@@ -29,12 +29,25 @@
 (define-public (%y y)
   (inexact->exact (truncate (/ (* y (cadr (display-size))) 100))))
 
+(define*-public (w%x x #&optional (w (get-window)))
+  (inexact->exact (truncate (/ (* x (car (window-size w))) 100))))
+
+(define*-public (w%y y #&optional (w (get-window)))
+  (inexact->exact (truncate (/ (* y (cadr (window-size w))) 100))))
+
 (define-public (execute command) 
   (system (string-append "exec " command " &")))
 
 (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
 (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
 (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))
+
+(define*-public (set-window-foreground! fg #&optional (w (get-window)))
+  (set-window-colors! fg #f w))
+
+(define*-public (set-window-background! bg #&optional (w (get-window))) 
+  (set-window-colors! #f bg w))
+
 
 (define-public (move-pointer x y)
   (let ((pos (pointer-position)))

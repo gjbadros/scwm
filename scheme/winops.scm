@@ -46,6 +46,18 @@
 (define-public toggle-window-shade 
   (make-toggling-winop window-shaded? un-window-shade window-shade))
 
+(define-public toggle-on-top
+  (make-toggling-winop kept-on-top? un-keep-on-top keep-on-top))
+
+(define-public toggle-titlebar
+  (make-toggling-winop titlebar-shown? hide-titlebar show-titlebar))
+
+(define-public toggle-border
+  (make-toggling-winop border-normal? plain-border normal-border))
+
+(define-public toggle-stick-icon
+  (make-toggling-winop icon-sticky? unstick-icon stick-icon))
+
 (define*-public (maximize nw nh #&optional (w (get-window)))
   (display 'maximizing)
   (newline)
@@ -74,7 +86,6 @@
 		     (resize-to (caddr max-prop)
 				(cadddr max-prop) w)
 		     (set-object-property! w 'maximized #f))))))
-
 
 (define*-public (toggle-maximize nw nh #&optional (w (get-window)))
   (if w (if (maximized? w)

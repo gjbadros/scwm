@@ -70,3 +70,22 @@
 			 (if i ")" "")))))
 
 
+(define-public (wildcard-matcher wildcard) 
+  (let ((wc-rgx (make-regexp 
+		 (regexp-substitute/global #f "\\*" wildcard 
+					   'pre ".*" 'post))))
+    (lambda* (#&optional (w (get-window)))
+      (or
+       (let* ((title (window-title w))
+  	      (result (regexp-exec wc-rgx title)))
+ 	 (and result (= (match:end result) (string-length title))))
+       (let* ((class (window-class w))
+	      (result (regexp-exec wc-rgx class)))
+	 (and result (= (match:end result) (string-length class))))
+       (let* ((resource (window-resource w))
+	      (result (regexp-exec wc-rgx resource)))
+	 (and result (= (match:end result) (string-length resource))))))))
+
+(define*-public (wildcard-match? wildcard #&optional (w (get-window)))
+  ((wildcard-matcher wildcard) w))
+

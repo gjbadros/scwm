@@ -26,12 +26,13 @@
 
 
 
-(define-public (default-winlist-proc w)
-  (deiconify w)
-  (focus w)
-  (raise-window w)
-  (warp-to-window w)
-  (move-pointer (%x 5) (%y 5)))
+(define-public (default-winlist-proc #&optional (w (get-window)))
+  (cond
+   (w (deiconify w)
+      (focus w)
+      (raise-window w)
+      (warp-to-window w)
+      (move-pointer (w%x 20 w) (w%y 20 w)))))
 
 (define-public window-list-proc default-winlist-proc)
 
@@ -49,6 +50,17 @@
 	(filter-only-except (list-all-windows) only except))
 
 
+
+(define-public (winlist-hit #&optional (w (get-window)))
+  (if w (set-object-property! w 'winlist-skip #f)))
+
+(define-public (winlist-skip #&optional (w (get-window)))
+  (if w (set-object-property! w 'winlist-skip #t)))
+
+(define-public (winlist-skip? #&optional (w (get-window)))
+  (if w (object-property w 'winlist-skip)) #f)
+
+
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (proc window-list-proc)
 				       (show-geometry #f))
@@ -63,7 +75,9 @@
 			     (window-geometry-string x))
 				  (window-title x))
 			(lambda () (proc x))))
-		     (list-windows #:only only #:except except))))) 
+		     (list-windows #:only only #:except (cons 
+							 winlist-skip?
+							 except)))))) 
 
 (define (rotate-around w wl)
   (append (cond
@@ -76,13 +90,37 @@
 	   (else '()))))
 
 
+(define-public (circulate-hit #&optional (w (get-window)))
+  (if w (set-object-property! w 'circulate-skip #f)))
+
+(define-public (circulate-skip #&optional (w (get-window)))
+  (if w (set-object-property! w 'circulate-skip #t)))
+
+(define-public (circulate-hit? #&optional (w (get-window)))
+  (if w (not (object-property w 'circulate-skip)) #f))
+
+(define-public (circulate-hit-icon #&optional (w (get-window)))
+  (if w (set-object-property! w 'circulate-skip-icon #f)))
+
+(define-public (circulate-skip-icon #&optional (w (get-window)))
+  (if w (set-object-property! w 'circulate-skip-icon #t)))
+
+(define-public (circulate-hit-icon? #&optional (w (get-window)))
+  (if w (not (object-property w 'circulate-skip-icon)) #f))
+
+(define-public (should-circulate-skip? #&optional (w (get-window)))
+  (if w 
+      (or (circulate-skip? w) (and (iconified? w) (circulate-skip-icon? w)))
+      #f))
+
 (define*-public (next-window #&key (window (get-window))
 			     (only '()) (except '()) (proc window-list-proc))
   (if window 
       (let* ((wl (list-all-windows))
 	     (rotwl (rotate-around window wl)))
 	(cond
-	 ((filter-only-except rotwl only except)
+	 ((filter-only-except rotwl only (cons 
+					  should-circulate-skip? except))
 	  => (lambda (x) (proc (car x))))))))
 
 (define*-public (prev-window #&key (window (get-window))
@@ -91,6 +129,11 @@
       (let* ((wl (list-all-windows))
 	     (rotwl (reverse (rotate-around window wl))))
 	(cond
-	 ((filter-only-except rotwl only except)
+	 ((filter-only-except rotwl only (cons 
+					  should-circulate-skip?
+					  except))
 	  => (lambda (x) (proc (car x))))))))
+
+
+
 
