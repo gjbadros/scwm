@@ -1,3 +1,9 @@
+Thu Aug 20 13:53:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* acconfig.h, configure.in:  Test for X_LOCALE, add -R arguments
+	for ld for Solaris (and other?) builds that want it (test
+	ac_R_nospace)
+
 Fri Aug 14 20:42:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Added -C option to only output
