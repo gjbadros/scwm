@@ -118,7 +118,7 @@ SUFFIXES = .x
 
 %.x: %.cc
 	CC=$(CXX) \
-	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
+	guile-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
 
 ## FIXMS: This really sucks, but it's the best we can do until
 ## Automake gets a way to compute dependencies with -MG
