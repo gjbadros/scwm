@@ -411,9 +411,10 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
   /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
-  scwm_font *scfont = pmdi->scfont;
-  int label_font_height = scfont->height;
   MenuItem *pmi = pmiim->pmi;
+  scwm_font *scfontItem = DYNAMIC_SAFE_FONT(pmi->scmFont);
+  scwm_font *scfont = scfontItem? scfontItem : pmdi->scfont;
+  int label_font_height = scfont->height;
   int y_offset = pmiim->pmidi->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
   int item_width = pmd->pmdi->cpixItemWidth;
@@ -439,9 +440,18 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
 
   /* Erase any old reliefs indicated selectedness */
-  XClearArea(dpy, w,
-	     x_offset-MENU_ITEM_RR_SPACE-1, y_offset,
-	     item_width+2*MENU_ITEM_RR_SPACE+2, item_height, False);
+  if (UNSET_SCM(pmi->scmBGColor)) {
+    /* inherit menu's bg color */
+    XClearArea(dpy, w,
+               x_offset-MENU_ITEM_RR_SPACE-1, y_offset,
+               item_width+2*MENU_ITEM_RR_SPACE+2, item_height, False);
+  } else {
+    Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+    SetGCFg(Scr.ScratchGC1,bg);
+    XFillRectangle(dpy, w, Scr.ScratchGC1, 
+                   x_offset-MENU_ITEM_RR_SPACE-1, y_offset, 
+                   item_width+2*MENU_ITEM_RR_SPACE+2, item_height);
+  }
   
   /* Draw the shadows for the absolute outside of the menus
      This stuff belongs in here, not in PaintMenu, since we only
@@ -477,6 +487,30 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
+
+    { /* scope */
+      Pixel fg = DYNAMIC_SAFE_COLOR(pmi->scmFGColor);
+      Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+      
+      if (fg || bg || fg) {
+        XGCValues gcv;
+        unsigned long gcm = 0;
+        XCopyGC(dpy,MenuGC,GCForeground | GCBackground | GCFont,Scr.ScratchGC1);
+
+        if (fg) {
+          gcm |= GCForeground;
+          gcv.foreground = fg;
+        }
+        if (bg) { 
+          gcm |= GCBackground;
+          gcv.background = bg;
+        }
+        scwm_msg(DBG,FUNC_NAME,"Changing GC with %ld",gcm);
+        XChangeGC(dpy, Scr.ScratchGC1, gcm, &gcv);
+        currentGC = Scr.ScratchGC1;
+      }
+    }
+
     x_offset += pmdi->cpixLeftPicWidth;
 
     x_offset += MENU_TEXT_SPACING/2;
@@ -855,10 +889,6 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
     
     scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
  
-    /* FIXGJB:    MakeGcsForDynamicMenu(pmenu);
-       FIXJTL: this is done in PaintMenuItem now; more effecient to do
-       it here, but I don't think it's safe.  See comment there. */
-
     label_font_height = scfont->height;
     
     pmd->x = 0;		/* just init: gets set elsewhere */

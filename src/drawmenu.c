@@ -288,9 +288,10 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
   /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
-  scwm_font *scfont = pmdi->scfont;
-  int label_font_height = scfont->height;
   MenuItem *pmi = pmiim->pmi;
+  scwm_font *scfontItem = DYNAMIC_SAFE_FONT(pmi->scmFont);
+  scwm_font *scfont = scfontItem? scfontItem : pmdi->scfont;
+  int label_font_height = scfont->height;
   int y_offset = pmiim->pmidi->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
   int width = pmd->cpixWidth;
@@ -396,13 +397,11 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     { /* scope */
       Pixel fg = DYNAMIC_SAFE_COLOR(pmi->scmFGColor);
       Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
-#ifndef I18N
-      scwm_font *pf = DYNAMIC_SAFE_FONT(pmi->scmFont);
-#endif
       
       if (fg || bg || fg) {
         XGCValues gcv;
         unsigned long gcm = 0;
+        XCopyGC(dpy,MenuGC,GCForeground | GCBackground | GCFont,Scr.ScratchGC1);
 
         if (fg) {
           gcm |= GCForeground;
@@ -412,12 +411,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
           gcm |= GCBackground;
           gcv.background = bg;
         }
-#ifndef I18N
-        if (pf) {
-          gcm |= GCFont;
-          gcv.font = pf->xfs->fid;
-        }
-#endif
+        scwm_msg(DBG,FUNC_NAME,"Changing GC with %ld",gcm);
         XChangeGC(dpy, Scr.ScratchGC1, gcm, &gcv);
         currentGC = Scr.ScratchGC1;
       }
