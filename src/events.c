@@ -571,38 +571,50 @@ HandleScwmExec()
   unsigned long nitems;
   unsigned long bytes_after;
   unsigned char *req;
+  unsigned long last_offset=0;
+  unsigned long saved_bytes_after=0;
 
-  /* Determine the request window. */
-  if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
-		     0, 1, True, AnyPropertyType, 
-		     &type_ret, &form_ret, &nitems, &bytes_after,
-			 &pw)==Success && pw!=NULL) {
-    w=*pw;
-    XFree(pw);
-
-    /* Get and delete its request. */
-    if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
-		       0, 0, False, XA_STRING, 
-		       &type_ret, &form_ret, &nitems, &bytes_after,
-		       &req)==Success && 
-	XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
-			   0, bytes_after*4, False, XA_STRING, 
+  do {
+    /* Determine the request window. */
+    if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
+			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
-			   &req)==Success) {
-      SCM val;
-      SCM str_val;
-      char *ret;
-      int len;
-      val = gh_eval_str_with_catch(req,scwm_error_handler);
-      str_val=scm_strprint_obj(val);
-      ret=gh_scm2newstr(str_val, &len);
-      XFree(req); 
-      XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
-		      8, PropModeReplace, ret, strlen(ret)+1);
-      free(ret);
-      return;
+			   &pw)==Success && pw!=NULL) {
+      w=*pw;
+      XFree(pw);
+      last_offset+=last_offset+1;
+      saved_bytes_after=bytes_after;;
+
+      /* Get and delete its request. */
+      if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+			     0, 0, False, XA_STRING, 
+			     &type_ret, &form_ret, &nitems, &bytes_after,
+			     &req)==Success && 
+	  XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+			     0, bytes_after*4, False, XA_STRING, 
+			     &type_ret, &form_ret, &nitems, &bytes_after,
+			     &req)==Success) {
+	SCM val;
+	SCM str_val;
+	char *ret;
+	int len;
+	val = gh_eval_str_with_catch(req,scwm_error_handler);
+	str_val=scm_strprint_obj(val);
+	ret=gh_scm2newstr(str_val, &len);
+	XFree(req); 
+	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
+			8, PropModeReplace, ret, strlen(ret)+1);
+	free(ret);
+	return;
+      }
     }
-  }
+  } while (saved_bytes_after != 0);
+  /* Repeat until we get a real_bytes_after of 0 on reading SCWMEXEC_REQWIN,
+     indicating that we read it all and it was deleted. It may well have
+     been re-created before we exit, but that doesn't matter because we'll
+     get a PropertyNotify and re-enter, but the offset to use will correctly
+     be 0. */
+
   /* scwm_msg(DBG, __FUNCTION__, "scwmexec protocol failure.\n"); */
   return;
 }
