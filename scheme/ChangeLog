@@ -1,3 +1,10 @@
+Thu Apr  4 01:47:44 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* rectangle.scm: Changed 'window-corners' and hence
+	'enclosing-rectangle' to use the window frame size instead of the
+	client window size.  This change was supposed to be checked in with the
+	last change to tile.scm.
+
 Tue Apr  2 23:57:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* style-options.scm:

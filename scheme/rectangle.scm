@@ -16,7 +16,7 @@ That is, the returned list is: ((nw-x nw-y) se-x se-y).  Use
 `rect-nw-x', `rect-nw-y', `rect-se-x', `rect-se-y' to take apart
 the returned list."
   (let ((p (window-position win))
-	(s (window-size win)))
+	(s (window-frame-size win)))
     (set-cdr! (cdr s) ())
     (cons p (map + p s))))
 
