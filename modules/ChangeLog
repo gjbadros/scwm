@@ -1,3 +1,9 @@
+1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
+
+	* xpm-menus/draw-xpm-menu.c (ConstructDynamicXpmMenu): enforce a
+	minimum 4-pixel border width, like KDE; without this, some
+	thin-border KDE themes didn't look right
+
 Sat Oct 10 13:59:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xpm-menus/draw-xpm-menu.c: Added include of libguile/dynl.h

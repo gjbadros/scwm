@@ -765,7 +765,7 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
   SCM scmRest;
   SCM scmImage;
   int iImage;
-  int cpixBorder = 0;
+  int cpixBorder = 4; /* KDE always uses at least 4 pixel borders */
 
   if (pmd->pmdi != NULL)
     return;
