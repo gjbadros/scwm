@@ -77,7 +77,7 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       break;
     default:
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
-      break;
+      return NULL;
     }
     pch += 2;
   }
@@ -95,8 +95,9 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   char *keyname = gh_scm2newstr(key,&len);
   char *pch = PchModifiersToModmask(keyname,pmodifier);
   
-  fOk = !((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
-	   (XKeysymToKeycode(dpy, *pkeysym)) == 0);
+  fOk = !(pch == 0 ||
+	  (*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
+	  (XKeysymToKeycode(dpy, *pkeysym)) == 0);
   free(keyname);
   return fOk;
 }
@@ -107,6 +108,9 @@ static
 int
 BnumFromSz(char *sz)
 {
+  if (sz == 0)
+    return -1;
+
   if (tolower(*sz) == 'a'  && (strcasecmp(sz,"any") == 0 ||
 			       strcasecmp(sz,"all") == 0)) {
     return 0;
