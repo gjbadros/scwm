@@ -65,8 +65,8 @@ set_edge_scroll_x(SCM sx, SCM sy)
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-scroll!", 2, sy);
   }
-  Scr.EdgeScrollX = gh_scm2int(sx) / 100;
-  Scr.EdgeScrollY = gh_scm2int(sy) / 100;
+  Scr.EdgeScrollX = gh_scm2int(sx);
+  Scr.EdgeScrollY = gh_scm2int(sy);
   checkPanFrames();
 
   SCM_REALLOW_INTS;
