@@ -15,6 +15,7 @@
 
 #include "scwm_msg.h"
 #include "scwm-snarf.h"
+#include "scwm-guile.h"
 #include "callbacks.h"
 
 #include "scwm_scheme_evaluator.h"
