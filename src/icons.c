@@ -532,25 +532,11 @@ AutoPlace(ScwmWindow *psw)
   int new_x, new_y;
 
 
-  /* New! Put icon in same page as the center of the window */
-  if (psw->fSticky) {
-    base_x = 0;
-    base_y = 0;
-    /*Also, if its a stickyWindow, put it on the current page! */
-    new_x = FRAME_X_VP(psw) % Scr.DisplayWidth;
-    new_y = FRAME_Y_VP(psw) % Scr.DisplayHeight;
-    if (new_x < 0)
-      new_x += Scr.DisplayWidth;
-    if (new_y < 0)
-      new_y += Scr.DisplayHeight;
-    move_finalize(psw->icon_w, psw, new_x, new_y);
-    psw->Desk = Scr.CurrentDesk;
-  } else {
-    base_x = ((FRAME_X_VP(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw)/2))
-              / Scr.DisplayWidth) * Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);
-    base_y = ((FRAME_Y_VP(psw) + ICON_VP_OFFSET_Y(psw) + (FRAME_HEIGHT(psw)/2))
-              / Scr.DisplayHeight) * Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
-  }
+  base_x = ((FRAME_X_VP(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw)/2))
+	    / Scr.DisplayWidth) * Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);
+  base_y = ((FRAME_Y_VP(psw) + ICON_VP_OFFSET_Y(psw) + (FRAME_HEIGHT(psw)/2))
+	    / Scr.DisplayHeight) * Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
+
   if (psw->fIconMoved) {
     if (psw->fStickyIcon) {
       /* FIXGJB: may not want this -- icons should be able to iconify

@@ -1,3 +1,11 @@
+Mon Dec 21 07:32:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* icons.c (AutoPlace): Stop treating sticky windows differently
+ 	for purposes of icon placement. I'm not sure what the old code was
+ 	trying to do, but what it was actually ending up doing was
+ 	definitely wrong. Thanks to Arturo Perez for reporting this bug
+ 	and Albert L. Ting for clarifying the problem.
+
 Sat Dec 12 00:09:50 1998  Carl R. Witty  <cwitty@newtonlabs.com>
 
 	* color.c (Shadow and Highlight Factors): New concept doc.
