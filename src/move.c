@@ -136,7 +136,8 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
   Window w = psw->w;
   Window wFrame = psw->frame;
   int width = FRAME_WIDTH(psw);
-  int shaded_height = psw->title_height + 2 * (psw->boundary_width + psw->bw);
+  int shaded_height = psw->title_height + psw->boundary_width;
+  /* FIXGJB above was psw->title_height + 2 * (psw->boundary_width + psw->bw); */
   int normal_height = psw->orig_height;
   int client_height = normal_height - shaded_height;
   /* set our defaults */

@@ -396,6 +396,138 @@ invalidate_window(SCM schwin)
 }
 
 
+/**** ResizeTo, MoveResizeTo, MoveTo
+ These three functions are the main way to reconfigure
+ a top level window.  They will update the psw-> fields
+ to the actual argument values directly if Cassowary is
+ not in use, and will otherwise set the add the appropriate
+ edit variables, set the constraint variables, and let
+ ScwmResolve copy the new constraint variable values into
+ the fields and then call ResizePswToCurrentSize or
+ MovePswToCurrentPosition to make the X11 calls to
+ actually move the window.
+
+ These are not to be used from within interactive positioning as they
+ encapsulate the adding and removing of the edit variables. Use the
+ functions that these call after sandwiching between the cassowary
+ edit variable adding and deleting: SuggestSizeWindowTo or
+ SuggestMoveWindowTo.
+
+ Note that resizing involves calling SetupFrame, which positions all
+ the decoration windows appropriately.
+*/
+
+void
+ResizeTo(ScwmWindow *psw, int width, int height)
+{
+  ConstrainSize(psw, 0, 0, &width, &height);
+  CassowaryEditSize(psw);
+  SuggestSizeWindowTo(psw, FRAME_X(psw), FRAME_Y(psw),
+                      width, height);
+  CassowaryEndEdit(psw);
+}
+
+void
+MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height)
+{
+  ConstrainSize(psw, 0, 0, &width, &height);
+  CassowaryEditSize(psw);
+  SuggestSizeWindowTo(psw, x, y, width, height);
+  CassowaryEndEdit(psw);
+}
+
+void
+MoveTo(ScwmWindow *psw, int x, int y)
+{
+  CassowaryEditPosition(psw);
+  SuggestMoveWindowTo(psw, x,y);
+  CassowaryEndEdit(psw);
+}
+
+
+void 
+MovePswToCurrentPosition(const ScwmWindow *psw)
+{
+  int x = FRAME_X(psw), y = FRAME_Y(psw);
+  XMoveWindow(dpy, psw->frame, x, y);
+}
+
+
+/* ResizePswToCurrentSize may update psw->attr, so is not const */
+void 
+ResizePswToCurrentSize(ScwmWindow *psw)
+{
+  int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
+  int x = FRAME_X(psw), y = FRAME_Y(psw);
+
+  SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
+
+}
+
+
+/* Only resize if something has changed -- this gets called
+   when cassowary is not re-solving for this window, so we must be sure that
+   the window has really changed.
+   (Note that it may get called when cassowary is in use if there is
+   no master solver yet) 
+
+   Normal scwm function never call this function -- they should call
+   MoveTo or MoveResizeTo or ResizeTo, and this will get invoked as
+   needed.
+*/
+void
+SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h) {
+  Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
+  Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);
+  if (fNeedMove || fNeedResize) {
+    SET_CVALUE(psw,frame_x,x);
+    SET_CVALUE(psw,frame_y,y);
+    SET_CVALUE(psw,frame_width,w);
+    SET_CVALUE(psw,frame_height,h);
+    if (fNeedResize)
+      ResizePswToCurrentSize(psw);
+    else
+      MovePswToCurrentPosition(psw);
+  }
+}
+
+
+
+/* This will involve cassowary as needed, through
+   use of MoveTo 
+   Same as MoveTo, except it knows about icons as well */
+void 
+move_finalize(Window w, ScwmWindow * psw, int x, int y)
+{
+  if (w == psw->frame) {
+#if 0 /* FIXGJB */
+    SetupFrame(psw, x, y,
+	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
+               WAS_MOVED, NOT_RESIZED);
+#endif
+    MoveTo(psw,x,y);
+  } else {			/* icon window */
+    psw->fIconMoved = True;
+    psw->icon_x_loc = x;
+    psw->icon_xl_loc = y - (psw->icon_w_width - psw->icon_p_width) / 2;
+    psw->icon_y_loc = y;
+    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
+	      (unsigned long) psw,
+	      psw->icon_x_loc, psw->icon_y_loc,
+	      psw->icon_w_width, psw->icon_w_height
+	      + psw->icon_p_height);
+    XMoveWindow(dpy, psw->icon_w,
+		psw->icon_xl_loc, y + psw->icon_p_height);
+    if (psw->icon_pixmap_w != None) {
+      XMapWindow(dpy, psw->icon_w);
+      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, y);
+      XMapWindow(dpy, w);
+    }
+  }
+}
+
+
+
 static int DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
                           enum cursor cursor, int FinishEvent);
 
@@ -642,8 +774,7 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
       (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
       (FRAME_X(psw) > Scr.DisplayWidth) || 
       (FRAME_Y(psw) > Scr.DisplayHeight)) {
-    SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, 
-               WAS_MOVED, NOT_RESIZED);
+    MoveTo(psw,0,0);
     if (!psw->fClickToFocus)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
@@ -714,8 +845,7 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
       (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
       (FRAME_X(psw) > Scr.DisplayWidth) || 
       (FRAME_Y(psw) > Scr.DisplayHeight)) {
-    SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
-               WAS_MOVED, NOT_RESIZED);
+    MoveTo(psw,0,0);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();
@@ -1793,102 +1923,6 @@ specified. */
 #undef FUNC_NAME
 
 
-void 
-move_finalize(Window w, ScwmWindow * psw, int x, int y)
-{
-  if (w == psw->frame) {
-    SetupFrame(psw, x, y,
-	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
-               WAS_MOVED, NOT_RESIZED);
-    CassowaryEditPosition(psw);
-    SuggestMoveWindowTo(psw,x,y);
-    CassowaryEndEdit(psw);
-  } else {			/* icon window */
-    psw->fIconMoved = True;
-    psw->icon_x_loc = x;
-    psw->icon_xl_loc = y - (psw->icon_w_width - psw->icon_p_width) / 2;
-    psw->icon_y_loc = y;
-    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
-	      (unsigned long) psw,
-	      psw->icon_x_loc, psw->icon_y_loc,
-	      psw->icon_w_width, psw->icon_w_height
-	      + psw->icon_p_height);
-    XMoveWindow(dpy, psw->icon_w,
-		psw->icon_xl_loc, y + psw->icon_p_height);
-    if (psw->icon_pixmap_w != None) {
-      XMapWindow(dpy, psw->icon_w);
-      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, y);
-      XMapWindow(dpy, w);
-    }
-  }
-}
-
-void 
-MovePswToCurrentPosition(const ScwmWindow *psw)
-{
-  int x = FRAME_X(psw), y = FRAME_Y(psw);
-  XMoveWindow(dpy, psw->frame, x, y);
-}
-
-
-/* ResizePswToCurrentSize may updated psw->attr, so is not const */
-void 
-ResizePswToCurrentSize(ScwmWindow *psw)
-{
-  int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
-  int x = FRAME_X(psw), y = FRAME_Y(psw);
-
-  SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
-
-#if 0
-  /* send configure event to client application */
-  { /* scope */
-    XEvent client_event;
-    client_event.type = ConfigureNotify;
-    client_event.xconfigure.display = dpy;
-    client_event.xconfigure.event = psw->w;
-    client_event.xconfigure.window = psw->w;
-
-    /* FIXGJB are x and y virtual or physical? may need to subtract paging pos */
-    client_event.xconfigure.x = x + psw->boundary_width;
-    client_event.xconfigure.y = y + psw->title_height + psw->boundary_width;
-    client_event.xconfigure.width = w - 2 * psw->boundary_width;
-    client_event.xconfigure.height = h - 2 * psw->boundary_width -
-      psw->title_height;
-
-    client_event.xconfigure.border_width = psw->bw;
-    /* Real ConfigureNotify events say we're above title window, so ... */
-    /* what if we don' thave a title ????? */
-    client_event.xconfigure.above = psw->frame;
-    client_event.xconfigure.override_redirect = False;
-    DBUG_RESIZE(__FUNCTION__, "Sending configure event to (%d,%d), %d x %d",
-                x,y,w,h);
-    XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
-  }
-#endif
-}
-
-
-/* Only resize if something has changed -- this gets called
-   when cassowary is not re-solving for this window, so we must be sure that
-   the window has really changed.
-   (Note that it may get called when cassowary is in use if there is
-   no master solver yet) */
-void
-SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h) {
-  Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
-  Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);
-  if (fNeedMove || fNeedResize) {
-    SET_CVALUE(psw,frame_x,x);
-    SET_CVALUE(psw,frame_y,y);
-    SET_CVALUE(psw,frame_width,w);
-    SET_CVALUE(psw,frame_height,h);
-    if (fNeedResize)
-      ResizePswToCurrentSize(psw);
-    else
-      MovePswToCurrentPosition(psw);
-  }
-}
 
 
 extern float rgpctMovementDefault[32];
@@ -2032,7 +2066,6 @@ specified. */
 }
 #undef FUNC_NAME
 
-
 SCWM_PROC(interactive_move, "interactive-move", 0, 1, 0,
           (SCM win))
      /** Move WIN interactively.
@@ -2091,11 +2124,7 @@ usual way if not specified.*/
      width += (2*psw->boundary_width);
      height += (psw->title_height + 2*psw->boundary_width);
    */
-
-  ConstrainSize(psw, 0, 0, &width, &height);
-  SetupFrame(psw, FRAME_X(psw),
-	     FRAME_Y(psw), width, height, False,
-             NOT_MOVED, WAS_RESIZED);
+  ResizeTo(psw,width,height);
 
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -2436,12 +2465,13 @@ specified. */
 
   if (!psw->fTitle) {
     psw->fTitle = True;
-    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
+    ResizeTo(psw,
 	       FRAME_WIDTH(psw),
-	       FRAME_HEIGHT(psw) + fl->TitleHeight,
-	       True, NOT_MOVED, WAS_RESIZED);
-    /* SetTitleBar(psw,(Scr.Hilite==psw),True); */
+	       FRAME_HEIGHT(psw) + fl->TitleHeight);
+    /* FIXGJB: are BroadcastConfig's needed here-- SetupFrame generates them, too
+       --07/26/98 gjb*/
+    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    /* SetTitleBar(psw,(Scr.Hilite==psw),True); FIXGJB */
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -2467,11 +2497,12 @@ to the window context in the usual way if not specified. */
   if (psw->fTitle) {
     psw->fTitle = False;
     psw->title_height = 0;
+    ResizeTo(psw,
+             FRAME_WIDTH(psw),
+             FRAME_HEIGHT(psw) - fl->TitleHeight);
+    /* FIXGJB: are BroadcastConfig's needed here-- SetupFrame generates them, too
+       --07/26/98 gjb*/
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
-	       FRAME_WIDTH(psw),
-	       FRAME_HEIGHT(psw) - fl->TitleHeight,
-	       True, NOT_MOVED, WAS_RESIZED);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -2593,11 +2624,11 @@ WIN defaults to the window context in the usual way if not specified. */
   oldw = psw->boundary_width;
   psw->boundary_width = w;
 
-  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
-	     FRAME_WIDTH(psw) + 2 * (w - oldw),
-	     FRAME_HEIGHT(psw) + 2 * (w - oldw),
-	     True, NOT_MOVED, WAS_RESIZED);
+  ResizeTo(psw, 
+           FRAME_WIDTH(psw) + 2 * (w - oldw),
+           FRAME_HEIGHT(psw) + 2 * (w - oldw));
 
+  /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
 }

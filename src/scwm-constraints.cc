@@ -156,10 +156,10 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h)
     .suggestValue(pswci->_frame_height,h)
     .resolve();
 
-  scwm_msg(DBG,__FUNCTION__,
-           "Now clv-width,height are %d x %d",
-           pswci->_frame_width.intValue(),
-           pswci->_frame_height.intValue());
+  DBUG(__FUNCTION__,
+       "Now clv-width,height are %d x %d",
+       pswci->_frame_width.intValue(),
+       pswci->_frame_height.intValue());
 }
 
 

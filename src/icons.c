@@ -569,8 +569,7 @@ AutoPlace(ScwmWindow *psw)
       new_x += Scr.DisplayWidth;
     if (new_y < 0)
       new_y += Scr.DisplayHeight;
-    SetupFrame(psw, new_x, new_y,
-	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, WAS_MOVED, NOT_RESIZED);
+    move_finalize(psw, new_x, new_y);
     psw->Desk = Scr.CurrentDesk;
   } else {
     base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *

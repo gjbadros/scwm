@@ -379,9 +379,7 @@ MoveViewport(int newx, int newy, Bool grab)
 		      psw->icon_w_height + psw->icon_p_width);
 	  }
 	}
-	SetupFrame(psw, FRAME_X(psw) + deltax, FRAME_Y(psw) + deltay,
-		   FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, 
-                   WAS_MOVED, NOT_RESIZED);
+	MoveTo(psw, FRAME_X(psw) + deltax, FRAME_Y(psw) + deltay);
       }
     }
     for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {

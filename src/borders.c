@@ -1197,9 +1197,12 @@ RelieveWindow(ScwmWindow *psw, Window win,
 
 
 /*
- *  Procedure:
- *      Setupframe - set window sizes
- *           This is called from lots and lots of places!
+ * Setupframe - configure the decoration window sizes and positions
+ * 
+ * Unlike in fvwm2, this is *not* the correct function to call
+ * when you want to move a ScwmWindow -- see the functions
+ * in window.c, such as MoveTo, ResizeTo, and MoveResizeTo
+ *
  *
  *  Inputs:
  *      psw - the ScwmWindow pointer
@@ -1208,6 +1211,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
  *      w       - the width of the frame window w/o border
  *      h       - the height of the frame window w/o border
  *      sendEvent  - True if we want to force an event to be sent reflecting the change
+ *                   (it may get sent anyway --- see ICCCM comment below)
  *      fMoved  - set if the window was moved
  *      fResized - set if the window was resized
  *
@@ -1244,10 +1248,15 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     psw->orig_height = h;
   }
 
-  if (x >= Scr.DisplayWidth + Scr.VxMax - Scr.Vx - 16)
-    x = Scr.DisplayWidth + Scr.VxMax - Scr.Vx - 16;
-  if (y >= Scr.DisplayHeight + Scr.VyMax - Scr.Vy - 16)
-    y = Scr.DisplayHeight + Scr.VyMax - Scr.Vy - 16;
+  { /* scope */
+    /* 16 pixels is the amount to force the window onto
+       the virtual desktop if it is completely off */
+    const int cpixForceOn = 16;
+    if (x >= Scr.DisplayWidth + Scr.VxMax - Scr.Vx - cpixForceOn)
+      x = Scr.DisplayWidth + Scr.VxMax - Scr.Vx - cpixForceOn;
+    if (y >= Scr.DisplayHeight + Scr.VyMax - Scr.Vy - cpixForceOn)
+      y = Scr.DisplayHeight + Scr.VyMax - Scr.Vy - cpixForceOn;
+  }
 
 
 #ifndef NDEBUG
@@ -1344,67 +1353,70 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       if (ywidth < 2)
 	ywidth = 2;
 
+      /* position the four sides */
       for (i = 0; i < 4; i++) {
-	if (i == 0) {
+	if (i == 0) { /* top side */
 	  xwc.x = psw->corner_width;
 	  xwc.y = 0;
 	  xwc.height = psw->boundary_width;
 	  xwc.width = xwidth;
-	} else if (i == 1) {
+	} else if (i == 1) { /* right side */
 	  xwc.x = w - psw->boundary_width + psw->bw;
 	  xwc.y = psw->corner_width;
 	  xwc.height = ywidth;
 	  xwc.width = psw->boundary_width;
-	} else if (i == 2) {
+	} else if (i == 2) { /* bottom side */
 	  xwc.x = psw->corner_width;
 	  xwc.y = h - psw->boundary_width + psw->bw;
 	  xwc.height = psw->boundary_width + psw->bw;
 	  xwc.width = xwidth;
-	} else {
+	} else { /* left side */
 	  xwc.x = 0;
 	  xwc.y = psw->corner_width;
 	  xwc.width = psw->boundary_width;
 	  xwc.height = ywidth;
 	}
-	if (!shaded || (i < 2)) /* do top corners even when shaded */
+	if (!shaded || (i != 2)) /* skip bottom side when shaded */
 	  XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
       }
 
       xwcm = CWX | CWY | CWWidth | CWHeight;
       xwc.width = psw->corner_width;
       xwc.height = psw->corner_width;
+
+      /* now position the four corners 
+         0 = NW, 1 = NE, 2 = SW, 3 = SE */
       for (i = 0; i < 4; i++) {
-	if (i == 1 || i == 3)
+
+	if (i == 1 || i == 3) /* Right corners: NE, SE */
 	  xwc.x = w - psw->corner_width + psw->bw;
-	else
+	else /* Left corners: NW, SW */
 	  xwc.x = 0;
-	if (i == 2 || i == 3)
+
+	if (i == 2 || i == 3) /* Bottom corners: SW, SE */
 	  xwc.y = h - psw->corner_width;
-	else
+	else /* Top corners:  */
 	  xwc.y = 0;
+
 	if (!shaded || (i < 2)) /* do top corners even when shaded */
 	  XConfigureWindow(dpy, psw->corners[i], xwcm, &xwc);
       }
     }
   }
   psw->attr.width = w - 2 * psw->boundary_width;
-  psw->attr.height = h - psw->title_height
-    - 2 * psw->boundary_width;
+  psw->attr.height = h - psw->title_height - 2 * psw->boundary_width;
   /* may need to omit the -1 for shaped windows, next two lines */
   cx = psw->boundary_width - psw->bw;
   cy = psw->title_height + psw->boundary_width - psw->bw;
 
-  if (!shaded) {
-    XResizeWindow(dpy, psw->w, psw->attr.width,
-		  psw->attr.height);
+  if (!shaded && (fMoved || fResized)) {
+    XResizeWindow(dpy, psw->w, psw->attr.width, psw->attr.height);
     XMoveResizeWindow(dpy, psw->Parent, cx, cy,
 		      psw->attr.width, psw->attr.height);
   }
 
-  /* 
-   * fix up frame and assign size/location values in psw
-   */
-  DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
+  /* fix up frame and assign size/location values in psw */
+  DBUG_RESIZE(__FUNCTION__,"w = %d, h = %d", w, h);
 
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 

@@ -334,9 +334,7 @@ the window context in the usual way. */
   extra_height = (psw->fTitle) ?
     (old_height - psw->fl->TitleHeight) : 0;
 
-  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
-             FRAME_WIDTH(psw), FRAME_HEIGHT(psw) - extra_height, True,
-             WAS_MOVED, WAS_RESIZED);
+  ResizeTo(psw, FRAME_WIDTH(psw), FRAME_HEIGHT(psw) - extra_height);
   SetBorder(psw, Scr.Hilite == psw, True, True, None);
 
   return SCM_UNSPECIFIED;

@@ -736,8 +736,7 @@ HandlePropertyNotify()
       ConstrainSize(pswCurrent, 0, 0, &new_width, &new_height);
       if ((new_width != FRAME_WIDTH(pswCurrent)) ||
 	  (new_height != FRAME_HEIGHT(pswCurrent)))
-	SetupFrame(pswCurrent, FRAME_X(pswCurrent), FRAME_Y(pswCurrent),
-		   new_width, new_height, False, NOT_MOVED, WAS_RESIZED);
+        ResizeTo(pswCurrent, new_width, new_height);
 
       BroadcastConfig(M_CONFIGURE_WINDOW, pswCurrent);
     }
@@ -1164,7 +1163,8 @@ HandleButtonPress()
                  (Event.xbutton.subwindow != pswCurrent->w) &&
                  (Event.xany.window != pswCurrent->Parent) &&
                  (Event.xbutton.subwindow != pswCurrent->Parent)) {
-        scwm_msg(DBG,__FUNCTION__,"Would have raised window, but commented out");
+        scwm_msg(DBG,__FUNCTION__,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
+                 pswCurrent->name);
         /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
            cond'n above --07/26/98 gjb */
       }
@@ -1475,8 +1475,7 @@ HandleConfigureRequest()
     height = FRAME_HEIGHT(pswCurrent);
   }
 
-  SetupFrame(pswCurrent, x, y, width, height, sendEvent,
-             WAS_MOVED,WAS_RESIZED);
+  MoveResizeTo(pswCurrent, x, y, width, height);
   KeepOnTop();
 }
 

@@ -391,18 +391,18 @@ default_select_desk(ScwmWindow *psw, int Desk)
 }
 
 
-void
-keep_on_screen(ScwmWindow *psw)
+/* FIXGJB: this is hocus pocus 
+   was called keep_on_screen in fvwm2 --07/26/98 gjb */
+static void
+CorrectPositionToStayOnscreen(ScwmWindow *psw)
 {
-  /* patches 11/93 to try to keep the window on the
-   * screen */
-  { 
+  /* try to keep the window on the screen */
+  { /* scope */
     int xNew = psw->attr.x + psw->old_bw - psw->bw;
     int yNew = psw->attr.y + psw->old_bw - psw->bw;
 
     SET_CVALUE(psw, frame_x, xNew);
     SET_CVALUE(psw, frame_y, yNew);
-    CassowarySetCValuesAndSolve(psw, True);
   }
   
   if (FRAME_X(psw) + FRAME_WIDTH(psw) +
@@ -457,7 +457,7 @@ returns #t. */
     psw->attr.x = x = x - psw->old_bw + psw->bw;
     psw->attr.y = y = y - psw->old_bw + psw->bw;
 
-    keep_on_screen(psw);
+    CorrectPositionToStayOnscreen(psw);
 
     move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;
@@ -493,7 +493,7 @@ returns #f; otherwise it returns #t. */
   } else {
     psw->attr.x = x = x - psw->old_bw + psw->bw;
     psw->attr.y = y = y - psw->old_bw + psw->bw;
-    keep_on_screen(psw);
+    CorrectPositionToStayOnscreen(psw);
 
     move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;

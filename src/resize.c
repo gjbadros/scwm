@@ -126,8 +126,8 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heigh
   maxWidth = psw->hints.max_width;
   maxHeight = psw->hints.max_height;
 
-/*    maxWidth = Scr.VxMax + Scr.DisplayWidth;
-   maxHeight = Scr.VyMax + Scr.DisplayHeight; */
+  /* Could bound the max dimensions by Scr.VxMax + Scr.DisplayWidth
+     and Scr.VyMax + Scr.DisplayHeight */
 
   xinc = psw->hints.width_inc;
   yinc = psw->hints.height_inc;
@@ -449,8 +449,6 @@ specified. */
 	       &dragx, &dragy, (unsigned int *) &dragWidth,
 	       (unsigned int *) &dragHeight, &JunkBW, &JunkDepth);
 
-  dragx += psw->bw;
-  dragy += psw->bw;
   origx = dragx;
   origy = dragy;
   origWidth = dragWidth;
@@ -577,6 +575,9 @@ specified. */
       Event = ResizeEvent;
       DispatchEvent();
 
+      /* limit ourselves to legitimate sizes */
+      ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
+
       SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight);
       if (!fOpaque) {
         RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
@@ -593,12 +594,7 @@ specified. */
   UnmapMessageWindow();
 
   CassowaryEndEdit(psw);
-  if (!abort) {
-    ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
-    SetupFrame(psw, dragx - psw->bw,
-	       dragy - psw->bw, dragWidth, dragHeight, False,
-               NOT_MOVED, WAS_RESIZED);
-  }
+
   UninstallRootColormap();
   ResizeWindow = None;
   if (!fOpaque) {

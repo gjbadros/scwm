@@ -256,10 +256,6 @@ EXTERN SCM cannot_grab_hook;
 #define set_window_context(X) window_context=X;
 #define unset_window_context() window_context=SCM_UNDEFINED;
 
-size_t free_window(SCM obj);
-SCM mark_window(SCM obj);
-int print_window(SCM obj, SCM port, scm_print_state * pstate);
-
 ScwmWindow *PswFromWindow(Display *dpy, Window w);
 ScwmWindow *PswFromPointerLocation(Display *dpy);
 ScwmWindow *PswSelectInteractively(Display *dpy);
@@ -280,6 +276,10 @@ void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h);
 
 void FocusOn(ScwmWindow *psw, int DeIconifyOnly);
 void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);
+
+void MoveTo(ScwmWindow *psw, int x, int y);
+void ResizeTo(ScwmWindow *psw, int width, int height);
+void MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height);
 
 Bool GrabEm(enum cursor);
 void UngrabEm(void);

@@ -34,6 +34,7 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
     y = FRAME_Y(psw);
     w = FRAME_WIDTH(psw);
     h = FRAME_HEIGHT(psw) - extra_height;
+    /* FIXGJB: switch to ResizeTo? --07/26/98 gjb */
     SetupFrame(psw, x, y, w, h, True, WAS_MOVED, WAS_RESIZED);
     /* FIXGJB: why two calls in a row? --07/14/98 gjb */
 #if 0

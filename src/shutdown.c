@@ -72,10 +72,11 @@ Done(int restart_or_dump, char *command)
 
   XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
 
-
   /* Pretty sure this should be done... */
   XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
   
+  /* FIXGJB: Should restore cursor to original cursor before scwm started */
+
   if (restart_or_dump > 0) {
     SaveDesktopState();		/* I wonder why ... */
 
