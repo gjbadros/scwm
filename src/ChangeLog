@@ -1,3 +1,15 @@
+Mon Oct 27 06:53:54 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* miscprocs.c: Added support for
+ 	set-smart-placement-is-really-smart!,
+ 	set-click-to-focus-passes-click!, set-click-to-focus-raises! and
+ 	set-mouse-focus-click-raises!. These are obscure, but being able
+ 	to have click-to-focus without raising the window is nice.
+
+
+	* events.c: When not raising on click-to-focus, don't raise
+ 	regardless of where the click comes from.
+
 Sun Oct 26 01:05:27 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* color.c, decor.c, font.c, menu.c, window.c: changed all of the
