@@ -1802,7 +1802,7 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
 }
 
 void 
-MovePswToCurrentPosition(ScwmWindow *psw)
+MovePswToCurrentPosition(const ScwmWindow *psw)
 {
   int x = FRAME_X(psw), y = FRAME_Y(psw);
   XMoveWindow(dpy, psw->frame, x, y);

@@ -278,7 +278,7 @@ void RaiseWindow(ScwmWindow *psw);
 void LowerWindow(ScwmWindow *psw);
 
 void KeepOnTop();
-void MovePswToCurrentPosition(ScwmWindow *psw);
+void MovePswToCurrentPosition(const ScwmWindow *psw);
 
 void FocusOn(ScwmWindow *psw, int DeIconifyOnly);
 void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);
