@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 16:30:14 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 18:01:36 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -112,6 +112,13 @@
     (let ((zz (id-select-symbol (point))))
       (buffer-substring-no-properties (car zz) (cdr zz)))))
 
+(defun scwm-symbol-at-point ()
+  "Return symbol at point; look back if not found."
+  (or (thing-at-point 'symbol)
+      (save-excursion (skip-syntax-backward "^w")
+                      (unless (bobp) (backward-char 1))
+                      (thing-at-point 'symbol)) ""))
+
 ;; user functions
 ;; ---- ---------
 
@@ -208,7 +215,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 Returns a string."
   ;; removed the last arg, `sym', for backward compatibility with e19.
   (completing-read "SCWM symbol: " (scwm-obarray) nil nil
-                   (or sym (thing-at-point 'symbol)) 'scwm-history))
+                   (or sym (scwm-symbol-at-point)) 'scwm-history))
 
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
@@ -266,12 +273,7 @@ Returns a string."
   "List all scwm symbols matching PAT."
   ;; (interactive (interactive-token "SCWM Apropos"))
   (interactive
-   (list (read-string
-	  "SCWM Apropos: "
-	  (format "%s" (or (thing-at-point 'symbol)
-			   (progn (skip-syntax-backward "^w")
-				  (if (bobp) () (backward-char 1))
-				  (thing-at-point 'symbol)) "")))))
+   (list (read-string "SCWM Apropos: " (format "%s" (scwm-symbol-at-point)))))
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
       (princ "Click mouse-2 for documentation.\n\n")
