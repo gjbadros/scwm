@@ -1284,6 +1284,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
  *      psw - the ScwmWindow pointer
  *      x       - the x coordinate of the upper-left outer corner of the frame
  *      y       - the y coordinate of the upper-left outer corner of the frame
+ * (x,y are in viewport coordinates)
  *      w       - the width of the frame window w/o border
  *      h       - the height of the frame window w/o border
  *      sendEvent  - True if we want to force an event to be sent reflecting the change

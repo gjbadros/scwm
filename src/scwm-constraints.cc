@@ -123,6 +123,7 @@ CassowaryEditSize(PScwmWindow psw)
 }
 
 
+/* x,y are virtual positions */
 void 
 SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
 {
@@ -143,6 +144,8 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
     .resolve();
 }
 
+
+/* x,y are virtual positions */
 void 
 SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
 {

@@ -100,9 +100,11 @@ void CassowaryInitClVarsInPscreen(ScreenInfo *pscreen) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
+/* x,y are virtual positions */
 void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y, Bool fOpaque) {
   SetScwmWindowPosition(psw,x,y,fOpaque);
 }
+/* x,y are virtual positions */
 void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
   SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }

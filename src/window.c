@@ -527,7 +527,9 @@ ResizePswToCurrentSize(ScwmWindow *psw)
    don't call this -- it is called when cassowary is not re-solving
    for this window, so we must be sure that the window has really
    changed.  (Note that it may get called when cassowary is in use if
-   there is no master solver yet) */
+   there is no master solver yet) 
+   x,y are virtual positions
+*/
 void
 SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque) 
 {
@@ -543,7 +545,7 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
       }
       RemoveRubberbandOutline(Scr.Root);
       RedrawOutlineAtNewPosition(Scr.Root, 
-                                 FRAME_X(psw), FRAME_Y(psw),
+                                 FRAME_X_VP(psw), FRAME_Y_VP(psw),
                                  FRAME_WIDTH(psw), h);
     }
   }
@@ -557,7 +559,10 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
 
    Normal scwm function never call this function -- they should call
    MoveTo or MoveResizeTo or ResizeTo, and this will get invoked as
-   needed.  */
+   needed.
+
+   x,y are virtual positions
+  */
 void
 SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, 
                       Bool fOpaque)
@@ -572,7 +577,7 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
     if (!fOpaque) {
       RemoveRubberbandOutline(Scr.Root);
       RedrawOutlineAtNewPosition(Scr.Root, 
-                                 FRAME_X(psw) - psw->bw, FRAME_Y(psw) - psw->bw,
+                                 FRAME_X_VP(psw) - psw->bw, FRAME_Y_VP(psw) - psw->bw,
                                  FRAME_WIDTH(psw) + 2 * psw->bw,
                                  FRAME_HEIGHT(psw) + 2 * psw->bw);
     } else {
@@ -1959,7 +1964,7 @@ not specified. */
   } /* else { FIXGJB: ideally, avoid this call when animated,
      but we need it to ensure that different combinations of 
      animated/unanimated shading do the right thing */
-    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
+    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
                psw->title_height + psw->boundary_width, 
                NOT_MOVED, WAS_RESIZED);
     /*  } */
@@ -2009,7 +2014,7 @@ window context in the usual way if not specified. */
   } /* else { FIXGJB: ideally, avoid this call when animated,
      but we need it to ensure that different combinations of 
      animated/unanimated shading do the right thing */
-    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
+    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), 
                psw->orig_width, psw->orig_height,
                NOT_MOVED, WAS_RESIZED);
     /*  } */
@@ -2194,11 +2199,14 @@ specified. */
 
 
 /* FIXMS: would animated resizes be a good idea? */
+/* FIXGJB: either resize-to or resize-frame-to should be written
+   in scheme using the other */
 
 SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
      /** Resize WIN's client area to a size of W by H in pixels. 
-The size includes the window decorations. WIN defaults to the window
+The size does not include the window decorations -- only the client
+application size. WIN defaults to the window
 context in the usual way if not specified.*/
 #define FUNC_NAME s_resize_to
 {
@@ -2237,9 +2245,9 @@ context in the usual way if not specified.*/
 
 SCWM_PROC(resize_frame_to, "resize-frame-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
-     /** Resize WIN to a size of W by H in pixels. The size includes
-the window decorations. WIN defaults to the window context in the
-usual way if not specified.*/
+     /** Resize WIN to a size of W by H in pixels. 
+The size includes the window decorations. WIN defaults to the window
+context in the usual way if not specified.*/
 #define FUNC_NAME s_resize_frame_to
 {
   int width, height;

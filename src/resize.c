@@ -368,6 +368,7 @@ resize frames. VALUE should be an integer. */
  *	root	    - the window we are outlining
  *	x	    - upper left x coordinate
  *	y	    - upper left y coordinate
+ * (x,y are viewport positions)
  *	width	    - the width of the rectangle
  *	height	    - the height of the rectangle
  */
@@ -543,7 +544,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                  x, y, &xmotion, &ymotion, 
                                  &dragx, &dragy, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, fOpaque);
+      SuggestSizeWindowTo(psw,Scr.Vx + dragx, Scr.Vy + dragy,
+                          dragWidth,dragHeight, fOpaque);
             
       DisplaySize(psw, dragWidth, dragHeight, True);
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
@@ -576,7 +578,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       /* limit ourselves to legitimate sizes */
       ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, fOpaque);
+      SuggestSizeWindowTo(psw,Scr.Vx+dragx,Scr.Vy+dragy,
+                          dragWidth,dragHeight, fOpaque);
     }
   }
 
@@ -587,7 +590,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   /* pop down the size window */
   UnmapMessageWindow();
 
-  SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, True);
+  SuggestSizeWindowTo(psw,Scr.Vx+dragx,Scr.Vy+dragy,
+                      dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
 
   UninstallRootColormap();
@@ -637,6 +641,7 @@ screen while the non-opaque resize takes place. */
   }
 
   InteractiveResize(psw, fOpaque, &width, &height);
+  /* FIXGJB: return the new size */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
