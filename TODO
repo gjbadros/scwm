@@ -3,6 +3,7 @@
 For scwm 0.9:
 
 * Add session manager support
+** TEST IT!  Add hooks to scheme code for various messages, etc.
 ** configure test for libSM, libICE, link with -lSM -lICE and #define XSM
 ** #include <X11/SM/SMlib.h>
 ** initialization routines in scwm-smc.c
