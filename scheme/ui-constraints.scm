@@ -8,10 +8,15 @@
 ;;
 
 (define-module (app scwm ui-constraints)
+  :use-module (app scwm message-window)
   :use-module (app scwm base)
   :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
   )
+
+
+;; in case we re-load
+;;(reset-ui-constraint-classes!)
 
 ;; (use-modules (app scwm ui-constraints))
 ;; (use-modules (app scwm ui-constraints-classes))
@@ -40,6 +45,7 @@
 (define-public global-constraint-class-list ())
 (define-public global-constraint-instance-list ())
 
+;; (length global-constraint-instance-list)
 
 ;; UI-CONSTRAINT-CLASS
 
@@ -100,7 +106,7 @@ SIDE-EFFECT: removes class object from the global class list."
   "Empty the global list of ui-constraint-classes."
   (begin
     (for-each (lambda (class) 
-		(call-hook-procedures constraint-class-remove-hook-list (list class))) 
+		(call-hook-procedures constraint-class-delete-hook-list (list class))) 
 	      global-constraint-class-list)
     (set! global-constraint-class-list '())))
 
@@ -274,7 +280,7 @@ SIDE-EFFECT: adds new instance object to the global list."
 	      (call-hook-procedures constraint-add-hook-list (list uc))
 	      (call-hook-procedures constraint-composition-record-hook-list (list uc arg-list))))
 	uc)
-      (error "Argument must be a UI-CONSTRAINT-CLASS object")))
+      (error "make-ui-constraint first argument must be UI-CONSTRAINT-CLASS object")))
 
 
 ;; make-ui-constraint-interactively
@@ -292,8 +298,13 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above)."
   (if (ui-constraint-class? ui-constraint-class)
       (let* ((ui-ctr (ui-constraint-class-ui-ctr ui-constraint-class))
 	     (arg-list (ui-ctr)))
-	(if arg-list (make-ui-constraint ui-constraint-class arg-list)))
-      (error "Argument must be a UI-CONSTRAINT-CLASS object")))
+	(if arg-list 
+	    (let ((uic (make-ui-constraint ui-constraint-class arg-list)))
+	      (if (ui-constraint? uic)
+		  uic
+		  (display-message-briefly "Error making constraint!")))
+	    (display-message-briefly "Error making constraint -- no arguments!")))
+      (error "make-ui-constraint-interactively first argument must be UI-CONSTRAINT-CLASS object")))
 
 
 ;; delete-ui-constraint
@@ -315,7 +326,7 @@ SIDE-EFFECT: removes instance object from the global list"
 ;; returns #f otherwise
 
 (define-public (ui-constraint? ui-constraint)
-  "returns #t if UI-CONSTRAINT is a ui-constraint.
+  "Returns #t if UI-CONSTRAINT is a ui-constraint.
 returns #f otherwise."
   (and (vector? ui-constraint) (eq? (vector-ref ui-constraint 0) obid-ui-constraint)))
 
@@ -330,7 +341,7 @@ returns #f otherwise."
 errors if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 2)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-cn first argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-enabled?
@@ -343,7 +354,7 @@ errors if UI-CONSTRAINT is not a ui-constraint."
 errors if UI-CONSTRAINT is not an ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 3)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-enabled? first argument must be a UI-CONSTRAINT object")))
 
 ;; ui-constraint-class
 
@@ -355,7 +366,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
 errors if UI-CONSTRAINT is not an ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 1)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-class first argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-windows
@@ -368,7 +379,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
 errors if UI-CONSTRAINT is not an ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 4)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-windows argument must be a UI-CONSTRAINT object")))
 
 ;; ui-constraint-opts
 
@@ -380,7 +391,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
 Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 5)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-opts argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-button
@@ -390,7 +401,7 @@ Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constrai
 Returns #f if the gtk toggle menu feature is not in use."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 6)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-button argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-set-button!
@@ -400,7 +411,7 @@ Returns #f if the gtk toggle menu feature is not in use."
 Errors if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-set! ui-constraint 6 button)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-set-button! first argument must be a UI-CONSTRAINT object")))
 
 
 
@@ -432,7 +443,7 @@ returns the constraint."
 	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #t)
 	(call-hook-procedures hooks '(#t)))
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "enable-ui-constraint argument must be a UI-CONSTRAINT object")))
 
 
 ;; disable-ui-constraint
@@ -451,7 +462,7 @@ returns the constraint"
 	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #f)
 	(call-hook-procedures hooks '(#f)))
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "disable-ui-constraint argument must be a UI-CONSTRAINT object")))
 
 
 ;; constraint-satisfied?
@@ -466,7 +477,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
       (let* ((class (ui-constraint-class ui-constraint))
 	     (satisfied? (ui-constraint-class-satisfied class)))
 	(satisfied? ui-constraint))
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "constraint-satisfied? argument must be a UI-CONSTRAINT object")))
 
 
 ;; constrained-window-in-focus?
@@ -486,7 +497,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
 Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (window-in-list-in-focus? (ui-constraint-windows ui-constraint))
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "constrained-window-in-focus? argument must be a UI-CONSTRAINT object")))
 
 
 ;; do-draw-constraint
@@ -503,7 +514,7 @@ Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint."
 	    (focus (constrained-window-in-focus? ui-constraint))
 	    (drawme (ui-constraint-class-draw-proc (ui-constraint-class ui-constraint))))
 	(drawme ui-constraint enable focus mode))
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "do-draw-constraint first argument must be a UI-CONSTRAINT object")))
 
 
 ;; draw-constraint
@@ -650,7 +661,7 @@ Errors if UI-CONSTRAINT is not a ui-constraint object."
 Errors if UI-CONSTRAINT is not a ui-constraint object."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 7)
-      (error "Argument must be a UI-CONSTRAINT object")))
+      (error "ui-constraint-enable-hooks argument must be a UI-CONSTRAINT object")))
 
 
 

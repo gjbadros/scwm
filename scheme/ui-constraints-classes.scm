@@ -10,8 +10,9 @@
   :use-module (app scwm window-selection)
   :use-module (app scwm xlib-drawing))
 
-;; (use-modules (app scwm ui-constraints-classes))
-;; (use-modules (app scwm xlib-drawing))
+;; (use-scwm-modules ui-constraints-classes)
+;; (use-scwm-modules ui-constraints)
+;; (use-scwm-modules xlib-drawing)
 
 
 ;; (load "/home/gjb/scwm/scheme/ui-constraints-classes.scm")
@@ -54,16 +55,30 @@
 		    diameter diameter 0 360)))
 
 ;; helpful prompter for two-window constraints
-(define (two-window-prompter name p1 p2)
+(define-public (two-window-prompter name p1 p2)
   (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 2)
+    (if (eqv? (length winlist) 2)
 	(begin
 	  (unselect-all-windows)
-	  (list (winlist)))
-	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin))
-	      (w2 (select-window-interactively (string-append name ": " p2) msgwin)))
-	  (if (or (equal? w1 #f) (equal? w2 #f)) #f
-	      (list (list w1 w2)))))))
+	  (list winlist))
+	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
+	  (if w1
+	      (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
+		(if w2
+		    (list (list w1 w2))
+		    #f))
+	      #f)))))
+
+(define*-public (one-window-prompter name #&optional (p1 "select window"))
+  (let ((winlist (selected-windows-list)))
+    (if (eqv? (length winlist) 1)
+	(begin 
+	  (unselect-all-windows)
+	  (list winlist))
+	(let ((win (select-window-interactively 
+		    (string-append name ": " p1) msgwin)))
+	  (if win (list win) #f)))))
+
 
 ;; Perhaps should move this elsewhere
 ;; Useful drawing utilities function
@@ -82,10 +97,10 @@
 ;; translates a nonant vector into a string for display
 (define (dirvector->string vec)
   (string-append 
-   (if (eq? (vector-ref vec 0) 1) "N" "")
-   (if (eq? (vector-ref vec 3) 1) "S" "")
-   (if (eq? (vector-ref vec 1) 1) "W" "")
-   (if (eq? (vector-ref vec 2) 1) "E" "")))
+   (if (eqv? (vector-ref vec 0) 1) "N" "")
+   (if (eqv? (vector-ref vec 3) 1) "S" "")
+   (if (eqv? (vector-ref vec 1) 1) "W" "")
+   (if (eqv? (vector-ref vec 2) 1) "E" "")))
 
 ;; the anchor constraint stores the clv in the first element of OPTS and 
 ;; constraint nonant in the second element
@@ -133,7 +148,7 @@
 ;; ui constructor
 (define (ui-cnctr-anchor)
   (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 1)
+    (if (eqv? (length winlist) 1)
 	(begin 
 	  (unselect-all-windows)
 	  (list (car winlist) (nonant->dirvector 4))) ;; give the default nonant as the middle
@@ -209,8 +224,7 @@
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 1))
 	(error "Expected only one window in win-list of cn for anchor"))
-    (if (eq? opts #f)
-	(error "Expected some optional information for an anchor."))
+    (or opts (error "Expected some optional information for an anchor."))
     (let* ((w (car win-list))
 	   (wt (window-center-top w))
 	   (wb (window-center-bottom w))
@@ -299,8 +313,7 @@
   (let ((win-list (ui-constraint-windows ui-constraint))
 	(opts (car (ui-constraint-opts ui-constraint)))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (eq? opts #f)
-	(error "Expected some optional information for an alignment constraint."))
+    (or opts (error "Expected some optional information for an alignment constraint."))
     (let* ((w1 (car win-list))
 	   (q1 (car opts))
 	   (w1pos (get-hpos-from-nonant w1 q1)))
@@ -369,8 +382,7 @@
   (let ((win-list (ui-constraint-windows ui-constraint))
 	(opts (car (ui-constraint-opts ui-constraint)))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (eq? opts #f)
-	(error "Expected some optional information for an alignment constraint."))
+    (or opts (error "Expected some optional information for an alignment constraint."))
     (let* ((w1 (car win-list))
 	   (q1 (car opts))
 	   (w1pos (get-vpos-from-nonant w1 q1)))
@@ -416,12 +428,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-hsize)
-  (let ((winlist (selected-windows-list)))
-    (if (>= (length winlist) 2)
-	(begin
-	  (unselect-all-windows)
-	  (list winlist))
-	(two-window-prompter "relative hsize" "select first window" "select second window"))))
+  (two-window-prompter "relative hsize" "select first window" "select second window"))
 
 ;; constructor
 (define* (cnctr-hsize winlist #&optional (enable? #f))
@@ -468,12 +475,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-vsize)
-  (let ((winlist (selected-windows-list)))
-    (if (>= (length winlist) 2)
-	(begin
-	  (unselect-all-windows)
-	  (list winlist))
-	(two-window-prompter "relative vsize" "select first window" "select second window"))))
+  (two-window-prompter "relative vsize" "select first window" "select second window"))
 
 ;; constructor
 (define* (cnctr-vsize winlist #&optional (enable? #f))
@@ -523,14 +525,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-minhsize)
-  (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 1)
-	(begin 
-	  (unselect-all-windows)
-	  (list (car winlist))) 
-	(let ((win (select-window-interactively "minimum hsize: select window" msgwin)))
-	  (if (eq? win #f) #f
-	      (list win))))))
+  (one-window-prompter "minimum hize"))
 
 ;; constructor
 (define* (cnctr-minhsize win #&optional (enable? #f))
@@ -559,14 +554,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-minvsize)
-  (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 1)
-	(begin 
-	  (unselect-all-windows)
-	  (list (car winlist)))
-	(let ((win (select-window-interactively "minimum vsize: select window" msgwin)))
-	  (if (eq? win #f) #f
-	      (list win))))))
+  (one-window-prompter "minimum vsize"))
 
 ;; constructor
 (define* (cnctr-minvsize win #&optional (enable? #f))
@@ -600,14 +588,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-maxhsize)
-  (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 1)
-	(begin 
-	  (unselect-all-windows)
-	  (list (car winlist)))
-	(let ((win (select-window-interactively "maximum hsize: select window" msgwin)))
-	  (if (eq? win #f) #f
-	      (list win))))))
+  (one-window-prompter "maximum hsize"))
 
 ;; constructor
 (define* (cnctr-maxhsize win #&optional (enable? #f))
@@ -636,14 +617,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-maxvsize)
-  (let ((winlist (selected-windows-list)))
-    (if (eq? (length winlist) 1)
-	(begin 
-	  (unselect-all-windows)
-	  (list (car winlist)))
-	(let ((win (select-window-interactively "minimum vsize: select window" msgwin)))
-	  (if (eq? win #f) #f
-	      (list win))))))
+  (one-window-prompter "minimum vsize"))
 
 ;; constructor
 (define* (cnctr-maxvsize win #&optional (enable? #f))
@@ -675,12 +649,7 @@
 
 ;;  ui-constructor
 (define (ui-cnctr-strict-relpos)
-  (let ((winlist (selected-windows-list)))
-    (if (>= (length winlist) 2)
-	(begin
-	  (unselect-all-windows)
-	  (list winlist))
-	(two-window-prompter "relative position" "select first window" "select second window"))))
+  (two-window-prompter "relative position" "select first window" "select second window"))
 
 ;; utilities functions to create some cl-variables
 (define (window-clv-cx win) 

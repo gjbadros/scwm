@@ -598,9 +598,9 @@ The rest of the arguments are passed as options to the xterm command."
 ;;;** Display message window MWN while evaluating BODY.
 ;;; If BODY throws, the MWN is guaranteed to be removed from the display.
   `(dynamic-wind
-    (lambda () (message-window-show! ,mwn))
+    (lambda () (and (message-window? ,mwn) (message-window-show! ,mwn)))
     (lambda () ,@body)
-    (lambda () (message-window-hide! ,mwn))))
+    (lambda () (and (message-window? ,mwn) (message-window-hide! ,mwn)))))
 
 ;; add-hook! and remove-hook! are defined in guile's boot-9.scm
 ;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
@@ -737,12 +737,11 @@ Returns #f if no window was selected."
 If given, use message window MESSAGE-WINDOW to display the message, otherwise create
 a new message window."
   (if msg
-      (let ((msgwin (or (and message-window
+      (let ((msgwin (or (and (message-window? message-window)
 			     (begin 
 			       (message-window-set-message! message-window msg)
 			       message-window))
-			 (make-message-window msg)))
-	    (answer #f))
+			(make-message-window msg))))
 	(with-message-window-shown msgwin (select-window)))
       (select-window)))
 ;; (select-window-interactively "foo")
