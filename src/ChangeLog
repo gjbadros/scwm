@@ -1,3 +1,8 @@
+Sat Dec  5 18:34:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* message-window.c (init_message_window): #include
+ 	"message-window.x", not "msgwin.x".
+
 Sat Dec  5 12:27:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* borders.c: Fix bug whereby GET_DECOR was assumed to return an

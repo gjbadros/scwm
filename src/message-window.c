@@ -590,7 +590,7 @@ init_message_window()
   REGISTER_SCWMSMOBFUNS(msgwindow);
 
 #ifndef SCM_MAGIC_SNARFER
-#include "msgwindow.x"
+#include "message-window.x"
 #endif
 }
 
