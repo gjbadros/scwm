@@ -1,3 +1,27 @@
+1999-07-13  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* window-locations.scm: Added window-center-middle procedure for
+	returning a point that corresponds to the exact middle of the window.
+	The return format is the same as other routines within the module.
+
+	* ui-constraints.scm: Reorganized the hook procedures so that they
+	all occurred in the same place in the file.  Added new hooks that 
+	are called whenever a constraint class is added or removed from 
+	the global list.  This will allow the ui-constraints-button window
+	to respond dynamically to newly added compositions.  Also added a 
+	new hook to support compositions which is called everytime a constraint
+	is added.  This is similar to the constraint-add hook which exists,
+	except that is passes the constructor argument list as a parameter
+	to the hook function.
+
+	* ui-constraints-classes.scm: Generalized the alignment constraints 
+	to have vertical and horizontal alignment constraint class over 
+	the previous align-tops, align-left, etc.  Added relative,
+	minimum, and maximum size constraint class.  Added a strict 
+	relative position constraint class.  Also changed instances of 
+	quadrant to nonant (a clearer name).  The module also no longer 
+	requires the simple-constraints module.
+
 Fri Jul  9 15:13:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `describe-key' moved here from gjb.scwmrc
