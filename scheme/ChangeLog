@@ -1,3 +1,12 @@
+Sun Nov 28 15:00:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm, ui-constraints-composition.scm,
+	ui-constraints-classes.scm, simple-constraints.scm,
+	constraints.scm, ui-constraints-toggle-menu.scm: Added use-module
+	of (cassowary constraints).  I'm not sure how the primitives from
+	that are getting linked into my scwm, and Robert Chassell is
+	having problems so maybe this helps.
+
 Sun Nov 28 10:17:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Update for added file, below.
