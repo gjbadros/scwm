@@ -1,3 +1,11 @@
+Sun Dec  5 12:03:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gnome.scwmrc, system.scwmrc: Make some procs interactive that
+ 	weren't before.
+
+	* system.scwmrc: Make prompt-string and ScwmUIConstraintsButtons
+	stay on top.
+
 Sat Dec  4 12:26:19 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Move the setting of the image-load-path to before 
