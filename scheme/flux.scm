@@ -199,19 +199,19 @@ See also `message'."
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
 example usage."
   (cons menu-separator
-	(map (lambda (elem)
-	       (let ((title (car elem))
-		     (mini-icon (cadr elem))
-		     (icon (caddr elem))
-		     (exename (cadddr elem)))
-		 (if (cached-program-exists? (first-word exename))
-		     (menuitem
-		      title #:action exename #:image-left
-		      (if mini-icon
-			  (string-append "mini-" mini-icon ".xpm") #f)
-		      ;; #:icon (if icon (string-append icon ".xpm") #f)
-		      )
-		     #f)))
+	(filter-map (lambda (elem)
+		      (let ((title (car elem))
+			    (mini-icon (cadr elem))
+			    (icon (caddr elem))
+			    (exename (cadddr elem)))
+			(if (cached-program-exists? (first-word exename))
+			    (menuitem
+			     title #:action exename #:image-left
+			     (if mini-icon
+				 (string-append "mini-" mini-icon ".xpm") #f)
+			     ;; #:icon (if icon (string-append icon ".xpm") #f)
+			     )
+			    #f)))
 	     menu-info-list)))
 
 

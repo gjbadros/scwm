@@ -25,7 +25,7 @@ window-configuration.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm xprop-extras.scm
 
 scwm_gtk_scheme = \
-gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
+gtk.scm gtk-menu.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
 prompting-shell.scm \
 prompt-bool.scm prompt-color.scm prompt-enum.scm prompt-file.scm prompt-font.scm \
 prompt-range.scm prompt-string.scm prompt-proc.scm flux-gtk.scm \

@@ -33,7 +33,6 @@
   :use-module (app scwm base)
   :use-module (app scwm std-menus)
   :use-module (app scwm optargs)
-  :use-module (app scwm user-options)
   :use-module (app scwm doc)
   :use-module (app scwm file)
   :use-module (app scwm stringops)
@@ -227,15 +226,13 @@ All the arguments are passed directly to the `menu' function."
               (menuitem "Scwm interaction" #:action
                         (run-in-xterm "scwmrepl"))
               (menuitem "Specific parameters" #:action
-                        (menu (append!
-                               (list
+                        (menu (list
                                 (menuitem "Opaque Move" #:action
                                           opaque-move-menu)
                                 (menuitem "Desk Size" #:action desk-size-menu)
                                 (menuitem "Scrolling" #:action scroll-menu))
                                (map (lambda (item)
-                                      (apply user-option-menuitem item))
-                                    user-options))))
+                                      (apply user-option-menuitem item)))))
               menu-separator
               (menuitem
                "X resources" #:action
