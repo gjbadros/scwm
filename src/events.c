@@ -90,6 +90,7 @@
 #endif
 
 SCM x_propertynotify_hook;
+SCM x_mappingnotify_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -152,6 +153,8 @@ InitEventHandlerJumpTable(void)
   EventHandlerJumpTable[KeyPress] = HandleKeyPress;
   EventHandlerJumpTable[VisibilityNotify] = HandleVisibilityNotify;
   EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
+  EventHandlerJumpTable[MappingNotify] = HandleMappingNotify;
+
   if (ShapesSupported)
     EventHandlerJumpTable[ShapeEventBase + ShapeNotify] = HandleShapeNotify;
 }
@@ -190,7 +193,7 @@ DispatchEvent()
  *
  ************************************************************************/
 void 
-HandleEvents()
+HandleEvents(void)
 {
 
   DBUG("HandleEvents", "Routine Entered");
@@ -201,6 +204,15 @@ HandleEvents()
       DispatchEvent();
     }
   }
+}
+
+/* keyboard remapping has occurred */
+void
+HandleMappingNotify()
+{
+  scwm_msg(WARN,__FUNCTION__,"Calling mapping notify hook (maybe empty)");
+  init_modifiers();
+  call0_hooks(x_mappingnotify_hook);
 }
 
 /***********************************************************************
@@ -1776,6 +1788,7 @@ void
 init_events()
 {
   DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
+  DEFINE_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif

@@ -24,6 +24,7 @@ void HandlePaging(int, int, int *, int *, int *, int *, Bool);
 
 void HandleHardFocus(struct ScwmWindow * t);
 
+void HandleMappingNotify(void);
 void HandleEvents(void);
 void HandleExpose(void);
 void HandleFocusIn(void);
