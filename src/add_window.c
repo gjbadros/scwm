@@ -70,6 +70,7 @@
 #include "icons.h"
 #include "placement.h"
 #include "callbacks.h"
+#include "session-manager.h"
 #include "xmisc.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -266,11 +267,6 @@ AddWindow(Window w)
 
   call1_hooks(before_new_window_hook, psw->schwin);
 
-  if (psw->fStartsOnDesk) {
-    DBUG((DBG,__FUNCTION__,"fStartsOnDesk is true"));
-    Desk = psw->StartDesk;
-  }
-
   GetMwmHints(psw);
   GetOlHints(psw);
 
@@ -279,8 +275,13 @@ AddWindow(Window w)
   DBUG((DBG,__FUNCTION__,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
 #ifdef HAVE_LIBSM_LIBICE
-  restoreWindowState(psw);	/* RBFIX: where should we call this? */
+  restoreWindowState(psw);
 #endif
+
+  if (psw->fStartsOnDesk) {
+    DBUG((DBG,__FUNCTION__,"fStartsOnDesk is true"));
+    Desk = psw->StartDesk;
+  }
 
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */

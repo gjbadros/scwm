@@ -30,6 +30,8 @@
 #include <config.h>
 #endif
 #include "session-manager.h"
+
+#include "icons.h"
 #include "scwm.h"
 #include "screen.h"
 #include "shutdown.h"
@@ -49,6 +51,7 @@ typedef struct SMWindowData_ {
   char *name;
   XClassHint class;
   INT32 x, y, w, h;
+  INT32 icon_x, icon_y;
   INT32 desk;
   CARD32 flags;
 } SMWindowData;
@@ -146,6 +149,8 @@ static void writeWindow(FILE *fd, ScwmWindow *psw)
     writeI32(fd, FRAME_WIDTH(psw) - psw->xboundary_width*2);
     writeI32(fd, FRAME_HEIGHT(psw)
 	     - psw->title_height - psw->boundary_width*2);
+    writeI32(fd, ICON_X(psw));
+    writeI32(fd, ICON_Y(psw));
     writeI32(fd, psw->Desk);
     writeI32(fd, FlagsBitsFromSw(psw));
     XFree(clientId);
@@ -167,6 +172,8 @@ static SMWindowData *readWindow(FILE *fd)
   d->y = readI32(fd);
   d->w = readI32(fd);
   d->h = readI32(fd);
+  d->icon_x = readI32(fd);
+  d->icon_y = readI32(fd);
   d->desk = readI32(fd);
   d->flags = readI32(fd);
   if (feof(fd)) {
@@ -182,6 +189,7 @@ void restoreWindowState(ScwmWindow *psw)
 {
   SMWindowData **p, *d;
   unsigned char *clientId;
+  extern long isIconicState;
   
   clientId = getWindowClientId(psw);
   if (!clientId)
@@ -192,17 +200,24 @@ void restoreWindowState(ScwmWindow *psw)
 	&& strcmp(psw->classhint.res_class, d->class.res_class) == 0)
       break;
   if (d) {			/* found match */
-    scwm_msg(DBG, "restoreWindowState", "moving `%s' to +%d+%d %dx%d",
-	     psw->name, d->x, d->y, d->w, d->h);
+    PswUpdateFlags(psw, d->flags);
     psw->attr.x = d->x;
     psw->attr.y = d->y;
     psw->attr.width = d->w;
     psw->attr.height = d->h;
-    psw->Desk = d->desk;
-    PswUpdateFlags(psw, d->flags);
-    if (psw->fIconified)
-      psw->fStartIconic = True;
+    psw->StartDesk = d->desk;
     psw->fStartsOnDesk = True;
+    psw->icon_x_loc = d->icon_x;
+    psw->icon_y_loc = d->icon_y;
+    psw->fIconMoved = True;
+    if (psw->fIconified) {
+      if (!psw->wmhints) {
+	psw->wmhints = XAllocWMHints();
+	psw->wmhints->flags = 0;
+      }
+      psw->wmhints->initial_state = isIconicState = IconicState;
+      psw->wmhints->flags |= StateHint;
+    } 
     *p = d->next;		/* remove from list */
     FREE(d);
   }
@@ -228,7 +243,6 @@ static void saveYourself2(SmcConn conn, SmPointer client_data)
   FILE *save;
   int successful = True;
 
-  scwm_msg(DBG, __FUNCTION__, "Dumping to `%s'", savename);
   if ((save = fopen(savename, "w")) != NULL) {
     writeI32(save, STATE_FILE_SERIAL);
     for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
@@ -256,7 +270,6 @@ static void loadMyself()
   FILE *load;
 
   SMData = NULL;
-  scwm_msg(DBG, __FUNCTION__, "Restoring from `%s'", loadname);
   if ((load = fopen(loadname, "r")) != NULL) {
     if (readI32(load) == STATE_FILE_SERIAL)
       while ((d = readWindow(load)) != NULL) {
