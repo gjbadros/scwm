@@ -88,39 +88,39 @@ mark_decor(SCM obj)
   for (i=0; i< 5; i++) {
     /* protect the titlebar buttons */
     for (j=0;j< MaxButtonState; j++) {
-      if (fl->right_buttons[i].state[j] != NULL) {
-	scm_gc_mark(fl->right_buttons[i].state[j]->sface);
+      if (fl->right_buttons[i].state[j]) {
+	GC_MARK_SCM_IF_SET(fl->right_buttons[i].state[j]->sface);
       }
-      if (fl->left_buttons[i].state[j] !=NULL) {
-	scm_gc_mark(fl->left_buttons[i].state[j]->sface);
+      if (fl->left_buttons[i].state[j]) {
+	GC_MARK_SCM_IF_SET(fl->left_buttons[i].state[j]->sface);
       }
     }
   }
 
   /* Mark the titlebar faces */
   for (j=0;j< MaxButtonState; j++) {
-    if (fl->titlebar.state[j] !=NULL) {
-      scm_gc_mark(fl->titlebar.state[j]->sface);
+    if (fl->titlebar.state[j]) {
+      GC_MARK_SCM_IF_SET(fl->titlebar.state[j]->sface);
     }
   }
 
   /* Mark the border faces */
 
-  if (fl->BorderStyle.inactive !=NULL) {
-    scm_gc_mark(fl->BorderStyle.inactive->sface);
+  if (fl->BorderStyle.inactive) {
+    GC_MARK_SCM_IF_SET(fl->BorderStyle.inactive->sface);
   }
-  if (fl->BorderStyle.active !=NULL) {
-    scm_gc_mark(fl->BorderStyle.active->sface);
+  if (fl->BorderStyle.active) {
+    GC_MARK_SCM_IF_SET(fl->BorderStyle.active->sface);
   }
   
   /* Mark the window font. */
-  scm_gc_mark(fl->window_font);
+  GC_MARK_SCM_IF_SET(fl->window_font);
 
   /* Mark the hilight colors and relief colors */
-  scm_gc_mark(fl->HiColors.fg);
-  scm_gc_mark(fl->HiColors.bg);
-  scm_gc_mark(fl->HiRelief.fg);
-  scm_gc_mark(fl->HiRelief.bg);
+  GC_MARK_SCM_IF_SET(fl->HiColors.fg);
+  GC_MARK_SCM_IF_SET(fl->HiColors.bg);
+  GC_MARK_SCM_IF_SET(fl->HiRelief.fg);
+  GC_MARK_SCM_IF_SET(fl->HiRelief.bg);
 
   return SCM_BOOL_F;
 }
