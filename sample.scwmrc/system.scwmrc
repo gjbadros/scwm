@@ -561,7 +561,7 @@
      (make-small-window-ops-menu w) w 1))
   #f)
 
-(define (popup-style-menu)
+(define* (popup-style-menu)
   ""
   (interactive)
   (let ((w (get-window)))
@@ -1186,7 +1186,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; (reset-hook! change-desk-hook)
 (use-change-desk-commands
  #(
-   "xsetroot -solid lightgreen"
+   "xsetroot -solid gray4"
    "xsetroot -solid cyan4" 
    ;;	  "xv -root -quit /home/satchell/kde_themes/Factory/gears.jpg"
    ;;	  "xearth -once"
