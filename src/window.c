@@ -1205,7 +1205,7 @@ DestroyScwmWindow(ScwmWindow *psw)
   /* XSCM */
   invalidate_window(psw->schwin);
   XFree(psw->name);
-  FREECPP(psw);
+  FREE(psw);
 
   if (!PPosOverride)
     XSync(dpy, 0);

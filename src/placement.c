@@ -400,14 +400,9 @@ keep_on_screen(ScwmWindow *psw)
     int xNew = psw->attr.x + psw->old_bw - psw->bw;
     int yNew = psw->attr.y + psw->old_bw - psw->bw;
 
-#ifdef USE_CASSOWARY
-    solver
-      .setEditedValue(psw->frame_x,xNew)
-      .setEditedValue(psw->frame_y,yNew);
-#else
-    FRAME_X(psw) = xNew;
-    FRAME_Y(psw) = yNew;
-#endif
+    SET_CVALUE(psw, frame_x, xNew);
+    SET_CVALUE(psw, frame_y, yNew);
+    CassowarySetCValuesAndSolve(psw);
   }
   
   if (FRAME_X(psw) + FRAME_WIDTH(psw) +
@@ -722,13 +717,9 @@ PlaceWindow(ScwmWindow *psw, int Desk)
         int yNew = psw->attr.y + psw->old_bw - psw->bw;
 
         /* #if 0-d out from above -- this code should get removed soon */      
-#ifdef USE_CASSOWARY
-        psw->frame_x.set_value(xNew);
-        psw->frame_y.set_value(yNew);
-#else
-        FRAME_X(psw) = xNew;
-        FRAME_Y(psw) = yNew;
-#endif
+        SET_CVALUE(psw, frame_x, xNew);
+        SET_CVALUE(psw, frame_y, yNew);
+        CassowarySetCValuesAndSolve(psw);
       }
 
       if (FRAME_X(psw) + FRAME_WIDTH(psw) +
@@ -762,7 +753,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 			   (unsigned int *) &DragHeight,
 			   &JunkBW, &JunkDepth) == 0) {
             invalidate_window(psw->schwin);
-	    FREECPP(psw);
+	    FREE(psw);
 	    XUngrabServer_withSemaphore(dpy);
 	    return False;
 	  }
@@ -808,13 +799,9 @@ PlaceWindow(ScwmWindow *psw, int Desk)
     int yNew = psw->attr.y + psw->old_bw - psw->bw;
     
     /* #if 0-d out from above -- this code should get removed soon */      
-#ifdef USE_CASSOWARY
-    psw->frame_x.set_value(xNew);
-    psw->frame_y.set_value(yNew);
-#else
-    FRAME_X(psw) = xNew;
-    FRAME_Y(psw) = yNew;
-#endif
+    SET_CVALUE(psw, frame_x, xNew);
+    SET_CVALUE(psw, frame_y, yNew);
+    CassowarySetCValuesAndSolve(psw);
   }
 #endif
 

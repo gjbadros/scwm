@@ -1426,18 +1426,12 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
    */
   DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
 
-#ifdef USE_CASSOWARY
-  solver
-    .setEditedValue(psw->frame_x,x)
-    .setEditedValue(psw->frame_y,y)
-    .setEditedValue(psw->frame_width,w)
-    .setEditedValue(psw->frame_height,h);
-#else
-  FRAME_X(psw) = x;
-  FRAME_Y(psw) = y;
-  FRAME_WIDTH(psw) = w;
-  FRAME_HEIGHT(psw) = h;
-#endif
+  SET_CVALUE(psw, frame_x, x);
+  SET_CVALUE(psw, frame_y, y);
+  SET_CVALUE(psw, frame_width, w);
+  SET_CVALUE(psw, frame_height, h);
+  CassowarySetCValuesAndSolve(psw);
+  
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
   if (ShapesSupported) {

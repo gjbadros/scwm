@@ -89,6 +89,14 @@ static XrmOptionDescRec table[] =
   {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
 
+#ifndef USE_CASSOWARY
+void CassowarySetCValuesAndSolve(ScwmWindow *psw)  { /* empty */ }
+void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
+void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
+void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) 
+{ XMoveWindow(dpy, psw->frame, x, y); }
+void CassowaryEndEditPosition(ScwmWindow *psw) { /* empty */ }
+#endif
 
 /*
  *  Procedure:
@@ -238,7 +246,7 @@ AddWindow(Window w)
   NeedToResizeToo = False;
   /* allocate space for the scwm window */
 
-  psw = NEWCPP(ScwmWindow);
+  psw = NEW(ScwmWindow);
 
   if (!psw) {
     return NULL;
@@ -250,7 +258,7 @@ AddWindow(Window w)
 
   if (!PPosOverride)
     if (!FXWindowAccessible(dpy,psw->w)) {
-      FREECPP(psw);
+      FREE(psw);
       return (NULL);
     }
 
@@ -276,19 +284,8 @@ AddWindow(Window w)
 #endif
     }
 
-#ifdef USE_CASSOWARY
-  if (psw->name != NoName) {
-    int ich = strlen(psw->name);
-    char *szNm = NEWC(ich+3,char);
-    strcpy(szNm, psw->name);
-    szNm[ich++] = '-';
-    szNm[ich+1] = '\0';
-    szNm[ich] = 'x'; psw->frame_x.setName(szNm);
-    szNm[ich] = 'y'; psw->frame_y.setName(szNm);
-    szNm[ich] = 'w'; psw->frame_width.setName(szNm);
-    szNm[ich] = 'h'; psw->frame_height.setName(szNm);
-  }
-#endif
+  /* initialize constraint structure hanging off of psw */
+  CassowaryInitClVarsInPsw(psw);
 
   /* removing NoClass change for now... */
   psw->classhint.res_name = NoResource;
@@ -410,7 +407,7 @@ AddWindow(Window w)
    */
   XGrabServer_withSemaphore(dpy); 
   if (!FXWindowAccessible(dpy,w)) {
-    FREECPP(psw);
+    FREE(psw);
     XUngrabServer_withSemaphore(dpy);
     return (NULL);
   }
@@ -695,22 +692,12 @@ AddWindow(Window w)
    * again in HandleMapNotify.
    */
   psw->fMapped = False;
-#ifdef USE_CASSOWARY
-  psw->frame_x.set_value(frame_x);
-  psw->frame_y.set_value(frame_y);
-  psw->frame_width.set_value(frame_width);
-  psw->frame_height.set_value(frame_height);
 
-  psw->frame_x.set_psw(psw);
-  psw->frame_y.set_psw(psw);
-  psw->frame_width.set_psw(psw);
-  psw->frame_height.set_psw(psw);
-#else
-  FRAME_X(psw) = frame_x;
-  FRAME_Y(psw) = frame_y;
-  FRAME_WIDTH(psw) = frame_width;
-  FRAME_HEIGHT(psw) = frame_height;
-#endif
+  SET_CVALUE(psw, frame_x, frame_x);
+  SET_CVALUE(psw, frame_y, frame_y);
+  SET_CVALUE(psw, frame_width, frame_width);
+  SET_CVALUE(psw, frame_height, frame_height);
+  CassowarySetCValuesAndSolve(psw);
 
   SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
              NOT_MOVED, WAS_RESIZED);

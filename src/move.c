@@ -193,13 +193,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
-#ifdef USE_CASSOWARY
-  solver
-    .addEditVar(psw->frame_x)
-    .addEditVar(psw->frame_y)
-    .beginEdit();
-#endif
-
+  CassowaryEditPosition(psw);
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -310,14 +304,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 			  yt + psw->icon_p_height);
 
 	  } else {
-#ifdef USE_CASSOWARY
-            solver
-              .suggestValue(psw->frame_x,xl)
-              .suggestValue(psw->frame_y,yt)
-              .resolve();
-#else
-            XMoveWindow(dpy, psw->frame, xl, yt);
-#endif
+            /* the solver's resolve does the move window */
+            /* if not using Cassowary, this just does an XMoveWindow */
+            SuggestMoveWindowTo(psw,xl,yt);
           }
 	}
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, False);
@@ -350,12 +339,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	MoveOutline(Scr.Root, xl, yt, Width, Height);
     }
   }
-#ifdef USE_CASSOWARY
-  solver
-    .suggestValue(psw->frame_x,xl)
-    .suggestValue(psw->frame_y,yt)
-    .endEdit();
-#endif
+  SuggestMoveWindowTo(psw,xl,yt);
+  CassowaryEndEditPosition(psw);
 }
 
 /***********************************************************************
