@@ -1,3 +1,16 @@
+Sun Apr 25 19:49:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Change the format for printing X11 errors (only if not
+	  Xmu library)
+
+	* callbacks.c: Added some comments for Maciej in
+	  scwm_handle_error. Drop the return SCM_BOOL_F, so that the hooks 
+	  get called.  We need to improve error hook documentation and
+	  handling before Scwm-1.0;  I'd like to be able to generate the
+	  backtrace from the procs in the error-hook.  We could pass the
+	  string to the error hook, or we may need to pass the stack
+	  object to the hook procedures.
+
 Sun Apr 25 18:49:16 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.hpp: Use ClsMedium-strength stay constraints
