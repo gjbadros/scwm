@@ -118,12 +118,16 @@ SNARFED_FILES = font.x \
 	scwmmenu.x \
 	color.x
 
+LOADABLE_PRIMITIVE_SOURCES = draw-pie-menu.c
+
+LOADABLE_PRIMITIVES = draw-pie-menu.so
+
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
 
 BUILT_SOURCES = font.x image.x menuitem.x scwmmenu.x module-interface.x\
 	color.x init_scheme_string.c
 
-all: $(SNARFED_FILES) $(PROG)
+all: $(SNARFED_FILES) $(PROG) $(LOADABLE_PRIMITIVES)
 
 tags: $(SRCS) $(BUILT_SOURCES) $(HEADERS)
 	etags $^
@@ -143,9 +147,10 @@ clean: mostlyclean
 
 distclean: clean
 
+# FIXGJB: -rdynamic may be linux specific -- use configure?
 $(PROG): $(OBJS)
 	rm -f $(PROG)
-	$(CC) -o $(PROG) $(OBJS) $(LIBS)
+	$(CC) -o $(PROG) -rdynamic $(OBJS) $(LIBS)
 
 # Build the scheme string to include in the executable
 init_scheme_string.c: ../scheme/minimal.scm
@@ -157,6 +162,13 @@ init_scheme_string.c: ../scheme/minimal.scm
 # file.  It is needed to create the dependencies, and to compile
 # the .c file into the .o file
 %.o : %.x
+
+# build a dynamically loadable object file
+# (FIXGJB: this needs to use autoconf settings; this is for linux)
+%.so : %.c
+	gcc $(CFLAGS) -fpic -shared -o $@ $^
+
+
 
 # Grab the SCM_PROC-s from the C source code
 # Note that the C code guards the #include "foo.x" with #ifndef SCM_MAGIC_SNARFER
