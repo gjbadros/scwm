@@ -49,13 +49,19 @@ new desktop number, the second is the old desktop number. It is\n\
 called before the desk is changed.  See also `after-change-desk-hook'.");
 
 SCWM_HOOK(after_change_desk_hook,"after-change-desk-hook", 2,
-"This hook is invoked whenever the current desktop is changed.\n\
+"This hook is invoked just after the current desktop is changed.\n\
 It is called with two argument, both integers.  The first is the\n\
 new desktop number, the second is the old desktop number.  It\n\
 is called after the desk is changed. See also `change-desk-hook'.");
 
 SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 4,
 "This hook is invoked whenever the viewport position is changed.\n\
+It is called with four arguments, all integers.  The first two are \n\
+the x and y coordinates of the new viewport position in pixels and\n\
+the second two are the change in x and y from the previous position.");
+
+SCWM_HOOK(after_viewport_position_change_hook,"after-viewport-position-change-hook", 4,
+"This hook is invoked just after the viewport position is changed.\n\
 It is called with four arguments, all integers.  The first two are \n\
 the x and y coordinates of the new viewport position in pixels and\n\
 the second two are the change in x and y from the previous position.");
@@ -485,6 +491,7 @@ initPanFrames()
     Scr.PanFrameRight.isMapped = Scr.PanFrameBottom.isMapped = False;
 }
 
+int fInMoveViewport_internal = False;
 
 /*
  *  Moves the viewport within the virtual desktop
@@ -493,8 +500,9 @@ void
 MoveViewport_internal(int newx, int newy)
 {
   ScwmWindow *psw;
-
   int diffx, diffy;
+
+  fInMoveViewport_internal = True;
 
   if (newx < 0)
     newx = 0;
@@ -544,13 +552,28 @@ MoveViewport_internal(int newx, int newy)
     }
   }
 
+  XSync(dpy,False);
+  while (XCheckMaskEvent(dpy, VisibilityChangeMask,
+                         &Event)) {
+    DispatchEvent();
+  }
+
+  scwm_run_hook(after_viewport_position_change_hook, 
+                gh_list(gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy),
+                        gh_int2scm(diffx), gh_int2scm(diffy),
+                        SCM_UNDEFINED)); 
+
   checkPanFrames();
+  fInMoveViewport_internal = False;
 }
 
 
 void 
 MoveViewport(int newx, int newy)
 {
+  /* ChangeVirtualPosition is different for
+     constraint-enabled vs. not-constraint-enabled
+     versions of Scwm */
   ChangeVirtualPosition(newx,newy);
 }
 

@@ -194,24 +194,25 @@ SCWM_HOOK(window_leave_hook, "window-leave-hook", 1,
 The hook procedures are invoked with one argument, the window object\n\
 of the window just left.");
 
-SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1,
+SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 2,
 "Invoked when window receives a VisibilityFullyObscured event.\n\
-The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully obscured. See also `window-visibility'.");
+The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+See also `window-visibility'.");
 
-SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1,
+SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 2,
 "Invoked when window receives a VisibilityPartiallyObscured\n\
-event.  The hook procedures are invoked with one argument, the window\n\
-object of the window that is now partially obscured.  Beware that this\n\
-event happens more often than you might expect and an action procedure\n\
+event.  The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+Beware that this event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events. See also `window-visibility'.");
 
-SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1,
+SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 2,
 "Invoked when window receives a VisibilityUnobscured event.\n\
-The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully visible. Beware that this\n\
-event happens more often than you might expect and an action procedure\n\
+The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+Beware that this event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events. See also `window-visibility'.");
 
@@ -349,6 +350,7 @@ of a long computation.")
 {
   int cevents = 0;
   if (Scr.fWindowsCaptured) {
+    XSync(dpy, False);
     last_event_type = 0;
     while (!NextScwmEvent(dpy, &Event, True)) {
       ++cevents;
@@ -1901,10 +1903,12 @@ void
 HandleVisibilityNotify()
 {
   XVisibilityEvent *vevent = (XVisibilityEvent *) &Event;
+  extern int fInMoveViewport_internal;
 
   DBUG_EVENT((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
   if (pswCurrent && last_event_window == pswCurrent->frame) {
+    SCM from_move_viewport_action = gh_bool2scm(fInMoveViewport_internal);
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
     /* For the most part, we'll raised partially obscured fOnTop windows
@@ -1920,13 +1924,16 @@ HandleVisibilityNotify()
     }
     switch (vevent->state) {
     case VisibilityFullyObscured:
-      scwm_run_hook1(window_fully_obscured_hook, SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook2(window_fully_obscured_hook, 
+                     SCM_FROM_PSW(pswCurrent), from_move_viewport_action);
       break;
     case VisibilityUnobscured:
-      scwm_run_hook1(window_unobscured_hook, SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook2(window_unobscured_hook, 
+                     SCM_FROM_PSW(pswCurrent), from_move_viewport_action);
       break;
     case VisibilityPartiallyObscured:
-      scwm_run_hook1(window_partially_obscured_hook, SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook2(window_partially_obscured_hook, 
+                     SCM_FROM_PSW(pswCurrent), from_move_viewport_action);
       break;
     }
     pswCurrent->visibility = vevent->state;
