@@ -1,3 +1,15 @@
+Tue Jan 26 15:58:08 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* string-prompt.scm: Pack the prompt label in with expand set to
+	false so only the entry widget expands when resized.
+
+	* simple-constraints.scm: Added synopsis doc comments, declare
+	variable v.
+
+	* fvwm-module.scm: Make fvwm2-module-send-window-list private (I
+	had made it public for debugging reasons long ago when I was more
+	clueless about the module system).
+
 1999-01-26  Sam Steingold  <sds@goems.com>
 
 	* placement.scm (place-at-point-internal): call

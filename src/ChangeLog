@@ -1,3 +1,7 @@
+Tue Jan 26 15:34:17 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* menulook.c, menu.c, ICCCM.c: Changed some doc comments.
+
 1999-01-26  Sam Steingold  <sds@goems.com>
 
 	* Makefile.am (noinst_HEADERS): do not use `+='.
