@@ -687,13 +687,12 @@
 	   (set! i (+ 1 i)))))
 
 ;;; menu-item test cases
-;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-image "mini-move.xpm")))
-;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" (make-image "mini-resize.xpm")))
-;(define a-menu (make-scwm-menu (list move-menu-item resize-menu-item)))
-;
+;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-image "mini-unkno.xpm") #f #f "sticky"))
+;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-image "mini-move.xpm") #f #f "move"))
+;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" (make-image "mini-resize.xpm") #f #f "resize"))
+;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-menu-item)))
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
 
-
-;(recapture)
 
 ;;; Local Variables:
 ;;; eval: (load "scwm-buffer")
