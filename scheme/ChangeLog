@@ -1,3 +1,26 @@
+Sat Dec  4 15:35:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `add-hook-once!' and `append-hook-once!'
+
+	* ui-constraints.scm: Added `delete-all-constraints';  use
+	for-each, not map.  Added pixmap2-name field to
+	ui-constraint-class objects.
+
+	* ui-constraints-composition.scm: Use `add-hook-once!', use no
+	pixmaps for the composition additions.
+
+	* ui-constraints-classes.scm: Updated for extra field in
+	ui-constraint-class objects.  Use second pixmap for two of the
+	buttons.  Still need to provide a right-click menu for stopping
+	the animation.
+
+	* ui-constraints-buttons.scm: Added `animate-pixmaps', and animate 
+	them when both pixmap-name and pixmap2-name fields are set.  Added 
+	record/stop-recording buttons (mutually-exclusive).
+
+	* constraint-investigator.scm: Use add-hook-once!.  Added
+	"Delete all" constraints button.
+
 Sat Dec  4 12:28:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-eval.scm: Move `fvwm-none' here and make it non-public
