@@ -700,11 +700,12 @@ HandleScwmExec()
           scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
                    w_for_scwmexec_response);
         }
-      } else {
-        DBUG((WARN,FUNC_NAME,"Done with last window in list of scwmexec requests"));
-        saved_bytes_after = 0;
-        last_offset = 0;
-      }
+      } /* if (pw != NULL) */
+    } else {
+      /* XGetWindowProperty returned False */
+      DBUG((WARN,FUNC_NAME,"Done with last window in list of scwmexec requests"));
+      saved_bytes_after = 0;
+      last_offset = 0;
     }
   } while (saved_bytes_after != 0);
   /* Repeat until we get a saved_bytes_after of 0 on reading SCWMEXEC_REQWIN,
