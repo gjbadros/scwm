@@ -702,7 +702,10 @@ SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
 
 SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
           ())
-     /** Return a string representing the next key event.
+     /** Return a represention of the next key event.
+The return value is (string modmask keycode). The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a key binding string.  Modifiers 
 are listed first, separated by "-" followed by a "-" and the
 keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
@@ -761,14 +764,18 @@ end in a "-"; e.g., "S-C-M-"
                                       ev.xkey.keycode);
     SCM answer = gh_str02scm(sz);
     FREE(sz);
-    return answer;
+    return gh_list(answer,gh_int2scm(ev.xkey.state),
+                   gh_int2scm(ev.xkey.keycode), SCM_UNDEFINED);
   }
 }
 #undef FUNC_NAME
 
 SCWM_PROC(get_mouse_event, "get-mouse-event", 0, 0, 0,
           ())
-     /** Return a string representing the next mouse event.
+     /** Return a represention of the next mouse event.
+The return value is (string modmask button-number #t).  The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a mouse binding string.  Modifiers 
 are listed first, separated by "-" followed by a "-" and the
 button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
@@ -812,7 +819,9 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
     answer = gh_str02scm(szFull);
     FREE(sz);
     FREE(szFull);
-    return answer;
+    return gh_list(answer,gh_int2scm(ev.xbutton.state),
+                   gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
+                   SCM_UNDEFINED);
   }
 }
 #undef FUNC_NAME

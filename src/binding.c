@@ -606,6 +606,7 @@ ungrab_button_all_windows(int button, int modifier)
   }
 }
 
+
 /* to remove a binding from the global list (probably needs more processing
    for mouse binding lines though, like when context is a title bar button).
 */
@@ -1430,6 +1431,79 @@ need to override the built-in algorithm. */
   return SCM_UNSPECIFIED;
 } 
 #undef FUNC_NAME
+
+
+SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
+          ())
+     /** Remove all passive grabs of keys and buttons of bindings.
+See `redo-all-passive-grabs' for re-establishing those bindings.
+This procedure can be useful for quoting numerous keystrokes or
+mouse events. Beware that it can take several seconds to execute. */
+#define FUNC_NAME s_undo_all_passive_grabs
+{
+  ungrab_all_keys_all_buttons_all_windows();
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(redo_all_passive_grabs, "redo-all-passive-grabs", 0, 0, 0,
+          ())
+     /** Re-instate all passive grabs of keys and buttons of bindings.
+See `undo-all-passive-grabs' for temporarily removing those bindings.
+This procedure might be useful for re-establishing bindings after
+quoting numerous keystrokes or mouse events.  Beware that it can
+take several seconds to execute. */
+#define FUNC_NAME s_redo_all_passive_grabs
+{
+  grab_all_keys_all_buttons_all_windows();
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(undo_passive_grab, "undo-passive-grab", 2, 1, 0,
+          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p))
+     /** Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
+a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
+#define FUNC_NAME s_undo_passive_grab
+{
+  unsigned int mask;
+  int key_or_but;
+  Bool fMouse;
+  VALIDATE_ARG_INT_COPY(1,modmask,mask);
+  VALIDATE_ARG_INT_COPY(2,keycode_or_butnum,key_or_but);
+  VALIDATE_ARG_BOOL_COPY_USE_F(3,mouse_p,fMouse);
+  if (fMouse)
+    ungrab_button_all_windows(key_or_but,mask);
+  else
+    ungrab_key_all_windows(key_or_but,mask);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(redo_passive_grab, "redo-passive-grab", 2, 1, 0,
+          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p))
+     /** Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
+a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
+#define FUNC_NAME s_redo_passive_grab
+{
+  unsigned int mask;
+  int key_or_but;
+  Bool fMouse;
+  VALIDATE_ARG_INT_COPY(1,modmask,mask);
+  VALIDATE_ARG_INT_COPY(2,keycode_or_butnum,key_or_but);
+  VALIDATE_ARG_BOOL_COPY_USE_F(3,mouse_p,fMouse);
+  if (fMouse)
+    grab_button_all_windows(key_or_but,mask);
+  else
+    grab_key_all_windows(key_or_but,mask);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,

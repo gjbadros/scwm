@@ -498,6 +498,9 @@ HandleKeyEvent(Bool fPress)
                      XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
 
   if (!fQuotingKeystrokes) {
+#ifdef USE_XALLOW_EVENTS
+    XAllowEvents(dpy,AsyncKeyboard,CurrentTime);
+#endif
     modifier = (Event.xkey.state & mods_used);
     ButtonWindow = pswCurrent;
     
@@ -527,7 +530,7 @@ HandleKeyEvent(Bool fPress)
       unset_window_context();
     }
   } else {
-#if 0
+#if USE_XALLOW_EVENTS
     /* only has effect w/ synch keyboard grabs...
        not sure how to do them synchronously, though...
        HandleKeyEvent never gets called --07/04/99 gjb */
@@ -539,15 +542,7 @@ HandleKeyEvent(Bool fPress)
     if (pswCurrent) {
       if (Event.xkey.window != pswCurrent->w) {
         Event.xkey.window = pswCurrent->w;
-#if 0 && defined(HAVE_XTEST)
-        /* this is no good, since Scwm still has the grab for the keystroke
-           and just gets stuck in a loop resending the faked keystroke 
-           --07/16/99 gjb */
-        XTestFakeKeyEvent(dpy, keycode,fPress,CurrentTime);
-        fQuotingKeystrokes = False;
-#else
         XSendEvent(dpy, pswCurrent->w, False, KeyPressMask, &Event);
-#endif
       }
     }
 #endif
