@@ -1,3 +1,10 @@
+Thu Aug 26 13:01:41 1999    <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: More map bug-fixes where lists were
+	of different lists.  Updated the draw procs for keep-above,
+	keep-left and the constructor for keep-left (ctr for keep-above
+	I fixed earlier)
+
 Wed Aug 25 16:53:08 1999    <gjb@cs.washington.edu>
 
 	* window-selection.scm: Use filter-map to eliminate invalid
