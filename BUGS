@@ -1,6 +1,15 @@
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
+Squashed titlebar problems
+  they should resize (width) when title changes, but they don't
+  they should take effect immediately, but require a window resize to notice
+     (can fix this with using set-window-property)
+  they don't have an extra thin border line drawn in the rest of the title
+     bar area to the right of the squashed titlebar
+  it'd also be nice if they could be squashed to the right, or centered,
+     instead of always only left-justified.
+-------------
 Incorrect usage of keyword arguments by a scheme function fails silently.
 Both wrong keyword names and missing arguments should be reported.
 -------------
