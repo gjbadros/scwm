@@ -767,12 +767,12 @@ AddWindow(Window w)
 
 
   if (!psw->fSticky) {
-#if 1
-    scwm_msg(WARN,FUNC_NAME,"Moving %s by %d,%d to to correct for restart_vp_offset",
-             psw->name,restart_vp_offset_x,restart_vp_offset_y);
-#endif
-    MoveTo(psw, FRAME_X(psw)+restart_vp_offset_x, 
-           FRAME_Y(psw)+restart_vp_offset_y, False);
+    if (restart_vp_offset_x != 0 || restart_vp_offset_y != 0) {
+      scwm_msg(WARN,FUNC_NAME,"Moving %s by %d,%d to to correct for restart_vp_offset",
+               psw->name,restart_vp_offset_x,restart_vp_offset_y);
+      MoveTo(psw, FRAME_X(psw)+restart_vp_offset_x, 
+             FRAME_Y(psw)+restart_vp_offset_y);
+    }
   }
 
   CreateIconWindow(psw,ICON_X_VP(psw),ICON_Y_VP(psw));

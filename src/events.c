@@ -170,6 +170,27 @@ SCWM_HOOK(window_leave_hook, "window-leave-hook", 1);
 The hook procedures are invoked with one argument, the window object
 of the window just left. */
 
+SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1);
+  /** Invoked when window receives a VisibilityFullyObscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully obscured. */
+
+SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1);
+  /** Invoked when window receives a VisibilityPartiallyObscured
+event.  The hook procedures are invoked with one argument, the window
+object of the window that is now partially obscured.  Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events. */
+
+SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1);
+  /** Invoked when window receives a VisibilityUnobscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully visible. Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events. */
+
 SCWM_HOOK(client_message_hook,"client-message-hook", 3);
   /** This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
@@ -1763,23 +1784,17 @@ HandleShapeNotify(void)
 #endif
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleVisibilityNotify - record fully visible windows for
+/*
+ * HandleVisibilityNotify - record fully visible windows for
  *      use in the RaiseLower function and the OnTop type windows.
- *
- ************************************************************************/
+ */
 void 
 HandleVisibilityNotify()
 {
-#if 0
-  XVisibilityEvent *vevent = (XVisibilityEvent *) & Event;
-#endif
+  XVisibilityEvent *vevent = (XVisibilityEvent *) &Event;
 
   DBUG((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
-#if 0
   if (pswCurrent) {
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
@@ -1794,8 +1809,18 @@ HandleVisibilityNotify()
       RaiseWindow(pswCurrent);
       pswCurrent->fRaised = False;
     }
+    switch (vevent->state) {
+    case VisibilityFullyObscured:
+      call1_hooks(window_fully_obscured_hook,pswCurrent->schwin);
+      break;
+    case VisibilityUnobscured:
+      call1_hooks(window_unobscured_hook,pswCurrent->schwin);
+      break;
+    case VisibilityPartiallyObscured:
+      call1_hooks(window_partially_obscured_hook,pswCurrent->schwin);
+      break;
+    }
   }
-#endif
 }
 
 /* CoerceEnterNotifyOnCurrentWindow()
