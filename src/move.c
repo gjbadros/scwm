@@ -170,11 +170,9 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
   XFlush(dpy);
 }
 
-/****************************************************************************
- *
+/*
  * Move the rubberband around, return with the new window location
- *
- ****************************************************************************/
+ */
 void 
 moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	 int Height, int *FinalX, int *FinalY, Bool opaque_move,
@@ -192,6 +190,14 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     MoveOutline(Scr.Root, xl, yt, Width, Height);
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
+
+#ifdef USE_CASSOWARY
+  solver
+    .addEditVar(psw->frame_x)
+    .addEditVar(psw->frame_y)
+    .beginEdit();
+#endif
+
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -301,8 +307,16 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
 			  yt + psw->icon_p_height);
 
-	  } else
-	    XMoveWindow(dpy, psw->frame, xl, yt);
+	  } else {
+#ifdef USE_CASSOWARY
+            solver
+              .suggestValue(psw->frame_x,xl)
+              .suggestValue(psw->frame_y,yt)
+              .resolve();
+#else
+            XMoveWindow(dpy, psw->frame, xl, yt);
+#endif
+          }
 	}
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, False);
 
@@ -334,6 +348,12 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	MoveOutline(Scr.Root, xl, yt, Width, Height);
     }
   }
+#ifdef USE_CASSOWARY
+  solver
+    .suggestValue(psw->frame_x,xl)
+    .suggestValue(psw->frame_y,yt)
+    .endEdit();
+#endif
 }
 
 /***********************************************************************
