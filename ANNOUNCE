@@ -1,4 +1,4 @@
-Scwm 0.5 is released.
+Scwm 0.6 is released.
 
 * What scwm is:
 
@@ -8,7 +8,8 @@ originally on fvwm2, but now much enhanced) with Guile Scheme as the
 configuration/extension language. Nearly all decorations can be
 changed at run-time or per-window, and eventually many decoration
 styles and additional features will be supported through dynamically
-loaded code.
+loaded code. A powerful protocol is provided for interacting with the
+window manager while it is running.
 
 
 * Primary Authors:
@@ -33,7 +34,13 @@ lists.
 
 You can download the latest scwm package from:
 
-http://web.mit.edu/mstachow/www/scwm-0.5.tar.gz
+http://web.mit.edu/mstachow/www/scwm-0.6.tar.gz
+
+There is also
+http://web.mit.edu/mstachow/www/scwm-icons-0.6.tar.gz
+
+which has a number of images for use with scwm as icons, textures,
+buttons, etc. Some of these images are not available otherwise.
 
 You will also need to download and install the guile library. You can
 get the latest release from:
@@ -42,8 +49,8 @@ ftp://prep.ai.mit.edu/pub/gnu/guile-1.2.tar.gz
 
 or any archive that has GNU source packages available.
 
-You can get the latest guile snapshot (required for --interactive
-mode) from:
+You can get the latest guile snapshot (likely to have more useful
+features and generally work better) from:
 
 ftp://red-bean.com/pub/guile
 
@@ -51,10 +58,41 @@ The snapshots are officially alpha but they generally work pretty
 well.
 
 
-* New with this release:
+* Here are highlights of what is new with the 0.6 release. There were
+many changes; see the NEWS file in the distribution for more details.
 
-Many bug fixes to the build process and the program itself.
+ - Support for fvwm2 modules: Scwm can now execute fvwm2 modules,
+using an interface written almost entirely in Scheme. This is only
+slightly slower than the native fvwm module support.
 
-Integrated the icon distribution.
+ - New external program protocol: scwm now supports an improved
+external program protocol which allows other programs to send commands
+to a running scwm and get the results. Two programs and an emacs mode
+are provided for using this protocol.
 
-The documentation has been updaed to roughly reflect current reality.
+ - Improvements to images: Support for images (to be used as icons,
+buttons, tiles, etc) is much improved. The main advantage is much
+improved caching which shares the image object for multiple loads of
+the same image, and support for user-defined image loaders.
+
+ - Foreign format image loading through conversion: The new (app scwm
+image-loaders) module supports several image loaders that attempt to
+convert a variety of formats through Imagemagick or netpbm to a
+natively supported format.
+
+ - Improvements to fonts: Fonts are now more properly treated as
+Scheme objects and should be garbage collected more effectively. They
+are also cached like images to minimize memory usage.
+
+ - Improvements to menus: Menus have been much improved. They now
+include support for side pixmaps a la fvwm95, specification of the
+fonts and colors to use per individual menu, and a nicer interface for
+specfying menus.
+
+ - Support for /etc/X11/wmconfig from Red Hat Linux 5.0: The new (app
+scwm wmconfig) module allows you to create a menu that matches the
+spec in the /etc/X11/wmconfig directory under Red Hat Linux 5.0.
+
+ - The icon distribution is now separate again, and has it's own
+installation process.
+
