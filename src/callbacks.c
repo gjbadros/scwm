@@ -1072,7 +1072,7 @@ void init_callbacks()
 
   gettimeofday(&last_timeval, NULL);
 
-  timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));
+  timer_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
   input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
   new_input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
 
