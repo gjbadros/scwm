@@ -18,7 +18,7 @@
 (define font14 
   (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
-(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue" 
+(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
 	    #:font font14 #:mwm #f)
 
 (title-style #:font font12 #:justify 'left)
@@ -50,20 +50,22 @@
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decroate-transient #t
-	      #:PPosition-hint #f)
+	      #:PPosition-hint #f
+	      #:lenience #t
+	      )
 
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:focus 'none))
 
 (window-style "*lock" #:use-style desk-widget)
-(window-style "xload" #:no-title #t #:use-style desk-widget)
-(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
-(window-style "xbiff" #:no-title #t #:use-style desk-widget)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget)
 (window-style "xcalc" #:icon "xcalc.xpm")
 (window-style "xman" #:icon "xman.xpm")
 (window-style "xmag" #:icon "mag_glass.xpm")
-(window-style "Emacs" #:icon "gnu-animal.bmp")
+(window-style "Emacs" #:icon "gnu-animal.xpm")
 (window-style "XTerm" #:icon "xterm.xpm")
 
 
@@ -167,6 +169,7 @@
 		      (show-window-list-menu #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup desk-menu)))
 
+
 ;; window buttons
 (bind-mouse 'button-1 1 popup-small-ops)
 (bind-mouse 'button-2 1 vertical-toggle-maximize)
@@ -181,7 +184,7 @@
     ((double-click) (toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
-(bind-mouse 'title 2 lower-window)
+(bind-mouse 'title 3 lower-window)
 
 
 ;; key bindings for the menus
@@ -199,6 +202,8 @@
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
+
+
 
 ;; move the pointer with the keyboard
 (bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
@@ -220,4 +225,3 @@
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
-
