@@ -1,3 +1,10 @@
+Fri Jan 28 13:57:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added CASSOWARY_STATIC_LIBS, GUILE_STATIC_LIBS @@
+	substitutions to support conditional static linking of those
+	libraries when --enable-dump.  Changes coupled with
+	src/Makefile.am.
+
 Wed Jan 26 16:51:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Use @examplesdir@ for those files installed

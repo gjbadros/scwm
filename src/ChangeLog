@@ -1,3 +1,48 @@
+Fri Jan 28 14:33:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* resize.c: Use the adding 1 to dwidth/dheight only if the
+ 	increment is > 1; this fixes a bug in ssh-add's window (and
+ 	probably others) that was 1 bigger than it should have been.
+
+	* scwm.c (scwm_main): Move definition of global "dumped" to
+	outside an ENABLE_DUMP #ifdef to avoid undef'd.  Protect call to
+	init_sbrk() w/ #ifdef ENABLE_DUMP.  Revert to using scwm_gh_enter, 
+	instead of the lower-level scm_boot_guile(..), and thus change
+	scwm_main back to the way it was.
+
+	* Makefile.am (scwm_LDADD): Make conditional on ENABLE_DUMP to
+ 	pick whether to statically or dynamically link to libguile and the
+ 	constraints, cassowary libraries.  Use new @@ substitutions for
+	the static library link contributions; correlated with changes in
+	../../configure.in.
+
+Fri Jan 28 13:27:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Get dumping working a bit better (most importantly,
+	changes to Makefile.am support this, but those are not yet
+	committed).  Run -f stuff when restarting a dumped binary,  added
+	init_sbrk, and some sbrk debugging output that's now commented
+	out.  Also some formatting changes from "if(..)" to "if(..)"
+
+	* screen.h: Comment scmdecor self pointer.
+
+	* resize.c (ConstrainSize): Make dwidth and dheight get floored
+	after adding 1, instead of strictly rounding down.  See comment in 
+	code.
+
+	* guile-compat.h: ws change.
+
+	* decor.c: do not assert(obj == fl->scmdecor);  multiple Scheme
+	objects can refer to the same ScmDecor, so don't require that the
+	back pointer be unique.
+
+Thu Jan 27 15:09:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Fix -o option -- the getopt_opts was wrong.  Use INFO
+	channel, not ERR channel for the "Initializing from dump file"
+	message.  Dumps still don't have the state exposed properly,
+	though.
+
 Wed Jan 26 18:22:40 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Call init_errors(), not init_error (the
