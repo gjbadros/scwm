@@ -1,3 +1,30 @@
+Tue Mar 10 00:32:45 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* image.c (path_expand_image_fname): Call image-not-found-hook if
+	it's set to a procedure.  Wrote InvokeHook1, but it's too thin a
+	wrapper over gh_call1 right now; also should be in a different file.
+
+Mon Mar  9 23:49:43 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* borders.c (SetBorderX): Eliminate a core-dump in the case that
+	an image for a decor is invalid;  this became an issue now that
+	I've relaxed the rules for pixmap validity (we now allow missing
+	pixmaps to stick around as SCM_BOOL_F)
+
+Mon Mar  9 23:45:40 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* screen.h (GetDecor): GetDecor macro did not need to use the
+	cpp stringization operator; removed the `##'
+
+Mon Mar  9 23:31:59 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* image.c (path_expand_image_fname): Use warnings instead of
+	scm_wrong_type_arg when we can't find an image file
+
+	* face.c (add_spec_to_face_x): Use warnings instead of
+	scm_wrong_type_arg when we can't find an image file
+	
+
 Mon Mar  9 22:50:16 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* drawmenu.c: Inverted the shading of the popup menu item arrow;
