@@ -1,3 +1,13 @@
+Tue Nov 10 10:48:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h (REGISTER_SCWMSMOBFUNS): Protect REGISTER_SCWMSMOBFUNS
+	macro with do { .. } while (0)
+
+Tue Nov 10 10:47:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* menulook.c (s_copy_menu_look): Rename original_menulook to
+	original_menu_look so it matches the docstring ORIGINAL-MENU-LOOK
+
 Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleMapRequestKeepRaised): Call raisePanFrames to
