@@ -1364,15 +1364,20 @@ SCM mouse_ev_type = SCM_BOOL_F;
 Bool have_orig_position = False;
 int orig_x, orig_y;
 
+void
+stash_orig_button_position(XButtonEvent *ev)
+{
+  orig_x = ev->x_root;
+  orig_y = ev->y_root;
+  have_orig_position = True;
+}
+
 void 
 find_mouse_event_type(XButtonEvent *ev)
 {
   XEvent d;
 
-  orig_x = ev->x_root;
-  orig_y = ev->y_root;
-  /*   WXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y); */
-  have_orig_position = True;
+  stash_orig_button_position(ev);
 
   mouse_ev_type = sym_motion;
   if (IsClick(orig_x, orig_y, ButtonReleaseMask, &d)) {

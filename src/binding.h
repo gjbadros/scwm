@@ -63,6 +63,7 @@ typedef struct Binding_tag {
 
 void init_modifiers();
 void init_pointer_mapping(void);
+void stash_orig_button_position(XButtonEvent *ev);
 void find_mouse_event_type(XButtonEvent *ev);
 void clear_mouse_event_type();
 

@@ -1539,7 +1539,7 @@ HandleButtonPress()
     }
     /* First call the immediate proc */
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
-      find_mouse_event_type(&Event.xbutton);
+      stash_orig_button_position(&Event.xbutton);
       done = call_interactively(pbnd->ReleaseThunk,SCM_BOOL_F);
     }
     /* GJB:FIXME:: maybe this should only not
