@@ -1,3 +1,9 @@
+1999-04-06  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (scwm-eval-sexp): use
+	`shrink-window-if-larger-than-buffer'.
+	In GNU Emacs, `enlarge-window' takes only one argument!
+
 Mon Apr  5 09:58:06 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Only mess with font-lock stuff (if featurep
@@ -9,7 +15,7 @@ Fri Apr  2 10:46:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 	(ice-9 session). This is now called in scwm-make-obarray (instead
 	of doing the use inline) and *also* in scwm-apropos.  Fixes bug
 	whereby doing apropos before a completion (after a
-	restart/startup) would result in a message about apropos not being 
+	restart/startup) would result in a message about apropos not being
 	defined by this version of guile.
 
 Sun Mar 28 15:02:45 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -28,7 +34,7 @@ Thu Mar 25 18:22:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Wed Mar 24 19:08:35 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* scwm.el: Comment-out the keydef of C-c C-l to scheme-load-file; 
+	* scwm.el: Comment-out the keydef of C-c C-l to scheme-load-file;
 	it was scwm-load-file, and I've come to use that binding a lot.
 
 1999-03-24  Sam Steingold  <sds@goems.com>

@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1999-03-25 Thu 09:32:57 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1999-04-06 Tue 09:43:50 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -158,16 +158,6 @@ then highlight the output."
                       (unless (bobp) (backward-char 1))
                       (thing-at-point 'symbol)) ""))
 
-;; Return number of screen lines between START and END in buffer B displayed in window W
-(defun count-screen-lines (start end b w)
-  (save-excursion
-    (save-restriction
-      (with-current-buffer b
-	(narrow-to-region start end)
-	(goto-char (point-min))
-	(+ 1 (vertical-motion (- (point-max) (point-min)) w))))))
-
-
 ;; user functions
 ;; ---- ---------
 
@@ -266,20 +256,15 @@ meaning of the second argument is reversed."
 	       (let ((lines (count-lines (point-min) (point-max))))
 		 (cond ((= lines 0)
 			(message "[scwm command completed with no output]"))
-		       ((and (= lines 1) 
+		       ((and (= lines 1)
 			     (< (- (point-max) (point-min))
 				(frame-width)))
 			(message "%s" (buffer-string)))
 		       (t (message "%s" (buffer-string))
-			  (display-buffer-in-sized-window (current-buffer))))))))))
+                          (goto-char (point-min))
+                          (shrink-window-if-larger-than-buffer
+                           (display-buffer (current-buffer)))))))))))
 
-(defun display-buffer-in-sized-window (buffer)
-  (let* ((w (display-buffer buffer))
-	 (lines (count-screen-lines (point-min) (point-max) buffer w))
-	 (h (- (max window-min-height (+ 2 lines)) (window-height w))))
-    (message "%d" lines)
-    (enlarge-window h nil w)))
-  
 ;;;###autoload
 (defun scwm-eval-last (mb-p)
   "Evaluate the last sexp with `scwm-eval-sexp'."
@@ -336,7 +321,6 @@ meaning of the second argument is reversed."
 This is needed for some commands such as apropos and apropos-internal.
 apropos-internal is used for completion, too"
   (scwm-eval "(use-modules (ice-9 session))" nil))
-  
 
 (defun scwm-make-obarray ()
   "Create and return an obarray of scwm symbols."
@@ -558,31 +542,31 @@ Procedure Index or in another manual found via the variable
 
 ;; fontifications
 ;; --------------
-(if (featurep 'font-lock)
-    (progn
-      (require 'cl)                   ; for assoc*
-      (let ((font-keywds
-	     (cond ((boundp 'running-xemacs)
-		    (put 'scwm-mode 'font-lock-defaults
-			 (get 'scheme-mode 'font-lock-defaults))
-		    scheme-font-lock-keywords)
-		   ((and (string-lessp emacs-version "20.3")
-			 (boundp 'font-lock-defaults-alist))
-		    (cdr
-		     (or (assq 'scwm-mode font-lock-defaults-alist)
-			 (car (setq font-lock-defaults-alist
-				    (cons (cons 'scwm-mode
-						(cdr (assq
-						      'scheme-mode
-						      font-lock-defaults-alist)))
-					  font-lock-defaults-alist))))))
-		   (scheme-font-lock-keywords-2))))
-	;; dirty hack!!!
-	(when (and font-keywds
-		   (not (assoc* "&" font-keywds :test 'string-match)))
-	  (nconc font-keywds
-		 (list (cons "\\<&\\sw+\\>"
-			     (cdr (assoc* ":" font-keywds :test 'string-match)))))))))
+(when (featurep 'font-lock)
+  (require 'cl)                 ; for assoc*
+  (let ((font-keywds
+         (cond ((boundp 'running-xemacs)
+                (put 'scwm-mode 'font-lock-defaults
+                     (get 'scheme-mode 'font-lock-defaults))
+                scheme-font-lock-keywords)
+               ((and (string-lessp emacs-version "20.3")
+                     (boundp 'font-lock-defaults-alist))
+                (cdr
+                 (or (assq 'scwm-mode font-lock-defaults-alist)
+                     (car (setq font-lock-defaults-alist
+                                (cons (cons 'scwm-mode
+                                            (cdr (assq
+                                                  'scheme-mode
+                                                  font-lock-defaults-alist)))
+                                      font-lock-defaults-alist))))))
+               (scheme-font-lock-keywords-2))))
+    ;; dirty hack!!!
+    (when (and font-keywds
+               (not (assoc* "&" font-keywds :test 'string-match)))
+      (nconc font-keywds
+             (list (cons "\\<&\\sw+\\>"
+                         (cdr (assoc* ":" font-keywds :test
+                                      'string-match))))))))
 
 (provide 'scwm)
 ;;; scwm ends here
