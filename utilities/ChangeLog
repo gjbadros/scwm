@@ -1,3 +1,8 @@
+Fri Oct  1 21:53:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/startscwm: expand out $userresources, look for
+	~/.Xresources first.
+
 Thu Sep 30 10:48:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* pidproperty/scwm_set_pid_property.c: Added -rdynamic to sample

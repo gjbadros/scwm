@@ -1,3 +1,28 @@
+Sat Oct  2 00:07:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h (DecorationYOffset, DecorationXOffset): Add protos for
+	these.
+
+	* window.c: Permit an unspecified width or height to mean leave
+	unchanged.  Added FIXME's re: psw->bw in Decoration[XY]Offset.
+
+	* miscprocs.c: Added #if-0'd code about XtGetSelectionValue.
+
+	* events.h: Added *pscm_configure_request_handled variable, EXTERN 
+	framework.
+
+	* events.c: Added `X-ConfigureRequest-hook', call it and let it
+	possibly hide the C handling if configure-request-handled variable 
+	is set to #t by a hook proc.  Handle gravity properly in
+	ConfigureRequest-s, so that, e.g., a font-size change in an xterm
+	causes the window to change its size while respecting gravity and
+	stay in a corner appropriately.
+
+	* callbacks.c: Make scwm_run_hook save and restore pswCurrent
+	(this was a problem at least one place).
+
+	* add_window.h: Added EXTERN framework (unused).
+
 1999-10-01  E. Jay Berkenbilt  <ejb@ql.org>
 
 	* miscprocs.c (s_X_fetch_bytes): added this function for cut

@@ -1,3 +1,20 @@
+Sat Oct  2 00:01:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Rename copy-window-title-to-cut-buffer0 to
+	copy-window-title-to-cut-buffer;
+	paste-window-title-from-cut-buffer0 to
+	paste-window-title-from-cut-buffer.
+
+	* window-configuration.scm: Added `push-window-configuration',
+	`pop-window-configuration', `window-configuration-menu'. And
+	define `window-configuration-menu' to expose this functionality.
+
+	* wavplay.scm: Do not try to play a sound that couldn't be found.
+
+	* flux.scm: Added shortcut keys for the window-ops menu.  Added
+	Configuration submenu.  Added `config-request-animate' to do
+	animated configure requests.
+
 Fri Oct  1 21:54:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Do not use bind-four-modifier-key-events here.

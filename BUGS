@@ -26,9 +26,6 @@ up one pixel larger in height.
 Bob Pepin bob@sendar.prophecy.lu
 
 -------
-Animated resizes of Emacs frames interact strangely with emacs resulting
-in the resize animating twice.
---------
 By-window-resource group menus should auto-select the first window in
 the sub-menus (they currently require a motion event for the menu item to
 get highlighted).

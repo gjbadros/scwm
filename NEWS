@@ -12,16 +12,26 @@ Changes for scwm-0.99.4 (released )
 * New modules
 ** last-mapped-window.scm for remembering the last window that got mapped
 
+* Changed modules
+** window-configuration.scm now has push-window-configuration, pop-window-configuration
+   and window-configuration-menu
+
 * Changed procedures
 ** X-cut-buffer-string now uses X-fetch-bytes primitive
 ** X-set-cut-buffer-string! now uses X-store-bytes primitive
+** Rename copy-window-title-to-cut-buffer0 to copy-window-title-to-cut-buffer
+** Rename paste-window-title-from-cut-buffer0 to paste-window-title-from-cut-buffer
+
+* New primitives
+** `X-fetch-bytes', `X-store-bytes' for better primary cut buffer handling
 
 * Changed primitives
 ** `animated-deiconify-to-last-viewport-position' to `animated-deiconify-to-viewport'
 ** Drop `animated-deiconify-to-current-viewport'
 
-* New primitives
-** `X-fetch-bytes', `X-store-bytes' for better primary cut buffer handling
+* New hooks
+** X-ConfigureRequest-hook
+
 
 
 Changes for scwm-0.99.3 (released 25-September-1999)

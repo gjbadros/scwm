@@ -1,3 +1,11 @@
+Sat Oct  2 00:12:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added register, window-configuration stuff.  Use
+	config-request-animate to make self-changing windows animate their 
+	changes.  Call push-window-configuration in
+	after-new-window-hook, so popping will restore to the
+	initially-mapped state.
+
 Thu Sep 30 10:13:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use last-mapped-window module instead of doing it 
