@@ -1,3 +1,7 @@
+1999-04-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Enable gnome and SM goodies.
+
 Mon Apr 12 19:03:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added H + Button1 to highlight the current window
