@@ -1,3 +1,7 @@
+Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c: Include callacks.h.
+
 Thu Mar 26 18:15:59 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Fix error redirection to deal with the standard guile
