@@ -192,7 +192,7 @@
 	 (enable (gtk-button-new-with-label "Enable All"))
 	 (delete-all (gtk-button-new-with-label "Delete All"))
 	 (hbuttonbox (gtk-hbutton-box-new))
-	 (close (gtk-button-new-with-label "Close")))
+	 (close (gtk-button-new-with-label "Close")))  ;; close button is not added below --12/08/99 gjb
     (gtk-window-set-title toplevel "Constraint investigator")
     (gtk-box-set-spacing vbox ui-box-spacing)
     (gtk-container-border-width vbox ui-box-border)
@@ -202,7 +202,7 @@
      (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
     (gtk-container-add vbox vboxcn)
-    (for-each (lambda (but) (gtk-container-add hbuttonbox but)) (list disable enable delete-all close))
+    (for-each (lambda (but) (gtk-container-add hbuttonbox but)) (list disable enable delete-all)) ;; close))
     (gtk-signal-connect disable "clicked" 
 			(lambda () (disable-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
