@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
 html
+scwm.info
 scwm.aux
 scwm.dvi
 scwm.log
