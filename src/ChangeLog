@@ -1,3 +1,8 @@
+Sat Jul  3 00:16:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* image.c: Added `image-size' for simpler, faster interface to a
+ 	common case.
+
 Fri Jul  2 22:24:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c: Rename global C variable from cpix_scroll_region to

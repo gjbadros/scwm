@@ -1,3 +1,14 @@
+Sat Jul  3 00:15:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm: ws change
+
+	* message-window.scm: Added `make-message-window-win-copy',
+	`with-frozen-root-window'
+
+Fri Jul  2 22:34:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* wmconfig-menu.scm: Added comment about resizing the image.
+
 Sat Jun 26 16:56:53 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* prefs-menu.scm: Added note about obsolescence-- do not want to
