@@ -1,5 +1,7 @@
 Tue Nov 18 01:23:38 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* version.h: Bumped to version 0.5.
+
 	* ANNOUNCE: Added 0.5 news to the announcement.
 
 	* NEWS: Updated for 0.5.
