@@ -143,7 +143,7 @@ drawn.  POINT is of the form (X . Y)."
 	  (if win (list win) #f)))))
 
 
-(define*-public (two-window-or-more-nonant-prompter name #&optional (p1 "first window") (p2 "second window"))
+(define*-public (two-window-or-more-nonant-prompter name #&key (p1 "first window") (p2 "second window") (orientation #f))
   (let ((winlist (selected-windows-list)))
     (if (>= (length winlist) 2)
 	(begin
@@ -156,10 +156,10 @@ drawn.  POINT is of the form (X . Y)."
 	  (message-window-set-message! msgwin (string-append name ": " p1))
 	  (with-message-window-shown
 	   msgwin
-	   (set! win1 (get-window-with-nonant-interactively))
+	   (set! win1 (get-window-with-nonant-interactively orientation))
 	   (set! nonant1 (object-property win1 'nonant))
 	   (message-window-set-message! msgwin (string-append name ": " p2))
-	   (set! win2 (get-window-with-nonant-interactively))
+	   (set! win2 (get-window-with-nonant-interactively orientation))
 	   (set! nonant2 (object-property win2 'nonant))
 	   (list (list win1 win2) (list nonant1 nonant2)))))))
 ;; (define-public ui-constraint-prompter-msgwin (make-message-window ""))
@@ -170,7 +170,8 @@ drawn.  POINT is of the form (X . Y)."
 ;; nonants
 ;; (get-window-with-nonant-interactively)
 ;; ui-constraints-classes
-;; (two-window-or-more-nonant-prompter "foo")
+;; (two-window-or-more-nonant-prompter "foo" #:orientation 'horizontal)
+;; (two-window-or-more-nonant-prompter "foo" #:orientation 'vertical)
 
 ;; Perhaps should move this elsewhere
 ;; Useful drawing utilities function
@@ -360,7 +361,9 @@ to make it resize around its center."
 ;; ui-constructor
 (define (make-ui-cnctr-align horiz-or-vert)
   (lambda ()
-    (two-window-or-more-nonant-prompter (string-append horiz-or-vert " alignment"))))
+    (two-window-or-more-nonant-prompter 
+     (string-append (symbol->string horiz-or-vert) " alignment")
+     #:orientation horiz-or-vert)))
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
@@ -431,7 +434,7 @@ to make it resize around its center."
 Keep windows together using a horizontal connecting bar. \
 Also can be used to glue top and bottom edges of windows together."
    '(2 '+) cnctr-halign 
-   (make-ui-cnctr-align "Horizontal") draw-cn-halign 
+   (make-ui-cnctr-align 'horizontal) draw-cn-halign 
    cl-is-constraint-satisfied? 
    "cn-keep-tops-even.xpm" "cn-keep-top-bottom-even.xpm" menuname-halign))
 
@@ -512,7 +515,7 @@ Also can be used to glue top and bottom edges of windows together."
 Keep windows together using a vertical connecting bar. \
 Also can be used to glue left and right edges of windows together." 
    '(2 '+) cnctr-valign 
-   (make-ui-cnctr-align "Vertical") draw-cn-valign 
+   (make-ui-cnctr-align 'vertical) draw-cn-valign 
    cl-is-constraint-satisfied? 
    "cn-keep-lefts-even.xpm" "cn-right-left-even.xpm" menuname-valign))
 

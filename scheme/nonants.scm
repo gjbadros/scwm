@@ -95,25 +95,59 @@ E.g., NONANT == 0 will answer the id of the northwest corner window."
   #:getter (lambda () (nonant-highlight-color)))
 
 (define lastwin #f)
+(define select-orientation #f)
+
+(define (nonant-considering-orientation nonant orientation)
+  "Return NONANT or one of 'left, 'hcenter, 'right, 'top, 'vmiddle, 'bottom.
+If ORIENTATION is #f, just returns NONANT.  If ORIENTATION is 'horizontal,
+then returns 'top, 'vmiddle, or 'bottom.
+If ORIENTATION is 'vertical, then returns 'left, 'hcenter, or 'right."
+  (case orientation
+   ((#f) nonant)
+   ((horizontal) 
+    (case nonant
+      ((0 1 2) 'top)
+      ((3 4 5) 'vmiddle)
+      ((6 7 8) 'bottom)
+      (else (error "Bad nonant"))))
+   ((vertical) 
+    (case nonant
+      ((0 3 6) 'left)
+      ((1 4 7) 'hcenter)
+      ((2 5 8) 'right)))))
+;; (nonant-considering-orientation 0 #f)
+;; (nonant-considering-orientation 4 #f)
+;; (nonant-considering-orientation 4 'horizontal)
 
 (define (mark-nonant-motion-handler x_root y_root state win dx dy)
   (if win 
-      (begin
+      (let ((nonant (window-and-offsets->nonant win dx dy)))
 	(set-window-highlighted-nonant! 
-	 (window-and-offsets->nonant win dx dy) win)))
+	 (nonant-considering-orientation nonant select-orientation) win)))
   (if (and lastwin (not (eq? win lastwin)))
       (set-window-highlighted-nonant! #f lastwin))
   (set! lastwin win))
 
 ;; (reset-motion-handlers!)
+;; (get-window-with-nonant-interactively)
+;; (get-window-with-nonant-interactively 'horizontal)
+;; (get-window-with-nonant-interactively 'vertical)
 ;; nonants
-(define-public (get-window-with-nonant-interactively)
+(define*-public (get-window-with-nonant-interactively #&optional (orientation #f))
   "Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
-for use with the window-selection and constraints modules."
+for use with the window-selection and constraints modules.
+ORIENTATION can be either 'horizontal or 'vertical to designate
+whether we are picking a horizontal slice or a vertical slice
+of a window; when #f, we are picking a nonant, not a slice."
   (dynamic-wind
    (lambda ()
      (start-highlighting-selected-window)
+     (if (not (or (eq? orientation 'horizontal)
+		  (eq? orientation 'vertical)
+		  (eq? orientation #f)))
+	 (error (string-append "Bad orientation:" (symbol->string orientation))))
+     (set! select-orientation orientation)
      (add-motion-handler! mark-nonant-motion-handler))
 ;;     (add-motion-handler! motion-handler-debug))
    (lambda ()
@@ -126,6 +160,7 @@ for use with the window-selection and constraints modules."
 	   #f)))
    (lambda ()
      (end-highlighting-selected-window)
+     (set! select-orientation #f)
      (if lastwin (set-window-highlighted-nonant! #f lastwin))
      (remove-motion-handler! mark-nonant-motion-handler))))
 ;;     (remove-motion-handler! motion-handler-debug))))
