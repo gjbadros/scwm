@@ -1,3 +1,7 @@
+Wed Oct 20 18:00:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* task-switcher.scm, winops-menu.scm, flux-gtk.scm: Needs winlist-menu.
+
 Tue Oct 19 18:02:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Needs nonants module, fix interactive decl for

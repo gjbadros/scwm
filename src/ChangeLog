@@ -1,3 +1,9 @@
+Wed Oct 20 17:58:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_main): Handle SIGINTs always so that the focus is
+	restored properly; change SCWM_CATCH_SIGINT to
+	SCWM_RESET_ON_SIGINT
+
 Tue Oct 19 15:45:08 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c:  Added code from tguile-core.c (of

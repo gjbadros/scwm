@@ -1,3 +1,9 @@
+Wed Oct 20 17:59:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c: Handle SIGINTs always so that the
+ 	focus is restored properly; change SCWM_CATCH_SIGINT to
+ 	SCWM_RESET_ON_SIGINT
+
 Tue Oct 19 09:15:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c (s_restore_scwm_handlers): Only

@@ -1,3 +1,12 @@
+Wed Oct 20 18:00:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Set window-list-proc to focus-change-warp-pointer
+ 	(workaround cyclic module dependence bug (?) in guile)
+
+Wed Oct 20 16:03:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added gnome.scwmrc, spare-blue.scwmrc.
+
 Tue Oct 19 11:33:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added winlist-menu
