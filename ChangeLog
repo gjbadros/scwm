@@ -1,3 +1,8 @@
+Sat Jul 18 16:30:09 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added --with-cassowary flag for the constraint
+	solver
+
 1998-07-15  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* configure: Use prefix/exec-prefix as defaults for
