@@ -1,0 +1,14 @@
+#!/bin/sh -
+# Greg J. Badros --08/07/98 gjb
+# Create a CVS repository file that,
+# when checked out, creates a file changed.c
+# that has the last changed repository time
+# of the checkout/snapshot
+cd /usr/local/repository/scwm/scwm
+co -l changed.c >/dev/null
+{
+  echo -n "char *szRepoLastChanged = \""
+  date | tr -d '\012'
+  echo " -- \$Revision\$\";"
+} > changed.c
+ci -m"$USER" changed.c
