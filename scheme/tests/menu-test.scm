@@ -118,3 +118,6 @@
 (define broadcast-hook (lambda (d1 d2 d3 d4 d5 d6 d7) (display "hook\n")))
 (define pic-unknown (make-image "unknown1.xpm"))
 (image-properties pic-unknown)
+
+(set-menu-hotkeys-activate-item! #t)
+(menu-hotkeys-activate-item?)
