@@ -617,7 +617,7 @@ remove_binding(int context, unsigned int mods, int bnum_or_keycode,
 	       int mouse_binding)
 {
   Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
-
+  
   if (!mouse_binding) {
     ungrab_key_all_windows(bnum_or_keycode, mods);
   } else if (context & C_WINDOW) {
@@ -664,9 +664,11 @@ void
 add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p, 
 	    SCM proc, SCM release_proc, char *name)
 {
-  Binding *pbndPrev = Scr.AllBindings;
+  Binding *pbndPrev;
 
   remove_binding(context,modmask,bnum_or_keycode,mouse_p);
+
+  pbndPrev = Scr.AllBindings; 
 
   Scr.AllBindings = NEW(Binding);
 
