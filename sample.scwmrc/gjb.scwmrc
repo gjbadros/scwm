@@ -7,7 +7,6 @@
 	     (app scwm wininfo)
              (app scwm style))
 
-(use-modules posix)
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
