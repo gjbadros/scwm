@@ -47,7 +47,7 @@
 INITVAL is a default initial font as a font object or string.
 TITLE is a window title."
   (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-font-hbox initval))
+	 (hbox-and-getter (prompt-font-hbox prompt initval))
 	 (hbox (car hbox-and-getter))
 	 (getter (cadr hbox-and-getter))
 	 (hbox-buttons (gtk-hbox-new #f 5))
