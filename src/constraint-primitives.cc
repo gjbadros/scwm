@@ -12,6 +12,7 @@
 
 extern "C" {
 #include "scwm.h"
+#include "guile-compat.h"
 #include "window.h"
 #include "resize.h"
 #include "callbacks.h"

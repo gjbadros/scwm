@@ -30,6 +30,7 @@
 #endif
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 #include <ctype.h>
 #include <unistd.h>
 

@@ -15,6 +15,7 @@
 #include <assert.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #define MENULOOK_IMPLEMENTATION
 #include "menulook.h"

@@ -11,6 +11,7 @@
 #endif
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include "drawmenu.h"
 

@@ -61,6 +61,30 @@ call_lost_focus_hook(ScwmWindow *psw)
 }
   
 
+Bool
+FFocussableWin(ScwmWindow *psw)
+{
+  if (psw->fClickToFocus && psw->fSloppyFocus)
+    return False;
+  if ((psw && psw->fLenience) || 
+      (!(psw && 
+         (psw->wmhints) && (psw->wmhints->flags & InputHint) &&
+         (psw->wmhints->input == False)))) {
+    return True;
+  }
+  return False;
+}
+
+SCWM_PROC(focussable_window_p,"focussable-window?",0,1,0,
+          (SCM win))
+#define FUNC_NAME s_focussable_window_p
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
+  return gh_bool2scm(FFocussableWin(psw));
+}
+#undef FUNC_NAME
+
 /*
  * Sets the input focus to the indicated window.
  */
@@ -150,29 +174,25 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
   if (psw && psw->fIconified && psw->icon_w)
     w = psw->icon_w;
 
-  if (psw && psw->fClickToFocus && psw->fSloppyFocus) {
+  if (psw && !FFocussableWin(psw)) {
     call_lost_focus_hook(NULL);
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
     Scr.Focus = NULL;
     Scr.UnknownWinFocused = None;
-  } else if ((psw && psw->fLenience) ||  /* GJB:FIXME:: split this conditional up */
-	     (!(psw && 
-		(psw->wmhints) && (psw->wmhints->flags & InputHint) &&
-		(psw->wmhints->input == False)))) {
-    /* Window will accept input focus */
+  } else {
     call_lost_focus_hook(psw);
     XSetInputFocus(dpy, w, RevertToParent, lastTimestamp);
     Scr.Focus = psw;
     Scr.UnknownWinFocused = None;
+#if 0  /* GJB:FIXME:: what are all these cases? --09/17/99 gjb */
   } else if (Scr.Focus && (Scr.Focus->Desk == Scr.CurrentDesk)) {
-
     /* Window doesn't want focus. Leave focus alone */
     /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToParent, lastTimestamp); */
-
   } else {
     call_lost_focus_hook(NULL);
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
     Scr.Focus = NULL;
+#endif
   }
 
 

@@ -12,6 +12,7 @@
 #include <X11/Xatom.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include "shutdown.h"
 

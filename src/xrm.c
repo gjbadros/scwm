@@ -30,6 +30,7 @@
 #include <X11/Xlib.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include "xrm.h"
 

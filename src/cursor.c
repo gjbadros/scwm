@@ -7,6 +7,7 @@
 #endif
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #define CURSOR_IMPLEMENTATION
 #include "cursor.h"

@@ -16,6 +16,7 @@
 #include "binding.h"
 
 #include "scwm.h"
+#include "guile-compat.h"
 #include "screen.h"
 #include "window.h"
 #include "decor.h"

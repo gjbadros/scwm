@@ -35,6 +35,18 @@ extern "C" {
 #define gh_free(x) free(x)
 #endif
 
+/* Check if the scm variable is undefined or #f -- these cases
+   correspond to places where we want to use a default value
+   either because the args were omitted, or #f was used to skip
+   the argument to get to an argument that the client wanted to 
+   specify.
+   Intentionally not named SCM_UNSET, since that would imply
+   it's part of guile */
+#define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
+
+#define GC_MARK_SCM_IF_SET(scm) do { if (scm && !UNSET_SCM((scm))) \
+     { scm_gc_mark((scm)); } } while (0)
+
 #ifndef HAVE_SCM_PUTS
 #define scm_putc(x,y) scm_gen_putc(x,y)
 #define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)

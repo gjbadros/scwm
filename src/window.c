@@ -1874,7 +1874,7 @@ and possibly other legacy fvwm2 modules). */
 
     cnt++;
 
-    if (psw->fIconified && !psw->fSuppressIcon) {
+    if (psw && psw->fIconified && !psw->fSuppressIcon) {
       if (!psw->fNoIconTitle) {
 	cnt++;
       }
@@ -3432,16 +3432,17 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none. */
   VALIDATE_ARG_WIN_USE_CONTEXT(1, win);
   psw = PSWFROMSCMWIN(win);
 
-  if (psw->fClickToFocus)
+  if (psw->fClickToFocus) {
     if (psw->fSloppyFocus)
       return sym_none;
     else
       return sym_click;
-  else
+  } else {
     if (psw->fSloppyFocus)
       return sym_sloppy;
     else
       return sym_mouse;
+  }
 }
 #undef FUNC_NAME
 
