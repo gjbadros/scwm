@@ -1,3 +1,14 @@
+Tue Mar 10 22:10:54 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (window_shade): Fixed bugs w.r.t. not redrawing the
+	decorations that get exposed due to an animated window shade (was
+	throwing out all events using XSync to avoid processing a resize), 
+	and regain proper focus after the window shade;  still did not fix 
+	the bug w.r.t. scwm improperly not disallowing resizes on shaded windows.
+
+	* events.c (HandleScwmExec): Fixed warning re: 12 arg's type in
+	XGetWindowProperty.
+
 Wed Mar 11 00:10:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm.c: Fixed version output (added trailing newline). Bug fix

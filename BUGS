@@ -1,14 +1,3 @@
-- Animated window-shade bug, reported by Sam Steingold <sds@usa.net>,
-exploit confirmed by MS, but I have no clue how to fix it right now:
-
-Open 2 windows, one (1) partially obscuring the other's (2) title bar.
-Double click on the (1)'s title bar, shading it.  You can see that the
-portion of the (2)'s title bar with was obscured before but it not
-obscured now is not repainted.  Also, if you move the mouse towards (2)
-while (1) is being (animatedly ==> with delay) shaded, so that the (1)
-is "pulled from under the mouse pointer", leaving it on (2), (2) will
-*not* have the focus, although it should as per sloppy focus.
- 
 - Another window shade problem: clients that resize themsleves while
 shaded make the wm lose. [ reported by Oleg Tihnov ]
 
@@ -42,6 +31,18 @@ outside the callback handler - the code would lose big on this -ms]
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+
+- Animated window-shade bug, reported by Sam Steingold <sds@usa.net>,
+exploit confirmed by MS, but I have no clue how to fix it right now:
+Open 2 windows, one (1) partially obscuring the other's (2) title bar.
+Double click on the (1)'s title bar, shading it.  You can see that the
+portion of the (2)'s title bar with was obscured before but it not
+obscured now is not repainted.  Also, if you move the mouse towards (2)
+while (1) is being (animatedly ==> with delay) shaded, so that the (1)
+is "pulled from under the mouse pointer", leaving it on (2), (2) will
+*not* have the focus, although it should as per sloppy focus.
+--03/10/98 gjb; XSync was discarding events, and we needed a CoerceEnterNotifyOnCurrentWindow() to restore proper focus 
+
 
 - Jim Blandy's patch to load boot-9 for newer guile versions is
 problematic; it can't tell wether or not we are running under an older
