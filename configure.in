@@ -116,12 +116,20 @@ AC_CHECK_FUNC(gethostbyname, , AC_CHECK_LIB(nsl, main, [LIBS="$LIBS -lnsl"]))
 
 
 AC_CHECK_LIB(qt, main)
-AC_CHECK_LIB(guile, scm_boot_guile,[
+AC_CHECK_LIB(guile, scm_handle_by_message_noexit,[
 LIBS="-lguile $LIBS"
 guile_scheme_prefix=`guile -c "(display (cdr (assq 'pkgdatadir %guile-build-info))) (newline)"`
 ],[
 AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
 ], $LIBS)
+
+dnl This checks (roughly) if the guile lib is a sufficiently recent snapshot
+dnl to have a scm_eval_string that is safe against re-entry by continuations. 
+dnl I was to lazy to write a real test macro so I just check for a function
+dnl that was added soon after.
+AC_CHECK_LIB(guile, scm_done_malloc,AC_DEFINE(HAVE_SAFE_SCM_EVAL_STRING))
+
+
 # AC_CHECK_LIB(Xpm,XpmFree); /* ?? */
 
 #-------------------------------------------------------------------
@@ -215,4 +223,10 @@ dnl          icons/Makefile \
 dnl          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
+          app/Makefile \
 )
+
+
+
+
+
