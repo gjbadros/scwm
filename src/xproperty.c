@@ -39,6 +39,7 @@
 #include <guile/gh.h>
 #include <libguile.h>
 #include <X11/X.h>
+#include <assert.h>
 #include "scwm.h"
 #include "errors.h"
 #include "screen.h"
@@ -281,6 +282,58 @@ VALUE is a string, if FORMAT is 8, or a vector of integers otherwise. */
   type=gh_str02scm(str);
   XFree(str);
   return gh_list(value,type,gh_int2scm(fmt),SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+/**CONCEPT: X atoms
+   X windows allows certain entities (for example, X properties [FIXME: XREF
+to X properties]) to have arbitrary names. To avoid exchanging strings ever so
+often, these names are in fact X atoms.
+
+New X atoms can be created, or old ones retrieved simply by specifying
+the string the atom stands for. An X atom can also be converted back to a
+string. Scwm provides primitives for these actions. */
+
+SCWM_PROC(string_to_X_atom, "string->X-atom", 1, 0, 0,
+	  (SCM string))
+     /** Returns an X atom representing STRING.
+If STRING contains NULL-characters, the behaviour is undefined. */
+#define FUNC_NAME s_string_to_X_atom
+{
+  char *str;
+  Atom a;
+
+  if (!gh_string_p(string)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, string);
+  }
+  str=gh_scm2newstr(string, NULL);
+  a=XInternAtom(dpy, str, False);
+  FREE(str);
+  assert(sizeof(Atom) == sizeof(unsigned long));
+  return gh_ulong2scm((unsigned long)a);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(X_atom_to_string, "X-atom->string", 1, 0, 0,
+	  (SCM atom))
+     /** Returns the string represented by ATOM.
+Returns #f, if the X atom was not known. */
+#define FUNC_NAME s_X_atom_to_string
+{
+  char *str;
+  SCM ret;
+
+  if (!gh_number_p(atom)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, atom);
+  }
+  assert(sizeof(Atom) == sizeof(unsigned long));
+  str=XGetAtomName(dpy, gh_scm2ulong(atom));
+  if (str == NULL) {
+    return SCM_BOOL_F;
+  }
+  ret=gh_str02scm(str);
+  XFree(str);
+  return ret;
 }
 #undef FUNC_NAME
 

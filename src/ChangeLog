@@ -1,3 +1,8 @@
+1998-09-01  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* xproperty.c (s_string_to_X_atom, s_X_atom_to_string): New
+	primitives.
+
 Mon Aug 31 14:05:09 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h, window.c, color.c, callbacks.c: Remove ifdef-d out
