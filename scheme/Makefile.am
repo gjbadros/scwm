@@ -5,11 +5,11 @@ scwm_common_scheme = \
 advice.scm animated-edge-moves.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm bincomm.scm cascade.scm constraints.scm decor.scm \
 defoption.scm desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
-face.scm file.scm flash-window.scm flux.scm focus-titlebar.scm \
-fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
+face.scm file.scm flash-window.scm flux.scm \
+focus-titlebar.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
 highlight-current-window.scm gnome-hints.scm \
 group.scm hooks.scm image-loaders.scm image-path-suggestor.scm key-mover-xtest.scm \
-kde-hints.scm key-mover.scm listops.scm message-window.scm \
+kde-hints.scm key-mover.scm last-mapped-window.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
 nonants.scm netscape.scm number-convert.scm optargs.scm \
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
