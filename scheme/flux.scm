@@ -14,6 +14,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm stylist)
+  :use-module (app scwm face)
   :use-module (app scwm animation)
   :use-module (app scwm animated-iconify)
   :use-module (app scwm animated-edge-moves)
