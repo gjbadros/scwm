@@ -1,3 +1,24 @@
+Mon Aug  3 16:13:52 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Use new macro SET_BIT_FOR_OBJ_PROP within
+	  FlagsBitsFromSw to do the right thing with WinlistSkip,
+	  Maximized, etc; ifdef-out a redundant BroadcastConfig
+
+	* decorations.c: Un-ifdef out the resetting of fBorder when
+	  boundary_width is 0.  There still seems to be a race condition
+	  with the FvwmWinList coming up w/o a title whereby the
+	  Configure notification to a module hangs when writing to the
+	  pipe (a hypothesis---not fully observed).
+
+Mon Aug  3 13:24:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added list-all-windows-in-stacking-order primitve, use 
+	  gh_cons instead of scm_cons in list-all-windows and update its
+	  comment
+
+	* scwm.c, scwm.h: added JunkWindow, to replace JunkChild,
+	  JunkRoot, since we really need only one for the xlib calls
+
 Sun Aug  2 17:57:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c, virtual.h, virtual.c: Added FNeedsPaging() as a pretest for
