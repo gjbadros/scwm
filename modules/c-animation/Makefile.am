@@ -1,7 +1,7 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
-scwm_module_LTLIBRARIES = libc-animation.la
+pkglib_LTLIBRARIES = libc-animation.la
 
 libc_animation_la_SOURCES = c-animation.c
 libc_animation_la_LDFLAGS = -export-dynamic
@@ -23,3 +23,11 @@ SUFFIXES = .x
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
 
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
+
+install-data-hook:
+	$(mkinstalldirs) $(scwm_moduledir)
+	rm -f $(scwm_moduledir)/libc-animation.la
+	$(LN_S) $(pkglibdir)/libc-animation.la $(scwm_moduledir)/libc-animation.la
+
+uninstall-local:
+	rm -f $(scwm_moduledir)/libc-animation.la

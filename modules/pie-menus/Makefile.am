@@ -1,7 +1,7 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
-scwm_module_LTLIBRARIES = libpie-menus.la
+pkglib_LTLIBRARIES = libpie-menus.la
 
 libpie_menus_la_SOURCES = draw-pie-menu.c
 libpie_menus_la_LDFLAGS = -export-dynamic
@@ -23,3 +23,11 @@ SUFFIXES = .x
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
 
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
+
+install-data-hook:
+	$(mkinstalldirs) $(scwm_moduledir)
+	rm -f  $(scwm_moduledir)/liboverlay-plane.la
+	$(LN_S) $(pkglibdir)/liboverlay-plane.la $(scwm_moduledir)/liboverlay-plane.la
+
+uninstall-local:
+	rm -f $(scwm_moduledir)/liboverlay-plane.la

@@ -1,5 +1,13 @@
 Thu Dec  3 02:04:42 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* applefile/Makefile.am, background/Makefile.am,
+ 	c-animation/Makefile.am, overlay-plane/Makefile.am,
+ 	pie-menus/Makefile.am, scwmgtkhelper/Makefile.am,
+ 	xpm-menus/Makefile.am: Install dynamic link modules in pklibdir
+ 	instead of scwm_schemedir, and make the proper symlink in
+ 	scwm_schemedir. All files in /usr/share should be
+ 	platform-independent.
+
 	* background/background.c (set_background_color_x,
  	set_background_pixmap_x): set the properties that
  	esetroot/xsetroot/xpmroot/xloadimage set, and which eterm uses at
