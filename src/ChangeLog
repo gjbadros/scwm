@@ -1,5 +1,30 @@
 Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* add_window.c, events.c, icons.c, move.c, placement.c, scmprocs.c
+ 	virtual.c, window.h: Icon handling fixes and changes:
+
+	Icon geometry has been broken for quite some time, it should be
+ 	better now.
+
+	The icon settings are now in four procedures: 
+
+	set-icon! - sets the requested icon image; if #f, no picture is
+ 	shown, just the icon title. However, unless force-icon is set,
+
+	set-force-icon! - if #t, the specified icon image or #f indicating
+ 	no icon image will override the app-provided icon, if any. If #f,
+ 	the app icon takes precedence.
+
+	set-icon-title! - #t or #f will specify wether the icon title is
+ 	or is not shown respectively.
+	
+	set-show-icon! - just determines wether or not the whole icon is
+ 	shown at all, without affecting any other settings (so setting it
+ 	to #f and then back to #t will restore all the original icons).
+
+	* module-interface.c: Broadcast: Provide the num_datum parameter
+ 	to broadcast hooks.
+
 	* image.c, image.h: Syndry improvements:
 	
 	Reorganized image loading - loaders can now be specified by a
