@@ -149,6 +149,7 @@
 
 (if (scwm-is-constraint-enabled?)
     (use-scwm-modules ui-constraints-toggle-menu
+		      ui-constraints
 		      ui-constraints-gtk-toggle-menu))
 
 ;; prefer doc files in scwmdir/doc
@@ -935,13 +936,18 @@ from other processes.
 (bind-mouse 'window "H-2" #f interactive-move-rubberband)
 (bind-mouse 'window "H-3" #f interactive-resize-rubberband)
 
-(bind-mouse 'all "H-1" #f select-window-toggle)
+(bind-mouse 'window "H-1" #f select-window-toggle)
 (bind-key 'all "H-S-s" select-window-toggle)
 (bind-mouse 'all "H-S-1" #f select-window-toggle)
 (bind-mouse 'all "H-A-1" #f select-window-toggle)
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
 (bind-mouse 'title "C-1" #f select-window-toggle)
 (bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
+
+(bind-mouse 'title "H-1" #f move-after-deleting-inferred-constraints)
+(bind-mouse 'title "H-3" #f move-after-deleting-constraints)
+(bind-mouse 'frame-sides "H-1" #f move-after-deleting-inferred-constraints)
+(bind-mouse 'frame-sides "H-3" #f move-after-deleting-constraints)
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
 ;;(bind-mouse 'left-button-1 3 popup-style-menu)
