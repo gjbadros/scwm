@@ -1,3 +1,10 @@
+Sat Oct 23 15:09:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Update for rename to send-button, added
+	`xmms-send-pause-click'
+
+	* robbe.scwmrc: Update for rename to send-button.
+
 Sat Oct 23 14:23:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Rename make-hosts-menu-gjb to just

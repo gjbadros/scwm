@@ -1,3 +1,20 @@
+Sun Oct 24 12:05:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* message-window.c (CreateMessageWindow): Added CWSaveUnder bit
+	(no noticeable effect, but seems desirable).
+
+	* events.c: Only require either X/Y change to do the
+	XMoveResizeWindow, not also a width/height change.  Fixes bug #12
+	reported by bkirby.
+
+Sat Oct 23 15:05:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c: ws change
+
+	* events.c: Renamed send-key-press to `send-key',
+	`send-button-press' to `send-button'.  Added dx, dy arguments to
+	`send-button'.  Change suggested by E. Jay Berkenbilt -- thanks!
+
 Sat Oct 23 14:16:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Do not decorate message-windows.  Thanks to Dirk Hermann 
