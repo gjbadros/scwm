@@ -1,3 +1,45 @@
+Sun Sep 13 12:52:03 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h: Drop FocusOn's 2nd argument
+
+	* window.c: Added GetWindowVirtualCenter(),
+	GetSnappedViewportPositionFor() to factor some repetition.
+	Simplify FocusOn, WarpOn to use them.  No longer re-snap the
+	viewport on every FocusOn (now only when window is not partially
+	visible)
+
+	* virtual.c: Update Icon position in changeDesks always
+
+	* move.c: Use ICON_VP_OFFSET_[XY] when moving icons interactively
+
+	* module-interface.h, module-interface.c: Added
+	BroadcastIconInfo() to send icon position for M_ICONIFY and
+	M_ICON_LOCATION packets
+
+	* menu.c: Added proto for InvokeUnhoverAction to avoid warnings
+
+	* icons.c: Call BroadcastIconInfo instead of the repetitive
+	Broadcast call with all args inline; Call MovePswToCurrentPosition 
+	in DeIconify in case it was out of position (might not update when 
+	not visible)
+
+	* events.c: Call BroadcastIconInfo instead of the repetitive
+	Broadcast call with all args inline
+
+Sun Sep 13 10:41:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (window-frame-border-width, window-title-size): Added
+	these new primitives
+
+Sun Sep 13 09:26:17 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* decor.h: Updated comment about DECORUNREF (not unsafe when
+	mismatched any longer)
+
+	* scwm.c (InitVariables): strdup("default") for the default decor
+	to get rid of memory bug trying to FREE a statically-allocated
+	string literal
+
 Sat Sep 12 13:45:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c (changeDesks): Call MovePsw*ToCurrentPosition on

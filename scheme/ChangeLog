@@ -1,3 +1,20 @@
+Sun Sep 13 13:00:37 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Only use [un]flash-window-proc if not #f
+
+Sun Sep 13 10:39:07 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Use window-viewport-position for maximize so
+	max/unmaxed windows do not drift with the viewport-position
+
+	* prefs-menu.scm: Fix typo in Sam's name
+
+	* flux.scm: Added some doc comments, remove window-title-height
+	and window-border-width -- use new less hacky versions
+
+	* base.scm: Defined `window-title-{height,width}' in terms of new
+	primitive `window-title-size'
+
 Sat Sep 12 13:58:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `icon-viewport-position', use
