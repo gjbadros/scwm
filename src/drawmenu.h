@@ -15,6 +15,9 @@
 /* This is the function any menu drawing code needs to implement */
 void ConstructDynamicMenu(DynamicMenu *pmd);
 
+void drawmenu_init_gcs(); /* FIXJTL: need to be able to register
+			     functions for late initialization */
+
 #endif
 
 /* Local Variables: */

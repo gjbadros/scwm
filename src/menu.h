@@ -68,13 +68,13 @@ typedef struct Menu_tag
 {
   SCM scmMenuItems;		/* list of menu items */
   SCM scmImgSide;		/* side image */
+  SCM scmSideAlign;		/* side image alignment */
   SCM scmSideBGColor;		/* side image background color */
   SCM scmBGColor;		/* background color */
   SCM scmTextColor;		/* text color */
   SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
   SCM scmExtraOptions;		/* extra list of options for the drawing code */
-  SCM scmSideAlign;		/* side image alignment */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
 } Menu;
 
@@ -106,8 +106,6 @@ struct DynamicMenu_tag
 #define DYNAMIC_SAFE_MENU(X)  (gh_symbol_p((X))? \
 			       SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
 			       SAFE_MENU((X)))
-
-void menu_init_gcs();
 
 SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p);
 

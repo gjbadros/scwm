@@ -329,27 +329,6 @@ SCWM_PROC(title_font, "title-font", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-
-
-static
-void
-menu_font_update()
-{
-  XGCValues gcv;
-  unsigned long gcm;
-
-  gcm = GCFont;
-  gcv.font = XFONTID(Scr.menu_font);
-
-  /* are all these needed? */
-  /* MSFIX: This stuff should really be handled by other code. */
-  XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
-  XChangeGC(dpy, Scr.MenuShadowGC, gcm, &gcv);
-  XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
-  XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
-}
-
-
 SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
            (SCM font))
      /** Set the default font used for drawing menus to FONT. */
@@ -366,7 +345,6 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
   gh_vector_set_x(protected_fonts,SCM_MAKINUM(1),font);
 
   Scr.menu_font=font;
-  menu_font_update();
 
   return font;
 }

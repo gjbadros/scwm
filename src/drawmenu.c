@@ -39,8 +39,58 @@ extern SCM sym_top, sym_center, sym_bottom;
 #define MENU_POPUP_ARROW_WIDTH 8
 #define MENU_HEIGHT_SEPARATOR 4
 
+static GC MenuGC;
+static GC MenuStippleGC;
+static GC MenuReliefGC;
+static GC MenuShadowGC;
 
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
+
+static void
+MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
+{
+  unsigned long gcm;
+  XGCValues gcv;
+  Pixel Bright, Dim;
+
+  /* Relief.fg */
+  Bright = adjust_pixel_brightness(pmd->pmdi->BGColor, menu_hilight_factor_val);
+  /* Relief.bg */
+  Dim = adjust_pixel_brightness(pmd->pmdi->BGColor, menu_shadow_factor_val);
+		  
+  gcm = GCForeground | GCBackground;
+  gcv.foreground = Bright;
+  gcv.background = Dim;
+  XChangeGC(dpy, MenuReliefGC, gcm, &gcv);
+
+  gcm = GCForeground | GCBackground;
+  gcv.foreground = Dim;
+  gcv.background = Bright;
+  XChangeGC(dpy, MenuShadowGC, gcm, &gcv);
+
+  gcm = GCForeground | GCBackground;
+  gcv.foreground = pmd->pmdi->TextColor;
+  gcv.background = pmd->pmdi->BGColor;
+#ifndef I18N
+  gcm |= GCFont;
+  gcv.font = scfont->xfs->fid;
+#endif
+  XChangeGC(dpy, MenuGC, gcm, &gcv);
+
+  gcm = GCForeground | GCBackground;
+  gcv.foreground = pmd->pmdi->TextColor;
+  gcv.background = pmd->pmdi->BGColor;
+  if (Scr.d_depth < 2) {
+    gcm |= GCStipple | GCFillStyle;
+    gcv.stipple = Scr.gray_bitmap;
+    gcv.fill_style = FillStippled;
+  }
+#ifndef I18N
+  gcm |= GCFont;
+  gcv.font = scfont->xfs->fid;
+#endif
+  XChangeGC(dpy, MenuGC, gcm, &gcv);
+}
 
 static
 scwm_font *
@@ -176,16 +226,23 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   int x_offset = pmdi->cpixItemOffset;
   int width = pmdi->cpixWidth;
   int item_height = pmiim->cpixItemHeight;
-  GC ShadowGC = Scr.MenuShadowGC;
-  GC ReliefGC = Scr.d_depth<2? Scr.MenuShadowGC: Scr.MenuReliefGC;
-  GC currentGC = ShadowGC;
-  GC gcImage = Scr.MenuGC;
+  GC ShadowGC = MenuShadowGC;
+  GC ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
+  GC currentGC;
   scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
   scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
   menu_item_state mis = pmiim->mis;
 
   /* code for FVWM menu look here -- should abstract for other options */
 
+  /* FIXJTL: how expensive is XChangeGC()?  If bad, there should be a
+     way of skipping this if they're still set up right from the last
+     menu item; maybe the exported PaintMenuItem should set up the GCs
+     and then call the real PaintMenuItem, and PaintMenu should set
+     them up before looping over the real PaintMenuItem */
+  
+  MakeGCs(pmd, scfont);
+  
   /* Erase any old reliefs indicated selectedness */
   XClearArea(dpy, w,
 	     x_offset-MENU_ITEM_RR_SPACE-1,
@@ -203,7 +260,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
   /* Bottom of the menu */
   if (pmiim->fOnBottomEdge) {
-    DrawSeparator(w,ShadowGC,ShadowGC, 
+    DrawSeparator(w, ShadowGC, ShadowGC, 
 		  0, width-1, y_offset + item_height,
 		  1);
   }
@@ -232,35 +289,23 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 	y_offset += (item_height - psimgAbove->height)/2;
       }
       DBUG((DBG,__FUNCTION__,"Drawing psimgAbove"));
-      DrawImage(w, psimgAbove, x, y_offset, gcImage);
+      DrawImage(w, psimgAbove, x, y_offset, MenuGC);
       y_offset += psimgAbove->height;
     }
 
     /* center text vertically if the pixmap is taller */
     if (psimgLeft) {
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
-      DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, gcImage);
+      DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
        
     if (mis == MIS_Grayed) {
-      currentGC = Scr.MenuStippleGC;
+      currentGC = MenuStippleGC;
     } else {
-      currentGC = Scr.MenuGC;
+      currentGC = MenuGC;
     }
 
     x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
-
-    { /* FIXGJB: clean up this gc garbage --12/12/97 gjb */
-      XGCValues gcv;
-#ifdef I18N
-      gcv.foreground = pmdi->TextColor;
-      XChangeGC(dpy,currentGC,GCForeground,&gcv);
-#else
-      gcv.font = scfont->xfs->fid;
-      gcv.foreground = pmdi->TextColor;
-      XChangeGC(dpy,currentGC,GCFont | GCForeground,&gcv);
-#endif
-    }
 
     if (pmi->szLabel) {
 #ifdef I18N
@@ -489,6 +534,24 @@ ConstructDynamicMenu(DynamicMenu *pmd)
   }
 }
 #undef INCREASE_MAYBE
+
+void 
+drawmenu_init_gcs()
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth | GCFillStyle;
+  gcv.fill_style = FillSolid;
+  gcv.plane_mask = AllPlanes;
+  gcv.function = GXcopy;
+  gcv.graphics_exposures = False;
+  gcv.line_width = 0;
+  MenuReliefGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  MenuShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+}
 
 
 /* Local Variables: */

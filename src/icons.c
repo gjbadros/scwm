@@ -404,8 +404,11 @@ DrawIconWindow(ScwmWindow * psw)
     }
   } else {
     if (Scr.d_depth < 2) {
-      Relief = Scr.MenuGC;
-      Shadow = Scr.MenuGC;
+      /* FIXJTL: Is this what was intended before? Does it make any
+         sense? */
+      SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(Scr.MenuColors.fg));
+      SetGCBg(Relief,XCOLOR(Scr.MenuColors.bg));
+      Shadow = Relief;
     } else {
       SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(psw->ReliefColor));
       SetGCFg(Shadow = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));

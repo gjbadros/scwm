@@ -3,7 +3,7 @@
 # By Greg J. Badros --07/23/98 gjb
 ( for i in "$@"; do echo $i; done ) | \
   sed -e 's/\.x$/();/' \
-      -e 's/-/_/' \
+      -e 's/-/_/g' \
       -e 's/^/void init_/'
 exit $?
 

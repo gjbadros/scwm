@@ -357,6 +357,21 @@ adjust_brightness(SCM color, double factor) {
   return make_color(gh_str02scm(cnamebuf));
 }
 
+Pixel
+adjust_pixel_brightness(Pixel pixel, double factor)
+{
+  XColor c;
+  char cnamebuf[19];
+
+  c.pixel = pixel;
+  
+  XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
+  color_mult(&c.red, &c.green, &c.blue, factor);
+  XAllocColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
+
+  return c.pixel;
+}
+
 
 SCM
 invert_color(SCM color) {
@@ -532,10 +547,6 @@ SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
   return (gh_double2scm(fl->shadow_factor));
 }
 #undef FUNC_NAME
-
-
-double menu_hilight_factor_val = 1.2;
-double menu_shadow_factor_val = 0.5;
 
 
 SCWM_PROC(set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
@@ -722,9 +733,6 @@ SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
      /** Use FG as the default foreground color for menus. */
 #define FUNC_NAME s_set_menu_foreground_x
 { 
-  XGCValues gcv;
-  unsigned long gcm;
-
   VALIDATE_COLOR(fg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
@@ -734,10 +742,6 @@ SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
   }
 
   gh_vector_set_x(protected_colors,SCM_MAKINUM(0),Scr.MenuColors.fg);
-
-  gcm = GCForeground;
-  gcv.foreground = XCOLOR(Scr.MenuColors.fg);
-  XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
 
   return (SCM_UNSPECIFIED);
 }
@@ -752,15 +756,11 @@ SCWM_PROC (menu_foreground, "menu-foreground", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-
 SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
            (SCM bg) )
      /** Use BG as the default foreground color for menus. */
 #define FUNC_NAME s_set_menu_background_x
 { 
-  XGCValues gcv;
-  unsigned long gcm;
-
   VALIDATE_COLOR(bg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
@@ -779,28 +779,6 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
   gh_vector_set_x(protected_colors,SCM_MAKINUM(2),Scr.MenuRelief.fg);
   gh_vector_set_x(protected_colors,SCM_MAKINUM(3),Scr.MenuRelief.bg);
   gh_vector_set_x(protected_colors,SCM_MAKINUM(4),Scr.MenuStippleColors.bg);
-
-
-  gcm = GCForeground | GCBackground;
-  gcv.foreground = XCOLOR(Scr.MenuRelief.fg);
-  gcv.background = XCOLOR(Scr.MenuRelief.bg);
-  XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
-  gcv.foreground = XCOLOR(Scr.MenuRelief.bg);
-  gcv.background = XCOLOR(Scr.MenuRelief.fg);
-  XChangeGC(dpy, Scr.MenuShadowGC, gcm, &gcv);
-  gcm = GCBackground;
-  gcv.background = XCOLOR(Scr.MenuColors.bg);
-  XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
-
-  
-  gcv.background = Scr.MenuStippleColors.bg;
-  if (Scr.d_depth < 2) {
-    gcm = GCBackground;
-  } else {  
-    gcm = GCBackground;
-  }
-
-  XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
 
   return (SCM_UNSPECIFIED);
 }
@@ -836,18 +814,6 @@ May not be used any longer. */
   }
 
   gh_vector_set_x(protected_colors,SCM_MAKINUM(5),Scr.MenuStippleColors.fg);
-
-  gcv.foreground = Scr.MenuStippleColors.fg;
-  if (Scr.d_depth < 2) {
-    gcm = GCForeground | GCStipple | GCFillStyle;
-    gcv.fill_style = FillStippled;
-    gcv.stipple = Scr.gray_bitmap;
-  } else {  
-    gcm = GCForeground;
-    gcv.foreground = Scr.MenuStippleColors.fg;
-  }
-  XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
-
   return (SCM_UNSPECIFIED);
 
 }
@@ -862,7 +828,6 @@ May not be used any more. */
   return (Scr.MenuStippleColors.fg);
 }
 #undef FUNC_NAME
-
 
 MAKE_SMOBFUNS(color);
 

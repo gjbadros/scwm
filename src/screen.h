@@ -237,11 +237,7 @@ typedef struct ScreenInfo {
   int msg_window_y;		/* y position of the size/position window */
   double msg_window_x_align;	/* offset msg window by multiple of size */
   double msg_window_y_align;	/* offset msg window by multiple of size */
-
-  GC MenuGC;
-  GC MenuStippleGC;
-  GC MenuReliefGC;
-  GC MenuShadowGC;
+  
   GC ScratchGC1;
   GC ScratchGC2;
   GC ScratchGC3;

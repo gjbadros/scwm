@@ -1,3 +1,38 @@
+1998-09-26  Todd Larason  <jtl@teeny.molehill.org>
+
+	* scwm.c (scwm_main): renamed menu_init_gcs to drawmenu_init_gcs
+
+	* screen.h: remove menu GCs
+
+	* menu.h: move scmSideAlign up with the other side image items;
+	remove menu_init_gcs
+
+	* menu.c (s_make_menu): correct small mistake in make-menu
+	documentation.  remove menu_init_gcs (now in drawmenu.c as
+	drawmenu_init_gcs)
+
+	* icons.c (DrawIconWindow): Don't use the MenuGC; still uses the
+	MenuColors though, which it shouldn't.
+
+	* generate_scm_init_funcs: allow multiple '-'s in file names
+
+	* font.c (s_menu_font): don't bother updating the menu GC font;
+	the drawmenu code does it anyway
+
+	* drawmenu.h: drawmenu_init_gcs added
+
+	* drawmenu.c: moved all the Menu GCs from the Scr structure to
+	here, and regularized how they're set up;  moved menu_init_gcs
+	here ad drawmenu_init_gcs
+
+	* color.h: Added adjust_pixel_brightness, menu_hilight_factor_val
+	and menu_shadow_factor_val
+
+	* color.c: Added adjust_pixel_brightness; like adjust_brightness,
+	but works on X Pixels not SCM color objects.  Made
+	menu_hilight_factor_val and menu_shadow_factor_val external.
+	Removed all references to the menu GCs.
+	
 Sat Sep 26 20:33:07 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.hpp: Make max/min size constraints take

@@ -217,7 +217,8 @@ SCWM_PROC(make_menu, "make-menu", 1, 8, 0,
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
 PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
 PICTURE-SIDE is an image object;
-SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects;
+SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR;
+PICTURE-BG is an image object;
 FONT is a font object;
 EXTRA-OPTIONS can be anything understood by the menu-specific
 drawing code (not used currently).
@@ -1344,25 +1345,6 @@ right justified against X-POS. */
                        x,y, fLeftSide?0:1);
 }
 #undef FUNC_NAME
-
-void 
-menu_init_gcs()
-{
-  XGCValues gcv;
-  unsigned long gcm;
-
-  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth | GCFillStyle;
-  gcv.fill_style = FillSolid;
-  gcv.plane_mask = AllPlanes;
-  gcv.function = GXcopy;
-  gcv.graphics_exposures = False;
-  gcv.line_width = 0;
-  Scr.MenuReliefGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  Scr.MenuShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  Scr.MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  Scr.MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-}
-
 
 MAKE_SMOBFUNS(menu);
 
