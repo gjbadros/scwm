@@ -280,12 +280,9 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	  vc.x[vc.num]=gh_scm2int(gh_car(pel));
 	  vc.y[vc.num]=gh_scm2int(gh_cadr(pel));
 	  vc.line_style[vc.num]=gh_scm2bool(gh_caddr(pel));
-	  printf("Added %dx%d@%d ; ", vc.x[vc.num], vc.y[vc.num],
-		 vc.line_style[vc.num]);
 	  vc.num++;
 	}
       }
-      printf("Total is: %d\n", vc.num);
 
       /* paritally destructive, so find the last face and 
 	 append (or mutate if its style is SimpleButton) */
@@ -537,8 +534,6 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
 
   left_p = n % 2;
   n = n / 2;
-
-  printf(" %d %d \n",left_p,n);
 
   if (left_p) {
     fl->left_buttons[n].state[ActiveUp]=BUTTONFACE(active_up);
