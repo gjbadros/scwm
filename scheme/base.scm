@@ -276,7 +276,7 @@ ML is a list of menuitem objects. MAX-LINES is a number."
   "Return a procedure that runs the system command COMMAND."
   (lambda () (execute command)))
 
-(define-public xterm-command "xterm -e ")
+(define-public xterm-command "xterm ")
 
 (define-public (run-in-xterm cmd)
   "Return a procedure that runs CMD in an xterm.

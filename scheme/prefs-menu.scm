@@ -164,7 +164,7 @@ the relief \"shadow\" color for the regular and h ilight background."
 	      (menuitem "General Info" #:action show-system-info)
 	      menu-separator
 	      (menuitem "SCWM interaction" #:action
-			(run-in-xterm "/usr/local/bin/scwmrepl"))
+			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
 	      (menuitem "Specific parameters" #:action
 			(menu (append!
 			       (list
