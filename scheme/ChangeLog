@@ -1,3 +1,17 @@
+Sun Mar 31 01:36:56 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* snap.scm: Changed name of 'snap-reset' to 'snap-disable'.
+	Made 'snap-reset' deprecated.
+	Added a few comments.
+	Changed name of internal function imeh to imfh to match the
+	name of the hook it gets installed into.
+	
+	Enhanced so that windows will also snap to the inside of each
+	other (e.g. the left edge of a window will snap to the left
+	edge of another window).  Added public variable
+	'snap-matches-inside-edges' to control whether to use the new
+	behavior or the old.  Default is #t which uses the new behavior.
+	
 Sat Mar 30 23:42:05 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* tile.scm: Added missing :use-module for flash-window.
