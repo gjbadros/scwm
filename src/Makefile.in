@@ -153,6 +153,8 @@ miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
 SUFFIXES = .x
 
 CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
+
+ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*([^,]*/' --regex='/[ \t]*SCWM_PROC[ \t]*([^,]*,[^,]*/' *.[ch]
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../include/config.h
 CONFIG_CLEAN_FILES = 
