@@ -1,3 +1,33 @@
+Sun Oct 17 14:41:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window-selection.scm: Fix bug: Use define*-public when using
+	(interactive) spec for `unselect-all-windows'
+
+	* gnome-hints.scm: Move *gnome-desktop-number* to end and give it
+	a setter.  Fix typo in use-module of the style module (was
+	styles).
+
+	* decor.scm: Use style module.
+
+Sun Oct 17 13:57:44 1999  Greg J. Badros <gjb@cs.washington.edu> (on behalf of A. Vorobiev)
+
+	Changes from Alexander Vorobiev to improve fvwm-eval handling for
+	use with FvwmKb module: http://linuxfan.com/~sparrow/software.
+	
+	* winlist.scm: Make filter-only-except public
+	
+	* fvwm-eval.scm: Make extract-command be more sophisticated in
+ 	handling missing ] at end.  Fix "Current" command, implemented
+ 	"ChangeDecor" command.  Added `get-one-string-arg' helper.
+	
+	* fvwm-module.scm: Fixed uses of logior to (not (zero? (logand
+ 	type mask))).  This makes modules' selecting of the messages they
+ 	want to receive work properly. Added more debugging code.
+
+Sun Oct 17 12:29:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: ws change.
+
 Sun Oct 17 12:00:14 1999    <gjb@cs.washington.edu>
 
 	* basic-styles.scm: Use #:use-style to express inheritance instead 
