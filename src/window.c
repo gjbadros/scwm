@@ -2118,18 +2118,19 @@ specified. */
 
 
 SCM 
-convert_move_data(SCM x, SCM y, SCM win, char *func, 
-		  int *pStartX, int *pStartY,
-		  int *pDestX, int *pDestY,
-		  ScwmWindow **ppsw, Window *pw)
+convert_move_data(SCM x, SCM y, SCM win, const char *func_name, 
+                  /* output params follow */
+		  int *pStartX, int *pStartY, /* the current position of win */
+		  int *pDestX, int *pDestY, /* the converted destination position for win */
+		  ScwmWindow **ppsw, Window *pw) /* the ScwmWindow, and X11 window */
 {
-  VALIDATEN(win, 3, func);
+  VALIDATEN(win, 3, func_name);
 
   if (x != SCM_BOOL_F && !gh_number_p(x)) {
-    scm_wrong_type_arg(func, 1, x);
+    scm_wrong_type_arg(func_name, 1, x);
   }
   if (y != SCM_BOOL_F && !gh_number_p(y)) {
-    scm_wrong_type_arg(func, 2, y);
+    scm_wrong_type_arg(func_name, 2, y);
   }
 
   *ppsw = PSWFROMSCMWIN(win);
@@ -3837,7 +3838,7 @@ MAKE_SMOBFUNS(window);
 
 
 SCM 
-ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
+ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 {
   if (UNSET_SCM(win)) {
     win = get_window(kill_p, SCM_BOOL_T, release_p);
@@ -3847,11 +3848,11 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
   }
   if (!WINDOWP(win)) {
     gh_allow_ints();
-    scm_wrong_type_arg(subr, n, win);
+    scm_wrong_type_arg(func_name, n, win);
   }
   if (!VALIDWINP(win)) {
     gh_allow_ints();
-    scwm_error(subr, "Window no longer valid.");
+    scwm_error(func_name, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
   }
   return (win);
