@@ -147,6 +147,7 @@ deprecated `SM-client-id'.
 ** `get-mouse-event' returns the next arbitrary mouse button w/ modifiers that the user hits
 ** `lookup-key' returns the procedures bound to a specific key
 ** `lookup-mouse' returns the procedures bound to a specific mouse event
+** `lookup-procedure-bindings' returns the bindings to a procedure, or all bindings
 ** `window-valid?' for testing if a window object still is valid.
 ** `id->message-window' -- convert from a window id to a message window object
 ** `send-client-message'
@@ -154,6 +155,7 @@ deprecated `SM-client-id'.
 ** `force-reset-window-frame!' -- force redraw of frame
 ** `select-viewport-position' (returns pointer position and selected window)
 ** `bind-keycode' -- lower level interface to binding keys, allows release procs
+** `undo-all-passive-grabs',`redo-all-passive-grabs', `undo-passive-grab', `redo-passive-grab'
 ** `keymask-keycode->string', `keysym->keycode', `keymask->string'
 ** `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super', `mod-mask-numlock', `mod-mask-scrolllock'
 ** `set-mod-mask-numlock!', `set-mod-mask-scrolllock!'
@@ -205,6 +207,9 @@ deprecated `SM-client-id'.
 ** `X-MapRequest-hook'
 
 * New scheme modules
+** quote.scm: Support for quoting arbitrary keystrokes that might have a scwm binding
+   so that an application can receive any keystroke
+** dir-focus.scm: Support for switching to a window that is a certain direction from the pointer
 ** window-configuration.scm: support for saving and restoring layout properties of windows
 ** undo.scm: Heavyweight undo support built on saving global configurations
 ** ui-constraints-gtk-toggle-menu: Persistent constraints menu support

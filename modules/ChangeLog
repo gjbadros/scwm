@@ -1,3 +1,11 @@
+Sun Jul 18 16:29:28 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xtest/scwmxtest.c: Permit "delay" argument to be anything, and
+	just do the delay iff the delay is really an integer. (This lets
+	there be an extra bogus argument if we choose;  probably not worth 
+	the workaround to avoid a set-cdr!, but the Scheme code for
+	quoting is a bit nicer because of this).
+
 Fri Jul 16 23:04:55 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xtest/Makefile.am, xtest/scwmxtest.c: Added XTest module
