@@ -310,6 +310,7 @@
 (set! image-load-path (cons "/uns/lib/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
 (set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
+(set! image-load-path (cons "/uns/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/usr/lib/icons" image-load-path))
 (set! image-load-path (cons "/usr/local/X11/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/usr/local/lib/icons" image-load-path))
