@@ -29,7 +29,7 @@ main(int argc, char **argv)
   char *result, *output, *error;
   
   if (argc != 2)
-    die("Usage: scwmexec expression\n");
+    die("Usage: scwmexec EXPRESSION\n");
   if (!init_display())
     die("Could not connect to server. Check your DISPLAY environment variable.\n");
 
