@@ -84,6 +84,22 @@
 #include "dmalloc.h"
 #endif
 
+#undef SCWM_DEBUG_ADDWINDOW
+#undef SCWM_DEBUG_ADDWINDOW_VERBOSE
+
+#ifdef SCWM_DEBUG_ADDWINDOW
+#  define DBUG_ADDWINDOW(X) scwm_msg X
+#else
+#  define DBUG_ADDWINDOW(X)		/* no messages */
+#endif
+
+#ifdef SCWM_DEBUG_ADDWINDOW_VERBOSE
+#  define DBUG_ADDWINDOW_VERBOSE(X) scwm_msg X
+#else
+#  define DBUG_ADDWINDOW_VERBOSE(X)		/* no messages */
+#endif
+
+
 
   SCWM_HOOK(before_new_window_hook, "before-new-window-hook", 1);
   /** This hook is invoked when first creating a new window object.
@@ -342,14 +358,14 @@ AddWindow(Window w)
 
   SelectDecor(psw, border_width, resize_width);
 
-  DBUG((DBG,FUNC_NAME,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
+  DBUG_ADDWINDOW((DBG,FUNC_NAME,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
 #ifdef HAVE_LIBSM_LIBICE
   restoreWindowState(psw);
 #endif
 
   if (psw->fStartsOnDesk) {
-    DBUG((DBG,FUNC_NAME,"fStartsOnDesk is true"));
+    DBUG_ADDWINDOW((DBG,FUNC_NAME,"fStartsOnDesk is true"));
   }
 
   /* GJB:FIXME:: need to provide more flexibility in how the
@@ -448,11 +464,11 @@ AddWindow(Window w)
     valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
 
-  DBUG((DBG,FUNC_NAME,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height));
+  DBUG_ADDWINDOW((DBG,FUNC_NAME,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
   /* What the heck, we'll always reparent everything from now on! */
-  DBUG((DBG,FUNC_NAME,"Creating child of root window: %d %d, %d x %d, %d",
-       frame_x,frame_y,frame_width,frame_height,psw->bw));
+  DBUG_ADDWINDOW((DBG,FUNC_NAME,"Creating child of root window: %d %d, %d x %d, %d",
+                  frame_x,frame_y,frame_width,frame_height,psw->bw));
 
   psw->frame =
     XCreateWindow(dpy, Scr.Root, frame_x, frame_y,
@@ -476,9 +492,9 @@ AddWindow(Window w)
      happy).  This Parent window is the child of the frame window, and
      holds the client window. --07/27/98 gjb */
   attributes.cursor = XCURSOR(psw->frame_cursor);
-  DBUG((DBG,FUNC_NAME,"Creating child of frame: %d %d, %d x %d, %d",
-       psw->boundary_width, psw->boundary_width + psw->title_height,
-       psw->attr.width, psw->attr.height, psw->bw));
+  DBUG_ADDWINDOW((DBG,FUNC_NAME,"Creating child of frame: %d %d, %d x %d, %d",
+                  psw->boundary_width, psw->boundary_width + psw->title_height,
+                  psw->attr.width, psw->attr.height, psw->bw));
   psw->Parent =
     XCreateWindow(dpy, psw->frame,
 		  psw->boundary_width, 
@@ -499,13 +515,13 @@ AddWindow(Window w)
   psw->title_height = 1;
   if (SHOW_TITLE_P(psw)) {
     psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
-    DBUG((DBG,FUNC_NAME,"Set height to %d",psw->title_height));
+    DBUG_ADDWINDOW((DBG,FUNC_NAME,"Set height to %d",psw->title_height));
     if (psw->title_height < 1)
       psw->title_height = 1;
   }
 
   if (psw->fBorder) {
-    DBUG((DBG,FUNC_NAME,"Has border"));
+    DBUG_ADDWINDOW((DBG,FUNC_NAME,"Has border"));
 
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
@@ -544,9 +560,9 @@ AddWindow(Window w)
   psw->title_y = psw->boundary_width;
   psw->title_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
   attributes.cursor = XCURSOR(psw->title_cursor);
-  DBUG((DBG,FUNC_NAME,"Creating title window: %d %d, %d x %d",
-       psw->title_x, psw->title_y,
-       psw->title_width, psw->title_height));
+  DBUG_ADDWINDOW((DBG,FUNC_NAME,"Creating title window: %d %d, %d x %d",
+                  psw->title_x, psw->title_y,
+                  psw->title_width, psw->title_height));
   psw->title_w =
     XCreateWindow(dpy, psw->frame, psw->title_x, psw->title_y,
                   psw->title_width, psw->title_height, 0,
@@ -565,7 +581,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG((DBG,FUNC_NAME,"Creating left button %d",i));
+      DBUG_ADDWINDOW((DBG,FUNC_NAME,"Creating left button %d",i));
       psw->left_w[i] =
         XCreateWindow(dpy, psw->frame, psw->title_height * i, 0,
                       psw->title_height, psw->title_height, 0,
@@ -590,7 +606,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG((DBG,FUNC_NAME,"Creating right button %d",i));
+      DBUG_ADDWINDOW_VERBOSE((DBG,FUNC_NAME,"Creating right button %d",i));
       psw->right_w[i] =
         XCreateWindow(dpy, psw->frame,
                       psw->title_width -
@@ -627,7 +643,7 @@ AddWindow(Window w)
       };
       psw->side_cursors[i]=get_scm_cursor_by_number(cursors[i]);
       attributes.cursor = XCURSOR(psw->side_cursors[i]);
-      DBUG((DBG,FUNC_NAME,"Creating side %d",i));
+      DBUG_ADDWINDOW_VERBOSE((DBG,FUNC_NAME,"Creating side %d",i));
       psw->sides[i] =
 	XCreateWindow(dpy, psw->frame, 0, 0, psw->boundary_width,
 		      psw->boundary_width, 0, CopyFromParent,
