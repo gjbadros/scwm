@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-10-06 Tue 15:58:21 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-10-27 Tue 15:47:05 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -382,9 +382,10 @@ Returns a string which is present in the `scwm-obarray'."
                           "\\]+\\):\\([0-9]+\\)\\)]$")
                   nil t)
             (help-xref-button 1 (lambda (fl pos)
-                                  (pop-to-buffer
-                                   (find-file-noselect
-                                    (concat scwm-source-path fl)))
+                                  (let ((ff (concat scwm-source-path fl)))
+                                    (unless (file-readable-p ff)
+                                      (error "File `%s' not found" ff))
+                                    (pop-to-buffer (find-file-noselect ff)))
                                   (goto-line pos))
                               (list (match-string 2)
                                     (string-to-number (match-string 3))))))
