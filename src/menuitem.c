@@ -227,6 +227,7 @@ void
 init_menuitem()
 {
   REGISTER_SCWMSMOBFUNS(menuitem);
+
 #ifndef SCM_MAGIC_SNARFER
 # include "menuitem.x"
 #endif

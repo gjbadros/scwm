@@ -212,6 +212,7 @@ main(int argc, char **argv)
 #ifdef USE_CASSOWARY
 ClSimplexSolver solver;
 #endif
+  void init_cassowary_scm();
 
 /*
  * scwm_main - main routine for scwm
@@ -268,11 +269,12 @@ scwm_main(int argc, char **argv)
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
-  
+  init_font();
+  init_decor();
+  init_cassowary_scm();
   init_callbacks();
   init_add_window();
   init_image();
-  init_font();
   init_color();
   init_module_interface();
   init_miscprocs();
@@ -285,7 +287,6 @@ scwm_main(int argc, char **argv)
   init_xproperty();
   init_events();
   init_deskpage();
-  init_decor();
   init_placement();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
@@ -1334,6 +1335,7 @@ InitVariables(void)
   Scr.buttons2grab = 7;
 
   decor2scm(&Scr.DefaultDecor);
+  /* MSFIX: why does decor2scm not do the DECORREF? */
   DECORREF(Scr.DefaultDecor.scmdecor);
 
   Scr.DefaultDecor.tag = "default";

@@ -2922,6 +2922,8 @@ MAKE_SMOBFUNS(window);
 void 
 init_window()
 {
+  REGISTER_SCWMSMOBFUNS(window);
+
   sym_mouse = gh_symbol2scm("mouse");
   scm_protect_object(sym_mouse);
   sym_sloppy = gh_symbol2scm("sloppy");
@@ -2932,7 +2934,6 @@ init_window()
   SCWM_DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
   SCWM_DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
 
-  REGISTER_SCWMSMOBFUNS(window);
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
 #endif

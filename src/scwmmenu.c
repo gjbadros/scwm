@@ -1257,10 +1257,11 @@ MAKE_SMOBFUNS(menu);
 void
 init_menu()
 {
+  REGISTER_SCWMSMOBFUNS(menu);
+
   pscm_construct_menu_primitive = SCM_CDRLOC
     (scm_sysintern("construct-menu-primitive", SCM_BOOL_F));
 
-  REGISTER_SCWMSMOBFUNS(menu);
 #ifndef SCM_MAGIC_SNARFER
 # include "scwmmenu.x"
 #endif

@@ -367,17 +367,12 @@ cache.*/
   return SCM_UNSPECIFIED;
 }
 
-static scm_smobfuns font_smobfuns =
-{
-  &mark_font,
-  &free_font,
-  &print_font,
-  0
-};
-
+MAKE_SMOBFUNS(font);
 
 void init_font() 
 {
+  REGISTER_SCWMSMOBFUNS(font);
+
 #ifdef I18N
   str_fixed=gh_str02scm(XFIXEDFONTSET);
 #else
@@ -390,8 +385,6 @@ void init_font()
   protected_fonts =
     scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
   scm_protect_object(protected_fonts);
-
-  scm_tc16_scwm_font = scm_newsmob(&font_smobfuns);
 
 #ifndef SCM_MAGIC_SNARFER
 #include "font.x"

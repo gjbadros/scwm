@@ -207,18 +207,12 @@ SCWM_PROC (string_to_xproperty, "string->xproperty", 1, 0, 0,
   return make_xproperty("STRING",len,string);
 }
 
-static scm_smobfuns xproperty_smobfuns =
-{
-  &mark_xproperty,
-  &free_xproperty,
-  &print_xproperty,
-  0
-};
+MAKE_SMOBFUNS(xproperty);
 
 void
 init_xproperty()
 {
-  scm_tc16_scwm_xproperty = scm_newsmob(&xproperty_smobfuns);
+  REGISTER_SCWMSMOBFUNS(xproperty);
 
 #ifndef SCM_MAGIC_SNARFER
 #include "xproperty.x"

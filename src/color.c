@@ -745,17 +745,13 @@ not sure this is used for anything any more. */
 
 }
 
-static scm_smobfuns color_smobfuns =
-{
-  &mark_color,
-  &free_color,
-  &print_color,
-  0
-};
+MAKE_SMOBFUNS(color);
 
 void 
 init_color()
 {
+  REGISTER_SCWMSMOBFUNS(color);
+
   color_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
@@ -771,7 +767,6 @@ init_color()
   /* XXX XXX remaining to fix for the color object migration: 
      fix all the Scheme code */
 
-  scm_tc16_scwm_color = scm_newsmob (&color_smobfuns);
 #ifndef SCM_MAGIC_SNARFER
 #include "color.x"
 #endif

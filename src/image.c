@@ -553,15 +553,6 @@ make_image_from_pixmap(char *szDescription,
 }
 
 
-static scm_smobfuns image_smobfuns =
-{
-  &mark_image,
-  &free_image,
-  &print_image,
-  0
-};
-
-
 void 
 init_image_colormap() 
 {
@@ -570,9 +561,13 @@ init_image_colormap()
   ImageColorMap = root_attributes.colormap;
 }
 
+MAKE_SMOBFUNS(image);
+
 void init_image() 
 {
   SCM val_load_xbm, val_load_xpm;
+
+  REGISTER_SCWMSMOBFUNS(image);
 
   /* Save a convenient Scheme "default" string */
   str_default=gh_str02scm("default");
@@ -586,9 +581,6 @@ void init_image()
 #ifndef SCM_MAGIC_SNARFER
 # include "image.x"
 #endif
-
-  /* Register the image type. */
-  scm_tc16_scwm_image = scm_newsmob(&image_smobfuns);
 
   /* Initialize the image cache table. */
   image_hash_table = 
