@@ -1,3 +1,18 @@
+Wed Jan 20 16:53:01 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Use error more pervasively.  Rename
+	ui-constraint-enable to ui-constraint-enabled?. Use vectors of
+	characters as obids (not strings). Make UI-CTR semantics be that
+	it only returns the list of args for the real ctr.  Implement
+	make-ui-constraint-interactively in terms of make-ui-constraint.
+	Fix the returned constraint instance objects to have the enabled
+	flag, the constraint-class object, etc., and update accessors to
+	go to the right places.  Rewrote ui-constraint-windows to use
+	cl-windows-of-constraint instead of building the window list into
+	the ui-constraint instances (in case some of the arguments are not 
+	windows... I suppose we could put a real list of windows in the
+	ui-constraint object using `window?').
+
 Wed Jan 20 14:23:09 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Bug fixes.  Use "error" instead of returning 
