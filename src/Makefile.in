@@ -109,11 +109,17 @@ SRCS = \
 	module-interface.c \
 	image.c
 
+SNARFED_FILES = font.x \
+	image.x \
+	menuitem.x \
+	module-interface.x \
+	scwmmenu.x
+
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
 
 BUILT_SOURCES = font.x image.x menuitem.x scwmmenu.x module-interface.x init_scheme_string.c
 
-all: $(PROG)
+all: $(SNARFED_FILES) $(PROG)
 
 tags: $(SRCS) $(BUILT_SOURCES) $(HEADERS)
 	etags $^
