@@ -1,5 +1,10 @@
 Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* module-interface.c: Use new hook interface. The broadcast-hook,
+ 	broadcast-config-hook and broadcast-name-hook special variables
+ 	are now expected to contain lists of procedures and may eb
+ 	manipulated with add-hook!, remove-hook!, etc.
+
 	* callbacks.c, callbacks.h: New system for hooks - allows scwm to
  	set up distinguished Scheme variables that contain a list of
  	procedures to be invoked on certain actions, possibly with

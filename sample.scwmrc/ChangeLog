@@ -1,3 +1,7 @@
+Fri Mar 27 20:43:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* gjb.scwmrc: Use the new broadcast interface for autoraise.
+
 Fri Mar 20 22:32:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* system.scwmrc, juhp.scwmrc, gjb.scwmrc, sds.scwmrc,
