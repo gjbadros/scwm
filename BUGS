@@ -8,6 +8,8 @@ Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 
 -------------
+Size/position window needs to be more dynamic, customizable
+-------------
 
 > > > I've noticed this off-and-on with 0.6, and just noticed again with
 > > > 0.7: My xterms have #:focus 'sloppy set; sometimes (probably about
