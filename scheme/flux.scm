@@ -425,3 +425,10 @@ underscores, so that the resulting string can be used as a key for
 This is the cut text selected by X clients."
   (X-property-get 'root-window "CUT_BUFFER0"))
 
+
+(define*-public (display-message-briefly msg #&optional (sec-timeout 3))
+  "Display MSG in the message window for SEC-TIMEOUT seconds.
+See `display-message' for details about MSG."
+  (display-message msg)
+  (add-timer-hook! (sec->usec sec-timeout)
+		   (lambda () (hide-message))))
