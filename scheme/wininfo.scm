@@ -249,7 +249,7 @@ instead of a shell-like wildcard."
 	  (let ((match-regexp 
 		 (make-regexp string (if case-sensitive
 					 '()
-					 '(regexp/icase)))))
+					 '(,regexp/icase)))))
 	    (lambda (win)
 	      (let* ((target (,accessor win))
 		     (result (regexp-exec match-regexp target)))
@@ -380,7 +380,3 @@ case-sensitive or not."
   (win-or?? (title-match?? string type case-sensitive) 
 	    (class-match?? string type case-sensitive) 
 	    (resource-match?? string type case-sensitive)))
-
-
-
-
