@@ -501,7 +501,7 @@ make_window(ScwmWindow * win)
   gh_defer_ints();
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
-  PSWFROMSCMWIN(answer) = win;
+  SCWMWINDOW(answer) = win;
   SET_VALIDWIN_FLAG(answer,True);
 
   /* Warning, arbitrary constant, we really need growable hash
@@ -518,7 +518,7 @@ void
 invalidate_window(SCM schwin)
 {
   SET_VALIDWIN_FLAG(schwin, False);
-  PSWFROMSCMWIN(schwin) = NULL;
+  SCWMWINDOW(schwin) = NULL;
   scm_unprotect_object(schwin);
 }
 
@@ -1300,11 +1300,11 @@ UngrabEm()
 ScwmWindow *
 PswFromWindow(Display *dpy, Window w)
 {
-  ScwmWindow *psw;
-  if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &psw) == XCNOENT) {
+  scwm_window *pscwmwin;
+  if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &pscwmwin) == XCNOENT) {
     return NULL;
   }
-  return psw;
+  return pscwmwin->valid?pscwmwin->psw:NULL;
 }
 
 /* PswFromAnyWindow checks w and all its parents
@@ -1315,13 +1315,19 @@ PswFromWindow(Display *dpy, Window w)
 ScwmWindow *
 PswFromAnyWindow(Display *dpy, Window w)
 {
-  ScwmWindow *psw;
+  scwm_window *pscwmwin;
   while (w != None) {
-    if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &psw) != XCNOENT)
-      return psw;
+    if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &pscwmwin) != XCNOENT)
+      return pscwmwin->valid?pscwmwin->psw:NULL;
     w = WXGetWindowParent(w);
   }
   return NULL;
+}
+
+void
+ScwmSaveContextPsw(Display *dpy, Window w, ScwmWindow *psw)
+{
+  XSaveContext(dpy, w, ScwmContext, (caddr_t) SCWMWINDOW_FROM_PSW(psw));
 }
 
 ScwmWindow *

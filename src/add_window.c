@@ -450,7 +450,7 @@ AddWindow(Window w)
 		  CopyFromParent,
 		  valuemask,
 		  &attributes);
-  XSaveContext(dpy, psw->frame, ScwmContext, (caddr_t) psw);
+  ScwmSaveContextPsw(dpy, psw->frame, psw);
 
   if (TexturePixmap) {
     attributes.background_pixmap = TexturePixmapSave;
@@ -475,8 +475,7 @@ AddWindow(Window w)
                   psw->attr.width, psw->attr.height, psw->bw, 
                   CopyFromParent, InputOutput, CopyFromParent, 
                   valuemask, &attributes);
-  XSaveContext(dpy, psw->Parent, ScwmContext, (caddr_t) psw);
-
+  ScwmSaveContextPsw(dpy,psw->Parent,psw);
 
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask | ExposureMask |
 			   EnterWindowMask | LeaveWindowMask);
@@ -521,7 +520,7 @@ AddWindow(Window w)
 		      CopyFromParent,
 		      valuemask,
 		      &attributes);
-      XSaveContext(dpy, psw->corners[i], ScwmContext, (caddr_t) psw);
+      ScwmSaveContextPsw(dpy, psw->corners[i], psw);
     }
     if (TexturePixmap) {
       attributes.background_pixmap = TexturePixmapSave;
@@ -542,7 +541,7 @@ AddWindow(Window w)
                   psw->title_width, psw->title_height, 0,
                   CopyFromParent, InputOutput, CopyFromParent,
                   valuemask, &attributes);
-  XSaveContext(dpy, psw->title_w, ScwmContext, (caddr_t) psw);
+  ScwmSaveContextPsw(dpy, psw->title_w, psw);
 
   psw->sys_cursor = get_scm_cursor_by_number(XC_hand2);
   attributes.cursor = XCURSOR(psw->sys_cursor);
@@ -563,7 +562,7 @@ AddWindow(Window w)
                       CopyFromParent,
                       valuemask,
                       &attributes);
-      XSaveContext(dpy, psw->left_w[i], ScwmContext, (caddr_t) psw);
+      ScwmSaveContextPsw(dpy, psw->left_w[i], psw);
       if (TexturePixmap
           && GET_DECOR(psw, left_buttons[i].flags) & UseBorderStyle) {
         attributes.background_pixmap = TexturePixmapSave;
@@ -591,7 +590,7 @@ AddWindow(Window w)
                       CopyFromParent,
                       valuemask,
                       &attributes);
-      XSaveContext(dpy, psw->right_w[i], ScwmContext, (caddr_t) psw);
+      ScwmSaveContextPsw(dpy, psw->right_w[i], psw);
       if (TexturePixmap
           && GET_DECOR(psw, right_buttons[i].flags) & UseBorderStyle) {
         attributes.background_pixmap = TexturePixmapSave;
@@ -624,7 +623,7 @@ AddWindow(Window w)
 		      InputOutput, CopyFromParent,
 		      valuemask,
 		      &attributes);
-      XSaveContext(dpy, psw->sides[i], ScwmContext, (caddr_t) psw);
+      ScwmSaveContextPsw(dpy, psw->sides[i], psw);
     }
     if (TexturePixmap) {
       attributes.background_pixmap = TexturePixmapSave;
@@ -643,7 +642,7 @@ AddWindow(Window w)
      psw->Parent is the direct parent of the application
      window psw->w --07/27/98 gjb */
   XReparentWindow(dpy, psw->w, psw->Parent, 0, 0);
-  XSaveContext(dpy, psw->w, ScwmContext, (caddr_t) psw);
+  ScwmSaveContextPsw(dpy, psw->w, psw);
 
 
   valuemask = (CWEventMask | CWDontPropagate);

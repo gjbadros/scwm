@@ -310,14 +310,17 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))
-/* SCWMWINDOW should disappear-- PSWFROMSCMWIN is a better name, IMO--07/17/98 gjb*/
 
-/* MS:FIXME:GJB: I disagree, functions and especially macros with FROM
-   in the name rather than TO are unintuitive.
-   GJB:FIXME:MS: can we close this? SCWMWINDOW has been commented out for a while now --03/22/99 gjb */
+#define SCWMWINDOW_FROM_PSW(X) WINDOW(((X)->schwin))
 
-/* #define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw) */
-#define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
+/* SCWMWINDOW is just an accessor for setting/getting
+   PSWFROMSCMWIN returns NULL for invalid windows
+   and cannot be used as an lvalue
+
+   MOST CODE SHOULD USE PSWFROMSCMWIN */
+
+#define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw)
+#define PSWFROMSCMWIN(X) (VALIDWINP(X)?SCWMWINDOW(X):0)
 
 /* I tried making VALIDWINP ensure WINDOWP first, but that
    failed miserably and strangely.... why? --04/12/99 gjb */
@@ -363,6 +366,8 @@ void MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height);
 
 Bool GrabEm(Cursor);
 void UngrabEm(void);
+
+void ScwmSaveContextPsw(Display *dpy, Window w, ScwmWindow *psw);
 
 void invalidate_window(SCM schwin);
 SCM make_window(ScwmWindow *psw);

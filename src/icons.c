@@ -353,13 +353,13 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   }
 
   if (psw->icon_w != None) {
-    XSaveContext(dpy, psw->icon_w, ScwmContext, (caddr_t) psw);
+    ScwmSaveContextPsw(dpy,psw->icon_w,psw);
     XDefineCursor(dpy, psw->icon_w, XCURSOR(psw->icon_cursor));
     GrabIconButtons(psw, psw->icon_w);
     GrabIconKeys(psw, psw->icon_w);
   }
   if (psw->icon_pixmap_w != None) {
-    XSaveContext(dpy, psw->icon_pixmap_w, ScwmContext, (caddr_t) psw);
+    ScwmSaveContextPsw(dpy,psw->icon_pixmap_w,psw);
     XDefineCursor(dpy, psw->icon_pixmap_w, XCURSOR(psw->icon_cursor));
     GrabIconButtons(psw, psw->icon_pixmap_w);
     GrabIconKeys(psw, psw->icon_pixmap_w);
