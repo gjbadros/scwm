@@ -129,8 +129,6 @@
 		  send-string quote background
 		  property-respond xprop-extras
 		  wavplay dir-focus tile undo
-		  ui-constraints-toggle-menu
-		  ui-constraints-gtk-toggle-menu
 		  image-path-suggestor
 		  )
 
@@ -153,6 +151,10 @@
 	       "Display Size: " (display-size) "\n"))
 
 (define mail-spool-dir (getenv "MAIL"))
+
+(if (scwm-is-constraint-enabled?)
+    (use-scwm-modules ui-constraints-toggle-menu
+		      ui-constraints-gtk-toggle-menu))
 
 ;; prefer doc files in scwmdir/doc
 (set! doc-files
@@ -684,7 +686,11 @@
 	              #:icon "xterm.xpm")
 (window-style "Emacs" #:mini-icon "mini-edit.xpm"
 	              #:icon "TextEditor.xpm")
-(window-style "x2x upintheair:0.0" #:kept-on-top #t) ;; does not give desired effect
+
+;; GJB:FIXME:: 
+;; does not give desired effect because Scwm does not know about
+;; these windows...
+(window-style "x2x *" #:kept-on-top #t)
 
 (debug-display "Before menu-window-ops\n")
 
@@ -1037,6 +1043,9 @@ from other processes.
 ;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
 ;; (procedure-name rename-window-interactively)
 
+(bind-key 'all "H-slash" undo)
+(bind-key 'all "H-M-slash" redo)
+(bind-key 'all "H-s" insert-undo-global)
 
 (bind-key 'all "H-w" describe-key)
 (bind-key 'all "H-comma" describe-mouse)
