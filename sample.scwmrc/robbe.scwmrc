@@ -108,6 +108,11 @@
 
 ;; general settings
 
+; this is done early so I could restart with ease even if there is an error in
+; the middle of this file (which of course never happens)
+; more less important key bindings are way below
+(bind-key 'all (super "r") (lambda () (restart "scwm")))
+
 ; paths
 (define user-image-load-path 
   (list (string-append (user-home) "/pixmaps")
@@ -197,38 +202,40 @@
       (circulate-skip)))
 
 ;; menus
-(if (which "xcmd")
-    (begin
-      ; Returns an action that starts X-app COMMAND,
-      ; unless a window with resourcename RES is already present.
-      (define (xcmd-action name command res)
-	(lambda () (execute (string-append "xcmd -fr " res
-					   " -x '" command "'"))))
+; Returns an action that starts X-app NAME by issuing COMMAND.
+; If NEEDS-TERM is given, run COMMAND from a terminal.
+; If CLASS is given, refrain from starting COMMAND if a window of CLASS exists.
+; If RESOURCE is given, don't start COMMAND if a window named RESOURCE exists.
+; If CLASS and RESOURCE are both specified, the window must match both.
+; If a matching window is found, it is made visible (i.e. desktop is switched,
+; window is deiconified, unshaded, and raised).
+; unless a window with resourcename RES is already present.
+(define* (xcmd-action name command
+		      #&key (class #f) (resource #f) (needs-term #f))
+  (lambda () 
+    (let ((w (if needs-term
+		 (find-window-by-name name)
+		 (and (or class resource)
+		      (find-window-by (win-and?? (class-match?? (or class "*"))
+						 (resource-match??
+						  (or resource "*"))))))))
+      (cond (w (raise-window w)
+	       (deiconify-window w)
+	       (unshade-window w)
+	       (set-current-desk! (window-desk w)))
+	    (else (if needs-term
+		      (execute (string-append "xterm -title '" name "' -e "
+					      command))
+		      (execute command)))))))
 
-      ; Returns an action that starts a terminal app
-      ; COMMAND, unless a window titled NAME is already present.
-      (define (xtcmd-action name command)
-	(lambda ()
-	  (let ((title (regexp-substitute/global #f "&" name 'pre 'post)))
-	    (execute (string-append "xcmd -ft " title " -t " title
-				    " -c '" command "'"))))))
-
-    (begin
-      ; Returns an action that starts X-app COMMAND.
-      (define (xcmd-action name command res)
-	(lambda () (execute command)))
-
-      ; Returns an action that starts a terminal app COMMAND.
-      (define (xtcmd-action name command)
-	(lambda () (execute (string-append "xterm -e " command))))))
 
 ; Returns a menuitem, titled NAME, that starts X-app COMMAND.
-(define (xcmd-menuitem name command res)
-  (menuitem name #:action (xcmd-action name command res)))
+;(define (xcmd-menuitem name command res)
+;  (menuitem name #:action (xcmd-action name command #:resource res)))
 
 ; Returns a menuitem, titled NAME, that starts a terminal app COMMAND.
-(define (xtcmd-menuitem name command)
-  (menuitem name #:action (xtcmd-action name command)))
+;(define (xtcmd-menuitem name command)
+;  (menuitem name #:action (xcmd-action name command #:needs-term #t)))
 
 ; Returns a menuitem titled "Start WM", that starts that WM instead of scwm.
 (define (wm-menuitem wm)
@@ -336,16 +343,20 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 						   #\  action list)))
 					(else #t))))
 			(if cmd
-			    (menuitem (car item) #:action
-				      (cond ((menu? action) action)
-					    ((not (null? (cddr item)))
-					     (if (eq? (caddr item) 'term)
-						 (xtcmd-action (car item)
-							       cmd)
-						 (xcmd-action (car item)
-							      cmd
-							      (caddr item))))
-					    (else (lambda () (execute cmd)))))
+			    (menuitem
+			     (car item) #:action
+			     (cond ((menu? action) action)
+				   ((not (null? (cddr item)))
+				    (let ((name (regexp-substitute/global
+						 #f "&" (car item)
+						 'pre 'post)))
+				      (if (eq? (caddr item) 'term)
+					  (xcmd-action name cmd
+						       #:needs-term #t)
+					  (xcmd-action name cmd
+						       #:resource
+						       (caddr item)))))
+				   (else (lambda () (execute cmd)))))
 			    #f))
 		      item))
 		template)))))
@@ -665,7 +676,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	    (lambda () (set-current-desk! i))))
 
 ; misc
-(bind-key 'all (super "r") (lambda () (restart "scwm")))
 (bind-key 'all (super "d") toggle-wm-style)
 (bind-key 'all (super "S-q") quit)
 
