@@ -39,8 +39,8 @@ Can restart with a fresh solver by using `start-constraints'."
   (reset-constraints))
 
 (define (install-constraints-ui-features)
-  (bind-three-modifier-key-events 
-   XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L
+  (bind-four-modifier-key-events 
+   XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L XKM_HYPER_L
    ;; (37 . 4) (115 . 16) (50 . 1)
    draw-all-constraints
    undraw-all-constraints)

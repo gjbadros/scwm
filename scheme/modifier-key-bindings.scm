@@ -1,5 +1,7 @@
 ;; $Id$
 ;; Copyright (C) 1999 Greg J. Badros
+;; GJB:FIXME:: need to add unbind-N-modifer-key-events procedures
+;; Should do it nicely w/o duplicating all code
 
 (define-module (app scwm modifier-key-bindings))
 
@@ -44,6 +46,36 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
       (bind-keycode 'all keycode3 (+ mod1 mod2) proc-press #f)
       (bind-keycode 'all keycode3 all-mods #f proc-release)
       )))
+
+(define-public (bind-four-modifier-key-events 
+		modkey1 modkey2 modkey3 modkey4
+		proc-press proc-release)
+  "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
+  (let ((keycode1 (car modkey1))
+	(mod1 (cdr modkey1))
+	(keycode2 (car modkey2))
+	(mod2 (cdr modkey2))
+	(keycode3 (car modkey3))
+	(mod3 (cdr modkey3))
+	(keycode4 (car modkey4))
+	(mod4 (cdr modkey4)))
+    (let ((all-mods (+ mod1 mod2 mod3 mod4)))
+      ;; first handle keycode1 last
+      (bind-keycode 'all keycode1 (+ mod2 mod3 mod4) proc-press #f)
+      (bind-keycode 'all keycode1 all-mods #f proc-release)
+      ;; now handle keycode2 last
+      (bind-keycode 'all keycode2 (+ mod1 mod3 mod4) proc-press #f)
+      (bind-keycode 'all keycode2 all-mods #f proc-release)
+      ;; now handle keycode 3 last
+      (bind-keycode 'all keycode3 (+ mod1 mod2 mod4) proc-press #f)
+      (bind-keycode 'all keycode3 all-mods #f proc-release)
+      ;; now handle keycode 4 last
+      (bind-keycode 'all keycode4 (+ mod1 mod2 mod3) proc-press #f)
+      (bind-keycode 'all keycode4 all-mods #f proc-release)
+      )))
+
 
 (define (car-or-255 l)
   (if (and (list? l) (not (eq? l '()))) (car l) 255))
