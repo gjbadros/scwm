@@ -544,7 +544,7 @@ CUT_BUFFER0 property is not a string."
 (define*-public (display-message-briefly msg #&optional (sec-timeout 3))
   "Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG."
-  (let ((mwn (make-message-window msg)))
+  (let ((mwn (make-message-window-clone-default msg)))
     (message-window-show! mwn)
     (add-timer-hook! (sec->usec sec-timeout)
 		     (lambda () (message-window-hide! mwn)))))

@@ -210,6 +210,21 @@ background color."
       (message-window-set-font! msgwin font))
   (message-window-set-colors! msgwin fg bg))
 
+(define-public (make-message-window-clone-default str)
+  (let ((answer (make-message-window str)))
+    (message-window-copy-style! answer default-message-window)
+    answer))
+
+(define*-public (message-window-copy-style! msgwin msgwin-source)
+  "Copy the visual style of MSGWIN-SOURCE to the style for MSGWIN.
+Returns a list of the font, fg-color, bg-color of msgwin-source"
+  (let* ((font (message-window-font msgwin-source))
+	 (colors (message-window-colors msgwin-source))
+	 (fg (car colors))
+	 (bg (cadr colors)))
+    (if msgwin
+	(message-window-style msgwin #:font font #:fg fg #:bg bg))
+    (list font fg bg)))
 
 ;;; enable move and resize message windows by default
 
