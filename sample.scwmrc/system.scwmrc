@@ -753,14 +753,14 @@ from other processes.
 
 (define menu-screensaver
   (make-xlock-menu #f))
-
+;; (start-xterm)
 (define menu-root-start
   (menu
    (list 
     (menu-title "Start" #:image-left "mini-exp.xpm")
     menu-separator
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
-	      #:action 'start-xterm)
+	      #:action start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
 	      #:submenu 'menu-applications)
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 

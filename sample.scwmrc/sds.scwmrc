@@ -921,7 +921,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;(bind-key 'all "C-M-S-8" (lambda () (send-button 2)))
 ;;(bind-key 'all "C-M-S-9" (lambda () (send-button 3)))
 
-;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
+;;(bind-key 'all "C-M-S-4" (lambda () (send-key "Return")))
 ;(bind-key 'all "C-M-S-s" (lambda () (X-synthetic-send-string "hello world")))
 
 ;; This one is experimental-- sends only the buttonpress event,
