@@ -1,3 +1,17 @@
+Wed Mar 11 13:54:02 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (AnimatedMoveWindow): now handle expose events as we
+	animatedly move windows, too (I like the affect from below *that*
+	much!)
+	
+	* window.c (window_shade): Instead of keeping only expose events
+	after doing the window shade, throw out the Resize events; this is 
+	more precisely the goal, and removes an XSync() call as a result.
+	
+	* move.c (AnimatedShadeWindow): handle expose events as we roll up 
+	the window shade;  much nicer effect in that previously hidden
+	windows get redrawn while the shade is still rolling up.
+
 Wed Mar 11 00:10:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Handle shaded windows that are resized by the app
