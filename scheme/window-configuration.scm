@@ -73,3 +73,33 @@
   (map (lambda (w) (restore-window-configuration global-configuration w))
        (list-stacking-order))
   (restack-windows (map car global-configuration)))
+
+(define*-public (push-window-configuration #&optional (win (get-window)))
+  (set-window-property! 
+   win 'window-configuration-stack
+   (cons 
+    (window-configuration win)
+    (or (window-property win 'window-configuration-stack) '()))))
+
+				      
+(define*-public (pop-window-configuration #&optional (win (get-window)))
+  (let ((config (window-property win 'window-configuration-stack)))
+    (if (and config (not (null? config)))
+	(begin
+	  (copy-window-configuration (car config) win)
+	  (set-window-property! 
+	   win
+	   'window-configuration-stack 
+	   (cdr config))))))
+
+(define-public window-configuration-menu
+  (menu
+   (list
+    (menu-title "Window configuration")
+    menu-separator
+    (menuitem "&Push" #:action push-window-configuration)
+    (menuitem "P&op" #:action pop-window-configuration))))
+
+;; (push-window-configuration)
+;; (pop-window-configuration)
+;; (popup-menu window-configuration-menu)

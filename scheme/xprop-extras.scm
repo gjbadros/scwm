@@ -27,12 +27,12 @@ cut buffer is empty or is not a string."
 This is the cut text selected by X clients."
   (X-store-bytes string))
 
-(define*-public (copy-window-title-to-cut-buffer0 #&optional (window (get-window)))
-  "Set CUT_BUFFER0 to be a string that is the title of WINDOW."
+(define*-public (copy-window-title-to-cut-buffer #&optional (window (get-window)))
+  "Set X cut buffer to be a string that is the title of WINDOW."
   (X-set-cut-buffer-string! (window-title window)))
 
-(define*-public (paste-window-title-from-cut-buffer0 #&optional (window (get-window)))
-  "Set the window title of WINDOW to be the string in CUT_BUFFER0.
+(define*-public (paste-window-title-from-cut-buffer #&optional (window (get-window)))
+  "Set the window title of WINDOW to be the string in the X cut buffer.
 Do nothing if the cut buffer does not contain a string."
   (let ((t (X-cut-buffer-string)))
     (if t (set-window-title! window t))))

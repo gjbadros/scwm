@@ -24,7 +24,8 @@ This is only used if the Scwm esdsound module is not built."
 ;; (define filename "scwm-startup.wav")
 (if (and (defined? 'sound-play) (defined? 'sound-load))
     (define-public (wavplay filename)
-      (sound-play (sound-load (string-append *sounds-dir* filename))))
+      (let ((snd (sound-load (string-append *sounds-dir* filename))))
+	(and snd (sound-play snd))))
     (define-public (wavplay filename)
       (system (string-append *external-wav-player*
 			     " " *sounds-dir* filename "&"))))

@@ -23,6 +23,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm message-window)
+  :use-module (app scwm window-configuration)
   :use-module (app scwm winops)
   :use-module (app scwm flash-window)
   :use-module (app scwm listops)
@@ -603,7 +604,7 @@ that corner fixed."
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
     menu-separator
-    (menuitem "Other" 
+    (menuitem "&Other" 
 	      #:submenu
 	      (menu 
 	       (list
@@ -622,16 +623,17 @@ that corner fixed."
 			      "Keep on top") 
 			  #:action toggle-on-top))))
     (menuitem "Sho&ve" #:submenu menu-window-shove)
-    (menuitem "Title"
+    (menuitem "&Configuration" #:submenu window-configuration-menu)
+    (menuitem "&Title"
 	      #:submenu
 	      (menu
 	       (list
-		(menuitem "&Copy to CUT_BUFFER0" #:action copy-window-title-to-cut-buffer0)
-		(menuitem "&Paste from CUT_BUFFER0" #:action paste-window-title-from-cut-buffer0))))
-    (menuitem "Style"
+		(menuitem "&Copy to X cut buffer" #:action copy-window-title-to-cut-buffer)
+		(menuitem "&Paste from X cut buffer" #:action paste-window-title-from-cut-buffer))))
+    (menuitem "St&yle"
 	      #:submenu
 	      (make-window-style-menu w))
-    (menuitem "Group"
+    (menuitem "Grou&p"
 	      #:submenu
 	      (make-window-group-menu w))
     menu-separator
@@ -746,6 +748,7 @@ that corner fixed."
 (define-public (send-key-press-next)
   (send-key-press "Next"))
 
+;; (toggle-maximize 0 (y- 20))
 (define*-public (vertical-toggle-maximize #&optional (win (get-window)))
   (toggle-maximize 0 (%y 100) win))
 
@@ -885,3 +888,14 @@ from the edges again."
 			      (number->string right-button-number)))
 	      1 hook immed-hook)
   (set! right-button-number (+ 1 right-button-number)))
+
+
+(define-public (config-request-animate win icon? x y width height)
+  "A procedure for `X-ConfigureRequest-hook' to do window configuration animatedly.
+Use `add-hook!' to attach this to `X-ConfigureRequest-hook'."
+  (if (and (not icon?) win)
+      (begin
+	(if (or width height)
+	    (animated-resize-window width height win x y)
+	    (animated-move-window x y win))
+	(set! configure-request-handled #t))))
