@@ -109,7 +109,7 @@ be considered in flux. */
 void 
 init_winprop()
 {
-  SCWM_HOOK(window_property_change_hook,"window-property-change-hook");
+  SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4);
   /** This hook is invoked whenever a window property changes.
 The hook procedures are invoked with four arguments, the window whose
 property changed, the name of the changed property, the new value and

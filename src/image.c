@@ -628,7 +628,7 @@ consider 'rm *.x' and rebuild");
   /** List of strings of directories in which to look for image files. */
 
 
-  SCWM_HOOK(image_not_found_hook, "image-not-found-hook");
+  SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1);
   /** Called with image name as a string when not found. */
   
 }

@@ -381,9 +381,9 @@ See also the variables "display-width" and "display-height". */
 void
 init_deskpage()
 {
-  SCWM_HOOK(desk_size_change_hook,"desk-size-change-hook");
+  SCWM_HOOK(desk_size_change_hook,"desk-size-change-hook", 2);
   /** This hook is invoked whenever the desk size is changed.  It is
-called with two argument, both integers, which are the width and
+called with two arguments, both integers, which are the width and
 height of the new desk size in screens. */
 
 #ifndef SCM_MAGIC_SNARFER

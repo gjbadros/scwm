@@ -2052,7 +2052,7 @@ void
 init_events()
 {
 
-  SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
+  SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
 for a window scwm is managing. This indicates that an X window
 property has changed. Watching for window property changes can be used
@@ -2060,7 +2060,7 @@ to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. */
 
-  SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook");
+  SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
 on the root window.  This indicates that an X window
 property has changed. Watching for window property changes can be used
@@ -2071,46 +2071,46 @@ property and a boolean telling whether the property was deleted.
 These arguments are different from those passed to
 X-PropertyNotify-hook's procedures. */
 
-  SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
+  SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook", 0);
   /** This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. */
 
-  SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook");
+  SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1);
   /** This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. */
 
-  SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook");
+  SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1);
   /** This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. */
 
-  SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook");
+  SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook", 1);
   /** This hook is invoked upon MapRequest X events.  It indicates a
 window is trying to map itself (add itself to the display).  The hook 
 procedures are invoked with one argument, WIN, the window being mapped.  
 The WIN is valid during the hook procedures. */
 
-  SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook");
+  SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1);
   /** This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. */
 
-  SCWM_HOOK(window_enter_hook, "window-enter-hook");
+  SCWM_HOOK(window_enter_hook, "window-enter-hook", 1);
   /** This hook is invoked whenever the mouse pointer enters a window.
 It is called with one argument, the window object of the window just
 entered. */
 
-  SCWM_HOOK(window_leave_hook, "window-leave-hook");
+  SCWM_HOOK(window_leave_hook, "window-leave-hook", 1);
   /** This hook is invoked whenever the mouse pointer leaves a window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. */
 
-  SCWM_HOOK(client_message_hook,"client-message-hook");
+  SCWM_HOOK(client_message_hook,"client-message-hook", 3);
   /** This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
 and the vector of data. */

@@ -188,7 +188,7 @@ void init_module_interface()
 #endif
   /* This will ensure that these are defined in the root module. */
 
-  SCWM_HOOK(broadcast_hook, "broadcast-hook");
+  SCWM_HOOK(broadcast_hook, "broadcast-hook", 8);
   /** This hook is invoked whenever fvwm2 would call Broadcast.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
@@ -197,7 +197,7 @@ far. The procedures in this hook are passed a numerical code
 representing the event type, a number that indicates how many of the
 following data arguments are meaningful, and 7 numeric data arguments. */
 
-  SCWM_HOOK(broadcast_config_hook, "broadcast-config-hook");
+  SCWM_HOOK(broadcast_config_hook, "broadcast-config-hook", 1);
   /** This hook is invoked whenever fvwm2 would call BroadcastConfig.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
@@ -205,7 +205,7 @@ can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed a window structure as the
 sole argument. */
 
-  SCWM_HOOK(broadcast_name_hook, "broadcast-name-hook");
+  SCWM_HOOK(broadcast_name_hook, "broadcast-name-hook", 5);
   /** This hook is invoked whenever fvwm2 would call BroadcastName.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways
@@ -213,7 +213,7 @@ that can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed an event type, three
 numeric data arguments, and a string. */
 
-  SCWM_HOOK(broadcast_mini_icon_hook, "broadcast-mini-icon-hook");
+  SCWM_HOOK(broadcast_mini_icon_hook, "broadcast-mini-icon-hook", 1);
   /** This hook is invoked whenever fvwm2 would call BroadcastMiniIcon.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that

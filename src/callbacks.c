@@ -810,7 +810,7 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  SCWM_HOOK(error_hook, "error-hook");
+  SCWM_HOOK(error_hook, "error-hook", 1);
   /** Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file

@@ -826,14 +826,14 @@ SetMapStateProp(ScwmWindow *psw, int state)
 void
 init_icons()
 {
-  SCWM_HOOK(iconify_hook, "iconify-hook");
+  SCWM_HOOK(iconify_hook, "iconify-hook", 2);
   /** This hook is invoked when a window is iconified.
 It is called with two arguments: WINDOW, WAS-ICONIFIED?.
 WINDOW is the window iconfied, and WAS-ICONIFIED? is
 a boolean telling whether the window was iconified previously.
 */
 
-  SCWM_HOOK(deiconify_hook, "deiconify-hook");
+  SCWM_HOOK(deiconify_hook, "deiconify-hook", 2);
   /** This hook is invoked when a window is deiconified.
 It is called with two arguments: WINDOW, WAS-ICONIFIED?.
 WINDOW is the window iconfied, and WAS-ICONIFIED? is

@@ -47,7 +47,11 @@ SCM scwm_safe_eval_str (char *string);
 #ifndef SCWM_EXTRACT_COMMENTS
 /* do not define this macro if we are extracting comments since
    the macro name is used as a lexical cue to the extractor */
-#define SCWM_HOOK(var, name) do { var=scm_sysintern(name, SCM_EOL); } while (0)
+#ifdef HAVE_SCM_MAKE_HOOK
+#define SCWM_HOOK(var, name, args) do { var = scm_make_named_hook(name,args); } while (0)
+#else
+#define SCWM_HOOK(var, name, args) do { var = scm_sysintern(name, SCM_EOL); } while (0)
+#endif
 #endif
 
 SCM call0_hooks (SCM hook);

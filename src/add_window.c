@@ -812,7 +812,7 @@ GetWindowSizeHints(ScwmWindow * psw)
 
 void init_add_window()
 {
-  SCWM_HOOK(before_new_window_hook, "before-new-window-hook");
+  SCWM_HOOK(before_new_window_hook, "before-new-window-hook", 1);
   /** This hook is invoked when first creating a new window object.
 Its procedures are each called with a single argument, WIN, the new
 window.  Only a subset of the usual window parameters should be set
@@ -826,7 +826,7 @@ created.
 
 See also `before-place-new-window-hook' and `after-new-window-hook'.  */
 
-  SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook");
+  SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook", 1);
   /** This hook is invoked just before placing a new window.
 It comes after `before-new-window-hook', but before `after-new-window-hook'. 
 Its procedures are each called with a single argument, WIN, the new window.
@@ -836,7 +836,7 @@ two hooks, despite being invoked at a slightly different time.
 See also `before-new-window-hook' and `after-new-window-hook'.
 */
 
-  SCWM_HOOK(after_new_window_hook, "after-new-window-hook");
+  SCWM_HOOK(after_new_window_hook, "after-new-window-hook", 1);
   /** This hook is invoked after a window is created and placed.
 Its procedures are each called with a single argument, WIN, the new window.
 Any window operations may be performed at this time. However, it is

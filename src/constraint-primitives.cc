@@ -336,7 +336,7 @@ init_constraint_primitives()
 {
   init_cassowary_scm();
 
-  SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook");
+  SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook", 1);
   /** Called upon completion of each constraint re-solve.
 The hook is passed a single argument, the solver object that just re-solved.
 The various 'changed-proc hooks on cl-variable objects are called as the solver

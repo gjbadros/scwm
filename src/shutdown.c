@@ -209,11 +209,11 @@ void run_startup_hook()
 
 void init_shutdown()
 {
-  SCWM_HOOK(shutdown_hook, "shutdown-hook");
-  /** The procedures in shutdown-hook are called with no arguments right
-before scwm quits or restarts. */
+  SCWM_HOOK(shutdown_hook, "shutdown-hook",1);
+  /** The procedures in shutdown-hook are before scwm quits or restarts.
+A single boolean argument is passed that is #t iff scwm is restarting. */
 
-  SCWM_HOOK(startup_hook, "startup-hook");
+  SCWM_HOOK(startup_hook, "startup-hook",0);
   /** The procedures in startup-hook are called with no arguments after scwm
 has processed the scwmrc and captured all application windows, and
 right before it enters the main event loop.  Note that during

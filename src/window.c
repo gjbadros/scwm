@@ -3986,19 +3986,19 @@ init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
 
-  SCWM_HOOK(window_close_hook,"window-close-hook");
+  SCWM_HOOK(window_close_hook,"window-close-hook",1);
   /** This hook is invoked whenever a scwm-managed window is closed
 for any reason. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. */
 
-  SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
+  SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
   /** This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. */
 
-  SCWM_HOOK(cannot_grab_hook,"cannot-grab-hook");
+  SCWM_HOOK(cannot_grab_hook,"cannot-grab-hook",0);
   /** This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  */

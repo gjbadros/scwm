@@ -656,14 +656,14 @@ init_resize_gcs()
 void 
 init_resize()
 {
-  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook");
+  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
   /** This hook is invoked at the start of an interactive resize.
 It is called with three arguments: WINDOW, XMOTION, YMOTION.
 XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
 can happen on the right/bottom side, not at all, or the top/left side,
 respectively. */
 
-  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook");
+  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7);
   /** This hook is invoked during an interactive resize.  
 It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
 NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
@@ -673,7 +673,7 @@ window (not the client window). The -UNITS arguments refer to the size
 of the client window and are in client units (e.g., characters for
 Emacsen and XTerms).  */
 
-SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook");
+SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1);
   /** This hook is invoked at the end of an interactive resize.
 It is called with one argument, WINDOW. */
 

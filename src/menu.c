@@ -1429,7 +1429,7 @@ SCWM_PROC(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1,
           (SCM activate_p))
 /** If ACTIVATE? is #t, let menu hotkeys invoke the item.
 If #f, a menuitem hotkey just makes that item selected and still requires
-a <return> or <space> to activate the item. */
+a Return or Space keypress to activate the item. */
 #define FUNC_NAME s_set_menu_hotkeys_activate_item_x
 {
   COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fMenuHotkeysActivateItems,activate_p,1,FUNC_NAME);
