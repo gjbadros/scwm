@@ -7,8 +7,8 @@
 
 ;; As you can see, this scwmrc was not built to show-off. Contrariwise, one
 ;; goal is to conserve as much screen real-estate as possible. At the
-;; moment, this is carried to the extreme with no decorations at all. I will 
-;; probably put in title-bars again, as they are not entirely useless.
+;; moment, the default is squashed title-bars. No decorations are also an
+;; option.
 
 ;; An even more important point is full functionality. All things possible
 ;; with scwm should be available (unless another feature was smuggled in
@@ -45,7 +45,8 @@
 	     (app scwm optargs)
 	     (app scwm std-menus)
 	     (app scwm animation)
-	     (ice-9 string-fun))
+	     (ice-9 string-fun)
+	     (ice-9 regex))
 
 ;; random niceties
 ; defines SYM to DEFAULT, unless it is already bound.
@@ -145,9 +146,9 @@
   (make-font "-adobe-times-medium-r-*-*-14-*-*-*-*-*-*-*"))
 
 (set-icon-font! font12)
-(set-hilight-foreground! "white")
-(set-hilight-background! "navy")
-(set-shadow-factor! 0.3)
+(set-hilight-foreground! "black")
+(set-hilight-background! "light slate blue")
+(set-shadow-factor! 0.4)
 
 (set-message-window-attributes! font12 "black" "royal blue")
 (menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
@@ -392,8 +393,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				       ("X&Fig" "xfig" "xfig"))))
 		       ("&State Info"
 			,(build-menu "State Info"
-				     '(("&Top" "top" 'term)
-				       ("&Procinfo" "procinfo -f" 'term)
+				     '(("&Top" "top" term)
+				       ("&Procinfo" "procinfo -f" term)
 				       ("X&Load" "xload" "xload")
 				       ("X&Idle" "xidle" "xidle")
 				       ("X&Mem" "xmem" "xmem"))))
@@ -507,24 +508,36 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (if (equal? win (current-window-with-focus))
       0
       (window-last-focus-time win)))
-  
+
+(define (warp-raise win)
+  (warp-to-window win)
+  (raise-window win))
+
 (define (toggle-focus)
   "Focus window that had the focus before the current one."
-  (warp-to-window (extreme (lambda (win1 win2) (> (last-focussed win1)
+  (warp-raise (extreme (lambda (win1 win2) (> (last-focussed win1)
 						  (last-focussed win2)))
 			   (list-all-windows))))
 
 
 ;; Key Bindings
 ; mouse emulation
-(bind-key 'all (super "KP_Left")	(lambda () (move-pointer -1 0)))
-(bind-key 'all (super "KP_Right")	(lambda () (move-pointer +1 0)))
-(bind-key 'all (super "KP_Up")	(lambda () (move-pointer 0 -1)))
-(bind-key 'all (super "KP_Down")	(lambda () (move-pointer 0 +1)))
-(bind-key 'all (super "S-KP_Left")	(lambda () (move-pointer -10 0)))
-(bind-key 'all (super "S-KP_Right")	(lambda () (move-pointer +10 0)))
-(bind-key 'all (super "S-KP_Up")	(lambda () (move-pointer 0 -10)))
-(bind-key 'all (super "S-KP_Down")	(lambda () (move-pointer 0 +10)))
+(define (mouse-movers mods pixels left down up right)
+  (bind-key 'all (apply mods (list left))
+	    (lambda () (move-pointer (- pixels) 0)))
+  (bind-key 'all (apply mods (list right))
+	    (lambda () (move-pointer pixels 0)))
+  (bind-key 'all (apply mods (list up))
+	    (lambda () (move-pointer 0 (- pixels))))
+  (bind-key 'all (apply mods (list down))
+	    (lambda () (move-pointer 0 pixels))))
+(mouse-movers super 1 "KP_Left" "KP_Down" "KP_Up" "KP_Right")
+(mouse-movers (lambda (key) (super (string-append "S-" key))) 10
+	      "KP_Left" "KP_Down" "KP_Up" "KP_Right")
+(bind-key 'all (super "KP_Divide") (lambda () (send-button-press 1)))
+(bind-key 'all (super "KP_Multiply") (lambda () (send-button-press 2)))
+(bind-key 'all (super "KP_Subtract") (lambda () (send-button-press 3)))
+
 ; backdrop action
 (bind-key 'all (super "F1") popup-softs)
 (bind-key 'all (super "F2") popup-window-ops)
@@ -565,7 +578,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		#:only xterm? #:except iconified-or-unfocusable?)
 (bind-circulate (super-kp "Left") (super-kp "Right") 
 		#:only visible? #:except iconified-or-unfocusable?
-		#:proc warp-to-window)
+		#:proc warp-raise)
 (bind-circulate (super-kp "Up") (super-kp "Down")
 		#:only visible? #:except unfocusable? #:proc focus-raise)
 
@@ -619,7 +632,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'root 2 popup-window-ops)
 (bind-mouse 'root 3 popup-winlist)
 (bind-mouse 'button-1 1 (lambda () (popup-small-ops)))
-(bind-mouse 'button-3 1 close-window)
+(bind-mouse 'button-3 1 (lambda () (case (mouse-event-type)
+				     ('click (close-window))
+				     ('double-click (destroy-window)))))
 (bind-mouse 'button-6 1 toggle-stick)
 (bind-mouse 'button-4 1 iconify)
 (bind-mouse 'button-2 1
@@ -657,15 +672,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 
 (window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
 				#:use-style FixedSize #:use-style NoFocus)
-(window-style "GTimer"		#:placement-proc (lambda (win)
-						   (move-to
-						    0 (+ 20
-							 (y-
-							  (cadr
-							   (window-size win))))
-						    win))
-				#:start-lowered #t #:use-style NoFocus)
-(window-style "GTimeTracker 0*"	#:focus 'none #:start-lowered #t)
+(window-style "GTimer"		#:start-lowered #t #:use-style NoFocus)
+(window-style "GTimeTracker 0*"	#:focus 'click #:start-lowered #t)
 (window-style "UAE"		#:icon "amiga.xpm.gz"
 				#:placement-proc (lambda (win)
 						   (move-to 0 0 win)))
@@ -678,7 +686,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (window-style "XZip Status"	#:random-placement #t #:use-style FixedSize)
 (window-style "povray"		#:icon "xpovicon.xpm.gz"
 				#:random-placement #t #:use-style FixedSize)
-(window-style "rxvt*"		#:icon "term.xpm.gz"  #:use-style Terminal)
+(window-style "rxvt*"		#:icon "term.xpm.gz")
 (window-style "xcalc"		#:icon "Calculator.xpm.gz"
 				#:random-placement #t)
 (window-style "xclock"		#:use-style Widget)
@@ -687,9 +695,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				#:use-style NoFocus)
 (window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
 				#:use-style NoFocus)
-(window-style "xsm:*"		#:focus 'none) 
-(window-style "xterm*"		#:icon "xterm-linux.xpm.gz"
-				#:use-style Terminal)
+(window-style "xsm:*"		#:focus 'none)
+(window-style "xterm*"		#:icon "xterm-linux.xpm.gz")
 (window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
 				#:use-style NoFocus)
 (window-style "xv load"		#:icon "xv.color.xpm.gz" #:use-style FixedSize
