@@ -118,7 +118,7 @@
 
 (define*-public (simple-title-style #&key font height justify)
   (if (bound? font)
-      (set-window-font! font))
+      (set-title-font! font))
   (if (bound? height) 
       (set-title-height! height))
   (if (bound? justify)

@@ -411,7 +411,7 @@
   (set-icon-font! (sans-surrounding-whitespace args)))
 
 (define-fvwm-command "WindowFont"
-  (set-window-font! (sans-surrounding-whitespace args)))
+  (set-title-font! (sans-surrounding-whitespace args)))
 
 (define (parse-context s)
   (define (parse-a-context c)

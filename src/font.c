@@ -277,10 +277,21 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
+
+SCWM_PROC(icon_font, "icon-font", 0, 0, 0,
+           ())
+     /** Return the font used for drawing icon titles. */
+#define FUNC_NAME icon_font
+{
+  return Scr.icon_font;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
            (SCM font))
 	/** Set the font for window titles In the current decor to FONT. */
-#define FUNC_NAME s_set_window_font_x
+#define FUNC_NAME s_set_title_font_x
 {
   int extra_height;
   ScwmDecor *fl;
@@ -303,6 +314,19 @@ SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
   fl->TitleHeight = FONTHEIGHT(font) + 3;
   redraw_titlebars(fl, extra_height);
   return font;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(title_font, "title-font", 0, 0, 0,
+           ())
+     /** Return the font used for drawing window titles in the current decor. */
+#define FUNC_NAME title_font
+{
+  ScwmDecor *fl;
+
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+
+  return fl->window_font;
 }
 #undef FUNC_NAME
 
@@ -346,6 +370,16 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
   menu_font_update();
 
   return font;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(menu_font, "menu-font", 0, 0, 0,
+           ())
+     /** Return the font used by default for drawing menus. */
+#define FUNC_NAME menu_font
+{
+  return Scr.menu_font;
 }
 #undef FUNC_NAME
 

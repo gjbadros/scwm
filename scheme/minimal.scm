@@ -26,7 +26,7 @@
 (set-hilight-foreground! BLACK)
 (set-hilight-background! GRAY)
 (set-icon-font! FIXED-FONT)
-(set-window-font! FIXED-FONT)
+(set-title-font! FIXED-FONT)
 (set-title-justify! 'center)
 
 ;;; A Menu

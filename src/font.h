@@ -100,7 +100,7 @@ typedef struct {
 SCM make_font(SCM fname);
 
 /* FIXGJB: this primitive should not be exposed */
-SCM set_window_font_x(SCM font);
+SCM set_title_font_x(SCM font);
 
 #endif /* FONT_H */
 

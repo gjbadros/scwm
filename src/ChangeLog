@@ -1,3 +1,10 @@
+1998-07-31  Maciej Stachowiak  <maciej@roc-ny5-12.ix.netcom.com>
+
+	* font.c, font.h, decor.c: Rename set-window-font! to
+	set-title-font! for precision and to make clear that it does not
+	affect a window object. Add title-font, icon-font and menu-font
+	accessor functions.
+
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
 	* events.c (send_button_press): Use the new
