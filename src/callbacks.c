@@ -590,7 +590,7 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
 
 SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
           (SCM num_lines))
-     /* Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
+     /** Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
 Returns the old value. */
 #define FUNC_NAME s_set_load_processing_frequency_x
 {
