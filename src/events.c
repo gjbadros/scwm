@@ -395,22 +395,6 @@ HandleKeyPress()
   ButtonWindow = NULL;
 }
 
-static const int scwm_property_max_length = 8000;
-
-SCM 
-scwm_error_handler (void *data, SCM tag, SCM throw_args)
-{
-  fprintf (stderr, "\nScwm got an error; tag is\n        ");
-  scm_display (tag, scm_current_error_port ());
-  scm_newline (scm_current_error_port ());
-  scm_display (throw_args,scm_current_error_port ());
-  scm_newline (scm_current_error_port ());
-
-  return SCM_BOOL_F;
-}
-
-
-
 
 static SCM make_output_strport(char *fname)
 {
@@ -476,6 +460,7 @@ HandleScwmExec()
 	char *ret, *output, *error;
 	int rlen, olen, elen;
 	SCM o_port, e_port;
+	SCM saved_def_e_port;
 	
 	/* Temporarily redirect output and error to string ports. 
 	   Note that the port setting functions return the current previous
@@ -483,6 +468,8 @@ HandleScwmExec()
 	
 	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
 	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
+	saved_def_e_port = scm_def_errp;
+	scm_def_errp = scm_current_error_port();
 
 	val = scwm_safe_eval_str(req);
 	XFree(req); 
@@ -492,7 +479,8 @@ HandleScwmExec()
 	/* restore output and error ports. */
 	o_port=scm_set_current_output_port(o_port);
 	e_port=scm_set_current_error_port(e_port);
-	
+	scm_def_errp = saved_def_e_port;
+
 	output=gh_scm2newstr(get_strport_string(o_port),&olen);
 	error=gh_scm2newstr(get_strport_string(e_port),&elen);
 	
