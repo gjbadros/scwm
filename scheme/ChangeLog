@@ -1,3 +1,9 @@
+Tue Dec  1 21:24:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am (scwm_common_scheme): Make sure to install all
+ 	Scheme files (other than minimal.scm). Bug report from Carl
+ 	R. Witty (cwitty@newtonlabs.com).
+
 1998-12-01  Sam Steingold  <sds@goems.com>
 
 	* flux.scm (move-inside): new function: ensures that the window is
