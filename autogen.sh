@@ -1,5 +1,8 @@
 ## autogen.sh - generate all the twisty little files.
 
+# Clean up these files -- maybe we should not have them in CVS? GJB:FIXME::
+rm -f ltconfig ltmain.sh
+
 # Generate aclocal.m4 from configure.in
 aclocal
 
