@@ -12,6 +12,9 @@
  *
  ***********************************************************************/
 
+#undef MS_DELETION_COMMENT
+#if MS_DELETION_COMMENT
+
 #include <config.h>
 
 #include <stdio.h>
@@ -69,6 +72,7 @@ void initModules(void)
       pipeName[i] = NULL;
     }
 }
+
 
 void ClosePipes(void)
 {
@@ -261,6 +265,7 @@ void executeModule(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   return;
 }
 
+
 void HandleModuleInput(Window w, int channel)
 {
   char text[256];
@@ -358,12 +363,10 @@ void HandleModuleInput(Window w, int channel)
   return;
 }
 
-
 void DeadPipe(int nonsense)
 {
   signal(SIGPIPE, DeadPipe);
 }
-
 
 void KillModule(int channel, int place)
 {
@@ -385,6 +388,7 @@ void KillModule(int channel, int place)
 	
   return;
 }
+
 
 void KillModuleByName(char *name)
 {
@@ -434,6 +438,8 @@ void SendPacket(int module, unsigned long event_type, unsigned long num_datum,
   PositiveWrite(module,body,(num_datum+4)*sizeof(body[0]));
 }
 
+
+
 void Broadcast(unsigned long event_type, unsigned long num_datum,
 	       unsigned long data1, unsigned long data2, unsigned long data3, 
 	       unsigned long data4, unsigned long data5, unsigned long data6,
@@ -447,6 +453,7 @@ void Broadcast(unsigned long event_type, unsigned long num_datum,
                data1,data2,data3,data4,data5,data6,data7);
   }
 }
+
 
 void SendConfig(int module, unsigned long event_type, ScwmWindow *t)
 {
@@ -486,6 +493,7 @@ void SendConfig(int module, unsigned long event_type, ScwmWindow *t)
 }
 
 
+
 void BroadcastConfig(unsigned long event_type, ScwmWindow *t)
 {
   int i;
@@ -495,6 +503,8 @@ void BroadcastConfig(unsigned long event_type, ScwmWindow *t)
     SendConfig(i,event_type,t);
   }
 }
+
+
 
 void SendName(int module, unsigned long event_type,
 	      unsigned long data1,unsigned long data2, 
@@ -524,6 +534,7 @@ void SendName(int module, unsigned long event_type,
   free(body);
 }
 
+
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *name)
 {
@@ -532,6 +543,7 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
   for(i=0;i<npipes;i++)
     SendName(i,event_type,data1,data2,data3,name);
 }
+
 
 
 /*
@@ -595,6 +607,7 @@ void AddToQueue(int module, unsigned long *ptr, int size, int done)
   e->next = c;
 }
 
+
 void DeleteQueueBuff(int module)
 {
   struct queue_buff_struct *a;
@@ -607,6 +620,7 @@ void DeleteQueueBuff(int module)
   free(a);
   return;
 }
+
 
 void FlushQueue(int module)
 {
@@ -645,6 +659,7 @@ void FlushQueue(int module)
       DeleteQueueBuff(module);
     }
 }
+
 
 
 void send_list_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
@@ -721,6 +736,9 @@ void send_list_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
       SendPacket(*Module,M_END_WINDOWLIST,0,0,0,0,0,0,0,0);
     }
 }
+
+
+
 void set_mask_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		     unsigned long context, char *action,int* Module)
 {
@@ -729,3 +747,5 @@ void set_mask_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   n = GetOneArgument(action, &val1, &val1_unit);
   PipeMask[*Module] = (unsigned long)val1;
 }
+
+#endif /* MS_DELETION_COMMENT */
