@@ -1426,9 +1426,6 @@ union of all other window managers!
 (bind-key 'all "C-S-F5" popup-utilities)
 (bind-key 'all "C-S-F6" popup-multimedia)
 
-(define (float->integer x)
-  (inexact->exact (truncate x)))
-
 ;; These are useful!
 (define root-size-x (car (display-size)))
 (define root-size-y (cadr (display-size)))
