@@ -1,3 +1,39 @@
+Mon Apr  5 15:21:19 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-string.scm: Rename prompt-proc-hbox to
+	simple-prompt-proc-hbox so as to not conflict with the real
+	prompt-proc-hbox.
+
+	* prompt-proc.scm: Added.  Requires some bug-fixes to
+	guile-gtk-0.15 to not seg fault.
+
+	* rgb-database.scm: Added.
+
+	* preferences.scm: Try attaching tooltips to the hbox-es, but it
+	doesn't work on hboxes for me.  To what can they be attached?
+
+	* message-window.scm:  Added opts: *message-window-{fg,bg}-color*
+
+	* gtk.scm: Added missing use-module of (app scwm optargs).
+
+	* base.scm: Make menu color setters call make-color as
+	needed. Make background-system a public proc.
+
+	* auto-raise.scm: Move option to end after the window-style exists 
+	so that the call to the setter when define-scwm-option expands
+	doesn't error.
+
+	* prompt-file.scm, prompt-color.scm: Moved the gtk-entry-set-text
+ 	to after the gtk-combo-set-popdown-strings since it otherwise
+ 	seemed to get set to the first popdown string.
+
+	* sort.scm: Reverse the order that the comparator is used so that
+	it sorts in the same order as the primitive sort in guile-1.3+.
+
+Mon Apr  5 09:50:42 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Drop user-options.scm -- that file was removed.
+
 Fri Apr  2 15:39:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gtk.scm: Added gdk-leader-window variable and set it if
