@@ -6,6 +6,10 @@
 	     (app scwm themes)
 	     (app scwm menus-extras)
 	     (app scwm prompt-proc)
+	     (app scwm base)
+	     (app scwm face)
+	     (app scwm fvwm-compat)
+	     (app scwm fvwm-module)
 	     (gtk gtk)
 	     (gtk gdk))
 
@@ -13,11 +17,10 @@
 (popup-menu (scwm-options-menu) #t)
 
 (scwm-options-dialog)
+(use-modules (app scwm auto-raise))
 ;; (window-style "*" #:smart-placement #f #:random-placement #f)
 
 (scwm-option-range '*window-font*)
-
-scwm-options
 
 (scwm-option-get *edge-y-scroll*)
 (scwm-option-get *desk-width*)
