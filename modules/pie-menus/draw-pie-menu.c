@@ -27,8 +27,6 @@
 #include <X11/extensions/shape.h>
 
 #include <guile/gh.h>
-/* FIXGJB13: guile-1.3 will have this already included */
-#include <libguile/dynl.h>
 
 #include "drawmenu.h"
 
