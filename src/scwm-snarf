@@ -11,7 +11,7 @@
 # AND we need these to only happen *after* the %/%/ marker on the input lines
 # so we use two sed's to do it.
 guile-snarf "$@" | \
-sed 's@%/%/@\
+sed 's@% */ *% */@\
 @
        /\n/!b
        h
