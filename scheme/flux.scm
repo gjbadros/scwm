@@ -546,3 +546,6 @@ that corner fixed."
 
 ;; (procedure->bindings-description describe-key)
 ;; (procedure->bindings-description popup-root-start)
+
+(define-public (add-ms-timer-hook! ms proc)
+  (add-timer-hook! (ms->usec ms) proc))
