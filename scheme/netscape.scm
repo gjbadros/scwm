@@ -97,7 +97,7 @@ separators, so the url gets chopped off at the first literal comma."
   (regexp-substitute/global #f "," uri 'pre (lambda (match) "%2C") 'post))
 
 (define-public (cgi-escapify-space uri)
-  "Replace commas in URI with the %2C escape code.
+  "Replace spaces in URI with the + escape code.
 This is useful since netscape's remote command invocation does a stupid
 syntactic scan of the passed url and treats commas as argument command
 separators, so the url gets chopped off at the first literal comma."
