@@ -408,7 +408,7 @@ scwm_main(int argc, char **argv)
       Blackout = True;
     } else if ((strncasecmp(argv[i], "-V", 8) == 0) ||
                (strncasecmp(argv[i], "--version", 9) == 0)) {
-      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s",
+      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n",
 	     VERSION, __DATE__, __TIME__, rcsid);
       exit(0);
     } else {
