@@ -1,3 +1,10 @@
+Mon Apr 19 13:04:40 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution): Use eventp->xbutton.[xy]_root,
+	instead of just .[xy].  This should report viewport positions even 
+	in decorations of the frame for `select-viewport-position', but
+	untested.
+
 Mon Apr 19 10:17:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* move.c: Convert ints to SCM in call3_hooks. Duh.
