@@ -60,7 +60,12 @@
 ;; SIDE-EFFECT: adds new class obj to the global list
 
 (define-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
-  "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
+  "Creates a new ui-constraint-class object.
+CTR takes a set of arguments and installs the appropriate constraints in the solver.  A number of
+windows should be included in those arguments, falling somewhere in the range of NUM-WINDOWS.  
+NUM-WINDOWS is a list of '(min-win max-win) where the values specify the minimum and maximum number
+of windows which may be constrained.  Max-win may optionally be specified as a non-number (preferably
+as #t), in which case the constraint is taken to be able to constraint an infinite number of windows.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
 UI-CTR should return the arguments (as a list) for CTR to build the constraint with.  UI-CTR should
 return #f if the user cancels the construction or fails to follow the interface correctly.  PIXMAP-NAME

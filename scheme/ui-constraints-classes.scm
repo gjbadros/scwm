@@ -7,6 +7,7 @@
   :use-module (app scwm ui-constraints)
   :use-module (app scwm message-window)
   :use-module (app scwm window-locations)
+  :use-module (app scwm window-selection)
   :use-module (app scwm xlib-drawing))
 
 ;; (use-modules (app scwm ui-constraints-classes))
@@ -20,7 +21,7 @@
 ;;; GJB:FIXME:: we'd like to be able to use color, mode
 ;;; but cannot w/o using an overlay plane;  Also,
 ;;; the draw functions should get passed semantic parameters
-;;; e.g., is-enabled? and is-focussed? instead of color, width
+;;; e.g., is-enabled? and is-in-focus? instead of color, width
 
 (define-public ui-constraint-prompter-msgwin (make-message-window ""))
 
@@ -54,10 +55,15 @@
 
 ;; helpful prompter for two-window constraints
 (define (two-window-prompter name p1 p2)
-  (let ((w1 (select-window-interactively (string-append name ": " p1) msgwin))
-	(w2 (select-window-interactively (string-append name ": " p2) msgwin)))
-    (if (or (equal? w1 #f) (equal? w2 #f)) #f
-	(list w1 w2))))
+  (let ((winlist (selected-windows-list)))
+    (if (eq? (length winlist) 2)
+	(begin
+	  (unselect-all-windows)
+	  (list (winlist)))
+	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin))
+	      (w2 (select-window-interactively (string-append name ": " p2) msgwin)))
+	  (if (or (equal? w1 #f) (equal? w2 #f)) #f
+	      (list (list w1 w2)))))))
 
 ;; Perhaps should move this elsewhere
 ;; Useful drawing utilities function
@@ -126,14 +132,19 @@
 
 ;; ui constructor
 (define (ui-cnctr-anchor)
-  (let ((msgwin ui-constraint-prompter-msgwin))
-    (message-window-set-message! msgwin "Select window to anchor")
-    (message-window-show! msgwin)
-    (let* ((winlist (select-viewport-position))
-	   (win (car winlist))
-	   (nonant (get-window-nonant winlist)))
-      (message-window-hide! msgwin)
-      (list win (nonant->dirvector nonant)))))
+  (let ((winlist (selected-windows-list)))
+    (if (eq? (length winlist) 1)
+	(begin 
+	  (unselect-all-windows)
+	  (list (car winlist) (nonant->dirvector 4))) ;; give the default nonant as the middle
+	(begin
+	  (message-window-set-message! msgwin "Select window to anchor")
+	  (message-window-show! msgwin)
+	  (let* ((winlist (select-viewport-position))
+		 (win (car winlist))
+		 (nonant (get-window-nonant winlist)))
+	    (message-window-hide! msgwin)
+	    (list win (nonant->dirvector nonant)))))))
 
 ;; constructor
 (define* (cnctr-anchor w1 nonant #&optional (enable? #f))
@@ -221,7 +232,7 @@
 ;; define the anchor type constraint
 (define-public uicc-anchor
   (make-ui-constraint-class 
-   "anchor" 1 cnctr-anchor 
+   "anchor" '(1 1) cnctr-anchor 
    ui-cnctr-anchor draw-cn-anchor 
    cl-is-constraint-satisfied? 
    "anchor.xpm" menuname-anchor))
@@ -237,24 +248,27 @@
 
 ;; ui-constructor
 (define (ui-cnctr-align)
-  (let ((msgwin ui-constraint-prompter-msgwin)
-	(winlist #f)
-	(win1 #f)
-	(win2 #f)
-	(slope #f)
-	(nonant1 #f)
-	(nonant2 #f))
-    (message-window-set-message! msgwin "Select first window to align")
-    (message-window-show! msgwin)
-    (set! winlist (select-viewport-position))
-    (set! win1 (car winlist))
-    (set! nonant1 (get-window-nonant winlist))
-    (message-window-set-message! msgwin "Select second window to align")
-    (set! winlist (select-viewport-position))
-    (set! win2 (car winlist))
-    (set! nonant2 (get-window-nonant winlist))
-    (message-window-hide! msgwin)
-    (list win1 win2 nonant1 nonant2)))
+  (let ((winlist (selected-windows-list)))
+    (if (>= (length winlist) 2)
+	(begin
+	  (unselect-all-windows)
+	  (list winlist (map (lambda (n) 4) winlist)))
+	(let ((win1 #f)
+	      (win2 #f)
+	      (slope #f)
+	      (nonant1 #f)
+	      (nonant2 #f))
+	  (message-window-set-message! msgwin "Select first window to align")
+	  (message-window-show! msgwin)
+	  (set! winlist (select-viewport-position))
+	  (set! win1 (car winlist))
+	  (set! nonant1 (get-window-nonant winlist))
+	  (message-window-set-message! msgwin "Select second window to align")
+	  (set! winlist (select-viewport-position))
+	  (set! win2 (car winlist))
+	  (set! nonant2 (get-window-nonant winlist))
+	  (message-window-hide! msgwin)
+	  (list (list win1 win2) (list nonant1 nonant2))))))
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
@@ -265,12 +279,12 @@
     (else (error "Bad nonant"))))
 
 ;; constructor
-(define* (cnctr-halign w1 w2 q1 q2 #&optional (enable? #f))
-  (let* ((var1 (get-hcl-from-nonant w1 q1))
-	 (var2 (get-hcl-from-nonant w2 q2))
-	 (cn (make-cl-constraint var1 = var2)))
-    (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) (list w1 w2) q1 q2)))
+(define* (cnctr-halign wlist qlist #&optional (enable? #f))
+  (let* ((var1 (get-hcl-from-nonant (car wlist) (car qlist)))
+	 (varlist (map (lambda (w q) (get-hcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
+	 (cnlist (map (lambda (v) (make-cl-constraint var1 = v)) varlist)))
+    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+    (list cnlist wlist qlist)))
 
 ;; get proper position for drawing
 (define (get-hpos-from-nonant win nonant)
@@ -283,22 +297,20 @@
 ;; draw the alignment constraint
 (define (draw-cn-halign ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))
-	(opts (ui-constraint-opts ui-constraint))
+	(opts (car (ui-constraint-opts ui-constraint)))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 2))
-	(error "Expected two windows in win-list of cn for an alignment constraint"))
     (if (eq? opts #f)
 	(error "Expected some optional information for an alignment constraint."))
     (let* ((w1 (car win-list))
 	   (q1 (car opts))
-	   (w2 (cadr win-list))
-	   (q2 (cadr opts))
-	   (w1pos (get-hpos-from-nonant w1 q1))
-	   (w2pos (get-hpos-from-nonant w2 q2)))
+	   (w1pos (get-hpos-from-nonant w1 q1)))
       (xlib-set-line-width! width)
-      (xlib-draw-line! w1pos w2pos)
       (draw-window-line-anchor w1pos 5)
-      (draw-window-line-anchor w2pos 5))))
+      (for-each (lambda (w q)
+		  (let ((wpos (get-hpos-from-nonant w q)))
+		    (xlib-draw-line! w1pos wpos)
+		    (draw-window-line-anchor wpos 5)))
+		(cdr win-list) (cdr opts)))))
 
 ;; halign-nonant->string
 ;; converts a normal nonant value to a string
@@ -310,7 +322,7 @@
 
 ;; menuname code for alignment
 (define (menuname-halign ui-constraint)
-  (let* ((opts (ui-constraint-opts ui-constraint))
+  (let* ((opts (car (ui-constraint-opts ui-constraint)))
 	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
 	 (q1 (car opts))
 	 (q2 (cadr opts))
@@ -320,7 +332,7 @@
 ;; define the horiz. alignment constraint
 (define-public uicc-halign
   (make-ui-constraint-class 
-   "horiz. align" 2 cnctr-halign 
+   "horiz. align" '(2 '+) cnctr-halign 
    ui-cnctr-align draw-cn-halign 
    cl-is-constraint-satisfied? 
    "cn-keep-tops-even.xpm" menuname-halign))
@@ -337,12 +349,12 @@
     (else (error "Bad nonant"))))
 
 ;; constructor
-(define* (cnctr-valign w1 w2 q1 q2 #&optional (enable? #f))
-  (let* ((var1 (get-vcl-from-nonant w1 q1))
-	 (var2 (get-vcl-from-nonant w2 q2))
-	 (cn (make-cl-constraint var1 = var2)))
-    (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) (list w1 w2) q1 q2)))
+(define* (cnctr-valign wlist qlist #&optional (enable? #f))
+  (let* ((var1 (get-vcl-from-nonant (car wlist) (car qlist)))
+	 (varlist (map (lambda (w q) (get-hcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
+	 (cnlist (map (lambda (v) (make-cl-constraint var1 = v)) varlist)))
+    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+    (list cnlist wlist qlist)))
 
 ;; get proper position for drawing 
 (define (get-vpos-from-nonant win nonant)
@@ -355,22 +367,20 @@
 ;; draw the alignment constraint
 (define (draw-cn-valign ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))
-	(opts (ui-constraint-opts ui-constraint))
+	(opts (car (ui-constraint-opts ui-constraint)))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 2))
-	(error "Expected two windows in win-list of cn for an alignment constraint"))
     (if (eq? opts #f)
 	(error "Expected some optional information for an alignment constraint."))
     (let* ((w1 (car win-list))
 	   (q1 (car opts))
-	   (w2 (cadr win-list))
-	   (q2 (cadr opts))
-	   (w1pos (get-vpos-from-nonant w1 q1))
-	   (w2pos (get-vpos-from-nonant w2 q2)))
+	   (w1pos (get-vpos-from-nonant w1 q1)))
       (xlib-set-line-width! width)
-      (xlib-draw-line! w1pos w2pos)
       (draw-window-line-anchor w1pos 5)
-      (draw-window-line-anchor w2pos 5))))
+      (for-each (lambda (w q)
+		  (let ((wpos (get-vpos-from-nonant w q)))
+		    (xlib-draw-line! w1pos wpos)
+		    (draw-window-line-anchor wpos 5)))
+		(cdr win-list) (cdr opts)))))
 
 ;; valign-nonant->string
 ;; converts a normal nonant value to a string
@@ -382,7 +392,7 @@
 
 ;; menuname code for alignment
 (define (menuname-valign ui-constraint)
-  (let* ((opts (ui-constraint-opts ui-constraint))
+  (let* ((opts (car (ui-constraint-opts ui-constraint)))
 	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
 	 (q1 (car opts))
 	 (q2 (cadr opts))
@@ -392,7 +402,7 @@
 ;; define the vert. alignment constraint
 (define-public uicc-valign
   (make-ui-constraint-class 
-   "vert. align" 2 cnctr-valign 
+   "vert. align" '(2 '+) cnctr-valign 
    ui-cnctr-align draw-cn-valign 
    cl-is-constraint-satisfied? 
    "cn-keep-lefts-even.xpm" menuname-valign))
@@ -406,19 +416,24 @@
 
 ;; ui-constructor
 (define (ui-cnctr-hsize)
-  (two-window-prompter "relative hsize" "select first window" "select second window"))
+  (let ((winlist (selected-windows-list)))
+    (if (>= (length winlist) 2)
+	(begin
+	  (unselect-all-windows)
+	  (list winlist))
+	(two-window-prompter "relative hsize" "select first window" "select second window"))))
 
 ;; constructor
-(define* (cnctr-hsize w1 w2 #&optional (enable? #f))
-  (let* ((width1 (car (window-frame-size w1)))
-	 (width2 (car (window-frame-size w2)))
-	 (clv (make-cl-variable "clvhwdiff" (- width1 width2)))
-	 (cleq (cl-minus (window-clv-width w1) (window-clv-width w2)))
-	 (cn (make-cl-constraint cleq = clv))
-	 (sc (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) cn)
-    (and enable? (cl-add-constraint (scwm-master-solver) sc))
-    (list (list sc) (list w1 w2) cn)))
+(define* (cnctr-hsize winlist #&optional (enable? #f))
+  (let* ((width1 (car (window-frame-size (car winlist))))
+	 (widthlist (map (lambda (w) (car (window-frame-size w))) (cdr winlist)))
+	 (clvlist (map (lambda (w) (make-cl-variable "clvhwdiff" (- width1 w))) widthlist))
+	 (cleqlist (map (lambda (w) (cl-minus (window-clv-width (car winlist)) (window-clv-width w))) (cdr winlist)))
+	 (cnlist (map (lambda (cleq clv) (make-cl-constraint cleq = clv)) cleqlist clvlist))
+	 (sclist (map (lambda (clv) (make-cl-stay-constraint clv cls-required 10)) clvlist)))
+    (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist)
+    (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
+    (list sclist winlist cnlist)))
 
 ;; draw-proc
 (define (draw-cn-hsize ui-constraint enable focus mode)
@@ -426,25 +441,25 @@
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
 	(error "Expected two windows in win-list of cn for an relative size constraint"))
-    (let* ((w1 (car win-list))
-	   (w2 (cadr win-list))
-	   (w1ctr (translate-point (window-center-middle w1) width 0))
-	   (w1lm (window-left-middle w1))
-	   (w1rm (window-right-middle w1))
-	   (w2ctr (translate-point (window-center-middle w2) width 0))
-	   (w2lm (window-left-middle w2))
-	   (w2rm (window-right-middle w2)))
+    (let* ((w1ctr (translate-point (window-center-middle (car win-list)) width 0))
+	   (w1lm (window-left-middle (car win-list)))
+	   (w1rm (window-right-middle (car win-list)))
+	   (wctrlist (map (lambda (w) (translate-point (window-center-middle w) width 0)) (cdr win-list))) 
+	   (wlmlist (map (lambda (w) (window-left-middle w)) (cdr win-list)))
+	   (wrmlist (map (lambda (w) (window-right-middle w)) (cdr win-list))))
       (xlib-set-line-width! width)
       (xlib-draw-line! w1lm w1rm)
-      (xlib-draw-line! w2lm w2rm)
-      (xlib-draw-line! w1ctr w2ctr)
       (draw-window-line-anchor w1ctr 5)
-      (draw-window-line-anchor w2ctr 5))))
+      (for-each (lambda (wctr wrm wlm)
+		  (xlib-draw-line! wlm wrm)
+		  (xlib-draw-line! w1ctr wctr)
+		  (draw-window-line-anchor wctr 5))
+		wctrlist wrmlist wlmlist))))
 
 ;; declare horiz. relative size constraint
 (define-public uicc-hsize
   (make-ui-constraint-class
-   "horiz. relative size" 2 cnctr-hsize
+   "horiz. relative size" '(2 '+) cnctr-hsize
    ui-cnctr-hsize draw-cn-hsize
    cl-is-constraint-satisfied?
    "cn-relative-hsize.xpm" menuname-as-class-name))
@@ -723,12 +738,12 @@
       (draw-window-line-anchor w2pos 5))))
 
 ;; constructor
-(define* (cnctr-keep-above w1 w2 #&optional (enable? #f))
-  (let* ((clv1 (window-clv-yb w1))
-	 (clv2 (window-clv-yt w2))
+(define* (cnctr-keep-above winlist #&optional (enable? #f))
+  (let* ((clv1 (window-clv-yb (car winlist)))
+	 (clv2 (window-clv-yt (cadr winlist)))
 	 (cn (make-cl-constraint clv1 <= clv2)))
     (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) (list w1 w2))))
+    (list (list cn) winlist)))
 
 ;; declare the keep-above constraint
 (define-public uicc-ka
@@ -761,12 +776,12 @@
       (draw-window-line-anchor w2pos 5))))
 
 ;; constructor
-(define* (cnctr-keep-to-left-of w1 w2 #&optional (enable? #f))
-  (let* ((clv1 (window-clv-xr w1))
-	 (clv2 (window-clv-xl w2))
+(define* (cnctr-keep-to-left-of winlist #&optional (enable? #f))
+  (let* ((clv1 (window-clv-xr (car winlist)))
+	 (clv2 (window-clv-xl (cadr winlist)))
 	 (cn (make-cl-constraint clv1 <= clv2)))
     (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) (list w1 w2))))
+    (list (list cn) winlist)))
 
 ;; declare the keep-to-left-of constraint
 (define-public uicc-klo

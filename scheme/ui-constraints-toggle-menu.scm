@@ -6,7 +6,8 @@
   :use-module (app scwm base)
   :use-module (app scwm optargs)
   :use-module (app scwm flash-window)
-  :use-module (app scwm ui-constraints))
+  :use-module (app scwm ui-constraints)
+  :use-module (app scwm ui-constraints-composition))
 
 
 ;; (use-modules (app scwm ui-constraints-toggle-menu))
@@ -35,6 +36,9 @@
      menu-separator
      (menuitem "&Disable all constraints" #:action disable-all-constraints)
      (menuitem "&Enable all constraints" #:action enable-all-constraints)
+     menu-separator
+     (menuitem "&Begin Composition" #:action ui-constraints-composition-begin)
+     (menuitem "&Finish Composition" #:action ui-constraints-composition-end)
      menu-separator)
     (map (lambda (x)
 	   (let* ((class (ui-constraint-class x))

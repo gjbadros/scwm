@@ -42,57 +42,106 @@
 ;; (use-modules (app scwm ui-constraints))
 ;; (draw-all-constraints)
 
-;; JWN 5/12/99
-;; define the window used by these buttons publicly
-;; this is a hack for ui-constraints-gdk-drawing...a visible window is
-;; required to create a gc for drawing.  Since this window is generally 
-;; visible once constraints are in use, it seemed like the best choice to
-;; create the gc from
+;; define some PRIVATE variables
 
-(define-public ui-constraints-buttons-window (gtk-window-new 'toplevel))
+(define buttons-toplevel #f)
+(define buttons-box      #f)
 
-(define tooltips (gtk-tooltips-new))
+(define buttons-tooltips (gtk-tooltips-new))
+
+(define toggle-pixmap #t)
+(define toggle-vertical #f)
+(define toggle-initialized #f)
+
+
+;; private function to make a class button
+
+(define (make-class-button class pixmap?)
+  (let* ((name   (ui-constraint-class-name class))
+	 (button (gtk-button-new))
+	 (label  (gtk-label-new name))
+	 (pixmap (if pixmap? (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name class) 
+							      button) #f)))
+    (gtk-tooltips-set-tip buttons-tooltips button name "")
+    (if pixmap?
+	(if pixmap (gtk-container-add button pixmap))
+	(gtk-container-add button label))
+    (if pixmap (gtk-widget-show pixmap) (gtk-widget-show label))
+    (gtk-signal-connect button "clicked"
+			(lambda ()
+			  (enable-ui-constraint (make-ui-constraint-interactively class))))
+    (gtk-container-add buttons-box button)
+    (gtk-widget-show button)
+    button))
+
+
+;; the simple hook function to add new constraints
+;; (defined so we can remove it later)
+
+(define (hook-func class)
+  (make-class-button class toggle-pixmap))
+
+;; initialize the buttons window
+;; it would be nice to add a constraint class remove options
+
+(define*-public (initialize-ui-constraints-buttons #&key (vertical #f) (pixmap #t) (show #f))
+  (let* ((toplevel (gtk-window-new 'toplevel))
+	 (box (if vertical (gtk-vbutton-box-new) (gtk-hbutton-box-new)))
+	 (ui-constraint-classes global-constraint-class-list))
+    (if toggle-initialized (gtk-widget-hide buttons-toplevel))
+    (set! buttons-toplevel toplevel)
+    (set! buttons-box box)
+    (set! toggle-pixmap pixmap)
+    (set! toggle-vertical vertical)
+    (remove-constraint-class-add-hook! hook-func)
+    (add-constraint-class-add-hook! hook-func)
+    (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
+    (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")    
+    (gtk-button-box-set-spacing box 0)
+    (gtk-button-box-set-child-ipadding box 0 0)
+    (gtk-button-box-set-child-size box 32 32)
+    (for-each (lambda (class) (make-class-button class pixmap)) ui-constraint-classes)
+    (gtk-container-add toplevel box)
+    (gtk-widget-show box)
+    (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
+    (set! toggle-initialized #t)
+    (if show (gtk-widget-show toplevel))))
+	 
+
+;; change the existing window
+	 
+(define*-public (change-ui-constraints-buttons #&key (vertical toggle-vertical) (pixmap toggle-pixmap))
+  (initialize-ui-constraints-buttons #:vertical vertical #:pixmap pixmap #:show #t))
+
+;; open the buttons window
 
 (define-public (start-ui-constraints-buttons)
-  (let* ((ui-constraint-classes global-constraint-class-list)
-	 (cn-ui-ctrs (map ui-constraint-class-ui-ctr ui-constraint-classes))
-	 (cn-names (map ui-constraint-class-name ui-constraint-classes))
-	 (cn-buttons (map (lambda (n) (gtk-button-new)) cn-names))  ;; was gtk-button-new-with-label
-;;	 (cn-buttons (map gtk-button-new-with-label cn-names))
-	 (cn-pixmaps (map (lambda (c b) (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name c) b))
-			  ui-constraint-classes cn-buttons))
-	 (toplevel ui-constraints-buttons-window)
-	 (hbox (gtk-hbutton-box-new)))
-    (for-each (lambda (b tip)
-		(gtk-tooltips-set-tip tooltips b tip ""))
-	      cn-buttons cn-names)
-    (gtk-button-box-set-spacing hbox 0)
-    (gtk-button-box-set-child-ipadding hbox 0 0)
-    (gtk-button-box-set-child-size hbox 32 32)
-    (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
-    (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")
-    (gtk-container-add toplevel hbox)
-    (gtk-container-border-width toplevel 0)
-    (for-each (lambda (b) (gtk-box-pack-start hbox b)) cn-buttons)
-    (for-each (lambda (b p l) 
-		(if p
-		    (gtk-container-add b p)
-		    (gtk-container-add b (gtk-label-new l))))
-	      cn-buttons cn-pixmaps cn-names)
-    (for-each (lambda (b d)
-		(gtk-signal-connect b "clicked"
-				    (lambda ()
-				      (enable-ui-constraint (make-ui-constraint-interactively d)))))
-	      cn-buttons ui-constraint-classes)
-    (for-each gtk-widget-show cn-buttons)
-    (for-each (lambda (p) (if p (gtk-widget-show p))) cn-pixmaps)
-    (gtk-widget-show hbox)
-    (gtk-widget-show toplevel)
-    ;; return the close procedure
-    (lambda ()
-      (if (not (gtk-widget-destroyed toplevel))
-	  (gtk-widget-hide toplevel)
-	  (gtk-widget-destroy toplevel)))))
+  (if (not buttons-toplevel)
+      (initialize-ui-constraints-buttons))
+  (gtk-widget-show buttons-toplevel))
 
-(define-public (close-ui-constraints-buttons sdb)
-  (sdb))
+
+;; close the buttons window
+
+(define-public (close-ui-constraints-buttons)
+  (gtk-widget-hide buttons-toplevel))
+
+
+;; (use-scwm-modules constraints ui-constraints gtk optargs ui-constraints-composition ui-constraints-gtk-toggle-menu)
+;; (use-modules (gtk gtk) (gtk gdk))
+
+;; (set! toggle-initialized #f)
+;; (start-constraints)
+;; (ui-constraints-gtk-toggle-menu)
+;; (initialize-ui-constraints-buttons #:vertical #f #:pixmap #t)
+;; (start-ui-constraints-buttons)
+;; (change-ui-constraints-buttons #:vertical #t)
+;; (change-ui-constraints-buttons #:pixmap #f)
+;; (initialize-ui-constraints-buttons #:vertical #t #:pixmap #t)
+;; (close-ui-constraints-buttons)
+;; (for-each (lambda (n) (execute "xlogo")) '(1 2 3))
+;; (ui-constraints-composition-begin)
+;; (ui-constraints-composition-end)
+;; (car global-constraint-class-list)
+;; (gtk-widget-hide buttons-toplevel)
+;; toggle-initialized
