@@ -29,34 +29,14 @@
       (display arg)
       ()))
 
-(use-modules (app scwm base)
-	     (app scwm winops)
-	     (app scwm defoption)
-	     (app scwm winlist)
-	     (app scwm wininfo)
-             (app scwm style)
-;;             (app scwm stringops)
-	     (app scwm face)
-	     (app scwm time-convert)
-	     (app scwm optargs)
-	     (app scwm menus-extras)
-	     (app scwm std-menus)
-	     (app scwm prefs-menu)
-	     (app scwm doc)
-	     (app scwm virtual)
-;;	     (app scwm send-string)
-	     (app scwm flux)
-	     (app scwm flux-gtk)
-	     (app scwm flash-window)
-	     (app scwm key-mover)
-	     (app scwm fvwm-module)
-	     (app scwm path-cache)
-	     (app scwm animation)
-	     (app scwm themes)
-	     (app scwm netscape)
-	     (app scwm message-window)
-	     (app scwm animated-iconify)
-	     )
+(use-scwm-modules base winops defoption winlist wininfo
+		  style face time-convert optargs menus-extras
+		  std-menus prefs-menu doc virtual
+		  flux flux-gtk flash-window key-mover
+		  fvwm-module path-cache animation themes netscape
+		  message-window animated-iconify
+;;		  string-ops send-string
+		  )
 
 ;;(load "/home/gjb/scwm/scheme/constraints.scm")
 ;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
@@ -426,7 +406,7 @@
 
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
-(set-smart-placement-is-really-smart! #t)
+;;(set-smart-placement-is-really-smart! #t)
 
 ;; (normal-border (current-window-with-pointer))
 
