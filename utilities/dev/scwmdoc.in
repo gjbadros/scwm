@@ -757,10 +757,11 @@ sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
 #  print STDERR "header = $header\n";
 #  print STDERR "filename = $filename\n";
-  my ($cprimname, $primname, $req, $opt, $var, $argslist,$space) =
-    $header =~ m%^${prefix}_[IW]?PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*)\)%o;
+  my ($cprimname, $primname, $req, $opt, $var, $argslist,$space,$comment_maybe) =
+    $header =~ m%^${prefix}_[IW]?PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*),\s*(.*)$%so;
 
 #  print STDERR "argslist = $argslist\n";
+#  print STDERR "comment_maybe = $comment_maybe\n";
   if (defined($space)) {
 #    print STDERR "$filename:$line:****WARNING: better to use )) to close arg list\n";
   }
@@ -773,7 +774,7 @@ sub ProcessHeader( $$$ ) {
     print STDERR "$filename:$line:****ERROR:could not parse argument list\n";
     return FALSE;
   }
-  my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
+  my ($comment) = $comment_maybe =~ m%^\"(.*)\"\s*\)\s*\#define%s;
   my ($fname_define) = $header =~ m%^\s*\#\s*define\s+FUNC_NAME\s+(.*?)\s*$%m;
   
   my $clean_argslist = $argslist;
