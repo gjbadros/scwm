@@ -1,0 +1,74 @@
+(make-ui-constraint-class
+        NAME
+                string
+        NUM-WINDOWS
+                integer
+        UI-CTR
+                proc, 0 args
+        CTR
+                proc, NUM-WINDOWS args
+        DRAW-PROC
+                proc, 1+NUM-WINDOWS args, first arg #t for draw, #f for erase
+        )
+ returns a ui-constraint-class object
+  -> probably just: (cons obid-ui-constraint-class (list NAME NUM-WINDOWS UI-CTR CTR DRAW-PROC))
+  -> may side-effect a global list of constraint-classes created for the menu of ctrs
+
+(ui-constraint-class? OBJECT)
+ return #t iff OBJECT is a ui-constraint-class object
+
+(ui-constraint-class-name UI-CONSTRAINT-CLASS) 
+ returns NAME
+
+(ui-constraint-class-num-windows UI-CONSTRAINT-CLASS)
+ returns NUM-WINDOWS
+
+(ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)
+ returns UI-CTR
+
+(ui-constraint-class-ctr UI-CONSTRAINT-CLASS)
+ returns CTR
+
+(ui-constraint-class-draw-proc UI-CONSTRAINT-CLASS)
+ returns DRAW-PROC
+
+----
+
+(make-ui-constraint UI-CONSTRAINT-CLASS)
+ returns a ui-constraint-instance object
+  -> probably just: (cons obid-ui-constraint (list CN ENABLE
+UI-CONSTRAINT-CLASS LIST-OF-WINDOWS))
+  -> may side-effect global list of UI-CONSTRAINTs
+
+(add-ui-constraint UI-CONSTRAINT)
+ adds UI-CONSTRAINT to the solver (adds its CN and sets ENABLE to true)
+
+(remove-ui-constraint UI-CONSTRAINT)
+ removes UI-CONSTRAINT from the solver (removes its CN and sets ENABLE to false)
+
+(ui-constraint? OBJECT)
+ return #t iff OBJECT is a ui-constraint instance object
+
+(ui-constraint-windows UI-CONSTRAINT) 
+ returns LIST-OF-WINDOWS
+
+(ui-constraint-cn UI-CONSTRAINT)
+ returns CN
+
+(ui-constraint-enable UI-CONSTRAINT)
+ returns ENABLE
+
+(ui-constraint-class UI-CONSTRAINT)
+ returns UI-CONSTRAINT-CLASS
+
+----
+
+(draw-constraint UI-CONSTRAINT)
+
+(undraw-constraint UI-CONSTRAINT)
+
+(draw-all-constraints)
+  -> use the global list of UI-CONSTRAINTS in effect, if we choose that approach
+
+(undraw-all-constraints)
+  -> use the global list of UI-CONSTRAINTS in effect, if we choose that approach

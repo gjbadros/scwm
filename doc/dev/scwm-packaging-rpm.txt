@@ -1,0 +1,66 @@
+Building the RPMs is pretty trivial, but here's what I did:
+
+1. cvs update
+2. Blow away those annoying ltconfig & ltmain.sh files because they're
+   a problem with my version of one of those equally annoying auto*
+   tools.
+3. ./autogen.sh
+4. ./configure --enable-maintainer-mode
+5. make
+6. make disp
+
+This gives scwm-0.9beta1.tar.gz, which I didn't want to package
+because it wouldn't match what's on the web site, so I:
+
+7. Unpacked scwm-0.9beta1.tar.gz
+8. mv scwm-9.9beta1 scwm-19990117
+9. tar czvf scwm-19990117.tar.gz scwm-19990117
+
+This also wouldn't match the 1/17 snapshot, but I lucked out in that
+such a snap isn't on the ftp server.
+
+Next, the RPM packaging itself is just a matter of writing a spec
+file.  I hacked up an old one to work with newer versions of rpm.
+
+Once you've got the .spec file & the .tar.gz, you can build the source
+& binary RPMs just by:
+
+10. cp scwm.spec /usr/src/redhat/SPECS
+11. cp scwm-19990117.tar.gz /usr/src/redhat/SOURCES
+12. rpm -ba /usr/src/redhat/SPECS
+
+[[ At some point (now?), we should put the spec file inside the tar.gzs we
+distribute, and then those three steps become just 'rpm -ta 
+scwm-19990117.tar.gz'. -- Todd L. ]]
+
+Once it finishes running you'll have:
+
+   /usr/src/redhat/SRPMS/scwm-19990117-1hjs.src.rpm
+
+and
+
+   /usr/src/redhat/RPMS/i386/scwm-19990117-1hjs.i386.rpm
+
+(assuming you're building on intel).
+
+If you install the src rpm, you get the tar.gz again in
+/usr/src/redhat/SOURCES, and the scwm.spec in /usr/src/redhat/SPECS.
+
+If you install the i386 rpm, you get scwm.
+
+Note 1. The rpm build cmd (rpm -ba) doesn't just run make - it runs
+configure first, so it should really build properly on other
+systems...
+
+Note 2. I set the release version to 1hjs to distinguish btw RPMs I
+packaged and "official" ones.
+
+Note 3. I listed huis-clos as the ftp source for the .tar.gz file
+(which is in the source rpm), but it really isn't there because I made
+the .tar.gz myself from my working cvs tree.
+
+Note 4. If you want to package a newer snapshot, just change the
+Version: line to the version # you want to use, and change the Source:
+line if you want the source tar file is something other than
+scwm-<version>.tar.gz.  Also change the Revision: (& take out my
+initials).
