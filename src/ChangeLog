@@ -1,3 +1,9 @@
+Thu Apr  8 14:11:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* borders.c, windows.c: Dropped some spurious "puts" calls
+	(presumably from old debugging code from Maciej's
+	set-window-property changes?)
+
 1999-04-07  Sam Steingold  <sds@goems.com>
 
 	* window.c ("set_squashed_titlebar_x!"): removed a spurious
