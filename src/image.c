@@ -619,7 +619,8 @@ SCWM_PROC(window_to_image,"window->image", 1, 4, 0,
           (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height))
      /** Return an image with the contents of window WIN.
 WIN can be a window id (as a long), a window object, or
-the symbol 'root-window. */
+the symbol 'root-window. Captures the rectangle of the window
+at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT. */
 #define FUNC_NAME s_window_to_image
 {
   Window w;

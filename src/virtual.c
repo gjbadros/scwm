@@ -618,6 +618,7 @@ void
 init_virtual()
 {
   SCWM_VAR_INIT(cpix_scroll_region, "scroll-region", 2);
+  /** The number of pixels at the edge of the screen within which virtual scrolling will occur. */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "virtual.x"

@@ -276,12 +276,12 @@ Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg)
 }
 
 
-SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,5,0,
-          (SCM image, SCM fg_color, SCM bg_color, SCM hotspot_x, SCM hotspot_y))
+SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
+          (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot))
      /** Create and return a new cursor object from the pixmap image.
 IMAGE specifies the look of the cursor that will be returned.
 FG-COLOR and BG-COLOR specify the foreground and background colors
-respectively.  HOTSPOT-X, HOTSPOT-Y give the x and y offset for the
+respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the
 cursor's hot spot (from the top-left of the cursor). */
 #define FUNC_NAME s_create_pixmap_cursor
 {
@@ -289,8 +289,8 @@ cursor's hot spot (from the top-left of the cursor). */
   VALIDATE_ARG_IMAGE(1,image);
   VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(2,fg_color);
   VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(3,bg_color);
-  VALIDATE_ARG_INT_COPY_USE_DEF(4,hotspot_x,dpixX,1);
-  VALIDATE_ARG_INT_COPY_USE_DEF(5,hotspot_y,dpixY,1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,x_hotspot,dpixX,1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(5,y_hotspot,dpixY,1);
   { /* scope */
     scwm_image *pimg = IMAGE(image);
     Pixel fg = XCOLOR(fg_color);

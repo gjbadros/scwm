@@ -485,7 +485,7 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 #undef FUNC_NAME
 
 
-SCWM_PROC(message_window_set_size_x, "message-window-set-size!", 3, 2, 0,
+SCWM_PROC(message_window_set_size_x, "message-window-set-size!", 3, 0, 0,
           (SCM mwn, SCM width, SCM height))
     /** Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.
 If WIDTH or HEIGHT is #f, that direction is automatically sized

@@ -711,7 +711,7 @@ For developers and hackers only. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(x_connection_number, "X-connection-number", 0, 0, 0,
+SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
           ())
      /** Return the X connection file descriptor number. */
 #define FUNC_NAME s_x_connection_number

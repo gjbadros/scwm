@@ -796,9 +796,9 @@ input hook may safely remove itself. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
+SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 1, 0, 0,
           (SCM handle))
-     /** Remove all procedures from the input hook. */
+     /** Remove all procedures from the input hook HANDLE. */
 #define FUNC_NAME s_reset_input_hook_x
 {
   gh_set_cdr_x(input_hooks,SCM_EOL);

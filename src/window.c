@@ -2815,7 +2815,7 @@ SCWM_PROC(any_id_to_window, "any-id->window", 1, 0, 0,
      /** Return the window object that contains the window with id WINDOW-ID.
 WINDOW-ID can be the X id of any child window in the application. If there is no
 such window object, return #f. */
-#define FUNC_NAME s_frame_id_to_window
+#define FUNC_NAME s_any_id_to_window
 {
   ScwmWindow *psw = NULL;
   Window w;
