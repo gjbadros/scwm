@@ -134,18 +134,72 @@
 	     (list "Refresh Screen" refresh)))
 
 (define (menu-item name pixmap action)
-  (list (string-append name "%mini-" pixmap ".xpm%") action))
+  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))
+
+;;FIXGJB:
+(define (scwm-help)
+  (display "Need to write scwm-help\n"))
+
+;;FIXGJB:
+(define (scwm-about-message)
+  (display "Need to write scwm-about-message\n"))
+
 
 (define (start-xterm)
   (execute "color-xterm"))
 
+(define (exec-xlock)
+  (execute "xlock -nice -16 -mode blank"))
+
+(define (tell-workman command)
+  (execute (string-append "workman -s " command)))
+
+(exec-xlock)
+
+(define use-complete-host-menu #t)
+
+;;; FIXGJB introduce syntax which gives the popup-menu-root-start closure after
+;;; defining a menu
 (define menu-root-start
 ;  (make-menu "RootStart%linux-menu.xpm@^blue^" "Start %mini-exp.xpm%"
   (make-menu "Start %mini-exp.xpm%"
 	     'title
-	     (menu-item "&New shell" "sh1" (lambda () (start-xterm)))
+	     (menu-item "&New shell" "sh1" start-xterm)
 	     (menu-item "&Applications" "x2" (lambda () 
-					       (popup menu-applications)))))
+					       (popup menu-applications)))
+	     (menu-item "&Utilities" "hammer" (lambda ()
+						(popup menu-utilities)))
+	     (menu-item "&Multimedia" "audiovol" (lambda ()
+						   (popup menu-multimedia)))
+	     (menu-item "&Games" "happy" (lambda ()
+					   (popup menu-games)))
+	     'separator
+	     (menu-item "H&osts" "windows" (lambda ()
+					     (popup menu-hosts)))
+	     (if use-complete-host-menu
+		 (menu-item "O&ther Hosts" #f (lambda ()
+						 (popup menu-otherhosts))))
+	     (menu-item "&System Utilities" "connect" (lambda ()
+							(popup menu-system-utilities)))
+	     (menu-item "&Window Operations" "windows" (lambda ()
+							 (popup menu-window-ops)))
+	     (menu-item "&Preferences" "prefs" (lambda ()
+						 (popup menu-preferences)))
+	     'separator
+	     (menu-item "S&creensaver" "display" (lambda ()
+						   (popup menu-screensaver)))
+	     (menu-item "&Lock Screen" "lock" (lambda ()
+						(exec-xlock)))
+	     'separator
+	     (menu-item "A&bout ScwmTNL" "exclam" (lambda ()
+						    (scwm-about-message)))
+	     (menu-item "&Help ScwmTNL" "question" (lambda ()
+						  (scwm-help)))
+	     (menu-item "E&xit Fvwm" "stop" quit-verify)))
+
+(define (popup-menu-root-start)
+  (popup menu-root-start))
+
 
 (define (popup-ops)
   (popup menu-window-ops))
@@ -259,17 +313,12 @@
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
 
-;; move the pointer with the keyboard
-(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
-(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
-(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
-(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+(bind-mouse 'all "C-S-M-1" toggle-raise)
+(bind-mouse 'all "C-S-M-2" interactive-move)
+(bind-mouse 'all "C-S-M-3" interactive-resize)
 
-;; move the viewport with the keyboard
-(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
-(bind-key 'all "C-M-Right" (lambda () (move-pointer (%x 100) 0)))
-(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
-(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+(bind-key 'all "C-S-F7" interactive-move)
+(bind-key 'all "C-S-F8" interactive-resize)
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-Tab"
@@ -290,15 +339,57 @@
   (bind-key 'all (string-append modifiers "-" right) 
 	    (lambda () (move-pointer (%x pct-of-screen) 0))))
 
+(define (key-viewport-moves modifiers pct-of-screen left down up right)
+  (bind-key 'all (string-append modifiers "-" left) 
+	    (lambda () (move-viewport (%x (- pct-of-screen)) 0)))
+  (bind-key 'all (string-append modifiers "-" down) 
+	    (lambda () (move-viewport 0 (%y pct-of-screen))))
+  (bind-key 'all (string-append modifiers "-" up) 
+	    (lambda () (move-viewport 0 (%y (- pct-of-screen)))))
+  (bind-key 'all (string-append modifiers "-" right) 
+	    (lambda () (move-viewport (%x pct-of-screen) 0))))
+
 (key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
 ;; XInside's old X server steal C-M-h for prev virtual console, so use m too
 (key-mouse-moves "C-M-S" 5 "m" "j" "k" "l")
 
 (key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
 
-(bind-key 'all "C-M-S-r" recapture)
+(key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
+(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+
+(bind-key 'all "C-M-S-r" refresh)
+(bind-key 'all "C-M-S-5" recapture)
+(bind-key 'all "C-M-S-x" start-xterm)
+
+(bind-key 'all "C-S-F1" popup-small-ops)
+;;(bind-key 'all "C-S-F2" window-list)
 
 
-(bind-key 'all "
+(define (float->integer x)
+	 (inexact->exact (round x)))
+
+(define (percent-display x y)
+  (let ((root-size-x (car (display-size)))
+	(root-size-y (cadr (display-size))))
+    (list (float->integer (/ (* root-size-x x) 100)) 
+	  (float->integer (/ (* root-size-y y) 100)))))
+
+
+(bind-key 'all "C-S-Down" iconify)
+;;(bind-key 'all "C-M-Return" raise-window)
+(bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "C-S-Up" (lambda () (apply maximize (percent-display 0 95))))
+(bind-key 'all "C-S-Right" (lambda () (apply maximize (percent-display 100 0))))
+(bind-key 'all "C-S-Left" (lambda () (apply maximize (percent-display 100 95))))
+
+;; FIXGJB: window-list does not exist
+;;(bind-key 'all "C-S-Return" window-list)
+
+
+(bind-key 'all "C-S-M-z" (lambda () (popup menu-root-start)))
+
+
+(set-click-time! 150)
 
 (recapture)
