@@ -118,8 +118,12 @@ menuitem (see `popup-menu').
 				      #f 
 				      (if show-mini-icon
 					  (window-mini-icon x) #f)
-				      (lambda () (flash-window-proc x))
-				      (lambda () (unflash-window-proc x))
+				      (if flash-window-proc
+					  (lambda () (flash-window-proc x))
+					  #f)
+				      (if unflash-window-proc
+					  (lambda () (unflash-window-proc x))
+					  #f)
 				      #f))
 		     (list-windows #:only only #:except 
 				   (cons 
