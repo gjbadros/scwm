@@ -121,7 +121,7 @@ void
 RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
 {
   int a, b, w2, h2;
-  unsigned int bw, mask;
+  unsigned int mask;
   XWindowChanges xwc;
 
   if (!psw)

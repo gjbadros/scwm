@@ -12,6 +12,7 @@
 
 #include "image.h"
 #include "window.h"
+#include <X11/Xlib.h>
 
 extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;

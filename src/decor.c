@@ -310,7 +310,7 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
 the window context in the usual way. */
 #define FUNC_NAME s_set_window_decor_x
 {
-  int x, y, width, height, old_height, extra_height;
+  int old_height, extra_height;
   ScwmDecor *fl;
   ScwmWindow *psw;
 

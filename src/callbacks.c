@@ -568,7 +568,6 @@ returned. */
 #define FUNC_NAME s_add_input_hook_x
 {
   SCM newcell;
-  SCM p, last;
 
   if (!SCM_OPINFPORTP(port)) {
     scm_wrong_type_arg(FUNC_NAME, 1, port);

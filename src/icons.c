@@ -216,7 +216,6 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   int final_x, final_y;
   unsigned long valuemask;	/* mask for create windows */
   XSetWindowAttributes attributes;	/* attributes for create windows */
-  XRectangle dummy,log_ret;
 
   psw->fIconOurs = True;
   psw->fPixmapOurs = False;

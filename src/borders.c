@@ -1,17 +1,15 @@
 /* $Id$
  * borders.c
+ * (C) 1997, 1998 By Maciej Stachowiak and Greg J. Badros
  *
-
-/****************************************************************************
  * This module is derived from code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
- ****************************************************************************/
-
-/* #define SCWM_DEBUG_MSGS */
-
+ *
+ */
+ 
 /***********************************************************************
  *
  * scwm window border drawing code
@@ -1270,7 +1268,7 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
 
 
 #ifndef NDEBUG
-  if ((w != FRAME_WIDTH(psw)) || (h != FRAME_HEIGHT(psw)) && !fResized)
+  if ((w != FRAME_WIDTH(psw)) || ((h != FRAME_HEIGHT(psw)) && !fResized))
     DBUG(__FUNCTION__,"Width/height changed but not fResized");
 
   if ((x != FRAME_X(psw) || y != FRAME_Y(psw)) && !fMoved)
