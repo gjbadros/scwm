@@ -1,3 +1,16 @@
+Sat Jul 17 23:43:06 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Make `visible?' check that the window is not
+	iconified, too.
+
+	* dir-focus.scm: Added.  Ported from GWM WOOL source.
+
+Sat Jul 17 23:08:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gnome-hints.scm: Do not window shade the Gnome Panel (prints a
+	warning message for now).  From Robert Bihlmeyer's patch to the
+	list on 28 Mar 1999.
+
 Sat Jul 17 21:23:41 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Fix uses of obsoleted contexts.
