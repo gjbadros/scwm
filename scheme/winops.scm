@@ -32,9 +32,11 @@
 	    (pos w))))
 
 
-(define-public close-window 
-  (make-toggling-winop window-deletable? delete-window destroy-window))
-
+(define-public (close-window #&optional (w (get-window #t)))
+  (if w (if (window-deletable? w)
+	    (delete-window w)
+	    (destroy-window w))))
+ 
 (define-public toggle-raise
   (make-toggling-winop raised? lower-window raise-window))
 
@@ -48,8 +50,8 @@
   (make-toggling-winop window-shaded? un-window-shade window-shade))
 
 (define*-public (maximize nw nh #&optional (w (get-window)))
-  (if w (let* ((pos (get-window-position w))
-	       (size (get-window-size w))
+  (if w (let* ((pos (window-position w))
+	       (size (window-size w))
 	       (x (car pos))
 	       (y (cadr pos))
 	       (width (car size))
@@ -82,7 +84,10 @@
 
 (define*-public (print-window #&optional (w (get-window)))
   (if w (execute (string-append "xwd -id " 
-				(number->string (get-window-id w))
+				(number->string (window-id w))
 				" | xpr | lpr"))))
+
+
+
 
 
