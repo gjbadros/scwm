@@ -26,12 +26,13 @@
 
 
 
+;; MSFIX: I don't think these are useful any longer, commenting for now
 ;; Also, this may be better placed somewhere else
 ;; Make make-pixmap and make-bitmap aliases for make-image;
 ;; Prefer and encourage make-image, though!
-(define-public make-pixmap make-image)
+;;(define-public make-pixmap make-image)
 
-(define-public make-bitmap make-image)
+;;(define-public make-bitmap make-image)
 
 ;; MSFIX: should use X Class name, or X Instance name first,
 ;; not wildcard matcher!  My xterm-s track the running program
@@ -152,32 +153,8 @@
 
 (add-window-style-option #:mwm-border set-mwm-border!)
 
-;; MSFIX: did I do this right?
-;; MS: would rather do this in the primitives at least for now.
-
-;(define (set-icon-maybe-name! arg w)
-;  (set-icon!
-;   (if (string? arg)
-;       (make-image arg)
-;       arg)
-;   w))
-  
-;(define (set-mini-icon-maybe-name! arg w)
-;  (set-mini-icon! 
-;   (if (string? arg)
-;       (make-image arg)
-;       arg)
-;   w))
-
-;(define (set-mini-icon-pixmap-name! arg w)
-;  (and (string? arg)
-;       (set-mini-icon! (string-append "mini-" arg ".xpm") w))
-;  (display "Set it!\n"))
-   
-
-;; Use the sugared versions from above
-;; MS: the primitive versions now handle strings, IMO this is more
-;; consistent with other interfaces.
+(add-window-style-option #:show-icon set-show-icon!)
+(add-window-style-option #:force-icon set-force-icon!)
 (add-window-style-option #:icon set-icon!)
 (add-window-style-option #:mini-icon set-mini-icon!)
 
@@ -209,10 +186,15 @@
 (add-window-hint-option #:use-style 			 
 			(lambda (the-style w) ((cdr the-style) w)))
 
-;; some extra style options not available in fvwm
+;; some extra style options of questionable usefulness
+
 (add-boolean-style-option #:start-lowered lower-window raise-window)
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
+
+
+
+
 
 
