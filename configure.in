@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl $Id$
 dnl configure.in
 dnl Autoconf script for SCWM
-dnl (C) 1998 Maciej Stachowiak and Greg J. Badros
+dnl (C) 1998, 1999 Maciej Stachowiak and Greg J. Badros
 
 
 dnl ## Initialize autoconf ##
@@ -443,6 +443,7 @@ AC_CHECK_FUNCS(gethostname waitpid sysconf uname)
 AC_CHECK_FUNCS(strerror strcasecmp strncasecmp)
 AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(setlinebuf setvbuf)
+AC_CHECK_FUNCS(setenv)
 
 dnl # Check for bleeding-edge guile funcs
 
