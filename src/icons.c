@@ -207,6 +207,7 @@ GetIconBitmap(ScwmWindow *psw)
 
 /*
  * Creates an icon window as needed
+ * def_x, def_y are viewport positions (I think --09/17/98 gjb)
  */
 void 
 CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
@@ -552,12 +553,14 @@ AutoPlace(ScwmWindow *psw)
       /* FIXGJB: may not want this -- icons should be able to iconify
          to anywhere */
       /* just make sure the icon is on this screen */
-      psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
-      psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
+      psw->icon_x_loc = ICON_X_VIRT(psw) % Scr.DisplayWidth + base_x;
+      psw->icon_y_loc = ICON_Y_VIRT(psw) % Scr.DisplayHeight + base_y;
+#if 0 /* FIXGJB */
       if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
         psw->icon_x_loc += Scr.DisplayWidth;
       if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
         psw->icon_y_loc += Scr.DisplayHeight;
+#endif 
     }
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
@@ -744,7 +747,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
   }
   if (psw->icon_w == None)
     if (psw->fIconMoved)
-      CreateIconWindow(psw, psw->icon_x_loc, psw->icon_y_loc);
+      CreateIconWindow(psw, ICON_X_VP(psw), ICON_Y_VP(psw));
     else
       CreateIconWindow(psw, def_x, def_y);
 

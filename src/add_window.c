@@ -672,7 +672,7 @@ AddWindow(Window w)
   InstallWindowColormaps(colormap_win);
 
   call1_hooks(after_new_window_hook, psw->schwin);
-  CreateIconWindow(psw,psw->icon_x_loc,psw->icon_y_loc);
+  CreateIconWindow(psw,ICON_X_VP(psw),ICON_Y_VP(psw));
 
   return (psw);
 }

@@ -707,7 +707,8 @@ HandlePropertyNotify()
       if (pswCurrent->fIconified) {
 	pswCurrent->fIconified = False;
 	pswCurrent->fIconUnmapped = False;
-	CreateIconWindow(pswCurrent, pswCurrent->icon_x_loc, pswCurrent->icon_y_loc);
+	CreateIconWindow(pswCurrent, 
+                         ICON_X_VP(pswCurrent), ICON_Y_VP(pswCurrent));
 	BroadcastIconInfo(M_ICONIFY, pswCurrent);
 	BroadcastConfig(M_CONFIGURE_WINDOW, pswCurrent);
 
@@ -1413,13 +1414,13 @@ HandleConfigureRequest()
     if (pswCurrent) {
       xwcm = cre->value_mask & (CWX | CWY);
       if (pswCurrent->icon_pixmap_w != None) {
-        xwc.x = pswCurrent->icon_x_loc;
-        xwc.y = pswCurrent->icon_y_loc;
+        xwc.x = ICON_X_VP(pswCurrent);
+        xwc.y = ICON_Y_VP(pswCurrent);
 	XConfigureWindow(dpy, pswCurrent->icon_pixmap_w, xwcm, &xwc);
       }
       if (pswCurrent->icon_w != None) {
-        xwc.x = pswCurrent->icon_x_loc;
-        xwc.y = pswCurrent->icon_y_loc +  pswCurrent->icon_p_height;
+        xwc.x = ICON_X_VP(pswCurrent);
+        xwc.y = ICON_Y_VP(pswCurrent) + pswCurrent->icon_p_height;
 	XConfigureWindow(dpy, pswCurrent->icon_w, xwcm, &xwc);
       }
     }

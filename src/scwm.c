@@ -1211,8 +1211,10 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
 	}
       }
     }
+#ifdef DEBUG_RESTORE
     scwm_msg(DBG,__FUNCTION__,"Reparenting %s to %d,%d",
              psw->name, xwc.x, xwc.y);
+#endif
     XReparentWindow(dpy, psw->w, Scr.Root, xwc.x, xwc.y);
 
     if (psw->fIconified && !(psw->fSuppressIcon)) {

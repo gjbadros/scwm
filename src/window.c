@@ -1948,8 +1948,8 @@ specified. */
     psw->fSticky = True;
     CassowaryEditPosition(psw);
     SuggestMoveWindowTo(psw,
-                        (FRAME_X(psw)-Scr.Vx) % Scr.DisplayWidth,
-                        (FRAME_Y(psw)-Scr.Vy) % Scr.DisplayHeight,
+                        (FRAME_X_VP(psw) % Scr.DisplayWidth),
+                        (FRAME_Y_VP(psw) % Scr.DisplayHeight),
                         True);
     CassowaryEndEdit(psw);
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
@@ -2505,9 +2505,10 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(window_position, "window-position", 0, 1, 0,
           (SCM win))
-     /** Return the position of WIN in pixels in virtual space.
+     /** Return the position of WIN in pixels.
 The position is returned as a list of the x coordinate and the y
-coordinate in pixels. WIN defaults to the window context in the usual
+coordinate in pixels. If the window is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified.  See also `window-viewport-position'. */
 #define FUNC_NAME s_window_position
 {
@@ -2527,7 +2528,8 @@ SCWM_PROC(icon_position, "icon-position", 0, 1, 0,
           (SCM win))
      /** Return the position of the icon for WIN. 
 The position is returned as a list of the x coordinate and the y
-coordinate in pixels. WIN defaults to the window context in the usual
+coordinate in pixels.  If the icon is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified. */
 #define FUNC_NAME s_icon_position
 {
@@ -2536,8 +2538,8 @@ way if not specified. */
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(SCM_MAKINUM(psw->icon_x_loc),
-                 SCM_MAKINUM(psw->icon_y_loc),
+  return gh_list(SCM_MAKINUM(ICON_X(psw)),
+                 SCM_MAKINUM(ICON_Y(psw)),
                  SCM_UNDEFINED);
 }
 #undef FUNC_NAME
