@@ -64,6 +64,10 @@ If all has gone well, you should be able to run the new binary
 evaluating some of the S-expressions from scheme/tests/constraints.scm
 for a demonstration of some of what the solver and scwm can do together.
 
+Note that when the constraint solver is in use, all interactive resizes
+and moves are done opaquely, no matter what options you give to the
+interactive-move or interactive-resize primitives.
+
 Please let me know of successes and failures. Consider the constraint
 code alpha. My main wm now has the constraint solver embedded, but I
 only turn on the solver (using the scwm-set-master-solver primitive) on
