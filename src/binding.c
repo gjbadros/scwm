@@ -108,7 +108,8 @@ int MetaMask = 0,
   numlock_mask = 0, 
   scrollock_mask = 0;
 
-static unsigned int mask_mod_combos[8];
+static int c_mask_mod_combos = 7;
+static unsigned int mask_mod_combos[7];
 
 static unsigned char rgmapMouseButtons[XSERVER_MAX_BUTTONS];
 
@@ -388,7 +389,7 @@ GrabButtonWithModifiersMaskXcPm(int button, int modifier,
                 pointer_mode, GrabModeAsync, None, xc);
   } else {
     int i = 0;
-    for (; i<8; ++i) {
+    for (; i<c_mask_mod_combos; ++i) {
       XGrabButton(dpy, button, (modifier | mask_mod_combos[i]), w,
                   True, event_mask,
                   pointer_mode, GrabModeAsync, None, xc);
@@ -417,7 +418,7 @@ UngrabButtonWithModifiersWin(int button, int modifier, Window w)
     XUngrabButton(dpy, button, modifier, w);
   } else {
     int i = 0;
-    for (; i<8; ++i) {
+    for (; i<c_mask_mod_combos; ++i) {
       XUngrabButton(dpy, button, (modifier | mask_mod_combos[i]), w);
     }
   }
@@ -435,7 +436,7 @@ GrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
            GrabModeAsync, GrabModeAsync);
   if (modifier != AnyModifier) {
     int i = 0;
-    for (; i<8; ++i) {
+    for (; i < c_mask_mod_combos; ++i) {
       XGrabKey(dpy, key, modifier | mask_mod_combos[i],
                w, True, GrabModeAsync, GrabModeAsync);
     }
@@ -453,7 +454,7 @@ UngrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
   XUngrabKey(dpy, key, modifier, w);
   if (modifier != AnyModifier) {
     int i = 0;
-    for (; i<8; ++i) {
+    for (; i < c_mask_mod_combos ; ++i) {
       XUngrabKey(dpy, key, modifier | mask_mod_combos[i], w);
     }
   }
@@ -1679,14 +1680,21 @@ init_modifiers(void)
             scrollock_mask = masks[i / mod->max_keypermod];
         }
       }
-      mask_mod_combos[0] = 0;
-      mask_mod_combos[1] = LockMask;
-      mask_mod_combos[2] = numlock_mask;
-      mask_mod_combos[3] = scrollock_mask;
-      mask_mod_combos[4] = numlock_mask | scrollock_mask;
-      mask_mod_combos[5] = LockMask | numlock_mask;
-      mask_mod_combos[6] = LockMask | scrollock_mask;
-      mask_mod_combos[7] = LockMask | numlock_mask | scrollock_mask;
+      if (numlock_mask == 0) {
+        scwm_msg(WARN,"init_modifiers",
+                 "Inefficiency due to numlock_mask not being found");
+      }
+      if (scrollock_mask == 0) {
+        scwm_msg(WARN,"init_modifiers",
+                 "Inefficiency due to scrollock_mask not being found");
+      }
+      mask_mod_combos[0] = LockMask;
+      mask_mod_combos[1] = numlock_mask;
+      mask_mod_combos[2] = scrollock_mask;
+      mask_mod_combos[3] = numlock_mask | scrollock_mask;
+      mask_mod_combos[4] = LockMask | numlock_mask;
+      mask_mod_combos[5] = LockMask | scrollock_mask;
+      mask_mod_combos[6] = LockMask | numlock_mask | scrollock_mask;
     }
     XFreeModifiermap(mod);
   }
