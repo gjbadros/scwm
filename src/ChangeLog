@@ -1,5 +1,8 @@
 Mon Mar  9 01:41:40 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c: Calculate length for read SCWM_REQUEST property more
+ 	correctly in HandleScwmExec.
+
 	* events.c(HandleScwmExec): redirect output and error to the
  	requesting program.
 
