@@ -16,8 +16,8 @@ vaguely up to date.  Also update `scwm.lsm' file.
 4) Grab hypothetical distribution directories by `cvs export'ing both
 the scwm and scwm-icons modules, and running `./autogen.sh'
 
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository export -D today scwm-icons
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository export -D today scwm
+   cvs -d serveuse.mit.edu:/usr/local/repository export -D today scwm-icons
+   cvs -d serveuse.mit.edu:/usr/local/repository export -D today scwm
    cd scwm; sh ./autogen.sh
 
 5) Make sure the sources configure, make, make install, run, and make
@@ -32,15 +32,15 @@ correct file size and version number
 7) Tag the repository using the convention of using "v" followed by the
    version number with all periods replaced by dashes, e.g. v0-7).
 
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository rtag v0-8 scwm-icons
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository rtag v0-8 scwm
+   cvs -d serveuse.mit.edu:/usr/local/repository rtag v0-8 scwm-icons
+   cvs -d serveuse.mit.edu:/usr/local/repository rtag v0-8 scwm
 
 8) Export modules to tar up, creating directories that contain the
 version number (e.g. scwm-0.8/). 
 
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository export -r v0-8 scwm-icons
+   cvs -d serveuse.mit.edu:/usr/local/repository export -r v0-8 scwm-icons
    mv scwm-icons scwm-icons-0.8
-   cvs -d vicarious-existence.mit.edu:/usr/local/repository export -r v0-8 scwm
+   cvs -d serveuse.mit.edu:/usr/local/repository export -r v0-8 scwm
    mv scwm scwm-0.8
    cd scwm-0.8; sh ./autogen.sh
 
@@ -65,7 +65,7 @@ version number references is useful.
 following places:
 
 E-mail:
-scwm-announce@vicarious-existence.mit.edu
+scwm-announce@serveuse.mit.edu
 guile@cygnus.com
 scsh@ai.mit.edu (this is at the invitation of Olin Shivers)
 
