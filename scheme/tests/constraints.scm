@@ -121,6 +121,14 @@
 	(cl-add-constraint solver cn)
 	cn)))
 
+  ;; returns the stay constraints, perhaps to be attached to 
+  ;; the window object
+  (define (keep-constant-size w)
+    (let ((cnw (make-cl-stay-constraint (window-clv-width w) cls-strong 2))
+	  (cnh (make-cl-stay-constraint (window-clv-height w) cls-strong 2)))
+      (cl-add-constraint solver cnw cnh)
+      (list cnw cnh)))
+
   (define (cl-set-solver-var s clv value)
     (cl-add-editvar s clv)
     (cl-begin-edit s)
@@ -179,7 +187,7 @@
 (define (flash-windows-of-constraint cn)
   (let ((color (if (cl-inequality? cn) "blue" "red")))
     (for-each 
-     (lambda (w) (flash-window w color)) 
+     (lambda (w) (flash-window w #:color color)) 
      (cl-windows-of-constraint cn))))
 
 (flash-windows-of-constraint cnl)
@@ -305,6 +313,9 @@ v
 
 ;;(cl-add-stay solver (window-clv-width (select-window-interactively)) cls-strong 1)
 (keep-in-view (select-window-interactively))
+(define cnsize (keep-constant-size (select-window-interactively)))
+
+(apply cl-remove-constraint solver cnsize)
 
 (cl-inequality? cn0)
 (cl-equation? cn0)
