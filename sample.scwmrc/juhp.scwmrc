@@ -245,7 +245,7 @@
    (menuitem "Destroy" #:image-left "mini-bomb.xpm" #:action destroy-window)))
 
 (define* (window-list-proc #&optional (w (get-window)))
-  (default-winlist-proc w))
+  (focus-change-warp-pointer w))
 
 (define (quit-verify-menu)
   (display-menu

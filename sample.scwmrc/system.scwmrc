@@ -995,26 +995,6 @@ from other processes.
 	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
 	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
 
-(define menu-utilities 
-  (menu 
-   (list
-    (menu-title "Utilities")
-    menu-separator
-    (menuitem "xterm" #:image-left "mini-term.xpm" 
-	       #:action xterm-program-name)
-    (menuitem "rxvt"
-	       #:action (lambda () (execute "rxvt")))
-    (menuitem "emacs" #:image-left "mini-edit.xpm" 
-	       #:action (lambda () (execute "emacs")))
-    (menuitem "top" #:action (lambda () (execute "rxvt -T Top -n Top -e top")))
-    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
-    (menuitem "xmag" #:action (lambda () (execute "xmag")))
-    menu-separator
-    (menuitem "Desks" #:action menu-desk)
-    menu-separator
-    (menuitem "Exit scwm" menu-quit-verify))))
-
-
 ;;; now set some mouse and key bindings ;;
 
 (define (popup-scwm-root-middle-menu)
@@ -1096,7 +1076,7 @@ from other processes.
 (bind-key 'all "C-M-S-q" quit-verify)
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 #f default-winlist-proc) ;; was deiconify
+(bind-mouse 'icon 2 #f focus-change-warp-pointer) ;; was deiconify
 
 (bind-mouse 'all "C-S-M-1" #f toggle-raise)
 
