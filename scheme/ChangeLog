@@ -1,3 +1,10 @@
+Fri Sep 11 15:49:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `unflash-window', and make `flash-window' store
+	old colors in scheme properties, instead of a lambda closure (for
+	support of highlighting the current window using hover hooks in 
+	the menuing code [during window-list popups])
+
 Fri Sep 11 13:41:03 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Added animated-move-window (taking virtual coords).  
@@ -5,7 +12,6 @@ Fri Sep 11 13:41:03 1998  Greg Badros  <gjb@cs.washington.edu>
 	* base.scm: Added a bunch of utility functions to the base
 	module: viewport->virtual, virtual->viewport, viewport-size,
 	viewport-{x,y}-position, vx-, vy-
-
 
 Fri Sep 11 11:49:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
