@@ -27,8 +27,10 @@
 #include <signal.h>
 #include <string.h>
 #include <X11/keysym.h>
-#include "scwm.h"
+
 #include "move.h"
+
+#include "scwm.h"
 #include "events.h"
 #include "screen.h"
 #include "Grab.h"

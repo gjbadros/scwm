@@ -25,6 +25,9 @@
 
 #include <stdio.h>
 #include <X11/Xlib.h>
+
+#include "Grab.h"
+
 #include "scwm.h"
 
 static int xgrabcount = 0;

@@ -10,15 +10,20 @@
 #include <config.h>
 #endif
 
-#include <X11/X.h>
-#include <guile/gh.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <X11/X.h>
+
+#include <guile/gh.h>
+
+#include "module-interface.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
 #include "callbacks.h"
 #include "scwm-constraints.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -18,9 +18,11 @@
 
 #include <stdio.h>
 #include <X11/keysym.h>
+
+#include "resize.h"
+
 #include "scwm.h"
 #include "screen.h"
-#include "resize.h"
 #include "borders.h"
 #include "font.h"
 #include "decorations.h"

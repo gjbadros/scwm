@@ -10,11 +10,10 @@
 #include <config.h>
 #endif
 
-#include "image.h"
-#include "window_fwd.h"
 #include <X11/Xlib.h>
 
-#define ScwmWindow   struct ScwmWindow
+#include "image.h"
+#include "window_fwd.h"
 
 extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;
@@ -51,9 +50,6 @@ char *SzExtractTextPropValue(const XTextProperty *pxtp);
 #endif
 
 int ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch);
-
-
-#undef ScwmWindow
 
 #endif /* XMISC_H__ */
 

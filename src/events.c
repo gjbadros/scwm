@@ -45,7 +45,6 @@
 #ifdef ISC
 #include <sys/bsdtypes.h>
 #endif
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -57,15 +56,19 @@
 #if defined ___AIX || defined _AIX || defined __QNX__ || defined ___AIXV3 || defined AIXV3 || defined _SEQUENT_
 #include <sys/select.h>
 #endif
+#include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/shape.h>
 
 #include <guile/gh.h>
-#include "window.h"
 
+#include "events.h"
+
+#include "window.h"
 #include "scwm.h"
-#include <X11/Xatom.h>
 #include "icons.h"
 #include "screen.h"
-#include <X11/extensions/shape.h>
 #include "util.h"
 #include "binding.h"
 #include "Grab.h"
@@ -75,7 +78,6 @@
 #include "window.h"
 #include "colormaps.h"
 #include "module-interface.h"
-#include "events.h"
 #include "focus.h"
 #include "color.h"
 #include "callbacks.h"
@@ -84,12 +86,13 @@
 #include "xmisc.h"
 #include "xrm.h"
 #include "dbug_resize.h"
-#ifdef USE_DMALLOC
-#include "dmalloc.h"
-#endif
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
+#endif
+
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
 #endif
 
 #ifndef WithdrawnState

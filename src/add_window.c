@@ -34,8 +34,6 @@
 /**    OR PERFORMANCE OF THIS SOFTWARE.                                     **/
 /*****************************************************************************/
 
-#define ADD_WINDOW_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -45,17 +43,23 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scwm.h"
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#include "screen.h"
-#include <X11/extensions/shape.h>
 #include <X11/Xresource.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/shape.h>
+
 #include <guile/gh.h>
+
+#define ADD_WINDOW_IMPLEMENTATION
+#include "add_window.h"
+
+#include "scwm.h"
+#include "screen.h"
 #include "binding.h"
 #include "window.h"
 #include "decorations.h"
 #include "Grab.h"
-#include "add_window.h"
 #include "colors.h"
 #include "borders.h"
 #include "resize.h"

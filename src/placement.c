@@ -13,8 +13,6 @@
  * warrantees of any sort whatsoever are given or implied or anything.
  ****************************************************************************/
 
-#define PLACEMENT_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -22,9 +20,12 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+
 #include <guile/gh.h>
 
+#define PLACEMENT_IMPLEMENTATION
 #include "placement.h"
+
 #include "scwm.h"
 #include "move.h"
 #include "screen.h"

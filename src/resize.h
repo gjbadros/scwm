@@ -10,6 +10,11 @@
 #include <config.h>
 #endif
 
+#include <X11/X.h>
+#include <X11/Intrinsic.h>
+
+#include "window_fwd.h"
+
 void ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
                    int *widthp, int *heightp);
 void RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height);

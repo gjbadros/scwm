@@ -16,6 +16,8 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include "virtual.h"
+
 #include "scwm.h"
 #include "util.h"
 #include "window.h"
@@ -26,7 +28,6 @@
 #include "borders.h"
 #include "focus.h"
 #include "module-interface.h"
-#include "virtual.h"
 #include "xmisc.h"
 #include "syscompat.h"
 

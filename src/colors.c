@@ -19,14 +19,14 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <pwd.h>
-
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 
+#include "colors.h"
 
 #include "scwm.h"
 #include "screen.h"
-#include "colors.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

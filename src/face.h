@@ -11,7 +11,9 @@
 #endif
 
 #include <libguile.h>
+
 #include "scwm.h"
+#include "screen.h"
 
 typedef struct {
   ButtonFace *bf;

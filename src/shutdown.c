@@ -10,17 +10,20 @@
 #include <signal.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
+
 #include <guile/gh.h>
+
+#include "shutdown.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "virtual.h"
 #include "callbacks.h"
-#include "shutdown.h"
 #include "syscompat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
-
 
 SCM shutdown_hook;
 SCM startup_hook;

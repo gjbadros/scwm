@@ -9,13 +9,17 @@
 #include <config.h>
 #endif
 
-#include <X11/Xlib.h>
-#include <unistd.h>
-#include <guile/gh.h>
-#include <signal.h>
-#include "scwm.h"
 #include <pwd.h>
+#include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
+#include <X11/Xlib.h>
+
+#include <guile/gh.h>
+
+#include "xrm.h"
+
+#include "scwm.h"
 
 XrmDatabase db;
 XrmDatabase dbSystem;

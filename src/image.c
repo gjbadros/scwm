@@ -18,14 +18,10 @@
  *
  */
 
-#define IMAGE_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <X11/Intrinsic.h>
-#include <X11/xpm.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -33,21 +29,26 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/stat.h>
-
+#include <X11/Intrinsic.h>
+#include <X11/xpm.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include <guile/gh.h>
+
+#define IMAGE_IMPLEMENTATION
+#include "image.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "callbacks.h"
 #include "scwmpaths.h"
+#include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
 
-#include "image.h"
-#include "guile-compat.h"
 
 
 static Colormap ImageColorMap;

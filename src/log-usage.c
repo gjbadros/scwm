@@ -30,13 +30,14 @@
  * GROUPE BULL.
  */
 
-
-#include "log-usage.h"
-#include "scwm.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#include "log-usage.h"
+
+#include "scwm.h"
 
 int
 SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */

@@ -42,6 +42,8 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
+#include "ICCCM.h"
+
 Atom XA_WM_PROTOCOLS = None;
 
 void 

@@ -7,23 +7,25 @@
  *     copyright remains in the source code and all documentation
  */
 
-#define DECOR_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <guile/gh.h>
+
+#define DECOR_IMPLEMENTATION
+#include "decor.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
-#include "decor.h"
 #include "color.h"
 #include "font.h"
 #include "face.h"
 #include "borders.h"
 #include "font.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -25,12 +25,16 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <limits.h>
+#include <assert.h>
+
 #include <guile/gh.h>
 #include <libguile.h>
-#include <assert.h>
-#include "scwm.h"
+
 #include "callbacks.h"
+
+#include "scwm.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -10,13 +10,16 @@
 #include <config.h>
 #endif
 
+#include <guile/gh.h>
+
+#include "drawmenu.h"
+
 #include "scwm.h"
 #include "menu.h"
-#include "drawmenu.h"
 #include "screen.h"
 #include "font.h"
-#include <guile/gh.h>
 #include "xmisc.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -11,6 +11,7 @@
 #endif
 
 #include "scwm.h"
+#include "window_fwd.h"
 
 Bool check_allowed_function(enum wm_client_functions function, ScwmWindow * t);
 void SelectDecor(ScwmWindow * t, int border_width, int resize_width);

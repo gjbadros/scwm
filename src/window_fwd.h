@@ -19,7 +19,7 @@
 struct ScwmWindow;
 /* Bit tricky because we need to avoid a redef error if window.h
    (the real thing) actually gets included after this file */
-/* typedef struct ScwmWindow ScwmWindow; */
+typedef struct ScwmWindow ScwmWindow;
 
 #endif /* WINDOW_FWD_H__ */
 #endif /* WINDOW_H__ */

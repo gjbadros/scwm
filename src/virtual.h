@@ -10,6 +10,8 @@
 #include <config.h>
 #endif
 
+#include <X11/Intrinsic.h>
+
 #ifndef NON_VIRTUAL
 void checkPanFrames();
 void raisePanFrames();

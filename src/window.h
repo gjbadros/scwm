@@ -10,6 +10,7 @@
 #endif
 
 #include <libguile.h>
+
 #include "scwm.h"
 #include "scwm-constraints.h"
 
@@ -78,7 +79,7 @@ typedef struct gravity_info_tag {
  * is allocated and linked into a list 
  * AddWindow initializes parts of this struct
  */
-typedef struct ScwmWindow {
+struct ScwmWindow {
   struct ScwmWindow *next;	/* next scwm window */
   struct ScwmWindow *prev;	/* prev scwm window */
   Window w;			/* the child window */
@@ -222,7 +223,13 @@ typedef struct ScwmWindow {
   SCM other_properties;
 
   SCM schwin;
-} ScwmWindow;
+};
+
+/* FIXJTL: This is ugly, but needed to make window_fwd work at all; is
+   it worth it? */
+#ifndef WINDOW_FWD_H__
+typedef struct ScwmWindow ScwmWindow;
+#endif
 
 /* FIXGJB: fWindowListSkip, fCirculateSkipIcon, fCirculateSkip are unused */
 

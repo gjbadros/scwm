@@ -19,18 +19,19 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_CONFIG_H
 #include <guile/gh.h>
-#endif
+
+#include "face.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
-#include "face.h"
 #include "color.h"
 #include "colors.h"
 #include "util.h"
 #include "image.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

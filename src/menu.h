@@ -11,11 +11,13 @@
 #include <config.h>
 #endif
 
+#include <X11/Intrinsic.h>
+
 #include <guile/gh.h>
+
 #include "image.h"
 #include "menuitem.h"
 #include "font.h"
-#include <X11/Intrinsic.h>
 
 #undef EXTERN
 #undef EXTERN_SET

@@ -29,9 +29,12 @@
 
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
+#include <X11/extensions/shape.h>
+
+#include "icons.h"
+
 #include "scwm.h"
 #include "screen.h"
-#include "icons.h"
 #include "borders.h"
 #include "module-interface.h"
 #include "binding.h"
@@ -39,8 +42,6 @@
 #include "color.h"
 #include "focus.h"
 #include "xmisc.h"
-
-#include <X11/extensions/shape.h>
 
 /***********************************************************************
  *

@@ -9,6 +9,8 @@
 #include <config.h>
 #endif
 
+#include "window_fwd.h"
+
 void SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 		 Window expose_win, Bool really_force);
 

@@ -22,14 +22,18 @@
 #include <signal.h>
 #include <string.h>
 #include <assert.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/shape.h>
+
+#include <guile/gh.h>
+
+#include "borders.h"
 
 #include "scwm.h"
 #include "icons.h"
 #include "screen.h"
-#include "borders.h"
-#include <guile/gh.h>
 #include "image.h"
-#include <X11/extensions/shape.h>
 #include "module-interface.h"
 #include "font.h"
 #include "xmisc.h"

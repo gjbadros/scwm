@@ -4,8 +4,6 @@
  * (C) 1998, 1997 Greg J. Badros and Maciej Stachowiak
  */
 
-#define MENU_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -16,15 +14,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <X11/keysym.h>
 #include <sys/types.h>
 #include <sys/time.h>
-
+#include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include <guile/gh.h>
+
+#define MENU_IMPLEMENTATION
 #include "menu.h"
+
 #include "scwm.h"
 #include "font.h"
 #include "events.h"
@@ -38,6 +38,7 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "callbacks.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

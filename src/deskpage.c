@@ -33,11 +33,13 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include "deskpage.h"
+
 #include "scwm.h"
 #include "screen.h"
-#include "deskpage.h"
 #include "module-interface.h"
 #include "virtual.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

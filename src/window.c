@@ -10,23 +10,25 @@
 
 /* #define SCWM_DEBUG_MSGS */
 
-#define WINDOW_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include <guile/gh.h>
-#include <X11/keysym.h>
 #include <assert.h>
+#include <stdio.h>
+#include <X11/keysym.h>
+
+#include <guile/gh.h>
+
+#define WINDOW_IMPLEMENTATION
+#include "window.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "focus.h"
 #include "move.h"
 #include "icons.h"
 #include "ICCCM.h"
-#include "window.h"
 #include "color.h"
 #include "util.h"
 #include "errors.h"

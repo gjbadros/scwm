@@ -5,8 +5,9 @@
  * Largely borrowed from IceWM's icewm.cc (C) 1997 by Marko Macek
  */
 
-#include "scwm.h"
 #include "session-manager.h"
+
+#include "scwm.h"
 
 int IceSMfd = -1;
 IceConn IceSMconn = NULL;

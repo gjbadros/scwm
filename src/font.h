@@ -35,9 +35,10 @@
 #include <config.h>
 #endif
 
-#include <libguile.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
+#include <libguile.h>
 
 #undef EXTERN
 #undef EXTERN_SET

@@ -24,6 +24,7 @@
 #endif
 
 #include <guile/gh.h>
+
 #include "guile-compat.h"
 
 #ifdef __cplusplus

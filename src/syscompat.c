@@ -26,11 +26,12 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include "syscompat.h"
-
 #if HAVE_UNAME
 #include <sys/utsname.h>
 #endif
+
+#include "syscompat.h"
+
 
 #ifndef HAVE_GETHOSTNAME
 /* define gethostname() by using uname() */

@@ -9,8 +9,9 @@
 #include <config.h>
 #endif
 
+#include <X11/X.h>
+
 #include "window_fwd.h"
-#define ScwmWindow   struct ScwmWindow
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -70,9 +71,6 @@ Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_n
 
 void GrabKeys(ScwmWindow *psw);
 void GrabButtons(ScwmWindow *psw);
-
-
-#undef ScwmWindow
 
 #endif /* BINDING_H */
 

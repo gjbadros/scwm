@@ -34,6 +34,8 @@
 #include <sys/types.h>
 #include <assert.h>
 
+#include "system.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

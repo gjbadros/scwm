@@ -43,12 +43,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scwm.h"
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
+
+#include "decorations.h"
+#include "scwm.h"
 #include "screen.h"
 #include "mwmcom.h"
 #include "borders.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

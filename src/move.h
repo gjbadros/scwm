@@ -10,9 +10,10 @@
 #include <config.h>
 #endif
 
-#include "window_fwd.h"
+#include <X11/X.h>
+#include <X11/Xlib.h>
 
-#define ScwmWindow   struct ScwmWindow
+#include "window_fwd.h"
 
 void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement);
@@ -34,8 +35,6 @@ Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 void DisplayMessage(const char *sz, Bool fRelief);
 void MapMessageWindow();
 void UnmapMessageWindow();
-
-#undef ScwmWindow
 
 #endif MOVE_H
 

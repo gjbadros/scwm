@@ -1,3 +1,30 @@
+1998-09-24  Todd Larason  <jtl@teeny.molehill.org>
+
+	* Grab.c, ICCCM.c, add_window.c, binding.c, borders.c,
+	callbacks.c, color.c, colormaps.c, colors.c, complex.c, decor.c,
+	decorations.c, deskpage.c, drawmenu.c, errors.c, events.c, face.c, 
+	guile-compat.c, icons.c, image.c, log-usage.c, menu.c, menuitem.c, 
+	miscprocs.c, module-interface.c, move.c, placement.c, resize.c,
+	screen.c, scwm.c, session-manager.c, shutdown.c, string_token.c,
+	syscompat.c, system.c, util.c, virtual.c, window.c, xmisc.c,
+	xproperty.c, xrm.c: All headers are now #included in the following 
+	order: config.h, system headers, X headers, guile headers,
+	<module>.h, other scwm headers, dmalloc.h.  Every module includes
+	its corresponding .h file.
+
+	* binding.h, borders.h, color.h, colors.h, decor.h, decorations.h, 
+	face.h, font.h, image.h, menu.h, menuitem.h, move.h, resize.h,
+	screen.h, scwm.h, virtual.h, window.h, xmisc.h: header files in
+	the order given above, and headers added to allow scwm headers to
+	be included independantly of one another.
+
+	* window.h, window_fwd.h: typedef struct ScwmWindow ScwmWindow in
+	window_fwd.h; guard typedef in window.h against window_fwd.h's.
+	
+	* add_window.h, binding.h, colormaps.h, move.h, xmisc.h: remove #define
+ 	ScwmWindow mechanism for using window_fwd.h; now all handled by
+ 	window.h and window_fwd.h
+
 Thu Sep 24 12:03:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c (InteractiveMove): Reset have_orig_position after testing 

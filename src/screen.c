@@ -3,16 +3,18 @@
  *
  */
 
-#define SCREEN_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <guile/gh.h>
 #include <assert.h>
-#include "scwm.h"
+
+#include <guile/gh.h>
+
+#define SCREEN_IMPLEMENTATION
 #include "screen.h"
+
+#include "scwm.h"
 #include "window.h"
 #include "decor.h"
 #include "color.h"
@@ -21,6 +23,7 @@
 #include "borders.h"
 #include "font.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -4,8 +4,6 @@
  *
  */
 
-#define MENUITEM_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -16,18 +14,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <X11/keysym.h>
 #include <sys/types.h>
 #include <sys/time.h>
-
+#include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 #include <guile/gh.h>
-#include "scwm.h"
+
+#define MENUITEM_IMPLEMENTATION
 #include "menu.h"
+
+#include "scwm.h"
 #include "menuitem.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

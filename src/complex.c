@@ -12,6 +12,8 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include "complex.h"
+
 #include "scwm.h"
 #include "util.h"
 #include "screen.h"

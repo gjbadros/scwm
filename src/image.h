@@ -26,8 +26,10 @@
 #include <config.h>
 #endif
 
-#include <guile/gh.h>
 #include <unistd.h>
+#include <X11/Intrinsic.h>
+
+#include <guile/gh.h>
 
 #undef EXTERN
 #undef EXTERN_SET

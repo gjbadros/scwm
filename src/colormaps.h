@@ -12,16 +12,12 @@
 
 #include "window_fwd.h"
 
-#define ScwmWindow    struct ScwmWindow
-
 void HandleColormapNotify(void);
 void ReInstallActiveColormap(void);
 void InstallWindowColormaps(ScwmWindow *psw);
 void InstallRootColormap(void);
 void UninstallRootColormap(void);
 void FetchWmColormapWindows(ScwmWindow *psw);
-
-#undef ScwmWindow
 
 #endif /* COLORMAPS_H__ */
 

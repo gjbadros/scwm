@@ -13,12 +13,15 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "scwm.h"
 #include <X11/Xatom.h>
+
+#include "colormaps.h"
+
+#include "scwm.h"
 #include "screen.h"
 #include "window.h"
-#include "colormaps.h"
 #include "xmisc.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

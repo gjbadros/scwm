@@ -7,8 +7,6 @@
  *     copyright remains in the source code and all documentation
  */
 
-#define COLOR_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -18,14 +16,17 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 
-#include "scwm.h"
+#define COLOR_IMPLEMENTATION
 #include "color.h"
+
+#include "scwm.h"
 #include "screen.h"
 #include "errors.h"
 #include "borders.h"
 #include "decor.h"
 #include "colors.h"
 #include "guile-compat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

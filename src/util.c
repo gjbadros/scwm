@@ -16,6 +16,9 @@
 #endif
 
 #include <guile/gh.h>
+
+#include "util.h"
+
 #include "scwm.h"
 #include "syscompat.h"
 #include "screen.h"

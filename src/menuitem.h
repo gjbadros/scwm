@@ -12,6 +12,7 @@
 #endif
 
 #include <guile/gh.h>
+
 #include "image.h"
 
 #undef EXTERN

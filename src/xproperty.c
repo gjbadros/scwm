@@ -30,22 +30,24 @@
  *
  */
 
-#define XPROPERTY_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <assert.h>
+#include <X11/X.h>
+
 #include <guile/gh.h>
 #include <libguile.h>
-#include <X11/X.h>
-#include <assert.h>
+
+#define XPROPERTY_IMPLEMENTATION
+#include "xproperty.h"
+
 #include "scwm.h"
 #include "errors.h"
 #include "screen.h"
 #include "guile-compat.h"
 #include "window.h"
-#include "xproperty.h"
 #include "xmisc.h"
 
 /* also used by window.c */

@@ -3,15 +3,17 @@
  * (C) 1997-1998 By Maciej Stachowiak and Greg J. Badros
  */
 
-#define BINDING_IMPLEMENTATION
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <guile/gh.h>
-#include <X11/keysym.h>
 #include <ctype.h>
+#include <X11/keysym.h>
+
+#include <guile/gh.h>
+
+#define BINDING_IMPLEMENTATION
+#include "binding.h"
 
 #include "scwm.h"
 #include "screen.h"
@@ -22,7 +24,6 @@
 #include "util.h"
 #include "miscprocs.h"
 #include "add_window.h"
-#include "binding.h"
 #include "xmisc.h"
 #include "syscompat.h"
 

@@ -13,8 +13,10 @@
 #include <assert.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
-#include "scwm.h"
+
 #include "xmisc.h"
+
+#include "scwm.h"
 #include "window.h"
 #include "screen.h"
 #include "image.h"

@@ -36,9 +36,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+
 #include "binding.h"
 #include "window.h"
-
 
 #undef EXTERN
 #undef EXTERN_SET

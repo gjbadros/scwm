@@ -10,6 +10,8 @@
 #include <config.h>
 #endif
 
+#include <X11/Intrinsic.h>
+
 Pixel *AllocNonlinearGradient(char *s_colors[], int clen[], 
 			      int nsegs, int npixels);
 

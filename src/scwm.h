@@ -43,8 +43,10 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
-#include <X11/Intrinsic.h> 
+#include <X11/Intrinsic.h>
+
 #include <guile/gh.h>
+
 #include "color.h"
 #include "module-types.h"
 #include <stdlib.h>

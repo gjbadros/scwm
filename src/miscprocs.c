@@ -10,10 +10,15 @@
 #include <config.h>
 #endif
 
-#include <X11/Xlib.h>
 #include <unistd.h>
-#include <guile/gh.h>
 #include <signal.h>
+#include <sys/times.h>
+#include <X11/Xlib.h>
+
+#include <guile/gh.h>
+
+#include "miscprocs.h"
+
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"
@@ -23,7 +28,6 @@
 #include "font.h"
 #include "xmisc.h"
 #include "scwmpaths.h"
-#include <sys/times.h>
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;

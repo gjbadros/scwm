@@ -31,49 +31,18 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-
-#include "scwm.h"
 #include <stdarg.h>
-#include <guile/gh.h>
-#include "guile-compat.h"
-#include "syscompat.h"
-#include "scwmpaths.h"
-#include "scm_init_funcs.h"
-#ifdef USE_CASSOWARY
-void init_cassowary_scm();           /* from the cassowary distribution */
-#endif
-
-#include "screen.h"
-#include "window.h"
-#include "decor.h"
-#include "image.h"
-#include "menu.h"
-#include "events.h"
-#include "callbacks.h"
-#include "font.h"
-#include "resize.h"
-#include "virtual.h"
-#include "Grab.h"
-#include "shutdown.h"
-#include "xmisc.h"
-#include "colormaps.h"
-#include "module-interface.h"
-#include "log-usage.h"
-
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 /* need to get prototype for XrmUniqueQuark for XUniqueContext call */
 #include <X11/Xresource.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
 #ifdef HAVE_LIBXMU
 #include <X11/Xmu/Error.h>
 #endif
-#ifdef HAVE_LIBSM_LIBICE
-#include "session-manager.h"
-#endif
-
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #else 
@@ -91,6 +60,43 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #else
 #include <locale.h>
 #endif
+#endif
+
+#include <guile/gh.h>
+
+#include "scwm.h"
+
+#include "guile-compat.h"
+#include "syscompat.h"
+#include "scwmpaths.h"
+#include "scm_init_funcs.h"
+#include "screen.h"
+#include "window.h"
+#include "decor.h"
+#include "image.h"
+#include "menu.h"
+#include "events.h"
+#include "callbacks.h"
+#include "font.h"
+#include "resize.h"
+#include "virtual.h"
+#include "Grab.h"
+#include "shutdown.h"
+#include "xmisc.h"
+#include "colormaps.h"
+#include "module-interface.h"
+#include "log-usage.h"
+
+#ifdef HAVE_LIBSM_LIBICE
+#include "session-manager.h"
+#endif
+
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
+#ifdef USE_CASSOWARY
+void init_cassowary_scm();           /* from the cassowary distribution */
 #endif
 
 #define MAXHOSTNAME 255
