@@ -1,5 +1,5 @@
 #!/bin/sh -
-# scwm-snarf
+# scwm-doc-snarf
 # (C) 1999 Ken Pizzini and Greg J. Badros
 # Handle snarfs with embedded %/%/ separating the arglist of procedures
 # from the rest.
@@ -10,15 +10,5 @@
 # s/"(/"'(/g  # add the Scheme quote to the list -- tricky shell quoting below
 # AND we need these to only happen *after* the %/%/ marker on the input lines
 # so we use two sed's to do it.
-guile-snarf "$@" | \
-sed 's@% */ *% */@\
-@
-       /\n/!b
-       h
-       s/SCM //g
-       s/\$\$\$.*//g
-       s/,[ 	]*/ /g
-       s/"(/"'\''(/
-       x
-       G
-       s/\n.*\n//' 
+test -n "${CPP+set}" || CPP="gcc -E"
+${CPP} -DSCM_MAGIC_SNARFER "$@" | tee | perl -e 'BEGIN {undef $/; $_ = <>} while (m/\$\$\$\s*(\S+)\s+(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s*\@\@\@\s*(.*?) \@\!\!\!/gs) { print "$1, $2, $3, $4, $5, $6\n\n"; }'

@@ -25,26 +25,28 @@ SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(), c
 
 #ifndef SCWM_EXTRACT_COMMENTS
 #ifndef SCM_MAGIC_SNARFER
-#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
+#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST, docstring) \
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
 
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
 #else
 #if defined(__cplusplus) || defined(GUILE_CPLUSPLUS_SNARF)
-#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
-%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST);
-
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
-%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST);
+#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST, docstring) \
+%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST); \
+$$$ primname #ARGLIST req opt var @@@ docstring @!!!
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST); \
+$$$ primname #ARGLIST req opt var @@@ docstring @!!!
 #else
-#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
-%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST);
-
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
-%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST);
+#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST, docstring) \
+%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST); \
+$$$ primname #ARGLIST req opt var @@@ docstring @!!!
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST); \
+$$$ primname #ARGLIST req opt var @@@ docstring @!!!
 #endif
 #endif
 #endif
@@ -53,30 +55,30 @@ SCM fname ARGLIST
    the macro name is used as a lexical cue to the extractor */
 
 #ifndef SCM_MAGIC_SNARFER
-#define SCWM_HOOK(var, name, args) \
+#define SCWM_HOOK(var, name, args, docstring) \
 static SCM var
 #else
 
 #ifdef HAVE_SCM_MAKE_HOOK
-#define SCWM_HOOK(var, name, args) \
+#define SCWM_HOOK(var, name, args, docstring) \
 %%%     do { var = scm_make_named_hook(name,args); } while (0)
 #else
-#define SCWM_HOOK(var, name, args) \
+#define SCWM_HOOK(var, name, args, docstring) \
 %%%     do { var = scm_sysintern(name, SCM_EOL); } while (0)
 #endif
 
 #endif
 
 #ifndef SCM_MAGIC_SNARFER
-#define SCWM_GLOBAL_HOOK(var, name, args) \
+#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
 SCM var
 #else
 
 #if HAVE_SCM_MAKE_HOOK
-#define SCWM_GLOBAL_HOOK(var, name, args) \
+#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
 %%%     do { var = scm_make_named_hook(name,args); } while (0)
 #else
-#define SCWM_GLOBAL_HOOK(var, name, args) \
+#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
 %%%     do { var = scm_sysintern(name, SCM_EOL); } while (0)
 #endif
 
