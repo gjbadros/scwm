@@ -17,7 +17,7 @@ exec_prefix=@exec_prefix@
 subdirs=libs scwm sample.scwmrc scheme app
 # icons mini-icons
 
-CFLAGS = -O
+CFLAGS=@CFLAGS@
 
 all:
 	@for i in ${subdirs}; do \
