@@ -342,11 +342,14 @@ AC_DEFINE(HAVE_SHAPE)
 
 dnl # Check for the XTest library (needed for better simulated event support, quoting) ##
 XTST_LIB=""
+have_xtest=no
 AC_CHECK_LIB(Xtst, XTestQueryExtension, [
 XTST_LIB="-lXtst"
 AC_DEFINE(HAVE_XTEST)
-], AC_MSG_WARN(libXtst not found -- key quoting and simulated events will not be supported)
+have_xtest=yes
+], AC_MSG_WARN(libXtst not found -- simulated events will not be supported)
 , $x_libs)
+AM_CONDITIONAL(HAVE_XTEST, test "$have_xtest" = yes)
 
 
 dnl # Check for the Xpm library #
@@ -705,6 +708,7 @@ AC_OUTPUT(Makefile \
 	  modules/xlib-drawing/Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/proplist/Makefile \
+	  modules/xtest/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
