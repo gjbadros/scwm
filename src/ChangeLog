@@ -1,3 +1,8 @@
+Wed Oct  6 17:40:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* miscprocs.c (s_X_get_primary_selection): Fix some doc comment
+	problems, bug in X-get-primary-selection.
+
 Wed Oct  6 09:21:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c (IsClick): Also grab ButtonPress and ButtonRelease
