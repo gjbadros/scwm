@@ -2153,7 +2153,7 @@ this unless you know what it means. */
   Window pointer_win;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(2, win,w);
-  VALIDATE_ARG_SYM(3,kind);
+  VALIDATE_ARG_SYM_USE_DEF(3,kind,sym_click);
   VALIDATE_ARG_BOOL_COPY_USE_T(4, propagate_p, fPropagate);
 
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME, False);

@@ -178,6 +178,13 @@ NOTE: Assignments to the cvar in the error handling
   if (!gh_symbol_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+#define VALIDATE_ARG_SYM_USE_DEF(pos,scm,def) \
+  do { \
+  if (UNSET_SCM(scm)) scm = def; \
+  if (!gh_symbol_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
 #define VALIDATE_ARG_STR(pos,scm) \
   do { \
   if (!gh_string_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
