@@ -286,6 +286,9 @@ AC_CHECK_LIB(SM, SmcOpenConnection, [
 ], AC_MSG_WARN(libSM not found -- no session manager support)
 , $x_libs)
 
+AM_PATH_ESD(0.2.7, HAVE_ESD=yes, HAVE_ESD=no)
+AM_CONDITIONAL(HAVE_ESD, test "$HAVE_ESD" = yes)
+
 AM_PATH_GTK(1.0.0, HAVE_GTK=yes, HAVE_GTK=no)
 
 AM_CONDITIONAL(HAVE_GTK, test $HAVE_GTK = yes)
@@ -560,13 +563,14 @@ AC_OUTPUT(Makefile \
           scheme/Makefile \
           app/Makefile \
 	  modules/Makefile \
-	  modules/xpm-menus/Makefile \
-	  modules/overlay-plane/Makefile \
-	  modules/pie-menus/Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \
+	  modules/esdsound/Makefile \
+	  modules/overlay-plane/Makefile \
+	  modules/pie-menus/Makefile \
 	  modules/scwmgtkhelper/Makefile \
 	  modules/xlib-drawing/Makefile \
+	  modules/xpm-menus/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
