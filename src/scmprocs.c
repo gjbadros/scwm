@@ -1,3 +1,33 @@
+/****************************************************************************
+ * This module is all original code 
+ * by Maciej Stachowiak.
+ * It may be used or distributed under either the FVWM license 
+ * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
+ * the description below)
+ * Copyright 1997, Maciej Stachowiak
+ ****************************************************************************/
+/*	Copyright (C) 1997, Maciej Stachowiak
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.GPL.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * As a special exception, this file may alternatively be distributed under 
+ * the fvwm license (see COPYING.FVWM).
+ *
+ */
+
 #include <stdio.h>
 #include <guile/gh.h>
 #include <libguile.h>
@@ -27,8 +57,8 @@ void init_scwm_procs(void)
   gh_new_procedure3_0("bind-mouse",bind_mouse);
   gh_new_procedure0_0("mouse-event-type",mouse_event_type);
   gh_new_procedure0_1("set-title-justify!",set_title_justify);
-  gh_new_procedure0_0("get-window",get_window);
-  gh_new_procedure0_0("select-window",select_window);
+  gh_new_procedure0_1("get-window",get_window);
+  gh_new_procedure0_1("select-window",select_window);
   /* maybe set-window-context! and unset-window-context! will be needed.. */
   gh_new_procedure0_1("delete-window",delete_window);
   gh_new_procedure0_1("destroy-window",destroy_window);
@@ -65,7 +95,7 @@ void init_scwm_procs(void)
   gh_new_procedure1_0("font?",font_p);
   gh_new_procedure1_0("window?",window_p);
   gh_new_procedure0_0("scwm-quit",scwm_quit);
-  gh_new_procedure0_0("get-pointer-position",get_pointer_position);
+  gh_new_procedure0_0("pointer-position",pointer_position);
   gh_new_procedure2_0("move-pointer-to",move_pointer_to);
   gh_new_procedure0_0("recapture",recapture);
   gh_new_procedure1_0("restart",restart);
@@ -79,16 +109,16 @@ void init_scwm_procs(void)
   gh_new_procedure2_0("set-edge-wrap!",set_edge_wrap_x);
   gh_new_procedure2_0("set-edge-resistance!",set_edge_resistance_x);
   gh_new_procedure2_0("set-desk-size!",set_desk_size_x);
-  gh_new_procedure0_0("get-display-size",get_display_size);
-  gh_new_procedure0_0("get-desk-size",get_desk_size);
-  gh_new_procedure0_0("get-viewport-position",get_viewport_position);
-  gh_new_procedure0_0("get-current-desk",get_current_desk);
-  gh_new_procedure0_1("get-window-position",get_window_position);
-  gh_new_procedure0_1("get-window-size",get_window_size);
-  gh_new_procedure0_1("get-window-id",get_window_id);
-  gh_new_procedure0_1("get-window-desk",get_window_desk);
-  gh_new_procedure0_1("get-window-title",get_window_title);
-  gh_new_procedure0_0("get-window-list",get_window_list);
+  gh_new_procedure0_0("display-size",display_size);
+  gh_new_procedure0_0("desk-size",desk_size);
+  gh_new_procedure0_0("viewport-position",viewport_position);
+  gh_new_procedure0_0("current-desk",current_desk);
+  gh_new_procedure0_1("window-position",window_position);
+  gh_new_procedure0_1("window-size",window_size);
+  gh_new_procedure0_1("window-id",window_id);
+  gh_new_procedure0_1("window-desk",window_desk);
+  gh_new_procedure0_1("window-title",window_title);
+  gh_new_procedure0_0("list-all-windows",list_all_windows);
 }
 
 

@@ -1,6 +1,8 @@
 /****************************************************************************
- * Copyright 1997, Maciej Stachowiak
- */
+ * This module has been significantly modified by Maciej Stachowiak.
+ * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
+ * Changes Copyright 1997, Maciej stachowiak
+ ****************************************************************************/
 
 #include <guile/gh.h>
 #include "../configure.h"

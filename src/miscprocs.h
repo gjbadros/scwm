@@ -15,7 +15,7 @@ SCM set_opaque_move_size_x(SCM size);
 
 SCM scwm_quit();
 
-SCM get_pointer_position();
+SCM pointer_position();
 SCM move_pointer_to(SCM sx, SCM sy);
 SCM recapture();
 SCM restart(SCM command);

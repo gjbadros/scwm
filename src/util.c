@@ -1,3 +1,17 @@
+/****************************************************************************
+ * This module has been significantly modified by Maciej Stachowiak.
+ * It may be used under the terms indicated by the copyright below.
+ * Changes Copyright 1997, Maciej stachowiak
+ ****************************************************************************/
+/****************************************************************************
+ * This module is all original code 
+ * by Rob Nation 
+ * Copyright 1993, Robert Nation
+ *     You may use this code for any purpose, as long as the original
+ *     copyright remains in the source code and all documentation
+ ****************************************************************************/
+
+
 #include <guile/gh.h>
 #include "../configure.h"
 #include "scwm.h"

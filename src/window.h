@@ -29,8 +29,8 @@ SCM make_window(ScwmWindow *win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 
-SCM get_window(void);
-SCM select_window(void); 
+SCM get_window(SCM kill_p);
+SCM select_window(SCM kill_p); 
 SCM delete_window(SCM win);
 SCM destroy_window(SCM win);
 SCM window_deletable_p(SCM win);
@@ -59,12 +59,12 @@ SCM interactive_resize(SCM win);
 SCM refresh_window(SCM win);
 
 SCM move_window_to_desk(SCM which, SCM win);
-SCM get_window_position(SCM win);
-SCM get_window_size(SCM win);
-SCM get_window_id(SCM win);
-SCM get_window_desk(SCM win);
-SCM get_window_title(SCM win);
-SCM get_window_list();
+SCM window_position(SCM win);
+SCM window_size(SCM win);
+SCM window_id(SCM win);
+SCM window_desk(SCM win);
+SCM window_title(SCM win);
+SCM list_all_windows();
 
 #endif /* WINDOW_H */
 

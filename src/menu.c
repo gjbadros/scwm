@@ -1,3 +1,33 @@
+/****************************************************************************
+ * This module is all original code 
+ * by Maciej Stachowiak.
+ * It may be used or distributed under either the FVWM license 
+ * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
+ * the description below)
+ * Copyright 1997, Maciej Stachowiak
+ ****************************************************************************/
+/*	Copyright (C) 1997, Maciej Stachowiak
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.GPL.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * As a special exception, this file may alternatively be distributed under 
+ * the fvwm license (see COPYING.FVWM).
+ *
+ */
+
 #include <guile/gh.h>
 #include "../configure.h"
 #include "scwm.h"
@@ -131,19 +161,21 @@ SCM make_menu(SCM title, SCM args)
       AddToMenu(MENUROOT(answer), 
 		"", "Nop");
       MENUROOT(answer)->last->thunk=SCM_UNDEFINED;
-    } else if (gh_pair_p(centry) && gh_string_p(SCM_CAR(centry)) &&
-	       gh_pair_p(SCM_CDR(centry)) && 
-	       ((procp=gh_procedure_p(gh_cadr(centry)))
+    } else if (gh_pair_p(centry) && gh_string_p(gh_car(centry)) &&
+	       gh_pair_p(gh_cdr(centry)) && 
+	       (gh_procedure_p(gh_cadr(centry))
 		|| (SCM_NIMP(gh_cadr(centry)) &&
-		    MENUP(gh_cadr(centry))) &&
-		(gh_cadr(centry)==SCM_EOL))) {
+		    MENUP(gh_cadr(centry)))) &&
+		    (gh_cddr(centry)==SCM_EOL)) {
+      procp=gh_procedure_p(gh_cadr(centry));
       AddToMenu(MENUROOT(answer), 
 		gh_scm2newstr(SCM_CAR(centry),&dummy), procp ? "Scheme" : "SchemeMenu");
       MENUROOT(answer)->last->thunk=SCM_CAR(SCM_CDR(centry));
     } else {
-      scwm_error("make-menu",12);
+      scwm_error("make-menu",11);
     }
   }
+    gh_allow_ints();
   add_menu_to_list(MENUROOT(answer));
   MakeMenu(MENUROOT(answer));
   return answer;
