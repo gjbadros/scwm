@@ -1,5 +1,12 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* Makefile.am (scwm_common_scheme): Update file list.
+
+	* gnome-hints.scm: Added support for nearly all gnome
+	hints. _WIN_AREA_COUNT, _WIN_AREA, _WIN_STATE and _WIN_LAYER still
+	do not update properly in response to internal state changes, but
+	other than that, everything should work. 
+
 	* kde-hints.scm: Minor bugfixes: use `window-close-hook' rather
 	than `X-DestroyNotify hook', since windows may be closed without
 	being destroyed. Make `client-message-hook' expect a window as its
