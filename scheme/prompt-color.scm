@@ -36,14 +36,14 @@
   "Prompt using PROMPT for a color and call PROC with value if Ok is clicked.
 INITVAL is a default initial color as a color object or string.
 TITLE is a window title."
+  (or title (set! title "prompt-color"))
   (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-color-hbox initval title favorites))
+	 (hbox-and-getter (prompt-color-hbox title initval favorites))
 	 (hbox (car hbox-and-getter))
 	 (getter (cadr hbox-and-getter))
 	 (hbox-buttons (gtk-hbox-new #f 5))
 	 (okbut (gtk-button-new-with-label "Ok"))
 	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (or title (set! title "prompt-color"))
     (gtk-window-set-title toplevel title)
     (gtk-box-pack-start hbox-buttons okbut #t #t)
     (gtk-box-pack-start hbox-buttons cancelbut #t #t)
@@ -84,6 +84,8 @@ TITLE is a window title."
 PROMPT is the prompt, INITVAL is the initial color as a color object or a string.
 The returned value is a list: (hbox getter).
 See also `prompt-color'."
+  (or favorites
+      (set! favorites (scwm-option-get *favorite-colors*)))
   (let* ((hbox (gtk-hbox-new #f 0))
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))

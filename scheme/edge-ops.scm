@@ -26,6 +26,11 @@
 
 
 
+(define current-edge-ops-scroll-delay #f)
+(define edge-ops-time-hook #f)
+(define edge-ops-wrap-avoid #f)
+(define edge-ops-last-scroll 0)
+
 (define-scwm-option *edge-ops-scroll-delay* #f
   "Delay in milliseconds for scrolling if the mouse cursor is on the edge."
   #:type 'integer
@@ -44,12 +49,6 @@ If #f, then this never happens.  If #t, then this always happens.  If
   #:type 'boolean
   #:group 'edge-ops
   )
-
-
-(define current-edge-ops-scroll-delay #f)
-(define edge-ops-time-hook #f)
-(define edge-ops-wrap-avoid #f)
-(define edge-ops-last-scroll 0)
 
 (add-hook!
  edge-enter-hook

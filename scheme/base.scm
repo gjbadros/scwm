@@ -98,15 +98,14 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   "The default menu text color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
   #:setter (lambda (color) (set! menu-text-color (maybe-make-color color)))
   #:getter (lambda () menu-text-color))
+;; (scwm-option-favorites '*menu-text-color*)
 
 (define-scwm-option *menu-bg-color* (make-color "grey75")
   "The default menu background color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
   #:setter (lambda (color) (set! menu-bg-color (maybe-make-color color)))
   #:getter (lambda () menu-bg-color))
 
@@ -115,7 +114,6 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   "The default menu highlight fg/text color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "inherit" "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
   #:setter (lambda (color) (set! menu-hl-fg-color (maybe-make-color color)))
   #:getter (lambda () menu-hl-fg-color))
 
@@ -124,7 +122,6 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   "The default menu highlight background color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "inherit" "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
   #:setter (lambda (color) (set! menu-hl-bg-color (maybe-make-color color)))
   #:getter (lambda () menu-hl-bg-color))
 
