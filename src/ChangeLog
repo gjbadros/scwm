@@ -1,3 +1,11 @@
+Thu Mar 26 13:59:14 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* misc.h: Removed a bunch of unused #define of FLAG variables from
+	window bit field rewrite
+
+	* window.c: Return SCM_UNSPECIFIED instead of SCM_BOOL_T from lots 
+	of primitives.
+	
 Thu Mar 26 07:41:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c, window.h, scmprocs.c: Added window-frame-id procedure,
