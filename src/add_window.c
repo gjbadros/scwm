@@ -218,6 +218,7 @@ ScwmWindow *AddWindow(Window w)
   saved_flags = tmp_win->flags;
   tmp_win->flags = tflag;
   tmp_win->schwin=make_window(tmp_win);
+
   run_new_window_hint_hook(tmp_win->schwin);
   tflag=tmp_win->flags;
 

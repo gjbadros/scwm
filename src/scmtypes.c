@@ -36,6 +36,7 @@
 #include "color.h"
 #include "window.h"
 #include "menu.h"
+#include "decor.h"
 
 static scm_smobfuns font_smobfuns= {
   &scm_mark0,
@@ -52,7 +53,7 @@ static scm_smobfuns color_smobfuns= {
 };
 
 static scm_smobfuns window_smobfuns= {
-  &scm_mark0,
+  &mark_window,
   &free_window,
   &print_window,
   0
@@ -65,6 +66,13 @@ static scm_smobfuns menu_smobfuns= {
   0
 };
 
+static scm_smobfuns decor_smobfuns= {
+  &scm_mark0,
+  &free_decor,
+  &print_decor,
+  0
+};
+
 
 void init_scwm_types(void)
 {
@@ -72,7 +80,9 @@ void init_scwm_types(void)
   scm_tc16_scwm_color = scm_newsmob (&color_smobfuns);
   scm_tc16_scwm_window = scm_newsmob (&window_smobfuns);
   scm_tc16_scwm_menu = scm_newsmob (&menu_smobfuns);
+  scm_tc16_scwm_decor = scm_newsmob (&decor_smobfuns);
 }
+
 
 
 

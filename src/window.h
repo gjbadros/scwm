@@ -23,6 +23,7 @@ extern SCM window_context;
 #define unset_window_context() window_context=SCM_UNDEFINED;
 
 size_t free_window (SCM obj);
+SCM mark_window (SCM obj);
 int print_window (SCM obj, SCM port, scm_print_state *pstate);
 
 void init_window();

@@ -42,6 +42,7 @@
 #include "menu.h"
 #include "paths.h"
 #include "deskpage.h"
+#include "decor.h"
 
 void init_scwm_procs(void)
 {
@@ -158,6 +159,11 @@ void init_scwm_procs(void)
   gh_new_procedure0_1("window-resource",window_resource);
   gh_new_procedure0_0("beep",beep);
   gh_new_procedure1_1("set-lenience!",set_lenience_x);
+  gh_new_procedure0_1("make-decor",make_decor);
+  gh_new_procedure0_0("default-decor",default_decor);
+  gh_new_procedure1_0("set-current-decor!",set_current_decor_x);
+  gh_new_procedure0_0("current-decor",current_decor);
+  gh_new_procedure1_1("set-window-decor!",set_window_decor_x);
 }
 
 

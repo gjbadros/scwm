@@ -31,6 +31,18 @@ size_t free_window (SCM obj)
   return(0);
 }
 
+SCM mark_window (SCM obj) {
+
+  SCM_SETGC8MARK (obj);
+
+  if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl!=NULL) {
+    scm_gc_mark(SCWMWINDOW(obj)->fl->scmdecor);
+  }
+
+  return SCM_BOOL_F;
+}
+
+
 int print_window (SCM obj, SCM port, scm_print_state *pstate) {
   scm_gen_puts(scm_regular_port, "#<window ", port);
   if (VALIDWINP(obj)) {
@@ -47,19 +59,22 @@ SCM make_window(ScwmWindow *win)
 {
   scwm_window *schwin;
   SCM answer;
-  gh_defer_ints();
+
   schwin=(scwm_window *)malloc(sizeof(scwm_window));
+
   if (schwin==NULL) {
-    gh_allow_ints();
     scm_memory_error("make_window");
   }
+  SCM_DEFER_INTS;
+
   SCM_NEWCELL (answer);
   SCM_SETCAR (answer, scm_tc16_scwm_window);
   SCM_SETCDR (answer, (SCM)schwin);
   SCWMWINDOW(answer)=win;
   VALIDWINP(answer)=1;
   scm_protect_object(answer);
-  gh_allow_ints();
+
+  SCM_ALLOW_INTS;
   return answer;
 }
 

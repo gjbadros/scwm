@@ -49,6 +49,7 @@
 #include "scmprocs.h"
 #include "miscprocs.h"
 #include "binding.h"
+#include "decor.h"
 
 #define MAXHOSTNAME 255
 
@@ -1195,9 +1196,12 @@ void InitScwmDecor(ScwmDecor *fl)
     fl->next = NULL;
 
     if (fl != &Scr.DefaultDecor) {
-	extern void AddToDecor(ScwmDecor *, char *);
-	AddToDecor(fl, "HilightColor black grey");
-	AddToDecor(fl, "WindowFont fixed");
+#if 0
+      extern void AddToDecor(ScwmDecor *, char *);
+      AddToDecor(fl, "HilightColor black grey");
+      
+      AddToDecor(fl, "WindowFont fixed");
+#endif
     }
 #endif
 
@@ -1328,8 +1332,11 @@ void InitVariables(void)
   Scr.buttons2grab = 7;
 
   InitScwmDecor(&Scr.DefaultDecor);
+  decor2scm(&Scr.DefaultDecor);
+  DECORREF(Scr.DefaultDecor.scmdecor);
+
 #ifdef USEDECOR
-  Scr.DefaultDecor.tag = "Default";
+  Scr.DefaultDecor.tag = "default";
 #endif
 
   Scr.SmartPlacementIsClever = False;
