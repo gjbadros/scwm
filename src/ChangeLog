@@ -1,3 +1,13 @@
+Thu Sep 24 12:03:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (InteractiveMove): Reset have_orig_position after testing 
+	it. Thanks Hideki Sakurada!
+
+	* add_window.c: Fix docs for before-new-window-hook, since that is 
+	now *not* used for window-styles (but I left the hook in in case
+	there are other generally useful things to do at that phase of
+	window setup -- might get removed later).
+
 1998-09-24  Todd Larason  <jtl@teeny.molehill.org>
 
 	* decor.c: properly add extra height to title bars when a decor is 
@@ -6,6 +16,18 @@
 	* add_window.c, color.c, decor.c, font.c, image.c, menu.c,
 	placement.c, screen.c: Standardize header_IMPLEMENTATION and
 	<config.h> location
+
+Wed Sep 23 16:53:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* add_window.c: Added a before-place-new-window-hook for the
+	window style to use, and call that hook before calling
+	PlaceWindow.  Fixes placement off by 6 pixels (or so, depending on 
+	border width) bug
+
+	* placement.c: Separate out some debugging code for ease of
+	interrogation under gdb
+
+	* decorations.c: Use -- instead of long-winded decrement
 
 1998-09-23  Todd Larason  <jtl@teeny.molehill.org>
 

@@ -1,3 +1,15 @@
+Thu Sep 24 12:07:09 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Go back to using after-new-window-hook instead of
+	before-place-new-window-hook for the window styles.  Todd's patch
+	may have fixed the placement-related bugs in a cleaner way.
+
+Wed Sep 23 17:28:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Use before-place-new-window-hook instead of
+	after-new-window-hook for styles (before-place-new-window-hook is
+	new, to fix placement bug)
+
 Wed Sep 23 11:11:58 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: undefine X-grab-server, X-ungrab-server after
