@@ -1,3 +1,11 @@
+1999-05-02  Jeff W Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Fixed the enabling/disabling
+	ability of the toggle menu.  The checkbox is updated regardless of
+	where the ui-constraint is enabled or disabled.
+	Also modified the routine that shows the toggle menu to auto-
+	initialize the toggle-menu if it has not been initialized yet.
+
 Sat May  1 19:08:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Added
