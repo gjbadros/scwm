@@ -27,12 +27,14 @@ Changes to scwm-0.8 (released XX-August-1998)
 
 * improved X synthetic keystroke and string sending
 
+* integration with guile-gtk widget bindings
+
 * window objects printable form now includes the title of the window
 
 * alpha-quality optional integration of Cassowary constraint solver
   see http://www.cs.washington.edu/research/constraints/cassowary/
 
-* much improved fvwm2 module support 
+* much improved fvwm2 module support (thanks to Danius Michaelides)
 
 * Use XmuPrintDefaultErrorMessage instead of ad-hoc format for X11 errors
 
