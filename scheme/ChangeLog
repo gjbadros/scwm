@@ -1,3 +1,13 @@
+Sat Mar 30 23:42:05 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* tile.scm: Added missing :use-module for flash-window.
+	Fixed #:raise restack-only for 'tile-windows'.
+	Changed default direction for 'tile-windows-interactively' to
+	  horizontal to match 'tile-windows' and the most common
+	  direction for tiling things.
+	Fixed ordering of selection from 'selected-windows-list'.
+	Changed to 'push-undo-global' from broken 'innsert-undo-global'.
+
 Sat Mar 30 22:43:38 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* shove-window.scm: Added a comment to 'menu-window-shove'.

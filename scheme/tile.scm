@@ -22,6 +22,7 @@
 (define-module (app scwm tile)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm flash-window)
   :use-module (app scwm wininfo)
   :use-module (app scwm undo)
   :use-module (app scwm winlist)
@@ -70,7 +71,7 @@ respectively. The default is 'restack-only."
        ((not (null? windows))
 	(cond
 	 (raise (if (not (eq? raise 'restack-only))
-		    (raise-window (car windows)))
+		    (raise-window (car (reverse windows))))
 		(restack-windows (reverse windows))))
 	(let* ((num-major (inexact->exact (ceiling (sqrt num-windows))))
 	       (num-minor (inexact->exact (ceiling (/ num-windows num-major))))
@@ -166,23 +167,23 @@ control the tiling options as for `tile-windows'."
    #:resize resize #:max-windows max-windows #:order order))
 
 
-(define*-public (tile-windows-interactively #&optional (order 'vertical))
+(define*-public (tile-windows-interactively #&optional (order 'horizontal))
   "Tile a set of selected windows either vertically or horizontally.
 ORDER can be either 'horizontal or 'vertical.
 The windows used are selected either by `selected-windows-list' or 
 `select-window-group'.
 If `selected-windows-list' is empty, then `select-window-group' is used.
-See also the undo module and `insert-undo-global' to save the window 
+See also the undo module and `push-undo-global' to save the window 
 configuration before executing this in case the effect is not what you
 expected."
   (interactive)
-  (let* ((winlist (selected-windows-list))
+  (let* ((winlist (reverse (selected-windows-list)))
 	 (wins (if (pair? winlist) winlist (select-window-group)))
 	 (r (enclosing-rectangle wins)))
     (if (pair? winlist)
 	(unselect-all-windows)
 	(for-each unflash-window wins))
-    (insert-undo-global)
+    (push-undo-global)
     (tile-windows wins
 		  #:start-pos (rect-nw r)
 		  #:end-pos (rect-se r)
