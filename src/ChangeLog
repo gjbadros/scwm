@@ -1,3 +1,9 @@
+Tue Nov 11 18:17:15 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c, window.h, scmprocs.c: Fixed the bug with slecting a
+ 	window for interactive-move from the root menu. The fix added
+ 	extra optional arguments to get-window and select-window.
+
 Tue Nov 11 12:49:37 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Use SCM_BOOL_F to report a bad key binding
@@ -8,11 +14,11 @@ Tue Nov 11 12:49:37 1997  Greg Badros  <gjb@cs.washington.edu>
 Mon Nov 10 20:41:21 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* move.c, window.c: Fix AnimatedShadeWindow()'s handling of
-	windows so that it works with Emacs windows;  bug was a result of
-	the resizing of the window causing an extra PropertyNotify event,
-	which caused scwm to think that the newly shaded window had been
-	resized, which then makes it call SetupFrame again and re-expose
-	part of the client window.
+ 	windows so that it works with Emacs windows; bug was a result of
+ 	the resizing of the window causing an extra PropertyNotify event,
+ 	which caused scwm to think that the newly shaded window had been
+ 	resized, which then makes it call SetupFrame again and re-expose
+ 	part of the client window.
 
 	* borders.c: cleaned up SetupFrame a bit while tracking down the
 	above bug.  Even found an old bug in fvwm2 (of no obvious
