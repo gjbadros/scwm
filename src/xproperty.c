@@ -311,6 +311,40 @@ If the X property could be found, a list "(value type format)" is returned.
 }
 #undef FUNC_NAME
 
+SCWM_PROC(X_property_delete_x, "X-property-delete!", 2, 0, 0,
+	  (SCM win, SCM name))
+     /** Delete X property NAME of window WIN.
+WIN is the window to check, or 'root-window.
+NAME is a string. The return value is unspecified. */
+#define FUNC_NAME s_X_property_delete_x
+{
+  char *str;
+  Atom aprop;
+  SCM value;
+  Window w;
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+  if (!gh_string_p(name)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, name);
+  }
+
+  str=gh_scm2newstr(name, NULL);
+  aprop=XInternAtom(dpy, str, False);
+  FREE(str);
+
+  XDeleteProperty(dpy, w, aprop);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 /**CONCEPT: X atoms
    X windows allows certain entities (for example, X properties [FIXME: XREF
 to X properties]) to have arbitrary names. To avoid exchanging strings ever so

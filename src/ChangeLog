@@ -1,3 +1,8 @@
+Thu Dec  3 01:43:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* xproperty.c (X_property_delete_x): Added new primitive
+ 	(X-property-delete! WIN NAME) to go with the others.
+
 1998-11-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* move.c (moveLoop): Restore original position when bailing out.
