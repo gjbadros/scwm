@@ -94,7 +94,7 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %{prefix}/bin/
 %{prefix}/lib/libscwm*
 %{prefix}/lib/scwm/
-%{prefix}/info/
+%{prefix}/info/scwm.info
 %{prefix}/man/
 %{prefix}/share/emacs/site-lisp/scwm.el
 ## GJB:FIXME:: should byte compile scwm.el in %postun
