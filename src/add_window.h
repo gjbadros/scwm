@@ -14,6 +14,10 @@ void UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *sw);
 
 void GetWindowSizeHints(ScwmWindow * tmp);
 
+void FetchWmProtocols(ScwmWindow * tmp);
+
+void GrabKeys(ScwmWindow * tmp_win);
+
 #endif
 
 /* Local Variables: */

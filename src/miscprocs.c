@@ -133,7 +133,7 @@ set_title_height(SCM height)
 SCM
 restarted_p()
 {
-  return (Restarting==True) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(Restarting);
 }
 
 

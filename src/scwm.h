@@ -168,7 +168,8 @@ void Done(int, char *);
 void BlackoutScreen(void);
 void UnBlackoutScreen(void);
 void init_scwm_load_path();
-
+void CaptureAllWindows(void);
+int MappedNotOverride(Window w);
 
 /* Global variables */
 extern int master_pid;

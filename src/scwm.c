@@ -110,6 +110,7 @@ void SaveDesktopState(void);
 void SetMWM_INFO(Window window);
 void SetRCDefaults(void);
 void StartupStuff(void);
+void usage(void);
 
 XContext ScwmContext;		/* context for scwm windows */
 
@@ -1420,7 +1421,7 @@ Done(int restart, char *command)
     XSync(dpy, 0);
     XCloseDisplay(dpy);
 
-    {
+    { /* scope */
       char *my_argv[10];
       int i, done, j;
 

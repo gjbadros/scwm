@@ -200,6 +200,7 @@ HandleEvents()
  *	Find the Scwm context for the Event.
  *
  ************************************************************************/
+static
 int 
 GetContext(ScwmWindow * t, XEvent * e, Window * w)
 {

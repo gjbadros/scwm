@@ -18,6 +18,7 @@
 #include "borders.h"
 #include "focus.h"
 #include "module-interface.h"
+#include "virtual.h"
 
 /***************************************************************************
  * 
@@ -456,7 +457,8 @@ changeDesks(int val1, int val2)
     }
   }
 
-  if (FocusWin && FocusWin->fClickToFocus)
+  if (FocusWin && FocusWin->fClickToFocus) {
+    /* FIXGJB: this should be a runtime option */
 #ifndef NO_REMEMBER_FOCUS
     SetFocus(FocusWin->w, FocusWin, 0);
   /* OK, someone beat me up, but I don't like this. If you are a predominantly
@@ -466,9 +468,10 @@ changeDesks(int val1, int val2)
   /* FIXGJB: what's going on here? --03/25/98 gjb */
 /*  else if (StickyWin && StickyWin->fSticky)
    SetFocus(StickyWin->w, StickyWin,1); */
-  else
+  } else {
 #endif
     SetFocus(Scr.NoFocusWin, NULL, 1);
+  }
 }
 
 /* Local Variables: */

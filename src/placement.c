@@ -15,6 +15,9 @@
 #include <unistd.h>
 #include <string.h>
 
+#define PLACEMENT_IMPLEMENTATION
+#include "placement.h"
+
 #include "scwm.h"
 #include "misc.h"
 #include "move.h"
@@ -26,6 +29,49 @@ int get_next_x(ScwmWindow * t, int x, int y);
 int get_next_y(ScwmWindow * t, int y);
 int test_fit(ScwmWindow * t, int test_x, int test_y, int aoimin);
 void CleverPlacement(ScwmWindow * t, int *x, int *y);
+
+
+/************************************************************************
+ *
+ *  Procedure:
+ *	GetGravityOffsets - map gravity to (x,y) offset signs for adding
+ *		to x and y when window is mapped to get proper placement.
+ * 
+ ************************************************************************/
+struct _gravity_offset {
+  int x, y;
+};
+
+static
+void 
+GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
+{
+  static struct _gravity_offset gravity_offsets[11] =
+  {
+    {0, 0},			/* ForgetGravity */
+    {-1, -1},			/* NorthWestGravity */
+    {0, -1},			/* NorthGravity */
+    {1, -1},			/* NorthEastGravity */
+    {-1, 0},			/* WestGravity */
+    {0, 0},			/* CenterGravity */
+    {1, 0},			/* EastGravity */
+    {-1, 1},			/* SouthWestGravity */
+    {0, 1},			/* SouthGravity */
+    {1, 1},			/* SouthEastGravity */
+    {0, 0},			/* StaticGravity */
+  };
+  register int g = ((tmp->hints.flags & PWinGravity)
+		    ? tmp->hints.win_gravity : NorthWestGravity);
+
+  if (g < ForgetGravity || g > StaticGravity) {
+    *xp = *yp = 0;
+  } else {
+    *xp = (int) gravity_offsets[g].x;
+    *yp = (int) gravity_offsets[g].y;
+  }
+  return;
+}
+
 
 /* The following factors represent the amount of area that these types of
  * windows are counted as.  For example, by default the area of fOnTop windows
@@ -46,6 +92,7 @@ void CleverPlacement(ScwmWindow * t, int *x, int *y);
 #define AVOIDICON 10		/*  Try hard no to place windows over icons */
 #endif
 
+static
 void 
 SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y)
 {
@@ -471,46 +518,6 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
 }
 
 
-
-/************************************************************************
- *
- *  Procedure:
- *	GetGravityOffsets - map gravity to (x,y) offset signs for adding
- *		to x and y when window is mapped to get proper placement.
- * 
- ************************************************************************/
-struct _gravity_offset {
-  int x, y;
-};
-
-void 
-GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
-{
-  static struct _gravity_offset gravity_offsets[11] =
-  {
-    {0, 0},			/* ForgetGravity */
-    {-1, -1},			/* NorthWestGravity */
-    {0, -1},			/* NorthGravity */
-    {1, -1},			/* NorthEastGravity */
-    {-1, 0},			/* WestGravity */
-    {0, 0},			/* CenterGravity */
-    {1, 0},			/* EastGravity */
-    {-1, 1},			/* SouthWestGravity */
-    {0, 1},			/* SouthGravity */
-    {1, 1},			/* SouthEastGravity */
-    {0, 0},			/* StaticGravity */
-  };
-  register int g = ((tmp->hints.flags & PWinGravity)
-		    ? tmp->hints.win_gravity : NorthWestGravity);
-
-  if (g < ForgetGravity || g > StaticGravity) {
-    *xp = *yp = 0;
-  } else {
-    *xp = (int) gravity_offsets[g].x;
-    *yp = (int) gravity_offsets[g].y;
-  }
-  return;
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -222,10 +222,15 @@ ScwmWindow *SwFromWindow(Display *dpy, Window w);
 ScwmWindow *SwFromPointerLocation(Display *dpy);
 ScwmWindow *SwSelectInteractively(Display *dpy);
 
+void MapIt(ScwmWindow * t);
+
 void DestroyScwmWindow(ScwmWindow *);
 void UnmapScwmWindow(ScwmWindow * t);
 void RaiseWindow(ScwmWindow * t);
 void LowerWindow(ScwmWindow * t);
+
+void FocusOn(ScwmWindow * t, int DeIconifyOnly);
+void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 
 SCM make_window(ScwmWindow * win);
 void invalidate_window(SCM schwin);

@@ -85,69 +85,10 @@ Bool GrabEm(enum cursor);
 void UngrabEm(void);
 void KeepOnTop(void);
 Bool FXWindowAccessible(Display *dpy, Window w);
+Bool XGetGeometryPositionOnly(Display *dpy, Window w, int *x_ret, int *y_ret);
+Bool XGetGeometryCacheIt(Display *dpy, Window w);
 
-/* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
-
-void FetchWmProtocols(ScwmWindow *);
-void InitEventHandlerJumpTable(void);
-void DispatchEvent(void);
-void HandleEvents(void);
-void HandleExpose(void);
-void HandleFocusIn(void);
-void HandleFocusOut(void);
-void HandleDestroyNotify(void);
-void HandleMapRequest(void);
-void HandleMapRequestKeepRaised(Window keepraised);
-void HandleMapNotify(void);
-void HandleUnmapNotify(void);
-void HandleMotionNotify(void);
-void HandleButtonRelease(void);
-void HandleButtonPress(void);
-void HandleEnterNotify(void);
-void HandleLeaveNotify(void);
-void HandleConfigureRequest(void);
-void HandleClientMessage(void);
-void HandlePropertyNotify(void);
-void HandleKeyPress(void);
-void HandleVisibilityNotify(void);
-void GetGravityOffsets(ScwmWindow *, int *, int *);
-void MoveViewport(int newx, int newy, Bool);
-ScwmWindow *AddWindow(Window w);
-int MappedNotOverride(Window w);
-void GrabKeys(ScwmWindow *);
-void SwitchPages(Bool, Bool);
-void NextPage(void);
-void PrevPage(void);
-
-void CaptureAllWindows(void);
-void SetTimer(int);
-void RaiseThisWindow(int);
-int GetContext(ScwmWindow *, XEvent *, Window * dummy);
-void HandlePaging(int, int, int *, int *, int *, int *, Bool);
-void CheckAndSetFocus(void);
-void initModules(void);
-void HandleModuleInput(Window w, int channel);
-void no_popup(char *ptr);
-void KillModule(int channel, int place);
-void ClosePipes(void);
-void SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y);
-void usage(void);
-
-void SetStickyProp(ScwmWindow *, int, int, int);
-void SetClientProp(ScwmWindow *);
-void show_panner(void);
-void WaitForButtonsUp(void);
-void FocusOn(ScwmWindow * t, int DeIconifyOnly);
-void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
-Bool PlaceWindow(ScwmWindow * tmp_win, int Desk);
-
-void MapIt(ScwmWindow * t);
-void do_save(void);
-void initPanFrames(void);
-int XNextEvent_orTimeout(Display * dpy, XEvent * event);
-
-void changeDesks(int val1, int val2);
-
+/* FIXGJB: shouldn't need these header files */
 #ifdef BROKEN_SUN_HEADERS
 #include "sun_headers.h"
 #endif

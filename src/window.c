@@ -1084,8 +1084,6 @@ window_deletable_p(SCM win)
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fDoesWmDeleteWindow);
 }
 
-void FocusOn(ScwmWindow * t, int DeIconifyOnly);
-
 SCM 
 focus(SCM win)
 {
@@ -1107,8 +1105,6 @@ unfocus()
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }  
-
-void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 
 SCM 
 warp_to_window(SCM win)
