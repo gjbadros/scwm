@@ -51,7 +51,7 @@ static SCM var
 SCM var
 #else
 
-#if 0 /* GJB:FIXME:: new style hooks are not yet supported */
+#if HAVE_SCM_MAKE_HOOK
 #define SCWM_GLOBAL_HOOK(var, name, args) \
 %%%     do { var = scm_make_named_hook(name,args); } while (0)
 #else
