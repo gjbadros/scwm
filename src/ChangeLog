@@ -1,7 +1,29 @@
+Thu Sep  3 14:26:35 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* session-manager.h, session-manager.c: Added -- for session
+ 	manager support -- derived from IceWM's session manager support
+
+	* Makefile.am (cassowary_srcs): added session-manager.[ch]
+
+	* scwm.c: #include session-manager.h and call initSM() if
+ 	HAVE_LIBSM_LIBICE
+
+	* events.c: Rename XNextEvent_orTimeout to NextScwmEvent; watch fd 
+	IceSMfd if it was initialized, and call IceProcessMessages when a
+	message is received
+
+	* miscprocs.c, events.h: Rename XNextEvent_orTimeout to
+ 	NextScwmEvent
+	
+	* xrm.c, xmisc.c, syscompat.c, shutdown.c, module-interface.c,
+	menuitem.c, menu.c, log-usage.c, image.c, guile-compat.c,
+	getopt1.c, getopt.c, drawmenu.c, draw-pie-menu.c, callbacks.c:
+	Add footer with Emacs local variable settings for C mode indentation
+
 Thu Sep  3 09:51:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (focus, warp-to-window): Improve documentation to
-	mention that the target window is not raised
+ 	mention that the target window is not raised
 
 Wed Sep  2 17:10:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
