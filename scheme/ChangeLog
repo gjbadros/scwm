@@ -1,3 +1,13 @@
+Fri Jan 22 17:58:26 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraints.scm: Drop the window-style, since it used something
+	from my .scwmrc
+
+	* gtk.scm: Fix bug in `gtk-pixmap-new-search-scwm-path'
+
+	* ui-constraints-classes.scm: Added keep-to-left-of, use
+	indicative pixmaps
+
 Fri Jan 22 17:14:44 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Added -- top level module for constraint
