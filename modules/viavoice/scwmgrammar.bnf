@@ -34,7 +34,7 @@
            "twenty five" : 25 | thirty : 30 | "thirty five" : 35 |
            forty : 40 | "forty five" : 45 | fifty : 50 | "one hundred" : 100.
 
-<absolute> = north | south | east | west | "north east" | "north west" | "south east" | "south west" .
+<absolute> = north | south | east | west | "north east" | "north west" | "south east" | "south west" | center .
 
 
 <focus_switch> = "focus" <next_prev> .
