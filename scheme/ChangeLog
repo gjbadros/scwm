@@ -1,5 +1,17 @@
 1999-07-22  Jeff Nichols  <jwnichls@cs.washington.edu>
 
+	* ui-constraints-classes.scm: Finished modifying the
+	ui constructors for working with the window-selection
+	module.  All constraint classes may be constructed by
+	pre-selecting windows using the window-selection 
+	module.  NOTE: Compositions are an exception for now.
+
+	* window-selection.scm: Added hooks which are called
+	when windows are added and removed from the selection
+	list.
+
+1999-07-22  Jeff Nichols  <jwnichls@cs.washington.edu>
+
 	* ui-constraints.scm: Updated comments on structure of
 	a UI-CONSTRAINT-CLASS pseudo-object.
 
