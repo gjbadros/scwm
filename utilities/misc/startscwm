@@ -135,7 +135,7 @@ env > $HOME/.Xrootenv-${DISPLAY}
 # This window will get iconified when gjb.scwmrc starts up
 # Uses the title of the window, so be sure to change gjb.scwmrc
 # if the title here changes.
-$XTERM -geometry 100x40 -T "SCWM Messages...." -e /bin/sh -c "echo 'SCWM MESSAGES: (Also writing to $ERRORSFILE)' &&\
+$XTERM -geometry 100x40 -name "scwmmessages" -T "SCWM Messages...." -e /bin/sh -c "echo 'SCWM MESSAGES: (Also writing to $ERRORSFILE)' &&\
  tail -f $ERRORSFILE" &
 PID_TAIL_STARTSCWM=$!
 
@@ -164,7 +164,7 @@ done
 
 # May want to run a different wm here.
 $XTERM -geometry +0-0 -e bash -c "trap bash SIGINT; echo \"Press CTRL-C to \
-allow commands before starting wm\"; sleep 1"
+allow commands before starting wm\"; sleep 3"
 
 echo $PID_TAIL_STARTSCWM > $HOME/.tracepids
 WMEXEC=$WM
