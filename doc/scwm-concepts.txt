@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3339]
+[From src/window.c:3283]
 
 
 Fonts
@@ -395,7 +395,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From src/scwm.c:656]
+[From src/scwm.c:709]
 
 
 SCWMEXEC Protocol
@@ -413,7 +413,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:583]
+[From src/events.c:607]
 
 
 Shadow and Highlight Factors
@@ -454,7 +454,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From src/window.c:2050]
+[From src/window.c:1999]
 
 
 Themes
@@ -509,7 +509,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From src/window.c:957]
+[From src/window.c:913]
 
 
 Window Style
@@ -527,8 +527,8 @@ auto-raise-delay (window-style) from scheme/auto-raise.scm:139
 auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:140
 auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:142
 auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:143
-hover-focus-delay (window-style) from scheme/hover-focus.scm:74
-hover-focus (window-style) from scheme/hover-focus.scm:96
+hover-focus-delay (window-style) from scheme/hover-focus.scm:73
+hover-focus (window-style) from scheme/hover-focus.scm:95
 border-width (window-style) from scheme/style.scm:197
 background (window-style) from scheme/style.scm:198
 bg (window-style) from scheme/style.scm:199
@@ -546,37 +546,37 @@ sticky-icon (boolean-style) from scheme/style.scm:214
 start-iconified (boolean-style) from scheme/style.scm:215
 kept-on-top (boolean-style) from scheme/style.scm:216
 sticky (boolean-style) from scheme/style.scm:217
-no-side-decorations (boolean-style) from scheme/style.scm:220
-mwm-buttons (window-hint) from scheme/style.scm:224
-mwm-border (window-style) from scheme/style.scm:226
-show-icon (window-style) from scheme/style.scm:228
-force-icon (window-style) from scheme/style.scm:229
-icon (window-style) from scheme/style.scm:230
-mini-icon (window-style) from scheme/style.scm:231
-random-placement (window-hint) from scheme/style.scm:233
-smart-placement (window-hint) from scheme/style.scm:234
-button (window-hint) from scheme/style.scm:237
-no-button (window-hint) from scheme/style.scm:239
-hint-override (window-hint) from scheme/style.scm:242
-decorate-transient (window-hint) from scheme/style.scm:243
-mwm-decor-hint (window-hint) from scheme/style.scm:244
-mwm-func-hint (window-hint) from scheme/style.scm:245
-PPosition-hint (window-hint) from scheme/style.scm:246
-OL-decor-hint (window-hint) from scheme/style.scm:247
-start-on-desk (window-hint) from scheme/style.scm:249
-skip-mapping (window-hint) from scheme/style.scm:250
-lenience (window-hint) from scheme/style.scm:251
-placement-proc (window-hint) from scheme/style.scm:272
-transient-placement-proc (window-hint) from scheme/style.scm:273
-start-lowered (boolean-style) from scheme/style.scm:277
-start-window-shaded (boolean-style) from scheme/style.scm:278
-other-proc (window-style) from scheme/style.scm:279
-other-hint-proc (window-hint) from scheme/style.scm:281
+no-side-decorations (boolean-style) from scheme/style.scm:222
+mwm-buttons (window-hint) from scheme/style.scm:226
+mwm-border (window-style) from scheme/style.scm:228
+show-icon (window-style) from scheme/style.scm:230
+force-icon (window-style) from scheme/style.scm:231
+icon (window-style) from scheme/style.scm:232
+mini-icon (window-style) from scheme/style.scm:233
+random-placement (window-hint) from scheme/style.scm:235
+smart-placement (window-hint) from scheme/style.scm:236
+button (window-hint) from scheme/style.scm:239
+no-button (window-hint) from scheme/style.scm:241
+hint-override (window-hint) from scheme/style.scm:244
+decorate-transient (window-hint) from scheme/style.scm:245
+mwm-decor-hint (window-hint) from scheme/style.scm:246
+mwm-func-hint (window-hint) from scheme/style.scm:247
+PPosition-hint (window-hint) from scheme/style.scm:248
+OL-decor-hint (window-hint) from scheme/style.scm:249
+start-on-desk (window-hint) from scheme/style.scm:251
+skip-mapping (window-hint) from scheme/style.scm:252
+lenience (window-hint) from scheme/style.scm:253
+placement-proc (window-hint) from scheme/style.scm:274
+transient-placement-proc (window-hint) from scheme/style.scm:275
+start-lowered (boolean-style) from scheme/style.scm:279
+start-window-shaded (boolean-style) from scheme/style.scm:280
+other-proc (window-style) from scheme/style.scm:281
+other-hint-proc (window-hint) from scheme/style.scm:283
 use-theme (window-style) from scheme/themes.scm:48
-winlist-skip (boolean-style) from scheme/winlist.scm:114
-circulate-skip (boolean-style) from scheme/winlist.scm:314
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:315
-start-maximized (window-style) from scheme/winops.scm:158
+winlist-skip (boolean-style) from scheme/winlist.scm:91
+circulate-skip (boolean-style) from scheme/winlist.scm:138
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:139
+start-maximized (window-style) from scheme/winops.scm:172
 
 [From src/face.c:542]
 

@@ -258,6 +258,20 @@ s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'
 [From src/callbacks.c:54]
 
 
+scwm-test-hook-0 (0 args)
+- 
+Just a test hook that takes no arguments.
+See `scwm-run-test-hook-0'. 
+[From src/miscprocs.c:41]
+
+
+scwm-test-hook-1 (1 args)
+- 
+Just a test hook that takes one argument.
+See `scwm-run-test-hook-1'. 
+[From src/miscprocs.c:45]
+
+
 select-window-done-hook (1 args)
 - 
 This hooks is run when a window is selected.
@@ -355,7 +369,7 @@ window-focus-lost-hook (1 args)
 This hook is invoked whenever the focus is lost on a window.
 It is called with one argument, the window object of the window
 that just lost the keyboard focus. See also `window-focus-change-hook'. 
-[From src/focus.c:46]
+[From src/focus.c:47]
 
 
 window-fully-obscured-hook (1 args)
