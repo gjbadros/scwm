@@ -105,7 +105,9 @@ BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 
 EXTRA_DIST = ChangeLog generate_scm_init_funcs scwm-snarf scwm-doc-snarf.in
 
-bin_SCRIPTS = scwm-doc-snarf
+## This is not needed for now, but maybe useful later
+## in case someone distributes Scwm modules independently.
+##bin_SCRIPTS = scwm-doc-snarf
 
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo "char *init_scheme_string = \"\\" ; \
