@@ -239,6 +239,8 @@ scwm_image_load_path="(\\\\\\\"$x_includes/X11/bitmaps\\\\\\\" \\\\\\\"$x_includ
 
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
 scwm_dir="\${prefix}/lib/X11/$scwm_name"
+scwm_scheme_mod_dir="\${prefix}/share/$scwm_name-modules/app/scwm"
+scwm_load_path=$scwm_scheme_mod_dir
 
 if test "x$x_libraries" != x ; then
   x_libraries="-L$x_libraries"
@@ -263,7 +265,8 @@ AC_SUBST(scwm_name)
 AC_SUBST(scwm_rc)
 AC_SUBST(scwm_dir)
 AC_SUBST(guile_scheme_prefix)
-
+AC_SUBST(scwm_scheme_mod_dir)
+AC_SUBST(scwm_load_path)
 
 #-------------------------------------------------------------------
 #

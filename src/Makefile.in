@@ -18,6 +18,7 @@ scwm_icons=@scwm_icons@
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
 scwm_image_load_path=@scwm_image_load_path@
+scwm_load_path=@scwm_load_path@
 scwm_dir=@scwm_dir@
 mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
 LDFLAGS=@LDFLAGS@
@@ -35,7 +36,8 @@ LIBS=-L../libs $(x_libraries) $(XPM_LIBRARY) $(XEXT_LIBRARY) $(X_LIBRARY) $(LDFL
 PATH_DEFINES=-DSCWM_ICONDIR=\"$(scwm_icons)\" \
                -DSCWMDIR=\"$(scwm_dir)\" \
                -DSCWMRC=\"$(scwm_rc)\" \
-               -DSCWM_IMAGE_LOAD_PATH="\"$(scwm_image_load_path)\""
+               -DSCWM_IMAGE_LOAD_PATH="\"$(scwm_image_load_path)\""\
+               -DSCWM_LOAD_PATH=\"$(scwm_load_path)\" 
 
 EXTRA_DEFINES=$(PATH_DEFINES)
 

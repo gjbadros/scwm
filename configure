@@ -2844,6 +2844,8 @@ scwm_image_load_path="(\\\\\\\"$x_includes/X11/bitmaps\\\\\\\" \\\\\\\"$x_includ
 
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
 scwm_dir="\${prefix}/lib/X11/$scwm_name"
+scwm_scheme_mod_dir="\${prefix}/share/$scwm_name-modules/app/scwm"
+scwm_load_path=$scwm_scheme_mod_dir
 
 if test "x$x_libraries" != x ; then
   x_libraries="-L$x_libraries"
@@ -2858,6 +2860,7 @@ fi
 # export variables
 #
 #-------------------------------------------------------------------
+
 
 
 
@@ -3036,6 +3039,8 @@ s%@scwm_name@%$scwm_name%g
 s%@scwm_rc@%$scwm_rc%g
 s%@scwm_dir@%$scwm_dir%g
 s%@guile_scheme_prefix@%$guile_scheme_prefix%g
+s%@scwm_scheme_mod_dir@%$scwm_scheme_mod_dir%g
+s%@scwm_load_path@%$scwm_load_path%g
 
 CEOF
 EOF
