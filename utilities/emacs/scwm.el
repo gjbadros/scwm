@@ -209,14 +209,15 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-make-obarray ()
   "Create and return an obarray of SCWM symbols."
   ;; can't use read-from-string because "? " is read as 32
-  (let ((obarray (make-vector 67 0)) (pos 2))
+  ;; should we make the hash table bigger than 67?
+  (let ((scwm-obarray (make-vector 67 0)) (pos 2))
     (with-temp-buffer
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
       (goto-char pos)
       (while (re-search-forward "[ ()]" nil t)
-        (intern (buffer-substring-no-properties pos (1- (point))) obarray)
+        (intern (buffer-substring-no-properties pos (1- (point))) scwm-obarray)
         (setq pos (point)))
-      obarray)))
+      scwm-obarray)))
 
 (defun scwm-obarray ()
   "Ensure `scwm-obarray' is initialized."
