@@ -10,6 +10,11 @@ dnl ## Initialize autoconf ##
 AC_INIT(scwm/scwm.c)
 AC_PREREQ(2.4)
 
+dnl ## Initialize automake ##
+AM_INIT_AUTOMAKE(scwm, 0.99.2pre2)
+AM_MAINTAINER_MODE
+AM_CONFIG_HEADER(include/config.h)
+
 ## This will try to create the named directory if it does not exist
 AC_DEFUN(SCWM_ARG_PATH,
 [
@@ -37,12 +42,6 @@ AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
     fi],
     $4)
 ])
-
-
-dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.2)
-AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(include/config.h)
 
 dnl ## Checks for programs ##
 
