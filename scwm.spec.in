@@ -1,5 +1,4 @@
 # Note that this is NOT a relocatable package
-# GJB:FIXME:: Why do I have to move libscwmexec* out of the way before rpm -ta'ing?
 %define ver @VERSION@
 %define rel 1
 %define prefix /usr
@@ -13,7 +12,7 @@ Group: X11/Window Managers
 BuildRoot: /tmp/scwm-%ver-build
 Copyright: Copyright (C) 1997,1998,1999 Greg J. Badros, Maciej Stachowiak, et. al.
 Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow@alum.mit.edu>
-URL: http://scwm.mit.edu/
+URL: http://scwm.mit.edu
 Requires: guile >= 1.3.2
 Requires: guile-gtk >= 0.16
 Requires: imlib >= 1.9
@@ -69,25 +68,27 @@ from other processes
 make 
 
 %install
-make prefix=$RPM_BUILD_ROOT/%{prefix} exec_prefix=$RPM_BUILD_ROOT/%{prefix}/X11R6 install
+make prefix=$RPM_BUILD_ROOT/%{prefix} install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-cd /etc/X11/xdm; patch < %{prefix}/utilities/misc/Xsession.patch
-cp %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
+/sbin/ldconfig
+cd /etc/X11/xdm; patch < %{prefix}/share/scwm/Xsession.patch
+install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/Scwm
 
 %postun
-cd /etc/X11/xdm; patch < %{prefix}/utilities/misc/Xsession.patch
+/sbin/ldconfig
+cd /etc/X11/xdm; patch < %{prefix}/share/scwm/Xsession.patch
 rm -f %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
 
 %files
 %defattr(-, root, root)
 
-%{prefix}/X11R6/bin/*
-%{prefix}/X11R6/lib/libscwm*
-%{prefix}/X11R6/lib/scwm/*
+%{prefix}/bin/*
+%{prefix}/lib/libscwm*
+%{prefix}/lib/scwm/*
 %{prefix}/info/*
 %{prefix}/man/*
 %{prefix}/share/emacs/site-lisp/*
@@ -98,4 +99,4 @@ rm -f %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
 %doc INSTALL NEWS README README-constraints THANKS TODO doc
 %doc sample.scwmrc/*.scwmrc sample.scwmrc/ChangeLog
 
-%config %{prefix}/X11R6/lib/X11/scwm/system.scwmrc
+%config %{prefix}/lib/X11/scwm/system.scwmrc
