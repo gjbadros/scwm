@@ -242,10 +242,11 @@ scwm_body_eval_str (void *body_data)
 
 SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
            (SCM fname))
-     /** Load file FNAME, trapping and displaying errors on each
-	 individual top-level expression. Should be used if you need
-	 to make sure most of a file loads, even if it may contain
-	 errors. */
+     /** Load file FNAME while trapping and displaying errors.
+Each individual top-level-expression is evaluated separately and all
+errors are trapped and displayed.  You Should use this procedure if
+you need to make sure most of a file loads, even if it may contain
+errors. */
 #define FUNC_NAME s_safe_load
 {
   SCM_STACKITEM stack_item;
@@ -420,10 +421,10 @@ removed.
 
 SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
           (SCM usec, SCM proc))
-     /** Add a timer hook; when at least USEC microseconds have
-passed, procedure PROC will be called with no arguments. A
-handle suitable for passing to `remove-timer-hook!' is
-returned. */
+     /** Add a timer hook to call PROC once sometime after USEC microseconds.
+When at least USEC microseconds have passed, procedure PROC will be
+called with no arguments. A handle suitable for passing to
+`remove-timer-hook!' is returned. */
 #define FUNC_NAME s_add_timer_hook_x
 {
   SCM newcell;
@@ -462,10 +463,10 @@ returned. */
 
 SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
           (SCM handle))
-/** Remove a timer hook identified by HANDLE, which should be an
-object that was returned by `add-timer-hook!'. No warning or
-error will occur if HANDLE is for a timer hook that has
-already been triggered. */
+/** Remove a timer hook identified by HANDLE.
+The HANDLE should be an object that was returned by
+`add-timer-hook!'. No warning or error will occur if HANDLE is for a
+timer hook that has already been triggered. */
 #define FUNC_NAME s_remove_timer_hook_x
 {
   SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
@@ -557,12 +558,13 @@ static SCM new_input_hooks;
 
 SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
           (SCM port, SCM proc))
-     /** Add a timer hook; whenever input becomes availabe on PORT,
-procedure PROC will be called with no arguments repeatedly until no
-unprocessed input remains on PORT. PORT must be open, it must be an
-input port, and it must be a file port (this includes pipes and
-sockets, but not string ports or soft ports). A handle suitable for
-passing to `remove-input-hook!' is returned. */
+     /** Add an input hook to run PROC on input from PORT.
+Whenever input becomes availabe on PORT, procedure PROC will be called
+with no arguments repeatedly until no unprocessed input remains on
+PORT. PORT must be open, it must be an input port, and it must be a
+file port (this includes pipes and sockets, but not string ports or
+soft ports). A handle suitable for passing to `remove-input-hook!' is
+returned. */
 #define FUNC_NAME s_add_input_hook_x
 {
   SCM newcell;
@@ -587,9 +589,9 @@ passing to `remove-input-hook!' is returned. */
 
 SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
           (SCM handle))
-     /** Remove an input hook identified by HANDLE, which should be an
-object that was returned by `add-input-hook!'. An input hook may
-safely remove itself. */
+     /** Remove an input hook identified by HANDLE.
+HANDLE should be an object that was returned by `add-input-hook!'. An
+input hook may safely remove itself. */
 #define FUNC_NAME s_remove_input_hook_x
 {
   SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
