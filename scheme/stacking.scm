@@ -30,7 +30,7 @@
 (define*-public (list-windows-above w #&key (only ()) (except()))
   "List the windows above w from bottom to top.
 Returns a list in the reverse of the stacking order of the windows
-above W, in otherwords, from the one immediately above, to the topmost
+above W, in other words, from the one immediately above, to the topmost
 window; the ONLY and EXCEPT keyword arguments operate as is usual for
 procedures that deal with the window list."
   (let ((memq-result (memq w (reverse (list-windows #:only only #:except except
@@ -62,7 +62,7 @@ that deal with the window list."
 (define-public (raise-window-above w w2)
   "Restack window W immediately above W2."
   (let ((windows-above-w2 (list-windows-above w2)))
-    (if (null? windows-above-w2 w2)
+    (if (null? windows-above-w2)
 	(raise-window w)
 	(restack-windows (list (car windows-above-w2) w)))))
 

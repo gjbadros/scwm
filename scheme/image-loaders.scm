@@ -23,6 +23,8 @@
 
 
 
+;; CRW:FIXME:: We should delete these temporary files at some point...
+
 (define-public (ImageMagick-loader fname)
   "Tries to load an arbitrary image using ImageMagick's `convert'.
 Uses `convert' to try to convert the file to an xpm, then

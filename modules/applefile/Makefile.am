@@ -14,9 +14,9 @@ crc.c: make_crc_table
 	./make_crc_table > crc.c
 
 install-data-hook:
-	$(mkinstalldirs) $(scwm_schemedir)
-	rm -f $(scwm_schemedir)/libapplefile.la
-	$(LN_S) $(pkglibdir)/libapplefile.la $(scwm_schemedir)/libapplefile.la
+	$(mkinstalldirs) $(DESTDIR)$(scwm_schemedir)
+	rm -f $(DESTDIR)$(scwm_schemedir)/libapplefile.la
+	$(LN_S) $(pkglibdir)/libapplefile.la $(DESTDIR)$(scwm_schemedir)/libapplefile.la
 
 uninstall-local:
 	rm -f $(scwm_schemedir)/libapplefile.la

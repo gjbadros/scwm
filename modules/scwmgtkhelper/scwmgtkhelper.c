@@ -49,6 +49,9 @@ extern XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
 
 SCWM_PROC(restore_scwm_handlers, "restore-scwm-handlers", 0, 0, 0,
 	  ())
+     /** Restore the scwm behavior for signals and for X errors.
+This is automatically called when (app scwm gtk) is loaded, to clean up
+after the (gtk gtk) module. */
 #define FUNC_NAME s_restore_scwm_handlers
 {
   newhandler(SIGINT);

@@ -184,7 +184,7 @@ If NW or NH is 0, that dimension is not changed."
 
 
 (define-public (window-frame-area win)
-  "Return the number of square pixels of area that WIN is."
+  "Return the area of WIN's frame in square pixels."
   (let* ((frame-size (window-frame-size win))
 	 (width (car frame-size))
 	 (height (cadr frame-size)))

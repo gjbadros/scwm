@@ -23,7 +23,8 @@
 
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
-Return #t if found anything, #f if no documentation."
+Works by searching through the files listed in `doc-files'.
+Returns #t if any documentation was found, #f otherwise."
   (let* ((func (if (string? func) func (symbol->string func)))
          (head (string-append "(" func))
          (len (string-length head))

@@ -246,7 +246,7 @@ the window context in the usual way if not specified. */
 
   /* MS:FIXME:: Good idea to forbid maximization of shaded windows? */
 
-  if (!psw->fTitle || psw->fMaximized) {
+  if (!psw->fTitle) {
     return SCM_BOOL_F;
   }
 
@@ -312,9 +312,8 @@ not specified. See also `window-unshade', `animated-window-shade'. */
 
 SCWM_PROC(animated_move_window, "animated-move-window", 2, 2, 0,
           (SCM x, SCM y, SCM win, SCM move_pointer_too_p))
-     /** Move WIN to coordinates virtual coordinates X, Y with
-animation.  If X is #f, then X defaults to the current X position of
-WIN.  If Y is #f, then Y defaults to the current Y position of WIN.
+     /** Move WIN to virtual coordinates X, Y with animation.  
+If X or Y is #f, then do not change that coordinate during the move. 
 If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window. WIN defaults to the window context in the usual

@@ -89,6 +89,7 @@ is non-empty."
 ;;; The main point is the currying, not the optional arguments. - MS 10/7/98
 (define*-public ((window-overlaps-window? #&optional (win (get-window))) 
 		 #&optional (win2 (get-window)))
+  "Return a function which takes WIN2 and returns #t if it overlaps WIN."
   (windows-overlap? win win2))
 
 (define*-public (visible? #&optional (win (get-window)))
@@ -118,7 +119,8 @@ if it were on top (unobscured)."
 (define*-public (window-geometry-string #&optional (win (get-window)))
   "Return a string corresponding to the geometry specifications for WIN.
 The virtual position and the frame size are used.  The resulting string
-looks like, e.g., FIXGJB."
+looks like \"157x133+200+306\".  If WIN is iconified, the string
+returned is in parentheses."
   (if win (let ((i (iconified? win))
 		(pos (window-virtual-position win))
 		(size (window-size win)))
@@ -143,7 +145,7 @@ looks like, e.g., FIXGJB."
 ;; quote all regexp meta-characters, then turn \* and \? into
 ;; .* and . respectively.
 (define-public (wildcard->regexp wildcard)
-  "Return the string real regular expresision corresponding to WILDCARD.
+  "Return the regular expresision string corresponding to WILDCARD.
 This involves quoting meta characters and replacing the wildcard
 meta-characters \"*\" with \".*\" and \"?\" with \".\"."
   (regexp-substitute/global 
@@ -166,9 +168,12 @@ meta-characters \"*\" with \".*\" and \"?\" with \".\"."
 
 (define*-public (wildcard-matcher wildcard #&key (full-regexp #f)
 				  (regexp-options `(,regexp/icase)))
-  "Return a procedure that matches WILDCARD using the supplied options.
-If FULL-REGEXP is #t, the WILDCARD is considered to be a regular-expression
-instead of a shell-like wildcard."
+  "Return a procedure that matches WILDCARD against a window.
+REGEXP-OPTIONS is passed to `make-regexp'.  If FULL-REGEXP is #t, 
+the WILDCARD is considered to be a regular-expression instead of 
+a shell-like wildcard.  The returned procedure takes a window
+and returns #t if WILDCARD matches the title, class, or resource
+of the window."
   (let ((wc-rgx (apply 
 		 make-regexp 
 		 (if full-regexp
@@ -191,6 +196,8 @@ instead of a shell-like wildcard."
 (define*-public (wildcard-match? wildcard #&optional (win (get-window))
 				 #&key (full-regexp #f)
 				 (regexp-options `(,regexp/icase)))
+  "Returns #t if WILDCARD matches WIN (in the sense of `wildcard-matcher').
+See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS."
   ((wildcard-matcher wildcard #:full-regexp full-regexp 
 		     #:regexp-options regexp-options) win))
 
@@ -303,7 +310,7 @@ client hostname matches STRING in the manner specified by the optional
 argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
 optional CASE-SENSITIVE argument determines whether the matching is
 case-sensitive or not."  
-  window-client-matchine-name)
+  window-client-machine-name)
 
 (define-public always? (lambda (w) #t))
 (define-public never? (lambda (w) #f))

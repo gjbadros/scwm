@@ -1,3 +1,20 @@
+Sat Dec 12 00:16:57 1998  Carl R. Witty  <cwitty@newtonlabs.com>
+
+	* c-animation/c-animation.c (s_animated_window_shade): Eliminate
+ 	the fMaximized window flag.
+
+	* background/background.c (s_set_background_color_x,
+ 	s_make_resized_image, s_set_background_image_x,
+ 	s_reset_background_x): Add docs.
+
+	* c-animation/c-animation.c (s_animated_move_window): Update docs.
+
+	* scwmgtkhelper/scwmgtkhelper.c (s_restore_scwm_handlers): Add
+ 	docs.
+
+	* */Makefile.am: Use $(DESTDIR) in hand-written install-data-hook
+ 	rules (to match automake-generated install rules).
+
 Sat Dec  5 11:19:30 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: #include a bunch of headers so that

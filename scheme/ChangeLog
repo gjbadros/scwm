@@ -1,3 +1,49 @@
+Sat Dec 12 00:15:14 1998  Carl R. Witty  <cwitty@newtonlabs.com>
+
+	* winlist.scm (list-windows): Update doc.
+	(winlist-skip?): Typo fix in doc.
+	(show-window-list-menu): Update doc.
+
+	* std-menus.scm (xlock-options): Made xlock very nice, instead of
+	very greedy.
+
+	* stacking.scm (list-windows-above): Typo fix in doc.
+	(raise-window-above): Fix bug.
+
+	* listops.scm (filter): Typo fix in doc.
+
+	* flux.scm (make-file-menu): Changed default editor to emacs.
+	(bool->str): Update doc.
+	(find-window-by): New function.
+	(find-window-by-name, find-window-by-class-resource): Rewritten to
+ 	use find-window-by.
+	(use-change-desk-commands): Don't error if the vector isn't
+	long enough.
+
+	* base.scm (hotkeys-from-name): Don't error if the last letter
+	is an '&'.
+
+	* wininfo.scm (window-geometry-string): Update doc.
+	(window-overlaps-window?): Update doc.
+
+	* winops.scm (window-frame-area): Rewrite doc.
+
+	* wininfo.scm (wildcard->regexp): Rewrite doc.
+	(wildcard-matcher, wildcard-match?): Update docs.
+	(client-hostname-match??): Typo fix.
+
+	* prefs-menu.scm (user-option-menuitem): Made non-public.
+
+	* flux.scm (use-change-desk-commands): Rewrite doc.
+
+	* face.scm (title-style, border-style, button-style): Update docs.
+
+	* winlist.scm (should-circulate-skip?): Typo fix in doc.
+
+	* cached-program-exists.scm (cached-program-exists?): Update doc.
+
+	* doc.scm (documentation): Update doc.
+
 1998-12-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* tests/session.scm: New file for SM tests.

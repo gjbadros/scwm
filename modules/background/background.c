@@ -56,6 +56,7 @@ SCM protected_objs;
 
 SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 	  (SCM color))
+     /** Sets the color of the root window to COLOR. */
 #define FUNC_NAME s_set_background_color_x
 {
   Pixmap dummy = None;
@@ -81,6 +82,10 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 
 SCWM_PROC(make_resized_image, "make-resized-image", 3, 1, 0,
 	  (image, width, height, bgcolor))
+     /** Makes a new image from IMAGE of the given WIDTH and HEIGHT.
+It does not scale IMAGE.  If the resized image is smaller than the
+original, it is cropped; if larger, the extra space in the new image
+is filled with BGCOLOR. */
 #define FUNC_NAME s_make_resized_image
 {
   int nw;
@@ -178,6 +183,8 @@ SCWM_PROC(make_resized_image, "make-resized-image", 3, 1, 0,
 
 SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
 	  (SCM image, SCM style))
+     /** Sets the background of the root window to be IMAGE.
+STYLE can be either 'centered or 'tiled. */
 #define FUNC_NAME s_set_background_image_x
 {
   Pixmap dummy = 0;
@@ -226,6 +233,7 @@ SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
 
 SCWM_PROC(reset_background_x, "reset-background!", 0, 0, 0,
 	  ())
+     /** Resets the root window to the default "weave". */
 #define FUNC_NAME s_reset_background_x
 {
   XSetWindowBackgroundPixmap(dpy, Scr.Root, (Pixmap) None);

@@ -114,7 +114,7 @@
 ;;   (kill-fvwm2-modules-by-name "FvwmPager")
 ;;
 ;; This support is in progress. It may or may not work with particular
-;; modules, depending on wether all the commands they use are
+;; modules, depending on whether all the commands they use are
 ;; supported by the fvwm-eval module (q.v.).
 ;;
 ;;
@@ -289,6 +289,10 @@
 (define (remove-active-module! fmod)
   (set! active-modules (delq! fmod active-modules)))
 
+;; CRW:FIXME:MS: The (logior type mask) below doesn't make any sense.
+;; 1) Shouldn't it be some sort of "and" instead of "or"?
+;; 2) logior will never return #f, so the "true" branch will always be taken...
+;; (There are several other functions in this file with the same problem.)
 (define (module-broadcast type num-data . args)
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))

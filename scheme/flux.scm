@@ -149,12 +149,16 @@ Use `show-system-info' to display it in a window."
 
 ;; CRW:FIXME:: This should be merged with make-context-menu in
 ;; std-menus.scm
+
+;; I (CRW) changed "vi" to "emacs" below.  If anybody feels strongly
+;; that the default should be "vi", at least make it "xterm -e vi"
+;; instead of just "vi".
 (define-public (make-file-menu file . rest)
   "Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu."
   (menu (append! (list (menuitem "View" #:action (show-file file))
 		       (menuitem "Edit" #:action
-				 (string-append (or (getenv "EDITOR") "vi")
+				 (string-append (or (getenv "EDITOR") "emacs")
 						" " file)))
 		 rest)))
 
@@ -184,7 +188,7 @@ See also `message'."
   (exe (string-append com "| xmessage -file - -default okay -nearmouse")))
 
 (define-public (bool->str arg)
-  "Return the string \"true\" if ARG is #t, \"false\" otherwise."
+  "Return the string \"false\" if ARG is #f, \"true\" otherwise."
   (if arg "true" "false"))
 
 (define*-public (size->str sz #&optional (sep "x"))
@@ -353,29 +357,30 @@ honour synthetic key events as they are a security hole."
 	    (printable-char->keysym-string (string-ref str i)) win)
 	   (set! i (+ 1 i)))))
 
-;; from Harvey Stein
+;; from Harvey Stein; rewritten by Carl Witty
+(define-public (find-window-by pred)
+  "Return a window satisfying predicate PRED.
+If there are multiple such windows, an unspecified one of them
+will be returned."
+  (let ((wlist (list-windows #:only pred)))
+    (if (not (null? wlist))
+	(car wlist)
+	#f)))
+
 (define-public (find-window-by-name window-name)
   "Return a window with name WINDOW-NAME.
 If there are multiple such windows, an unspecified one of them
 will be returned."
-  (let ((wlist (list-windows
-		#:only (lambda (w)
-			 (string=? (window-title w) window-name)))))
-    (if (not (null? wlist))
-	(car wlist)
-	#f)))
+  (find-window-by (lambda (w)
+		    (string=? (window-title w) window-name))))
 
 (define-public (find-window-by-class-resource class resource)
   "Return a window by its CLASS and RESOURCE names (as strings).
 If there are multiple such windows, an unspecified one of them
 will be returned."
-  (let ((wlist (list-windows
-		#:only (lambda (w)
-			 (and (string=? (window-class w) class)
-			      (string=? (window-resource w) resource))))))
-    (if (not (null? wlist))
-	(car wlist)
-	#f)))
+  (find-window-by (lambda (w)
+		    (and (string=? (window-class w) class)
+			 (string=? (window-resource w) resource)))))
 
 
 (define (list-without-elem l e)
@@ -693,13 +698,15 @@ It defaults to `netscape-new-window'."
 
 ;; Inspired by Julian Satchell's version of this --10/09/98 gjb
 (define-public (use-change-desk-commands vector-of-commands)
-  "Execute one of VECTOR-OF-COMMANDS each time the desk changes.
+  "Execute one of the VECTOR-OF-COMMANDS shell commands when the desk changes.
 The 0th element of the vector is used for changes to desk 0,
-the first element for changes to desk 1, etc."
+the first element for changes to desk 1, etc.  Changes to desks which are
+\"off the end\" of the vector do nothing."
   (add-hook! change-desk-hook
 	     (lambda (new old)
 	       ;; (display n) (newline) ;; for debugging
-	       (system (vector-ref vector-of-commands new))
+	       (if (< new (vector-length vector-of-commands))
+		   (system (vector-ref vector-of-commands new)))
 	       )))
 
 (define-public (execute-on-selection command)

@@ -106,7 +106,7 @@
 ;;; currently use is use xprompt and have it run the apropriate
 ;;; scwm-exec command (i.e., pass the continuation [the
 ;;; set-shadow-factor!  e.g.] to the ask-string, and have it run
-;;; scwm-exec after getting the value from the user
+;;; scwm-exec after getting the value from the user)
 (define-public (ask-string prompt)
   "Ask for a string with PROMPT."
   (message prompt "New value: ?!")
@@ -178,7 +178,7 @@
             ;;     ((symbol-binding #f setter) res)
             ;;     (symbol-set! #f symbol res)))))))
 
-(define-public (user-option-menuitem symbol)
+(define (user-option-menuitem symbol)
   "Create a menuitem for the option."
   (menuitem (symbol->string symbol) #:action (reset-user-variable symbol)))
 
@@ -198,6 +198,7 @@ All the arguments are passed directly to the `menu' function."
               (menuitem "Window Properties" #:action (show-com "xprop"))
               (menuitem "General Info" #:action show-system-info)
               menu-separator
+	      ;; CRW:FIXME:: This shouldn't be hardcoded to /usr/local/bin
               (menuitem "SCWM interaction" #:action
                         (run-in-xterm "/usr/local/bin/scwmrepl"))
               (menuitem "Specific parameters" #:action

@@ -58,7 +58,7 @@
 			      (by-focus #f)
 			      (reverse #f))
 
-  "Return the list of windows matching ONLY or not matching EXCEPT.
+  "Return the list of windows matching ONLY and not matching EXCEPT.
 The windows are returned their stacking order (top first) if
 BY-STACKING is #t.  They are returned sorted by their last focussed
 time (most recently focussed first) if BY-FOCUS is #t. If REVERSE is
@@ -85,7 +85,7 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
   (if win (set-object-property! win 'winlist-skip #t)))
 
 (define*-public (winlist-skip? #&optional (win (get-window)))
-  "Return #t of WIN is skipped in the window list, #f otherwise."
+  "Return #t if WIN is skipped in the window list, #f otherwise."
   (if win (object-property win 'winlist-skip) #f))
 
 ;; add style options for #:winlist-skip
@@ -112,6 +112,10 @@ and REVERSE control the order in which windows appear. See
 `list-windows' for more on these as well.
 
 PROC is the procedure which will be called on the selected window. 
+
+FLASH-WINDOW-PROC and UNFLASH-WINDOW-PROC are set as the hover-action
+and unhover-action (respectively) of the items in the menu.  (See
+`menuitem'.)
 
 If SHOW-GEOMETRY is #t, the geometries of the windows will be listed
 in each menuitem.  
@@ -206,9 +210,11 @@ See also `circulate-hit-icon'."
 Otherwise return #f."
   (if win (object-property win 'circulate-skip-icon) #f))
 
+;; CRW:FIXME:MS: Shouldn't this be:
+;; ((if (iconified? win) circulate-skip? circulate-skip-icon?) win)
 (define*-public (should-circulate-skip? #&optional (win (get-window)))
   "Return #t if WIN should now be skipped when circulating, #f otherwise.
-Using the current state of WIN (whether it is iconified or not) in
+Uses the current state of WIN (whether it is iconified or not) in
 determining the result."
   (if win 
       (or (circulate-skip? win) (and (iconified? win) (circulate-skip-icon? win)))

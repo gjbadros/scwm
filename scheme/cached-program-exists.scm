@@ -31,7 +31,9 @@ spawns a zsh process to get the list of files in the $PATH very quickly."
 (define-public (cached-program-exists? program-name)
   "Return #t if PROGRAM-NAME is in the cache of programs that exist.
 Returns #f otherwise.  If `debug-program-cache' is true, a message will 
-print to stdout on hits and misses."
+print to stdout on hits and misses.  You must call 
+`initialize-programs-that-exist' before calling this function; otherwise,
+it reverts to the (inefficient) implementation of `program-exists?'."
   (if debug-program-cache
       (if programs-that-exist
 	  (if (member program-name programs-that-exist) 

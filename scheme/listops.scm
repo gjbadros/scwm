@@ -35,6 +35,7 @@
 ;;; Scheme names where they exist, rather than the pseudo-common-lispy
 ;;; names of the common-list module, and
 
+;; CRW:FIXME:: Whoever was writing the above comment should finish it...
 
 
 (define-public (iota n) 
@@ -81,7 +82,7 @@ possibly none."
 
 
 (define-public (filter pred l)
-  "Return a list of those elements of L for with PRED is true.
+  "Return a list of those elements of L for which PRED is true.
 The elements appear in the result list in the same order in which they
 appeared in L."
   (let loop ((accum ())

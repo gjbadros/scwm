@@ -55,7 +55,7 @@
        "xlock")))
 
 (define-public xlock-options
-  "-nice -19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
+  "-nice 19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
 (define (run-xlock mode lock)	; returns a lambda!
   (exe (string-append "xlock " xlock-options " -mode " mode
                       (if lock "" " -nolock"))))

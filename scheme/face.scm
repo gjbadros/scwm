@@ -30,11 +30,23 @@
 			     (active-up '()) 
 			     (active-down '()) 
 			     (inactive '()) #&allow-other-keys . rest)
-  "Set the current title style to use FONT, HEIGHT, and JUSTIFY.
+  "Set the title style in the current decor.
 FONT is the window title font, a font object or a string.
 HEIGHT is the height of the title bar, in points.
 JUSTIFY is one of 'left, 'right, or 'center.
-FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
+This function also takes the keyword arguments #:relief, #:solid,
+#:gradient, #:h-gradient, #:v-gradient, and #:pixmap, with effects
+as described under the `Face Flags' and `Face Specification Flags'
+concepts (except that #:pixmap is always tiled, and #:h-gradient
+and #:v-gradient are horizontal and vertical gradients).  These
+extra keyword arguments can either be included in the main argument
+list, or lists of these arguments can be used as the ACTIVE-UP,
+ACTIVE-DOWN, or INACTIVE arguments.  For instance:
+  (title-style #:solid \"red\" #:inactive (list #:solid \"green\"))
+would set the title to be red in either active state, and green
+in the inactive state, leaving FONT, HEIGHT, and JUSTIFY in their
+current state, and returning everything else about the title
+to their default state."
   (if (bound? font)
       (set-title-font! font))
   (if (bound? height) 
@@ -48,7 +60,13 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 
 (define*-public (border-style #&key (active '())  
 			      (inactive '()) #&allow-other-keys . rest)
-  "Set the border style in the current decor."
+  "Set the border style in the current decor.
+This function takes the keyword arguments #:hidden-handles, 
+#:no-inset, and #:pixmap, with effects as described under the
+`Face Flags' and `Face Specification Flags' concepts (except
+that #:pixmap is always tiled).  These keyword arguments can
+either be included in the main argument list, or lists of these
+arguments can be used as the ACTIVE or INACTIVE arguments."
   (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
 				  (set-border-face! active inactive)
@@ -61,7 +79,18 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 			      (active-up '()) 
 			      (active-down '()) 
 			      (inactive '()) #&allow-other-keys . rest)
-  "Set the button style for button number BUTTON in the current decor."
+  "Set the button style for button number BUTTON in the current decor.
+MWM sets the button's mwm flag (see `set-button-mwm-flag!'.
+This function also takes the keyword arguments #:justify, #:relief,
+#:vertical-justify, #:use-style-of, #:solid, #:gradient, #:h-gradient,
+#:v-gradient, #:relief-pattern, #:vector, #:pixmap, and #:tiled-pixmap,
+with effects as described under the `Face Flags' and `Face
+Specification Flags' concepts (with the additions that #:tiled-pixmap
+is an always-tiled pixmap, #:vector is a synonym for #:relief-pattern,
+and #:h-gradient and #:v-gradient are horizontal and vertical
+gradients).  These extra keyword arguments can either be included
+in the main argument list, or lists of these arguments can be used
+as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
   (if (bound? mwm)
       (set-button-mwm-flag! mwm))
   (act-on-face-specs (lambda args

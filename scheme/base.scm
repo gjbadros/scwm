@@ -281,7 +281,9 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 	(return-key-char-list ())
 	(return-label-char-list ()))
     (while (not (null? char-list))
-	   (if (equal? (car char-list) #\&)
+	   ;; If the last character in the label is an &, leave it
+	   ;; as a literal &
+	   (if (and (equal? (car char-list) #\&) (not (null? (cdr char-list))))
 	       (set! return-key-char-list (cons (cadr char-list)
 						return-key-char-list))
 	       (set! return-label-char-list (cons (car char-list)
