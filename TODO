@@ -2,6 +2,9 @@
 
 * documentation strings in scwm scheme modules
 
+* Organize and automate testing of scheme/tests/*.scm files
+** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
+
 * Constraint embedding
 ** consider using cleaner subclassing w/ partial wrap model, instead of C-like void pointers
 ** virtual desktop and sticky interaction with the constraint variables
