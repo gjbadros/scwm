@@ -240,8 +240,8 @@
 		       (remove-active-module! fmod)
 		       (catch #t
 			      (lambda ()
-				(close to-module-write)
-				(close from-module-read))
+				(close-port to-module-write)
+				(close-port from-module-read))
 			      (lambda args args))
 		       (list-set! fmod 4 #f))))))
 
