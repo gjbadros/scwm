@@ -1,0 +1,6 @@
+.deps
+.libs
+Makefile
+Makefile.in
+scwm-corba-exec
+scwm_scheme_evaluator-server

@@ -1,0 +1,5 @@
+module scwm_scheme_evaluator {
+	interface object {
+		void evaluate_sexp(in string expr, out string answer, out string output, out string error_output);
+	};
+};

@@ -1,0 +1,6 @@
+Sun Sep  5 15:36:33 1999    <gjb@cs.washington.edu>
+
+	* First version of scwm_scheme_evaluator interface + client +
+	server.  The server currently does nothing but echo the expression 
+	to evaluate.
+
