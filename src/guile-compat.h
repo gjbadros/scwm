@@ -30,6 +30,8 @@
 extern "C" {
 #endif
 
+#include <guile/gh.h>
+
 /* pair gh_free with gh_scm2newstr, etc. */
 #ifndef gh_free
 #define gh_free(x) free(x)
