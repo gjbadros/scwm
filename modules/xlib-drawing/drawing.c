@@ -157,11 +157,11 @@ The line is drawn from ( X1, Y1 ) to ( X2, Y2 ).  */
 
 SCWM_PROC(xlib_draw_arc_x, "xlib-draw-arc!", 6, 0, 0,
 	  (SCM x, SCM y, SCM width, SCM height, SCM angle1, SCM angle2))
-     /** Draws a arc to the screen using the Xlib call XDrawArc.  The arc is
-specified in terms of a rectangle, in which it is wholly enclosed.
-( X, Y ) is at the upper left corner of the rectangle.  The rectangle is of 
-size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to ANGLE2. Angles are
-specified in degrees (0.0 to 360.0).*/
+     /** Draws a arc to the screen using the Xlib call XDrawArc.  
+The arc is specified in terms of a rectangle, in which it is wholly
+enclosed.  ( X, Y ) is at the upper left corner of the rectangle.  The
+rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to
+ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 #define FUNC_NAME s_xlib_draw_arc_x
 {
   int iX, iY, iWidth, iHeight;
@@ -188,7 +188,7 @@ specified in degrees (0.0 to 360.0).*/
   iWidth = gh_scm2int(width);
   if (iWidth < 0) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, width);
+    scm_misc_error(FUNC_NAME,"WIDTH must be non-negative",SCM_EOL);
   }
 
   if (!gh_number_p(height)) {
@@ -198,7 +198,7 @@ specified in degrees (0.0 to 360.0).*/
   iHeight = gh_scm2int(height);
   if (iHeight < 0) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, height);
+    scm_misc_error(FUNC_NAME,"HEIGHT must be non-negative",SCM_EOL);
   }
 
   if (!gh_number_p(angle1)) {
@@ -216,7 +216,7 @@ specified in degrees (0.0 to 360.0).*/
   SCM_REALLOW_INTS;
 
   XDrawArc(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight, 
-	   (int) nAngle1 * 64, (int) nAngle2 * 64);
+	   (int) (nAngle1 * 64), (int) (nAngle2 * 64));
 
   return SCM_UNDEFINED;
 }
