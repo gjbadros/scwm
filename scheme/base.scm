@@ -173,12 +173,18 @@ See `move-window' if you wish to move a window to a virtual position."
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
 way if not specified.  See also `window-position'."
-  (if (sticky? win) (window-position win)
-      (let* ((pos (window-position win))
-	     (x (car pos))
-	     (y (cadr pos))
-	     (vpos (viewport-position)))
-	(list (- x (car vpos)) (- y (cadr vpos))))))
+  (let ((pos (window-position win)))
+    (if (sticky? win) pos
+	(apply virtual->viewport pos))))
+
+(define*-public (icon-viewport-position #&optional (win (get-window)))
+  "Return the position of WIN's icon in pixels within the viewport.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified.  See also `icon-position'."
+  (let ((pos (icon-position win)))
+    (if (icon-sticky? win) pos
+	(apply virtual->viewport pos))))
     
 (define-public (move-viewport x y)
   "Move the viewport onto the virtual desktop relatively.
