@@ -6,4 +6,5 @@ init_scheme_string.c
 out.log
 scwm
 scwm-works
+scwm_cl
 scwmpaths.h
