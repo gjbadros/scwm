@@ -1034,20 +1034,18 @@ window_shade(SCM win, SCM animated_p)
   
   if (fAnimated) {
     AnimatedShadeWindow(sw,True /* roll up */, -1, NULL);
-    /* handle expose events */
-    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-      DispatchEvent();
-    /* and discard the rest */
-    XSync(dpy,True);  /* Discard events so we don't propagate a resize
-			 event that will call setupframe again */
-    /* FIXGJB: the above XSync is timing dependent, sometimes the
-       event we're trying to discard won't be generated in time
-       for the above to discard it, so I had to hack the
-       HandleConfigureNotify() routine to avoid resizing the frame; I
-       left the XSync in for performance, since there's no reason to
-       propagate that event if we can avoid it;  perhaps substructure
-       redirection is a solution here, but I don't know much about it
-       --11/11/97 gjb */
+    /* discard resize events */
+    while (XCheckMaskEvent(dpy,  ResizeRedirectMask, &Event))
+      { }
+    /* We discard events so we don't propagate a resize
+       event that will call setupframe again */
+    /* Note sometimes the event we're trying to discard won't be
+       generated in time for the above to discard it, so I had to hack
+       the HandleConfigureNotify() routine to avoid resizing the
+       frame; I left the XSync in for performance, since there's no
+       reason to propagate that event if we can avoid it; perhaps
+       substructure redirection is a solution here, but I don't know
+       much about it --11/11/97 gjb */
   }
   SetupFrame(sw, sw->frame_x, sw->frame_y, sw->frame_width,
 	     sw->title_height + sw->boundary_width, False);
@@ -1055,9 +1053,9 @@ window_shade(SCM win, SCM animated_p)
     /* need to reset the client window offset so that if
        if it's un-window-shaded w/o animation, things are ok */
     XMoveWindow(dpy,sw->w,0,0);
-    CoerceEnterNotifyOnCurrentWindow();
   }
 
+  CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
