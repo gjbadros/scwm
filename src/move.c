@@ -481,7 +481,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   have_orig_position = False;
   InstallRootColormap();
 
-  if (!GrabEm(XCursorByNumber(XC_fleur))) {
+  if (!GrabEm(XCURSOR_MOVE)) {
     /* GJB:FIXME:: xmag caused this to run
        when click-to place (no auto/smart placement)
        and it should not, IMO --09/22/98 gjb

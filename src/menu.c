@@ -1576,7 +1576,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   }
 
   PopupMenu(pmd);
-  GrabEm(XCursorByNumber(XC_sb_left_arrow));
+  GrabEm(XCURSOR_MENU);
   pmi = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
   UngrabEm();
   PopdownMenu(pmd);

@@ -138,6 +138,8 @@ static CursorNameMap map[] = {
 
 #undef CURS
 
+/* GJB:FIXME:TS: Why only even XC_* values--
+   can we halve the size of the array?  Is it worth it? Maybe not */
 static SCM preloaded_x_cursors[XC_num_glyphs];
 
 /* ========================================================================== */
@@ -173,7 +175,7 @@ get_scm_cursor_by_number(int cursor_num)
     sc=x_cursor_to_scm(c,1);
     return sc;
   }
-  return SCM_UNDEFINED;
+  return SCM_BOOL_F;
 }
 
 /* Return SCM_BOOL_F if failed to find the name */
@@ -230,6 +232,29 @@ this procedure.. */
   scm_wrong_type_arg(FUNC_NAME,1,name_or_number);
 }
 
+
+void
+CreateScmGlobalCursors()
+{
+  SCWM_VAR_INIT(cursor_set_focus,"cursor-set-focus", get_scm_cursor_by_number(XC_hand2));
+  /** The cursor to use for set focus actions, defaults to hand2. */
+
+  SCWM_VAR_INIT(cursor_move,"cursor-move", get_scm_cursor_by_number(XC_fleur));
+  /** The cursor to use for move actions, defaults to fleur. */
+
+  SCWM_VAR_INIT(cursor_icon,"cursor-icon", get_scm_cursor_by_number(XC_top_left_arrow));
+  /** The cursor to use for icon windows, defaults to top_left_arrow. */
+
+  SCWM_VAR_INIT(cursor_kill,"cursor-kill", get_scm_cursor_by_number(XC_pirate));
+  /** The cursor to use for selecting a window to kill, defaults to pirate. */
+
+  SCWM_VAR_INIT(cursor_select,"cursor-select", get_scm_cursor_by_number(XC_dot));
+  /** The cursor to use for selecting a window, defaults to dot. */
+
+  SCWM_VAR_INIT(cursor_menu,"cursor-menu", get_scm_cursor_by_number(XC_sb_left_arrow));
+  /** The cursor to use when in a menu, defaults to sb_left_arrow. */
+}
+
 /* ========================================================================== */
 MAKE_SMOBFUNS(cursor);
 
@@ -242,6 +267,7 @@ init_cursor()
   for (i=0;i<XC_num_glyphs;i++) {
     preloaded_x_cursors[i]=SCM_UNDEFINED;
   }
+
 #ifndef SCM_MAGIC_SNARFER
 #include "cursor.x"
 #endif
@@ -253,5 +279,3 @@ init_cursor()
 /* c-basic-offset: 2 */
 /* End: */
 /* vim:ts=8:sw=2:sta */
-
-

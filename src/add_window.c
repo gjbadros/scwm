@@ -419,7 +419,7 @@ AddWindow(Window w)
 
   attributes.border_pixel = SAFE_COLOR(psw->ShadowColor);
 
-  psw->frame_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
+  psw->frame_cursor = get_scm_cursor_by_number(XC_top_left_arrow);
   attributes.cursor = XCURSOR(psw->frame_cursor);
   attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |
 			   ButtonReleaseMask | EnterWindowMask |
@@ -544,7 +544,7 @@ AddWindow(Window w)
                   valuemask, &attributes);
   XSaveContext(dpy, psw->title_w, ScwmContext, (caddr_t) psw);
 
-  psw->sys_cursor=get_scm_cursor_by_number(XC_hand2);
+  psw->sys_cursor = get_scm_cursor_by_number(XC_hand2);
   attributes.cursor = XCURSOR(psw->sys_cursor);
   for (i = 4; i >= 0; i--) {
     if ((i < Scr.nr_left_buttons) && (psw->left_w[i] > 0)) {

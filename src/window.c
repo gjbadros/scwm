@@ -439,13 +439,13 @@ mark_window(SCM obj)
     }
     scm_gc_mark(psw->mini_icon_image);
     for (i=0;i<4;i++) {
-      scm_gc_mark(psw->corner_cursors[i]);
-      scm_gc_mark(psw->side_cursors[i]);
+      GC_MARK_SCM_IF_SET(psw->corner_cursors[i]);
+      GC_MARK_SCM_IF_SET(psw->side_cursors[i]);
     }
-    scm_gc_mark(psw->title_cursor);
-    scm_gc_mark(psw->sys_cursor);
-    scm_gc_mark(psw->frame_cursor);
-    scm_gc_mark(psw->icon_cursor);
+    GC_MARK_SCM_IF_SET(psw->title_cursor);
+    GC_MARK_SCM_IF_SET(psw->sys_cursor);
+    GC_MARK_SCM_IF_SET(psw->frame_cursor);
+    GC_MARK_SCM_IF_SET(psw->icon_cursor);
 
     scm_gc_mark(psw->mini_icon_image);
     scm_gc_mark(psw->icon_req_image);
@@ -930,8 +930,7 @@ destroy-window), or #f or omitted for the standard circle cursor. */
   if (DeferExecution(&ev, &w, &psw,
 		     (x_cursor==None)?(
 		       (cursor != SCM_BOOL_F ?
-			 XCursorByNumber(XC_pirate):
-			 XCursorByNumber(XC_dot))
+                        XCURSOR_KILL:XCURSOR_SELECT)
 		       ):(
 		         x_cursor
 		       ),

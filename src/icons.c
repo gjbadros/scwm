@@ -74,24 +74,24 @@ GrabIconButtons(ScwmWindow *ARG_UNUSED(psw), Window w)
   MouseEntry = Scr.AllBindings;
   while (MouseEntry != (Binding *) 0) {
     if ((MouseEntry->Context & C_ICON) && (MouseEntry->IsMouse == 1)) {
-      if (MouseEntry->Button_Key > 0)
+      if (MouseEntry->Button_Key > 0) {
 	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
-      else {
+                    XCURSOR_ICON);
+      } else {
 	XGrabButton(dpy, 1, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
+                    XCURSOR_ICON);
 	XGrabButton(dpy, 2, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
+                    XCURSOR_ICON);
 	XGrabButton(dpy, 3, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
+                    XCURSOR_ICON);
       }
     }
     MouseEntry = MouseEntry->NextBinding;
@@ -313,7 +313,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   attributes.background_pixel = XCOLOR(Scr.NotMenuColors.bg);
   valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
   attributes.border_pixel = XCOLOR(Scr.NotMenuColors.fg);
-  psw->icon_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
+  psw->icon_cursor=get_scm_cursor_by_number(XCURSOR_ICON);
   attributes.cursor = XCURSOR(psw->icon_cursor);
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			   VisibilityChangeMask |
