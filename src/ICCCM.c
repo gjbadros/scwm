@@ -71,7 +71,7 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
 SCWM_PROC(send_client_message, "send-client-message", 2, 1, 0,
           (SCM win, SCM atom, SCM x))
      /** Send WIN the message "ATOM X".
-WIN can be 'root-window or an X window ID number.
+WIN can be 'root-window or an X window identification number.
 Useful for supporting other WMs module communication protocols. 
 ATOM and X are both 32-bit integers. */
 #define FUNC_NAME s_send_client_message

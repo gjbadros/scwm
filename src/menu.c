@@ -227,7 +227,6 @@ The properties returned are:
 '(menu-title menu-items side-image side-image-align side-bg-color bg-color
 text-color stipple-color
 image-bg font extra-options used-shortcut-keys) */
-/* FIXJTL: menu-look */
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu = SAFE_MENU(menu);

@@ -94,7 +94,7 @@ SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
 If EXTRA is not given, the EXTRA information from the original menu is
 used. The form and purpose of the EXTRA information varies with the
 menu look, and is documented with the original menu looks; currently,
-only the XPM menu look uses the EXTRA information. */
+only the Xpm menu look uses the EXTRA information. */
 #define FUNC_NAME s_copy_menu_look
 {
   scwm_menulook * pmlOrig;
