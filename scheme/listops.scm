@@ -35,7 +35,7 @@
 ;;; Scheme names where they exist, rather than the pseudo-common-lispy
 ;;; names of the common-list module, and
 
-;; CRW:FIXME:: Whoever was writing the above comment should finish it...
+;; CRW:FIXME:MS: Above comment is incomplete!
 
 
 (define-public (iota n) 

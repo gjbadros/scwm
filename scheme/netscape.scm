@@ -69,6 +69,15 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
 	#t)
       (error "No netscape window.")))
 
+(define-public (uri-escapify-comma uri)
+  "Replace commas in URI with the %2C escape code.
+This is useful since netscape's remote command invocation does a stupid
+syntactic scan of the passed url and treats commas as argument command
+separators, so the url gets chopped off at the first literal comma."
+  (regexp-substitute/global #f "," uri 'pre (lambda (match) "%2C") 'post))
+;; (use-modules (ice-9 regex))
+;; (uri-escapify-comma "foo,bar")
+
 (define*-public (netscape-goto-url url 
                 #&optional
 		(completion #f)
@@ -78,7 +87,7 @@ Calls COMPLETION when done.
 The optional argument specifies whether a new window should be opened.
 It defaults to `*netscape-new-window*'."
   (run-in-netscape
-   (string-append "openURL(" url (if new ",new-window)" ")"))
+   (string-append "openURL(" (uri-escapify-comma url) (if new ",new-window)" ")"))
    completion))
 
 (define*-public (netscape-goto-cut-buffer-url 

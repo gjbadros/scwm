@@ -3,6 +3,7 @@
 ;;; Copyright (C) 1999 Greg J. Badros
 
 
+;; (use-modules (app scwm xprop-extras))
 (define-module (app scwm xprop-extras)
   :use-module (app scwm optargs)
   :use-module (app scwm stringops)
