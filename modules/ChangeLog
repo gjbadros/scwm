@@ -1,3 +1,8 @@
+Sun Sep 26 13:58:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */Makefile.am (INCLUDES): Use new $(SCWM_SRC_DIR) so that
+	-I../../src is used instead of -I../../scwm
+
 Fri Sep 24 09:27:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c (xlib-set-drawing-mask!): Use XChangeGC

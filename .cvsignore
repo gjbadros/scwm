@@ -1,9 +1,13 @@
+*.rpm
+*.tar.gz
+ANNOUNCE
 Makefile
 Makefile.in
+README
 aclocal.m4
 config.cache
-config.log
 config.guess
+config.log
 config.status
 config.sub
 configure
@@ -12,5 +16,3 @@ libtool
 ltconfig
 ltmain.sh
 scwm.spec
-*.tar.gz
-*.rpm
