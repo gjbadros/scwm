@@ -8,10 +8,12 @@ pkgdata_DATA=scwm-procedures.txt scwm-variables.txt scwm.sgml
 
 # Use extract-docs to build the documentation files
 scwm.sgml scwm-procedures.txt: $(scwm_SOURCES)
-	outdir=$$PWD/$(top_builddir)/$(subdir); \
+	abs_builddir_doc=`pwd`; \
+	outdir=$$abs_builddir_doc; \
 	echo Outputting to directory: $$outdir; \
-	cd $(top_srcdir) ; \
-	perl utilities/dev/scwmdoc -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -V scheme/user-options.scm </dev/null scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt
+	cd $(top_builddir); abs_top_builddir=`pwd`; \
+	cd $$abs_builddir_doc; cd $(top_srcdir); \
+	perl $$abs_top_builddir/utilities/dev/scwmdoc -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -V scheme/user-options.scm </dev/null scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt
 
 html: scwm.sgml
 	mkdir -p $@ && cd $@ && \
