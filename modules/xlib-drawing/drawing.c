@@ -78,7 +78,7 @@ resize frames. VALUE should be an integer. */
   gcv.function = GXxor;
   gcv.foreground = val;
   gcv.subwindow_mode = IncludeInferiors;
-  XChangeGC(dpy, DrawingGC, Scr.Root, gcm, &gcv);
+  XChangeGC(dpy, DrawingGC, gcm, &gcv);
   return (value);
 }
 #undef FUNC_NAME
