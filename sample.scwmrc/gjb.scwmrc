@@ -10,6 +10,13 @@
 
 (define xlock-query-program "xlock-stdout")
 
+(define debug #t)
+
+(define (debug-display arg)
+  (if debug
+      (display arg)
+      ()))
+
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
@@ -18,6 +25,7 @@
 	     (app scwm face)
 	     (app scwm optargs)
 	     (app scwm std-menus)
+	     (app scwm prefs-menu)
 	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     )
@@ -34,7 +42,7 @@
 (define USER (getenv "USER"))
 
 (define fvwm-pager-path "/uns/lib/fvwm2/FvwmPager")
-(define want-fvwm-pager-module #f)
+(define want-fvwm-pager-module #t)
 
 (define fvwm-winlist-path "/uns/lib/fvwm2/FvwmWinList")
 (define want-fvwm-winlist-module #f)
@@ -165,6 +173,7 @@
     ("XE&vil" #f #f "xevil")
     ("&XBill" #f #f "xbill")
     ("XBlock&out" #f #f "xbl")
+    ("XSnow" #f #f "xsnow")
     ("X&Gammon" #f #f "xgammon")
     ))
 
@@ -174,8 +183,8 @@
     ("XMi&xer" "audiovol" "Multimedia" "xmixer")
     ("&WorkMan" "cdlabel" "cdrom2_3d" "workman")
     ("XPlay&Cd" "cdlabel" "cdrom2_3d" "xplaycd")
-    ("&Tracker" #f #f "tracker $("xgetfile -title "Select a MOD file for Tracker" -path MOD_SOUND_PATH -pattern "*.mod#f)")
-    ("Play&midi" #f #f "xplaymidi $("xgetfile -title "Select a MIDI file for PlayMidi" -path MIDI_SOUND_PATH -pattern "*.mid*#f)")
+;;    ("&Tracker" #f #f "tracker \\$(xgetfile -title 'Select a MOD file for Tracker' -path $MOD_SOUND_PATH -pattern '*.mod')" #f)
+;;    ("Play&midi" #f #f "xplaymidi \\$(xgetfile -title 'Select a MIDI file for PlayMidi' -path $MIDI_SOUND_PATH -pattern '*.mid')" #f)
     ("Xm&play" #f #f "xmplay")
     ))
 
@@ -224,6 +233,7 @@
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified?))
 
+(debug-display "Before setting image-load-path\n")
 
 ;;; set path to use for image searches
 (set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
@@ -468,11 +478,13 @@
 (window-style "Emacs" #:mini-icon "mini-edit.xpm"
 	              #:icon "TextEditor.xpm")
 
+(debug-display "Before menu-window-ops\n")
+
 ;;; define some useful menus
 (define menu-window-ops
   (menu
    (list
-    (menuitem "Window Ops" #f)
+    (menuitem "Window Ops" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	       #:action 'interactive-move)
     (menuitem "&Resize" #:image-left "mini-resize.xpm" 
@@ -602,13 +614,24 @@
   (exe (string-append xterm-program-name " -name remotexterm -T " hostname " -n " hostname 
 		      " -e sh -c 'ssh " hostname "'")))
 
-(define favorite-hosts 
-  '(pahtoo glacier demille rhodes fielder elwha
-	   kani nishin kazunoko hirame uni unagi methow chiwawa tolt torigai
-	   elwha apex bugbane bugs-bunny hoh oddvar calvin forbidden emerald
-	   daisy fireweed hobbes greg herman pugsly shrimp june cindy pysht
-	   puyallup manastash bergen twain hammahamma curie lutefisk chelan saba)
+(define server-hosts 
+  '(pahtoo glacier june amaebi bauhaus)
   )
+
+(define other-hosts 
+  '( sturgeon thresher coho ;; Ultrix
+	      forbidden pinnacle copper ;; AIX
+	      pintail edgar bugs-bunny ;; DEC OSF
+	      fireweed anemone bugbane buttercup ;; IRIX
+	      ))
+
+(define linux-hosts
+  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani))
+
+(define solaris-hosts
+  '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
+
+
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
@@ -619,16 +642,25 @@
 	    (menuitem elem #:image-left "mini-display.xpm" #:action (xterm-other-host elem)))
 	  hosts))))
 
-(define menu-hosts
-  (menu
-   (cons
-    (menuitem "Hosts")
-    (make-hosts-menu-gjb favorite-hosts))))
+(define menu-hosts-servers
+  (menu (cons
+	 (menuitem "Hosts (Servers)") 
+	 (make-hosts-menu-gjb server-hosts))))
 
-(define menu-other-hosts
-  (menu
-   (list
-    (menuitem "Other hosts"))))
+(define menu-hosts-linux
+  (menu (cons
+	 (menuitem "Hosts (Linux)") 
+	 (make-hosts-menu-gjb linux-hosts))))
+
+(define menu-hosts-solaris
+  (menu (cons
+	 (menuitem "Hosts (Solaris)") 
+	 (make-hosts-menu-gjb solaris-hosts))))
+
+(define menu-hosts-other
+  (menu (cons
+	 (menuitem "Hosts (Other)") 
+	 (make-hosts-menu-gjb solaris-hosts))))
 
 (define menu-preferences-scroll
   (menu (list
@@ -641,7 +673,7 @@
 	 (menuitem "&Partial 1/2" #:action (lambda () (set-edge-scroll 50 50)))
 	 (menuitem "Partial 1/&4" #:action (lambda () (set-edge-scroll 25 25))))))
 
-;; (popup-menu menu-prefs #t)
+;; (popup-menu (menu-prefs) #t)
 
 (define menu-prefs-gjb
   (menu (list (menuitem "Preferences" #f) menu-title menu-separator
@@ -654,7 +686,7 @@
 	      (menuitem "SCWM interaction" #:action
 			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info)
-	      menu-separator
+;	      menu-separator
 ;	      (menuitem "Opaque Move" #:action opaque-move-menu)
 ;	      (menuitem "Desk Size" #:action desk-size-menu)
 ;	      (menuitem "Scrolling" #:action scroll-menu)
@@ -671,6 +703,7 @@
 ;				      " " user-init-file))))))
 ;	      (menuitem "Save settings" #:action save-settings))))
 	      )))
+
 (define menu-preferences menu-prefs-gjb)
 
 (define menu-system-utilities
@@ -720,16 +753,21 @@
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
 	      #:action 'menu-games)
     menu-separator
-    (menuitem "H&osts" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts)
-    (if use-complete-host-menu
-	(menuitem "O&ther Hosts" #:action 'menu-other-hosts))
+    (menuitem "H&osts - Servers" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-servers)
+    (menuitem "Hosts - Linux" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-linux)
+    (menuitem "Hosts - Solaris" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-solaris)
+    (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-other)
     (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
 	      #:action 'menu-system-utilities)
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
 	      #:action 'menu-window-ops)
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action 'menu-preferences)
+	      #:action (menu-prefs))
+;;	      #:action menu-prefs-gjb)
     menu-separator
     (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
 	      #:action 'menu-screensaver)
@@ -744,6 +782,8 @@
 	      #:action 'menu-quit-verify))
    #:image-side "linux-menu.xpm"
    #:color-bg-image-side "blue"))
+
+(debug-display "before-popup-menu-root-start\n")
 
 (define (popup-menu-root-start)
   (popup-menu 'menu-root-start))
@@ -791,7 +831,7 @@
 (define (make-small-window-ops-menu w)
   (menu
    (list
-    (menuitem "Window Ops Small" #f)
+    (menuitem "Window Ops Small" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	       #:action interactive-move)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 
@@ -960,9 +1000,6 @@
 
 (set-click-time! 150)
 
-;; FIXGJB: I don't think this gets used right yet
-(define animation-ms-delay 50)
-
 ;; Fluid, cartoon-like
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
 
@@ -1059,7 +1096,7 @@
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-(display " *** `scwmrc' processed.\n")
+(debug-display " *** `scwmrc' processed.\n")
 
 
 ;;; Local Variables:
