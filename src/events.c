@@ -197,7 +197,7 @@ of the window just left.");
 SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1,
 "Invoked when window receives a VisibilityFullyObscured event.\n\
 The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully obscured.");
+of the window that is now fully obscured. See also `window-visibility'.");
 
 SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1,
 "Invoked when window receives a VisibilityPartiallyObscured\n\
@@ -205,7 +205,7 @@ event.  The hook procedures are invoked with one argument, the window\n\
 object of the window that is now partially obscured.  Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events.");
+that might cause more Visibility events. See also `window-visibility'.");
 
 SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1,
 "Invoked when window receives a VisibilityUnobscured event.\n\
@@ -213,7 +213,7 @@ The hook procedures are invoked with one argument, the window object\n\
 of the window that is now fully visible. Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events.");
+that might cause more Visibility events. See also `window-visibility'.");
 
 SCWM_HOOK(client_message_hook,"client-message-hook", 4,
 "This hook is invoked whenever Scwm receives an X/11 client message.\n\
