@@ -3,8 +3,6 @@
  * It may be used under the terms indicated by the copyright below.
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
-
-
 /****************************************************************************
  * This module is based partly on original code 
  * by Rob Nation 
@@ -64,14 +62,15 @@ SCM load_font(SCM fname)
   char *fn;
   int len;
 
+  SCM_REDEFER_INTS;
   if (!gh_string_p(fname)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("load-font",1,fname);
   }
-  gh_defer_ints();
   fn=gh_scm2newstr(fname,&len);
   if (NULL==fn) {
   allocation:
-    gh_allow_ints();
+    SCM_ALLOW_INTS;
     scm_memory_error("load-font");
   }
   xfs=XLoadQueryFont(dpy,fn);
@@ -84,7 +83,7 @@ SCM load_font(SCM fname)
   }
   if (NULL==xfs) {
     free(fn);
-    gh_allow_ints();
+    SCM_ALLOW_INTS;
     scwm_error("load-font",1);
   }
   font = malloc (sizeof (*font));
@@ -98,7 +97,8 @@ SCM load_font(SCM fname)
   SCM_SETCDR (answer, (SCM)font);
   XFONT(answer)=xfs;
   FONTNAME(answer)=fn;
-  gh_allow_ints();
+  
+  SCM_REALLOW_INTS;
   return answer;
 }
 
@@ -110,10 +110,14 @@ SCM font_p(SCM obj) {
 SCM set_icon_font(SCM font)
 {
   ScwmWindow *tmp;
+
+  SCM_REDEFER_INTS;
+
   if(gh_string_p(font)) {
     font=load_font(font);
   }
   if(!(SCM_NIMP(font) && FONTP(font))) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-icon-font!",1,font);
   }
   scm_unprotect_object(icon_font);
@@ -131,20 +135,30 @@ SCM set_icon_font(SCM font)
     }
     tmp = tmp->next;
   }
+
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
 }
 
 SCM set_window_font(SCM font)
 {
   int extra_height;
+  ScwmDecor *fl;
+
+  SCM_REDEFER_INTS;
+
 #ifdef USEDECOR
-  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  ScwmDecor *fl = &Scr.DefaultDecor;
+  *fl = &Scr.DefaultDecor;
 #endif
+
+
   if(gh_string_p(font)) {
     font=load_font(font);
   }
   if(!(SCM_NIMP(font) && FONTP(font))) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-font!",1,font);
   }
   scm_unprotect_object(window_font);
@@ -158,6 +172,7 @@ SCM set_window_font(SCM font)
   fl->TitleHeight=fl->WindowFont.font->ascent+fl->WindowFont.font->descent+3;
   extra_height -= fl->TitleHeight;
   redraw_titlebars(fl,extra_height);
+  SCM_REALLOW_INTS;
   return font;
 }
 
@@ -166,10 +181,15 @@ SCM set_menu_font(SCM font)
 {
   XGCValues gcv;
   unsigned long gcm;
+
+  SCM_REDEFER_INTS;
+
   if(gh_string_p(font)) {
+    SCM_ALLOW_INTS;
     font=load_font(font);
   }
   if(!(SCM_NIMP(font) && FONTP(font))) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-menu-font!",1,font);
   }
   scm_unprotect_object(menu_font);
@@ -187,6 +207,8 @@ SCM set_menu_font(SCM font)
   XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
   XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
   MakeMenus();
+
+  SCM_REALLOW_INTS;
   return(font);
 }
 
