@@ -46,10 +46,11 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:nP:';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N $opt_n $opt_P);
+my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:nP:SF';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_F
+	    $opt_d $opt_V $opt_O $opt_H $opt_N $opt_n $opt_P $opt_S);
 
-my $scwm_version = "post-0.8";
+my $scwm_version = "pre-1.0";
 
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
@@ -64,8 +65,10 @@ sub script_usage ( ) {
 -s       Run ispell on the comments and reports warnings for its responses
 -C       Only output concepts chapters
 -n       No warning for functions without comments
--d path  Set scwmdir source code base to path (e.g., /usr/local/src/scwm)
+-d URL  Set scwmdir source code base to path (e.g., file:///usr/local/src/scwm)
 -P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
+-S       Skip the procedures chapters-- makes it much faster to convert to HTML
+-F       Skip all procedures except those starting with \"F\" for fast check on output
 ";
   exit 0;
 }
@@ -91,7 +94,11 @@ $fReallyQuiet = TRUE if $opt_Q;
 $fWarnIfNoComment = FALSE if $opt_n;
 $prefix = $opt_P if $opt_P;
 
-my $scwmdir = $opt_d || $ENV{SCWMDIR};
+# link directly to the cvsweb checkout of the file;
+# I could even make this go to the version that the docs were generated
+# from, but I think it's better to look at the latest version for now
+# (at least until 1.0)
+my $scwmdir = $opt_d || "http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~";
 
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
@@ -313,7 +320,7 @@ if ($opt_o) {
   	<surname>Badros</surname>
   	<affiliation>
   	  <shortaffil>UWashington</shortaffil>
-  	  <jobtitle>Graduate Research Assistant</jobtitle>
+  	  <jobtitle>PhD Candidate</jobtitle>
   	  <orgname>University of Washington</orgname>
   	  <orgdiv>Department of Computer Science and Engineering</orgdiv>
   	  <address>
@@ -337,9 +344,67 @@ END_HEADER
   ;
 }
 
-if ($opt_C) {
-  goto CONCEPTS_CHAPTER;
+
+CONCEPTS_CHAPTER:
+
+# Now output concepts chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_CONCEPTS_CHAPTER
+  <chapter>
+    <title>Concepts</title>
+START_CONCEPTS_CHAPTER
+   ;
+  foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
+    my $markup = $concepts{$concept}{markup};
+    my $concept_id = $concept;
+    $concept_id =~ tr/ _/--/;
+    print MARKUP_OUT "    <sect1 id=\"$concept_id\"><title>$concept</title><para>\n$markup
+    </para></sect1>\n";
+  }
+
+  print MARKUP_OUT "  </chapter>\n";
 }
+
+if ($opt_C) {
+  goto SGML_TRAILER;
+}
+
+# Now output hooks chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_HOOKS_CHAPTER
+  <chapter>
+    <title>Hooks</title>
+START_HOOKS_CHAPTER
+  ;
+  foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
+    my $markup = $hooks{$hook}{markup};
+    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook</title><para>\n$markup
+    </para></sect1>\n";
+  }
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+
+# Now output vars chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_VARS_CHAPTER
+  <chapter>
+    <title>User variables</title>
+START_VARS_CHAPTER
+  ;
+  foreach my $var (sort { lc($a) cmp lc($b) } keys %vars ) {
+    my $markup = $vars{$var}{markup};
+    print MARKUP_OUT "    <sect1 id=\"$var\"><title>$var</title><para>\n$markup
+    </para></sect1>\n";
+  }
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+if ($opt_S) {
+  goto SGML_TRAILER;
+}
+
+PROCEDURES_CHAPTER:
 
 if ($opt_o) {
   print MARKUP_OUT <<END_CHAP_HEAD
@@ -351,6 +416,7 @@ END_CHAP_HEAD
 
 # This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
+  next if $opt_F && $proc !~ m/^f/i;
   my $usage = $procedure{$proc}{usage};
   my $comment = $procedure{$proc}{comment};
   my $file = $procedure{$proc}{file};
@@ -390,6 +456,7 @@ START_PROC_BY_FILE
     if (scalar(@prims) > 0) {
       print MARKUP_OUT "    <sect1><title>$file</title> <itemizedlist>\n";
       foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
+	next if $opt_F && $proc !~ m/^f/i;
 	my $markup = $procedure{$proc}{markup};
 	my $target = $procedure{$proc}{sgml_id};
 	my $primname = $procedure{$proc}{primname};
@@ -404,60 +471,7 @@ START_PROC_BY_FILE
 }
 
 
-# Now output hooks chapter
-if ($opt_o) {
-  print MARKUP_OUT <<START_HOOKS_CHAPTER
-  <chapter>
-    <title>Hooks</title>
-START_HOOKS_CHAPTER
-  ;
-  foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
-    my $markup = $hooks{$hook}{markup};
-    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook</title><para>\n$markup
-    </para></sect1>\n";
-  }
-  print MARKUP_OUT "  </chapter>\n";
-}
-
-
-# Now output vars chapter
-if ($opt_o) {
-  print MARKUP_OUT <<START_VARS_CHAPTER
-  <chapter>
-    <title>User variables</title>
-START_VARS_CHAPTER
-  ;
-  foreach my $var (sort { lc($a) cmp lc($b) } keys %vars ) {
-    my $markup = $vars{$var}{markup};
-    print MARKUP_OUT "    <sect1 id=\"$var\"><title>$var</title><para>\n$markup
-    </para></sect1>\n";
-  }
-  print MARKUP_OUT "  </chapter>\n";
-}
-
-
-CONCEPTS_CHAPTER:
-
-# Now output concepts chapter
-if ($opt_o) {
-  print MARKUP_OUT <<START_CONCEPTS_CHAPTER
-  <chapter>
-    <title>Concepts</title>
-START_CONCEPTS_CHAPTER
-   ;
-  foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
-    my $markup = $concepts{$concept}{markup};
-    my $concept_id = $concept;
-    $concept_id =~ tr/ _/--/;
-    print MARKUP_OUT "    <sect1 id=\"$concept_id\"><title>$concept</title><para>\n$markup
-    </para></sect1>\n";
-  }
-
-  print MARKUP_OUT "  </chapter>\n";
-}
-
-
-
+SGML_TRAILER:
 
 # Now output sgml trailer
 if ($opt_o) {
@@ -958,6 +972,8 @@ sub CreateMarkupBody ( $$$$$$$ ) {
   # Filename url links rely on environment variable SCWMDIR being
   # set to the base of the scwm distribution
   # i.e. $SCWMDIR/scwm/scwm.c should contain main()
+  my $cvs_url_link = "$scwmdir/$filename";
+  $cvs_url_link =~ s%/~checkout~%%;
   my $markup = 
 "<refentry id=\"$sgml_id\">
   <refnamediv>
@@ -979,8 +995,8 @@ sub CreateMarkupBody ( $$$$$$$ ) {
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url=\"file://$scwmdir/$filename\"><filename>$filename</filename></ulink>
-  at line $line </para> </refsect1>
+  <para> Defined in <ulink url=\"$scwmdir/$filename\"><filename>$filename</filename></ulink>
+  at line $line (<ulink url=\"$cvs_url_link\">CVS log</ulink>)</para> </refsect1>
 </refentry>
 ";
   return $markup;
