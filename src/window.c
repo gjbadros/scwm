@@ -1352,12 +1352,9 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 {
   Bool fDone = False;
   Bool fFinished = False;
-  Window original_w;
   SCM lastwin_entered = SCM_BOOL_F;
   ScwmWindow *pswInitialWin = PswFromPointerLocation(dpy);
   XEvent event_junk;
-
-  original_w = *w;
 
   if (!GrabEm(cursor)) {
     call0_hooks(cannot_grab_hook);
@@ -1449,37 +1446,20 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
     *w = eventp->xbutton.subwindow;
     eventp->xany.window = *w;
   }
-  if (*w == Scr.Root) {
-    goto defer_no_select;
-  }
-  *ppsw = PswFromWindow(dpy,*w);
-  if (*ppsw == NULL) {
-    goto defer_no_select;
+  if ((*w == Scr.Root) ||
+      (NULL == (*ppsw = PswFromWindow(dpy,*w)) )) {
+    UngrabEm();
+    *ppsw = NULL;
+    return False;
   }
 
-  /* this ugly mess attempts to ensure that the release and press
-   * are in the same window. */
+  /* Success!! */
 
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
 
-  if (original_w == (*ppsw)->Parent)
-    original_w = (*ppsw)->w;
-
-  if ((*w != original_w) && (original_w != Scr.Root) &&
-      (original_w != None) && (original_w != Scr.NoFocusWin)) {
-    if (!((*w == (*ppsw)->frame) &&
-	  (original_w == (*ppsw)->w))) {
-      /* Success!! */
-      UngrabEm();
-      return True;
-    }
-  }
-
- defer_no_select:
   UngrabEm();
-  *ppsw = NULL;
-  return False;
+  return True;
 }
 
 
