@@ -83,7 +83,8 @@ SRCS = \
 	menu.c \
 	paths.c \
 	deskpage.c \
-	decor.c
+	decor.c \
+	face.c
  
 OBJS = \
 	add_window.o \
@@ -116,7 +117,8 @@ OBJS = \
 	menu.o \
 	paths.o \
 	deskpage.o \
-	decor.o
+	decor.o \
+	face.o
 
 all: ${PROG}
 
