@@ -1,4 +1,4 @@
-Scwm 0.8
+Scwm 0.9beta1
 
 This is a beta release of
 
@@ -8,11 +8,11 @@ Web site: http://huis-clos.mit.edu/scwm/
 Ftp directory: ftp://huis-clos.mit.edu/pub/scwm/
 
 
-Scwm is a dynamic and extensible window manager based on Guile Scheme.
-It descends loosely from fvwm2 and supports virtually all fvwm2
-functionality (module support is still only beta-quality), and is far more
-powerful thanks to the embedded Scheme interpreter, and all of its features
-and libraries.
+Scwm is a dynamic and extensible window manager and X11 scripting
+facility based on Guile Scheme.  It descends loosely from fvwm2 and
+supports virtually all fvwm2 functionality (module support is still
+only beta-quality), and is far more powerful thanks to the embedded
+Scheme interpreter, and all of its features and libraries.
 
 Other additional features scwm provides are:
 
@@ -38,9 +38,8 @@ make no guarantees -- use at your own risk, as always.
 
 Scwm builds on i386-pc-linux, i386-pc-freebsd, sparc-sun-solaris,
 mips-sgi-irix, and generally any platform where both fvwm2 and guile
-will build.  Note that we recommend using recent developer's snapshots
-of guile until guile 1.3 is released (guile 1.2 may work with some
-tweaking). See the file INSTALL for further instructions.
+will build.  We recommend using guile-1.3 currently. See the file
+INSTALL for further instructions.
 
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the

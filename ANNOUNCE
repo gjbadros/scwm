@@ -1,15 +1,15 @@
-Scwm 0.8 is released.
+Scwm 0.9beta1 is released.
 
 * What Scwm is:
 
 Scwm is the Scheme Configurable Window Manager. This is a highly
-dynamic and extensible window manager for the X Window System (based
-originally on fvwm2, but now much enhanced) with Guile Scheme as the
-configuration/extension language. Nearly all decorations can be
-changed at run-time or per-window, and eventually many decoration
-styles and additional features will be supported through dynamically
-loaded code. A powerful protocol is provided for interacting with the
-window manager while it is running.
+dynamic and extensible window manager and scripting facility for the X
+Window System (based originally on fvwm2, but now much enhanced) with
+Guile Scheme as the configuration/extension language. Nearly all
+decorations can be changed at run-time or per-window, and eventually
+many decoration styles and additional features will be supported
+through dynamically loaded code. A powerful protocol is provided for
+interacting with the window manager while it is running.
 
 
 * Primary Authors:
@@ -17,6 +17,11 @@ window manager while it is running.
 Maciej Stachowiak <mstachow@mit.edu> 
 Greg J. Badros <gjb@cs.washington.edu>
 
+Other major contributors are Sam Steingold <sds@goems.com>, Robert
+Bihlmeyer <robbe@orcus.priv.at>, and Todd Larason <jtl@molehill.org>.
+
+Many more people have contributed bug reports, bug fixes, or smaller
+changes; see AUTHORS and THANKS in the distribution.
 
 * Where you can find more info:
 
@@ -26,14 +31,17 @@ http://huis-clos.mit.edu/scwm/
 
 There are also scwm-discuss@huis-clos.mit.edu and
 scwm-announce@huis-clos.mit.edu mailing lists for disscussion and
-release announcements repsectively. You can subscribe to either at
-majordomo@huis-clos.mit.edu
+release announcements repsectively. The new list
+scwm-commits@huis-clos.mit.edu receives all scwm CVS commit messages.
+You can subscribe to any of these at majordomo@huis-clos.mit.edu by
+sending a message with a body of "subscribe <list>" where <list> is
+the name of the list you want.
 
 * Where you can get it:
 
 You can download the latest scwm package from:
 
-ftp://huis-clos.mit.edu/pub/scwm/scwm-0.8.tar.gz
+ftp://huis-clos.mit.edu/pub/scwm/scwm-0.9beta1.tar.gz
 
 There is also
 ftp://huis-clos.mit.edu/pub/scwm/scwm-icons-0.8.tar.gz
@@ -44,39 +52,18 @@ buttons, etc. Some of these images are not available otherwise.
 You will also need to download and install the guile library. You can
 get the latest release from:
 
-ftp://prep.ai.mit.edu/pub/gnu/guile-1.2.tar.gz
+ftp://prep.ai.mit.edu/pub/gnu/guile-1.3.tar.gz
 
 or any archive that has GNU source packages available.
 
-You can get the latest guile snapshot (has more useful features and
-generally work better) from:
+You can get the latest guile snapshot from:
 
 ftp://red-bean.com/pub/guile
 
-The snapshots are officially alpha but they generally work pretty well.
+The snapshots are officially alpha but they generally work pretty
+well; however, 1.3 is reccomended for now since it is pretty
+recent. Guile 1.2 will also work but support will be removed in a
+coming release.
 
 
-* Here are highlights of what is new with the 0.8 release. There were
-many changes; see the NEWS file in the distribution for more details.
-
-o Fully documented all primitives 
--- Extracted during the build-process via new extract-docs tool
--- DocBook SGML and plaintext formats
--- html available online at: 
-   http://www.cs.washington.edu/research/constraints/cassowary/scwm-doc/
-
-o Integrated documentation into scwm.el Emacs interaction mode
--- apropos and procedure documentation help
-
-o Lots of bug fixes, cleaned-up API for consistency, multibyte 
-  character support
-
-o Squashed titlebar style
-
-o Optional alpha-quality integration of Cassowary constraint solver for
-  window layout
-
-o Improved window placement configurability, window gravity support, and
-  fvwm2 module support
-
-o Access to X properties, X resources,
+Here is what's new with 0.9beta1 (since 0.8):

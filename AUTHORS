@@ -4,22 +4,25 @@ Authors of Scwm
 Maciej Stachowiak, mstachow@mit.edu:
 originally modified fvwm to use guile as the configuration language,
 yielding scwm. Many changes throughout, and wrote the following files
-in the subdirectory scwm:
+in the subdirectory scwm (or mostly wrote the latest versions):
     callbacks.c color.c decor.c deskpage.c 
     errors.c    face.c  font.c  miscprocs.c 
-    scmprocs.c  scmtypes.c
+    scmprocs.c  scmtypes.c image.c shutdown.c
 in the subdirectory scheme:
     auto-raise.scm  base.scm          bincomm.scm     decor.scm 
     fvwm-compat.scm fvwm-eval.scm     fvwm-module.scm image-loaders.scm
     optargs.scm     style-options.scm style.scm       wininfo.scm
-    winlist.scm     winops.scm 
+    winlist.scm     winops.scm        animation.scm   cascade.scm 
+    file.scm        listops.scm       shutdown-opts.scm stacking.scm 
+    theme-impl.scm  themes.scm
 in the subdirectory utilities/libscwmexec:
     libmain.c  scwmexec.h
 in the subdirectory utilities/scwmexec:
     scwmexec.c
 in the subdirectory utilities/scwmrepl:
     scwmrepl.c
-
+in the subdirectory modules/background:
+    background.c
 
 Greg J. Badros, gjb@cs.washington.edu:
 
