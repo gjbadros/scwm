@@ -855,7 +855,8 @@ union of all other window managers!
 (define solaris-hosts
   '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
 
-
+(define favorite-hosts
+  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu vicarious-existence.mit.edu))
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
@@ -1186,7 +1187,7 @@ union of all other window managers!
 
 (bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
-(bind-key 'all "C-S-F3" (lambda () (popup-menu 'menu-hosts #t)))
+;;(bind-key 'all "C-S-F3" (lambda () (popup-menu (make-hosts-menu-gjb favorite-hosts) #t)))
 (bind-key 'all "C-S-F4" (lambda () (popup-menu 'menu-applications #t)))
 (bind-key 'all "C-S-F5" (lambda () (popup-menu 'menu-utilities #t)))
 (bind-key 'all "C-S-F6" (lambda () (popup-menu 'menu-multimedia #t)))
