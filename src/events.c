@@ -932,14 +932,16 @@ HandleClientMessage()
     return;
   }
 
-  /* GJB:FIXME:: converting from C array to SCM vector is clumsy -- better way? */
-  if (SCM_BOOL_F != scm_empty_hook_p(client_message_hook)) {
+  if (SCM_BOOL_F == scm_empty_hook_p(client_message_hook)) {
+    /* hook is not empty */
     SCM data = SCM_BOOL_F;
     switch (Event.xclient.format) {
     case 8: /* interpret as a string */
       data = gh_str02scm(Event.xclient.data.b);
       break;
     case 16:
+      /* GJB:FIXME:: 
+         converting from C array to SCM vector is clumsy -- better way? */
       { /* scope */
         short *ps = Event.xclient.data.s;
         int i = 0;
