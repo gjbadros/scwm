@@ -36,12 +36,14 @@
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
-		  group preferences
+		  group preferences gnome-hints
 		  send-string
 		  primopts auto-raise
 		  property-respond
 		  )
 
+;; do this early, since gnome times out in 10 seconds
+(enable-gnome-hints)
 
 ;;(use-scwm-modules gtk)
 ;;(use-scwm-modules send-string)
@@ -785,7 +787,7 @@
     (un-window-shade w #t)))
 
 (define (scwm-help)
-  (netscape-goto-url "http://vicarious-existence.mit.edu/scwm" #f 'netscape-new-window))
+  (netscape-goto-url "http://serveuse.mit.edu/scwm" #f 'netscape-new-window))
 
 (define (scwm-about-message)
   (message "Scwm TheNextLevel
@@ -894,7 +896,7 @@ union of all other window managers!
   '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
 
 (define favorite-hosts
-  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu vicarious-existence.mit.edu))
+  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu serveuse.mit.edu))
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
@@ -959,7 +961,7 @@ union of all other window managers!
 (define menu-system-utilities
   (menu
    (list
-    (menu-title "Preferences"))))
+    (menu-title "System utilities"))))
 
 (define menu-screensaver
   (make-xlock-menu #f))
@@ -1007,8 +1009,8 @@ union of all other window managers!
 	      #:action 'menu-hosts-solaris)
     (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
 	      #:action 'menu-hosts-other)
-    (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
-	      #:action 'menu-system-utilities)
+;;    (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
+;;	      #:action 'menu-system-utilities)
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
 	      #:action 'menu-window-ops)
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
@@ -1147,7 +1149,7 @@ union of all other window managers!
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" (thunk netscape-goto-cut-buffer-url))
-;; http://vicarious-existence.mit.edu/scwm    ;; highlight w/ mouse and try it!
+;; http://serveuse.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)
