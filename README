@@ -1,8 +1,10 @@
-Scwm pre-1.0
+!!PACKAGE TESTING PRE-RELEASE!!
+
+Scwm 0.99.2
 
 This is a pre-stable release of
 
-Scwm, The Scheme Configurable Window Manager.
+Scwm, The Scheme Constraints Window Manager.
 
 Web site: http://scwm.mit.edu/
 Ftp directory: ftp://scwm.mit.edu/pub/scwm/
