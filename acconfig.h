@@ -1,7 +1,7 @@
 /* acconfig.h --- documentation for local preprocessor symbols defined
    by configure.
-   Maciej Stachowiak <mstachow@alum.mit.edu>
    Greg J. Badros <gjb@cs.washington.edu>
+   Maciej Stachowiak <mstachow@alum.mit.edu>
    */
 
 /* Package and version macros defined by automake */
@@ -138,3 +138,6 @@
 
 /* Define this if you have IBM ViaVoice installed with its smapi.h header */
 #undef HAVE_VIAVOICE
+
+/* Define this if you want the --dump option */
+#undef ENABLE_DUMP

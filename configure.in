@@ -391,6 +391,22 @@ AC_CHECK_LIB(SM, SmcOpenConnection, [
 ], AC_MSG_WARN(libSM not found -- no session manager support)
 , $x_libs -lICE)
 
+AC_ARG_ENABLE(dump, [  --enable-dump       Enable the --dump option (reqs libunexec.a)],
+		    enable_dump=yes,
+		    enable_dump=no)
+
+if test x"$enable_dump" = x"yes"; then
+	AC_MSG_RESULT(Be sure symlink to libunexec.a exists in src/)
+	UNEXEC_LIB="libunexec.a"
+	AC_DEFINE(ENABLE_DUMP)
+else
+	AC_MSG_RESULT(No --dump option will exist)
+	AM_CONDITIONAL(ENABLE_DUMP, false)
+	UNEXEC_LIB=""
+fi
+
+AC_SUBST(UNEXEC_LIB)
+
 AC_ARG_ENABLE(esd, [  --disable-esd       Do not use ESD even if it exists],
 		    enable_esd=no,
 		    enable_esd=yes)
