@@ -1,3 +1,10 @@
+Mon Sep  6 17:56:34 1999    <gjb@cs.washington.edu>
+
+	* doc.scm: Added `hook-documentation', `object-documentation'
+
+	* base.scm: Added `hook?' since it's missing from Guile-1.3.[23]
+	-- maybe will be in guile-1.3.4?
+
 Mon Sep  6 17:17:37 1999    <gjb@cs.washington.edu>
 
 	* test-case.scm: Display error message on failures so I can just
