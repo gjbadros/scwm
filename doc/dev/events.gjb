@@ -1,5 +1,5 @@
 Event Rewrite Proposal for Scwm
-Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998, 3-Sep-1998
+Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998, 3-Sep-1998, 5-Sep-1998
 (Inspired by conversations w/ Maciej and his "events" proposal in this
  same directory)
 
@@ -42,7 +42,7 @@ Overview:
 (make-key-event KEYSYM-NAME #&optional MODIFIER-SPECIFIER)
 e.g.:
 (make-key-event "F1")
-(make-key-event "Return" (with-modifier 'control 'shift 'meta))
+(make-key-event "Return" '(control shift meta))
 KEYSYM-NAME is the name of a keysym (e.g., "x", "BackSpace", etc.).
 It cannot have prefixed modifiers -- a convenience function can provide
 conversions from (e.g., "C-S-M-Return" to the 2nd example above).
@@ -50,20 +50,35 @@ conversions from (e.g., "C-S-M-Return" to the 2nd example above).
 events being bound to some combination of modifier keys just being
 depressed or released.  (These may not be necessary thanks to make-x-event)]]
 
-MODIFIER-SPECIFIER is an cons pair of bitmasks for the modifier bits of
-the event: (MUST-BE-ON . MUST-BE-OFF).  E.g., if bit 2 corresponds to
-the meta modifier, (4 . 0) would match events with at least the Meta
-modifier depressed, while (0 . 4) would match only events without the
-Meta modifier depressed.  `with-modifier' and other convenience
-functions will be provided to simplify the writing of the
-MODIFIER-SPECIFIER.  They will permit using logical modifiers using
-symbols (e.g., 'control 'meta 'hyper 'super, etc.) and physical
-modifiers by numbers (e.g., 1 refers to whatever mod1 is).  Call the
-modifiers of the key event: MOD.  The event matches the
-MODIFIER-SPECIFIER iff:
+MODIFIER-SPECIFIER is a list of symbolic modifiers.  If the first
+element of the list is the pseudo-modifier 'exactly, then exactly 
+the list of modifiers that follows must be depressed for the event
+to be matched.  Modifiers include:
+
+'control 'shift 'meta 'super 'alt 'hyper 'numlock 'capslock 'mod[1-8]
+'~control '~shift '~meta '~super '~alt '~hyper '~numlock '~capslock '~mod[1-8]
+'*control '*shift '*meta '*super '*alt '*hyper '*numlock '*capslock '*mod[1-8]
+
+The "~"-prefixes mean *not* that modifier, the "*"-prefixes mean don't
+care either way for that modifier (only useful in conjunction with the
+pseudo-modifier 'exactly.  e.g.,
+
+'(exactly control shift meta)
+is the same as
+'(control shift meta ~super ~alt ~hyper ~numlock ~capslock)
+and
+'(exactly control shift meta *numlock)
+is the same as
+'(control shift meta ~super ~alt ~hyper ~capslock)
+
+
+These get converted internally to on and off bitmasks such that the
+event matches iff:
   ((MOD | OnMask == MOD) && (MOD & ~OffMask == MOD)).
+Rebinding of modifiers will recompute the bitmasks.
 
-
+(Thanks to Robert Bihlmeyer who made useful comments regarding this
+subsection.)
 
 (make-mouse-event BUTTON-SPECIFIER X-EVENT-SPECIFIER 
                   #&optional MODIFIER-SPECIFIER)
@@ -183,9 +198,16 @@ event-map-global
 ;; the menu object, etc.), or #f if there is no applicable scheme object 
 ;; (e.g., the root window)
 ;; #2 - the event object that caused this dispatch (i.e. EVENT)
-;; #3 - the event map object (i.e. EVENT-MAP)
-;; #4 - the window id of the X window that got the event.  We can add 
+;; #3 - the window id of the X window that got the event.  We can add 
 ;; primitives to query what decoration/menu/whatever a window ID is
+;; #4 - the time of that event, as reported by the X server
+;; #5 - a list of event-specific information or #f; e.g.,
+;;    a property-notify event may use
+;;         '("WM_TITLE" 'NewValue)
+;;         property name changed and either 'NewValue or 'Delete
+;;    for this argument
+;; #6 - the event map object (i.e. EVENT-MAP)
+;;
 ;; We may need to do something to help simplify binding simple
 ;; procedures to an event (maybe something like Emacs's (interactive)
 ;; declaration), but I think we need all of the above (and maybe more)
@@ -205,6 +227,10 @@ event-map-global
 ;; notion of a procedure to be called when no event binding matches --
 ;; the chaining could be made more explicit and put under programmer
 ;; control using this primitive.
+
+(Thanks to Robert Bihlmeyer who made useful comments regarding this
+subsection.)
+
 
 
 4 - Binding of Event Maps:
