@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-18 Tue 10:15:38 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-21 Fri 16:53:13 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -140,8 +140,13 @@ See also `with-temp-buffer'."
 ;; user variables
 ;; ---- ---------
 
-(defvar scwm-repl "scwmrepl" "The path to scwmrepl.")
-(defvar scwm-exec "scwmexec" "The path to scwmexec.")
+(defvar scwm-repl "scwmrepl" "*The path to scwmrepl.")
+(defvar scwm-exec "scwmexec" "*The path to scwmexec.")
+(defvar scwm-source-path "/usr/src/scwm/" "*The path to the SCWM sources.")
+
+;; thing-at-point-file-name-chars ==>
+(defvar scwm-file-name-chars "~/A-Za-z0-9---_.${}#%,:"
+  "Characters allowable in filenames.")
 
 ;; Use scheme major mode
 (require 'scheme)
@@ -335,18 +340,33 @@ Returns a string which is present in the `scwm-obarray'."
                          "`procedure-documentation'.\n\"))")
                  standard-output)
       ;; add buttons to the help message
-      ;; clicking on quoted `symbol' invokes `scwm-documentation'.
       (let ((st (syntax-table)))
         (set-syntax-table scwm-mode-syntax-table)
         (goto-char 1) (forward-line 8) ; skip the header and value
         (while (looking-at "trying `") (forward-line 1))
         (let ((pt (point)))
+          ;; clicking on quoted `symbol' invokes `scwm-documentation'.
           (while (re-search-forward "`\\(\\(\\sw\\|\\s_\\)+\\)'" nil t)
             (help-xref-button 1 #'scwm-documentation (match-string 1)))
           (goto-char pt)
-          (when (re-search-forward (concat "^(" pat " .*)$") nil t)
+          ;; calling sequence (quote `?')
+          (when (re-search-forward (concat "^(" (regexp-quote pat) " .*)$")
+                                   nil t)
             (put-text-property (match-beginning 0) (match-end 0)
-                               'face 'highlight)))
+                               'face 'highlight))
+          (goto-char pt)
+          ;; function definition in the source
+          (while (re-search-forward
+                  (concat "^\\[From \\(\\([" scwm-file-name-chars
+                          "\\]+\\):\\([0-9]+\\)\\)]$")
+                  nil t)
+            (help-xref-button 1 (lambda (fl pos)
+                                  (pop-to-buffer
+                                   (find-file-noselect
+                                    (concat scwm-source-path fl)))
+                                  (goto-line pos))
+                              (list (match-string 2)
+                                    (string-to-number (match-string 3))))))
         (set-syntax-table st))
       (help-mode) (goto-char 1) (print-help-return-message))))
 
