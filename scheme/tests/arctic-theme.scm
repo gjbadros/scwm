@@ -2,6 +2,7 @@
 (use-modules (app scwm xpm-menus))
 
 (define theme-dir "/home/jtl/.pixmaps/kde_themes/")  ;; needs trailing slash
+;;(define theme-dir "/scratch/gjb/themes/")  ;; needs trailing slash
 
 (define* (list-of-theme-images prefix #&optional 
 			       (list-of-image-names '("topleft"
