@@ -99,7 +99,7 @@ BUILT_SOURCES = image.x
 
 all: ${PROG}
 
-tags: $(SRCS) $BUILT_SRCS $(HEADERS)
+tags: $(SRCS) $(BUILT_SRCS) $(HEADERS)
 	etags $^
 
 depend:
