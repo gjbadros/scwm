@@ -1,3 +1,26 @@
+Sun Nov 23 17:08:02 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.[hc]: added DrawImage to abstract drawing of both pixmaps
+	and bitmaps.  Perhaps this should be in the new Image.[ch], but
+	I'm holding off until that code is in use.
+
+	* drawmenu.[ch]: rework much of the drawing code so that it now
+	looks fairly reasonable.  Still need more item spacing, etc., but
+	there are more important things to handle before polishing the
+	look.
+
+	* face.c, drawmenu.c, scwmmenu.c: remove the checking of
+	HAVE_GH_LENGTH -- do this only in scwm.h
+
+	* scwm.h: add above check.
+
+	* menuitem.h: reduce the number of fields in MenuItemInMenu -- use
+	more per-menu drawing information in MenuDrawingInfo struct
+
+	* scwmmenu.c: Don't trust drawing code to set correct event mask--
+	do it here instead
+		
+
 Sun Nov 23 01:42:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu-item.h: added some more fields to MenuItemInMenu
