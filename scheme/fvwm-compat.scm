@@ -54,7 +54,7 @@
 	 (write-pipe (cdr command-pipes)))
     (cond
      ((eq? 0 (primitive-fork))
-      (set-current-output-port write-pipe)
+      (dup write-pipe 1)
       (execl
        fvwm-exec-shell fvwm-exec-shell "-c" 
        (string-append "exec " command)))
