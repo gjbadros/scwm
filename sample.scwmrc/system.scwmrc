@@ -34,8 +34,51 @@
       (display arg)
       ()))
 
+(define-public (load-user-file filename)
+  "Load user configuration from $HOME/.scwm/FILENAME."
+  (let ((fname (string-append (getenv "HOME") "/.scwm/" filename)))
+    (debug-display "Attempting load of ")
+    (debug-display fname)
+    (debug-display "\n")
+    (if (file-exists? fname)
+	(begin
+	  (load fname)
+	  #t)
+	#f)))
+
 (define (hyper str)
   (string-append "H-" str))
+
+(define (show-desk-name new old)
+  (display-message-briefly (string-append "Desk: " (number->string new))))
+
+(define (play-window-flashing-start-sound ignored)
+  (wavplay "Utopia Question.WAV"))
+
+(define (select-message-window)
+  (id->message-window (car (select-viewport-position))))
+
+(define (select-and-hide-message-window)
+  (message-window-hide! (select-message-window)))
+
+(define (xmms-send-pause-click)
+  (let ((lw (list-windows #:only (resource-match?? "XMMS_Player"))))
+    (and
+     lw
+     (not (null? lw))
+     (send-button 1 (car lw) 'click #f 67 95))))
+
+(define scwm-messages-window #f)
+
+(define (reposition-scwm-messages-window)
+  (set! scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
+  (if scwm-messages-window
+      (with-window 
+       scwm-messages-window
+       (animated-resize-frame 640 96 #f 0 
+			      (y- (- 96 (window-frame-border-width) 1)))
+       (set-window-gravity! 'southwest))
+      (display "Could not find SCWM Messages window---consider using `startscwm' to start Scwm\n")))
 
 (define (display-string-newline-to-error-port str)
   (display str (current-error-port))
@@ -51,6 +94,8 @@
 ;; are never on (or are explicitly used in the bindings that
 ;; you want to apply when they are on).
 ;;(set-ignore-dubious-modifiers! #f)
+
+(load-user-file "startup")
 
 (define suppress-xclients #f)
 
@@ -147,6 +192,8 @@
 		  )
 
 (debug-display "Done reading modules\n")
+
+(load-user-file "after-modules")
 
 (set! *use-scwm-system-proc* #t)
 
@@ -306,6 +353,9 @@
 ;;    ("Play&midi" #f #f "xplaymidi \\$(xgetfile -title 'Select a MIDI file for PlayMidi' -path $MIDI_SOUND_PATH -pattern '*.mid')" #f)
     ("Xm&play" #f #f "xmplay")
     ))
+
+
+(load-user-file "after-applications")
 
 ;;; These can change dynamically and the menus which 
 ;;; used 'menu-bg-color [which is used by default]
@@ -641,6 +691,8 @@
 ;; these windows...
 (window-style "x2x *" #:kept-on-top #t)
 
+(load-user-file "after-window-styles")
+
 (debug-display "Before menu-window-ops\n")
 
 (define (scwm-help)
@@ -858,6 +910,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
   (interactive)
   (show-window-list-menu #f #f #:by-resource #t #:show-geometry #t))
 
+(load-user-file "after-menus")
+
 (if (and
      gnome-sm
      (not (SM-register)))
@@ -905,9 +959,6 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 resize-or-raise)
-
-(define (play-window-flashing-start-sound ignored)
-  (wavplay "Utopia Question.WAV"))
 
 (add-hook! window-flashing-start-hook play-window-flashing-start-sound)
 
@@ -1131,6 +1182,21 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (bind-key 'all (hyper "d") focus-window-with-pointer)
 
+(bind-key 'all "C-S-M-n" dir-focus-west)
+(bind-key 'all "C-S-M-m" dir-focus-south)
+(bind-key 'all "C-S-M-comma" dir-focus-north)
+(bind-key 'all "C-S-M-period" dir-focus-east)
+(bind-key 'all "C-S-A-p" xmms-send-pause-click)
+
+;;; (define (force-gc)  (display "gc...")  (gc) (display "done!\n"))
+;;; (bind-key 'all "C-S-A-g" force-gc)
+
+(bind-key 'all (hyper "q") quote-key-event)
+(bind-key 'all (hyper "m") quote-mouse-event)
+
+(load-user-file "after-bindings")
+
+
 ;; Hyper-w
 ;;(bind-key 'all (hyper "w") (lambda () (write (get-window)) (newline)))
 ;; Alt-w
@@ -1200,9 +1266,6 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
    ;;	  "xearth -once"
    ))
 
-(define (show-desk-name new old)
-  (display-message-briefly (string-append "Desk: " (number->string new))))
-
 (add-hook! change-desk-hook show-desk-name)
 
 ;; (reset-hook! X-ConfigureRequest-hook)
@@ -1213,53 +1276,20 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; enable xterm patch's window flashing behaviour
 (start-property-respond)
 
-(define (select-message-window)
-  (id->message-window (car (select-viewport-position))))
-
-(define (select-and-hide-message-window)
-  (message-window-hide! (select-message-window)))
-
-
-(define (xmms-send-pause-click)
-  (let ((lw (list-windows #:only (resource-match?? "XMMS_Player"))))
-    (and
-     lw
-     (not (null? lw))
-     (send-button 1 (car lw) 'click #f 67 95))))
-
-(bind-key 'all "C-S-M-n" dir-focus-west)
-(bind-key 'all "C-S-M-m" dir-focus-south)
-(bind-key 'all "C-S-M-comma" dir-focus-north)
-(bind-key 'all "C-S-M-period" dir-focus-east)
-(bind-key 'all "C-S-A-p" xmms-send-pause-click)
-
-;;; (define (force-gc)  (display "gc...")  (gc) (display "done!\n"))
-;;; (bind-key 'all "C-S-A-g" force-gc)
-
-(bind-key 'all (hyper "q") quote-key-event)
-(bind-key 'all (hyper "m") quote-mouse-event)
-
 (if (and (not (restarted?)) (not suppress-xclients)
 	 (not gnome-sm))
     (run-dot-xclients-at-startup))
 
-(define scwm-messages-window #f)
-
-(define (reposition-scwm-messages-window)
-  (set! scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
-  (if scwm-messages-window
-      (with-window 
-       scwm-messages-window
-       (animated-resize-frame 640 96 #f 0 
-			      (y- (- 96 (window-frame-border-width) 1)))
-       (set-window-gravity! 'southwest))
-      (display "Could not find SCWM Messages window---consider using `startscwm' to start Scwm\n")))
-
 (add-hook! startup-hook reposition-scwm-messages-window)
+
+
+(load-user-file "before-preferences")
 
 ;; Get user preferences from $HOME/.scwm-options --
 ;; let them take priority over anything done in here
 (load-preferences)
+
+(load-user-file "after-preferences")
 
 (logo-remove)
 
@@ -1269,6 +1299,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (set! window-list-proc focus-change-warp-pointer)
 
-(wavplay "scwm-startup.wav")
+(or 
+ (load-user-file "done")
+ (wavplay "scwm-startup.wav"))
 
 (debug-display " *** `scwmrc' processed.\n")
