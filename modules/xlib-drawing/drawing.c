@@ -70,7 +70,7 @@ resize frames. VALUE should be an integer. */
   unsigned long gcm;
   int val;
 
-  VALIDATE_ARG_INT_RANGE_COPY(1,value,0,255,val);
+  VALIDATE_ARG_INT_MIN_COPY(1,value,0,val);
 
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
