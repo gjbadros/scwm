@@ -1,3 +1,15 @@
+Tue Sep 21 13:48:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added `decoration-size', Drop `resize-to', rename
+	`resize-frame-to' to `resize-frame', now `resize-window' is
+	implemented in Scheme in terms of resize-frame and
+	decoration-size. Permit extra X,Y args to let resize-* do
+	movements as well as resizes (for matching animated-resize-frame a 
+	bit better)
+
+	* miscprocs.c: Make `set-handle-segv!' set fHandleSegv just so
+	that the C variable is kept in synch with the actual status.
+
 Mon Sep 20 23:46:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* drawmenu.c (InPopupZone): Use /2, instead of *3/4 for

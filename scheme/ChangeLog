@@ -1,3 +1,23 @@
+Tue Sep 21 15:02:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm: Use installed location of grammar.  Fix order of
+	testing matches for commands so it works.
+
+Tue Sep 21 14:55:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window-configuration.scm, tile.scm, fvwm-eval.scm, cascade.scm: Use new name
+ 	`resize-frame' (was `resize-frame-to'), `resize-window' (was `resize-to')
+
+	* viavoice.scm: More debugging stuff.
+
+	* base.scm: Added `vpx->vx', `vpy->vy', `vy->vpy', `vx->vpx'
+
+	* animated-edge-moves.scm: Fix `animated-move-to-center'
+
+	* winops.scm: Use c-animation module, simplify maximize and
+	unmaximize (hopefully not incorrectly!) and make them honour new
+	variable *maximize-animatedly*
+
 Mon Sep 20 23:23:33 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm, rgb-database.scm, path-cache.scm, flux.scm,

@@ -16,14 +16,16 @@ Changes for scwm-0.99.3 (not yet released)
 * Improved preferences dialog support, cleaner internally, too.
 
 * New primitives
+** `window-decoration-size'
 ** `window-decoration-ids', `set-window-id-background!'
 ** `set-window-highlighted-nonant!', `window-highlighted-nonant'
 ** `set-nonant-highlight-color!', `nonant-highlight-color'
 ** `focussable-window?'
 
 * Changed primitives
-** xlib-set-line-width! has been replaced by xlib-set-line-attributes! which now takes
+** `xlib-set-line-width!' has been replaced by xlib-set-line-attributes! which now takes
 a width and a line style.
+** Renamed `resize-to' to `resize-window', `resize-frame-to' to `resize-frame' and permit each to take X, Y for movement, to.
 
 
 Changes for scwm-0.99.2 (released 14-September-1999)
