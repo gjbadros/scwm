@@ -39,6 +39,7 @@
 		  group preferences
 		  send-string
 		  primopts auto-raise
+		  property-respond
 		  )
 
 
@@ -51,6 +52,9 @@
 ;;(use-scwm-modules constraints)
 
 (set! *use-scwm-system-proc* #t)
+
+;; defaults to sb_left_arrow, but that's a bit ugly
+(set! cursor-menu (get-x-cursor "right_ptr"))
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
@@ -110,7 +114,8 @@
 (define want-workman-menu #t)
 
 (define xterm-user-shell-options "-e start-zsh")
-(define xterm-program-name "nxterm")
+;;(define xterm-program-name "nxterm")
+(define xterm-program-name "xterm105-gjb")
 
 (define use-complete-host-menu #t)
 (define xterm-other-host-use-local-xterm #t)
@@ -283,8 +288,13 @@
   (popup-menu 'menu-applications #t))
 
 (define (popup-root-start)
-  (popup-menu 'menu-root-start #t))
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start #t)))
 
+(define (popup-window-ops)
+  (popup-menu 'menu-window-ops))
 
 (define*-public (animated-deiconify-to-current-viewport-focus-raise #&optional (win (get-window)))
   (cond
@@ -486,8 +496,14 @@
 (window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
 ;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
 
+(define (wavplay filename)
+  (system (string-append "wavplay " filename "&")))
+
+(define download-closed-wav "/scratch/gjb/Media/tada.wav")
+
 (define (netscape-download-closed-action win)
-  (message "Download finished")) ;; probably better to play a sound, but you get the point
+  (wavplay download-closed-wav))
+;;  (message "Download finished"))
 
 (define (call-netscape-download-closed-action win)
   (if (and (string=? (window-class win) "Netscape")
@@ -702,7 +718,7 @@
 	              #:icon "xterm.xpm")
 (window-style "Emacs" #:mini-icon "mini-edit.xpm"
 	              #:icon "TextEditor.xpm")
-;; (window-style "x2x upintheair:0.0" #:kept-on-top #t) ;; does not give desired effect
+(window-style "x2x upintheair:0.0" #:kept-on-top #t) ;; does not give desired effect
 
 (debug-display "Before menu-window-ops\n")
 
@@ -787,8 +803,10 @@ union of all other window managers!
 (define (start-xlogo)
   (execute "xlogo"))
 
+;;(define (exec-xlock)
+;;  (execute "xlock -remote -nice -19 -mode blank"))
 (define (exec-xlock)
-  (execute "xlock -remote -nice -19 -mode blank"))
+  (execute "xlock-both"))
 
 (define menu-quit-verify
   (menu 
@@ -1016,7 +1034,7 @@ union of all other window managers!
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
 
-(debug-display "before-popup-menu-root-start\n")
+(debug-display "before enable-constraint-solver")
 
 (define (enable-constraint-solver)
   (if (scwm-is-constraint-enabled?)
@@ -1024,16 +1042,6 @@ union of all other window managers!
 	(use-scwm-modules constraints)
 	(start-constraints))
       (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
-
-(define (popup-menu-root-start)
-  (with-window 
-   #f  ;; ensure that the window context is empty, so that, e.g.,
-       ;; window operations menu always prompts for a window
-   (popup-menu 'menu-root-start)))
-
-
-(define (popup-window-ops)
-  (popup-menu 'menu-window-ops))
 
 (define menu-desk 
   (menu 
@@ -1108,7 +1116,7 @@ union of all other window managers!
 
 
 ;;; first our root menus
-(bind-mouse 'root 1 popup-root-start)
+(bind-mouse 'root 1 (lambda () (popup-menu 'menu-root-start)))
 (bind-mouse 'root 2 (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
@@ -1268,8 +1276,8 @@ union of all other window managers!
 ;; to add geometry strings to this as well.
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
-(bind-key 'all "C-S-M-z" (thunk popup-menu-root-start))
-(bind-key 'all "H-z" (thunk popup-menu-root-start))
+(bind-key 'all "C-S-M-z" popup-root-start)
+(bind-key 'all "H-z" popup-root-start)
 
 (set-click-delay! 150)
 
@@ -1349,9 +1357,9 @@ union of all other window managers!
 (bind-key 'all "C-M-S-s" (lambda () (toggle-stick)))
 
 ;; Hyper-w
-(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
-(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
+;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 ;; Handle Gale popup windows--
 ;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
@@ -1439,6 +1447,9 @@ union of all other window managers!
   (remove-hook! window-enter-hook flash-window-on)
   (remove-hook! window-leave-hook unflash-window-if-not-selected))
 
+;; enable xterm patch's window flashing behaviour
+(start-property-respond)
+
 (bind-two-modifier-key-events
  XKM_HYPER_L XKM_SHIFT_L
  start-highlighting-current-window
@@ -1449,9 +1460,6 @@ union of all other window managers!
 (bind-mouse 'all "H-S-2" (lambda () 
 			   (interactive-move-group (selected-windows-list))
 			   (end-highlighting-current-window)
-			   (unselect-all-windows)))
-(bind-mouse 'all "H-A-2" (lambda () 
-			   (interactive-move-group (selected-windows-list))
 			   (unselect-all-windows)))
 
 ;; send 100 presses of button 1
