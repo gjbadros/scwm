@@ -1,3 +1,8 @@
+Sat May  1 19:08:41 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added
+	ui-constraints-gtk-toggle-menu.scm to be installed.
+
 1999-05-01  Jeff W Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Created a new constraint

@@ -1,3 +1,14 @@
+Sat May  1 19:10:17 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pixmaps/Makefile.in: Added
+
+	* Makefile.am: Added pixmaps/ subdirectory so those files will get 
+	installed.
+
+	* configure.in: Create pixmaps/Makefile.  Added -lGTL to
+	CASSOWARY_LIBS line (if you're not using cassowary from CVS,
+	you'll need to remove this... sorry).
+
 Tue Apr 27 20:59:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* THANKS: Added Michael Livshin -- contributed
