@@ -846,9 +846,18 @@ which case the height is just the titlebar height."
 	(list (car size) (cadr (window-decoration-size win)))
 	(window-frame-size win))))
 
+(define-public (make-image-or-warn filename)
+  "Return an image object for FILENAME and report a warning if it fails.
+See `make-image' for details.  Return value is #f on failure,
+but no error is thrown; `image-not-found-message' is used to 
+write a warning instead."
+  (let ((answer (make-image filename)))
+    (or answer
+	(image-not-found-message filename))))
+
 (define-public (image-not-found-message filename)
   "Report a missing image filename, but do not error."
   (display (string-append "Could not find image `" filename 
 			  "' --- perhaps your image-load-path is wrong "
 			  "or you need to install scwm/pixmaps or the "
-			  "scwm-icons package?")))
+			  "scwm-icons package?\n")))

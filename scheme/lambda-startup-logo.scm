@@ -8,7 +8,7 @@
   :use-module (app scwm base)
   :use-module (app scwm message-window))
 
-(define scwm-logo (make-image "scwm-logo-0.xpm"))
+(define scwm-logo (make-image-or-warn "scwm-logo-0.xpm"))
 
 (define scwm-logo-msgwin #f)
 
@@ -28,8 +28,6 @@
 If SHOULD-ROTATE is #t, then the logo will animate (this
 has some cost in perfromance and memory, but is useful
 as startup can be longer than ideal)."
-  (if (not scwm-logo)
-      (image-not-found-message "scwm-logo-0.xpm"))
   (set! scwm-logo-msgwin 
 	(make-message-window-with-image scwm-logo #t))
   (set-X-server-synchronize! #t)
@@ -50,7 +48,10 @@ as startup can be longer than ideal)."
   (append-hook! startup-hook logo-remove)
   )
 
-(define (logo-remove)
+(define-public (logo-remove)
+  "Remove the Scwm lambda startup logo.
+This is added to `startup-hook' by `logo-setup' and
+usually will not need to be invoked directly."
   (if scwm-logo
       (begin
 	(message-window-hide! scwm-logo-msgwin)

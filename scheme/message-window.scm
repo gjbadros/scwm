@@ -1,9 +1,12 @@
-;; $Id$
-;; Move/Resize w/ Message Window
-;; By Jeffrey Nichols
-;;
-;; A scheme implementation of the message window that appears 
-;; and tells you how much you're moving/resizing your window.
+;;; $Id$
+;;; message-window.scm
+;;;
+;;; (C) 1999 Greg J. Badros and Jeffrey Nichols
+;;;
+;;; Scheme extensions of the message window feature. 
+;;; Message windows are a generalization of the little
+;;; window that appears and tells you how much you're
+;;; moving/resizing your window.
 
 
 (define-module (app scwm message-window)
@@ -241,7 +244,8 @@ background color."
 Initially the message window is centered in the display."
   (let ((answer (make-message-window "")))
     (message-window-set-image! answer img #f #f shaped?)
-    (apply message-window-set-size! (cons answer (image-size img)))
+    (if img
+	(apply message-window-set-size! (cons answer (image-size img))))
     (message-window-set-position! answer (/ display-width 2) (/ display-height 2))
     answer))
 
@@ -283,7 +287,10 @@ The message-window will have no text and no relief, and be the same size
 as WIN."
   (let ((img (window->image win))
 	(msgwin (make-message-window "")))
-    (apply message-window-set-size! (cons msgwin (image-size img)))
+    (if img
+	(begin
+	  (message-window-set-image! msgwin img)
+	  (apply message-window-set-size! (cons msgwin (image-size img)))))
     (message-window-set-position! msgwin 0 0 0 0)
     (message-window-set-relief! msgwin #f)
     msgwin))
