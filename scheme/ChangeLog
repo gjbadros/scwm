@@ -1,3 +1,16 @@
+1999-07-24  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints.scm: Added a check to 
+	make-ui-constraint-class such that when adding a 
+	new constraint class all existing constraint classes
+	with that name were deleted.
+
+	* ui-constraints-buttons.scm: Used object properties to
+	associate button with constraint class and added method
+	to remove the associated button when a constraint class
+	was removed.  Also modified window properties so that 
+	button window would shrink as buttons were removed.
+
 Fri Jul 23 23:32:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* path-cache.scm: Typo fix: :use-module, not :use-modules.
