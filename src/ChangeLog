@@ -1,3 +1,46 @@
+Wed Jul 14 10:05:18 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.h (VALIDATE_ARG_ATOM_OR_STRING_COPY): Added this
+	macro. 
+
+	* xproperty.c: Use VALIDATE_ARG_ATOM_OR_STRING_COPY, other
+	validate macros.
+
+	* window.h: Added ttCreated field of struct ScwmWindow.
+
+	* window.c: Fix some warnings; added `window-creation-time',
+	updated docs on `window-last-focus-time' to remove mention of
+	using X server times (they wrap pretty frequently -- added comment 
+	to that effect).
+
+	* virtual.c: Fix warning by including "events.h"
+
+	* shutdown.c, drawmenu.c, decorations.c, font.c, decor.c,
+ 	cursor.c, borders.c, binding.h, binding.c:  Fix warnings
+
+	* scwm.c: Fix some warnings re: unsigned/signed comparisons.
+
+	* screen.h: Make ClickTime an unsigned int for fixing warnings.
+
+	* placement.h: Added proto for GravityFromSym().
+
+	* message-window.c: Require image object in
+	`message-window-set-image!' (do not permit #f).  Permit
+	`message-window-set-position!' to use #f in a position argument to 
+	mean "no change" of that coordinate.
+
+	* image.c: Fix warning by including "xmisc.h"
+
+	* events.c: Include events.h
+
+	* callbacks.c: Added `load-processing-hook', call it every five
+	top-level sexps. Drop bogus arg to `reset-input-hook!'
+
+	* add_window.c: Fix warnings, set psw->ttCreated when
+	re-parenting.
+
+	* Makefile.am:  Use @PREFIX_INCLUDES@ in @INCLUDES@
+
 Fri Jul  9 15:07:02 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Fix order of arguments in calls to

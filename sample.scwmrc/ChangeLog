@@ -1,3 +1,17 @@
+Tue Jul 13 23:07:13 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added startup spinning lambda logo.  Drop
+	popup-util-- always call it popup-utilities.  Added popup-desk and 
+	popup-favorite-hosts-menu.  Added pic-lambda-mini, and use it
+	instead of the xterm logo by default.   Fix wavplay to use esound
+	appropriately (had test backwards.  Make netscape download done
+	sound happen iff the download took more than 5 seconds (uses new
+	window-creation-time primitive. Make fewer bindings use lambdas--
+	give functions proper names.  Added raise-and-stop-flashing for
+	title button-1, and make it an immediate proc.  Added some
+	synthetic keypress bindings for convenient netscape scrolling.
+	Fix the highlighting of the current window for window selection. 
+
 Fri Jul  9 15:09:45 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added `close-on-double-click',
