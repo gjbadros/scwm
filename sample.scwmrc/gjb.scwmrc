@@ -14,6 +14,7 @@
 	     (app scwm wininfo)
              (app scwm style)
 	     (app scwm face)
+	     (app scwm optargs)
 	     (app scwm std-menus)
 	     (app scwm fvwm-module)
 	     )
@@ -174,6 +175,44 @@
     ("Play&midi" #f #f "xplaymidi $("xgetfile -title "Select a MIDI file for PlayMidi" -path MIDI_SOUND_PATH -pattern "*.mid*#f)")
     ("Xm&play" #f #f "xmplay")
     ))
+
+(define (quotify-single-quotes str)
+  (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
+
+;;; FIXGJB: how set width of an xmessage?
+(define (message . str)		; return lambda
+  (execute (string-append "echo -e \'" 
+			  (quotify-single-quotes (apply string-append str))
+			   "\'| xmessage -file - -default okay -nearmouse")))
+#<unspecified>
+
+(define (show-mesg . str) (lambda () (apply message str)))
+(define (show-file fl)		; return lambda
+  (exe (string-append
+	"xmessage -buttons ok:0 -default ok -nearmouse -file " fl)))
+
+(define (bool->str arg) (if arg "true" "false"))
+(define* (size->str sz #&optional (sep "x"))
+  (let ((xx (car sz)) (yy (cadr sz)))
+    (string-append (number->string xx) sep (number->string yy))))
+
+(define* (window-info #&optional (ww (selected-window)))
+  (message
+   "Window ID:\t\t" (number->string (window-id ww))
+   "\nTitle:\t\t\t\"" (window-title ww) "\"\nPosition:\t\t"
+   (size->str (window-position ww)) "\nSize:\t\t\t"
+   (size->str (window-size ww))
+   "\nDesk:\t\t\t" (number->string (window-desk ww)) "\nClass:\t\t\t\""
+   (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
+   "\"\nBorder normal:\t\t" (bool->str (border-normal? ww))
+   "\nDeletable:\t\t" (bool->str (window-deletable? ww))
+   "\nIconified:\t\t" (bool->str (iconified? ww))
+   "\nKept on top:\t\t" (bool->str (kept-on-top? ww))
+   "\nRaised:\t\t\t" (bool->str (raised? ww))
+   "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
+   "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
+   "\nSticky:\t\t\t" (bool->str (sticky? ww))
+   "\nTitle bar shown:\t" (bool->str (titlebar-shown? ww))))
 
 
 ;;; These can change dynamically and the menus which 
@@ -649,10 +688,37 @@
 	 (menuitem "&Partial 1/2" #:action (lambda () (set-edge-scroll 50 50)))
 	 (menuitem "Partial 1/&4" #:action (lambda () (set-edge-scroll 25 25))))))
 
-(define menu-preferences
-  (menu
-   (list
-    (menuitem "Preferences"))))
+;; (popup-menu menu-prefs #t)
+
+(define menu-prefs
+  (menu (list (menuitem "Preferences" #f) menu-title menu-separator
+	      (menuitem "Reload X resources" #:action
+			(exe "xrdb -merge ${HOME}/.Xresources"))
+	      (menuitem "View all icons" #:action
+			(exe (apply string-append "xv "
+				    (map (lambda (st) (string-append st "/* "))
+					 image-load-path))))
+	      (menuitem "SCWM interaction" #:action
+			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
+	      (menuitem "Info on a window" #:action window-info)
+	      menu-separator
+;	      (menuitem "Opaque Move" #:action opaque-move-menu)
+;	      (menuitem "Desk Size" #:action desk-size-menu)
+;	      (menuitem "Scrolling" #:action scroll-menu)
+;	      menu-separator
+;	      (menuitem
+;	       "User Init File" #:action
+;	       (menu (list
+;		      (menuitem "Reload" #:action
+;				(lambda () (load user-init-file)))
+;		      (menuitem "View" #:action (show-file user-init-file))
+;		      (menuitem "Edit" #:action
+;				(exe (string-append
+;				      (or (getenv "EDITOR") "gvim")
+;				      " " user-init-file))))))
+;	      (menuitem "Save settings" #:action save-settings))))
+	      )))
+(define menu-preferences menu-prefs)
 
 (define menu-system-utilities
   (menu
@@ -875,6 +941,7 @@
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
+(bind-key 'all "C-S-F9" window-info)
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" 
