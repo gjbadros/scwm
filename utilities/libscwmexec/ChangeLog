@@ -1,5 +1,9 @@
 Wed Mar 11 21:34:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* libmain.c: Deleting the properties while reading them is now
+ 	safe, thanks to waiting for all three PropertyNotifies, so this is
+ 	now done.
+
 	* libmain.c: OK, I broke down and made scwmexec_exec_full wait for
  	notification on all three relevant properties. This should avoid
  	the former weirdness. XSync in the server was not helping.
