@@ -79,6 +79,8 @@
 ;; a guile procedure.  Be sure guile-ref.info exists and is in your
 ;; Info-directory-list path.
 
+;; To reload the current Scwm module file, do C-u C-c C-l <Return>
+
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
  ;; these three are dumped with e20.3
