@@ -1,6 +1,7 @@
 /* acconfig.h --- documentation for local preprocessor symbols defined
    by configure.
-   Maciej Stachowiak <mstachow@mit.edu>
+   Maciej Stachowiak <mstachow@alum.mit.edu>
+   Greg J. Badros <gjb@cs.washington.edu>
    */
 
 /* Package and version macros defined by automake */
@@ -57,7 +58,7 @@
 /* Define this if your libguile has scm_parse_path.  */
 #undef HAVE_SCM_PARSE_PATH
 
-/* Define this if your libguile has scm_parse_path.  */
+/* Define this if your libguile has scm_internal_select.  */
 #undef HAVE_SCM_INTERNAL_SELECT
 
 /* Define this if your libguile has scm_the_last_stack_fluid instead
