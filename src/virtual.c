@@ -608,6 +608,16 @@ changeDesks(int val1, int val2)
     }
   }
 
+  /* GJB:FIXME:NOW: Do not need this if change-desk-hook can accomplish
+     the same thing */
+#ifdef CHANGE_DESK_FORCE_CLICK_FOCUS
+  if (FocusWin && FocusWin->fClickToFocus) {
+    SetFocus(FocusWin->w, FocusWin, 0);
+  } else {
+    SetFocus(Scr.NoFocusWin, NULL, 1);
+  }
+#endif
+
   /* be sure the correct window gets focus
      if we are in focus-follow-mouse mode */
   CoerceEnterNotifyOnCurrentWindow();

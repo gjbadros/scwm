@@ -928,6 +928,8 @@ Repository Timestamp: %s\n",
                                        &XTestMajorP,&XTestMinorP);
 #endif
   
+  if (debugging)
+    XSynchronize(dpy, True);
   /* Need to do this after Scr.Root gets set */
   InternUsefulAtoms();
   CreateScmGlobalCursors();
@@ -991,8 +993,10 @@ Repository Timestamp: %s\n",
 #ifdef GNOME_SUPPORT_IN_C
     AnnounceGnomeCompliancy(Scr.NoFocusWin);
 #endif
-  
+
+#if 0 /* GJB:FIXME:NOW: */  
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
+#endif
   } /* end scope */
 
   
@@ -1085,8 +1089,6 @@ Repository Timestamp: %s\n",
   }
   
   XSync(dpy, False);
-  if (debugging)
-    XSynchronize(dpy, True);
 
   initPanFrames();
 
