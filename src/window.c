@@ -3084,17 +3084,30 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
   oldh = psw->title_height;
   if (oldh != nh) {
     int dpixY = nh-oldh;        /* change in height */
+    double gravFactor = 0;
 
     oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
     psw->title_height=nh;
 
+    if ((fInPlace && psw->grav.y == 0) ||
+        (!fInPlace && psw->grav.y == 2)) {
+      /* correct when we have north gravity (grav.y==0) and
+         we want the client to stay in place,
+         or when we have south gravity (grav.y==2) and
+         we do not want the client to stay in place */
+      gravFactor = 1;
+    } else if (psw->grav.y == 1) {
+      /* correct 50% if we have east, center, or west gravity */
+      gravFactor = 0.5;
+    }
+
     if (psw->fFullyConstructed) {
+      int dpixYGravity = GRAV_Y_ADJUSTMENT(psw);
       MoveResizeTo(psw,
                    FRAME_X(psw),
-                   FRAME_Y(psw) 
-                   + GRAV_Y_ADJUSTMENT(psw) - oldyadj 
-                   - (fInPlace? dpixY:0),
+                   FRAME_Y(psw) + dpixYGravity - oldyadj 
+                   - (gravFactor *  dpixY),
                    FRAME_WIDTH(psw),
                    FRAME_HEIGHT(psw) + dpixY);
       BroadcastConfig(M_CONFIGURE_WINDOW, psw);
