@@ -424,17 +424,7 @@ way if not specified. */
     return SCM_BOOL_F;
   };
 
-  
-  if (move_pointer_too_p == SCM_UNDEFINED) {
-    /* This is the only sensible default */
-    move_pointer_too_p = SCM_BOOL_F;
-  }
-
-  if (!gh_boolean_p(move_pointer_too_p)) {
-    scm_wrong_type_arg(FUNC_NAME, 4, move_pointer_too_p);
-  }
-
-  fMovePointer = gh_scm2bool(move_pointer_too_p);
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fMovePointer,move_pointer_too_p,4,FUNC_NAME);
 
   { /* scope */
     SCM animation_ms_delay = SCM_CDR(animation_delay);
