@@ -1,3 +1,7 @@
+Wed Sep 15 14:00:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Convert #&rest into #&amp;rest.
+
 Sun Aug 22 14:25:30 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_SCRIPTS): Added X-error-describe.

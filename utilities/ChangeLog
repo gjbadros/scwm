@@ -1,3 +1,8 @@
+Thu Sep 16 10:01:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/guile.spec: Bump to release 3gjb, take care of readline
+	change in repo.
+
 Wed Sep  8 18:18:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Make bash-portable by adding missing semicolon
