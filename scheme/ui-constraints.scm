@@ -1,11 +1,25 @@
-;; $Id$
-;; Copyright (C) 1999 Jeffrey W. Nichols and Greg J. Badros
-;;
-;; ui-constraints.scm
-;;
-;; A module that adds support for graphical manipulation of
-;; constraints on windows.
-;;
+;;; $Id$
+;;; Copyright (C) 1999 Jeffrey W. Nichols and Greg J. Badros
+;;;
+;;; ui-constraints.scm
+;;;
+;;; A module that adds support for graphical manipulation of
+;;; constraints on windows.
+;;;
+;;; Constraints TODO
+;;;
+;;; o Use ScwmButtons instead of rolling our own
+;;; o Added the sum-to-width and sum-to-height constraints
+;;; o Fix visual representations for the handful of constraints w/o good ones
+;;; o Use new version of get-window-nonant-interactively that provides
+;;;   feedback about which nonant is selected
+;;; o Improve get-window-nonant-interactively's marking of a nonant-- ideally
+;;;   colorize the partial border area....
+;;; o Extend ScwmButtons to permit animated icons when mouse is over button
+;;; o Extend ScwmButtons to have a right-click menu for
+;;;   -> turning on/off tooltips
+;;;   -> changing orientation
+;;;   -> changing auto-orientation
 
 (define-module (app scwm ui-constraints)
   :use-module (app scwm message-window)
