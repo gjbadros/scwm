@@ -1,3 +1,7 @@
+Thu Nov 25 14:18:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to pre0.99.6
+
 Tue Nov 23 12:39:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* README: Added; Do not ignore README -- needs to exist for automake, so

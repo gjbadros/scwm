@@ -1,3 +1,32 @@
+Thu Nov 25 14:14:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* animation.scm: export new `animate-windows' primitive
+
+	* visibility-reporter.scm: Added doc comments to appease scwmdoc.
+
+	* ui-constraints.scm: Use constraint-animation module and animate
+	constraints when disabling/enabling constraints.
+
+	* ui-constraints-classes.scm: Fix bug in call of
+	`xlib-set-line-attributes!'
+
+	* defoption.scm: doc bugfix.
+
+	* window-configuration.scm: Added
+	`window-configuration->xform-to-it', and use `animate-windows' to
+	make changes of global state animate all windows at once instead
+	of sequentially.  Added some doc comments to appease scwmdoc.
+
+Thu Nov 25 14:09:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraint-animation.scm: Added; support animating multiple
+	windows to new positions/sizes on a resolve.
+
+	* constraint-investigator.scm: Added, renamed from below.
+
+	* ui-constraints-gtk-toggle-menu.scm: Removed -- renamed to
+	constraint-investigator.scm.
+
 Wed Nov 24 12:42:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fix menu-title to permit extra #:args.  Thanks to bug

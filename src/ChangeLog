@@ -1,3 +1,18 @@
+Thu Nov 25 14:03:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h, window.c: Added ScmWindowDelta(), ScwmWindowDeltaVP()
+	to build XFORM objects for new multi-window animation stuff in
+	c-animation.c.  Also added FScmIsWindowDelta() to see if the arg
+	is one of those created objects.  Fixed typo bug caught by scwmdoc 
+	on window-visibility's FUNC_NAME.
+
+	* constraint-primitives.cc: Added `cl-resolve-xforms',
+	`cl-reset-dirty-windows' primitives.  Set fInResolveHook to True
+	while calling that hook so `animated-windows' can do the right
+	thing.
+
+	* add_window.c: Added fInResolveHook global variable.
+
 Tue Nov 23 15:08:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (mark_window): Use GC_MARK_SCM_IF_SET, and do not mark

@@ -1,6 +1,6 @@
 Begin3
 Title:          Scwm
-Version:        0.99.2
+Version:        0.99.6
 Entered-date:   14SEP99
 Description:    Scwm is the Scheme Constraints Window Manager, a highly
 		dynamic and extensible window manager for the X Window
@@ -18,7 +18,7 @@ Author:         gjb@cs.washington.edu (Greg J. Badros)
 		mstachow@alum.mit.edu (Maciej Stachowiak)
 Maintained-by:  gjb@cs.washington.edu (Greg J. Badros)
 Primary-site:   scwm.mit.edu /pub/scwm/
-		1401600 KB scwm-0.99.2.tar.gz
+		1401600 KB scwm-0.99.6.tar.gz
 Alternate-site: upintheair.cs.washington.edu /pub/scwm
 Original-site:  
 Platforms:      GNU/Linux or Unix, X11, Guile-scheme,

@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3283]
+[From src/window.c:3407]
 
 
 Fonts
@@ -413,7 +413,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:607]
+[From src/events.c:613]
 
 
 Shadow and Highlight Factors
@@ -454,7 +454,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From src/window.c:1999]
+[From src/window.c:2101]
 
 
 Themes
@@ -509,7 +509,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From src/window.c:913]
+[From src/window.c:1015]
 
 
 Window Style
@@ -589,7 +589,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From src/window.c:427]
+[From src/window.c:495]
 
 
 X atoms

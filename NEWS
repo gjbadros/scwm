@@ -7,8 +7,13 @@ Changes for scwm-0.99.6 (not yet released)
 ** menus popped-up from decorations stay on screen
 ** visibility change hooks are called properly, and during moves/resizes
 
+* window-configuration.scm
+** Now changes in global state animate all windows simultaneously, instead of sequentially
+
 * New primitives
-** `window-visibility' 
+** `window-visibility' for reporting on current visibility state of a window
+** `animate-windows' for permitting animations of multiple windows simultaneously
+** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
 
 Changes for scwm-0.99.5.1 (released 26-October-1999)
 * Bug fixes
