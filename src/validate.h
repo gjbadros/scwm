@@ -87,7 +87,7 @@ VALIDATE_...
   cvar = gh_scm2long(scm); \
   if (cvar < low || cvar > high) \
      scm_misc_error(FUNC_NAME,"Argument %S must be in [%S,%S]", \
-                    gh_list(gh_int2scm(pos),gh_int2scm(low),gh_int2scm(high),SCM_EOL)); \
+                    gh_list(gh_int2scm(pos),gh_int2scm(low),gh_int2scm(high),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_MIN_COPY(pos,scm,low,cvar) \
@@ -95,7 +95,7 @@ VALIDATE_...
   if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   cvar = gh_scm2long(scm); \
   if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
-                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_EOL)); \
+                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_MAX_COPY(pos,scm,high,cvar) \
@@ -103,7 +103,7 @@ VALIDATE_...
   if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   cvar = gh_scm2long(scm); \
   if (cvar > high) scm_misc_error(FUNC_NAME,"Argument %S must be less than %S", \
-                                  gh_list(gh_int2scm(pos),gh_int2scm(high),SCM_EOL)); \
+                                  gh_list(gh_int2scm(pos),gh_int2scm(high),SCM_UNDEFINED)); \
   } while (0)
 
 
@@ -137,7 +137,7 @@ VALIDATE_...
   if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
-                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_EOL)); \
+                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
   } while (0)
 
 
