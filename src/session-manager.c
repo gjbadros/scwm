@@ -25,6 +25,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_LIBSM_LIBICE
+
 /* The SM standard says that SmDiscardCommand should be of type
    SmLISTofARRAY8 on POSIX systems. xsm insists that it should be a SmARRAY8.
    Sigh. */
@@ -32,9 +38,6 @@
 
 #define SESSION_MANAGER_IMPLEMENTATION
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 #include "session-manager.h"
 
 #include "icons.h"
@@ -582,6 +585,8 @@ void initSM()
   if (SmcId)
     loadMyself();
 }
+
+#endif /* HAVE_LIBSM_LIBICE */
 
 
 /* Local Variables: */
