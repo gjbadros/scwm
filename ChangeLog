@@ -1,3 +1,9 @@
+Mon Jul  5 19:27:03 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Point scwm_image_load_path at ${scwm_pixmapdir}
+	(it changed values, and it's old one was duplicated here,
+	stupidly).
+
 Sun Jul  4 21:40:19 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Check for libXtst, set HAVE_XTEST, and substitute

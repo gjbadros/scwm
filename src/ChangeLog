@@ -1,3 +1,21 @@
+Mon Jul  5 19:33:37 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* validate.h (VALIDATE_ARG_DBL_MIN_COPY): Added a missing SCM_EOL
+	to a gh_list call.
+
+Mon Jul  5 19:28:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleButtonPress): Call the ReleaseThunk (the
+	immediate click procedure) right away and use its return value to
+	determine whether to bother with the find_mouse_event_type
+	garbage.
+
+	* binding.h: Added comment w/ ReleaseThunk member of binding re:
+	its use as an immediate click procedure for mouse bindings.
+
+	* binding.c: Added immediate-proc argument to bind-mouse, and
+	handle it.  Also cleanup an old ifdef.
+
 Mon Jul  5 18:50:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Removed mention of complex.[ch]

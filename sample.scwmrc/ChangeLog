@@ -1,3 +1,9 @@
+Mon Jul  5 19:47:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added #f argument to various bind-mouse calls to
+	make use of the new immediate-proc.  Also added arg to
+	add-{left,right}-button. Works great!
+
 Mon Jul  5 00:00:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added more debug-display to get a better idea of the 
