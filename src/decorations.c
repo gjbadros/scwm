@@ -323,11 +323,10 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     }
   }
   /* Assume no decorations, and build up */
-  /* FIXGJB:
-     t->fBorder = False;
-     t->fTitle = False;
-     should these get reset?  old code was testing tflags...--03/25/98 gjb
-  */
+  /* FIXGJB: should these get reset */
+  t->fBorder = False;
+  t->fTitle = False;
+
   t->boundary_width = 0;
   t->corner_width = 0;
   t->title_height = 0;
