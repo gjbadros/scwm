@@ -606,7 +606,7 @@ SetRCDefaults()
 	      "(define SLATEGRAY (load-color \"slategray\"))"
 	      "(define LIGHTGRAY (load-color \"lightgray\"))"
 	      "(define DIMGRAY (load-color \"dimgray\"))"
-	      "(set-xor-value! 1)"
+	      "(set-rubber-band-mask! 1)"
 	      "(set-menu-colors! BLACK GRAY SLATEGRAY)"
 	      "(bind-event \'new-window (lambda () (set-window-colors!"
 	      "                                    LIGHTGRAY DIMGRAY)"
