@@ -1,3 +1,42 @@
+Thu Apr  4 02:04:24 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* style.scm:
+	Added comment about what the structure for a style looks like.
+	Added docs for 'style-one-window', 'clear-window-style', 'make-style',
+	  'make-conditional-style', 'apply-style'.
+	Improved doc for 'window-style'.
+	Fixed 'window-unstyle' so that it works for splicing styles.  Also,
+	  added note to doc that it removes all instances of the style.
+	Fixed 'clear-window-style' which was accessing an undefined variable.
+	Added comments explaining private functions 'mcs-complain',
+	  'mcs-parse-args'.
+	Added concept for 'Style Entry'.
+	Formatting improvements for style-entry:* functions.
+	Improved 'simplify-style' by making it actually do some simplification.
+	  Specifically, made it remove empty styles (which get created all the
+	  time by splicing styles).
+	Added BROKEN comments to #:icon-title, #:start-iconified,
+	  #:decorate-transient.
+	  #:start-iconified crashes scwm because the 'iconify-window' call
+	  is made before the icon window created because of where the hook
+	  runs.  This appears to be in order to make #:start-iconified sort
+	  of work.  Removed #:start-iconified option until this can be
+	  fixed.
+	Discovered that #:show-icon only works as a hint and only when set to
+	  #f.  Changed from style to hint to reflect when it actually works.
+	Found out #:icon only works as hint.  Changed to hint from style until
+	  'set-icon!' gets fixed.  Causes window to vanish when applied to an
+	  existing window.
+	Added FIXME noting that #:button x only shows the button if it is bound
+	  to a mouse event (very unintuitive).
+	Added FIXME about adding documentation to style options.
+	Fixed #:other-proc style option which was not setting the option type.
+	Added FIXMEs for the following style options which have not been tested
+	  yet: #:hint-override, #:mwm-decor-hint, #:mwm-func-hint,
+	  #:PPosition-hint, #:OL-decor-hint, #:lenience.
+	
+	* style-options.scm: Added concept for 'Style Option'.
+
 Thu Apr  4 01:47:44 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* rectangle.scm: Changed 'window-corners' and hence

@@ -24,6 +24,25 @@
 
 
 
+;;;**CONCEPT:Style Option
+;;; A style option is a option which can be applied to a window
+;;; to control its appearance or behavior.  Each style option has
+;;; a key which is used to access it.  Whenever a style option is
+;;; applied to a window, the key will have an associated value for
+;;; that window.  This all works by using a handler procedure to
+;;; apply the style option to the window when necessary.
+;;; There are three basic types of style options, 'normal, 'hint,
+;;; and 'splicing.  Additionally, a style option can be both of
+;;; type 'normal and 'hint which is indicated with the type 'both.
+;;; A 'normal option is one that is applied after the window is
+;;; created.  A 'hint option is one that can only be applied before
+;;; the window is created.  A 'both option can be applied after a
+;;; window is created, but saves effort by being applied before the
+;;; window is created.  A 'splicing style option indicates a style
+;;; option composed of other style options.  See also the concepts
+;;; 'Style' and 'Style Entry'.
+
+
 ;;; Public for debugging purposes.
 (define-public window-style-options (make-hash-table 60))
 

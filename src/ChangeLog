@@ -1,3 +1,10 @@
+Thu Apr  4 02:41:36 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* face.c:
+	Added FIXME for documenting style options.
+	Improved doc for 'Window Style' concept and added references to
+	  new concepts added 'Style Option' and 'Style Entry'.
+
 Tue Apr  2 22:16:13 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* face.c: Drastically improved the doc string for gradients.

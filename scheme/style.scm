@@ -27,6 +27,10 @@
 
 
 
+;;;; Definitions for style type.
+
+;;; A style is simply a list of style-entries.
+
 (define (x-make-style style-entries)
   style-entries)
 
@@ -40,16 +44,25 @@
 (define-public global-conditional-style (x-make-style ()))
 
 (define-public (style-one-window win . args)
+  "Add style options ARGS to the style for WIN.
+See 'window-style' for more details on style options."
   (let ((new-style (apply make-conditional-style always? args)))
     (apply-style new-style win)))
 
 (define-public (window-style condition . args) 
   "Specify various properties for windows matching CONDITION.
-See the `Face Specification Flags' and `Window Style' sections
-for details.  CONDITION can be a string in which case
-`default-style-condition-handler' is used, or it can be a list
-of two elements in which case the first is the X class name to match
-and the second is the X resource name to match (both must match).
+ARGS are extra agruments to the 'window-style' function.  These
+style options should come in pairs of key followed by value
+as separate arguments.  There are many possible style options.
+See the `Window Style' section for details.  Styling windows
+is cumulative, so if you apply one style to a window and then
+apply a seoncd style, everything not specified in the second
+style will use the values from the first style.  Hint styles
+will not be applied to already existing windows by this function.
+CONDITION can be a string in which case `default-style-condition-handler'
+is used, or it can be a list of two elements in which case the first
+is the X class name to match and the second is the X resource name to
+match (both must match).
 CONDITION can also be an arbitrary predicate that takes a window
 and returns #t iff that window is to be considered a match."
   (let ((new-style (apply make-conditional-style condition args)))
@@ -59,22 +72,34 @@ and returns #t iff that window is to be considered a match."
 
 (define-public (window-unstyle . style)
   "Remove STYLE definition from list of window styles.
-STYLE must be given exactly the same way as on invocation of `window-style'."
-  (delete! (car (apply make-conditional-style style))
-	   global-conditional-style))
+STYLE must be given exactly the same way as on invocation of `window-style'.
+If style is present multiple times, every instance is removed."
+  (for-each (lambda (cond-style)
+              (set! global-conditional-style
+                    (delete! cond-style
+                             global-conditional-style)))
+           (apply make-conditional-style style)))
 
 (define-public (clear-window-style)
-  (set! global-conditional-style (make-window-style)))
+  "Clear all previous 'window-style' directives.
+This will not affect windows already on the screen."
+  (set! global-conditional-style (x-make-style '())))
 
 (define-public (make-style . args)
+  "Make an unconditional window style using ARGS as the style options."
   (apply make-conditional-style always? args))
 
+;;; Produce an error giving WARNING about key KEY
 (define (mcs-complain warning key)
   (error (string-append 
 	  warning " style option: "
 	  (objects->string key))))
 
-
+;;; Produce a style corresponding to window condition CONDITION
+;;;   and style options ARGS.  CONDITION should already have been
+;;;   converted into a predicate.  ARGS should be a list of style
+;;;   options as given by the user, i.e.
+;;;       (list key1 val1 key2 val2 ... )
 (define (mcs-parse-args condition args)
   (let loop ((l args)
 	     (style-accum ())
@@ -129,11 +154,16 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
    ((procedure? condition) condition)
    (else (error "Bad window specifier for window-style."))))
 
-
 (define-public (make-conditional-style condition . args)
+  "Make a style that only applies to windows matching CONDITION.
+ARGS is style options to use in the new style.
+See 'window-style' for more information."
   (simplify-style (mcs-parse-args (condition->predicate condition) args)))
 
 (define-public (apply-style style win)
+  "Apply STYLE to WIN.
+This only applies normal and both styles from STYLE.
+Hint styles are not applied."
   (apply-style-internal style win style-entry:window-options))
 
 (define (apply-hint-style style win)
@@ -162,14 +192,21 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 	   (lambda (win)
 	     (apply-hint-style global-conditional-style win)))
 
+
+;;;**CONCEPT:Style Entry
+;;; A style entry is a collection of style options and an associated condition
+;;; under which to apply them.  The condition is a predicate which takes a window
+;;; and indicates whether to apply its style options to the window.
+;;; See the concepts 'Style Option' and 'Window Style'.
+
 (define (make-style-entry condition window-options hint-options)
   (vector condition window-options hint-options))
 
-(define (style-entry:condition style-entry)
+(define (style-entry:condition      style-entry)
   (vector-ref style-entry 0))
 (define (style-entry:window-options style-entry) 
   (vector-ref style-entry 1))
-(define (style-entry:hint-options style-entry)
+(define (style-entry:hint-options   style-entry)
   (vector-ref style-entry 2))
 
 (define (objects->string . objs)
@@ -180,10 +217,16 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
   (x-make-style (append (style:style-entries style1)
 			(style:style-entries style2))))
 
-;; MS:FIXME:: Figure out what I meant by the comment below.
-;; MS:FIXME:: add actual simplification later. Hack to make windows eq?
+;; MS:FIXME:: Add more actual simplification later.
 (define (simplify-style style)
-  style)
+  (x-make-style
+   (filter-map
+    (lambda (se)
+      (if (and (null? (style-entry:window-options se)) 
+               (null? (style-entry:hint-options   se)))
+          #f
+          se))
+    (style:style-entries style))))
   
 (add-window-style-option 
  #:use-style (lambda (condition style) 
@@ -211,12 +254,15 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (add-window-style-option #:highlight-fg set-window-highlight-foreground!)
 (add-window-style-option #:focus set-window-focus!)
 (add-boolean-style-option #:plain-border plain-border normal-border)
+;;; SRL:FIXME:: BROKEN, remove this line when set-icon-title! gets fixed.
 (add-window-style-option #:icon-title set-icon-title!)
 (add-window-style-option #:icon-box (lambda (args w)
 				      (apply set-icon-box! (append args 
 								   (list w)))))
 (add-boolean-style-option #:sticky-icon stick-icon unstick-icon)
-(add-boolean-style-option #:start-iconified iconify-window noop)
+;;; SRL:FIXME:: BROKEN.  Crashes scwm often.  Tries to access the icon
+;;;   stuff before the icon window even gets created.  Commenting out for now.
+;(add-boolean-style-option #:start-iconified iconify-window noop)
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
 (add-boolean-style-option #:sticky stick-window unstick-window)
 
@@ -229,26 +275,40 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 
 (add-window-style-option #:mwm-border set-mwm-border!)
 
-(add-window-style-option #:show-icon set-show-icon!)
+;;; SRL:FIXME:: Only works as hint, but should work as style.
+;;;   Also seems to work in going from no icon to icon.
+(add-window-hint-option #:show-icon set-show-icon!)
 (add-window-style-option #:force-icon set-force-icon!)
-(add-window-style-option #:icon set-icon!)
+;;; SRL:FIXME:: Only works as hint, but should work as style.
+(add-window-hint-option #:icon set-icon!)
 (add-window-style-option #:mini-icon set-mini-icon!)
 
 ;; MS:FIXME:: Figure out a better way to do this
+;;; SRL:FIXME:: #:button will only show the button if the button is bound
+;;;   to something.  Not intuitive.
+;;; SRL:FIXME:: Propagate note about above behavior to docs somehow.
 (add-window-hint-option #:button (lambda (n w) (set-window-button! n #t w))
 			#t) ; cumulative
 (add-window-hint-option #:no-button (lambda (n w) (set-window-button! n #f w))
 			#t) ; cumulative
 
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:hint-override set-hint-override!)
+;;; SRL:FIXME:: Broken.  Propagated to C code but C code displays
+;;;   incorrectly.
 (add-window-hint-option #:decorate-transient set-decorate-transient!)
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:mwm-decor-hint set-mwm-decor-hint!)
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:mwm-func-hint set-mwm-func-hint!)
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:PPosition-hint set-PPosition-hint!)
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:OL-decor-hint set-OL-decor-hint!)
 
 (add-window-hint-option #:start-on-desk set-start-on-desk!)
 (add-window-hint-option #:skip-mapping set-skip-mapping!)
+;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:lenience set-lenience!)
 
 
@@ -276,7 +336,7 @@ for a way to make sure this function is called at the correct time."
 ;; random stuff
 (add-boolean-style-option #:start-lowered lower-window raise-window)
 (add-boolean-style-option #:start-window-shaded shade-window unshade-window)
-(add-window-style-option #:other-proc (lambda (val w) (val w))
+(add-window-style-option #:other-proc (lambda (val w) (val w)) 'normal
 			 #t) ; cumulative
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w))
 			#t) ; cumulative

@@ -537,15 +537,17 @@ title and border faces, are indicated below.
 </tgroup>
 </table>
 */
-  
+
+/* SRL:FIXME:: Make docs for all these options somehow. */
 
 /**CONCEPT: Window Style
   Window styles encapsulate the behaviour and appearance of windows.
-They are applied to windows arbitrarily so different windows can
-use different styles at the same time.  Numerous options are permitted
-for window styles.  For some of the below options you will
+A window style is a collection of style entries.  See the concepts
+'Style Option' and 'Style Entry'.  They are applied to windows arbitrarily
+so different windows can use different styles at the same time.  Numerous
+options are permitted for window styles.  For some of the below options you will
 need to use the appropriate module to make the options available. 
-The options include at least:
+The style options include at least:
 
 */
 
