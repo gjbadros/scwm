@@ -1,3 +1,27 @@
+Mon Nov  3 11:20:17 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Further changes that should bring things really close to user
+ 	face handling; only set-button-face! and friends need to be
+ 	written now.
+
+	scwm.c: Changes to initialization of the default decor, and
+ 	decor initialization in general to support the creation of the
+ 	initial button, border and title faces as Scheme objects
+ 	
+	face.c, face.h: Added creation of the default button, title and
+ 	border faces as Scheme bjects in the variables
+ 	default_titlebar_face, default_rbuton_face[],
+ 	default_lbutton_face[] and default_border_face.
+
+	decor.c, decor.h: Added mark_decor, a new gc marker function that
+ 	marks all of the face objects associated with a decor object, so
+ 	garbage collection is happy. Also made make-decor initialize the
+ 	button, title and border faces from the defaults.
+
+	* colors.c: Changed shadow handling in GetShadow slightly; don't
+ 	mod by %0xffff any more so very bright colors are not
+ 	automatically shadowed with black.
+
 Sun Nov  2 00:20:29 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* add_window.c, borders.c, builtins.c, face.c, functions.c,

@@ -28,6 +28,7 @@ extern long scm_tc16_scwm_decor;
 
 size_t free_decor(SCM obj);
 int print_decor(SCM obj, SCM port, scm_print_state * pstate);
+SCM mark_decor(SCM obj);
 
 SCM decor2scm(ScwmDecor * fl);
 SCM make_decor(SCM name);
