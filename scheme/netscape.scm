@@ -42,15 +42,19 @@
 ;; if none are visible
 (define-public (netscape-win)
   "Return a netscape window, prefer a visible netscape window.
+Should return the window containing the pointer if that is a Netscape window.
 May error if no netscape windows are present."
-  (let* ((ns-wins
-	 (list-windows #:only (win-and?? (class-match?? "Netscape") 
-					 (resource-match?? "Navigator"))))
-	 (win (if (pair? ns-wins) 
-		  (car ns-wins) 
-		  #f)))
-    (for-each (lambda (w) (if (visible? w) (set! win w))) ns-wins)
-    win))
+  (let ((pwin (window-with-pointer)))
+    (if (string=? (window-class pwin) "Netscape")
+	pwin
+	(let* ((ns-wins
+		(list-windows #:only (win-and?? (class-match?? "Netscape") 
+						(resource-match?? "Navigator"))))
+	       (win (if (pair? ns-wins) 
+			(car ns-wins) 
+			#f)))
+	  (for-each (lambda (w) (if (visible? w) (set! win w))) ns-wins)
+	  win))))
 
 
 ;; from Todd Larason
