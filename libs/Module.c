@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <scwm/scwmlib.h>
 #include "../scwm/module.h"
@@ -103,7 +105,7 @@ SetMessageMask(int *fd, unsigned long mask)
  * no more lines to be had. "line" is a pointer to a char *.
  *
  **************************************************************************/
-void *
+void
 GetConfigLine(int *fd, char **tline)
 {
   static int first_pass = 1;

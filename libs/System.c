@@ -47,6 +47,7 @@ mygethostname(char *client, int length)
 
   uname(&sysname);
   strncpy(client, sysname.nodename, length);
+  return 1;
 }
 
 /* return a string indicating the OS type (i.e. "Linux", "SINIX-D", ... ) */
@@ -69,7 +70,7 @@ mygetostype(char *buf, int max)
 int 
 mygethostname(char *client, int length)
 {
-  gethostname(client, length);
+  return gethostname(client, length);
 }
 
 #else

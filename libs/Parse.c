@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <scwm/scwmlib.h>
 
@@ -19,14 +20,14 @@
 char *
 PeekToken(const char *pstr)
 {
-  char *tok = NULL, *p;
+  char *tok = NULL;
+  const char *p = pstr;
   char bc = 0, be = 0, tmptok[MAX_TOKEN_LENGTH];
   int len = 0;
 
   if (!pstr)
     return NULL;
 
-  p = pstr;
   EatWS(p);			/* skip leading space */
   if (*p) {
     if (IsQuote(*p) || IsBlockStart(*p)) {	/* quoted string or block start? */
