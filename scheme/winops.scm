@@ -24,6 +24,8 @@
   :use-module (app scwm defoption)
   :use-module (app scwm c-animation)
   :use-module (app scwm base)
+  :use-module (app scwm winlist)
+  :use-module (app scwm wininfo)
   :use-module (app scwm nonants)
   :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
