@@ -33,6 +33,7 @@
 	     (app scwm wininfo)
              (app scwm style)
 	     (app scwm face)
+	     (app scwm time-convert)
 	     (app scwm optargs)
 	     (app scwm menus-extras)
 	     (app scwm std-menus)
@@ -743,7 +744,7 @@
 (defmacro menuitem-for-exec (name pixmap . body)
   (if (cached-program-exists? name)
       `(list ,name #:action (lambda () (execute ,name) ,@body)
-	     #:left-pixmap ,pixmap)))
+	     #:image-left ,pixmap)))
 
 ;;(window-shade (get-window) #t)
 ;;(un-window-shade (get-window) #t)
