@@ -21,6 +21,8 @@
 #include "dmalloc.h"
 #endif
 
+extern SCM sym_top, sym_center, sym_bottom;
+
 /* FIXGJB: comment these! */
 #define MENU_EDGE_VERT_SPACING 2
 #define MENU_EDGE_HORIZ_SPACING 2
@@ -49,8 +51,12 @@ PscwmFontForMenuItem(SCM scmFont)
 }
 
 static void
-PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
+PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
+	       SCM align)
 {
+  int cpixDstYoffset, cpixSrcYoffset;
+  int height;
+  
   if (!psimg) {
     scwm_msg(ERR,__FUNCTION__,"psimg is NULL");
     return;
@@ -59,9 +65,38 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
   XFillRectangle(dpy, w, Scr.ScratchGC1, 
 		 MENU_ITEM_RR_SPACE, MENU_ITEM_RR_SPACE,
 		 psimg->width, cpixHeight - 2*MENU_ITEM_RR_SPACE);
-  DrawImage(w,psimg,MENU_ITEM_RR_SPACE,MENU_ITEM_RR_SPACE,NULL);
-}
 
+  height = psimg->height;
+  if (height > cpixHeight - 2*MENU_ITEM_RR_SPACE)
+    height = cpixHeight - 2*MENU_ITEM_RR_SPACE;
+  
+  if (align == sym_top) {
+    cpixDstYoffset = MENU_ITEM_RR_SPACE;
+    cpixSrcYoffset = 0;
+  } else if (align == sym_center) {
+    if (psimg->height > height) {
+      cpixDstYoffset = MENU_ITEM_RR_SPACE;
+      cpixSrcYoffset = (psimg->height - height)/2;
+    } else {
+      cpixDstYoffset = (cpixHeight - height)/2;
+      cpixSrcYoffset = 0;
+    }
+  } else {
+    if (psimg->height > height) {
+      cpixDstYoffset = MENU_ITEM_RR_SPACE;
+      cpixSrcYoffset = psimg->height - height;
+    } else {
+      cpixDstYoffset = cpixHeight - height;
+      cpixSrcYoffset = 0;
+    }
+  }
+  
+  DrawSubImage(w, psimg,
+	       MENU_ITEM_RR_SPACE, cpixDstYoffset,
+	       0, cpixSrcYoffset,
+	       psimg->width, height,
+	       NULL);
+}
 
 /*
  * RelieveHalfRectangle - add relief lines to the sides only of a
@@ -293,7 +328,8 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   { /* scope */
     scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
-      PaintSideImage(w,pmdi->SideBGColor,pmdi->cpixHeight,psimgSide);
+      PaintSideImage(w,pmdi->SideBGColor,pmdi->cpixHeight,psimgSide,
+		     pmd->pmenu->scmSideAlign);
     }
   }
   XSync(dpy,0);

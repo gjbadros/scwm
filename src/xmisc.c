@@ -104,23 +104,39 @@ FXIsWindowMapped(Display *dpy, Window w)
 void
 DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc)
 {
+  DrawSubImage(w, psimg, cpixXoffset, cpixYoffset, 0, 0, psimg->width, psimg->height, gc);
+}    
+
+/* Note: gc is only used for bitmaps! */
+void
+DrawSubImage(Window w, scwm_image *psimg,
+	     int cpixDstXoffset, int cpixDstYoffset,
+	     int cpixSrcXoffset, int cpixSrcYoffset,
+	     int cpixWidth, int cpixHeight,
+	     GC gc)
+{
   if (psimg->depth > 0) {
     GC gcPixmap = Scr.ScratchGC1;
     /* a full pixmap (as opposed to just a bitmap) */
     Globalgcv.clip_mask = psimg->mask;
-    Globalgcv.clip_x_origin = cpixXoffset;
-    Globalgcv.clip_y_origin = cpixYoffset;
+    Globalgcv.clip_x_origin = cpixDstXoffset;
+    Globalgcv.clip_y_origin = cpixDstYoffset;
     
     XChangeGC(dpy,gcPixmap,(GCClipMask | GCClipXOrigin | GCClipYOrigin),&Globalgcv);
-    XCopyArea(dpy, psimg->image, w, gcPixmap, 0, 0, psimg->width, psimg->height,
-	      Globalgcv.clip_x_origin, Globalgcv.clip_y_origin);
+    XCopyArea(dpy, psimg->image, w, gcPixmap,
+	      cpixSrcXoffset, cpixSrcYoffset,
+	      cpixWidth, cpixHeight,
+	      cpixDstXoffset, cpixDstYoffset);
 
     Globalgcv.clip_mask = None;
     XChangeGC(dpy,gcPixmap,(GCClipMask),&Globalgcv);
   } else {
     /* bitmap */
-    XCopyPlane(dpy, psimg->image, w, gc, 0, 0, psimg->width, psimg->height,
-	       cpixXoffset, cpixYoffset, 1 /* plane */);
+    XCopyPlane(dpy, psimg->image, w, gc,
+	       cpixSrcXoffset, cpixSrcYoffset,
+	       cpixWidth, cpixHeight,
+	       cpixDstXoffset, cpixDstYoffset,
+	       1 /* plane */);
   }
 }    
 

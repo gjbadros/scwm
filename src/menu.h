@@ -72,6 +72,7 @@ typedef struct Menu_tag
   SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
   SCM scmExtraOptions;		/* extra list of options for the drawing code */
+  SCM scmSideAlign;		/* side image alignment */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
 } Menu;
 
@@ -89,7 +90,6 @@ struct DynamicMenu_tag
   PfnPaintDynamicMenu fnPaintDynamicMenu; /* the function to paint the whole menu */
   PfnPaintMenuItem fnPaintMenuItem; /* the function to paint a single menu item */
 };
-
 
 #define MENU_P(X) (SCM_NIMP((X)) && (gh_car((X)) == (SCM)scm_tc16_scwm_menu))
 #define MENU(X)  ((Menu *)gh_cdr((X)))

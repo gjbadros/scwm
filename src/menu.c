@@ -43,6 +43,8 @@
 #include "dmalloc.h"
 #endif
 
+extern SCM sym_top, sym_center, sym_bottom;
+
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
@@ -78,6 +80,7 @@ mark_menu(SCM obj)
 
   GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
   GC_MARK_SCM_IF_SET(pmenu->scmImgSide);
+  GC_MARK_SCM_IF_SET(pmenu->scmSideAlign);
   GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
@@ -178,6 +181,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
   return pch;
 }
 
+/* FIXGJB: better as an assoc list, probably */
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
 /** Returns the a list of the menu properties of MENU, a menu object.
@@ -204,13 +208,14 @@ font extra-options used-shortcut-keys) */
 #undef FUNC_NAME
 
 
-SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
+SCWM_PROC(make_menu, "make-menu", 1, 8, 0,
           (SCM list_of_menuitems,
-           SCM picture_side, SCM side_bg_color,
+           SCM picture_side, SCM picture_align, SCM side_bg_color,
            SCM bg_color, SCM text_color,
            SCM picture_bg, SCM font, SCM extra_options))
 /** Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
+PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
 PICTURE-SIDE is an image object;
 SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects;
 FONT is a font object;
@@ -239,6 +244,18 @@ drawing code (not used currently).
   } 
   pmenu->scmImgSide = picture_side;
 
+  iarg++;
+  if (UNSET_SCM(picture_align)) {
+    picture_align = sym_top;
+  } else if (!gh_symbol_p(picture_align) ||
+	     (picture_align != sym_top &&
+	      picture_align != sym_center &&
+	      picture_align != sym_bottom)) {
+    scm_misc_error(FUNC_NAME,"PICTURE-ALIGN must be 'top, 'center or 'bottom'",
+		   SCM_EOL);
+  }
+  pmenu->scmSideAlign = picture_align;
+  
   iarg++;
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = WHITE_COLOR;

@@ -29,6 +29,11 @@ Bool FXWindowAccessible(Display *dpy, Window w);
 Bool FXIsWindowMapped(Display *dpy, Window w);
 
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
+void DrawSubImage(Window w, scwm_image *psimg,
+		  int cpixDstXoffset, int cpixDstYoffset,
+		  int cpixSrcXoffset, int cpixSrcYOffset,
+		  int cpixWidth, int cpixHeight,
+		  GC gc);
 XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 int flush_expose(Window w);
 void RestoreWithdrawnLocation(ScwmWindow *, Bool);

@@ -316,11 +316,14 @@ SCM default_rbutton_face[5];
 
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
-/* These three symbols are also used by msicprocs.c's
-   set-title-justify! */
+/* 'left, 'right and 'center are also used by miscprocs.c's
+   set-title-justify!; 'center, 'top and 'bottom are used by
+   menu.c's side menu alignment */
 SCWM_GLOBAL_SYMBOL(sym_left , "left");
 SCWM_GLOBAL_SYMBOL(sym_right , "right");
 SCWM_GLOBAL_SYMBOL(sym_center , "center");
+SCWM_GLOBAL_SYMBOL(sym_top , "top");
+SCWM_GLOBAL_SYMBOL(sym_bottom , "bottom");
 
 SCWM_SYMBOL(sym_clear , "clear");
 SCWM_SYMBOL(sym_justify , "justify");
@@ -329,8 +332,6 @@ SCWM_SYMBOL(sym_relief , "relief");
 SCWM_SYMBOL(sym_use_style_of , "use-style-of");
 SCWM_SYMBOL(sym_hidden_handles , "hidden-handles");
 SCWM_SYMBOL(sym_no_inset , "no-inset");
-SCWM_SYMBOL(sym_top , "top");
-SCWM_SYMBOL(sym_bottom , "bottom");
 SCWM_SYMBOL(sym_flat , "flat");
 SCWM_SYMBOL(sym_sunk , "sunk");
 SCWM_SYMBOL(sym_raised , "raised");
