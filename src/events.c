@@ -612,8 +612,10 @@ HandleScwmExec()
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
-                          (unsigned char **) &pw)==Success) {
+                          (unsigned char **) &pw)==Success && pw != NULL) {
+#if 0
       if (pw!=NULL) {
+#endif
         /* This is the window we want to look at: */
         w = *pw;
         XFree(pw);
@@ -700,7 +702,9 @@ HandleScwmExec()
           scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
                    w_for_scwmexec_response);
         }
+#if 0
       } /* if (pw != NULL) */
+#endif
     } else {
       /* XGetWindowProperty returned False */
       DBUG((WARN,FUNC_NAME,"Done with last window in list of scwmexec requests"));
