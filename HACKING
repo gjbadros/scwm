@@ -43,10 +43,3 @@ those files automatically.
 For details on libSM and libICE, see:
 
 ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/{SM,ICE}/*.PS.gz
-
-NOTE: 
-Due to a bug in automake 1.3, the following error messages will be
-generated; they may be safely ignored:
-
-configure.in: 470: required file `utilities/dev/scwmdoc.in' not found
-configure.in: 470: required file `utilities/dev/scwmdoc.scm.in' not found

@@ -1,5 +1,8 @@
 Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Makefile.am (EXTRA_DIST): Mention more files that should be
+ 	distributed.
+
 	* HACKING: Remove note about automake bug, since we decided to
  	work around it after all.
 
