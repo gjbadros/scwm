@@ -39,8 +39,8 @@
 
 (use-scwm-modules base winops winlist wininfo style face flux optargs
 		  std-menus animation message-window pie-menus gnome-hints
-		  xlock-menus placement
-		  group (ice-9 string-fun) (ice-9 regex))
+		  xlock-menus placement winlist-menu
+		  group (ice-9 format) (ice-9 string-fun) (ice-9 regex))
 
 (display "[robbe.scwmrc] Loading modules ... done.\n")
 
@@ -421,8 +421,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "Re&size" #:extra-label "F6" #:action interactive-resize)
     (menuitem "&Raise" #:action raise-window)
     (menuitem "&Lower" #:action lower-window)
-    (if (defined? 'print-window)
-      (menuitem "&Print" #:action print-window))
     (menuitem "(Un)&Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)&Iconify" #:extra-label "F4" #:action toggle-iconify)
     (menuitem "(Un)&Maximize" #:extra-label "F8"
@@ -537,7 +535,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (show-window-list-menu #f #f #:show-geometry #t))
 
 (define (last-focussed win)
-  (if (equal? win (current-window-with-focus))
+  (if (equal? win (window-with-focus))
       0
       (window-last-focus-time win)))
 
@@ -630,7 +628,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (set-current-desk! (+ (current-desk) inc)))
 
 (define (remember-focus new-desk desk)
-  (let ((win (current-window-with-focus)))
+  (let ((win (window-with-focus)))
     (if win
 	(let ((ref (assoc desk focused-windows)))
 	  (if ref
@@ -639,17 +637,33 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (let ((ref (assoc new-desk focused-windows)))
 ;      (write `(leaving desk ,desk and focus ,win new desk ,ref)) 
       (cond
-       ((and win (on-current-desk? win)) (focus win))
-       ((and ref (on-current-desk? (cdr ref))) (focus (cdr ref)))
+       ((and win (on-current-desk? win)) (focus-window win))
+       ((and ref (on-current-desk? (cdr ref))) (focus-window (cdr ref)))
        (else (next-window #:proc focus))))))
 
-;(remove-hook! change-desk-hook (car change-desk-hook))
 (add-hook! change-desk-hook remember-focus)
+
+(define (show-message-briefly msg msec)
+  (let ((mw (make-message-window-clone-default msg)))
+    (message-window-show! mw)
+    (add-timer-hook! msec (lambda () (message-window-hide! mw)))))
+
+(define Desks '("Main" "Root" "Gimp"))
+(add-hook! change-desk-hook (lambda (new-desk old-desk)
+			      (show-message-briefly (list-ref Desks new-desk)
+						    1000)))
+
 
 (bind-key 'all (super-kp "Page_Up")
 	  (lambda () (change-desk -1)))
 (bind-key 'all (super-kp "Page_Down")
 	  (lambda () (change-desk +1)))
+
+(do ((i 0 (1+ i)))
+    ((>= i 9))
+  (bind-key 'all (super (format "~d" (1+ i)))
+	    (lambda () (set-current-desk! i))))
+
 ; misc
 (bind-key 'all (super "r") (lambda () (restart "scwm")))
 (bind-key 'all (super "d") toggle-wm-style)
