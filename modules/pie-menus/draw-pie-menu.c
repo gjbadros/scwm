@@ -36,6 +36,7 @@
 #include "screen.h"
 #include "font.h"
 #include "xmisc.h"
+#include "cursor.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -1215,7 +1216,7 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     unsigned long valuemask = (CWBackPixel | CWCursor | CWSaveUnder);
     XSetWindowAttributes attributes;
     attributes.background_pixel = pmd->pmdi->BGColor;
-    attributes.cursor = Scr.ScwmCursors[CURSOR_MENU];
+    attributes.cursor = XCursorByNumber(XC_sb_left_arrow);
     attributes.save_under = True;
 
     pmd->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmd->cpixWidth,

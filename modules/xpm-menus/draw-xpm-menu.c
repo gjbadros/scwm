@@ -1006,7 +1006,7 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
       unsigned long valuemask = (CWBackPixel | CWCursor | CWSaveUnder);
       XSetWindowAttributes attributes;
       attributes.background_pixel = pmdi->BGColor;
-      attributes.cursor = Scr.ScwmCursors[CURSOR_MENU];
+      attributes.cursor = XCursorByNumber(XC_sb_left_arrow);
       attributes.save_under = True;
 
       pmd->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmd->cpixWidth,
