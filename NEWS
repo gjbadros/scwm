@@ -2,6 +2,245 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
 
+Changes to scwm-0.6
+
+* Changes to installation: Scwm no longer installs it's scheme modules
+in the guile install locations; instead, it installs them in its own
+prefix and adds it to the guile load path. The environment variable
+SCWM_LOAD_PATH will override this location.
+
+* Support for fvwm2 modules: Scwm can now execute fvwm2 modules, using
+an interface written almost entirely in Scheme. This is only slightly
+slower than the native fvwm module support. The new support is mainly
+in the new (app scwm fvwm-module) module, using the following
+procedures:
+
+run-fvwm-module PATH RC-FILE CONFIGURATION #&optional OTHER-ARGS
+
+  Runs the specified module. PATH is the full path to the module
+  binary. RC-FILE is the path to the fvwm2rc file, which does not have
+  to actually exist for most modules. CONFIGURATION is a list of
+  strings which are passed as the module as the configuration
+  information. OTHER-ARGS is an optional list of strings to be passed
+  extra command-line arguments to pass to the module. The
+  procedure returns an fvwm-module object which may be passed to
+  kill-fvwm-module.
+
+kill-fvwm-module FVWM-MODULE
+
+  Kills the module.
+
+See the fvwm-module.scm file for additional documentation.
+
+* New external program protocol: scwm now supports an improved
+external program protocol which allows other programs to send commands
+to a running scwm and get the results. Two new programs take advantage
+of this:
+
+  `scwmexec' will send scwm an expression passed on the command line,
+  and print the return value. 
+
+  `scwmrepl' gives the user an interactive session with a running
+  scwm.
+
+There is also new emacs support based on these programs, in the form
+of scwm.el. scwm.el allows either evaluation of single expressions or
+access to the interactive repl from within emacs. See
+utilities/dev/scwm.el in the distribution for more details.
+
+These changes obsolete the old scwmsend program, scwm --interactive
+mode, and the old emacs interaction mode, all of which will be removed
+by the next release.
+
+* Improvements to images: Support for images (to be used as icons,
+buttons, tiles, etc) is much improved.
+
+  - The path for loading images is now an ordinary Scheme variable,
+  image-load-path, which the user may set to a list of string path
+  prefixes.
+
+  - Multiple requests to load the same image file will return the same
+  object through the use of a cache.
+
+  - Loaders may be specified for additional image formats.
+
+The new procedures are:
+
+make-image FILENAME
+
+  Return a scheme object representing the image from FILENAME; if
+  FILENAME is an absolute path or relative to the current or parent
+  directory (starts with "/", "./" or "../") the image is loaded
+  directly, otherwise the image-load-path is scanned.
+
+image? OBJECT
+
+  A predicate determining if an object is an image object.
+
+image-properties IMAGE
+
+  Returns an asssociation list of several properties of the image.
+
+load-xbm PATHNAME
+
+  Loads a file as an X bitmap directly from PATHNAME, treating it as
+  an absolute path. This procedure is not intended for direct use, but
+  rather to be registered as an image loader.
+
+load-xpm PATHNAME
+
+  Loads a file as an X pixmap directly from PATHNAME, treating it as
+  an absolute path. This procedure is not intended for direct use, but
+  rather to be registered as an image loader.
+
+register-image-loader EXTENSION PROC
+
+  Registers PROC as an image loader for files ending in
+  EXTENSION. EXTENSION should either be a string starting with a dot,
+  or the string "default", which is used to register the default image
+  loader.
+
+unregister-mage-loader EXTENSION
+
+  Unregisters the image loader for the specified extension.
+
+clear-image-cache-entry FNAME
+
+  Clears the appropriate entry in the image cache; this may be
+  necessary if an image is currently loaded, the file is changed, and
+  the user wants to load the updated version. Note that images are
+  cached both by the name passed to make-image and the fully qualified
+  path name, so two clears may be necessary.
+
+In addition to X bitmaps and X pixmaps, GNU zipped X pixmap
+(".xpm.gz") files are now supported automatically; the icons and
+mini-icons could in theory all be installed gzipped to save space.
+
+* Foreign format image loading through conversion: The new (app scwm
+image-loaders) module supports several image loaders that attempt to
+convert a variety of formats through external programs to a natively
+supported format.
+
+ImageMagick-loader
+
+  Tries to convert the image to xpm using the `convert' program from the
+  ImageMagick package.
+
+netpbm-loader
+
+  Tries to convert the image to xpm using the `anytopnm' and
+  `ppmtoxpm' programs from the ImageMagick package.
+
+try-everything-loader
+
+  Tries both ImageMagick-loader and then netpbm loader if the former
+  fails. In the future, it will support any other available conversion
+  loaders.
+
+support-image-conversion
+
+  Installs try-everything-loader as the default loader.
+
+* Improvements to fonts: Fonts are now more properly treated as Scheme
+objects and should be garbage collected more effectively. They are
+also cached like images, so multiple calls to make-font with the same
+font name will return the same font object.
+
+make-font FONTNAME
+  Renamed from load-font.
+
+font-properties? FONT
+  Returns an association list of properties of the font.
+  
+clear-font-cache-entry FONTNAME
+  Analogous to clear-image-cache-entry
+
+* Improvements to menus: Menus have been much improved. They now
+include support for side pixmaps a la fvwm95, specification of the
+fonts and colors to use per individual menu, and a nicer interface for
+specfying menus. The new interface is in the (app scwm base) module
+and should be used as follows:
+
+menu MENUITEMS #&key IMAGE-SIDE COLOR-BG-IMAGE-SIDE IMAGE-BG COLOR-TEXT 
+  COLOR-BG FONT
+
+  Creates a menu object. The list of menuitems is mandatory, all the
+  other keyword arguments are optional settings.
+
+menuitem LABEL #&key IMAGE-ABOVE IMAGE-LEFT EXTRA-LABEL ACTION
+  HOVER-ACTION UNHOVER-ACTION
+
+  Creates a menuitem suitable for inclusion in a menu. The label is
+  the only required part; keywords may specify images to put above or
+  on the left, additional text to right-justify, an action, and hover
+  and unhover actions. The hover and unhover actions are invoked when
+  the cursor lingers over a menu item without clicking, and the
+  unhover action when the mouse cursor leaves a hovered menu
+  item. This is used to implement submenus. However, it need not be
+  used directly. The action may be a procedure of no arguments, a
+  string, or a menu. If it is a procedure, the procedure will be
+  called when the program is selected, if a string, it will be run as
+  a program. If it is a menu, it will be invoked as a submenu, and the
+  hover and unhover actions will automatically be set up properly.
+
+menu-sparator
+  This variable should be passed in lieu of a menuitem when a
+  separator is desired.
+
+menu-title 
+  This variable should be passed below the title entry of a menuitem
+  when a title separator is desired.
+
+* Improved icon handling: Several bugs in icon geometry handling have
+been fixed. Control over the displayed icon has also been enhanced
+with several new procedures and style options.
+
+set-icon! IMAGE #&optional WINDOW
+  Sets the window's icon image to icon. ICON may be an image object,
+  a string specifying an image file, or #f, indicating no image.
+
+set-force-icon! BOOLEAN #&optional WINDOW
+  Specifies wether or not to override the application-supplied
+  image. The default is to ignore the setting established by set-icon!
+  for applications that provide an icon bitmap or icon window, and use
+  the app-provided icon instead. This is the case even if the
+  set-icon! setting is #f. However, setting the force-icon setting to
+  #t will make the user-requested icon take precedence.
+
+set-icon-title! BOOLEAN #&optional WINDOW
+  Specifies wether or not the icon title is shown.
+	
+set-show-icon! BOOLEAN #&optional WINDOW
+  Just determines wether or not the whole icon is shown at all, without
+  affecting any other settings (so setting it to #f and then back to
+  #t will hide and then restore all the original icons).
+
+The corresponding style options for use with window-style are
+#:icon, #:force-icon, #:icon-title and #:show-icon.
+
+* Improved example scwmrcs: Two new example scwmrc files are
+available: juhp.scwmrc and sds.scwmrc. These demonstrate usage of some
+of the new advanced features.
+
+* Support for /etc/X11/wmconfig from Red Hat Linux 5.0: The new (app
+scwm wmconfig) module allows you to create a menu that matches the
+spec in the /etc/X11/wmconfig directory under Red Hat Linux 5.0.
+
+* Several other useful menus: The (app scwm std-menus) module provides
+convenience procedures to create menus that allow launching xlock in a
+variety of modes, and telnetting to a set of specified hosts.
+
+* Broadcast hooks: intentionally undocumented for now.
+
+* Input hooksL intentionally undocumented for now.
+
+* The icon distribution is now separate again, and has it's own
+installation process. It is reccomended that it be installed with the
+same --prefix passed to configure.
+
+* Many bug fixes and general clean-up.
+
+
 Changes to scwm-0.5
 
 Many bug fixes to the build process and the program itself.
