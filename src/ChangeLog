@@ -1,3 +1,9 @@
+1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-17.ix.netcom.com>
+
+	* guile-compat.h: Don't prototype scm_parse path if
+	HAVE_SCM_INTERNAL_PARSE_PATH is defined, in which case it will
+	have a different prototype.
+
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
 	* colors.c (nocolor): Throw an error when we fail to allocate a

@@ -37,7 +37,9 @@
 #define scm_internal_select select
 #endif
 
+#ifndef HAVE_SCM_INTERNAL_PARSE_PATH
 SCM scm_parse_path (char *path, SCM tail);
+#endif
 
 #ifndef HAVE_GH_VECTOR_SET_X
 #define gh_vector_set_x gh_vset
