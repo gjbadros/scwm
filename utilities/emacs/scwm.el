@@ -30,6 +30,7 @@
 ;; (load "scwm")
 ;; (define-key scheme-mode-map "\C-j" 'scwm-eval-print)
 ;; (define-key scheme-mode-map "\C-x\C-j" 'scwm-eval-to-minibuffer)
+;; (define-key scheme-mode-map "\C-hd" 'scwm-procedure-documentation)
 ;; (define-key scheme-mode-map [tab] 'scwm-complete-symbol)
 
 ;; Now you do M-x scwm-run to get the *scwm* buffer, where you can type
@@ -94,7 +95,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   "Complete the current symbol by querying scwm using apropos-internal."
   (interactive)
   (let* ((start (point))
-	 (end (save-excursion (forward-word -1) (point)))
+	 (end (save-excursion (forward-sexp -1) (point)))
 	 (arg (buffer-substring-no-properties start end))
 	 (bfr (get-buffer-create "*scwm-completions*"))
 	 (choices (save-excursion
@@ -112,3 +113,58 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun advertised-xscheme-send-previous-expression ()
   (interactive)
   (scwm-eval-to-minibuffer))
+
+(defun scwm-procedure-documentation-1 (function out)
+  (call-process scwm-exec nil out nil (concat "(procedure-documentation " (symbol-name function) ")")))
+  
+;; from help.el
+(defun scwm-function-at-point ()
+  "Return the scwm-function whose name is around point.
+If that gives no function, return the function which is called by the
+list containing point.  If that doesn't give a function, return nil."
+  (or (condition-case ()
+	  (let ((stab (syntax-table)))
+	    (unwind-protect
+		(save-excursion
+		  (set-syntax-table emacs-lisp-mode-syntax-table)
+		  (or (not (zerop (skip-syntax-backward "_w")))
+		      (eq (char-syntax (char-after (point))) ?w)
+		      (eq (char-syntax (char-after (point))) ?_)
+		      (forward-sexp -1))
+		  (skip-chars-forward "`'")
+;;;		  (let ((obj (read (current-buffer))))
+;;;		    (and (symbolp obj) (fboundp obj) obj)))
+		  (read (current-buffer)))
+	      (set-syntax-table stab)))
+	(error nil))
+      (condition-case ()
+	  (save-excursion
+	    (save-restriction
+	      (narrow-to-region (max (point-min) (- (point) 1000))
+				(point-max))
+	      (backward-up-list 1)
+	      (forward-char 1)
+	      (let (obj)
+		(setq obj (read (current-buffer)))
+		(and (symbolp obj) (fboundp obj) obj))))
+	(error nil))))
+
+;;; bind this to C-h d
+(defun scwm-procedure-documentation (function-name)
+  "Query scwm for documentation for function named function-name"
+  (interactive
+    (let* ((fn (scwm-function-at-point))
+           (val (let ((enable-recursive-minibuffers t))
+                  (completing-read
+                    (if fn
+                        (format (gettext "Describe function (default %s): ")
+				fn)
+                        (gettext "Describe function: "))
+                    obarray 'fboundp t nil 'function-history))))
+      (list (if (equal val "") fn (intern val)))))
+  (with-displaying-help-buffer
+   (lambda ()
+     (scwm-procedure-documentation-1 function-name standard-output)
+     ;; Return the text we displayed.
+     (buffer-string nil nil standard-output))))
+
