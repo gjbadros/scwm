@@ -1,3 +1,15 @@
+Tue Sep 29 11:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h: Fix name of prototype for SetGCBg (was SetGCFb)
+
+	* scwm.c: #include "drawmenu.h" for drawmenu_init_gcs fn
+
+	* resize.c, move.c: Use actual size/position of window for the
+	  message display (in case the solver doesn't permit the suggested 
+	  resize/move).  
+
+	* color.c: Remove some unused variables to eliminate warnings.
+
 1998-09-27  Todd Larason  <jtl@teeny.molehill.org>
 
 	* draw-pie-menu.c: Lots of changes to bring it up to date with the 
