@@ -46,8 +46,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:n';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N $opt_n);
+my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:nP:';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N $opt_n $opt_P);
 
 my $scwm_version = "post-0.8";
 
@@ -65,11 +65,13 @@ sub script_usage ( ) {
 -C       Only output concepts chapters
 -n       No warning for functions without comments
 -d path  Set scwmdir source code base to path (e.g., /usr/local/src/scwm)
+-P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
 ";
   exit 0;
 }
 
 
+my $prefix = "SCWM";
 my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
 my $fQuiet = FALSE;
@@ -87,6 +89,7 @@ $fDebug = TRUE if $opt_D;
 $fQuiet = TRUE if $opt_q || $opt_Q;
 $fReallyQuiet = TRUE if $opt_Q;
 $fWarnIfNoComment = FALSE if $opt_n;
+$prefix = $opt_P if $opt_P;
 
 my $scwmdir = $opt_d || $ENV{SCWMDIR};
 
@@ -133,7 +136,7 @@ while (<>) {
     next;
   }
   my $fScheme = ($ARGV =~ /.scm$/);
-  if (m/^SCWM_PROC/) {
+  if (m/^${prefix}_PROC/o) {
     my $header = $_;
     my $filename = $ARGV;
     my $line = $.;
@@ -163,7 +166,7 @@ while (<>) {
     if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
       print STDERR "$ARGV:$.:**** Argument name/number mismatch in VALIDATE_COLOR_... line\n";
     }
-  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"\s*\)/) {
+  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"\s*\)/o) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
     my $filename = $ARGV;
@@ -183,12 +186,15 @@ while (<>) {
           " $filename:$line body:\n$body\n";
     }
     ProcessHookComment($filename, $line, $scheme_hookname, $body);
-  } elsif (m/SCWM_VAR(?:_READ_ONLY|_INIT)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/) {
+  } elsif (m/${prefix}_VAR(?:_READ_ONLY|_INIT(?:_PERMANENT)?)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/o) {
+    #FIXGJB: not ideal, since macro needs to end on same line
+    # or else the comment will not get found --02/11/99 gjb
     my $c_varname = $1;
     my $scheme_varname = $2;
     my $filename = $ARGV;
     my $line = $.;
     my $body = <>;
+#    print STDERR "Found var $c_varname\n";
     if ($c_varname ne "NULL" && 
 	!CNameMatchesSchemeName($c_varname,$scheme_varname)) {
       print STDERR "$ARGV:$.:**** Scheme variable name `$scheme_varname' does not match `$c_varname'\n";
@@ -652,7 +658,7 @@ sub ProcessSchemeHeader( $$$$$ ) {
 sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
-    $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
+    $header =~ m%^${prefix}_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%o;
 
   if ($fDebug) {
     print STDERR "Handing $primname from $filename:$line\n";
