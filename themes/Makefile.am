@@ -8,6 +8,12 @@ scwm_theme_DATA = fvwm2.@TAR_SUFFIX@ mwm.@TAR_SUFFIX@ win95.@TAR_SUFFIX@ \
 EXTRA_DIST=$(srcdir)/fvwm2/* $(srcdir)/mwm/* $(srcdir)/win95/* \
            $(srcdir)/woven/* $(srcdir)/gjb/* $(srcdir)/twm/* $(srcdir)/afterstep/*
 
+## Themes must be removed by make distclean
+## WARNING: this assume that the only files ending with
+## .@TAR_SUFFIX@ are the themes files
+DISTCLEANFILES=*.@TAR_SFUFFIX@
+
+
 fvwm2.@TAR_SUFFIX@: $(srcdir)/fvwm2 $(srcdir)/fvwm2/*
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
