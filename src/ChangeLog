@@ -1,5 +1,8 @@
 Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* callbacks.c: Fixed bug in run_timed_out_timers() - was failing
+ 	to break out of the loop that runs the timers.
+
 	* callbacks.c, callbacks,h, events.c: Added support for timer
  	hooks. This involved adding several procedures for managing the
  	timer hook list: shortest_timer_timeout, update_timer_hooks and
