@@ -23,6 +23,17 @@ Tue Sep  7 17:51:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added a missing return statement.
 
+Tue Sep  7 15:11:19 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_make_gsubr): Only add documentation if we're using
+	a recent guile-- I get a bug in guile-1.3 about `quote' being
+	undefined when I load c-animation module.
+
+	* events.c: Do not use cMotionHandlers -- just see if list becomes 
+	empty to turn off MotionNotify event selection.
+
+	* callbacks.c: Added scm_empty_hook_p that should be provided by guile.
+
 Mon Sep  6 19:48:21 1999    <gjb@cs.washington.edu>
 
 	* window.c (s_list_stacking_order): Document that this skips
