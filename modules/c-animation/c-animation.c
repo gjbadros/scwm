@@ -45,8 +45,7 @@ extern SCM sym_shaded;
 
 extern XEvent Event;
 
-/* MS:FIXME:: Add variable and concept documentation. */
-SCM_VCELL_INIT(animation_delay, "animation-delay", SCM_BOOL_F);
+static SCM *pscm_animation_delay;
 
 float rgpctMovementDefault[32] = {
     -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
@@ -382,11 +381,10 @@ way if not specified. */
   VALIDATE_ARG_BOOL_COPY_USE_F(4, move_pointer_too_p, fMovePointer);
 
   { /* scope */
-    SCM animation_ms_delay = SCM_CDR(animation_delay);
     int cmsDelay = -1;
     
-    if (gh_number_p(animation_ms_delay)) {
-      cmsDelay = gh_scm2int(animation_ms_delay);
+    if (gh_number_p(*pscm_animation_delay)) {
+      cmsDelay = gh_scm2int(*pscm_animation_delay);
     }
 
     /* use viewport coordinates */
@@ -439,12 +437,10 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
   }
 
   { /* scope */
-    SCM animation_ms_delay = SCM_CDR(animation_delay);
     int cmsDelay = -1;
     Window x_win;
-    if (animation_ms_delay != SCM_BOOL_F &&
-	gh_number_p(animation_ms_delay)) {
-      cmsDelay = gh_scm2int(animation_ms_delay);
+    if (gh_number_p(*pscm_animation_delay)) {
+      cmsDelay = gh_scm2int(*pscm_animation_delay);
     }
 
     if (SCM_BOOL_F==
@@ -513,6 +509,11 @@ init_c_animation()
 
 void scm_init_app_scwm_c_animation_module()
 {
+  SCWM_VAR_INIT(animation_delay, "animation-delay", SCM_BOOL_F);
+  /** Number of milliseconds to delay between frames of animation.
+Defaults to 10 milliseconds if this is not a number.  See also
+`animated-resize-window', `animated-move-window', etc. */
+
   scm_register_module_xxx("app scwm c-animation", init_c_animation);
 }
 
