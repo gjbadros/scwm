@@ -61,3 +61,9 @@
 
 /* Define if you have the qt library (-lqt).  */
 #undef HAVE_LIBQT
+
+/* Define if you have the readline library (-lreadline).  */
+#undef HAVE_LIBREADLINE
+
+/* Define if you have the termcap library (-ltermcap).  */
+#undef HAVE_LIBTERMCAP
