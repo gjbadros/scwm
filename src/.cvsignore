@@ -1,3 +1,4 @@
+*.doc
 *.x
 .deps
 .libs
@@ -9,6 +10,7 @@ init_scheme_string.c
 out.log
 scm_init_funcs.h
 scwm
+scwm-doc-snarf
 scwm-stable
 scwm-stable-no-cassowary
 scwm-stable-with-cassowary
@@ -17,4 +19,3 @@ scwm.stripped
 scwm_cl
 scwm_cl_works
 scwmpaths.h
-*.doc

@@ -1,3 +1,15 @@
+Wed Jan 12 00:28:56 2000    <gjb@cs.washington.edu>
+
+	* winops-menu.scm: Added `make-menu-focus-options'
+
+	* winlist-menu.scm: Added `show-netscape-window-list-menu'
+
+	* placement.scm: Added `make-keep-winclass-centered'
+
+	* flux-gtk.scm: ws change.
+
+	* base.scm: Added `viewport-center-x', `viewport-center-y'
+
 Tue Jan 11 18:15:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Make some fns interactive that weren't.

@@ -76,6 +76,10 @@ for supporting whole-edge highlighting for better constraint interface
 ** `done-startup?' to let us tell whether we're still initializing or not
 
 * New procedures
+** `show-netscape-window-list-menu'
+** `make-menu-focus-options'
+** `make-keep-winclass-centered'
+** `viewport-center-x', `viewport-center-y'
 ** `auto-accept-dialog-placement' to permit automating pressing "Return" whenever a dialog returns
 ** `X-handle-selection-string', `netscape-goto-selection-url', `netscape-google-search-selection-url'
 ** `describe-event', to complement `describe-{mouse,key}' using new `get-next-event' primitive

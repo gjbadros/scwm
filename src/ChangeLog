@@ -1,3 +1,15 @@
+Wed Jan 12 00:35:25 2000    <gjb@cs.washington.edu>
+
+	* scwm.c: Reliably turn on/off backtraces based on the command
+	line flag.  (Finally committing the Sep 25, 1999 change from my
+	laptop; doh!)
+
+	* module-interface.c: Only run the broadcast hooks if
+	Scr.fWindowsCaptured -- avoid deadlock (old change from laptop).
+
+	* events.c: Only call the maprequest hook if Scr.fWindowsCaptured
+	-- avoid deadlock (old change from laptop).
+	
 Tue Jan 11 23:53:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Fix bin_SCRIPTS's scwm_doc_snarf -- it's

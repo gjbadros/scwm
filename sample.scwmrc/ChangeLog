@@ -1,3 +1,7 @@
+Wed Jan 12 00:39:18 2000    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Bind C-A-S-n to `show-netscape-window-list-menu'
+
 Tue Jan 11 18:11:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added H-., H-S-. bindings for
