@@ -69,7 +69,7 @@ char *scwm_complete(char *text, int state)
 	XFree(output);
       }
       query=(unsigned char *)malloc(strlen(text)+14);
-      strcat(strcat(strcpy(query,"(apropos \"^"),text),"\")");
+      strcat(strcat(strcpy(query,"(apropos-internal \"^"),text),"\")");
       result=scwmexec_exec_full(display,w,query,&output,&error);
       if (error) {
 	XFree(error);
@@ -319,6 +319,9 @@ main(int argc, char **argv)
   init_readline();
 #endif
 
+  /* make sure apropos is present */
+  scwmexec_exec(display,w,"(use-modules (ice-9 session))");
+  
   if (w==None)
     die ("Unable to establish scwmexec connection.\n");
 
