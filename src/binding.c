@@ -50,16 +50,16 @@ struct symnum binding_contexts[] =
 
 static int MetaMask, AltMask, HyperMask, SuperMask;
 
-static char *
+static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {
-  int error, modmask = 0;
+  int modmask = 0;
+  Bool fError = False;
 
   while (True) {
     if (pch[1] != '-') {
       break;
     }
-    error = 0;
     switch (pch[0]) {
     case 'S': /* Shift */
       modmask |= ShiftMask;
@@ -68,23 +68,31 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       modmask |= ControlMask;
       break;
     case 'M': /* Meta */
-      if (!MetaMask)
-	error++;
+      if (!MetaMask) {
+	fError = True;
+        scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignoring binding",pch[0]);
+      }
       modmask |= MetaMask;
       break;
     case 'A': /* Alt */
-      if (!AltMask)
-	error++;
+      if (!AltMask) {
+	fError = True;
+        scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignoring binding",pch[0]);
+      }
       modmask |= AltMask;
       break;
     case 'H': /* Hyper */
-      if (!HyperMask)
-	error++;
+      if (!HyperMask) {
+	fError = True;
+        scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignoring binding",pch[0]);
+      }
       modmask |= HyperMask;
       break;
     case 's': /* super modifier [0x40] (emacs uses "s", so we do too) */
-      if (!SuperMask)
-	error++;
+      if (!SuperMask) {
+	fError = True;
+        scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignoring binding",pch[0]);
+      }
       modmask |= SuperMask;
       break;
     case 'P':
@@ -96,13 +104,15 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
       return NULL;
     }
-    if (error)
-      scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignored",pch[0]);
     pch += 2;
   }
 
-  *pmodifier = modmask;
-  return STATIC_CAST(char *,pch);
+  if (fError) {
+    *pmodifier = -1;
+  } else {
+    *pmodifier = modmask;
+  }
+  return pch;
 }
 
 
@@ -112,9 +122,9 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   Bool fOk;
   int len;
   char *keyname = gh_scm2newstr(key,&len);
-  char *pch = PchModifiersToModmask(keyname,pmodifier);
+  const char *pch = PchModifiersToModmask(keyname,pmodifier);
   
-  fOk = !(pch == 0 ||
+  fOk = !(pch == 0 || *pmodifier < 0 ||
 	  (*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	  (XKeysymToKeycode(dpy, *pkeysym)) == 0);
   free(keyname);
@@ -125,7 +135,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
    be acceptable */
 static
 int
-BnumFromSz(char *sz)
+BnumFromSz(const char *sz)
 {
   if (sz == 0)
     return -1;
@@ -382,6 +392,12 @@ unbind_mouse(SCM contexts, SCM button)
     bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
     if (bnum < 0) {
       scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
+      SCM_ALLOW_INTS;
+      free(szButton);
+      return SCM_UNSPECIFIED;
+    }
+    if (modmask < 0) {
+      scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier, ignoring binding for %s",szButton);
       SCM_ALLOW_INTS;
       free(szButton);
       return SCM_UNSPECIFIED;
