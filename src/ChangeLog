@@ -1,7 +1,11 @@
 1998-07-07  Greg Badros  <gjb@cs.washington.edu>
 
+	* *.c, *.h: Rename to SCWM_DEFINE_HOOK, instead of DEFINE_HOOK
+
 	* binding.c: Added comments for primitives, in an extractable
 	format.  See utilities/dev/extract-docs for prototype extractor.
+	Also added example /**CONCEPT:  ... */ documentation comment to be 
+	woven into a section on concepts
 
 Mon Jul  6 19:53:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
