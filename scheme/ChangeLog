@@ -1,3 +1,27 @@
+Mon Jul  5 17:07:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Fix typo, make `interactive-set-window-gravity!' more
+ 	robust.
+
+	* base.scm: Added `with-message-window-shown' macro.  Switch order 
+	of args to seelct-window, select-viewport-position -- the cursor
+	is first, now.
+
+Mon Jul  5 15:50:34 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `nonant->gravity',
+	`interactive-set-window-gravity' using a nifty pixmap cursor of an 
+	anchor.  Use window-locations module for get-window-nonant.
+
+	* window-locations.scm: Rename `get-window-quadrant' to more
+	accurate `get-window-nonant', and fix its documentation a bit.
+
+Mon Jul  5 15:47:38 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* snap.scm: Patch from Danius Michaelides-- bug fix, avoid
+	infinite loop.  Also no longer mess with the new-position-hooks;
+	snapping only occurs at the end of the move.
+
 Sun Jul  4 23:55:03 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `keycode->keysym', in terms of
