@@ -1,3 +1,36 @@
+Mon Jan 18 13:05:21 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, message-window.c, menu.c, constraint-primitives.cc,
+ 	callbacks.c: Fixed some doc warnings; correct some mistaken uses
+ 	of iarg++ (used in conditionals so they did not always execute)
+
+	* binding.h: Drop field "Action" from struct Binding, add
+	ReleaseThunk for the key release event
+
+	* binding.c: (add_binding) Correct bnum_or_keysym to
+	bnum_or_keycode, use release_proc too; (GrabButtons) Drop test of
+	BINDING->Action since that field is now gone; (keysym_to_keycode)
+	added; (bind_keycode) added -- lower level interface to key
+	bindings that permits specifying release procedures;
+	(mod_mask_shift, mod_mask_control) added -- these were missing and 
+	are needed for completeness
+	
+	* icons.c: Drop test of BINDING->Action since that field is now
+ 	gone
+
+	* events.h, events.c: Added HandleKeyRelease(), generalize
+	HandleKeyPress to HandleKeyEvent, drop checks of BINDING->Action
+	(I eliminated that field)
+
+Fri Jan 15 14:14:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* decor.c, screen.c, face.c (print_XXX): Use scwm_ptr2scm instead
+	of gh_int2scm or gh_long2scm -- abstracts out the size of a
+	pointer to fix problems with 64-bit machines.
+
+	* scwm.h (scwm_ptr2scm): Added this macro to abstract out the size 
+	of a pointer -- for now just use long.
+
 Fri Jan 15 10:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (MenuInteraction): Guard derefs of pmiim in case no item
