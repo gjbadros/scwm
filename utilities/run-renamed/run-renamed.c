@@ -24,7 +24,15 @@ int main(int argc, char **argv)
     exit(1);
   }
   if (!strcmp(r1bindex(argv[0], '/'), "run-renamed")) { 
+#ifdef NO_SETENV
+    /* GJB:FIXME:: untested -- JWN reports it's needed for AIX */
+    char *sz = malloc(strlen("RESOURCE_NAME=")+strlen(argv[1])+1);
+    sprintf(sz,"RESOURCE_NAME=%s",argv[1]);
+    putenv(sz);
+    free(sz);
+#else
     setenv("RESOURCE_NAME",argv[1],1);
+#endif
   } else {
     char *sz = (char *) malloc(strlen(argv[1]) + strlen(argv[0]) + 12);
     sprintf(sz,"rename_to=%s %s",argv[1],argv[0]);
