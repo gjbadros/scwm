@@ -842,7 +842,6 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
     x = FRAME_X(psw);
     y = FRAME_Y(psw);
   }
-  RaiseWindow(psw);
   KeepOnTop();
 
   /* If the window is still not visible, make it visible! */
@@ -913,7 +912,6 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
   if (warp_x >= 0 && warp_y >= 0) {
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x, y);
   }
-  RaiseWindow(psw);
   KeepOnTop();
 
   /* If the window is still not visible, make it visible! */

@@ -17,9 +17,8 @@
  */
 
 /***********************************************************************
- * scwm - "Scheme Configurable Window Manager"
- * based on fvwm2 with Guile Scheme used as the configuration 
- * language.
+ * Scwm - "Scheme Configurable Window Manager"
+ * A highly dynamic and extensible X11 window manager embedding guile scheme.
  ***********************************************************************/
 
 #ifdef HAVE_CONFIG_H

@@ -537,8 +537,7 @@ AutoPlace(ScwmWindow *psw)
 
 
   /* New! Put icon in same page as the center of the window */
-  /* Not a good idea for fStickyIcon */
-  if (psw->fStickyIcon || psw->fSticky) {
+  if (psw->fSticky) {
     base_x = 0;
     base_y = 0;
     /*Also, if its a stickyWindow, put it on the current page! */
