@@ -19,7 +19,7 @@
 //
 //--------------------------------------------------------------------
 
-<command> = <move_window> | <focus_switch> | <misc> | <joke>.
+<<command>> = <move_window> | <focus_switch> | <select_switch> | <window_command> | <misc> | <start_app> | <joke>.
 
 <move_window> = move window <rel_or_absolute> .
 
@@ -38,6 +38,8 @@
 
 <focus_switch> = "focus" <next_prev> .
 
+<select_switch> = "select" <next_prev> .
+
 <next_prev> = <next> | <prev> .
 
 <next> = "next" . // | "forward" .
@@ -45,6 +47,14 @@
 <prev> = "previous" . // | "prior" | "back" .
 
 
-<misc> = "window"  "list" .
+<window_command> = "window" <window_action> .
+
+<window_action> = "list" | "close" | "minimize" | "maximize" | "shade" | "select" .
 
 <joke> = "jump" "down" "turn" "around" "pick" "a" "bale" "of" "cotton" .
+
+<start_app> = "start" <application>  .
+
+<application> = "emacs" | "term" | "logo" .
+
+<misc> = "tile" | "cascade" | "remember" | "undo" .
