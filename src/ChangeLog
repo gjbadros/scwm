@@ -1,5 +1,7 @@
 Wed Mar 25 18:29:12 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* system.c: Remove unused findFile function.
+
 	* color.c: Use gh_number_p, not scm_number_p.
 
 Wed Mar 25 15:01:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
