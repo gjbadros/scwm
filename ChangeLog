@@ -1,3 +1,12 @@
+Fri Jan  7 10:38:02 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to 0.99.6-pre1
+
+Fri Jan  7 10:25:23 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* README-testing-applications: Added, to document some useful
+	programs to test Scwm with.
+
 Fri Dec  3 13:22:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.common: Added rules for creating *.doc files from *.c,

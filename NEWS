@@ -4,8 +4,15 @@ See the end for copying conditions.
 
 Changes for scwm-0.99.6 (not yet released)
 * Bug fixes
+** Button-click position is used as anchor for interactive window moves
+Fixes a race condition in determining where the user clicked on the window
+that could have resulted in the window not being under the pointer
+** Fixed race condition that caused instability for short-lived windows
+Paricularly noticeable with the GIMP
 ** menus popped-up from decorations stay on screen
 ** visibility change hooks are called properly, and during moves/resizes
+** Window minimum/maximum sizes now correct for decorations accurately
+** Many more!!!
 
 * New modules
 ** cursor.scm -- fancy resize cursor support
@@ -20,17 +27,24 @@ Changes for scwm-0.99.6 (not yet released)
 *** Now moves to new positions/sizes are animated instead of jumped-to
 ** non-interactive procedures display a warning when invoked interactively
 
-* Improved GUI for constraints
+* Much Improved GUI for constraints
 ** toolbar now has a record button, that turns into a stop button
 ** toolbar now supports animating different pictures of constraints to
    give a better idea of the utility of a constraint class's button
-** constraint-investigator has a new "Delete all" button
-** newly-recorded compositions get added to the toolbar w/ their name in the button.
+** constraint-investigator is improved!
+*** has a new "Delete all" button
+*** highlights the constraint when hovering over the label, not just when hovering over the checkbox
+*** nicer-looking alignment into columns
+** newly-recorded compositions get added to the toolbar w/ the record-composition.xpm pixmap in the button
+** alignment constraints now do nonant-highlighting of whole edges of windows
+   instead of always highlighting just a single corner or side window
 
 * Changed procedures
 ** Rename menu-global-theme, menu-window-theme to
 `make-menu-global-theme' and `make-menu-window-theme' since they are
 procs that return menus, not bound directly to menus.
+** `set-window-highlighted-nonant!' `window-highlighted-nonant' now take symbols
+for supporting whole-edge highlighting for better constraint interface
 
 * New primitives
 ** `call-interactively' (also invoked internally when dispatch key/mouse bindings)
@@ -40,6 +54,10 @@ procs that return menus, not bound directly to menus.
 
 * New procedures
 ** Added `set-highlight-colors!' convenience procedure.
+
+* Added -g option to force regular gc-ing at all invoking of Scheme hooks
+slows stuff down enough for easier debugging, and also finds problems in
+gcing sooner, rather than later.
 
 Changes for scwm-0.99.5.1 (released 26-October-1999)
 * Bug fixes
