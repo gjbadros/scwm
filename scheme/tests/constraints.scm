@@ -10,65 +10,63 @@
   (cl-add-stay solver v)
 
   (define (keep-tops-even w1 w2)
-    (let ((w1-y (window-clv-y w1))
-	  (w2-y (window-clv-y w2)))
+    (let ((w1-y (window-clv-yt w1))
+	  (w2-y (window-clv-yt w2)))
       (let ((cn (make-cl-constraint w1-y = w2-y)))
 	(cl-add-constraint solver cn)
 	cn)))
 
   (define (keep-lefts-even w1 w2)
-    (let ((w1-x (window-clv-x w1))
-	  (w2-x (window-clv-x w2)))
-      (let ((cn (make-cl-constraint w1-x = w2-x)))
-	(cl-add-constraint solver cn)
-	cn)))
-
-  (define (keep-lefts-even w1 w2)
-    (let ((w1-x (window-clv-x w1))
-	  (w2-x (window-clv-x w2)))
+    (let ((w1-x (window-clv-xl w1))
+	  (w2-x (window-clv-xl w2)))
       (let ((cn (make-cl-constraint w1-x = w2-x)))
 	(cl-add-constraint solver cn)
 	cn)))
 
   (define (keep-bottoms-even w1 w2)
-    (let ((w1-y (window-clv-y w1))
-	  (w2-y (window-clv-y w2))
-	  (w1-height (window-clv-height w1))
-	  (w2-height (window-clv-height w2)))
-      (let ((cn (make-cl-constraint
-		 (cl-plus w1-y w1-height) =
-		 (cl-plus w2-y w2-height))))
+    (let ((w1-y (window-clv-yb w1))
+	  (w2-y (window-clv-yb w2)))
+      (let ((cn (make-cl-constraint w1-y = w2-y)))
 	(cl-add-constraint solver cn)
 	cn)))
 
   (define (keep-rights-even w1 w2)
-    (let ((w1-x (window-clv-x w1))
-	  (w2-x (window-clv-x w2))
-	  (w1-width (window-clv-width w1))
-	  (w2-width (window-clv-width w2)))
-      (let ((cn (make-cl-constraint
-		 (cl-plus w1-x w1-width) =
-		 (cl-plus w2-x w2-width))))
-	(cl-add-constraint solver cn)
-	cn)))
-  
-  (define (keep-to-left-of w1 w2)
-    (let ((w1-x (window-clv-x w1))
-	  (w1-width (window-clv-width w1))
-	  (w2-x (window-clv-x w2)))
-      (let ((cn (make-cl-constraint (cl-plus w1-width w1-x) <= w2-x)))
+    (let ((w1-x (window-clv-xr w1))
+	  (w2-x (window-clv-xr w2)))
+      (let ((cn (make-cl-constraint w1-x = w2-x)))
 	(cl-add-constraint solver cn)
 	cn)))
 
+  (define (keep-to-left-of w1 w2)
+    (let ((w1-xr (window-clv-xr w1))
+	  (w2-xl (window-clv-xl w2)))
+      (let ((cn (make-cl-constraint w1-xr <= w2-xl)))
+	(cl-add-constraint solver cn)
+	cn)))
+
+  (define (keep-above w1 w2)
+    (let ((w1-yb (window-clv-yb w1))
+	  (w2-yt (window-clv-yt w2)))
+      (let ((cn (make-cl-constraint w1-yb <= w2-yt)))
+	(cl-add-constraint solver cn)
+	cn)))
+
+
   (define (keep-top-at-v w1)
-    (let ((w1-y (window-clv-y w1)))
+    (let ((w1-y (window-clv-yt w1)))
       (let ((cn (make-cl-constraint w1-y = v)))
 	(cl-add-constraint solver cn)
 	cn)))
   
   (define (keep-left-at-v w1)
-    (let ((w1-x (window-clv-x w1)))
-      (let ((cn (make-cl-constraint w1- x = v)))
+    (let ((w1-x (window-clv-xl w1)))
+      (let ((cn (make-cl-constraint w1-x = v)))
+	(cl-add-constraint solver cn)
+	cn)))
+
+  (define (keep-right-at-v w1)
+    (let ((w1-x (window-clv-xr w1)))
+      (let ((cn (make-cl-constraint w1-x = v)))
 	(cl-add-constraint solver cn)
 	cn)))
   
@@ -87,28 +85,28 @@
 	cn)))
 
   (define (keep-adjacent-horizontal w1 w2)
-    (let ((w1-right-x (cl-plus (window-clv-x w1) (window-clv-width w1)))
-	  (w2-x (window-clv-x w2)))
-      (let ((cn (make-cl-constraint w1-right-x = w2-x)))
+    (let ((w1-xr (window-clv-xr w1))
+	  (w2-xl (window-clv-xl w2)))
+      (let ((cn (make-cl-constraint w1-xr = w2-xl)))
 	(cl-add-constraint solver cn)
 	cn)))
 
   (define (keep-adjacent-vertical w1 w2)
-    (let ((w1-bottom-y (cl-plus (window-clv-y w1) (window-clv-height w1)))
-	  (w2-y (window-clv-y w2)))
-      (let ((cn (make-cl-constraint w1-bottom-y = w2-y)))
+    (let ((w1-yb (window-clv-yb w1))
+	  (w2-yt (window-clv-yt w2)))
+      (let ((cn (make-cl-constraint w1-yb = w2-yt)))
 	(cl-add-constraint solver cn)
 	cn)))
   
   (define (keep-at-left-edge w)
-    (let ((w-x (window-clv-x w)))
-      (let ((cn (make-cl-constraint w-x = 0 cls-medium)))
+    (let ((w-xl (window-clv-xl w)))
+      (let ((cn (make-cl-constraint w-xl = 0 cls-weak .1)))
 	(cl-add-constraint solver cn)
 	cn)))
-  
+
   (define (keep-at-right-edge w)
-    (let ((w-right (cl-plus (window-clv-x w) (window-clv-width w))))
-      (let ((cn (make-cl-constraint w-right = 1152 cls-medium .5)))
+    (let ((w-xr (window-clv-xr w)))
+      (let ((cn (make-cl-constraint w-xr = 1152 cls-weak .1)))
 	(cl-add-constraint solver cn)
 	cn)))
   
@@ -144,19 +142,30 @@
 
 (keep-constant-width wA 200)
 (keep-at-left-edge wA)
-(keep-at-right-edge wA)
+(keep-at-right-edge wB)
 
 (keep-constant-width wB 200)
 (keep-at-left-edge wB)
+(define cn-a-l-e (keep-at-left-edge wA))
 (keep-at-right-edge wB)
 
 
 (window-position w)
 
 (define cnl (keep-to-left-of wA wB))
+(define cnlt (keep-above wA wB))
+
+
+(define swi select-window-interactively)
+(define cnl (keep-to-left-of (swi) (swi)))
+
+(cl-is-constraint-satisfied? solver cnl)
+(cl-is-constraint-satisfied? solver cn-a-l-e)
+
 (set-object-property! cnl 'description "Keep wA to left of wB")
 (object-property (car (cl-constraint-list solver)) 'description)
 
+(for-each (lambda (cn) (cl-remove-constraint solver cn)) (cl-constraint-list solver))
 
 (cl-remove-constraint solver cnl)
 
@@ -200,7 +209,10 @@
 
 (window-clv-width (current-window-with-focus))
 
-(window-clv-x (current-window-with-focus))
+(window-clv-xl (current-window-with-focus))
+(window-clv-xr (current-window-with-focus))
+(window-clv-yt (current-window-with-focus))
+(window-clv-yb (current-window-with-focus))
 
 (add-stays-on-window (get-window))
 (keep-to-left-of (get-window) (get-window))
@@ -259,7 +271,10 @@ cls-required
 (screen-clv-vx)
 (screen-clv-vy)
 
+;; kill all xlogo windows
+(for-each (lambda (w) (close-window w)) 
+	  (list-windows #:only (lambda (w) (string=? (window-title w) "xlogo"))))
+
 
 ;;; Local Variables:
-;;; eval: (progn (load "scwm") (scwm-mode))
 ;;; End:
