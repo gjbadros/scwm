@@ -103,6 +103,9 @@ GetGravityOffsets(ScwmWindow *psw)
 void
 SetPswGravity(ScwmWindow *psw, int g)
 {
+  XSetWindowAttributes attrib;
+  attrib.win_gravity = g;
+  XChangeWindowAttributes(dpy,psw->frame,CWWinGravity,&attrib);
   psw->hints.flags |= PWinGravity;
   assert(g >= ForgetGravity && g <= StaticGravity);
   psw->hints.win_gravity = g;

@@ -390,11 +390,13 @@ RedrawOutlineAtNewPosition(int x, int y, int width, int height)
 
 
 /* GJB:FIXME:: InteractiveResize uses the global var PressedW 
-   to figure out how the resize should work. This is bad! */
+   and the global Event to figure out how the resize should work. 
+   This is bad! */
 Bool
 InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheightReturn)
 {
   extern Window PressedW;       /* GJB:FIXME:: ugly! */
+  extern XEvent Event;		/* GJB:FIXME:: this too! */
 
   int dragx;			/* all these variables are used */
   int dragy;			/* in resize operations */
@@ -406,6 +408,9 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   int origWidth;
   int origHeight;
   int yoffset = 0;
+
+  int x_win_offset = 0;
+  int y_win_offset = 0;
 
   int ymotion = 0, xmotion = 0;
   Bool finished = False, done = False;
@@ -439,13 +444,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   origHeight = dragHeight;
   ymotion = xmotion = 0;
 
-  /* Get the current position to determine which border to resize
-     GJB:FIXME:: this is ugly -- perhaps should pass in resize
-     directions?  Could use new scheme level functionality to find
-     position of a click and pick to resize the appropriate direction(s)
-     initially, using the current pointer position as the anchor
-     (instead of waiting until the pointer leaves the window)
-  */
   if ((PressedW != Scr.Root) && (PressedW != None)) {
     if (PressedW == psw->sides[0])	/* top */
       ymotion = 1;
@@ -472,6 +470,39 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     if (PressedW == psw->corners[3]) {	/* lower right */
       ymotion = -1;
       xmotion = -1;
+    }
+    if (PressedW == psw->Parent) { /* the window itself */
+      if ((Event.type == ButtonPress) ||
+	  (Event.type == ButtonRelease))
+      {
+	/* Figure out which nonant the mouse was clicked in and use
+	 * this to determine which direction to move. */
+
+	if (Event.xbutton.x < (origWidth / 3))
+	{
+	  /* anchor against left */
+	  x_win_offset = Event.xbutton.x;
+	  xmotion = 1;
+	}
+	else if (Event.xbutton.x > ((2 * origWidth) / 3))
+	{
+	  /* anchor against right */
+	  x_win_offset = Event.xbutton.x - origWidth;
+	  xmotion = -1;
+	}
+	if (Event.xbutton.y < (origHeight / 3))
+	{
+	  /* anchor against top */
+	  y_win_offset = Event.xbutton.y;
+	  ymotion = 1;
+	}
+	else if (Event.xbutton.y > ((2 * origHeight) / 3))
+	{
+	  /* anchor against right */
+	  y_win_offset = Event.xbutton.y - origHeight;
+	  ymotion = -1;
+	}
+      }
     }
   }
 
@@ -553,8 +584,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       break;
 
     case MotionNotify:
-      x = ResizeEvent.xmotion.x_root;
-      y = ResizeEvent.xmotion.y_root - yoffset;
+      x = ResizeEvent.xmotion.x_root - x_win_offset;
+      y = ResizeEvent.xmotion.y_root - yoffset - y_win_offset;
       /* resize before paging request to prevent resize from lagging mouse - mab */
       ComputeNewGeometryOnResize(psw,origx,origy,origWidth,origHeight,
                                  x, y, &xmotion, &ymotion, 
@@ -709,7 +740,7 @@ init_resize_gcs()
   unsigned long gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
   gcv.line_width = 0;
-  gcv.foreground = 37; /* randomish */
+  gcv.foreground = 0xaaaaaa;
   gcv.subwindow_mode = IncludeInferiors;
   DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
