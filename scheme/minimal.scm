@@ -85,3 +85,20 @@ motion does `interactive-move', and double-click does
 (undefine X-ungrab-server)
 
 ;; END gross hack
+
+(define-public (process-use-scwm-module module)
+  (if (symbol? module)
+      (set! module (append '(app scwm) (list module))))
+  (catch #t
+	 (lambda ()
+	   (process-use-modules (list module)) #t)
+	 (lambda (key . args)
+	   (display "Error loading module: ")
+	   (display module) (newline)
+	   #f)))
+
+(define-public (process-use-scwm-modules module-list)
+  (map process-use-scwm-module module-list))
+
+(defmacro use-scwm-modules modules
+  `(process-use-scwm-modules ',modules))
