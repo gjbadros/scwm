@@ -1,3 +1,11 @@
+Tue Sep  7 16:39:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Clean up setting of doc-files, *theme-path*.  Set 
+	placement-proc for desktop_icon windows to use-placement-proc.
+	This fixes the long-time bug of GNOME desktop icons not being
+	placed properly and resulting in quirky behaviour with button
+	press selections (the latter has only recently been supported).
+
 Mon Sep  6 23:16:23 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added very primitive google-search keybinding.
