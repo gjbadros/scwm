@@ -37,7 +37,8 @@
  (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
- (app scwm animation))
+ (app scwm animation) (app scwm standard-move-resize-message-window)
+ )
 
 ;; user settable!
 (define want-pictures? #f)

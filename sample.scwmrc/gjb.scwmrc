@@ -41,6 +41,7 @@
 	     (app scwm fvwm-module)
 	     (app scwm cached-program-exists)
 	     (app scwm animation)
+	     (app scwm standard-move-resize-message-window)
 	     )
 
 (set! debug-fvwm-module #f)
@@ -74,9 +75,11 @@
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 
-(set! opaque-move-percent 100)
+(define (resize-opaquely? win) #t)
+(define (move-opaquely? win) #t)
+;; below variables used if the default predicates are used, 
+;; but the above make my system always do opaque moves and resizes
 ;;(set! opaque-move-percent 20)
-(set! opaque-resize-percent 100)
 ;;(set! opaque-resize-percent 20)
 
 ;; Disabled autoraise by default; 
@@ -231,10 +234,10 @@
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
 	    #:font menu-font)
 
-(set-message-window-attributes! (make-font "*helvetica*medium-r*18*")
-				"black" "gray80")
-
 ;; (select-window-interactively "Pick window #1")
+
+(set-move-resize-message-window-attributes! (make-font "*helvetica*medium-r*18*")
+					    "black" "gray80")
 
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
@@ -412,7 +415,7 @@
 ;;(define ns-win (select-window-interactively))
 ;;(define (netscape-win) ns-win)
 
-(define w (select-window-interactively))
+;; (define w (select-window-interactively))
 
 (define (move-next-to-netscape-win w)
   (let* ((ns-pos (window-viewport-position (netscape-win)))
@@ -1078,11 +1081,11 @@
 (bind-mouse 'all "C-S-M-1" toggle-raise)
 
 ;; These always do opaque moves
-(bind-mouse 'all "C-S-M-2" opaque-interactive-move)
-(bind-mouse 'all "C-S-M-3" opaque-interactive-resize)
-;; These always do rubberband moves
-(bind-mouse 'all "H-2" interactive-move)
-(bind-mouse 'all "H-3" interactive-resize)
+(bind-mouse 'all "C-S-M-2" interactive-move)
+(bind-mouse 'all "C-S-M-3" interactive-resize)
+;; These always do rubberband moves (except when constraint solver is active)
+(bind-mouse 'all "H-2" (lambda () (interactive-move (get-window) #f)))
+(bind-mouse 'all "H-3" (lambda () (interactive-resize (get-window) #f)))
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))

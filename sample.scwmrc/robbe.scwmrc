@@ -45,6 +45,7 @@
 	     (app scwm optargs)
 	     (app scwm std-menus)
 	     (app scwm animation)
+	     (app scwm standard-move-resize-message-window)
 	     (ice-9 string-fun)
 	     (ice-9 regex))
 
@@ -150,7 +151,7 @@
 (set-hilight-background! "light slate blue")
 (set-shadow-factor! 0.4)
 
-(set-message-window-attributes! font12 "black" "royal blue")
+(set-move-resize-message-window-attributes! font12 "black" "royal blue")
 (menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
 	    #:font font14)
 (title-style #:font font12 #:justify 'left)
