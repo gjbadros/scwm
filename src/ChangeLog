@@ -1,3 +1,9 @@
+Mon Sep 13 22:45:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c ("init_modifiers"): Drop the "Doing n XGrabKey
+	calls..." message-- put in a DBUG macro.  This message is mostly
+	superfluous for the average user.
+
 Mon Sep 13 22:21:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc: Fix bug that resulted in resize hook not
