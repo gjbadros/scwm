@@ -59,6 +59,19 @@ scheme. Is to blame for the following files in the directory scwm:
     xproperty.c
 
 
+Todd Larason, jtl@molehill.org:
+fiddled here and there, moving bugs from one place to another.  Finished
+Greg's work on pluggable menu looks, and added support for dynamically
+loaded modules.  added a few other smaller bits.  Is responsible for the 
+current shape the following files in the directory scwm:
+   menu.c drawmenu.c 
+Is the primary author of the following file in the directory scwm:
+   menulook.c
+Is responsible for the current menu interface in base.scm
+Primary author of the following files under the modules directory:
+   pie-menus/draw-pie-menu.c xpm-menus/draw-xpm-menu.c
+
+
 Tom LaStrange: 
 wrote Twm, from which Scwm is indirectly derived. The following files
 in the subdirectory scwm still supposedly have traces of twm code:
