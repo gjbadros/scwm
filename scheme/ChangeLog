@@ -1,3 +1,7 @@
+Tue Mar 24 16:43:32 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.in (install): install flux.scm
+
 Tue Mar 24 16:09:00 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* fvwm-compat.scm: Added all the FvwmM4 simple macros like
