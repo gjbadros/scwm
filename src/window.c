@@ -963,8 +963,6 @@ about passing around the window argument.
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. */
 
-/* FIXMS: consider reordering the arguments for get-window */
-
 SCWM_PROC(get_window, "get-window", 0, 3, 0,
           (SCM select_p, SCM release_p, SCM cursor))
      /** Retrieve the window context or select interactively.
@@ -4051,10 +4049,10 @@ MAKE_SMOBFUNS(window);
    VALIDATE_WIN_USE_CONTEXT, so do not have it use
    that for argument checking --03/31/99 gjb */
 SCM
-ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
+ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
 {
   if (UNSET_SCM(win)) {
-    win = get_window(kill_p, SCM_BOOL_T, release_p);
+    win = get_window(SCM_BOOL_T, release_p, cursor);
     if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;
     }

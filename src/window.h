@@ -40,11 +40,11 @@
 
 
 #define VALIDATE_WIN_USE_CONTEXT(win) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) \
           return SCM_BOOL_F; } while (0)
 
 #define VALIDATE_WIN_COPY_USE_CONTEXT(win,psw) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) \
           return SCM_BOOL_F; \
        else psw = PSWFROMSCMWIN(win); } while (0)
 
@@ -53,9 +53,8 @@
           return SCM_BOOL_F; } while (0)
 
 #define VALIDATE_ARG_WIN_USE_CONTEXT(n,win) \
-  do { if ((win = ensure_valid(win,n,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+  do { if ((win = ensure_valid(win,n,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) \
            return SCM_BOOL_F; } while (0)
-
 
 #define VALIDATE_PRESS_ONLY(win) \
   do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_F)) == SCM_BOOL_F) \
