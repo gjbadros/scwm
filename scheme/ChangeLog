@@ -1,3 +1,8 @@
+Mon Jan 10 17:09:47 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* fvwm-module.scm: Make `raise-fvwm2-pager', `lower-fvwm2-pager'
+	interactive. 
+
 Mon Jan 10 14:04:03 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* prompt-binding.scm: Change the way copy and insert work so that

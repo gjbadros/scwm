@@ -1,3 +1,20 @@
+Mon Jan 10 17:11:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xproperty.h (VALIDATE_ARG_ATOM_OR_STRING_COPY): Use
+	InternAtomFromScm() function.
+
+	* xproperty.c: Added InternAtomFromScm(), and use it.
+
+	* scwm_msg.h: Added prototype for new scwm_message(), and now
+	#include <guile/gh.h> since we need type SCM.
+
+	* scwm.c: Added scwm_message().
+
+	* events.c, callbacks.c: Use scwm_message, fix warning about
+	non-interactive procedures to check for symbols, not just strings.
+
+	* colors.c: changed warning msg text.
+	
 Mon Jan 10 13:19:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c, scwm-constraints.hpp, resize.c, placement.c,

@@ -25,6 +25,7 @@ Paricularly noticeable with the GIMP
 
 * Changed behaviours
 ** system.scwmrc now has sides of windows do resizes (like Win) instead of moves
+** C-S-M now raises the fvwm2 pager (which is no longer always on-top)
 ** window-configuration.scm
 *** Now changes in global state animate all windows simultaneously, instead of sequentially
 ** constraints.scm

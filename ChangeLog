@@ -1,3 +1,8 @@
+Mon Jan 10 14:40:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Make it 0.99.6pre1, so rpm is happy (version
+	numbers for rpm cannot include dashes)
+
 Fri Jan  7 10:38:02 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to 0.99.6-pre1
