@@ -22,6 +22,7 @@
 #include "color.h"
 #include "colors.h"
 #include "util.h"
+#include "image.h"
 
 long scm_tc16_scwm_face;
 
@@ -53,6 +54,23 @@ free_face(SCM obj)
   return (0);
 }
 
+SCM
+mark_face(SCM obj)
+{
+  if (!SCM_GC8MARKP(obj)) {
+    ButtonFace *bf;
+
+    SCM_SETGC8MARK(obj);
+    
+    for (bf=BUTTONFACE(obj); bf != NULL; bf = bf->next) {
+      if (((bf->style & ButtonFaceTypeMask) == PixmapButton) || 
+	  ((bf->style & ButtonFaceTypeMask) == TiledPixmapButton)) {
+	scm_gc_mark(bf->u.image);
+      }
+    }
+  }
+  return SCM_BOOL_F;
+}
 
 SCM default_titlebar_face;
 SCM default_border_face;
@@ -403,8 +421,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     tiled_p=(gh_list_p(arg) && gh_length(arg) ==2 &&
 	     gh_car(arg)==sym_tiled && gh_string_p(gh_cadr(arg)));
     if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_program_icon)) ||
-	PICTURE_P(arg)) {
-      Picture *p = NULL;
+	IMAGE_P(arg)) {
+      SCM image;
       
       if (tiled_p) {
 	arg=gh_cadr(arg);
@@ -416,20 +434,12 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	 so maybe it's only work changing when make-face is
 	 wrapped to use keyword arguments */
       if (!mini_p) {
-	int len;
-
-	if (PICTURE_P(arg)) {
-	  p = PICTURE(arg)->pic;
-	  if (p==NULL) {
-	    scwm_msg(ERR,"add_spec_to_face_x","Picture object has no pic==NULL");
-	  }
+	if (IMAGE_P(arg)) {
+	  image = arg;
 	} else {
-	  char *pixmap = gh_scm2newstr(arg,&len);
-	  p = CachePicture(dpy, Scr.Root,
-			   szPicturePath, pixmap);
-	  if (pixmap) free(pixmap);
+	  image = make_image (arg);
 	}
-	if (p==NULL) {
+	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */
 	  /* FIXMS give a better error message */
 	  scm_wrong_type_arg("add_spec_to_face_x",3,arg);
@@ -445,7 +455,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	   append (or mutate if its style is SimpleButton) */
 	bf=append_new_face(bf);
       }
-      bf->u.p = p;
+      bf->u.image = image;
       bf->style &= ~ButtonFaceTypeMask;
       if (mini_p) {
 	bf->style |= MiniIconButton;
@@ -712,9 +722,7 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
 
   case PixmapButton:
   case TiledPixmapButton:
-    if (bf->u.p)
-      DestroyPicture(dpy, bf->u.p);
-    bf->u.p = NULL;
+    bf->u.image=SCM_UNDEFINED;
     break;
   default:
     break;

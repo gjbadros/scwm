@@ -225,12 +225,15 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
   if (tmp_win->flags & SUPPRESSICON)
     return;
 
-  /* Check for a picture in a file */
-  if (tmp_win->szIconFile != NULL)
-    GetPictureFile(tmp_win);
+  /* FIXMS: it seems to me that we should let the app icon override until
+     we implement forced-icon, since then the semantics of #:icon will
+     not be changing suddenly. It also seems more reasonable to try
+     the app icon first for now. Must implement forced-icon RSN... */
+  
+  /* Would check for forced icon here... */
 
   /* Next, See if the app supplies its own icon window */
-  if (tmp_win->picIcon == NULL &&
+  if (/* tmp_win->picIcon == NULL && */
       (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconWindowHint))
     GetIconWindow(tmp_win);
 
@@ -238,6 +241,11 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
   if (tmp_win->picIcon == NULL &&
       (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconPixmapHint))
     GetIconBitmap(tmp_win);
+
+  /* Last, check for non-forced picture in a file */
+  if (tmp_win->picIcon == NULL && tmp_win->szIconFile != NULL)
+    GetPictureFile(tmp_win);
+
 
   /* FIXGJB: we need a way of setting an icon here if we've not got
      one already; e.g., a user should be able to specify a default
@@ -248,6 +256,10 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
      that, where the #:icon behaviour allows the application to
      override, and the forced-icon says we always want a specific icon
   */
+
+  
+  /* FIXMS: You should be able to set separately whether you want icon
+     titles or icon images or both. */
 
   /* figure out the icon window size */
   if (!(tmp_win->flags & NOICON_TITLE) ||  ICON_P_HEIGHT(tmp_win) == 0) {
@@ -269,7 +281,11 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
     }
     tmp_win->icon_w_width = tmp_win->picIcon->width;
   } else {
-    scwm_msg(ERR,__FUNCTION__,"have picIcon == NULL");
+    /* GJBFIX: Not having an icon picture should not throw an error,
+       it is a valid state! All it means is that we don't want an icon
+       picture at all, just the icon title. Commenting for now.
+       - MS 11/19/97 */
+    /* scwm_msg(ERR,__FUNCTION__,"have picIcon == NULL"); */
   }
   final_x = def_x;
   final_y = def_y;

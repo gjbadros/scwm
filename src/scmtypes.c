@@ -84,7 +84,7 @@ static scm_smobfuns decor_smobfuns =
 
 static scm_smobfuns face_smobfuns =
 {
-  &scm_mark0,
+  &mark_face,
   &free_face,
   &print_face,
   0

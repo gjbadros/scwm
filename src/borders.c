@@ -25,6 +25,8 @@
 #include "icons.h"
 #include "screen.h"
 #include "borders.h"
+#include <guile/gh.h>
+#include "image.h"
 #include <X11/extensions/shape.h>
 
 extern Window PressedW;
@@ -82,7 +84,7 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
 {
   register int type = bf->style & ButtonFaceTypeMask;
 
-  Picture *p;
+  scwm_image *image;
   int border = 0;
   int width, height, x, y;
 
@@ -118,11 +120,11 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
   case MiniIconButton:
   case PixmapButton:
     if (type == PixmapButton)
-      p = bf->u.p;
+      image = IMAGE (bf->u.image);
     else {
-      if (!t->picMiniIcon)
+      if (!t->mini_icon_image==SCM_BOOL_F)
 	break;
-      p = t->picMiniIcon;
+      image = IMAGE (t->mini_icon_image);
     }
     if (bf->style & FlatButton)
       border = 0;
@@ -134,38 +136,38 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     x = border;
     if (bf->style & HOffCenter) {
       if (bf->style & HRight)
-	x += (int) (width - p->width);
+	x += (int) (width - image->width);
     } else
-      x += (int) (width - p->width) / 2;
+      x += (int) (width - image->width) / 2;
 
     y = border;
     if (bf->style & VOffCenter) {
       if (bf->style & VBottom)
-	y += (int) (height - p->height);
+	y += (int) (height - image->height);
     } else
-      y += (int) (height - p->height) / 2;
+      y += (int) (height - image->height) / 2;
 
     if (x < border)
       x = border;
     if (y < border)
       y = border;
-    if (width > p->width)
-      width = p->width;
-    if (height > p->height)
-      height = p->height;
+    if (width > image->width)
+      width = image->width;
+    if (height > image->height)
+      height = image->height;
     if (width > w - x - border)
       width = w - x - border;
     if (height > h - y - border)
       height = h - y - border;
 
-    XSetClipMask(dpy, Scr.TransMaskGC, p->mask);
+    XSetClipMask(dpy, Scr.TransMaskGC, image->mask);
     XSetClipOrigin(dpy, Scr.TransMaskGC, x, y);
-    XCopyArea(dpy, p->picture, win, Scr.TransMaskGC,
+    XCopyArea(dpy, image->image, win, Scr.TransMaskGC,
 	      0, 0, width, height, x, y);
     break;
 
   case TiledPixmapButton:
-    XSetWindowBackgroundPixmap(dpy, win, bf->u.p->picture);
+    XSetWindowBackgroundPixmap(dpy, win, IMAGE(bf->u.image)->image);
     flush_expose(win);
     XClearWindow(dpy, win);
     break;
@@ -566,7 +568,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     /* are we using textured borders? */
     if ((GetDecor(t, BorderStyle.active->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = GetDecor(t, BorderStyle.active->u.p->picture);
+      TexturePixmap = IMAGE(GetDecor(t, BorderStyle.active->u.image))->image;
 
     /* set the keyboard focus */
     if ((Mapped) && (t->flags & MAPPED) && (Scr.Hilite != t))
@@ -596,7 +598,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     }
     if ((GetDecor(t, BorderStyle.inactive->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = GetDecor(t, BorderStyle.inactive->u.p->picture);
+      TexturePixmap = IMAGE(GetDecor(t, BorderStyle.inactive->u.image))->image;
 
     TextColor = t->TextPixel;
     BackPixmap = Scr.light_gray_pixmap;
@@ -993,7 +995,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 
     if ((tb_style & UseBorderStyle)
 	&& ((bf->style & ButtonFaceTypeMask) == TiledPixmapButton))
-      XSetWindowBackgroundPixmap(dpy, t->title_w, bf->u.p->picture);
+      XSetWindowBackgroundPixmap(dpy, t->title_w, IMAGE(bf->u.image)->image);
   }
   XClearWindow(dpy, t->title_w);
 

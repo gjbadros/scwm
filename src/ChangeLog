@@ -1,8 +1,44 @@
+Tue Nov 25 16:37:01 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* face.c, face.h: Use scheme image objects instead of Picture
+ 	structs for all images in faces; add mark_face which appropriately
+ 	gc-marks any referenced images.
+
+	scmtypes.c: Use the new marker function for faces.
+
+	add_window.c: Removed all code that tries to load the mini-icon
+ 	from a filename, and change AddWindow to expect the tiled pixmap
+ 	for the border, if any, to be a Scheme image object.
+
+	screen.h: Replaced the p member of the u union in the ButtonFace
+ 	struct with an image member which is an SCM expected to hold
+ 	SCM_BOOL_F or an image object.
+
+	scwm.h: Replaced picMiniIcon and szMiniIconFile fields in the
+ 	ScwmWindow struct with a mini_icon_image field which is an SCM
+ 	expected to hold SCM_BOOL_F or an image object.
+
+	borders.c: Draw images specified by button/titlebar/border faces
+	(including mini-icons) knowing that they are now Scheme image
+ 	objects.
+
+	window.c: Changed set-mini-icon! to expect and use image objects
+ 	rather than picture objects. Changed set-icon! to make some effort
+ 	to remember the icon if it is turned off; this needs more work
+ 	however.
+
+	* scwm.c: Initialize the new image code.
+
+	* image.c, image.h: Added the init_image_colormap() function; the
+ 	colormap for images needs to be initialized separately and later
+ 	than the image code itself; also protect image_loader_hash_table
+ 	from gc.
+
 Mon Nov 24 14:00:49 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.in: Fixed some dependence problems using image.x file.
-	Added rule to build init_scheme_string.c from
-	../scheme/minimal.scm and link that in with the binary
+  	Added rule to build init_scheme_string.c from
+ 	../scheme/minimal.scm and link that in with the binary
 
 	* scwm.c: SetRCDefaults() now uses the extern char
 	*init_scheme_string from the .c file that the makefile builds.

@@ -125,7 +125,7 @@ enum {
 typedef struct ButtonFace {
   ButtonFaceStyle style;
   union {
-    Picture *p;
+    SCM image;
     Pixel back;
     struct {
       int npixels;

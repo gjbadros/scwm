@@ -48,6 +48,7 @@
 #include "screen.h"
 #include <X11/extensions/shape.h>
 #include <X11/Xresource.h>
+#include <guile/gh.h>
 #include "binding.h"
 #include "window.h"
 #include "decorations.h"
@@ -57,6 +58,7 @@
 #include "borders.h"
 #include "resize.h"
 #include "colormaps.h"
+#include "image.h"
 
 #undef MS_DELETION_COMMENT
 
@@ -171,7 +173,6 @@ GrabButtons(ScwmWindow * tmp_win)
 static unsigned long 
 LookInList(name_list * list, char *name, XClassHint * class,
 	   char **value,
-	   char **mini_value,
 	   char **decor,
 	   int *Desk, int *border_width,
 	   int *resize_width, char **forecolor, char **backcolor,
@@ -184,7 +185,6 @@ LookInList(name_list * list, char *name, XClassHint * class,
   unsigned long retval = 0;
 
   *value = NULL;
-  *mini_value = NULL;
   *decor = NULL;
   *forecolor = NULL;
   *backcolor = NULL;
@@ -368,8 +368,6 @@ AddWindow(Window w)
   int a, b;
   char *value;
 
-  char *mini_value;
-
   char *decor = NULL;
 
   unsigned long tflag, saved_flags;
@@ -394,7 +392,6 @@ AddWindow(Window w)
   tmp_win->w = w;
 
   tmp_win->cmap_windows = (Window *) NULL;
-  tmp_win->szMiniIconFile = NULL;
   tmp_win->szIconFile = NULL;
 
   if (!PPosOverride)
@@ -452,9 +449,9 @@ AddWindow(Window w)
   /*  Assume that we'll decorate */
   tmp_win->flags |= BORDER;
   tmp_win->flags |= TITLE;
+  tmp_win->mini_icon_image = SCM_BOOL_F;
 
   tflag = LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &value,
-		     &mini_value,
 		     &decor,
 		     &Desk,
 		     &border_width, &resize_width,
@@ -513,10 +510,6 @@ AddWindow(Window w)
   } else {
     /* use default icon */
     tmp_win->szIconFile = Scr.DefaultIcon;
-  }
-
-  if (tflag & MINIICON_FLAG) {
-    tmp_win->szMiniIconFile = mini_value;
   }
 
   GetWindowSizeHints(tmp_win);
@@ -626,7 +619,8 @@ AddWindow(Window w)
 
   if ((GetDecor(tmp_win, BorderStyle.inactive->style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
-    TexturePixmap = GetDecor(tmp_win, BorderStyle.inactive->u.p->picture);
+    TexturePixmap = IMAGE (GetDecor(tmp_win, 
+				    BorderStyle.inactive->u.image))->image;
 
   if (TexturePixmap) {
     TexturePixmapSave = attributes.background_pixmap;
@@ -755,18 +749,6 @@ AddWindow(Window w)
 	tmp_win->right_w[i] = None;
     }
 
-    /* This is redundant with what set-mini-icon! now does, should
-       probably go away. */
-#if MS_DELETION_COMMENT
-    if (tmp_win->szMiniIconFile) {
-      tmp_win->picMiniIcon = CachePicture(dpy, Scr.Root,
-					  szPicturePath,
-					  tmp_win->szMiniIconFile);
-    } else {
-      tmp_win->picMiniIcon = NULL;
-    }
-#endif
-
   }
   if (tmp_win->flags & BORDER) {
     if (TexturePixmap) {
@@ -890,14 +872,14 @@ AddWindow(Window w)
 		(unsigned long) tmp_win, tmp_win->class.res_class);
   BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_name);
-  if (tmp_win->picMiniIcon != NULL)
+  if (tmp_win->mini_icon_image != SCM_BOOL_F)
     Broadcast(M_MINI_ICON, 6,
 	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */
-	      tmp_win->picMiniIcon->picture,
-	      tmp_win->picMiniIcon->mask,
-	      tmp_win->picMiniIcon->width,
-	      tmp_win->picMiniIcon->height,
-	      tmp_win->picMiniIcon->depth, 0);
+	      IMAGE(tmp_win->mini_icon_image)->image,
+	      IMAGE(tmp_win->mini_icon_image)->mask,
+	      IMAGE(tmp_win->mini_icon_image)->width,
+	      IMAGE(tmp_win->mini_icon_image)->height,
+	      IMAGE(tmp_win->mini_icon_image)->depth, 0);
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);

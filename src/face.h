@@ -18,6 +18,7 @@ extern long scm_tc16_scwm_face;
 
 size_t free_face(SCM obj);
 int print_face(SCM obj, SCM port, scm_print_state * pstate);
+SCM mark_face(SCM obj);
 
 void init_face();
 

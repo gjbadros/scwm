@@ -31,6 +31,7 @@
 #include "decor.h"
 #include "colors.h"
 #include "colormaps.h"
+#include "image.h"
 
 size_t 
 free_window(SCM obj)
@@ -42,11 +43,13 @@ free_window(SCM obj)
 SCM 
 mark_window(SCM obj)
 {
-
-  SCM_SETGC8MARK(obj);
-
-  if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
-    scm_gc_mark(SCWMWINDOW(obj)->fl->scmdecor);
+  if (!SCM_GC8MARKP(obj)) {
+    SCM_SETGC8MARK(obj);
+    
+    if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
+      scm_gc_mark(SCWMWINDOW(obj)->fl->scmdecor);
+      scm_gc_mark(SCWMWINDOW(obj)->mini_icon_image);
+    }
   }
   return SCM_BOOL_F;
 }
@@ -1853,13 +1856,16 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->flags |= SUPPRESSICON_FLAG;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
+    /* FIXMS: Inelegant and probably leaks memory,
+       need a better fix than this. */
+    tmp_win->szIconSavedFile = tmp_win->szIconFile;
     tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
-    if (tmp_win->picIcon!=NULL) {
-      tmp_win->szIconFile = tmp_win->picIcon->name;
+    if (tmp_win->szIconFile == NULL) {
+      tmp_win->szIconFile = tmp_win->szIconSavedFile;
     }
   } else if (gh_string_p(picture)) {
     int len;
@@ -1901,24 +1907,31 @@ set_icon_x(SCM picture, SCM win)
 }
 
 SCM 
-set_mini_icon_x(SCM picture, SCM win)
+set_mini_icon_x(SCM image, SCM win)
 {
   ScwmWindow *sw;
 
   VALIDATEN(win, 2, "set-mini-icon!");
   sw = SCWMWINDOW(win);
-  if (picture == SCM_BOOL_F) {
-    sw->picMiniIcon = NULL;
-  } else if (gh_string_p(picture)) {
-    int len;
-    char *name = gh_scm2newstr(picture, &len);
-
-    sw->picMiniIcon = CachePicture(dpy, Scr.Root, szPicturePath, name);
-    free(name);
-  } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
-    sw->picMiniIcon = PICTURE(picture)->pic;
+  if (image == SCM_BOOL_F) {
+    sw->mini_icon_image = SCM_BOOL_F;
+  } else if (gh_string_p(image)) {
+    sw->mini_icon_image = make_image(image);
+  } else if (SCM_NIMP(image) && IMAGE_P(image)) {
+    sw->mini_icon_image = image;
   } else {
-    scm_wrong_type_arg("set-mini-icon!", 1, picture);
+    scm_wrong_type_arg("set-mini-icon!", 1, image);
+  }
+
+  /* Broadcast the new mini-icon or something? */
+  if (sw->mini_icon_image != SCM_BOOL_F) {
+    Broadcast(M_MINI_ICON, 6,
+	      sw->w,	/* Watch Out ! : I reduced the set of infos... */
+	      IMAGE(sw->mini_icon_image)->image,
+	      IMAGE(sw->mini_icon_image)->mask,
+	      IMAGE(sw->mini_icon_image)->width,
+	      IMAGE(sw->mini_icon_image)->height,
+	      IMAGE(sw->mini_icon_image)->depth, 0);
   }
 
   SetBorderX(sw, Scr.Hilite == sw, True, sw->flags & MAPPED, 

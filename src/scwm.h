@@ -191,9 +191,12 @@ typedef struct ScwmWindow {
   Window transientfor;
 
   unsigned long flags;
-  char *szMiniIconFile;		/* the filename for the mini-icon */
-  Picture *picMiniIcon;		/* the mini icon picture */
+  SCM mini_icon_image;          /* A Scheme image object to use for the 
+				   mini-icon. */
   char *szIconFile;		/* the filename for the icon */
+  char *szIconSavedFile;        /* save the filename here when we change
+				   to no icon, so it can be restored 
+				   properly */
   Picture *picIcon;		/* the icon picture */
 
   int orig_x;			/* unmaximized x coordinate */
