@@ -35,6 +35,7 @@ scwm_SOURCES =  Grab.c \
                 move.c \
                 placement.c \
                 resize.c \
+		screen.c \
                 scwm.c \
                 shutdown.c \
                 string_token.c \
@@ -64,7 +65,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 guile_snarfs = add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
 miscprocs.x module-interface.x placement.x resize.x \
-shutdown.x xproperty.x window.x
+screen.x shutdown.x xproperty.x window.x
 
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
