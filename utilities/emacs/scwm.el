@@ -320,7 +320,7 @@ meaning of the second argument is reversed."
   "Have Scwm use the ice-9 session module.
 This is needed for some commands such as apropos and apropos-internal.
 apropos-internal is used for completion, too"
-  (scwm-eval "(use-modules (ice-9 session) (app scwm documentation))" nil))
+  (scwm-eval "(use-modules (ice-9 session) (app scwm doc))" nil))
 
 (defun scwm-make-obarray ()
   "Create and return an obarray of scwm symbols."
