@@ -594,11 +594,6 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 
   default_select_desk(psw,Desk);
 
-  SetupFrame(psw, psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
-	     psw->attr.y + GRAV_Y_ADJUSTMENT(psw), 
-	     FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
-	     WAS_MOVED, WAS_RESIZED);
-
   move_finalize(psw->frame,psw, 
 		psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
 		psw->attr.y + GRAV_Y_ADJUSTMENT(psw));

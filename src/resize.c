@@ -106,6 +106,18 @@ DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
   DisplayMessage(sz,fRelief);
 }
 
+
+static int
+makemult(int a, int b)
+{
+  if (b==1)
+    return a;
+  else {
+    int t = a/b;
+    return t * (b + (a/b - t >= .5? 1: 0));
+  }
+}
+
 /*
  * ConstrainSize - adjust the given width and height to account for the
  *              constraints imposed by size hints
@@ -113,12 +125,9 @@ DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
  *      The general algorithm, especially the aspect ratio stuff, is
  *      borrowed from uwm's CheckConsistency routine.
  */
-
 void 
 ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heightp)
 {
-  /*#define makemult(a,b) ((b==1) ? (a) : (((int)(((a)+(b)*.99)/(b))) * (b)) )*/
-#define makemult(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
@@ -230,7 +239,6 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heigh
   *heightp = dheight + psw->title_height + 2 * psw->boundary_width;
   return;
 }
-#undef makemult
 
 void
 ComputeNewGeometryOnResize(ScwmWindow *psw, 

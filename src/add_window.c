@@ -273,11 +273,16 @@ AddWindow(Window w)
 
   GetWindowSizeHints(psw);
 
+  psw->xboundary_width = psw->boundary_width;
+  if (psw->fMWMBorders) psw->bw = 0;
+  else psw->bw = BW;
+
   /* Tentative size estimate */
   frame_x = 0;
   frame_y = 0;
-  frame_width = psw->attr.width + 2 * psw->boundary_width;
-  frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
+  frame_width = psw->attr.width + 2 * (psw->xboundary_width + psw->bw);
+  frame_height = (psw->attr.height + psw->title_height + 
+                  2 * (psw->boundary_width + psw->bw));
 
   ConstrainSize(psw, 0, 0, &frame_width, &frame_height);
 

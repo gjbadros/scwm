@@ -2150,9 +2150,9 @@ specified. */
 
 SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
-     /** Resize WIN to a size of W by H in pixels. The size includes
-the window decorations. WIN defaults to the window context in the
-usual way if not specified.*/
+     /** Resize WIN's client area to a size of W by H in pixels. 
+The size includes the window decorations. WIN defaults to the window
+context in the usual way if not specified.*/
 #define FUNC_NAME s_resize_to
 {
   int width, height;
@@ -2177,18 +2177,86 @@ usual way if not specified.*/
   width = gh_scm2int(w);
   height = gh_scm2int(h);
 
-  /* took the next two lines out because we can do that in scheme if we 
-     really want, and maximize gets broken otherwise. */
-  /*
-     width += (2*psw->boundary_width);
-     height += (psw->title_height + 2*psw->boundary_width);
-   */
+  width += (2*psw->boundary_width);
+  height += (psw->title_height + 2*psw->boundary_width);
+  ConstrainSize(psw, 0, 0, &width, &height);
   ResizeTo(psw,width,height);
 
   SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
+  return SCM_BOOL_T;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(resize_frame_to, "resize-frame-to", 2, 1, 0,
+          (SCM w, SCM h, SCM win))
+     /** Resize WIN to a size of W by H in pixels. The size includes
+the window decorations. WIN defaults to the window context in the
+usual way if not specified.*/
+#define FUNC_NAME s_resize_frame_to
+{
+  int width, height;
+  ScwmWindow *psw;
+
+  SCM_REDEFER_INTS;
+  VALIDATEN(win, 3, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  if (check_allowed_function(F_RESIZE, psw) == 0
+      || SHADED_P(psw)) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  psw->fMaximized = False;
+
+  /* can't resize icons */
+  if (psw->fIconified) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  width = gh_scm2int(w);
+  height = gh_scm2int(h);
+
+  ConstrainSize(psw, 0, 0, &width, &height);
+  ResizeTo(psw,width,height);
+
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_size_hints, "window-size-hints", 1, 0, 0,
+           (SCM win))
+     /** Return a list of the window size hints associated with WIN.
+The list returned contains 4 cons pairs containing:
+'((min-width . max-width) (min-height . max-height) 
+  (width-inc . height-inc) (base-width . baseheight)) */
+#define FUNC_NAME s_window_size_hints
+{
+  int iarg = 1;
+  SCM answer = SCM_EOL;
+  ScwmWindow *psw = NULL;
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg++,win);
+  }
+  psw = PSWFROMSCMWIN(win);
+
+  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.base_width),
+                           gh_int2scm(psw->hints.base_height)),answer);
+
+  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.width_inc),
+                           gh_int2scm(psw->hints.height_inc)),answer);
+
+  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.min_height),
+                           gh_int2scm(psw->hints.max_height)),answer);
+
+  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.min_width),
+                           gh_int2scm(psw->hints.max_width)),answer);
+  
+  return answer;
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(refresh_window, "refresh-window", 0, 1, 0,
           (SCM win))
@@ -2301,12 +2369,13 @@ way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(window_size, "window-size", 0, 1, 0,
+SCWM_PROC(window_frame_size, "window-frame-size", 0, 1, 0,
           (SCM win))
-/** Return the size of WIN. The position is returned as a list of
-the width and the height in pixels. WIN defaults to the window context
-in the usual way if not specified. */
-#define FUNC_NAME s_window_size
+/** Return the size of the frame of WIN.
+The position is returned as a list of the width and the height in
+pixels. WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_window_frame_size
 {
   ScwmWindow *psw;
 
@@ -2315,6 +2384,44 @@ in the usual way if not specified. */
 
   return scm_listify(SCM_MAKINUM(FRAME_WIDTH(psw)),
 		     SCM_MAKINUM(FRAME_HEIGHT(psw)),
+		     SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(window_size, "window-size", 0, 1, 0,
+          (SCM win))
+/** Return the size of the application window of WIN.
+
+WIN defaults to the window context in the usual way if not specified.
+The position is returned as a list of four numbers. The first two are
+the width and the height in pixels, the third and fourth are the width
+and height in resize units (e.g., characters for an xterm).  */
+#define FUNC_NAME s_window_size
+{
+  ScwmWindow *psw;
+  int cpixX;
+  int cpixY;
+  int width;
+  int height;
+
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  cpixX = FRAME_WIDTH(psw) - psw->xboundary_width*2;
+  cpixY = FRAME_HEIGHT(psw) - psw->title_height - psw->boundary_width*2;
+
+  /* these are the size in resize units */
+  /* see also the code in DisplaySize */
+  width = cpixX;
+  height = cpixY;
+
+  width -= psw->hints.base_width;
+  height -= psw->hints.base_height;
+  width /= psw->hints.width_inc;
+  height /= psw->hints.height_inc;
+
+  return scm_listify(gh_int2scm(cpixX),gh_int2scm(cpixY),
+                     gh_int2scm(width),gh_int2scm(height),
 		     SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -2726,7 +2833,7 @@ WIN defaults to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
   ScwmDecor *fl;
-  int cpix, oldw;
+  int cpix, oldw, oldxw;
   int oldxadj, oldyadj;
 
   SCM_REDEFER_INTS;
@@ -2739,17 +2846,25 @@ WIN defaults to the window context in the usual way if not specified. */
 
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+
   oldw = psw->boundary_width;
-  oldxadj = GRAV_X_ADJUSTMENT(psw);
-  oldyadj = GRAV_Y_ADJUSTMENT(psw);
+  oldxw = psw->xboundary_width;
+
+#define NO_SIDE_DECORATIONS_P(psw) \
+  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-side-decorations")))
 
   psw->boundary_width = cpix;
+  if (!NO_SIDE_DECORATIONS_P(psw))
+    psw->xboundary_width = psw->boundary_width;
+
+  oldxadj = GRAV_X_ADJUSTMENT(psw);
+  oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
   MoveResizeTo(psw, 
 	       psw->frame_x + GRAV_X_ADJUSTMENT(psw) - oldxadj,
 	       psw->frame_y + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
-	       FRAME_WIDTH(psw) + 2 * (cpix - oldw),
-	       FRAME_HEIGHT(psw) + 2 * (cpix - oldw));
+	       FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
+	       FRAME_HEIGHT(psw) + 2 * (psw->boundary_width - oldw));
 
 #if 0
   /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */
@@ -3051,7 +3166,7 @@ specified. */
     psw->bw = 0;
   } else {
     psw->bw = BW;
-    psw->boundary_width = psw->boundary_width - 1;
+    /*    psw->boundary_width -= 1; makes no sense --08/12/98 gjb */
   }
   SetupFrame(psw,FRAME_X(psw),FRAME_Y(psw),FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
              WAS_MOVED, WAS_RESIZED);
