@@ -32,8 +32,9 @@ PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
                -DSCWMDIR=\"${scwm_dir}\" \
                -DSCWMRC=\"${scwm_rc}\"
 
-EXTRA_DEFINES=-DXPM -DSHAPE ${PATH_DEFINES} -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
-
+# All these compile time options are now gone! --gjb
+#EXTRA_DEFINES=${PATH_DEFINES} -DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
+EXTRA_DEFINES=${PATH_DEFINES}
 
 CC=@CC@
 INCLUDES=-I../include -I${top_srcdir}/include ${x_includes} -I${prefix}/include
@@ -53,9 +54,9 @@ SRCS = \
 	Picture.c \
 	system.c \
 	Grab.c \
+	pixmap.c \
 	add_window.c \
 	borders.c \
-	builtins.c \
 	colormaps.c \
 	colors.c \
 	complex.c \
@@ -116,4 +117,6 @@ ${PROG}: ${OBJS}
 	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< \
 		| sed '\''s/$*\\.o[ :]*/& $@/g'\'' > $@'
 
-include ${DEPS}
+# FIXGJB: how do we not remake the .d files for a clean build?
+# The leading - means do not error, but still creates the .d file
+-include ${DEPS}
