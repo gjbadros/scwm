@@ -170,7 +170,7 @@ enum wm_client_functions {
      SCM_NEWCELL((ANSWER)); \
      SCM_SETCAR((ANSWER),(ID)); \
      SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
-   } while (0);
+   } while (0)
 
 #define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
                                    (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \
