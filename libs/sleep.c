@@ -7,19 +7,20 @@
 
 /**************************************************************************
  * 
- * Sleep for n microseconds
+ * Sleep for n milliseconds
  *
  *************************************************************************/
+
 void 
-sleep_a_little(int n)
+sleep_ms(int n)
 {
   struct timeval value;
 
   if (n <= 0)
     return;
 
-  value.tv_usec = n % 1000000;
-  value.tv_sec = n / 1000000;
+  value.tv_usec = n % 1000;
+  value.tv_sec = n / 1000;
 
   (void) select(1, 0, 0, 0, &value);
 }
