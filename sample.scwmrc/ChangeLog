@@ -1,3 +1,9 @@
+Sat May  1 19:29:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use a subshell instead of { } when killing the
+	tracepids... bash 2.01.1(1)-release on Debian seems to have either 
+	a bug, or handle curly braces differently from zsh
+
 Tue May  4 12:42:43 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added C-A-S-m key to do show-window-list-matching-interactively.
