@@ -7,6 +7,7 @@ init_scheme_string.c
 out.log
 scm_init_funcs.h
 scwm
+scwm-stable
 scwm-works
 scwm_cl
 scwm_cl_works
