@@ -23,11 +23,6 @@
 #endif
 
 #include <X11/Xlib.h>
-#if 0
-#include <X11/Xresource.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/shape.h>
-#endif
 
 #include <guile/gh.h>
 /* FIXGJB13: guile-1.3 will have this already included */
@@ -38,6 +33,11 @@
 #include "color.h"
 #include "guile-compat.h"
 #include "screen.h"
+
+static Atom atom_XROOTPMAP_ID;
+static Atom atom_XROOTCOLOR_PIXEL;
+static Atom atom_XSETROOT_ID;
+
 
 SCM_SYMBOL(sym_centered, "centered");
 SCM_SYMBOL(sym_tiled, "tiled");
@@ -58,11 +58,22 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 	  (SCM color))
 #define FUNC_NAME s_set_background_color_x
 {
+  Pixmap dummy = None;
+
   VALIDATE_COLOR(color, FUNC_NAME, 1);
 
   gh_vector_set_x(protected_objs, SCM_MAKINUM(0), color);
   XSetWindowBackground(dpy, Scr.Root, XCOLOR(color));
   XClearWindow(dpy, Scr.Root);
+
+  XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
+		  (char *)&(XCOLOR(color)), 1);
+  XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
+		  (char *)&dummy, 1);
+
+  /* MS:FIXME:: Should set _XSETROOT_ID to a fake one-pixel pixmap, just delete for now. */
+  XDeleteProperty(dpy, Scr.Root, atom_XSETROOT_ID);
+
 
   return SCM_UNSPECIFIED;
 }
@@ -169,6 +180,8 @@ SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
 	  (SCM image, SCM style))
 #define FUNC_NAME s_set_background_image_x
 {
+  Pixmap dummy = 0;
+
   {
     SCM i = image;
     if (gh_string_p(image)) {
@@ -199,6 +212,13 @@ SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
   XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(image)->image);
   XClearWindow(dpy, Scr.Root);
 
+  XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
+		  (char *)&dummy, 1);
+  XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
+		  (char *)&(IMAGE(image)->image), 1);
+  XChangeProperty(dpy, Scr.Root, atom_XSETROOT_ID, XA_PIXMAP, 32, PropModeReplace,
+		  (char *)&(IMAGE(image)->image), 1);
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME 
@@ -223,6 +243,11 @@ static
 void
 init_background()
 {
+
+  atom_XROOTPMAP_ID = XInternAtom (dpy, "_XROOTPMAP_ID", False);
+  atom_XROOTCOLOR_PIXEL = XInternAtom (dpy,"_XROOTCOLOR_PIXEL", False);
+  atom_XSETROOT_ID = XInternAtom (dpy, "_XSETROOT_ID", False);
+
   protected_objs = scm_make_vector(SCM_MAKINUM(2), SCM_BOOL_F);
   scm_permanent_object(protected_objs);
 

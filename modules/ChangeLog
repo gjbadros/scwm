@@ -1,3 +1,10 @@
+Thu Dec  3 02:04:42 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* background/background.c (set_background_color_x,
+ 	set_background_pixmap_x): set the properties that
+ 	esetroot/xsetroot/xpmroot/xloadimage set, and which eterm uses at
+ 	least some of to achieve the alpha transparency effect.
+
 1998-11-22  Todd Larason  <jtl@molehill.org>
 
 	* scwmgtkhelper/scwmgtkhelper.c (init_scwmgtkhelper): fix typo in
