@@ -2,7 +2,7 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Maciej Stachowiak and Greg J. Badros
 See the end for copying conditions.
 
-Changes for scwm-0.99.1 (not yet released)
+Changes for scwm-0.99.2 (not yet released)
 
 * Lots of documentation improvements, revamp of Scwm web page, many,
 many bug-fixes (compiles warning free with virtually all warnings turned
@@ -144,6 +144,7 @@ deprecated `SM-client-id'.
 * Misc. new primitives not discussed above
 ** `window-creation-time' returns the time that a window was created
 ** `get-key-event' returns the next arbitrary key w/ modifiers that the user hits
+** `get-mouse-event' returns the next arbitrary mouse button w/ modifiers that the user hits
 ** `lookup-key' returns the procedures bound to a specific key
 ** `lookup-mouse' returns the procedures bound to a specific mouse event
 ** `window-valid?' for testing if a window object still is valid.
@@ -153,7 +154,7 @@ deprecated `SM-client-id'.
 ** `force-reset-window-frame!' -- force redraw of frame
 ** `select-viewport-position' (returns pointer position and selected window)
 ** `bind-keycode' -- lower level interface to binding keys, allows release procs
-** `keymask-keycode->string', `keysym->keycode'
+** `keymask-keycode->string', `keysym->keycode', `keymask->string'
 ** `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super', `mod-mask-numlock', `mod-mask-scrolllock'
 ** `set-mod-mask-numlock!', `set-mod-mask-scrolllock!'
 ** `animated-resize-window', `animated-resize-frame'
@@ -231,6 +232,12 @@ deprecated `SM-client-id'.
 ** rgb-database.scm: Read X11 colors from /etc/X11/rgb.txt using `rgb-colors' procedure
 
 
+
+
+Note: scwm-0.99.1 was never released-- Debian package maintainer
+packaged up a release from CVS that had that version number, but
+it was never an official version of Scwm.  We skipped the number
+to avoid confusion with that packaged version. 
 
 
 Changes for scwm-0.9 (released 27-Jan-1999)
