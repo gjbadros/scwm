@@ -8,7 +8,9 @@
 #include "face.h"
 #include "color.h"
 
-
+#ifndef HAVE_GH_LENGTH
+#define gh_length gh_list_length
+#endif /* HAVE_GH_LENGTH */
 
 long scm_tc16_scwm_face;
 
@@ -321,6 +323,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       int npixels, nsegs, i, sum;
       int *perc;
       Pixel *pixels;
+      SCM p;
 
       npixels=gh_scm2int(gh_cadr(arg));
       arg=gh_cddr(arg);
@@ -334,9 +337,9 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       s_colors = (char **) safemalloc((nsegs+1)*sizeof(char *));
 
       sum=0;
-      for (i = 0; i <= nsegs; ++i) {
+      for (i = 0, p=arg; i <= nsegs; ++i, p=SCM_CDR(p)) {
 	int dummy;
-	SCM item_i=gh_list_ref(arg, SCM_MAKINUM(i));
+	SCM item_i=gh_car(p);
 
 	if (i< nsegs-1 || gh_list_p(item_i)) {
 	  perc[i] = gh_scm2int(gh_cadr(item_i));
@@ -468,6 +471,7 @@ ButtonFace *append_new_face(ButtonFace *bf) {
     return retval;
   }
 }
+
 
 
 void 
