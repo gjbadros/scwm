@@ -48,6 +48,8 @@
 
 extern SCM sym_top, sym_center, sym_bottom;
 
+static Bool fMenuHotkeysActivateItems = True;
+
 /* MS:FIXME:: These SCM_VAR_INIT's should be removed when we have a
 better long-term solution to styling menus. TEMPORARY HACK! */
 /* GJB:FIXME:MS: I move the vars back into the scheme module before the module definition
@@ -819,6 +821,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 
     case XK_Return:
     case XK_KP_Enter:
+    case XK_space:
       *pmenu_status = MENUSTATUS_ITEM_SELECTED;
       return PmiimSelectedFromPmd(pmd);
       break;
@@ -1070,10 +1073,15 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       pmiim = PmiimMenuShortcuts(pmd,&Event,&ms,&fHotkeyUsed,&fPermitAltReleaseToSelect);
       if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
-      } else if (ms == MENUSTATUS_ITEM_SELECTED) {
+      } else if (ms == MENUSTATUS_ITEM_SELECTED ||
+                 (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM )) {
 	if (pmiim) {
+          MenuItemInMenu *pmiimSelected;
+          if (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM) {
+            pmd->ipmiimSelected = pmiim->ipmiim;
+          }
 	  /* FIXGJB: duplicated above */
-	  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	  pmiimSelected = PmiimSelectedFromPmd(pmd);
 	  if (pmiim != pmiimSelected) {
 	    scwm_msg(WARN,FUNC_NAME,"Pointer not in selected item -- weird!");
 	  } else {
@@ -1431,6 +1439,28 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   }
   return SCM_BOOL_F;
 }
+
+SCWM_PROC(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1, 0, 0,
+          (SCM activate_p))
+/** If ACTIVATE? is #t, let menu hotkeys invoke the item.
+If #f, a menuitem hotkey just makes that item selected and still requires
+a <return> or <space> to activate the item. */
+#define FUNC_NAME s_set_menu_hotkeys_activate_item_x
+{
+  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fMenuHotkeysActivateItems,activate_p,1,FUNC_NAME);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
+          ())
+/** Return #t if hotkeys invoke item, #f if they just select the item. */
+#define FUNC_NAME s_menu_hotkeys_activate_item_p
+{
+  return SCM_BOOL_FromBool(fMenuHotkeysActivateItems);
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(popup_menu,"popup-menu", 1,4,0,
           (SCM menu, SCM warp_to_first_p, SCM x_pos, SCM y_pos, SCM left_side_p))

@@ -101,6 +101,7 @@
 #endif
 
 SCM x_propertynotify_hook;
+SCM x_root_propertynotify_hook;
 SCM x_mappingnotify_hook;
 SCM x_destroynotify_hook;
 SCM x_unmapnotify_hook;
@@ -656,6 +657,12 @@ HandlePropertyNotify()
   if (Event.xproperty.atom == XA_SCWMEXEC_REQWIN) {
     HandleScwmExec();
     return;
+  }
+
+  if (Event.xproperty.window == Scr.Root) {
+    call2_hooks(x_root_propertynotify_hook, 
+                gh_long2scm(Event.xproperty.atom),
+                SCM_BOOL_FromBool(Event.xproperty.state == PropertyDelete));
   }
 
   if (!pswCurrent || !FXWindowAccessible(dpy, pswCurrent->w))
@@ -2019,6 +2026,18 @@ property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. */
+
+
+  SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook");
+  /** This hook is invoked whenever a PropertyNotify event is received
+on the root window.  This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols, or interface
+to other desktop environments such as KDE or GNOME. The hook
+procedures are invoked with two arguments: the atom for the changed
+property and a boolean telling whether the property was deleted. 
+These arguments are different from those passed to
+X-PropertyNotify-hook's procedures. */
 
 
   SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
