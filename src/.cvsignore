@@ -1,5 +1,6 @@
 *.d
 Makefile
+callbacks.x
 color.x
 font.x
 image.x
