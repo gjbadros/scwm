@@ -1,3 +1,7 @@
+Fri May  7 08:37:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Default to 14 point font, not 24 pt.
+
 1999-05-04  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* stylist.scm: Made a proper module.

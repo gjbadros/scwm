@@ -1,3 +1,8 @@
+Sun May  9 09:45:57 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* shutdown.c (restart): Fix FREE(sz) that was in error
+	(harmlessly, but still wrong). Thanks Jim Blandy!
+
 Fri May  7 08:34:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* color.c: Use float.h, not values.h, and DBL_MAX, not
