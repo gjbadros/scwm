@@ -55,18 +55,24 @@
 (define toggle-vertical #f)
 (define toggle-initialized #f)
 
-(define animate-pixmaps-delay 2000)
+(define animate-pixmaps-delay 1000)  ;; in ms
+(define animating? #f)
+
 
 (define (animate-pixmaps button pixmap1 pixmap2)
   (define (show1) 
-    (gtk-container-remove button pixmap2)
-    (gtk-container-add button pixmap1)
-    (gtk-widget-show pixmap1)
+    (if animating?
+	(begin
+	  (gtk-container-remove button (car (gtk-container-children button)))
+	  (gtk-container-add button pixmap1)
+	  (gtk-widget-show pixmap1)))
     (add-timer-hook! animate-pixmaps-delay show2))
   (define (show2) 
-    (gtk-container-remove button pixmap1)
-    (gtk-container-add button pixmap2)
-    (gtk-widget-show pixmap2) 
+    (if animating?
+	(begin
+	  (gtk-container-remove button (car (gtk-container-children button)))
+	  (gtk-container-add button pixmap2)
+	  (gtk-widget-show pixmap2)))
     (add-timer-hook! animate-pixmaps-delay show1))
   (show1))
 
@@ -88,7 +94,7 @@
     (gtk-container-add button (if (and pixmap? pixmap)
 				  pixmap label))
     (if pixmap (gtk-widget-show pixmap) (gtk-widget-show label))
-    (if (and pixmap pixmap2) (animate-pixmaps button pixmap pixmap2))
+    (if (and pixmap pixmap2) (animate-pixmaps button pixmap2 pixmap))
     (set-object-property! class 'gtk-button button)
     (gtk-signal-connect button "clicked"
 			(lambda ()
@@ -168,6 +174,8 @@
     (gtk-container-add toplevel box)
     (gtk-widget-show box)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
+    (gtk-signal-connect toplevel "enter_notify_event" (lambda (args) (set! animating? #t)))
+    (gtk-signal-connect toplevel "leave_notify_event" (lambda (args) (set! animating? #f)))
     (set! toggle-initialized #t)
     (gtk-window-set-policy toplevel #t #t #t)
     (if show (gtk-widget-show toplevel))))

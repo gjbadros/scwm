@@ -140,6 +140,27 @@ drawn.  POINT is of the form (X . Y)."
 	  (if win (list win) #f)))))
 
 
+(define*-public (two-window-or-more-nonant-prompter name #&optional (p1 "first window") (p2 "second window"))
+  (let ((winlist (selected-windows-list)))
+    (if (>= (length winlist) 2)
+	(begin
+	  (unselect-all-windows)
+	  (list winlist (map (lambda (w) (object-property w 'nonant)) winlist)))
+	(let ((win1 #f)
+	      (win2 #f)
+	      (nonant1 #f)
+	      (nonant2 #f))
+	  (message-window-set-message! msgwin (string-append name ": " p1))
+	  (with-message-window-shown
+	   msgwin
+	   (set! win1 (get-window-with-nonant-interactively))
+	   (set! nonant1 (object-property win1 'nonant))
+	   (message-window-set-message! msgwin (string-append name ": " p2))
+	   (set! win2 (get-window-with-nonant-interactively))
+	   (set! nonant2 (object-property win2 'nonant))
+	   (list (list win1 win2) (list nonant1 nonant2)))))))
+
+
 ;; Perhaps should move this elsewhere
 ;; Useful drawing utilities function
 ;; TRANSLATE POINT
@@ -203,14 +224,15 @@ drawn.  POINT is of the form (X . Y)."
     (if (eqv? (length winlist) 1)
 	(begin 
 	  (unselect-all-windows)
-	  (list (car winlist) (nonant->dirvector (object-property (car winlist) 'nonant)))) ;; give the default nonant as the middle
+	  (list (car winlist) 
+		(nonant->dirvector 
+		 (object-property (car winlist) 'nonant)))) ;; give the default nonant as the middle
 	(begin
 	  (message-window-set-message! msgwin "Window nonant to anchor?")
 	  (with-message-window-shown 
 	   msgwin
-	   (let* ((winlist (select-viewport-position))
-		  (win (car winlist))
-		  (nonant (get-window-nonant winlist)))
+	   (let* ((win (get-window-nonant-interactively))
+		  (nonant (object-property win 'nonant)))
 	     (list win (nonant->dirvector nonant))))))))
 
 ;; (nonant->dirvector (get-window-nonant (select-viewport-position)))
@@ -322,26 +344,7 @@ to make it resize around its center."
 
 ;; ui-constructor
 (define (ui-cnctr-align)
-  (let ((winlist (selected-windows-list)))
-    (if (>= (length winlist) 2)
-	(begin
-	  (unselect-all-windows)
-	  (list winlist (map (lambda (w) (object-property w 'nonant)) winlist)))
-	(let ((win1 #f)
-	      (win2 #f)
-	      (nonant1 #f)
-	      (nonant2 #f))
-	  (message-window-set-message! msgwin "First window nonant to align?")
-	  (with-message-window-shown
-	   msgwin
-	   (set! winlist (select-viewport-position))
-	   (set! win1 (car winlist))
-	   (set! nonant1 (get-window-nonant winlist))
-	   (message-window-set-message! msgwin "Second window nonant to align?")
-	   (set! winlist (select-viewport-position))
-	   (set! win2 (car winlist))
-	   (set! nonant2 (get-window-nonant winlist))
-	   (list (list win1 win2) (list nonant1 nonant2)))))))
+  (two-window-or-more-nonant-prompter "Alignment"))
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
@@ -388,9 +391,9 @@ to make it resize around its center."
 ;; converts a normal nonant value to a string
 (define (halign-nonant->string nonant)
   (case nonant
-    ((0 1 2) "Top")
-    ((3 4 5) "Middle")
-    ((6 7 8) "Bottom")))
+    ((0 1 2) "top")
+    ((3 4 5) "middle")
+    ((6 7 8) "bottom")))
 
 ;; menuname code for alignment
 (define (menuname-halign ui-constraint)
@@ -469,9 +472,9 @@ Also can be used to glue top and bottom edges of windows together."
 ;; converts a normal nonant value to a string
 (define (valign-nonant->string nonant)
   (case nonant
-    ((0 3 6) "Top")
-    ((1 4 7) "Center")
-    ((2 5 8) "Bottom")))
+    ((0 3 6) "left")
+    ((1 4 7) "center")
+    ((2 5 8) "right")))
 
 ;; menuname code for alignment
 (define (menuname-valign ui-constraint)
@@ -835,26 +838,7 @@ Do not let window get taller than it is."
 
 ;;  ui-constructor
 (define (ui-cnctr-strict-relpos)
-  (let ((winlist (selected-windows-list)))
-    (if (>= (length winlist) 2)
-	(begin
-	  (unselect-all-windows)
-	  (list winlist (map (lambda (w) (object-property w 'nonant)) winlist)))
-	(let ((win1 #f)
-	      (win2 #f)
-	      (nonant1 #f)
-	      (nonant2 #f))
-	  (message-window-set-message! msgwin "First window nonant to maintain relative loc?")
-	  (with-message-window-shown
-	   msgwin
-	   (set! winlist (select-viewport-position))
-	   (set! win1 (car winlist))
-	   (set! nonant1 (get-window-nonant winlist))
-	   (message-window-set-message! msgwin "Second window nonant to maintain relative loc?")
-	   (set! winlist (select-viewport-position))
-	   (set! win2 (car winlist))
-	   (set! nonant2 (get-window-nonant winlist))
-	   (list (list win1 win2) (list nonant1 nonant2)))))))
+  (two-window-or-more-nonant-prompter "Strict relative position"))
 
 ;; utilities functions to create some cl-variables
 (define (window-clv-cx win) 

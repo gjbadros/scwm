@@ -20,6 +20,7 @@
 
 (define-module (app scwm highlight-current-window)
   :use-module (app scwm optargs)
+  :use-module (app scwm window-selection)
   :use-module (app scwm flash-window)
   :use-module (app scwm modifier-key-bindings))
 

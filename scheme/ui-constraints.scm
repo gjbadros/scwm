@@ -655,7 +655,7 @@ If WIN is not specified, the user is prompted to select a window."
 ;; delete-all-constraints
 (define-public (delete-all-constraints)
   "Delete all constraints in the global instance list."
-  (for-each delete-ui-constraint global-constraint-instance-list))
+  (for-each delete-ui-constraint! global-constraint-instance-list))
 
 
 ;; HOOKS
