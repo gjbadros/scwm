@@ -19,6 +19,7 @@ Paricularly noticeable with the GIMP
 
 * New hooks
 ** `pre-command-hook', `post-command-hook': pre- uses `this-command' and `this-command-args' variables.
+** `X-SelectionNotify-hook' for notification that there is no selection after `X-convert-selection' requests
 
 * Interactive specifications are now warned when violated.
 
@@ -43,6 +44,8 @@ Paricularly noticeable with the GIMP
    instead of always highlighting just a single corner or side window
 
 * Changed procedures
+** `maximize' no longer resets the gravity on the maximized window
+   (also some animation maximization bugs were fixed)
 ** Rename menu-global-theme, menu-window-theme to
 `make-menu-global-theme' and `make-menu-window-theme' since they are
 procs that return menus, not bound directly to menus.
@@ -50,6 +53,7 @@ procs that return menus, not bound directly to menus.
 for supporting whole-edge highlighting for better constraint interface
 
 * New primitives
+** `X-get-selection-owner', `X-convert-selection' for managing selections, also `X-SelectionNotify-hook'
 ** `get-next-event' for getting the next key *or* mouse event
 ** `call-interactively' (also invoked internally when dispatch key/mouse bindings)
 ** `window-visibility' for reporting on current visibility state of a window
@@ -57,6 +61,7 @@ for supporting whole-edge highlighting for better constraint interface
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
 
 * New procedures
+** `X-handle-selection-string', `netscape-goto-selection-url'
 ** `describe-event', to complement `describe-{mouse,key}' using new `get-next-event' primitive
 ** `set-highlight-colors!' convenience procedure.
 ** `unbind-mouse', `unbind-key' take optional ignored extra arguments

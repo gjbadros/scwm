@@ -1,3 +1,18 @@
+Sun Jan  9 16:25:43 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Added `X-handle-selection-string' (nicer
+	interface to `X-convert-selection' primitive).
+
+	* winops.scm: Added some debug code to `maximize' and no longer
+	reset gravity to 'northwest after a maximization.
+
+	* netscape.scm: Added `netscape-goto-selection-url'.
+
+	* bincomm.scm: Added some debugging code.
+
+	* stringops.scm: Use base module for `color-property'.  Thanks
+	Harald Meland!
+
 Sat Jan  8 17:50:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* describe.scm: Added `describe-event', and factor out
