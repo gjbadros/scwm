@@ -39,6 +39,11 @@
     (window-frame-size)))		; 3
   )
 
+(define-public (window-configuration? wcfg)
+  "Return #t if WCFG is a window configuration."
+  (and (pair? wcfg) 
+       (window? (car wcfg))))
+
 ;; (define c (window-configuration))
 
 (define*-public (copy-window-configuration configuration #&optional (win (get-window)))

@@ -136,3 +136,15 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (cons (car-or-255 (keysym->keycode "Hyper_L")) (mod-mask-hyper)))
 (define-public XKM_SUPER_L
   (cons (car-or-255 (keysym->keycode "Super_L")) (mod-mask-super)))
+
+(define (mod-mask-tester?? mm)
+  (lambda (modmask)
+    (if (= (logand mm modmask) 0) #f #t)))
+
+(define-public mod-mask-shift? (mod-mask-tester?? (mod-mask-shift)))
+(define-public mod-mask-control? (mod-mask-tester?? (mod-mask-control)))
+(define-public mod-mask-meta? (mod-mask-tester?? (mod-mask-meta)))
+(define-public mod-mask-hyper? (mod-mask-tester?? (mod-mask-hyper)))
+(define-public mod-mask-alt? (mod-mask-tester?? (mod-mask-alt)))
+(define-public mod-mask-super? (mod-mask-tester?? (mod-mask-super)))
+

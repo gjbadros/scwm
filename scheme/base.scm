@@ -597,11 +597,12 @@ The rest of the arguments are passed as options to the xterm command."
 (defmacro-public with-message-window-shown (mwn . body)
 ;;;** Display message window MWN while evaluating BODY.
 ;;; If BODY throws, the MWN is guaranteed to be removed from the display.
-  `(dynamic-wind
-    (lambda () (and (message-window? ,mwn) (message-window-show! ,mwn)))
-    (lambda () ,@body)
-    (lambda () (and (message-window? ,mwn) (message-window-hide! ,mwn)))))
-
+  `(let ((msgwin ,mwn))
+     (dynamic-wind
+      (lambda () (and (message-window? msgwin) (message-window-show! msgwin)))
+      (lambda () ,@body)
+      (lambda () (and (message-window? msgwin) (message-window-hide! msgwin))))))
+  
 ;; add-hook! and remove-hook! are defined in guile's boot-9.scm
 ;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
 ;; (otherwise, in post guile-1.3, it's already a primitive)
