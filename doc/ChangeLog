@@ -1,3 +1,8 @@
+1998-07-25  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm.sgml scwm-procedures.txt): Build
+	  scwm-procedures.txt, scwm.sgml by default
+
 1998-07-23  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.sgml: added links between functions, to the files (these

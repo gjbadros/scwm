@@ -1,3 +1,80 @@
+1998-07-25  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.c: mark_XXXXX -- use GC_MARK_SCM_IF_SET pervasively, instead
+	  of scm_gc_mark (just in case something is not initialized)
+
+	* *.c: use new SCWM_SYMBOL macros pervasively
+
+	* callbacks.c: doc string spelling fix, drop a FIXDOC since the
+	  extractor now gets HOOK comments
+
+	* constraint-primitives.cc: Use a set, not a list for the dirty
+	  windows.  Better debug support on ScwmResolve.  Clear the set of 
+	  dirty windows when there is a new master solver.  Added doc strings
+
+	* decor.c: Docstring edit
+
+	* drawmmenu.c: Move RelieveRectangle into xmisc.c
+	
+	* events.c: Use new ConstrainSize() args; better debugging for
+	  HandleConfigureRequest()
+	
+	* face.c: doc string changes
+
+	* makefile.cassowary: rebuild extratags when TAGS changes
+	
+	* module-interface.c: Doc comment fixes
+
+	* move.h, move.c: Added MapMessageWindow(), UnmapMessageWindow();
+	  clean up some I18N support and added a ComputeTextWidth function 
+	  (FIXGJB: maybe this should go in xmisc.c?);  Improve
+	  DisplayMessage;  Use move_size of 10 in Keyboard_shortcuts()
+	  instead of menu entry height (which was completely broken
+	  anyway, and I removed Scr.EntryHeight from the struct
+	  ScreenInfo in screen.h
+
+	* placement.c: typographical changes -- I hate spaces between
+	  function name and parameter list! :-)
+	
+	* resize.h, resize.c: Better encapsulate ConstrainSize, resizing: drop all
+	  the file-static variables that manage the resize operation.
+	  Added opaque resizing, dropped DoResize (and with it the
+	  rubberband -- I'll bring the rubberband back, soon, as I imagine 
+	  people w/ slower machines [like me at home] want this);  Got
+	  resizing working with Cassowary; Added
+	  ComputeNewGeometryOnResize to enclose the constrain size stuff;
+	  further improve CreateMessageWindow.
+
+	* scwm-snarf.h: Added SCWM_SYMBOL, SCWM_GLOBAL_SYMBOL macros which 
+	  currently just pass along to SCM_??_SYMBOL macros
+
+	* screen.h: Rename SizeWindow -> MsgWindow.  Drop SizStringWidth
+	  and EntryHeight since these are no longer used
+
+	* scwm-constraints.h, scwm-constraints.c: Added x,y args to
+	  SuggestSizeWindowTo since resizing to the left involves moving,
+	  too.  Call AddSizeConstraints on a new window;  make
+	  SuggestMoveWindowTo check to make sure the window really moved
+	  before calling XMoveWindow.
+	
+	* scwm-constraints.hpp: Added AddSizeConstraints(); make
+	  CopyStateToPswVars return two bools, fMoved, fResized; better
+	  debugging -- added a _name member to SWCI
+	
+	* scwm.c: reorder some initialization stuff to be a bit safer,
+	  drop last arg from CreateMessageWindow since MWMMenus flag was
+	  unused by it
+	
+	* xmisc.c, xmisc.h: Added FXGetWindowSize, RelieveRectangle (move
+	  from drawmenu.c, since the message window needed the code)
+
+	* window.h, window.c: Added SetScwmWindowGeometry to resize and
+	  move a window properly.  Added select-window-interactively
+	  (takes a prompt), generalize the size and pointer window into a
+	  message window, and rename appropriately.
+	
+	* dbug_resize.h: Added for tracing the resize operations
+
 1998-07-24  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added screen.c, screen.x
