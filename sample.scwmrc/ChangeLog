@@ -1,3 +1,9 @@
+Sat Jul  3 21:03:53 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* juhp.scwmrc, gjb.scwmrc, sds.scwmrc:  Do not try to set
+	resize-opaquely? or move-opaquely? -- they're scwm options now and 
+	have been renamed.
+
 Sat Jul  3 18:11:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Set scwmdir to $SCWMDIR or a default, and use it

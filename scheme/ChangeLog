@@ -1,3 +1,60 @@
+Sat Jul  3 22:00:26 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm: Use defoption module. make *context-map*'s
+	procedures have names so they can be read in.
+
+	* preferences.scm: Make procedure reader from port work on
+	procedures that have arguments.
+
+	* minimal.scm: Fix process-use-scwm-modules error handling to have 
+	the second proc take (key . args).
+
+	* menus-extras.scm: Use defoption module.  Added range and
+	favorites to *menu-max-fold-lines*
+
+	* edge-ops.scm: Use defoption module.
+
+Sat Jul  3 20:48:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm, flux.scm: Rename `move-opaquely?' to
+ 	`*move-opaquely-proc*', `resize-opaquely?' to
+ 	`*resize-opaquely-proc*'; make them scwm-options.
+
+	* std-menus.scm: Rename `context-map' to `*context-map*' and make
+	it a scwm-option.
+
+	* preferences.scm: Added `dummy-prompt-hbox' for unknown types,
+	and handle them reasonably gracefully.
+
+	* minimal.scm: ws change
+
+	* menu-extras.scm: Rename `default-menu-max-fold-lines' to
+	`*menu-max-fold-lines*' and make scwm-option.
+
+	* edge-ops.scm: Rename `samf-edge-scroll-delay' to
+	`*edge-ops-scroll-delay*', `edge-ops-scroll-backoff' to
+	`*edge-ops-scroll-backoff*'. Make them scwm-options.
+
+	* defoption.scm: Added 'alist:re->string type in documentation
+	(still unsupported).
+
+Sat Jul  3 19:51:35 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Use my new `eval-after-load' to protect against
+ 	undefined symbols.
+
+	* minimal.scm: Added `scwm-module-loaded?'  and `eval-after-load'
+	features.  Make `use-scwm-modules' return a list with the modules
+	that succeeded in it, instead of just list of booleans.  Also,
+	improve error handling by calling handle-system-error when a
+	module does not load properly.
+
+	* flux.scm: ws change.
+
+	* defoption.scm: Save the module name with the scwm-option so that 
+	they the option remembers what needs to be loaded to access it and 
+	does not try to set! an undefined variable.
+
 Sat Jul  3 00:15:25 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm: ws change
