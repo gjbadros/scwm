@@ -39,6 +39,17 @@
 #include "window.h"
 #include "binding.h"
 
+
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef DECOR_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
 #define SIZE_HINDENT 5
 #define SIZE_VINDENT 3
 #define MAX_WINDOW_WIDTH 32767
@@ -173,6 +184,8 @@ typedef struct ScwmDecor {
 } ScwmDecor;
 
 
+EXTERN long scm_tc16_scwm_screen;
+
 typedef struct ScreenInfo {
 
   unsigned long screen;
@@ -279,6 +292,12 @@ typedef struct ScreenInfo {
 } ScreenInfo;
 
 extern ScreenInfo Scr;
+
+SCM ScmFromPScreenInfo(ScreenInfo *psi);
+
+#define SCREENP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_screen)
+#define SCREEN(X)  ((ScreenInfo *)SCM_CDR(X))
+
 
 /* 
    Macro which gets specific decor or default decor.
