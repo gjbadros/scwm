@@ -232,11 +232,18 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 extern ScwmWindow *pswCurrent;
 extern Bool scwm_gc_often;
 
+/* Can set this in debugger to turn off running hooks */
+static Bool fSuppressRunningHooks = False;
+
 SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
 {
   static Bool scwm_gc_really_often = False;
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
   SCM answer;
+
+  if (fSuppressRunningHooks)
+    return SCM_BOOL_F;
+
   if (!SCM_HOOKP(hook)) {
     scwm_error_message(gh_str02scm("Bad hook: %S, args = %S\n"), 
                        gh_list(hook,args,SCM_UNDEFINED));
