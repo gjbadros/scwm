@@ -1,3 +1,8 @@
+Thu Jul  1 09:41:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (DISTCLEANFILES): Added this rule -- thanks
+	Francesco Tapparo!
+
 Wed Apr 14 15:08:48 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Build fixes... was missing some stuff for new
