@@ -15,6 +15,7 @@
   :use-module (app scwm base)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
+  :use-module (app scwm message-window)
   :use-module (app scwm winops)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
@@ -769,6 +770,7 @@ of this function, as a string."
     (close-pipe p)
     answer))
 
+;; GJB:FIXME:: sans-final-newline exists in (ice-9 string-fun)
 (define-public (chop-newline str)
   "Return STR up to but not including the first newline character."
   (let ((ich (string-index str #\newline)))

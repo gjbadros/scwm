@@ -22,6 +22,7 @@
 (define-module (app scwm themes)
   :use-module (app scwm style-options)
   :use-module (app scwm style)
+  :use-module (app scwm defoption)
   :use-module (app scwm optargs)
   :use-module (app scwm file)
   :use-module (app scwm listops)
@@ -36,8 +37,11 @@
 ;;; affect window styles, menus, icons, backgrounds, and various
 ;;; global settings.
 
-(define-public theme-path (list (string-append (scwm-path-prefix) "/share/scwm-themes")))
-
+;; this is not primitive either, but need string test case
+(define-scwm-option *theme-path* (list (string-append (scwm-path-prefix) "/share/scwm-themes"))
+  "The path (list of directory names as strings) to search for theme files."
+  #:type 'path
+  #:group 'file-locations)
 
 (add-window-style-option #:use-theme 
 			 (lambda (condition theme) 
@@ -71,14 +75,14 @@ of themes have yet to be implemented.)"
 	((theme:background-style theme)))))
 
 (define-public (load-theme fname)
-  "Returns a theme FNAME which is loaded from `theme-path'.
+  "Returns a theme FNAME which is loaded from `*theme-path*'.
 The theme should be either a directory, or a (possibly gzipped)
 tar file with extension .tar, .tar.gz, or .tgz."
   (let ((full-fname (or 
-		     (find-file-in-path fname theme-path)
-		     (find-file-in-path (string-append fname ".tar") theme-path)
-		     (find-file-in-path (string-append fname ".tar.gz") theme-path)
-		     (find-file-in-path (string-append fname ".tgz") theme-path))))
+		     (find-file-in-path fname *theme-path*)
+		     (find-file-in-path (string-append fname ".tar") *theme-path*)
+		     (find-file-in-path (string-append fname ".tar.gz") *theme-path*)
+		     (find-file-in-path (string-append fname ".tgz") *theme-path*))))
     (cond
      ((not full-fname) 
       (error (string-append "Theme file \"" fname "\" not found.")))
@@ -177,12 +181,14 @@ tar file with extension .tar, .tar.gz, or .tgz."
 
 
 ;; contributed by Glenn Trig
+;; (this is close to basename, but keeps the path intact,
+;;  whereas basename strips the leading directories, too --03/27/99 gjb)
 (define (remove-suffix str suffix) 
   (let ((sufl (string-length suffix)) 
         (sl (string-length str))) 
     (if (and (> sl sufl) 
              (string=? (substring str (- sl sufl) sl) suffix)) 
-        (substring str 0 (- sl sufl)) str))) 
+        (substring str 0 (- sl sufl)) str)))
  
 ;; contributed by Glenn Trig
 (define-public (theme-names) 
@@ -222,6 +228,6 @@ tar file with extension .tar, .tar.gz, or .tgz."
                    #f)) 
              (closedir dir)) 
            #f)) 
-     theme-path) 
+     *theme-path*) 
     (sort path-items string<?)) 
   ) 

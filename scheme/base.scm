@@ -65,6 +65,14 @@
   "Return the number of pixels that is Y percent of the display height."
   (round/ (* y display-height) 100))
 
+(define-public (pix->%x pix)
+  "Return the percent of the display width that PIX is."
+  (round/ (* pix 100) display-width))
+
+(define-public (pix->%y pix)
+  "Return the percent of the display height that PIX is."
+  (round/ (* pix 100) display-height))
+
 (define-public (x- x)
   "Return the viewport pixel coordinate X pixels left of the right display edge."
   (- display-width x))

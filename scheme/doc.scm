@@ -2,13 +2,6 @@
 ;;; doc.scm
 ;;; (C) 1998 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
 
-;; GJB:FIXME:: hack to put doc-files in root module
-(define doc-files
-  (map (lambda (st) (string-append (scwm-path-prefix) "/share/scwm/" st))
-       '("scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"
-         "scwm-concepts.txt" "cassowary_scm-procedures.txt")))
-
-
 (define-module (app scwm doc)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
@@ -16,6 +9,11 @@
   :use-module (app scwm optargs))
 
 
+
+(define-public doc-files
+  (map (lambda (st) (string-append (scwm-path-prefix) "/share/scwm/" st))
+       '("scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"
+         "scwm-concepts.txt" "cassowary_scm-procedures.txt")))
 
 (define-public documentation-debug #f)
 

@@ -30,8 +30,8 @@
 ;;; Currently, the best documentation on themes is the source code;
 ;;; however, here are a few notes.
 ;;; To create a theme, create a new subdirectory of a directory in
-;;; `theme-path' (you'll probably want to add a private directory to 
-;;; `theme-path').  This subdirectory should be named the same as the
+;;; `*theme-path*' (you'll probably want to add a private directory to 
+;;; `*theme-path*').  This subdirectory should be named the same as the
 ;;; theme.  This subdirectory must contain (at least) a file named
 ;;; theme.scm.  This file must create a module named
 ;;; (app scwm theme your-theme-name), and define (in this module)

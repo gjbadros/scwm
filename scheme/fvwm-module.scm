@@ -22,6 +22,7 @@
 (define-module (app scwm fvwm-module)
   :use-module (app scwm winlist)
   :use-module (app scwm base)
+  :use-module (app scwm file)
   :use-module (app scwm module-types)
   :use-module (app scwm bincomm)
   :use-module (app scwm fvwm-eval)
@@ -393,6 +394,8 @@
 (define-public fvwm2-module-path '("/usr/lib/X11/fvwm2"
 				   "/usr/local/lib/X11/fvwm2"))
 
+;; GJB:FIXME:MS: Isn't this a primitive procedure?  And that one
+;; takes an optional second arg, suffix
 (if (not (defined? 'basename))
     (define (basename str)
       (let ((ix (string-rindex str #\/)))
@@ -401,14 +404,10 @@
 	    str))))
 
 (define (aux-config-info)
-  (define (insert-colons l)
-    (if (null? (cdr l))
-	l
-	(append (list (car l)) '(":") (insert-colons (cdr l)))))
-  (let ((path (insert-colons image-load-path)))
+  (let ((path (path-list->string-with-colons image-load-path)))
     (list
-     (list->string (append '("IconPath ") path))
-     (list->string (append '("PixmapPath ") path))
+     (string-append "IconPath " path)
+     (string-append "PixmapPath " path)
      "ColorLimit 0"
      "ClickTime 150")))
 

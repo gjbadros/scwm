@@ -19,7 +19,8 @@
 
 
 
-(define-module (app scwm file))
+(define-module (app scwm file)
+  :use-module (ice-9 string-fun))
 
 
 ;;;;
@@ -59,3 +60,16 @@ file. If the file is found, the full pathname to it is returned; if not,
 		      #f))) 
 	      path)))
 
+
+(define-public (path-list->string-with-colons l)
+  (define (insert-colons l)
+    (if (null? (cdr l))
+	l
+	(append (list (car l)) '(":") (insert-colons (cdr l)))))
+  (list->string (insert-colons l)))
+
+;; (use-modules (ice-9 string-fun))
+;; (use-modules (app scwm file))
+;; (string-with-colons->path-list "this:is:a:test")
+(define-public (string-with-colons->path-list s)
+  (separate-fields-discarding-char #\: s list))

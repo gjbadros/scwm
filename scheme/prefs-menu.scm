@@ -35,6 +35,7 @@
 
 (define-public save-header
   ";; text from here to the EOF is overwritten by `save-settings'.")
+;; ignore above string -- it refers to text occurring elsewhere
 
 (define-public (save-settings)
   (let ((fd (open user-init-file (logior O_RDWR O_CREAT))))
@@ -215,7 +216,7 @@ All the arguments are passed directly to the `menu' function."
               (menuitem "Window Properties" #:action (show-com "xprop"))
               (menuitem "General Info" #:action show-system-info)
               menu-separator
-              (menuitem "SCWM interaction" #:action
+              (menuitem "Scwm interaction" #:action
                         (run-in-xterm "scwmrepl"))
               (menuitem "Specific parameters" #:action
                         (menu (append!

@@ -27,6 +27,9 @@
 
 
 
+;; GJB:FIXME:MS: Is there a better way to see if a module has been loaded?
+(provide 'scwm-auto-raise)
+
 ;;;; auto-raise
 ;;;;
 ;;;; This module provides a convenient wrapper for the timer and
