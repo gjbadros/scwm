@@ -1,3 +1,10 @@
+Mon Apr 12 14:41:45 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* colors.c: Couldn't -> could not.
+
+	* color.c: Small memory leak on an error condition (not
+ 	responsible for the leak Sam Steingold is seeing).
+
 Mon Apr 12 12:21:14 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winprop.c: Use VALIDATE_ARG_WIN_COPY, VALIDATE_ARG_SYM.
