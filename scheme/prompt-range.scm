@@ -20,6 +20,7 @@
 
 (define-module (app scwm prompt-range)
   :use-module (app scwm gtk)
+  :use-module (app scwm base)
   :use-module (gtk gtk)
   :use-module (app scwm optargs))
 
@@ -43,13 +44,14 @@
 ;;(define w (prompt-integer-range "Value?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval 1))
 (define*-public (prompt-range prompt range proc #&key
 			      (initval #f)
-			      (title #f))
+			      (title #f)
+			      (digits 1))
   "Prompt using PROMPT for a numeric value in RANGE, and call PROC with value if Ok is clicked.
 RANGE is a cons cell (low . hight); ranges are inclusive. 
 INITVAL is a default initial value.
 TITLE is a window title."
   (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-range-hbox prompt range initval))
+	 (hbox-and-getter (prompt-range-hbox prompt range initval digits))
 	 (hbox (car hbox-and-getter))
 	 (getter (cadr hbox-and-getter))
 	 (hbox-buttons (gtk-hbox-new #f 5))
@@ -86,7 +88,8 @@ INITVAL is a default initial value.
 TITLE is a window title."
   (prompt-range prompt range (lambda (v) (proc (inexact->exact v)))
 		#:initval initval
-		#:title title))
+		#:title title
+		#:digits 0))
 
 
 
@@ -97,10 +100,12 @@ The returned value is a list: (hbox getter).
 See also `prompt-range'."
   (let* ((hbox (gtk-hbox-new #f 5))
 	 (label (gtk-label-new prompt))
+	 (delta (- (cdr range) (car range)))
+	 (page-inc (round/ delta 10))
 	 ;; gtk-adjustment-new value lower upper step-inc page-inc page-size
 	 (adjustment (gtk-adjustment-new (or initval (car range))
 					 (car range) (cdr range)
-					 1.0 5.0 5.0))
+					 1.0 page-inc 0.0))
 	 (scale (gtk-hscale-new adjustment)))
     (gtk-widget-set-usize scale 300 30)
     (gtk-range-set-update-policy scale 'delayed)
