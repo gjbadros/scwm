@@ -378,11 +378,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (gtk-widget-show-all toplevel)
     (gtk-signal-connect okbut "clicked" 
 			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-;;    (gtk-signal-connect applybut "clicked" 
-;;			(lambda () 
-;;			  (proc (getter))))
+			  (gtk-widget-destroy toplevel)))
     (gtk-signal-connect cancelbut "clicked"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
