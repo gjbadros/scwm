@@ -12,7 +12,7 @@
 
 #include "window_fwd.h"
 
-Bool PlaceWindow(struct ScwmWindow *psw, int Desk);
+Bool PlaceWindow(struct ScwmWindow *psw);
 
 #endif
 

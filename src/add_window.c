@@ -156,7 +156,7 @@ AddWindow(Window w)
   XSetWindowAttributes attributes;	/* attributes for create windows */
   int i;
 
-  int Desk = 0, border_width = 0, resize_width = 0;
+  int border_width = 0, resize_width = 0;
   extern ScwmWindow *colormap_win;
   int client_argc;
   char **client_argv = NULL, *str_type;
@@ -281,7 +281,6 @@ AddWindow(Window w)
 
   if (psw->fStartsOnDesk) {
     DBUG((DBG,FUNC_NAME,"fStartsOnDesk is true"));
-    Desk = psw->StartDesk;
   }
 
   /* FIXGJB: need to provide more flexibility in how the
@@ -311,7 +310,7 @@ AddWindow(Window w)
     XrmParseCommand(&db, table, 4, "scwm", &client_argc, client_argv);
     status = XrmGetResource(db, "scwm.desk", "Scwm.Desk", &str_type, &rm_value);
     if ((status == True) && (rm_value.size != 0)) {
-      Desk = atoi(rm_value.addr);
+      psw->StartDesk = atoi(rm_value.addr);
       psw->fStartsOnDesk = True;
     }
     XrmDestroyDatabase(db);
@@ -620,7 +619,7 @@ AddWindow(Window w)
 
   call1_hooks(before_place_new_window_hook, psw->schwin);
 
-  if (!PlaceWindow(psw, Desk)) {
+  if (!PlaceWindow(psw)) {
     scwm_msg(ERR,FUNC_NAME,"PlaceWindow failed for %s -- resources leaked!",psw->name);
     /* there is cleanup we would need to do (but what is the 
        meaning of a failed PlaceWindow?) --07/27/98 gjb */

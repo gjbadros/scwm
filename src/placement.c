@@ -342,14 +342,16 @@ test_fit(ScwmWindow * psw, int x11, int y11, int aoimin)
   return aoi;
 }
 
+
 void 
-default_select_desk(ScwmWindow *psw, int Desk)
+default_select_desk(ScwmWindow *psw)
 {
   Atom atype;
   int aformat;
   unsigned long nitems, bytes_remain;
   unsigned char *prop;
   ScwmWindow *tpsw;
+  int Desk;
 
   /* Select a desk to put the window on (in list of priority):
    * 1. Sticky Windows stay on the current desk.
@@ -358,6 +360,7 @@ default_select_desk(ScwmWindow *psw, int Desk)
    * 4. Transients go on the same desk as their parents.
    * 5. Window groups stay together (completely untested) */
 
+  Desk=psw->StartDesk;
   psw->Desk = Scr.CurrentDesk;
 
   if (psw->fSticky) {
@@ -383,15 +386,29 @@ default_select_desk(ScwmWindow *psw, int Desk)
      * in the group */
     psw->Desk = tpsw->Desk;
   }
-
-  /* I think it would be good to switch to the selected desk
-   * whenever a new window pops up, except during initialization */  
-  /* FIXGJB: this should be a callback, not a forced switch to the new
-     desk --03/26/98 gjb */
-  if ((!PPosOverride) && (!(psw->fShowOnMap)))
-    changeDesks(0, psw->Desk);
 }
 
+
+SCWM_PROC(place_on_default_desk, "place-on-default-desk", 1, 0, 0, 
+           (SCM win))
+     /**Place WIN on a desk according to the default algorithm.
+
+Place a window with it's window group, with a window it is transient
+for, on the desk it was on previous to a restart, on the desk
+specified with the starts-on-desk flag,
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
+`set-window-placement-proc!'). */
+#define FUNC_NAME s_place_on_default_desk
+{
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+
+  default_select_desk(PSWFROMSCMWIN(win));
+}
+#undef FUNC_NAME
 
 
 SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0, 
@@ -544,6 +561,11 @@ is not set, or the window starts iconic. */
 
   psw=PSWFROMSCMWIN(win);
 
+  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+    changeDesks(0, psw->Desk);
+
+  default_select_desk(psw);
+
   if (PPosOverride ||
       (psw->hints.flags & USPosition) ||
       (!psw->fNoPPosition && (psw->hints.flags & PPosition)) ||
@@ -587,6 +609,19 @@ SCWM_PROC(default_transient_placement_proc, "default-transient-placement-proc", 
 It simply leaves the window WIN in place, exactly as requested. */
 #define FUNC_NAME s_default_transient_placement_proc
 {
+  ScwmWindow *psw;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+
+  psw=PSWFROMSCMWIN(win);
+
+  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+    changeDesks(0, psw->Desk);
+
+  default_select_desk(psw);
+
   /* Just doing nothing should dtrt. */
 
   return SCM_BOOL_T;
@@ -604,7 +639,7 @@ It simply leaves the window WIN in place, exactly as requested. */
  * tell, this never returns False.
  */
 Bool 
-PlaceWindow(ScwmWindow *psw, int Desk)
+PlaceWindow(ScwmWindow *psw)
 {
   SCM place_proc;
   SCM win;
@@ -614,7 +649,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
   /* FIXMS: The desk selection stuff should be folded into the
      placement-procs, but let's leave it as it is for now. */
 
-  default_select_desk(psw,Desk);
+  default_select_desk(psw);
 
 #if DEBUG_PLACE_WINDOW
   scwm_msg(DBG,"PlaceWindow","attr = (%d,%d)",psw->attr.x,psw->attr.y);
