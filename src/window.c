@@ -1906,6 +1906,7 @@ SCWM_PROC(iconified_p, "iconified?", 0, 1, 0,
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_iconified_p
+
 {
   VALIDATE(win, FUNC_NAME);
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fIconified);
@@ -1991,6 +1992,24 @@ the usual way if not specified. */
 
 
 /* GJB:FIXME:MS: rename to window-sticky? */
+void set_sticky (SCM win, SCM flag)
+{
+  puts("Here we are.");
+  if (flag==SCM_BOOL_F) {
+    unstick(win);
+  } else {
+    stick(win);
+  }
+}
+
+
+scwm_property_handler sticky_handler =
+{
+  &set_sticky,
+  &sticky_p
+};
+
+
 SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is "sticky", #f otherwise.
@@ -3847,6 +3866,8 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
     scm_wrong_type_arg(func_name, n, win);
   }
   if (!VALIDWINP(win)) {
+
+  set_property_handler (sym_sticky, &sticky_handler);
     gh_allow_ints();
     scwm_error(func_name, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
