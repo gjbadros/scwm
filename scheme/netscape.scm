@@ -176,12 +176,17 @@ See `netscape-download-closed-action'."
   (disable-autosave-netscape-dialog)
   (add-hook! window-close-hook call-netscape-download-closed-action))
 
-(define-public url-google "http://www.google.com/search?q=")
+(define-public url-google "http://www.google.com")
+(define-public url-google-search (string-append url-google "/search?q="))
 
 ;; (netscape-google-search "glade")
 ;; (netscape-google-search "gtk")
 (define-public (netscape-google-search word)
-  (netscape-goto-url (string-append url-google (cgi-escapify-space word))))
+  "Use Netscape to do a google search for WORD.
+Just go to the google home page if WORD is #f."
+  (netscape-goto-url (if word
+			 (string-append url-google-search (cgi-escapify-space word))
+			 url-google)))
 
 (define*-public (netscape-google-search-cut-buffer)
   "Use Netscape to do a Google search of the `X-cut-buffer-string'."
