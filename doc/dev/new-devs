@@ -28,3 +28,18 @@ Other files to read:
 
 
 --09/16/98 gjb
+
+
+o header order sometimes matters; `EXTERN' isn't always `extern',
+depending on *_IMPLEMENTATION; if adding a #include leads to symbols
+not being defined at link time, see if you need to move a #define
+*_IMPLEMENTATION line up.
+
+o Explore the X tools you may not have used before; xev can show
+events going to a window, xprop can watch property changes,
+xwindowinfo will show all sorts of useful information.
+
+o Xnest isn't perfect, but is usually a better alternative than trying
+to debug the WM running your development environment.
+
+--09/23/98 jtl
