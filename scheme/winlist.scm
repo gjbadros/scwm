@@ -29,6 +29,24 @@
 
 
 
+  
+;; warp-placement is from Ken Pizzini
+(define-public (warp-placement win)
+  "Return a list, (%x %y), for the desired pointer placement for WIN.
+The percentages are of the window size, and are gotten by using
+the 'warp-placement object-property of WIN;  they default to (20 20)
+if no such property is set. To change the default for all your windows
+you can do something like:
+  (add-hook! after-new-window-hook 
+    (lambda (win) 
+      (set-object-property! win 'warp-placement '(80 20))))"
+  (let ((p (object-property win 'warp-placement))) 
+    (if (and p (pair? p) (= (length p) 2) (number? (car p)) (number? (cadr p)))
+	p '(20 20))))
+
+;;(set-object-property! (select-window-interactively) 'warp-placement '(80 25))
+;;(warp-placement (select-window-interactively))
+
 (define*-public (default-winlist-proc #&optional (win (get-window)))
   "The default behaviour when WIN is selected from the window list."
   (cond
@@ -36,7 +54,8 @@
 	(focus win)
 	(raise-window win)
 	(warp-to-window win)
-	(move-pointer (w%x 20 win) (w%y 20 win)))))
+	(let ((p (warp-placement win))) 
+	  (move-pointer (w%x (car p) win) (w%y (cadr p) win))))))
 
 (define (listify-if-atom l)
   (if (or (pair? l) (null? l)) l (list l)))
@@ -285,3 +304,4 @@ PROC is a procedure of one argument which does the work after the
 windows are circulated.  PROC defaults to `window-list-proc'.
 See also `next-window'."
   (circulate #t window only except proc))
+
