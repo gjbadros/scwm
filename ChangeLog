@@ -1,3 +1,7 @@
+Wed Oct  7 19:16:36 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* HACKING: Added note about automake bug.
+
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
 	* configure.in: define and substitute scwm_bin_load_path and 
