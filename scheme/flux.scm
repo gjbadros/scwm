@@ -33,6 +33,11 @@
 (define-public (interactive-resize-window-with-pointer)
   (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
 
+(define-public (toggle-max-vert) (toggle-maximize 0 (%y 100)))
+(define-public (toggle-max-horz) (toggle-maximize (%x 100) 0))
+(define-public (toggle-max-both) (toggle-maximize (%x 100) (%y 100)))
+(define-public (toggle-max-vert-part) (toggle-maximize 0 (%y 95)))
+
 (define-public (wiggle-window)
   (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
 
@@ -43,6 +48,25 @@
 
 (define-public (to-string . rest)
   (with-output-to-string (lambda () (apply write-all () rest))))
+
+(define-public (system-info-string)
+  (let ((vv (X-version-information)) (dd (X-display-information)))
+    (apply
+     to-string "Guile verion:\t\t" (version)
+     "\nLibguile timestamp:\t" (libguile-config-stamp)
+     "\nSCWM version:\t\t" (scwm-version)
+     "\nRestarted:\t\t" (bool->str (restarted?))
+     "\nDisplay Size:\t\t" (size->str (display-size))
+     "\nDesk Size:\t\t" (size->str (desk-size))
+     "\nViewport:\t\t" (size->str (viewport-position))
+     "\nPointer:\t\t" (size->str (pointer-position))
+     "\nCurrent Desk:\t\t" (number->string (current-desk))
+     "\nX vendor:\t\t" (caddr vv) "; version: " (number->string (car vv)) "."
+     (number->string (cadr vv)) "; release: " (number->string (cadddr vv))
+     "\nX Display:\n\tResolution:\t" (size->str dd) "\n\tColor:\t\t"
+     (list-ref dd 4) " (depth: " (number->string (caddr dd))
+     "; bits per RGB: " (number->string (cadddr dd)) ")\nimage-load-path:\n"
+     (map (lambda (st) (string-append "\t" st "\n")) image-load-path))))
 
 (define-public (make-file-menu file . rest)
   (menu (append! (list (menuitem "View" #:action (show-file file))
@@ -92,26 +116,10 @@
    "\nSticky:\t\t\t" (bool->str (sticky? ww))
    "\nTitle Bar Shown:\t" (bool->str (titlebar-shown? ww))))
 
-(define-public (show-system-info)
-  (let ((vv (X-version-information)) (dd (X-display-information)))
-    (apply
-     message "Guile verion:\t" (version)
-     "\nSCWM version:\t" (scwm-version)
-     "\nRestarted:\t" (bool->str (restarted?))
-     "\nDisplay Size:\t" (size->str (display-size))
-     "\nDesk Size:\t" (size->str (desk-size))
-     "\nViewport:\t" (size->str (viewport-position))
-     "\nPointer:\t" (size->str (pointer-position))
-     "\nCurrent Desk:\t" (number->string (current-desk))
-     "\nX vendor:\t" (caddr vv) "; version: " (number->string (car vv)) "."
-     (number->string (cadr vv)) "; release: " (number->string (cadddr vv))
-     "\nX Display:\n\tResolution:\t" (size->str dd) "\n\tColor:\t\t"
-     (list-ref dd 4) " (depth: " (number->string (caddr dd))
-     "; bits per RGB: " (number->string (cadddr dd)) ")\nimage-load-path:"
-     (map (lambda (st) (string-append "\n\t" st)) image-load-path))))
+(define-public (show-system-info) (message (system-info-string)))
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
-  (cons menu-title 
+  (cons menu-title
 	(cons menu-separator
 	      (map (lambda (elem)
 		     (let ((title (car elem))
@@ -119,12 +127,11 @@
 			   (icon (caddr elem))
 			   (exename (cadddr elem)))
 		       (if (program-exists? exename)
-			   (menuitem title
-				     #:image-left (if mini-icon
-						      (string-append
-						       "mini-" mini-icon ".xpm") #f)
-				     #:icon (if icon (string-append icon ".xpm") #f)
-				     #:action (lambda () (execute exename)))
+			   (menuitem
+                            title #:action exename #:image-left
+                            (if mini-icon
+                                (string-append "mini-" mini-icon ".xpm") #f)
+                            #:icon (if icon (string-append icon ".xpm") #f))
 			   #f)))
 		   menu-info-list))))
 
