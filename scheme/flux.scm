@@ -28,6 +28,7 @@
   :use-module (app scwm window-selection)
   :use-module (app scwm window-locations)
   :use-module (app scwm optargs)
+  :use-module (app scwm tile)
   :use-module (app scwm xprop-extras))
 
 
