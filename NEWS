@@ -38,6 +38,9 @@ numerous scwmdoc script fixes and improvements.
 * GNOME Support
 ** See (app scwm gnome-hints)
 
+* Corba Support
+** See (app scwm corba), modules/corba/ChangeLog
+
 * Alpha version of fvwm2rc-to-scwmrc converter
 ** utilities/converters/fvwm2rc-to-scwmrc
 ** handles /etc/X11/system.fvwm2rc
