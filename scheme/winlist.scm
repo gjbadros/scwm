@@ -225,13 +225,13 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
      #:hover-delay hover-delay)))
 
 
-(define*-public (show-window-list-menu warp-to-first #&rest rest)
+(define*-public (show-window-list-menu warp-to-index permit-alt-release-selection? #&rest rest)
   "Popup a window list menu.
 Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
 Accepts all keyword arguments that `make-window-list-menu' takes."
-  (popup-menu (apply make-window-list-menu rest) warp-to-first))
+  (popup-menu (apply make-window-list-menu rest) warp-to-index #f #f #f permit-alt-release-selection?))
   
-;; GJB:FIXME:MS: What the heck does this do?
+;; GJB:FIXME:MS: What the heck does this do?  Why does it remove the element, too?
 ;; (rotate-around 3 '(1 2 3 4 5)) => (4 5 1 2) --09/19/99 gjb
 (define (rotate-around w wl)
   (append (cond
@@ -249,7 +249,8 @@ Accepts all keyword arguments that `make-window-list-menu' takes."
 						(ignore-winlist-skip #f))
   "Permit selecting a window from a window list.
 Return the selected window object, or #f if none was selected"
-  (show-window-list-menu #:only only #:except except
+  (show-window-list-menu #f #f 
+			 #:only only #:except except
 			 #:flash-window-proc
 			 (lambda (w) (flash-window w #:unflash-delay #f))
 			 #:unflash-window-proc

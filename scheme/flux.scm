@@ -702,8 +702,10 @@ that corner fixed."
 	       #:except iconified?))
 
 (define-public (window-task-switcher-menu)
-  (show-window-list-menu #t #:by-focus #t #:show-last-focus-time #t
-			 #:show-geometry #t))
+  ;; Skip over the title and first window in the list (that win has focus already)
+  (show-window-list-menu 3 #t
+			 #:by-focus #t #:show-last-focus-time #t
+			 #:show-geometry #f))
   
 
 (define-public (bind-wheel-mouse-prior-next matching-proc)
@@ -812,16 +814,17 @@ May deiconify WIN and will raise WIN."
 
 (define-public (show-icon-list-menu)
   "Show a window list of only iconfied programs for animatedly deiconifying and giving them focus."
-  (show-window-list-menu #t
+  (show-window-list-menu 1 #f
 			 #:only iconified?
 			 #:proc animated-deiconify-to-current-vp-focus))
 
 (define-public (show-xterm-window-list-menu)
   "Show a window list of only xterms for animatedly deiconifying and giving them focus."
-  (show-window-list-menu #t #:only (lambda (w)
-				     (or 
-				      (string=? (window-class w) "XTerm")
-				      (string=? (window-class w) "NXTerm")))
+  (show-window-list-menu 1 #f
+			 #:only (lambda (w)
+				  (or 
+				   (string=? (window-class w) "XTerm")
+				   (string=? (window-class w) "NXTerm")))
 			 #:proc animated-deiconify-to-current-vp-focus))
 
 (define-public (move-or-shade)
