@@ -561,6 +561,7 @@ scwm_main(int argc, char **argv)
   init_menu();
   init_binding();
   init_window();
+  init_winprop();
   init_resize();
   init_move();
   init_face();
