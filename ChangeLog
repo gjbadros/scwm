@@ -1,3 +1,9 @@
+Thu Mar 12 09:20:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/emacs/scwm.el: Added scwm-procedure-documentation, and
+ 	some support functions; Fixed scwm-complete to go back an sexp,
+ 	not just a word
+
 Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* utilities/Makefile.in: Don't attempt to build scwmsend.
