@@ -1,5 +1,15 @@
 Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* face.c: Restore the calls to redraw_borders, since it is now
+ 	fixed.
+
+	* util.c: Fixed the bug in redraw_borders - it turned out not to
+ 	be a problem with SetBorderX at all, but rather with some code I
+ 	mindlessly copied.
+
+	* util.c: Fixed redraw_borders so that it works for now (but is
+ 	somewhat unattractive).
+
 	* Picture.c, Picture.h, scmtypes.c: Removed mark_picture;
  	scm_mark0 can be used as the marker when no sub-objects need to be
  	marked.
