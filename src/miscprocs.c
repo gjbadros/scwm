@@ -398,7 +398,7 @@ wait_for_window(SCM predicate)
 
   if (!gh_procedure_p(predicate)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("wait-for-window", 1, name);
+    scm_wrong_type_arg("wait-for-window", 1, predicate);
   }
   while (!done) {
     if (My_XNextEvent(dpy, &Event)) {
