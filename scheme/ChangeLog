@@ -1,3 +1,11 @@
+Mon Apr 26 08:16:54 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `call-hook-procedures' for some basic
+	  scheme-level support of invoking a hook list.
+
+	* ui-constraints-gtk-toggle-menu.scm: ws change, do use-module on
+	  flash-window as it *is* needed (was commented out).
+
 1999-04-25  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Added a new toggle menu for
