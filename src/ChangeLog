@@ -1,3 +1,20 @@
+Sat Nov 15 00:18:22 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menuitem.[ch]:  Added;  the beginnings of an scm object for menu
+	items to replace those in menu.[ch]
+
+	* scwmmenu.[ch]: Added; the beginnings of an scm object for menus
+	to replace those in menu.[ch]
+
+	* Makefile.in: Include above files in build.
+
+	* system.h: Include config.h and #ifdef out get_hostname prototype
+ 	if we have the function -- patch from Harald Meland
+ 	<Harald.Meland@usit.uio.no>
+
+	* gjb.scwmrc: add some commented out test code for new menu items
+	and scwm menus.
+
 Wed Nov 12 22:57:31 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added current-window-with-{pointer,focus} functions.
