@@ -111,6 +111,9 @@
 /* Define this and use C++ compiler if you want to use constraint solver */
 #undef USE_CASSOWARY
 
+/* Define this if you want to use libproplist */
+#undef USE_PROPLIST
+
 /* Define tihs if you want to turn debug support off for cassowary */
 #undef CL_NO_TRACE
 

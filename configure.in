@@ -189,6 +189,40 @@ SCWM_ARG_PATH(lispdir,
 	AC_MSG_RESULT("${lispdir}")
 ])
 
+PROPLIST_INCLUDES=""
+PROPLIST_LIBS=""
+PROPLIST_OBJECTS=""
+
+SCWM_ARG_PATH_MAYBE_EMPTY(proplist,
+[  --with-proplist=DIR   Use libPropList installation from DIR
+                         can omit DIR to use $prefix ],
+[
+	AC_DEFINE(USE_PROPLIST)
+	AC_DEFINE(CL_NO_TRACE)
+	HAVE_PROPLIST="yes"
+	AC_MSG_CHECKING(where to expect to find libPropList headers and library)
+	if test -z "${withval}" || test "yes" = "${withval}"; then
+	   AC_MSG_RESULT("defaulting to the prefix = ${prefix}")
+	   withval=${prefix}
+	else
+	   AC_MSG_RESULT("${withval}")
+        fi
+	PROPLIST_INCLUDES="-I${withval}/include"
+	case "$ac_R_nospace" in
+	"yes") prop_lib_path="-L${withval}/lib -R${withval}/lib" ;;
+	"no")  prop_lib_path="-L${withval}/lib -R ${withval}/lib" ;;
+	*)     prop_lib_path="-L${withval}/lib" ;;
+	esac
+	PROPLIST_LIBS="$prop_lib_path -lPropList"
+])
+
+AM_CONDITIONAL(HAVE_PROPLIST, test "$HAVE_PROPLIST" = yes)
+
+
+AC_SUBST(PROPLIST_INCLUDES)
+AC_SUBST(PROPLIST_LIBS)
+AC_SUBST(PROPLIST_OBJECTS)
+
 CASSOWARY_INCLUDES=""
 CASSOWARY_LIBS=""
 CASSOWARY_OBJECTS=""
@@ -201,9 +235,11 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	AC_DEFINE(CL_NO_TRACE)
 	AC_MSG_CHECKING(where to expect to find cassowary headers and library)
 	if test -z "${withval}" || test "yes" = "${withval}"; then
-	   AC_MSG_RESULT(using the prefix = )
+	   AC_MSG_RESULT("defaulting to the prefix = ${prefix}")
 	   withval=${prefix}
-	fi
+	else
+	   AC_MSG_RESULT("${withval}")
+ 	fi
 	CASSOWARY_INCLUDES="-I${withval}/include"
 	cassolibdir="${withval}/lib"
 	case "$ac_R_nospace" in
@@ -213,7 +249,6 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	esac
 	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
-	AC_MSG_RESULT("${withval}")
 ])
 
 AC_SUBST(CASSOWARY_INCLUDES)
@@ -287,8 +322,16 @@ AC_CHECK_LIB(SM, SmcOpenConnection, [
 ], AC_MSG_WARN(libSM not found -- no session manager support)
 , $x_libs)
 
-AM_PATH_ESD(0.2.7, HAVE_ESD=yes, HAVE_ESD=no)
-AM_CONDITIONAL(HAVE_ESD, test "$HAVE_ESD" = yes)
+AC_ARG_ENABLE(esd, [  --disable-esd       Do not use ESD even if it exists],
+		    enable_esd=no,
+		    enable_esd=yes)
+
+if test x"$enable_esd" = x"no"; then
+	AC_MSG_RESULT(Not using ESD due to --disable-esd option)
+else
+	AM_PATH_ESD(0.2.7, HAVE_ESD=yes, HAVE_ESD=no)
+	AM_CONDITIONAL(HAVE_ESD, test "$HAVE_ESD" = yes)
+fi
 
 AM_PATH_GTK(1.0.0, HAVE_GTK=yes, HAVE_GTK=no)
 
@@ -590,6 +633,7 @@ AC_OUTPUT(Makefile \
 	  modules/scwmgtkhelper/Makefile \
 	  modules/xlib-drawing/Makefile \
 	  modules/xpm-menus/Makefile \
+	  modules/proplist/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
