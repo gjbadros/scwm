@@ -90,8 +90,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   FXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
-  /* Turn off the rubberband if its on */
-  MoveOutline(Scr.Root, 0, 0, 0, 0);
+  RemoveRubberbandOutline(Scr.Root);
 
   /* Move the viewport */
   /* and/or move the cursor back to the approximate correct location */
