@@ -728,3 +728,11 @@ in the user's home directory."
 
 (define-public (delete-multiple-windows-interactively)
   (select-multiple-windows-interactively #f delete-window))
+
+
+(define-public (run-dot-xclients-script)
+  "Runs the ~/.clients script."
+  (system "$HOME/.xclients"))
+
+(define-public (run-dot-xclients-at-startup)
+  (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))
