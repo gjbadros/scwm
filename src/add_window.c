@@ -61,6 +61,7 @@
 #include "screen.h"
 #include "binding.h"
 #include "window.h"
+#include "cursor.h"
 #include "decorations.h"
 #include "Grab.h"
 #include "colors.h"
@@ -708,8 +709,8 @@ AddWindow(Window w)
      before creating the icon window */
   psw->icon_w = None;
 
-  GrabButtons(psw);
-  GrabKeys(psw);
+  GrabButtonsForPsw(psw);
+  GrabKeysForPsw(psw);
 
   RaiseWindow(psw);
   KeepOnTop();
@@ -723,12 +724,9 @@ AddWindow(Window w)
        * unhighlight */
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
       if (Scr.buttons2grab & (1 << i)) {
-	XGrabButton(dpy, (i + 1), 0, psw->frame, True,
-		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    XCursorByNumber(XC_hand2));
-	XGrabButton(dpy, (i + 1), LockMask, psw->frame, True,
-		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    XCursorByNumber(XC_hand2));
+        GrabButtonWithModifiersMaskXcPm(i+1,0,psw->frame,
+                                        ButtonPressMask,
+                                        XCursorByNumber(XC_hand2),GrabModeSync);
       }
   }
 

@@ -83,12 +83,10 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
 	XSync(dpy, 0);
 	for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
 	  if (Scr.buttons2grab & (1 << i)) {
-	    XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
-			ButtonPressMask, GrabModeSync, GrabModeAsync,
-			None,XCURSOR_SET_FOCUS);
-	    XGrabButton(dpy, (i + 1), LockMask, Scr.Ungrabbed->frame, True,
-			ButtonPressMask, GrabModeSync, GrabModeAsync,
-			None,XCURSOR_SET_FOCUS);
+            GrabButtonWithModifiersMaskXcPm(i+1,0,Scr.Ungrabbed->frame,
+                                            ButtonPressMask,
+                                            XCURSOR_SET_FOCUS,
+                                            GrabModeSync);
 	  }
 	Scr.Focus = NULL;
 	Scr.Ungrabbed = NULL;
@@ -108,9 +106,10 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
     XSync(dpy, 0);
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++) {
       if (Scr.buttons2grab & (1 << i)) {
-	XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
-		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-                    XCURSOR_SET_FOCUS);
+        GrabButtonWithModifiersMaskXcPm(i+1,0,Scr.Ungrabbed->frame,
+                                        ButtonPressMask,
+                                        XCURSOR_SET_FOCUS,
+                                        GrabModeSync);
       }
     }
     Scr.Ungrabbed = NULL;
@@ -120,8 +119,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   if (Fw && Fw->fClickToFocus && !Fw->fSloppyFocus) {
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++) {
       if (Scr.buttons2grab & (1 << i)) {
-	XUngrabButton(dpy, (i + 1), 0, Fw->frame);
-	XUngrabButton(dpy, (i + 1), LockMask, Fw->frame);
+        UngrabButtonWithModifiersWin(i+1,0,Fw->frame);
       }
     }
     Scr.Ungrabbed = Fw;

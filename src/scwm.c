@@ -295,10 +295,10 @@ AnnounceGnomeCompliancy(Window w)
   XA_WIN_SUPPORTING_WM_CHECK=XInternAtom(dpy,"_WIN_SUPPORTING_WM_CHECK",False);
   XChangeProperty(dpy, w, XA_WIN_SUPPORTING_WM_CHECK,
                   XA_CARDINAL,32,PropModeReplace, 
-                  (unsigned char *) Scr.Root, 1);
+                  (unsigned char *) &Scr.Root, 1);
   XChangeProperty(dpy, Scr.Root, XA_WIN_SUPPORTING_WM_CHECK,
                   XA_CARDINAL,32,PropModeReplace, 
-                  (unsigned char *) Scr.Root, 1);
+                  (unsigned char *) &Scr.Root, 1);
 }
 #endif
 

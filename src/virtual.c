@@ -505,9 +505,9 @@ MoveViewport_internal(int newx, int newy)
   Scr.Vy = newy;
 
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_X,
-		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) Scr.Vx, 1);
+		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vx, 1);
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_Y,
-		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) Scr.Vy, 1);
+		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vy, 1);
 
   call2_hooks(viewport_position_change_hook, gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy)); 
 

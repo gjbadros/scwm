@@ -71,32 +71,15 @@ a boolean telling whether the window was iconified previously. */
 static void 
 GrabIconButtons(ScwmWindow *ARG_UNUSED(psw), Window w)
 {
-  Binding *MouseEntry;
+  Binding *pbnd;
 
-  MouseEntry = Scr.AllBindings;
-  while (MouseEntry != (Binding *) 0) {
-    if ((MouseEntry->Context & C_ICON) && (MouseEntry->IsMouse == 1)) {
-      if (MouseEntry->Button_Key > 0) {
-	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-                    XCURSOR_ICON);
-      } else {
-	XGrabButton(dpy, 1, MouseEntry->Modifier, w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-                    XCURSOR_ICON);
-	XGrabButton(dpy, 2, MouseEntry->Modifier, w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-                    XCURSOR_ICON);
-	XGrabButton(dpy, 3, MouseEntry->Modifier, w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-                    XCURSOR_ICON);
-      }
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & C_ICON) && 
+        pbnd->IsMouse ) {
+      GrabButtonWithModifiersMaskXcPm(pbnd->Button_Key,pbnd->Modifier,
+                                      w,ButtonPressMask|ButtonReleaseMask,
+                                      XCURSOR_ICON,GrabModeAsync);
     }
-    MouseEntry = MouseEntry->NextBinding;
   }
   return;
 }
@@ -114,12 +97,13 @@ GrabIconButtons(ScwmWindow *ARG_UNUSED(psw), Window w)
 static void 
 GrabIconKeys(ScwmWindow *ARG_UNUSED(psw), Window w)
 {
-  Binding *tmp;
+  Binding *pbnd;
 
-  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
-    if ((tmp->Context & C_ICON) && (tmp->IsMouse == 0))
-      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, w, True,
-	       GrabModeAsync, GrabModeAsync);
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & C_ICON) && 
+        !pbnd->IsMouse == 0) {
+      GrabKeyWithModifiersWin(pbnd->Button_Key,pbnd->Modifier,w);
+    }
   }
   return;
 }

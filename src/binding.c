@@ -63,8 +63,8 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, C_ROOT},
   {SCM_UNDEFINED, C_FRAME},
   {SCM_UNDEFINED, C_SIDEBAR},
-  {SCM_UNDEFINED, C_WINDOW},
-  {SCM_UNDEFINED, C_TITLE},
+  {SCM_UNDEFINED, C_WINDOW},   /* intentional duplicates to match aliases */
+  {SCM_UNDEFINED, C_TITLE},    /* in parallel array below */
   {SCM_UNDEFINED, C_ROOT},
   {SCM_UNDEFINED, C_FRAME},
   {SCM_UNDEFINED, C_SIDEBAR},
@@ -133,10 +133,15 @@ static char *context_strings[] =
 
 
 
-static int MetaMask = 0,
+static unsigned 
+int MetaMask = 0,
   AltMask = 0,
   HyperMask = 0,
-  SuperMask = 0;
+  SuperMask = 0,
+  numlock_mask = 0, 
+  scrollock_mask = 0;
+
+static unsigned int mask_mod_combos[8];
 
 static unsigned char rgmapMouseButtons[XSERVER_MAX_BUTTONS];
 
@@ -398,172 +403,194 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name,
 }
 
 
-
-
-/*
- * GrabKeys - grab needed keys for the window
- */
-void 
-GrabKeys(ScwmWindow *psw)
-{
-  Binding *tmp;
-
-  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
-    if ((tmp->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
-	(tmp->IsMouse == 0)) {
-      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, psw->frame, True,
-	       GrabModeAsync, GrabModeAsync);
-      if (tmp->Modifier != AnyModifier) {
-	XGrabKey(dpy, tmp->Button_Key, tmp->Modifier | LockMask,
-		 psw->frame, True,
-		 GrabModeAsync, GrabModeAsync);
-      }
-    }
-  }
-  return;
-}
-
-
-
 void
-GrabButtonWithModifiers(int button, int modifier, 
-			ScwmWindow *psw)
+GrabButtonWithModifiersMaskXcPm(int button, int modifier, 
+                                Window w, unsigned int event_mask,
+                                Cursor xc, int pointer_mode)
 {
   if (button > 0) {
-    XGrabButton(dpy, button, modifier, psw->w,
-		True, ButtonPressMask | ButtonReleaseMask,
-		GrabModeAsync, GrabModeAsync, None,
-		XCursorByNumber(XC_top_left_arrow));
+    XGrabButton(dpy, button, modifier, w,
+		True, event_mask,
+		pointer_mode, GrabModeAsync, None, xc);
     if (modifier != AnyModifier) {
-      XGrabButton(dpy, button, (modifier | LockMask), psw->w,
-		  True, ButtonPressMask | ButtonReleaseMask,
-		  GrabModeAsync, GrabModeAsync, None,
-		  XCursorByNumber(XC_top_left_arrow));
+      int i = 0;
+      for (; i<8; ++i) {
+        XGrabButton(dpy, button, (modifier | mask_mod_combos[i]), w,
+                    True, event_mask,
+                    pointer_mode, GrabModeAsync, None, xc);
+      }
     }
   } else {
     int i = 1;
     for ( ; i <= XSERVER_MAX_BUTTONS; ++i) {
-      GrabButtonWithModifiers(i,modifier,psw);
+      GrabButtonWithModifiersMaskXcPm(i,modifier,w,event_mask,xc,pointer_mode);
     }
   }
 }
-  
+
+__inline__ void
+GrabButtonWithModifiers(int button, int modifier, 
+			ScwmWindow *psw)
+{ 
+  GrabButtonWithModifiersMaskXcPm(button,modifier,psw->w,
+                                  ButtonPressMask | ButtonReleaseMask,
+                                  XCursorByNumber(XC_top_left_arrow),
+                                  GrabModeAsync);
+}
+
 
 void
-UngrabButtonWithModifiers(int button, int modifier, 
-			  ScwmWindow *psw)
+UngrabButtonWithModifiersWin(int button, int modifier, Window w)
 {
   if (button > 0) {
-    XUngrabButton(dpy, button, modifier, psw->w);
+    XUngrabButton(dpy, button, modifier, w);
     if (modifier != AnyModifier) {
-      XUngrabButton(dpy, button, (modifier | LockMask), psw->w);
+      int i = 0;
+      for (; i<8; ++i) {
+        XUngrabButton(dpy, button, (modifier | mask_mod_combos[i]), w);
+      }
     }
   } else {
-    UngrabButtonWithModifiers(1,modifier,psw);
-    UngrabButtonWithModifiers(2,modifier,psw);
-    UngrabButtonWithModifiers(3,modifier,psw);
+    int i = 1;
+    for ( ; i <= XSERVER_MAX_BUTTONS; ++i) {
+      UngrabButtonWithModifiersWin(i,modifier,w);
+    }
   }
 }
 
-/*
- *  Procedure:
- *	GrabButtons - grab needed buttons for the window
- *
- *  Inputs:
- * 	psw - the scwm window structure to use
- */
+__inline__ void
+UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw)
+{ UngrabButtonWithModifiersWin(button,modifier,psw->w); }
 
-/* GJB:FIXME:: rewrite to use GrabButtonWithModifiers, above */
+
 void 
-GrabButtons(ScwmWindow * psw)
+GrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
 {
-  Binding *MouseEntry;
-
-  MouseEntry = Scr.AllBindings;
-  while (MouseEntry != (Binding *) 0) {
-    if ((MouseEntry->Context & C_WINDOW) && (MouseEntry->IsMouse == 1)) {
-      if (MouseEntry->Button_Key > 0) {
-	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
-		    psw->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
-	if (MouseEntry->Modifier != AnyModifier) {
-	  XGrabButton(dpy, MouseEntry->Button_Key,
-		      (MouseEntry->Modifier | LockMask),
-		      psw->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      XCursorByNumber(XC_top_left_arrow));
-	}
-      } else {
-	XGrabButton(dpy, 1, MouseEntry->Modifier,
-		    psw->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
-	XGrabButton(dpy, 2, MouseEntry->Modifier,
-		    psw->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
-	XGrabButton(dpy, 3, MouseEntry->Modifier,
-		    psw->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    XCursorByNumber(XC_top_left_arrow));
-	if (MouseEntry->Modifier != AnyModifier) {
-	  XGrabButton(dpy, 1,
-		      (MouseEntry->Modifier | LockMask),
-		      psw->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      XCursorByNumber(XC_top_left_arrow));
-	  XGrabButton(dpy, 2,
-		      (MouseEntry->Modifier | LockMask),
-		      psw->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      XCursorByNumber(XC_top_left_arrow));
-	  XGrabButton(dpy, 3,
-		      (MouseEntry->Modifier | LockMask),
-		      psw->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      XCursorByNumber(XC_top_left_arrow));
-	}
-      }
+  XGrabKey(dpy, key, modifier, w, True,
+           GrabModeAsync, GrabModeAsync);
+  if (modifier != AnyModifier) {
+    int i = 0;
+    for (; i<8; ++i) {
+      XGrabKey(dpy, key, modifier | mask_mod_combos[i],
+               w, True, GrabModeAsync, GrabModeAsync);
     }
-    MouseEntry = MouseEntry->NextBinding;
   }
   return;
 }
 
-#if 0 /* GJB:FIXME:: we do not use this function, but maybe should */
+__inline__ void 
+GrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw)
+{ GrabKeyWithModifiersWin(key,modifier,psw->frame); }
+
+void 
+UngrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
+{
+  XUngrabKey(dpy, key, modifier, w);
+  if (modifier != AnyModifier) {
+    int i = 0;
+    for (; i<8; ++i) {
+      XUngrabKey(dpy, key, modifier | mask_mod_combos[i], w);
+    }
+  }
+  return;
+}
+
+__inline__ void 
+UngrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw)
+{ UngrabKeyWithModifiersWin(key,modifier,psw->frame); }
+
+
+/* GrabButtonsForPsw - grab needed buttons for the window
+ *
+ * psw - the scwm window structure that needs the grabs
+ * (a window just being added)
+ */
+void 
+GrabButtonsForPsw(ScwmWindow * psw)
+{
+  Binding *pbnd;
+
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) && 
+        pbnd->IsMouse) {
+      GrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
+    }
+  }
+  return;
+}
+
+void 
+UngrabButtonsForPsw(ScwmWindow * psw)
+{
+  Binding *pbnd;
+
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) && 
+        pbnd->IsMouse) {
+      UngrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
+    }
+  }
+  return;
+}
+
+/*
+ * GrabKeysForPsw - grab needed keys for the window
+ *
+ * psw - the scwm window structure that needs the grabs
+ * (a window just being added)
+ */
+void 
+GrabKeysForPsw(ScwmWindow *psw)
+{
+  Binding *pbnd;
+
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+	!pbnd->IsMouse) {
+      GrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
+    }
+  }
+  return;
+}
+
+void 
+UngrabKeysForPsw(ScwmWindow *psw)
+{
+  Binding *pbnd;
+
+  for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
+    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+	!pbnd->IsMouse) {
+      UngrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
+    }
+  }
+  return;
+}
+
+
+
 /* This grabs all the defined keys on all the windows */
 static void
 grab_all_keys_all_buttons_all_windows()
 {
   ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    GrabKeys(psw);
-    GrabButtons(psw);
+  for (psw = Scr.ScwmRoot.next; psw; psw = psw->next) {
+    GrabKeysForPsw(psw);
+    GrabButtonsForPsw(psw);
   }
 }
-#endif
 
-
-#if 0 /* GJB:FIXME:: we do not use this function, but maybe should */
 /* This grabs all the defined keys on all the windows */
 static void
-grab_all_buttons_all_windows()
+ungrab_all_keys_all_buttons_all_windows()
 {
   ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    GrabButtons(psw);
+  for (psw = Scr.ScwmRoot.next; psw; psw = psw->next) {
+    UngrabKeysForPsw(psw);
+    UngrabButtonsForPsw(psw);
   }
 }
-#endif
+
 
 /* Just grab a single key + modifier on all windows
    This needs to be done after a new key binding */
@@ -572,12 +599,7 @@ grab_key_all_windows(int key, int modifier)
 {
   ScwmWindow *psw;
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    XGrabKey(dpy, key, modifier, psw->frame, True, 
-	     GrabModeAsync, GrabModeAsync);
-    if (modifier != AnyModifier) {
-      XGrabKey(dpy, key, modifier | LockMask, psw->frame, True,
-	       GrabModeAsync, GrabModeAsync);
-    }
+    GrabKeyWithModifiers(key,modifier,psw);
   }
 }
 
@@ -587,10 +609,7 @@ ungrab_key_all_windows(int key, int modifier)
 {
   ScwmWindow *psw;
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    XUngrabKey(dpy, key, modifier, psw->frame);
-    if (modifier != AnyModifier) {
-      XUngrabKey(dpy, key, modifier | LockMask, psw->frame);
-    }
+    UngrabKeyWithModifiers(key,modifier,psw);
   }
 }
 
@@ -629,7 +648,7 @@ remove_binding(int context, unsigned int mods, int button, KeySym keysym,
   if (!mouse_binding) {
     keycode = XKeysymToKeycode(dpy, keysym);
     ungrab_key_all_windows(keycode, mods);
-  } else if (context & C_WINDOW) {
+  } else if (context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) {
     ungrab_button_all_windows(button,mods);
   }
 
@@ -686,7 +705,7 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
     scm_protect_object(release_proc);
 
   if (mouse_p) {
-    if ( (context & C_WINDOW) && Scr.fWindowsCaptured) {
+    if ( (context & (C_WINDOW)) && Scr.fWindowsCaptured) {
       /* only grab the button press if we have already captured,
 	 otherwise it's a waste of time since we will grab
 	 them all later when we do the initial capture;
@@ -784,10 +803,14 @@ PBindingFromKey(KeyCode keycode,
                 unsigned int modifier, int context)
 {
   Binding *pbnd;
+  unsigned int mask =
+    (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
+     Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
+
   for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
     if (!pbnd->IsMouse &&
         (pbnd->Button_Key == keycode) &&
-	((pbnd->Modifier == (modifier & (~LockMask))) ||
+	((pbnd->Modifier == (modifier & mask)) ||
 	 (pbnd->Modifier == AnyModifier)) &&
 	(pbnd->Context & context)) {
       return pbnd;
@@ -1330,6 +1353,24 @@ returns a power of two corresponding to the bit-mask of the modifier */
 #undef FUNC_NAME
 
 
+SCWM_PROC(mod_mask_numlock, "mod-mask-numlock", 0, 0, 0, ())
+     /** Return the bit-mask for the NumLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as NumLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
+#define FUNC_NAME s_mod_mask_numlock
+{ return numlock_mask == 0? SCM_BOOL_F : gh_int2scm (numlock_mask); }
+#undef FUNC_NAME
+
+
+SCWM_PROC(mod_mask_scrolllock, "mod-mask-scrolllock", 0, 0, 0, ())
+     /** Return the bit-mask for the ScrollLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
+#define FUNC_NAME s_mod_mask_scrolllock
+{ return scrollock_mask == 0? SCM_BOOL_F : gh_int2scm (scrollock_mask); }
+#undef FUNC_NAME
+
+
 SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
           ())
      /** Return the mapping of physical->logical pointer buttons as a list.
@@ -1391,8 +1432,8 @@ init_modifiers(void)
   mod = XGetModifierMapping(dpy);
   if (mod) {
     codes = mod->modifiermap;
-    for (i = 0; i < 8; i++)
-      for (j = 0; j < mod->max_keypermod; j++, codes++)
+    for (i = 0; i < 8; i++) {
+      for (j = 0; j < mod->max_keypermod; j++, codes++) {
 	if (*codes) {
 	  syms = XGetKeyboardMapping(dpy, *codes, 1, &num);
 	  if (syms) {
@@ -1418,6 +1459,36 @@ init_modifiers(void)
 	    XFree(syms);
 	  }
 	}
+      }
+    }
+
+    { /* scope */
+      /* Modified from Enlightenment, setup.c:  GJB:SHAREDCODE:: */
+      int nl, sl;
+      unsigned int masks[8] = {
+        ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
+        Mod4Mask, Mod5Mask
+      };
+
+      nl = XKeysymToKeycode(dpy, XK_Num_Lock);
+      sl = XKeysymToKeycode(dpy, XK_Scroll_Lock);
+      if ((mod) && (mod->max_keypermod > 0)) {
+        for (i = 0; i < (8 * mod->max_keypermod); i++) {
+          if ((nl) && (mod->modifiermap[i] == nl))
+            numlock_mask = masks[i / mod->max_keypermod];
+          else if ((sl) && (mod->modifiermap[i] == sl))
+            scrollock_mask = masks[i / mod->max_keypermod];
+        }
+      }
+      mask_mod_combos[0] = 0;
+      mask_mod_combos[1] = LockMask;
+      mask_mod_combos[2] = numlock_mask;
+      mask_mod_combos[3] = scrollock_mask;
+      mask_mod_combos[4] = numlock_mask | scrollock_mask;
+      mask_mod_combos[5] = LockMask | numlock_mask;
+      mask_mod_combos[6] = LockMask | scrollock_mask;
+      mask_mod_combos[7] = LockMask | numlock_mask | scrollock_mask;
+    }
     XFreeModifiermap(mod);
   }
 }

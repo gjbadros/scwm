@@ -81,8 +81,18 @@ Binding *PBindingFromKey(KeyCode keycode,
                          unsigned int modifier, int context);
 
 
-void GrabKeys(ScwmWindow *psw);
-void GrabButtons(ScwmWindow *psw);
+void GrabKeysForPsw(ScwmWindow *psw);
+void GrabButtonsForPsw(ScwmWindow *psw);
+void GrabButtonWithModifiersMaskXcPm(int button, int modifier, 
+                                     Window w, unsigned int event_mask,
+                                     Cursor xc, int pointer_mode);
+void GrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
+void UngrabButtonWithModifiersWin(int button, int modifier, Window w);
+void UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
+void GrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw);
+void UngrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw);
+void GrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window win);
+void UngrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window win);
 
 #endif /* BINDING_H */
 
