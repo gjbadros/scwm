@@ -63,7 +63,7 @@ SUFFIXES = .x
 scwm.o: scwmpaths.h
 callbacks.o: callbacks.x
 color.o: color.x
-fonts.o: fonts.x
+font.o: font.x
 image.o: scwmpaths.h image.x
 menuitem.o: menuitem.x
 module-interface.o: module-interface.x
