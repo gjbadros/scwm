@@ -49,7 +49,7 @@ scwm_SOURCES =  string_token.c \
 
 scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 
-INCLUDES = @x_cflags@
+INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c callbacks.x color.x font.x \
  image.x menuitem.x module-interface.x scwmmenu.x shutdown.x scwmpaths.h

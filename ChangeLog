@@ -1,3 +1,10 @@
+1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
+
+	* configure.in, configure: Add --with-guile-prefix=DIR and
+	--with-guile-exec-prefix=DIR to help people who have Guile
+	installed in a funny place. Substitute the new GUILE_INCLUDES
+	variable and use it where appropriate.
+
 1998-06-22  Maciej Stachowiak  <maciej@roc-ny2-11.ix.netcom.com>
 
 	* configure.in, configure, acconfig.h, include/config.in.h: Detect
