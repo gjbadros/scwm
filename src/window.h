@@ -57,10 +57,6 @@ extern SCM sym_click, sym_root_window;
           return SCM_BOOL_F; \
        else psw = PSWFROMSCMWIN(win); } while (0)
 
-#define VALIDATE_WIN_COPY(arg,psw) \
-  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,1,arg); \
-       else psw = PSWFROMSCMWIN(arg); } while (0)
-
 #define VALIDATEKILL(win) \
   do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_T)) == SCM_BOOL_F) \
           return SCM_BOOL_F; } while (0)
@@ -96,17 +92,20 @@ extern SCM sym_click, sym_root_window;
        else if (!VALIDWINP(arg)) scm_misc_error(FUNC_NAME,"Window is not valid",SCM_EOL); \
        else psw = PSWFROMSCMWIN(arg); } while (0)
 
-
 #define VALIDATE_ARG_WIN_COPY(pos,arg,psw) \
   do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
        else psw = PSWFROMSCMWIN(arg); } while (0)
+
+#define VALIDATE_WIN_COPY(arg,psw) VALIDATE_ARG_WIN_COPY(1,(arg),(psw))
+
+#define VALIDATE_WINVALID_COPY(arg,psw) VALIDATE_ARG_WINVALID_COPY(1,(arg),(psw))
 
 #define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,w) \
   do {  if (arg == sym_root_window) w = Scr.Root;                 \
         else if (gh_number_p(arg)) {                              \
           assert(sizeof(Window) == sizeof(unsigned long));        \
           w = gh_scm2ulong(arg);                                  \
-        } else if (WINDOWP(arg)) {                                \
+        } else if (VALIDWINP(arg)) {                              \
           w = PSWFROMSCMWIN(arg)->w;                              \
         } else {                                                  \
           w = None;                                               \

@@ -109,6 +109,8 @@ extern SCM sym_root_window;
 extern Bool fQuotingKeystrokes;
 
 static SCM x_motionnotify_hook;
+static SCM g_lastwin_entered = SCM_BOOL_F;
+
 
 SCWM_SYMBOL(sym_press,"press");
 SCWM_SYMBOL(sym_release,"release");
@@ -155,9 +157,8 @@ buttons. The hook procedures are invoked with no arguments. */
 
 SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1);
   /** This hook is invoked upon DestroyNotify X events.
-It indicates a window is being destroyed.  The hook procedures are
-invoked with one argument, WIN, the window being destroyed.
-The WIN is still valid during the hook procedures. */
+It indicates a window was destroyed.  The hook procedures are
+invoked with one argument, WINID, the X id of the window that was destroyed. */
 
 SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1);
   /** This hook is invoked upon UnmapNotify X events.  It indicates a
@@ -1046,9 +1047,23 @@ HandleExpose()
 void 
 HandleDestroyNotify()
 {
+  Window w = Event.xdestroywindow.window;
   DBUG((DBG,"HandleDestroyNotify", "Routine Entered"));
+
+  call1_hooks(x_destroynotify_hook,gh_ulong2scm(w));
+
+  /* maybe use the window in the XDestroyWindowEvent structure
+     if the one in xany did not correlate to a sw */
+  if (!pswCurrent) {
+    pswCurrent = PswFromAnyWindow(dpy,w);
+  }
+  
+  /* GJB:FIXME:: I don't think we will
+     ever get a pswCurrent out of the above 
+     and the DispatchEvent routine. */
+  assert(!pswCurrent);
+
   if (pswCurrent) {
-    call1_hooks(x_destroynotify_hook,pswCurrent->schwin);
     DestroyScwmWindow(pswCurrent);
   }
 }
@@ -1266,6 +1281,10 @@ HandleUnmapNotify()
   if (!pswCurrent)
     return;
   
+  if (pswCurrent->schwin == g_lastwin_entered) {
+    call1_hooks(window_leave_hook, g_lastwin_entered);
+    g_lastwin_entered = SCM_BOOL_F;
+  }
   call1_hooks(x_unmapnotify_hook,pswCurrent->schwin);
 
   if (weMustUnmap)
@@ -1491,8 +1510,6 @@ HandleButtonPress()
 }
 #undef FUNC_NAME
 
-
-static SCM g_lastwin_entered = SCM_BOOL_F;
 
 /*
  * HandleEnterNotify - EnterNotify event handler
