@@ -118,7 +118,7 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 		     output);
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_OUTPUT,
 		     0, (bytes_after / 4) + ((bytes_after % 4) ? 1 : 0), 
-		     False, type_ret, 
+		     True, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 		     output);
 
@@ -128,7 +128,7 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 		     error);
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_ERROR,
 		     0, (bytes_after / 4) + ((bytes_after % 4) ? 1 : 0), 
-		     False, type_ret, 
+		     True, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 		     error);
 
@@ -138,7 +138,7 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 		     &prop);
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_REPLY,
 		     0, (bytes_after / 4) + ((bytes_after % 4) ? 1 : 0), 
-		     False, type_ret, 
+		     True, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 		     &prop);
 
