@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-09-08 Tue 10:08:43 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-09-09 Wed 11:21:47 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -184,10 +184,9 @@ if that value is non-nil.
 If you are using Emacs 20.2 or earlier and want to use fontifications,
 you have to (require 'font-lock) first.  Sorry.")
 
-(define-key scwm-mode-map [(control j)] 'scwm-eval-print)
+(define-key scwm-mode-map [(control j)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
 (define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
-(define-key scwm-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
 (define-key scwm-mode-map [(control h) (control f)]
@@ -212,44 +211,48 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   "Evaluate the SEXP with scwm-exec and print the results to OUT."
   (call-process scwm-exec nil out nil sexp))
 
-(defun scwm-eval-last (out)
-  "Evaluate the last sexp with scwm-exec and print the results to OUT."
-  (scwm-eval (buffer-substring-no-properties
-	      (point) (save-excursion (backward-sexp) (point))) out))
-
 (defun scwm-safe-call (func args out)
   "Call FUNC with ARGS and output to OUT, checking existence of FUNC first."
   (scwm-eval (concat "(if (defined? '" func ") (" func " " args ") "
                      "(display \"This Guile version lacks `" func "'.\n\"))")
              out))
 
-;;;###autoload
-(defun scwm-eval-print ()
-  "Evaluate the last SEXP and insert the result into the current buffer."
-  (interactive) (newline-and-indent) (scwm-eval-last t) (newline))
+(defvar scwm-eval-to-minibuffer nil
+  "*The default destination of SCWM output.
+If this is nil, the output from `scwm-eval-sexp' is inserted into the
+current buffer, otherwise it goes to the minibuffer.")
 
 ;;;###autoload
-(defun scwm-eval-region (beg end &optional out)
-  "Evaluate the region, print the result to minibuffer or current buffer
-\(with a prefix argument)."
+(defun scwm-eval-sexp (sexp mb-p)
+  "Eval the SEXP.  Output to the current buffer or minibuffer.
+If the prefix argument (the second argument when called from lisp) is
+non-nil, the output goes to the minibuffer, otherwise it is inserted in
+the current buffer.  When `scwm-eval-to-minibuffer' is non-nil, the
+meaning of the second argument is reversed."
+  (interactive "sEval in SCWM: \nP")
+  (cond ((or (and mb-p scwm-eval-to-minibuffer)
+             (not (or mb-p scwm-eval-to-minibuffer)))
+         (newline-and-indent)
+         (scwm-eval sexp t)
+         (newline))
+        (t (message "%s" (with-output-to-string
+                           (scwm-eval sexp standard-output))))))
+
+;;;###autoload
+(defun scwm-eval-last (mb-p)
+  "Evaluate the last sexp with `scwm-eval-sexp'."
+  (interactive "P")
+  (scwm-eval-sexp (buffer-substring-no-properties
+                   (point) (save-excursion (backward-sexp) (point))) mb-p))
+
+;;;###autoload
+(defun scwm-eval-region (beg end mb-p)
+  "Evaluate the region with `scwm-eval-sexp'."
   (interactive "r\nP")
-  (let ((sexp (buffer-substring-no-properties beg end)))
-    (if out (scwm-eval sexp t)
-        (message "%s" (with-output-to-string
-                        (scwm-eval sexp standard-output))))))
-
-;;;###autoload
-(defun scwm-eval-to-minibuffer ()
-  "Evaluate the last SEXP and show the result in the minibuffer."
-  (interactive)
-  ;; workaround for XEmacs' buggy `with-output-to-string'.  should be:
-  ;; (message "%s" (with-output-to-string (scwm-eval-last standard-output)))
-  (let ((last (buffer-substring-no-properties
-	       (point) (save-excursion (backward-sexp) (point)))))
-    (message "%s" (with-output-to-string (scwm-eval last standard-output)))))
+  (scwm-eval-sexp (buffer-substring-no-properties beg end) mb-p))
 
 (defalias 'advertised-xscheme-send-previous-expression
-    'scwm-eval-to-minibuffer)
+    'scwm-eval-last)
 
 ;; completion
 ;; ----------
