@@ -46,6 +46,9 @@
 	     (app scwm std-menus)
 	     (app scwm animation)
 	     (app scwm message-window)
+	     (app scwm pie-menus)
+	     (app scwm gnome-hints)
+	     (app scwm group)
 	     (ice-9 string-fun)
 	     (ice-9 regex))
 
@@ -59,17 +62,6 @@
 (define (executable? file)
   (and (access? file X_OK)
        (eq? (stat:type (stat file)) 'regular)))
-
-; guile 1.2's separate-fields-discarding-char is broken. Redefine it.
-(if (equal? (version) "1.2")
-    (define-public (separate-fields-discarding-char ch str ret)
-      (let loop ((fields '())
-		 (str str))
-	(cond
-	 ((string-rindex str ch)
-	  => (lambda (w) (loop (cons (make-shared-substring str (+ 1 w)) fields)
-			       (make-shared-substring str 0 w))))
-	 (else (apply ret str fields))))))
 
 ; searches PROGRAMS in the PATH, and returns the full location of the first
 ; found, or #f if none was found.
@@ -151,7 +143,8 @@
 (set-hilight-background! "light slate blue")
 (set-shadow-factor! 0.4)
 
-(set-move-resize-message-window-attributes! font12 "black" "royal blue")
+(message-window-style default-message-window
+		      #:font font12 #:fg "black" #:bg "royal blue")
 (menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
 	    #:font font14)
 (title-style #:font font12 #:justify 'left)
@@ -375,12 +368,15 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		       ,(if (which "xemacs")
 			    '("X&Emacs" "xem" "emacs")
 			    '("&Emacs" "emacs" "emacs"))
-		       ("&Netscape" ("netscape4.04s" "netscpape404" "netscape")
+		       ("&Netscape" ("netscape4.08s" "netscape4.04s"
+						     "netscpape404" "netscape")
 				    "Netscape")
+		       ("Gnome &Panel" ("gnome panel" "panel"))
 		       ,menu-separator
 		       ("&Aural Stims"
 			,(build-menu "Aural Stims"
-				     '(("X&Cd" "xcd")
+				     '(("&Mixer" ("mix2000" "gmix"))
+				       ("X&Cd" "xcd")
 				       ("X&Synaesthesia" "xsynaesthesia cd"
 							 "xsynaesthesia")
 				       ("G&mp3" "gmp3" "gmp3"))))
@@ -461,46 +457,42 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (popup-window-ops)
   (popup-menu window-ops-menu))
 
-(define (make-small-window-ops-menu w)
-  (menu 
-   (list
-    (menuitem "Move" #:extra-label "F5" #:action interactive-move)
-    (menuitem "Resize" #:extra-label "F6" #:action interactive-resize)
-    (menuitem "Raise" #:action raise-window)
-    (menuitem "Lower" #:action lower-window)
-    (menuitem "Iconify" #:extra-label "F4" #:action iconify)
-    menu-separator
-    (menuitem "More..." #:action 
-	      (menu 
-	       (list
-		(menuitem (if (maximized? w)
-			      "Restore Size"
-			      "Maximize") #:extra-label "F8"
-			      #:action vertical-toggle-maximize)
-		(menuitem (if (sticky? w)
-			      "Pull Off"
-			      "Stick") #:extra-label "Return"
-			      #:action toggle-stick)
-		(menuitem (if (window-shaded? w)
-			      "Roll Down"
-			      "Roll Up") #:action toggle-window-shade)
-		(menuitem (if (kept-on-top? w)
-			      "UnKeep On Top"
-			      "Keep On Top") #:extra-label "Home"
-			      #:action toggle-on-top)
-		(menuitem (if (circulate-skip? w)
-			      "Hit"
-			      "Skip") #:extra-label "Ins"
-			      #:action toggle-circulate-skip)
-		menu-separator
-		(menuitem "Properties" #:action xprop-window)
-		(menuitem "Info" #:action xwininfo-window))))
-    menu-separator
-    (menuitem "Close" #:extra-label "Del" #:action close-window)
-    (menuitem "Destroy" #:action destroy-window))))
-
 (define (popup-small-ops)
-  (popup-menu (make-small-window-ops-menu (get-window))))
+  (let ((w (get-window)))
+    (popup-menu
+     (menu 
+      (list
+       (menuitem "M" #:image-above "move.xpm"
+		 #:action interactive-move)
+       (menuitem "#" #:image-above "resize.xpm"
+		 #:action interactive-resize)
+       (menuitem "+" #:action raise-window)
+       (menuitem "-" #:action lower-window)
+       (menuitem "v" #:image-left "minimize.xpm"
+		 #:action iconify)
+       menu-separator
+       (menuitem ">" #:action
+		 (menu
+		  (list
+		   (menuitem (if (maximized? w) "~^" "^")
+			     #:image-left "maximize.xpm"
+			     #:action vertical-toggle-maximize)
+		   (menuitem (if (sticky? w) "~*" "*")
+			     #:action toggle-stick)
+		   (menuitem (if (window-shaded? w) "~=" "=")
+			     #:action toggle-window-shade)
+		   (menuitem (if (kept-on-top? w) "~T" "T")
+			     #:action toggle-on-top)
+		   (menuitem (if (circulate-skip? w) "~S" "S")
+			     #:action toggle-circulate-skip)
+		   menu-separator
+		   (menuitem "P" #:action xprop-window)
+		   (menuitem "?" #:action xwininfo-window))
+		  #:look circle-pie-menu-look))
+       menu-separator
+       (menuitem "X" #:action close-window)
+       (menuitem "D" #:action destroy-window))
+      #:look circle-pie-menu-look))))
 
 (define (popup-winlist)
   (show-window-list-menu #:show-geometry #t))
@@ -544,6 +536,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-key 'all (super "F2") popup-window-ops)
 (bind-key 'all (super "F3") popup-winlist)
 ; window manipulation
+(bind-key 'all (super "S-F4") iconify-group)
 (bind-key 'all (super "F4") toggle-iconify)
 (bind-key 'all (super "F5") interactive-move)
 (bind-key 'all (super "F6") interactive-resize)
@@ -653,9 +646,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (deiconify-group-or-window))))
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 deiconify-group-or-window)
 (bind-mouse '(title sidebar frame) 2 (lambda () (popup-small-ops)))
 (bind-mouse '(title sidebar frame) 3 toggle-raise)
 (bind-mouse 'all (super "1") move-or-raise)
@@ -673,8 +666,13 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 
 (window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
 				#:use-style FixedSize #:use-style NoFocus)
+(window-style (class-match?? "Gimp")
+	      #:start-on-desk 3)
+(window-style (title-match?? "GimpConsole")
+	      #:start-on-desk 3)
 (window-style "GTimer"		#:start-lowered #t #:use-style NoFocus)
-(window-style "GTimeTracker 0*"	#:focus 'click #:start-lowered #t)
+(window-style (class-match?? "GTimeTracker")
+	      #:start-lowered #t) ; #:other-proc circulate-skip
 (window-style "UAE"		#:icon "amiga.xpm.gz"
 				#:placement-proc (lambda (win)
 						   (move-to 0 0 win)))
@@ -696,8 +694,10 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				#:use-style NoFocus)
 (window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
 				#:use-style NoFocus)
-(window-style "xsm:*"		#:focus 'none)
-(window-style "xterm*"		#:icon "xterm-linux.xpm.gz")
+(window-style (class-match?? "XSm")
+	      #:focus 'click)
+(window-style (class-match?? "XTerm")
+	      #:icon "xterm-linux.xpm.gz")
 (window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
 				#:use-style NoFocus)
 (window-style "xv load"		#:icon "xv.color.xpm.gz" #:use-style FixedSize
