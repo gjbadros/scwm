@@ -1,3 +1,8 @@
+2000-01-16  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc (iconified-or-unfocusable): Add shaded windows
+	here, so they are skipped in normal focus-circling.
+
 Sat Jan 15 16:27:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Ensure scwm-is-constraint-enabled? befroe using
