@@ -1,12 +1,15 @@
 ;;; $Id$
-;;; scwm --- functions for editing and running SCWM code under Emacs
+;;; scwm --- functions for editing and running Scwm code under Emacs
+;;; Scwm is the Scheme Configurable Window Manager
+;;; See: http://scwm.mit.edu
 
-;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
+;; Copyright (c) 1998, 1999 by Sam Steingold and Greg J. Badros
 
 ;; File: <scwm.el - 1999-04-06 Tue 09:43:50 EDT sds@eho.eaglets.com>
 ;; Authors: Sam Steingold <sds@usa.net>, Greg J. Badros <gjb@cs.washington.edu>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
+
 
 ;; LCD Archive Entry:
 ;; scwm|Sam Steingold|sds@usa.net|
@@ -181,6 +184,7 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
+(define-key scwm-mode-map [(control h) (control w)] 'scwm-whereis)
 (define-key scwm-mode-map [(control h) (control f)]
   'scwm-goto-guile-procedure-node)
 (define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
@@ -368,7 +372,7 @@ apropos-internal is used for completion, too"
   "Ensure `scwm-obarray' is initialized."
   (setq scwm-obarray (or scwm-obarray (scwm-make-obarray))))
 
-(defun scwm-complete-symbol (&optional sym)
+(defun scwm-complete-symbol (&optional prompt sym)
   "Complete the current symbol or SYM by querying Scwm with `apropos-internal'.
 Returns a string which is present in the `scwm-obarray'."
   (when current-prefix-arg (setq scwm-obarray nil))
@@ -376,7 +380,7 @@ Returns a string which is present in the `scwm-obarray'."
     ;; Require a match only when the obarry is present
     ;; (in case guile lacks `apropos-internal')
     ;; to be removed when the situation stabilizes.
-    (completing-read "Scwm/guile symbol: " oa nil oa
+    (completing-read (or prompt "Scwm/guile symbol: ") oa nil oa
                      (or sym (scwm-symbol-at-point)) 'scwm-history)))
 
 ;;;###autoload
@@ -414,7 +418,7 @@ Returns a string which is present in the `scwm-obarray'."
 ;;;###autoload
 (defun scwm-documentation (pat)
   "Query scwm for documentation for the symbol pat."
-  (interactive (list (scwm-complete-symbol)))
+  (interactive (list (scwm-complete-symbol "Documentation on scwm/guile symbol: ")))
   (help-setup-xref (list 'scwm-documentation pat) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
     (with-current-buffer "*Help*"
@@ -499,6 +503,21 @@ Returns a string which is present in the `scwm-obarray'."
           (forward-line 1)))
       (apropos-mode) (setq truncate-lines t))))
 
+;;;###autoload
+(defun scwm-whereis (procname)
+  "List event binding information for procname."
+  (interactive
+;;   (list (read-string "Scwm whereis: " (format "%s" (scwm-symbol-at-point)))))
+   (list (scwm-complete-symbol "Scwm whereis procedure: ")))
+  (let ((bfr (get-buffer-create "*Scwm-binding-information*")))
+    (with-output-to-temp-buffer "*Scwm-binding-information*"
+      (with-current-buffer bfr
+	(scwm-safe-call "procedure->bindings-description" procname standard-output)
+	(beginning-of-buffer)
+	(delete-char 1)
+	(goto-char (point-max))   ; kill `#<unspecified>'
+	(delete-region (point) (progn (beginning-of-line) (point)))))))
+
 ;; info interface
 (defvar scwm-info-file-list
   '(("r4rs" . "Index")
@@ -546,7 +565,7 @@ i.e. (FILENAME NODENAME BUFFERPOS)"
 The procedure is found by looking up in the Guile Reference manual's
 Procedure Index or in another manual found via the variable
 `scwm-info-file-list'."
-  (interactive (list (scwm-complete-symbol)))
+  (interactive (list (scwm-complete-symbol "Guile procedure info node: ")))
   (let ((where (scwm-find-guile-procedure-nodes procedure)))
     (unless where (error "Could not find guile documentation for %s -- check your Info-directory-list variable and ensure guile-ref.info exists" procedure))
     (let ((num-matches (length where)))
