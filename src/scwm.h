@@ -61,6 +61,7 @@
 #include "validate.h"
 #include "system.h"
 #include "window_fwd.h"
+#include "scwm_msg.h"
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -197,17 +198,6 @@ enum wm_client_functions {
 
 #define PackedBool(x) unsigned short x:1
 
-/* if you would like to see lots of debug messages from scwm, for debugging
-   purposes, uncomment the next line */
-
-/* #define SCWM_DEBUG_MSGS */
-
-#ifdef SCWM_DEBUG_MSGS
-#  define DBUG(X) scwm_msg X
-#else
-#  define DBUG(X)		/* no messages */
-#endif
-
 #ifndef NDEBUG
 /* Use "handle SIGUSR2 stop nopass" as a gdb option (in .gdbinit, e.g.)
    and then put this in functions that you change so you can single
@@ -218,16 +208,10 @@ enum wm_client_functions {
 #endif
 
 
-/*
-   ** message levels for scwm_msg:
- */
-typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
-
 struct ScwmWindow;
 
 /* Prototypes for functions in scwm.c */
 
-void scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...);
 void Reborder(Bool fRestart);
 void RestoreWithdrawnLocation(struct ScwmWindow *psw, Bool fRestart);
 void SigDone(int);

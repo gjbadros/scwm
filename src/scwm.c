@@ -1475,12 +1475,9 @@ CatchFatal(Display *ARG_IGNORE(dpy))
   exit(1);
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	ScwmErrorHandler - displays info on internal errors
- *
- ************************************************************************/
+/*
+ * ScwmErrorHandler - displays info on internal errors
+ */
 XErrorHandler 
 ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 {
