@@ -111,8 +111,8 @@
 
 
 ;; Use below lines for help when debugging a GC issue during startup
-;; (set-load-processing-frequency! 1)
-;; (add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
+;;(set-load-processing-frequency! 1)
+;;(add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
 
 (debug-display "Starting reading scwm modules\n")
 
@@ -427,8 +427,8 @@
 ;;; anyway...
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
-	      #:icon #f ;; this turns off icons, but leaves icon titles
-	      #:show-icon #f ;; this turns off both icon titles and icons
+;;	      #:icon #f ;; this turns off icons, but leaves icon titles
+;;	      #:show-icon #t ;; this turns off both icon titles and icons
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 4
 	      #:focus 'mouse
@@ -457,19 +457,6 @@
 ;; MS has a wrapper planned for this
 (border-style #:hidden-handles #t #:no-inset #t)
 
-
-;;; I'm not changing these for now to use the new style
-;;; because of the way add-left-button and add-right-button work and
-;;; such; I think in general, though, setting the button appearance
-;;; should be more separated from setting its function. Will look
-;;; over this more. --MS
-;;; GJB:FIXME:MS: I think actions and conceptual appearance should go together
-;;; but that conceptual appearance and actual appearance should be separated.
-;;; Now that pixmaps are real objects, I get this by making, e.g.,
-;;; `sticky-button-face' and `(add-left-button sticky-button-face toggle-stick)'
-;;; I never want to say, `the third button from the right should do this action'.
-;;; Ideally, buttons should have some identifier which can be tested by the
-;;; event handling code for the callbacks --gjb
 
 (define mini-icon-button-face 
   (make-face '((relief flat))
@@ -538,35 +525,6 @@
 )
 
 
-(define left-button-number 1)
-(define right-button-number 1)
-
-;;(set-button-face! 1 mini-icon-button-face)
-;; (set! left-button-number 1)
-;; (set! right-button-number 1)
-
-(define* (add-left-button button-face hook #&optional (immed-hook #f))
-  (set-left-button-face! left-button-number button-face)
-  (bind-mouse (string->symbol 
-	       (string-append "left-button-" 
-			      (number->string left-button-number)))
-	      1 hook immed-hook)
-  (set! left-button-number (+ 1 left-button-number)))
-
-
-(define* (add-right-button button-face hook #&optional (immed-hook #f))
-  (set-right-button-face! right-button-number button-face)
-  (bind-mouse (string->symbol 
-	       (string-append "right-button-" 
-			      (number->string right-button-number)))
-	      1 hook immed-hook)
-  (set! right-button-number (+ 1 right-button-number)))
-
-;;(set-button-face! 1 mini-icon-button-face)
-;;(set-button-face! 1 tall-maximize-button-face)
-
-
-;;;(add-left-button system-button-face (lambda () (popup-small-ops)))
 (define (popup-small-ops-or-close)
   (case (mouse-event-type)
     ((double-click) (close-window))
@@ -788,7 +746,7 @@ from other processes.
 	       #:action (lambda () (restart "scwm")))
     (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart 
-				    (string-append scwmdir "/scwm/scwm"))))
+				    (string-append scwmdir "/src/scwm"))))
     menu-separator
     (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
@@ -1085,7 +1043,7 @@ from other processes.
 (bind-key 'all "C-M-S-q" quit-verify)
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 #f focus-change-warp-pointer) ;; was deiconify
+(bind-mouse 'icon 2 #f animated-deiconify-to-current-viewport)
 
 (bind-mouse 'all "C-S-M-1" #f toggle-raise)
 
@@ -1240,6 +1198,24 @@ from other processes.
       (bind-key 'all "C-M-KP_Down" animated-move-to-s)
       (bind-key 'all "C-M-KP_Next" animated-move-to-se)
       ))
+
+(define (shove-window-prefix)
+  (display-message-briefly "Shove window...")
+  (let* ((next-key-event (get-key-event))
+	 (key (string->symbol (car next-key-event))))
+    (case key
+      ((j) (animated-move-to-w))
+      ((l) (animated-move-to-e))
+      ((i) (animated-move-to-n))
+      ((comma) (animated-move-to-s))
+      ((period) (animated-move-to-se))
+      ((o) (animated-move-to-ne))
+      ((u) (animated-move-to-nw))
+      ((m) (animated-move-to-sw))
+      ((k) (animated-move-to-center))
+      )))
+
+(bind-key 'all "H-p" shove-window-prefix)
 
 (define (send-button-press-1) (send-button-press 1))
 ;;(define (send-button-press-1) (xtest-fake-button-event 1 #t))
