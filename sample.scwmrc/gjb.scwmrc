@@ -123,15 +123,25 @@
 ;; is different from the window-style method; I imagine
 ;; MS has a wrapper planned for this (MSFIX)
 
-(define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
-(set-border-face! border-face)
+;(define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
+;(set-border-face! border-face)
+;;; GJBFIX: here's the new version
+(border-style #:hidden-handles #t #:no-inset #t)
 
-(define title-face (make-face '((relief raised)) '()))
-(set-title-face! title-face)
+;(define title-face (make-face '((relief raised)) '()))
+;(set-title-face! title-face)
+;;; GJBFIX
+; this is already done (the #:relief 'raised entry in the call to
+; title-style
 
-;; MS: temporarily replaced pixmaps with ones I have installed.
 ;(define system-button-face (make-face '((relief flat))
 ;				      '((pixmap pic-system-button))))
+
+;;; GJBFIX: I'm not changing these for now to use the new style
+;;; because of the way add-left-button and add-right-button work and
+;;; such; I think in general, though, setting the button appearance
+;;; should be more separated from setting its function. Will look
+;;; over this more.
 
 (define mini-icon-button-face 
   (make-face '((relief raised))
