@@ -236,15 +236,16 @@
 
 ;; (select-window-interactively "Pick window #1")
 
-(set-move-resize-message-window-attributes! (make-font "*helvetica*medium-r*18*")
-					    "black" "gray80")
+(message-window-style default-message-window #:font (make-font "*helvetica*medium-r*18*")
+					    #:fg "black" #:bg "gray80")
 
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
 
 (set-edge-resistance! 500 10)
-(set-edge-scroll! (%x 100) (%y 100))
+;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
+(set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
 
 (title-style #:font font12 #:justify 'left #:relief 'raised)
 
