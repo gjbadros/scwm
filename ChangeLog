@@ -1,3 +1,9 @@
+Sun Oct 19 01:30:37 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Conditionally set CFLAGS from configure.
+
+	* configure.in: Fixed the setting for CFLAGS; the old was buggy.
+
 Sat Oct 18 02:29:34 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* version.h: Bumped version to 0.3
