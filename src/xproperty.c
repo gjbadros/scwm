@@ -157,6 +157,8 @@ value. */
     case 32:
       setter=&Set32Value;
       break;
+    default:
+      assert(0);		/* we checked this above */
     }
     len=gh_vector_length(value);
     v=val=safemalloc(len*fmt/8);
@@ -189,6 +191,7 @@ value. */
     FREE(val);
     scwm_error(FUNC_NAME, "ACTION must be one of 'replace, 'prepend, or "
 	       "'append");
+    return SCM_UNSPECIFIED;
   }
   str=gh_scm2newstr(name, NULL);
   aprop=XInternAtom(dpy, str, False);
@@ -201,6 +204,30 @@ value. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+/* GetXProperty - retrieves an X property PROP from window WIN.
+ * The property is deleted afterwards if DEL is True.
+ * Returns a pointer to the property value, which must be freed with XFree().
+ * TYPE, FMT, NITEMS are set according to the property's properties.
+ */
+unsigned char *GetXProperty(Window win, Atom prop, Bool del,
+			    Atom *type, int *fmt, unsigned long *nitems)
+{
+  int dwords=32;		/* try a small size first */
+  unsigned long bytes_left;
+  unsigned char *val;
+
+  while (True) {
+    if (XGetWindowProperty(dpy, win, prop, 0, dwords, del, AnyPropertyType,
+			   type, fmt, nitems, &bytes_left, &val)!=Success) {
+      break;
+    }
+    if (!bytes_left)
+      break;
+    dwords += (bytes_left>>2)+1; /* adjust size and try again */
+  }
+  return val;
+}
 
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume))
@@ -221,8 +248,8 @@ If the X property could be found, a list "(value type format)" is returned.
   unsigned char *val;
   INT16 *v16;
   INT32 *v32;
-  int i, dwords, fmt;
-  long len, bytes_left;
+  int i, fmt;
+  long len;
   Atom aprop, atype;
   SCM value, type;
   Window w;
@@ -249,15 +276,7 @@ If the X property could be found, a list "(value type format)" is returned.
   aprop=XInternAtom(dpy, str, False);
   FREE(str);
 
-  dwords=32;			/* try a small size first */
-  while (True) {
-    XGetWindowProperty(dpy, w, aprop, 0, dwords, del, AnyPropertyType,
-		       &atype, &fmt, &len, &bytes_left, &val);
-    if (bytes_left)
-      dwords += (bytes_left>>2)+1;	/* adjust size and try again */
-    else
-      break;
-  }
+  val = GetXProperty(w, aprop, del, &atype, &fmt, &len);
 
   if (atype==None)
     return SCM_BOOL_F;
@@ -280,6 +299,9 @@ If the X property could be found, a list "(value type format)" is returned.
       gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v32++));
     }
     break;
+  default:
+    scwm_error(FUNC_NAME, "XGetWindowProperty returned format != 8, 16, 32");
+    value = SCM_BOOL_F;
   }
   XFree(val);
   str=XGetAtomName(dpy, atype);

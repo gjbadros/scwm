@@ -37,7 +37,10 @@
 #include <config.h>
 #endif
 
-/* No C-level interface */
+#include <X11/Xlib.h>
+
+unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
+			    int *, unsigned long *);
 
 #endif /* XPROPERTY_H__ */
 
