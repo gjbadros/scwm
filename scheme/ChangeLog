@@ -1,3 +1,27 @@
+Sat Sep 19 12:01:16 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `with-window-no-wind' macro, since there seems
+ 	to be a bug in extra calls to select window when
+ 	broadcast-config-hook is non empty and an interactive-move is
+ 	invoked inside a dynamically-wound with-window -- see
+ 	tests/with-window.scm;  drop answer var from with-window, since
+	dynamic-wind returns the value of the middle thunk.
+
+Fri Sep 18 15:57:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm (show-window-list-menu): Added an
+ 	ignore-winlist-skip option
+
+	* flux.scm: Added `netscape-goto-cut-buffer-url', `netscape-win';
+	added ignore-winlist-skip option to
+	`select-window-from-window-list'. Fix X-cut-buffer-string to
+	return the car of the returned list, and verify that the property
+	was a string.  Also added Todd Larason's way-cool
+	`run-in-netscape'.
+
+	* base.scm: make move-to handle sticky windows better.  Make
+	`with-window' macro use dynamic-wind
+
 1998-09-17  Todd Larason  <jtl@teeny.molehill.org>
 
 	* base.scm (unset-message-window-position!): Added, to move

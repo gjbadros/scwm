@@ -1,3 +1,15 @@
+Fri Sep 18 17:02:52 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added a hacky `deiconify-to-current-viewport' (hacky 
+	because it deiconifies then moves the window).  Move
+	`netscape-win' out of here into flux.scm.  Use
+	window-viewport-position in `move-next-to-netscape-win'.  Added
+	binding to `netscape-goto-cut-buffer-url'
+
+	* juhp.scwmrc: Use `window-viewport-position' instead of
+	`window-position'.  Probably should rename that function from
+	`move-window' since `move-window' is now built-in
+
 Mon Sep  7 09:56:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Fix my typo in calling set-edge-resistance!

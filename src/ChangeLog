@@ -1,3 +1,25 @@
+Sat Sep 19 12:04:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Use UNSET_SCM in ensure_valid so #f
+	can be used too to skip an optional argument.
+
+	* shutdown.c: Ungrab the server, and reset the cursor at exit.
+
+	* module-interface.c (marshal_fvwm2_iconify_info,
+	marshal_fvwm2_config_info): Test the WIN argument directly for
+	being a window instead of using VALIDATE -- it doesn't make sense
+	to permit interactive selection for these primitives.
+
+Fri Sep 18 15:47:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (ResetScwmexecProtocol): Added, and invoke it, in case
+	XA_SCWMEXEC_REQWIN property is set on root at startup of scwm (and 
+	refers to a bad window)
+
+	* move.c (AnimatedMoveWindow): Do not do anything if the move is
+	to the current location (from another Tim Phipps fvwm2 patch of my 
+	code in that project)
+
 1998-09-18  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xproperty.c: Added X-atomic-property-set-if-unset!
