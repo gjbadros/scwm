@@ -30,9 +30,11 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <X11/Intrinsic.h>
-#include <X11/xpm.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_LIBXPM
+#include <X11/xpm.h>
+#endif
 
 #include <guile/gh.h>
 
@@ -303,7 +305,7 @@ SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-
+#ifdef HAVE_LIBXPM
 SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
            (SCM full_path))
      /** Load an X Pixmap file identified by the pathname FULL-PATH. */
@@ -350,6 +352,8 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
   return result;
 }
 #undef FUNC_NAME
+
+#endif /* HAVE_LIBXPM */
 #else /* USE_IMLIB */
 
 Bool
