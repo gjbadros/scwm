@@ -2,7 +2,7 @@
 static char * scwm_logo_180_xpm[] = {
 "200 260 4089 2",
 "  	c None",
-". 	c #F9A804",
+". 	c None",
 "+ 	c #F8A704",
 "@ 	c #F7A704",
 "# 	c #F6A604",
