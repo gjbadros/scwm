@@ -77,10 +77,10 @@ notify_edge_enter(Edge e)
     edge_sym = sym_north;
     break;
   case EDGE_LEFT:
-    edge_sym = sym_east;
+    edge_sym = sym_west;
     break;
   case EDGE_RIGHT:
-    edge_sym = sym_west;
+    edge_sym = sym_east;
     break;
   case EDGE_BOTTOM:
     edge_sym = sym_south;
@@ -107,10 +107,10 @@ notify_edge_leave(Edge e)
     edge_sym = sym_north;
     break;
   case EDGE_LEFT:
-    edge_sym = sym_east;
+    edge_sym = sym_west;
     break;
   case EDGE_RIGHT:
-    edge_sym = sym_west;
+    edge_sym = sym_east;
     break;
   case EDGE_BOTTOM:
     edge_sym = sym_south;
