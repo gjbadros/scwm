@@ -39,6 +39,22 @@ SCM scm_parse_path (char *path, SCM tail);
 #define SCM_EOF_OBJECT_P(x) ((x) == SCM_EOF_VAL)
 #endif
 
+#ifndef HAVE_SCM_INTERNAL_CWDR
+
+/* Simulate cwdr with catch. */
+#define scm_internal_cwdr(body, body_data, handler, handler_data, \
+			  stack_start) \
+scm_internal_catch (SCM_BOOL_T, body, body_data, handler, handler_data)
+#endif /* SCM_INTERNAL_CWDR */
+
+#ifndef HAVE_SCM_INTERNAL_STACK_CATCH
+extern SCM scm_internal_stack_catch (SCM tag,
+				     scm_catch_body_t body,
+				     void *body_data,
+				     scm_catch_handler_t handler,
+				     void *handler_data);
+#endif
+
 #endif GUILE_COMPAT_H
 
 

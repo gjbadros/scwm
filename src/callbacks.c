@@ -55,7 +55,7 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
 
   if (scm_ilength (throw_args) >= 3)
     {
-      SCM stack = scm_fluid_ref(SCM_CDR (scm_the_last_stack_fluid));
+      SCM stack = DEREF_LAST_STACK;
       SCM subr = SCM_CAR (throw_args);
       SCM message = SCM_CADR (throw_args);
       SCM args = SCM_CADDR (throw_args);
@@ -96,8 +96,7 @@ static SCM
 ssdr_handler (void *data, SCM tag, SCM throw_args)
 {
   /* Save the stack */
-  scm_fluid_set_x (SCM_CDR (scm_the_last_stack_fluid),
-                   scm_make_stack (scm_cons (SCM_BOOL_T, SCM_EOL)));
+  SET_LAST_STACK(scm_make_stack (scm_cons (SCM_BOOL_T, SCM_EOL)));
   /* Throw the error */
   return scm_throw (tag, throw_args);
 }

@@ -25,7 +25,7 @@
 #include "system.h"
 #include "scwmmenu.h"
 #include "menuitem.h"
-
+#include "guile-compat.h"
 
 SCM 
 mark_menuitem(SCM obj)
