@@ -1,6 +1,22 @@
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
+1. I pop up an xterm
+2. I do a horizontal-toggle-maximize
+3. I change to a smaller font.
+4. The window automatically resizes due to 3, preserving the number of rows & columns.
+5. I do a horizontal-toggle-maximize again to bring it back to normal size.
+6. The window resizes to many more rows and columns than it originally
+   had.  It ends up about the same size in pixels, though.
+
+Evidentally toggle-maximize isn't differentiating between windows
+sized in characters & windows sized in pixels.
+
+Shouldn't toggling back to the original size go back to the orignal
+number of rows & columns, not the original size in pixels?  If I
+recall correctly, that's what fvwm does.
+   hstein - 7/16/98
+-------------
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
@@ -73,12 +89,6 @@ shaded make the wm lose. [ reported by Oleg Tihnov ]
 Jens	<http://www.kurims.kyoto-u.ac.jp/~petersen/>
 
 
-gjb gets this on recapture
-[Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
-                                    XFreePixmap 
-This could be due to the recapture code losing track of the pixmap due
-to some change I made in the pixmap code --11/08/97 gjb
-
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
 
@@ -86,9 +96,18 @@ callbacks should run from a new dynamic root. [ huh? --11/08/97 gjb ]
 [ this would prevent them from calling continuations that escape
 outside the callback handler - the code would lose big on this -ms]
 
+
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+
+gjb gets this on recapture
+[Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
+                                    XFreePixmap 
+This could be due to the recapture code losing track of the pixmap due
+to some change I made in the pixmap code --11/08/97 gjb
+Not reproducible any longer --08/02/98 gjb
+
 
 - Animated window-shade bug, reported by Sam Steingold <sds@usa.net>,
 exploit confirmed by MS, but I have no clue how to fix it right now:
