@@ -91,17 +91,35 @@ invoked from within anywhere but the root window, the current window
 context is set to the window it was invoked from. Window contexts are
 explained in the section on window operations.
 
+(unbind-key CONTEXTS KEY-SPECIFIER)
+
+Removes the binding set for the specified key in the specified set
+of contexts.
 
 (bind-mouse CONTEXTS BUTTON-SPECIFIER PROC)
 
 Works much like bind-key above, but binds to a mouse action. In
 addition to possibly setting the window context, it also sets the
 current mouse event type so that the type of mouse event can be
-distiguished from the procedure. This is explained in 
- Mouse button specifiers are either
-numbers or strings that consist of a number with optional prefixes
-specifying modifier keys. Here are some valid mouse specifiers
+distiguished from the procedure. This is explained in the section on
+mouse-event-type below.
 
+Mouse button specifiers are either numbers or strings that consist of
+a number with optional prefixes specifying modifier
+keys. mouse-<number> may be used as well. Here are some valid mouse
+specifiers:
+
+1
+2
+"M-1"
+"C-M-2"
+"mouse-3"
+"S-mouse-1"
+
+(unbind-mouse CONTEXTS KEY-SPECIFIER)
+
+Removes the binding set for the specified mouse event in the specified
+set of contexts.
 
 (mouse-event-type)
 
@@ -142,9 +160,9 @@ MISCELLANEOUS SETTINGS:
 
 Determines if menus are MWM style or FVWM style.
 
-(set-xor-value! INT)
+(set-rubber-band-mask! INT)
 
-Sets the XOR value used for rubber-banding windows.
+Sets the XOR mask value used for rubber-banding windows.
 
 (set-title-height! INT)
 
@@ -173,6 +191,16 @@ with rubber-banding, as percentage of screen size. 0 will make all
 windows rubber-band when they move, while 100 will make all windows
 move as solid. The default
 
+(set-smart-placement-is-really-smart! BOOL)
+(set-click-to-focus-passes-click! BOOL)
+(set-click-to-focus-raises! BOOL)
+(set-mouse-focus-click-raises! BOOL)
+
+(set-animation! VECTOR);
+
+animation-ms-delay 
+
+
 
 MISCELLANEOUS OPERATIONS:
 
@@ -184,20 +212,30 @@ Refreshes the whole screen.
 
 Returns a list of the current x and y coordinates of the mouse cursor.
 
-(move-pointer-to X Y)
-
-Moves the pointer to the absolute position X,Y.
-
 (recapture)
 
 (restart NEW-WM)
 
-(wait-for-window NAME)
+(wait-for-window PREDICATE)
 
 (beep)
 
 My suggested definition in Scheme is not adequate for remote displays - the
 new (tiny) C implementation using XBell should take care of this.
+
+SYNTHETIC EVENTS:
+
+(move-pointer-to X Y)
+
+Moves the pointer to the absolute position X,Y.
+
+(send-button-press button modifier #&optional win button_press_p 
+		   button_release_p propagate_p)
+(send-key-press key #&optional win button_press_p button_release_p 
+		propagate_p)
+
+Send synthetic button and key presses.
+
 
 WINDOWS: 
 
@@ -205,14 +243,24 @@ WINDOWS:
 (window? OBJ)
 Returns #t if OBJ is a window object, else #f.
 
-(get-window) 
+(get-window #&optional USE_KILL_CURSOR USE_SELECT_WINDOW WAIT_FOR_RELEASE) 
 
 Retrieves the current window context and returns the window object
 representing it. If no window context is set, it lets the user select
 a window by ccalling select-window. However, select-window is not
 really implemented yet so it will actually return #f in this case.
 
-(select-window) [not fully implemented]
+The optional arguments are generally not needed in most user code.
+
+(select-window USE_KILL_CURSOR WAIT_FOR_RELEASE)
+
+Interactively selects a window.
+
+The optional arguments are generally not needed in most user code.
+
+(current-window-with-focus)
+(current-window-with-pointer)
+
 
 
 WINDOW OPERATIONS:
@@ -267,8 +315,10 @@ Reverses the effects of "stick."
 (sticky? #&optional W)
 Determines if a window is currently "sticky."
 
-(window-shade #&optional W)
-Rolls up the window into just a title bar, like a window shade.
+(window-shade #&optional W ANIMATED_P)
+Rolls up the window into just a title bar, like a window
+shade. Optionally animated.
+
 
 (un-window-shade #&optional W)
 Reverses the effect of window-shade.
@@ -276,8 +326,9 @@ Reverses the effect of window-shade.
 (window-shaded? #&optional W)
 Determines if the window is currently shaded.
 
-(move-to X Y #&optional W)
-Moves the window to X,Y on the current screen.
+(move-to X Y #&optional W ANIMATED_P MOVE_POINTER_TOO_P) 
+Moves the window to X,Y on the current screen. The move can optionally
+be animated and it is possible to also move the pointer.
 
 (interactive-move #&optional W) 
 Begins an interactive move operation. The user can adjust the position
@@ -359,8 +410,8 @@ available are:
 (set-window-button! NUM BOOL #&optional W)
 (set-mwm-buttons! BOOL #&optional W)
 (set-mwm-border! BOOL #&optional W)
-(set-icon! BOOL-OR-STRING #&optional W)
-(set-mini-icon! BOOL-OR-STRING #&optional W)
+(set-icon! BOOL-OR-STRING-OR-IMAGE #&optional W)
+(set-mini-icon! BOOL-OR-STRING-OR-IMAGE #&optional W)
 
 (set-hint-override! BOOL #&optional W)
 (set-decorate-transient! BOOL #&optional W)
@@ -370,7 +421,7 @@ available are:
 (set-OL-decor-hint! BOOL #&optional W)
 (set-start-on-desk! DESK #&optional W)
 (set-skip-mapping! BOOL #&optional W)
-
+(set-lenience! BOOL #&optional W)
 
 
 MENUS:
@@ -398,14 +449,19 @@ stays up when the mouse is released, assuming it was started in
 response to a mouse click. The default is #f.
 
 
-PATHS:
+IMAGES:
+
+(make-image NAME)
+
+Creates a Scheme image object loaded from the first file found in the
+image path that matches NAME.
+
+(set-image-path! PATH)
 
 Paths are specified as strings that contain a colon-delimited list of
-directories. This will change, as they obviously should be lists in
-ordinary scheme variables.
+directories. This will change, as they obviously should be lists,
+preferably in an ordinary scheme variable.
 
-(set-icon-path! PATH)
-(set-pixmap-path! PATH)
 
 
 VIRTUAL DESKTOP:
@@ -420,6 +476,21 @@ VIRTUAL DESKTOP:
 (desk-size)
 (viewport-position)
 (current-desk)
+
+DECORS:
+
+(make-decor #&&optional NAME)
+(default-decor)
+(set-current-decor! DECOR)
+(current-decor)
+(set-window-decor! DECOR #&optional WINDOW)
+
+FACES:
+(make-face FLAGS SPECS)
+(set-title-face! ACTIVE_UP_FACE #&optional ACTIVE_DOWN_FACE INACTIVE_FACE)
+(set-button-face! NUM ACTIVE_UP_FACE #&optional ACTIVE_DOWN_FACE INACTIVE_FACE)
+(set-button-mwm-flag! NUM BOOLEAN)
+(set-border-face! ACTIVE_FACE #&optional INACTIVE_FACE) 
 
 
 
@@ -458,6 +529,11 @@ placement.
 (%y y)
 
 Just like %x, but for the vertical direction.
+
+(x- x)
+(y- y)
+(%x- x)
+(%y- y)
 
 (w%x x #&optional w) 
 (w%y y #&optional w)
@@ -507,7 +583,7 @@ the mwm-style to true. The keywords available are:
 #:mwm or #:mwm-style - mwm style. If true, menus are "mwm style", else they
 are "fvwm style".
 
-(title-style #&key font height justify)
+(simple-title-style #&key font height justify)
 
 This is a similar interface to the above. The available keywords are
 
@@ -515,9 +591,6 @@ This is a similar interface to the above. The available keywords are
 #:height - the titlebar height
 #:justify - the justification - 'left, 'right or 'center.
 
-I'd like to eventually have more option-style interfaces like this,
-which collect all the different style options for something into one
-convenient procedure.
 
 
 MODULE (app scwm winops)
@@ -527,7 +600,7 @@ window operations, they default to the current window context if the
 window is not specified.
 
 (define*-public ((make-toggling-winop pred neg pos) 
-		 #&optional W)
+		 #&optional W))
 
 This can be used to define toggling window operations easily. you pass
 a predicate which determines if the window has been affected, then a
@@ -569,6 +642,10 @@ A toggling version of maximize.
 
 (print-window #&optional W)
 Prints a screen dump of the selected window.
+
+(menu-title)
+(menu-separator)
+(menu-item menu-item name #&key above-pixmap left-pixmap action)
 
 
 MODULE (app scwm winlist)
@@ -639,6 +716,15 @@ the window list with the keyboard. Here is the meaning of the keywords:
          do not satisfy the predicate or predictes given.
 #:proc - apply this procedure to the window selected to the menu.
          defaults to window-list-proc.
+
+
+This module also adds these style options:
+
+#:winlist-skip - skip this window in the window list menu
+#:circulate-skip - #t/#f, skip this window when circulating with 
+                   next-window or prev-window, or not.
+#:circulate-skip-icon - #t/#f, skip this window when circulating with 
+                   	next-window or prev-window, or not.
 
 
 MODULE (app scwm wininfo)
@@ -739,12 +825,6 @@ style options are predefined:
 
 #:fg - synonym for #:foreground
 
-#:circulate-skip - #t/#f, skip this window when circulating with 
-                   next-window or prev-window, or not.
-
-#:circulate-skip-icon - #t/#f, skip this window when circulating with 
-                   	next-window or prev-window, or not.
-
 #:focus - sets the window's focus style, 'click, 'mouse, 'sloppy or 'none.
 
 #:plain-border - if #t, makes the window have a plain border with no resize 
@@ -767,7 +847,6 @@ style options are predefined:
 #:no-titlebar - #t/#f, makes the window lack or have a titlebar 
                 respectively.
 
-#:winlist-skip - skip this window in the window list menu
 
 #:mwm-buttons - use mwm buttons - particular buttons should have their 
                 beveling inverted when the window is maximized. This does
@@ -844,4 +923,28 @@ Here are some extra style options not available in fvwm:
 #:other-hint-proc - lets you specify an additional procedure to apply to the
                     window when hints are being processed.
 
+
+
+MODULE (app scwm decor)
+
+(call-with-decor decor thunk)
+macro (with-decor decor . body)
+
+Adds #:use-decor style option
+
+
+MODULE (app scwm face)
+
+(title-style . args)
+(border-style . args)
+(button-style num . args)
+
+
+MODULE (app scwm fvwm-compat)
+
+(fvwm-exec-use-shell #&optional shell)
+(fvwm-exec command)
+(fvwm-none thunk #&key only except)
+(fvwm-pipe-read command)
+(fvwm-nop . args)
 
