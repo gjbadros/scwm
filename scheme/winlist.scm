@@ -61,10 +61,9 @@
 			    (string-append
 			     (window-title x) "\t"
 			     (window-geometry-string x))
-			    (window-title x))
+				  (window-title x))
 			(lambda () (proc x))))
-		     (list-windows #:only only #:except except)))))
-
+		     (list-windows #:only only #:except except))))) 
 
 (define (rotate-around w wl)
   (append (cond

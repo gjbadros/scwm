@@ -23,16 +23,13 @@
 
 
 
-
-
 (define*-public ((make-toggling-winop pred neg pos) 
 		 #&optional (w (get-window)))
   (if w (if (pred w)
 	    (neg w)
 	    (pos w))))
 
-
-(define-public (close-window #&optional (w (get-window #t)))
+(define*-public (close-window #&optional (w (get-window #t)))
   (if w (if (window-deletable? w)
 	    (delete-window w)
 	    (destroy-window w))))
@@ -50,22 +47,24 @@
   (make-toggling-winop window-shaded? un-window-shade window-shade))
 
 (define*-public (maximize nw nh #&optional (w (get-window)))
+  (display 'maximizing)
+  (newline)
   (if w (let* ((pos (window-position w))
 	       (size (window-size w))
 	       (x (car pos))
 	       (y (cadr pos))
 	       (width (car size))
 	       (height (cadr size)))
-	  (if (not (object-property w 'maximized))
+	  (if (not (maximized? w))
 	      (set-object-property! w 'maximized 
 				    (list x y width height)))
 	  (move-to (if (> nw 0) 0 x)
 		   (if (> nh 0) 0 y) w)
 	  (resize-to (if (> nw 0) nw width)
-		     (if (> nh 0) nh height) w)))
+		     (if (> nh 0) nh height) w))))
 
 (define*-public (maximized? #&optional (w (get-window)))
-  (->bool (object-property w 'maximized)) #f))
+  (->bool (object-property w 'maximized)))
 
 (define*-public (unmaximize #&optional (w (get-window)))
   (if w (let ((max-prop (object-property w 'maximized)))
