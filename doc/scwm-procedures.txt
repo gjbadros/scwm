@@ -1,6 +1,6 @@
 (add-input-hook! port proc)
 Add an input hook to run PROC on input from PORT.
-Whenever input becomes availabe on PORT, procedure PROC will be called
+Whenever input becomes available on PORT, procedure PROC will be called
 with no arguments repeatedly until no unprocessed input remains on
 PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
@@ -42,11 +42,11 @@ PROC is a procedure (possibly a thunk) that should be invoked
 Return #t if WIN has a normal border, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2713]
+[From scwm/window.c:2712]
 
 
 (capturing?)
-Returns #t when the windows are being caputured.
+Returns #t when the windows are being captured.
 This happens at two times: both during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
@@ -74,7 +74,7 @@ cache.
 
 
 (clear-image-cache-entry name)
-Images are cached by both name and full pathnme. It is
+Images are cached by both name and full pathname. It is
 remotely possible that the file that should be used for a particular
 name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
@@ -119,12 +119,12 @@ Returns the integer identifying the current desk.
 
 (current-window-with-focus)
 Return the window that currently has the input focus.
-[From scwm/window.c:482]
+[From scwm/window.c:481]
 
 
 (current-window-with-pointer)
 Return the window that currently contains the mouse pointer.
-[From scwm/window.c:492]
+[From scwm/window.c:491]
 
 
 (default-decor)
@@ -133,11 +133,11 @@ Return the default decor.
 
 
 (default-placement-proc win)
-Use settable flags to call an appropriate placement function.
+Use various flags to call an appropriate placement function.
 This is the default placement procedure for non-transient windows. It
 tries `smart-place-window', `clever-place-window',
 `random-place-window', or `interactive-move' (to achieve interactive
-placement) on WIN depending on several settable style flags. However,
+placement) on WIN depending on several style flags. However,
 if one of the following factors holds, the window will instead be
 placed exactly as requested by the program: the position was specified
 by the user, the position was specified by the program, and
@@ -156,7 +156,7 @@ Deiconify WIN.
 Unmap its icon window, and map its regular
 window. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1566]
+[From scwm/window.c:1565]
 
 
 (delete-window  #&optional win)
@@ -164,7 +164,7 @@ Request that WIN remove itself from the display. This is the
 friendly way of closing a window, but it will not work if the
 application does not cooperate. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:1224]
+[From scwm/window.c:1223]
 
 
 (desk-size)
@@ -179,7 +179,7 @@ Forcibly remove WIN from the screen. This will kill the
 application without giving it a chance to save its state or do any
 other shutdown, but is guaranteed to work. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:1254]
+[From scwm/window.c:1253]
 
 
 (display-size)
@@ -193,7 +193,7 @@ width is the `car', the height is the `cadr' of the returned list.
 Give WIN the input focus. This will typically result in
 drawing WIN's frame in a special style as well. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:1298]
+[From scwm/window.c:1297]
 
 
 (font-properties font)
@@ -210,9 +210,9 @@ Returns #t if OBJ is a font object, otherwise #f.
 
 (frame-id->window window-id)
 Return the window object corresponding to a frame WINDOW-ID.
-WINDOW-ID should be the X id of wm frame window. If there is no
+WINDOW-ID should be the X id of a scwm frame window. If there is no
 such window object, return #f.
-[From scwm/window.c:2415]
+[From scwm/window.c:2414]
 
 
 (get-window  #&optional kill? select? release?)
@@ -228,13 +228,13 @@ release event or just a press. The latter behavior is useful if the
 action being performed on the window is an interactive one involving
 mouse drags. (FIXMS: that's probably a bad order for the optional
 arguments)
-[From scwm/window.c:451]
+[From scwm/window.c:450]
 
 
 (hide-titlebar  #&optional win)
 Cause WIN not to be decorated with a titlebar. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:2605]
+[From scwm/window.c:2604]
 
 
 (hilight-background)
@@ -258,14 +258,14 @@ Applies to the focus in the current decor.
 Return #t if WIN is "sticky", #f otherwise.
 See `stick-icon' and `stick'. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:2800]
+[From scwm/window.c:2799]
 
 
 (iconified?  #&optional win)
 Return #t if WIN is iconified, otherwise return #f.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1582]
+[From scwm/window.c:1581]
 
 
 (iconify  #&optional win)
@@ -273,14 +273,14 @@ Iconify WIN.
 Iconifying unmaps the regular window, and map the window's icon
 window. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1540]
+[From scwm/window.c:1539]
 
 
 (id->window window-id)
-Return the window object corresponding to an app WINDOW-ID.
+Return the window object corresponding to an application WINDOW-ID.
 WINDOW-ID should be the X id of the application window. If there is no
 such window object, return #f.
-[From scwm/window.c:2394]
+[From scwm/window.c:2393]
 
 
 (image-properties image)
@@ -302,7 +302,7 @@ This allows the user to drag a rubber band frame or the window itself
 around the screen (depending on the setting of `set-opaque-move-size!'
 and drop it where desired). WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:1968]
+[From scwm/window.c:1967]
 
 
 (interactive-resize  #&optional win)
@@ -310,27 +310,27 @@ Resize WIN interactively.
 This allows the user to drag a rubber band frame to set the size of
 the window. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2072]
+[From scwm/window.c:2071]
 
 
 (keep-on-top  #&optional win)
 Ensure that WIN is kept on top of all other windows.
 Obviously, other windows that are also on-top may obscure WIN.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2515]
+[From scwm/window.c:2514]
 
 
 (kept-on-top?  #&optional win)
 Return #t if WIN is an on-top window, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2558]
+[From scwm/window.c:2557]
 
 
 (list-all-windows)
 Return a Scheme list of all of the windows. The list is in a
 semi-arbitrary order that is convenient for the sake of circulation.
-[From scwm/window.c:2497]
+[From scwm/window.c:2496]
 
 
 (load-xbm full-path)
@@ -346,7 +346,7 @@ Load an X Pixmap file identified by the pathname FULL-PATH.
 (lower-window  #&optional win)
 Lower WIN to the bottom of the window stack. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:1373]
+[From scwm/window.c:1372]
 
 
 (make-color cname)
@@ -381,7 +381,7 @@ allocated, an error results.
 Loads an image from the file NAME.
 To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
-fully qulified pathname; otherwise, the image path is searched for an
+fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
 [From scwm/image.c:483]
 
@@ -450,7 +450,7 @@ Return the current menu hilight factor.
 Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are:
 '(menu-items side-image side-bg-color bg-color text-color image-bg
-font extra-options used-shortcutkeys)
+font extra-options used-shortcut-keys)
 [From scwm/scwmmenu.c:180]
 
 
@@ -469,37 +469,37 @@ Return a list of the properties of the given MENU-ITEM.
 MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
 returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
-unhover-action hotkey-prefs)
+unhover-action hotkey-preferences)
 Note that this is the same as the arguments to the `make-menuitem'
 primitive
 [From scwm/menuitem.c:103]
 
 
 (mod-mask-alt)
-Return the bitmask for the Alt modifier key, or #f.
-Returns #f iff there is no key bound to act as Alt, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+Return the bit-mask for the Alt modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Alt, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
 [From scwm/binding.c:763]
 
 
 (mod-mask-hyper)
-Return the bitmask for the Hyper modifier key, or #f.
-Returns #f iff there is no key bound to act as Hyper, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+Return the bit-mask for the Hyper modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Hyper, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
 [From scwm/binding.c:771]
 
 
 (mod-mask-meta)
-Return the bitmask for the Meta modifier key, or #f.
-Returns #f iff there is no key bound to act as Meta, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+Return the bit-mask for the Meta modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Meta, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
 [From scwm/binding.c:755]
 
 
 (mod-mask-super)
-Return the bitmask for the Super modifier key, or #f.
-Returns #f iff there is no key bound to act as Super, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+Return the bit-mask for the Super modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Super, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
 [From scwm/binding.c:780]
 
 
@@ -522,20 +522,20 @@ and true, move the mouse pointer by the same amount as the window,
 animating the motion of the pointer along with the window if ANIMATED?
 is true. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1882]
+[From scwm/window.c:1881]
 
 
 (move-window-to-desk desk #&optional win)
 Move WIN to DESK. DESK is an integer desk identifier. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2282]
+[From scwm/window.c:2281]
 
 
 (normal-border  #&optional win)
 Cause WIN to be decorated with a normal border. This means
 that there will be resize handles in the corners. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:2649]
+[From scwm/window.c:2648]
 
 
 (plain-border  #&optional win)
@@ -543,7 +543,7 @@ Cause WIN to be decorated with a plain border. This means
 that there will be no resize handles in the corners, and the
 window . WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2683]
+[From scwm/window.c:2682]
 
 
 (pointer-position)
@@ -561,14 +561,14 @@ Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t.
 Raise WIN to the top of the window stack.
 Stays-on-top windows still take priority. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:1347]
+[From scwm/window.c:1346]
 
 
 (raised?  #&optional win)
 Return #t if WIN is currently raised, #f if not.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1478]
+[From scwm/window.c:1477]
 
 
 (random-place-window win)
@@ -600,13 +600,13 @@ Refreshing ensuring that everything, including the decorations is up
 to date. `refresh' does this in a more efficient way for all windows,
 as well as the root. WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:2261]
+[From scwm/window.c:2260]
 
 
 (register-image-loader extension proc)
 Register PROC as the loader to use for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.
@@ -642,16 +642,16 @@ if your Emacs hangs when you try evaluating a scwm expression).
 Resize WIN to a size of W by H in pixels. The size includes
 the window decorations. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:2007]
+[From scwm/window.c:2006]
 
 
 (restack-windows winlist)
 WINLIST is a list of windows. The first element of WINLIST
 will be kept in its current stacking order, the remainder will be
 stacked immediately below it in the order given. (Note: This will
-currently confuse the heck out of the pager and possibly other lagacy
+currently confuse the heck out of the pager and possibly other legacy
 fvwm2 modules).
-[From scwm/window.c:1392]
+[From scwm/window.c:1391]
 
 
 (restart  #&optional command)
@@ -691,27 +691,27 @@ Return the version of scwm running.
 Select a window interactively.
 Use a special cursor and let the user click to select the window. The
 optional arguments KILL? and RELEASE? indicate whether to use the
-"skull and crossbones" kill cursor (reccomended for destructive
+"skull and cross-bones" kill cursor (recommended for destructive
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
-placeholder until we have proper cursor support in scwm.
-[From scwm/window.c:869]
+place-holder until we have proper cursor support in scwm.
+[From scwm/window.c:868]
 
 
 (select-window-interactively)
 Should return a window selected interactively - unimplemented.
-[From scwm/window.c:503]
+[From scwm/window.c:502]
 
 
 (send-button-press button modifier #&optional win button-press? button-release? propagate?)
 Send a synthetic mouse press event.
 Create a synthetic event of a press of mouse button BUTTON, with modifier
-MODIFIER and send the eent to window WIN if specified; otherwise the
+MODIFIER and send the event to window WIN if specified; otherwise the
 window to be used defaults to the window context in the usual way. By
 default, both a press and a release are sent. However, the boolean
 parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
 which are sent individually. PROPAGATE? indicates whether the propagate
-flag is set on the event; the default is #f. You shouldn't have to
+flag is set on the event; the default is #f. You should not have to
 worry about this unless you know what it means.
 [From scwm/events.c:1760]
 
@@ -724,19 +724,19 @@ context in the usual way. By default, both a press and a release are
 sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
-shouldn't have to worry about this unless you know what it means.
+should not have to worry about this unless you know what it means.
 [From scwm/events.c:1847]
 
 
 (set-animation! vector)
 Set the animation parameters to VECTOR. VECTOR is a vector of
 floats which give the fractions of the final position that the window
-should appear at. For intance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
-make the window appear at the initial positon, 1/4 of the way, 1/2 of
-the way, 3/4 of the way, overshoot the finall position slightly, and
+should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
+make the window appear at the initial position, 1/4 of the way, 1/2 of
+the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves.
-[From scwm/window.c:1835]
+[From scwm/window.c:1834]
 
 
 (set-border-face! active #&optional inactive)
@@ -750,7 +750,7 @@ ACTIVE when not specified.
 (set-border-width! width #&optional win)
 Set the border width of WIN's border to WIDTH pixels.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2726]
+[From scwm/window.c:2725]
 
 
 (set-button-face! button active-up #&optional active-down inactive)
@@ -776,15 +776,15 @@ when the window is maximized.
 
 (set-click-time! ctime)
 Set the delay used in identifying mouse clicks and drags.
-CTIME is specified in microseconds. After CTIME usecs, a mouse-down
-without a mouse-up is considered a drag.  Also, after CTIME usecs, a
+CTIME is specified in microseconds. After CTIME microseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after CTIME microseconds, a
 single click is definitively identified as not a double click.
 [From scwm/miscprocs.c:206]
 
 
 (set-click-to-focus-passes-click! flag)
 Determine whether a click-to-focus window receives the click.
-If FLAG is #t, the window will receive the event, if #f, the wm
+If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client.
 [From scwm/miscprocs.c:396]
 
@@ -801,7 +801,7 @@ Set the colormap focus policy to FTYPE. FTYPE can either be
 'mouse, indicating that the window under the mouse pointer should
 always have it's colormap installed, or 'focus to indicate that the
 window with the input focus should also get the colormap focus. This
-makes a difference onl when using focus policies other than 'mouse.
+makes a difference only when using focus policies other than 'mouse.
 [From scwm/miscprocs.c:227]
 
 
@@ -824,7 +824,7 @@ If FLAG is #t, then if WIN is transient it will be fully
 decorated. Transient windows that are not fully decorated will be
 given only a border and no titlebar regardless of other settings. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3248]
+[From scwm/window.c:3247]
 
 
 (set-desk-size! width height)
@@ -841,7 +841,7 @@ Sets two parameters indicating how much resistance should be
 offered when scrolling things past the edge, in two different
 senses. SR is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
-scrolls. If this paramenter is greater than 10,000, the viewport will
+scrolls. If this parameter is greater than 10,000, the viewport will
 not scroll at all at the screen edge (FIXMS: that's a bogus way to
 indicate that.) MR is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it
@@ -868,11 +868,11 @@ wraparound is in effect
 
 
 (set-force-icon! flag #&optional win)
-Set the wm-overriding property for WIN to boolean FLAG.
-If #t, the icon spcified for WIN by the wm will override an
-app-provided icon.  WIN defaults to the window context in the usual
+Set the window-manager-overriding property for WIN to boolean FLAG.
+If #t, the icon specified for WIN by the user through scwm will override an
+application-provided icon.  WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:3080]
+[From scwm/window.c:3079]
 
 
 (set-hilight-background! bg)
@@ -899,15 +899,15 @@ If FLAG is #t, the hints, which indicate what operations should be
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
 be honoured. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:3231]
+[From scwm/window.c:3230]
 
 
 (set-icon! image #&optional win)
 Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
-also be specified, ndicating no icon image. WIN defaults to the window
+also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:3126]
+[From scwm/window.c:3125]
 
 
 (set-icon-box! x y w h #&optional win)
@@ -915,7 +915,7 @@ Set the icon box in which WIN's icon will be placed.
 This set the box to the rectangle at coordinates X, Y with width W and
 height H. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2814]
+[From scwm/window.c:2813]
 
 
 (set-icon-font! font)
@@ -926,7 +926,7 @@ Set the font used for drawing icon titles to FONT.
 (set-icon-title! flag #&optional win)
 Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3061]
+[From scwm/window.c:3060]
 
 
 (set-lenience! flag #&optional win)
@@ -936,7 +936,7 @@ when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
 FLAG. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3364]
+[From scwm/window.c:3363]
 
 
 (set-menu-background! bg)
@@ -982,7 +982,7 @@ May not be used any longer.
 Set the image to use for the mini-icon of WIN to IMAGE. As
 usual, an image object or a filename string may be given. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3177]
+[From scwm/window.c:3176]
 
 
 (set-mouse-focus-click-raises! flag)
@@ -993,11 +993,11 @@ makes sense any more.  FIXDOC.
 
 
 (set-mwm-border! flag #&optional win)
-Set the mwm-border style flag of WIN to bealean FLAG.
+Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3033]
+[From scwm/window.c:3032]
 
 
 (set-mwm-buttons! flag #&optional win)
@@ -1005,14 +1005,14 @@ Set the mwm-buttons flag of WIN to boolean FLAG.
 The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3017]
+[From scwm/window.c:3016]
 
 
 (set-mwm-decor-hint! flag #&optional win)
 Set whether or not Motif decoration hints are used for WIN.
-If FLAG is #t, the MWM decor hint will be given for WIN.  WIN defaults
+If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3262]
+[From scwm/window.c:3261]
 
 
 (set-mwm-func-hint! flag #&optional win)
@@ -1020,14 +1020,14 @@ Set whether or not Motif function hints are used for WIN.
 If FLAG is #t, the Motif function hints are respected for WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3277]
+[From scwm/window.c:3276]
 
 
 (set-OL-decor-hint! flag #&optional win)
 Determine whether or not to respect Open Look decoration hints.
 If FLAG is #t, the decoration hints will be respected for WIN. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3308]
+[From scwm/window.c:3307]
 
 
 (set-opaque-move-size! size)
@@ -1043,9 +1043,9 @@ Set or reset the program-specified position hint for WIN.
 If FLAG is #t, the hint will be set, otherwise reset.  This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
-ignoring it is reccomended. WIN defaults to the window context in the
+ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:3294]
+[From scwm/window.c:3293]
 
 
 (set-random-placement! flag #&optional win)
@@ -1053,7 +1053,7 @@ Set the random-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2962]
+[From scwm/window.c:2961]
 
 
 (set-rubber-band-mask! value)
@@ -1075,7 +1075,7 @@ is #t, the icon will be displayed, if #f, it will not appear when the
 window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3108]
+[From scwm/window.c:3107]
 
 
 (set-skip-mapping! flag #&optional win)
@@ -1083,7 +1083,7 @@ Set or reset whether scwm should not change desktops on a map.
 This only affect the behaviour upon initial mapping of WIN. If FLAG is
 #t, the virtual desktop will not be changed when WIN is mapped.  WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3347]
+[From scwm/window.c:3346]
 
 
 (set-smart-placement! flag #&optional win)
@@ -1091,7 +1091,7 @@ Set the smart-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2977]
+[From scwm/window.c:2976]
 
 
 (set-smart-placement-is-really-smart! flag)
@@ -1106,7 +1106,7 @@ value FLAG.
 (set-start-on-desk! desk #&optional win)
 Make WIN start on DESK when first mapped. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:3321]
+[From scwm/window.c:3320]
 
 
 (set-title-face! active-up #&optional active-down inactive)
@@ -1146,7 +1146,7 @@ draw most of the window decorations, along with the relief colors
 generated from it, which are used to draw the window's 3-D bevels.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2933]
+[From scwm/window.c:2932]
 
 
 (set-window-button! n flag #&optional win)
@@ -1154,7 +1154,7 @@ Set the visibility of button number N on window WIN.
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: this code may be broken right now.)
-[From scwm/window.c:2992]
+[From scwm/window.c:2991]
 
 
 (set-window-decor! decor #&optional win)
@@ -1167,7 +1167,7 @@ the window context in the usual way.
 Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
 'sloppy or 'none. WIN defaults to the window context in the usual way
 if not specified.
-[From scwm/window.c:2873]
+[From scwm/window.c:2872]
 
 
 (set-window-font! font)
@@ -1180,7 +1180,7 @@ Set the foreground color of WIN to FG. This color is used to
 draw the title text currently. In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified.
-[From scwm/window.c:2909]
+[From scwm/window.c:2908]
 
 
 (set-window-text-property win propname value)
@@ -1198,7 +1198,7 @@ Return the current shadow factor.
 Cause WIN to be decorated with a titlebar.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2574]
+[From scwm/window.c:2573]
 
 
 (smart-place-window win)
@@ -1216,20 +1216,20 @@ A sticky window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1597]
+[From scwm/window.c:1596]
 
 
 (stick-icon  #&optional win)
 Cause WIN's icon to become "sticky". See `stick'. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2760]
+[From scwm/window.c:2759]
 
 
 (sticky?  #&optional win)
 Return #t if WIN is "sticky", #f otherwise.
 See `stick' for an explanation. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:1638]
+[From scwm/window.c:1637]
 
 
 (string->xproperty str)
@@ -1241,21 +1241,21 @@ Create an xproperty object from STR.
 Return #t if WIN is decorated with a titlebar, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2636]
+[From scwm/window.c:2635]
 
 
 (transient?  #&optional win)
 Return #t if WIN is transient, #f if not.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1495]
+[From scwm/window.c:1494]
 
 
 (un-keep-on-top  #&optional win)
 Remove the on-top property from WIN, if it has it.
 See `keep-on-top'. WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:2537]
+[From scwm/window.c:2536]
 
 
 (un-window-shade  #&optional win animated?)
@@ -1264,7 +1264,7 @@ By default, the change takes place instantaneously. However, if the
 optional ANIMATED? argument is true, the window will be animated as it
 rolls down, producing a pleasing visual effect. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:1733]
+[From scwm/window.c:1732]
 
 
 (unbind-key contexts key)
@@ -1283,13 +1283,13 @@ BUTTON is a string or integer giving the mouse button number
 
 (unfocus)
 Remove the input focus from any window that may have it.
-[From scwm/window.c:1315]
+[From scwm/window.c:1314]
 
 
 (unregister-image-loader extension)
 Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
 [From scwm/image.c:334]
 
@@ -1298,14 +1298,14 @@ empty string (for files with no extension), or the strting "default"
 Cause a window to no longer be "sticky", if it is.
 See `stick' for an explanation. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:1618]
+[From scwm/window.c:1617]
 
 
 (unstick-icon  #&optional win)
 Cause WIN's icon to no longer by "sticky". See `stick-icon'
 and `stick'. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:2780]
+[From scwm/window.c:2779]
 
 
 (viewport-position)
@@ -1326,76 +1326,76 @@ Move the mouse pointer to the upper left corner of WIN.  If
 WIN is on a different desk or in a different viewport, these will be
 changed appropriately so that the window is visible. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:1331]
+[From scwm/window.c:1330]
 
 
 (window-class  #&optional win)
 Return the window resource class of WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2473]
+[From scwm/window.c:2472]
 
 
 (window-deletable?  #&optional win)
-Return #t if WIN is deletable, #f otherwise.
-The wm may call `delete-window' on WIN only if this procedure returns
+Return #t if WIN is able to be deleted, #f otherwise.
+Scwm may call `delete-window' on WIN only if this procedure returns
 #t. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1285]
+[From scwm/window.c:1284]
 
 
 (window-desk  #&optional win)
 Return the desk that WIN is currently on. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:2437]
+[From scwm/window.c:2436]
 
 
 (window-frame-id  #&optional win)
 Return the X window id for the outermost frame window of WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2381]
+[From scwm/window.c:2380]
 
 
 (window-icon win)
 Get the icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3160]
+[From scwm/window.c:3159]
 
 
 (window-icon-title  #&optional win)
 Return the icon window title of WIN.
-This is the title as requested by the app. WIN defaults to the window
-context in the usual way if not specified.
-[From scwm/window.c:2461]
+This is the title as requested by the application . WIN defaults to
+the window context in the usual way if not specified.
+[From scwm/window.c:2460]
 
 
 (window-id  #&optional win)
 Return the X window id for WIN.
 This is the X id for the actual application window. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:2368]
+[From scwm/window.c:2367]
 
 
 (window-mini-icon win)
 Get the mini-icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3212]
+[From scwm/window.c:3211]
 
 
 (window-position  #&optional win)
 Return the position of WIN. The position is returned as a
 list of the x coordinate and the y coordinate in pixels. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:2330]
+[From scwm/window.c:2329]
 
 
 (window-resource  #&optional win)
 Return the window resource instance of WIN. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:2485]
+[From scwm/window.c:2484]
 
 
 (window-shade  #&optional win animated?)
@@ -1405,27 +1405,27 @@ place instantaneously. However, if the optional ANIMATED? argument is
 true, the window will be animated as it rolls up, producing a pleasing
 visual effect. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:1665]
+[From scwm/window.c:1664]
 
 
 (window-shaded?  #&optional win)
 Return #t if WIN is shaded.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1776]
+[From scwm/window.c:1775]
 
 
 (window-size  #&optional win)
 Return the size of WIN. The position is returned as a list of
 the width and the height in pixels. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:2349]
+[From scwm/window.c:2348]
 
 
 (window-title  #&optional win)
-Return the window title of WIN, as requested by the app. WIN
-defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2449]
+Return the window title of WIN, as requested by the application.
+WIN defaults to the window context in the usual way if not specified.
+[From scwm/window.c:2448]
 
 
 (window-transient-for  #&optional win)
@@ -1435,7 +1435,7 @@ not the root window and is being managed by scwm, this returns the window
 object of the window that WIN is transient for, otherwise return
 #f. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1513]
+[From scwm/window.c:1512]
 
 
 (window-xproperty win name #&optional consume)
@@ -1447,20 +1447,20 @@ if the boolean value CONSUME is #t
 
 (window? obj)
 Returns #t if OBJ is a window object, otherwise returns #f.
-[From scwm/window.c:418]
+[From scwm/window.c:417]
 
 
 (X-display-information)
 Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
-bits per color supported by the hadware, the visual class (one of
+bits per color supported by the hardware, the visual class (one of
 "StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
 or "TrueColor") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
-be shared anmong multiple machines.
+be shared among multiple machines.
 [From scwm/miscprocs.c:488]
 
 

@@ -61,7 +61,7 @@
   <title>Description</title>
   <para>
   Add an input hook to run <parameter>proc</parameter> on input from <parameter>port</parameter>.
-Whenever input becomes availabe on <parameter>port</parameter>, procedure <parameter>proc</parameter> will be called
+Whenever input becomes available on <parameter>port</parameter>, procedure <parameter>proc</parameter> will be called
 with no arguments repeatedly until no unprocessed input remains on
 <parameter>port</parameter>. <parameter>port</parameter> must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
@@ -177,13 +177,13 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2713 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2712 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>capturing?</refname>
-    <refpurpose>Returns #t when the windows are being caputured.</refpurpose>
+    <refpurpose>Returns #t when the windows are being captured.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(capturing?)</synopsis>
@@ -191,7 +191,7 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Returns <literal>#t</literal> when the windows are being caputured.
+  Returns <literal>#t</literal> when the windows are being captured.
 This happens at two times: both during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
@@ -253,7 +253,7 @@ cache.
 <refentry>
   <refnamediv>
     <refname>clear-image-cache-entry</refname>
-    <refpurpose>Images are cached by both name and full pathnme.</refpurpose>
+    <refpurpose>Images are cached by both name and full pathname.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(clear-image-cache-entry name)</synopsis>
@@ -261,7 +261,7 @@ cache.
   <refsect1>
   <title>Description</title>
   <para>
-  Images are cached by both name and full pathnme. It is
+  Images are cached by both name and full pathname. It is
 remotely possible that the file that should be used for a particular
 name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
@@ -394,7 +394,7 @@ color, and 'pixel, the X pixel value it uses.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 482 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 481 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -413,7 +413,7 @@ color, and 'pixel, the X pixel value it uses.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 492 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 491 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -438,7 +438,7 @@ color, and 'pixel, the X pixel value it uses.
 <refentry>
   <refnamediv>
     <refname>default-placement-proc</refname>
-    <refpurpose>Use settable flags to call an appropriate placement function.</refpurpose>
+    <refpurpose>Use various flags to call an appropriate placement function.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(default-placement-proc win)</synopsis>
@@ -446,11 +446,11 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Description</title>
   <para>
-  Use settable flags to call an appropriate placement function.
+  Use various flags to call an appropriate placement function.
 This is the default placement procedure for non-transient windows. It
 tries <function>smart-place-window</function>, <function>clever-place-window</function>,
 <function>random-place-window</function>, or <function>interactive-move</function> (to achieve interactive
-placement) on <parameter>win</parameter> depending on several settable style flags. However,
+placement) on <parameter>win</parameter> depending on several style flags. However,
 if one of the following factors holds, the window will instead be
 placed exactly as requested by the program: the position was specified
 by the user, the position was specified by the program, and
@@ -501,7 +501,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1566 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1565 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -523,7 +523,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1224 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1223 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -566,7 +566,7 @@ context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1254 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1253 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -608,7 +608,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1298 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1297 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -663,13 +663,13 @@ color, and 'height, it's total height in pixels.
   <title>Description</title>
   <para>
   Return the window object corresponding to a frame <parameter>window-id</parameter>.
-<parameter>window-id</parameter> should be the X id of wm frame window. If there is no
+<parameter>window-id</parameter> should be the X id of a scwm frame window. If there is no
 such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2415 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2414 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -699,7 +699,7 @@ arguments)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 451 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 450 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -719,7 +719,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2605 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2604 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -799,7 +799,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2800 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2799 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -820,7 +820,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1582 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1581 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -842,13 +842,13 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1540 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1539 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>id->window</refname>
-    <refpurpose>Return the window object corresponding to an app WINDOW-ID.</refpurpose>
+    <refpurpose>Return the window object corresponding to an application WINDOW-ID.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(id->window window-id)</synopsis>
@@ -856,14 +856,14 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the window object corresponding to an app <parameter>window-id</parameter>.
+  Return the window object corresponding to an application <parameter>window-id</parameter>.
 <parameter>window-id</parameter> should be the X id of the application window. If there is no
 such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2394 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2393 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -927,7 +927,7 @@ usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1968 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1967 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -949,7 +949,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2072 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2071 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -970,7 +970,7 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2515 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2514 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -991,7 +991,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2558 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2557 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1011,7 +1011,7 @@ semi-arbitrary order that is convenient for the sake of circulation.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2497 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2496 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1069,7 +1069,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1373 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1372 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1170,7 +1170,7 @@ allocated, an error results.
   Loads an image from the file <parameter>name</parameter>.
 To load the image, the appropriate image loaders will be invoked as
 needed. If <parameter>name</parameter> starts with "/", "./" or "../", it is treated as a
-fully qulified pathname; otherwise, the image path is searched for an
+fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
   </para>
   </refsect1>
@@ -1337,7 +1337,7 @@ module packet for <parameter>win</parameter> as a Scheme string.
   Returns the a list of the menu properties of <parameter>menu</parameter>, a menu object.
 The properties returned are:
 '(menu-items side-image side-bg-color bg-color text-color image-bg
-font extra-options used-shortcutkeys)
+font extra-options used-shortcut-keys)
   </para>
   </refsect1>
   <refsect1>
@@ -1398,7 +1398,7 @@ font extra-options used-shortcutkeys)
 <parameter>menu-item</parameter> is a menuitem object, created by <function>make-menuitem</function>.  The
 returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
-unhover-action hotkey-prefs)
+unhover-action hotkey-preferences)
 Note that this is the same as the arguments to the <function>make-menuitem</function>
 primitive
   </para>
@@ -1411,7 +1411,7 @@ primitive
 <refentry>
   <refnamediv>
     <refname>mod-mask-alt</refname>
-    <refpurpose>Return the bitmask for the Alt modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Alt modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-alt)</synopsis>
@@ -1419,9 +1419,9 @@ primitive
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Alt modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Alt, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Alt modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Alt, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -1432,7 +1432,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-hyper</refname>
-    <refpurpose>Return the bitmask for the Hyper modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Hyper modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-hyper)</synopsis>
@@ -1440,9 +1440,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Hyper modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Hyper, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Hyper modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Hyper, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -1453,7 +1453,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-meta</refname>
-    <refpurpose>Return the bitmask for the Meta modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Meta modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-meta)</synopsis>
@@ -1461,9 +1461,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Meta modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Meta, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Meta modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Meta, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -1474,7 +1474,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-super</refname>
-    <refpurpose>Return the bitmask for the Super modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Super modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-super)</synopsis>
@@ -1482,9 +1482,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Super modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Super, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Super modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Super, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -1553,7 +1553,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1882 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1881 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1573,7 +1573,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2282 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2281 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1594,7 +1594,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2649 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2648 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1616,7 +1616,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2683 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2682 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1676,7 +1676,7 @@ context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1347 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1346 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1697,7 +1697,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1478 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1477 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1785,7 +1785,7 @@ way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2261 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2260 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1801,7 +1801,7 @@ way if not specified.
   <para>
   Register <parameter>proc</parameter> as the loader to use for images ending in <parameter>extension</parameter>.
 <parameter>extension</parameter> must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). <parameter>proc</parameter> will
 be called with the full pathname of the image and should return an
 image object, or <literal>#f</literal> if it succeeds.
@@ -1897,7 +1897,7 @@ usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2007 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2006 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -1914,13 +1914,13 @@ usual way if not specified.
   <parameter>winlist</parameter> is a list of windows. The first element of <parameter>winlist</parameter>
 will be kept in its current stacking order, the remainder will be
 stacked immediately below it in the order given. (Note: This will
-currently confuse the heck out of the pager and possibly other lagacy
+currently confuse the heck out of the pager and possibly other legacy
 fvwm2 modules).
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1392 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1391 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2040,15 +2040,15 @@ scwm. <parameter>args</parameter> is ignored.
   Select a window interactively.
 Use a special cursor and let the user click to select the window. The
 optional arguments <parameter>kill?</parameter> and <parameter>release?</parameter> indicate whether to use the
-"skull and crossbones" kill cursor (reccomended for destructive
+"skull and cross-bones" kill cursor (recommended for destructive
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
-placeholder until we have proper cursor support in scwm.
+place-holder until we have proper cursor support in scwm.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 869 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 868 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2067,7 +2067,7 @@ placeholder until we have proper cursor support in scwm.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 503 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 502 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2083,12 +2083,12 @@ placeholder until we have proper cursor support in scwm.
   <para>
   Send a synthetic mouse press event.
 Create a synthetic event of a press of mouse button <parameter>button</parameter>, with modifier
-<parameter>modifier</parameter> and send the eent to window <parameter>win</parameter> if specified; otherwise the
+<parameter>modifier</parameter> and send the event to window <parameter>win</parameter> if specified; otherwise the
 window to be used defaults to the window context in the usual way. By
 default, both a press and a release are sent. However, the boolean
 parameters <parameter>button-press?</parameter> and <parameter>button-release?</parameter> allow you to specify
 which are sent individually. <parameter>propagate?</parameter> indicates whether the propagate
-flag is set on the event; the default is <literal>#f</literal>. You shouldn't have to
+flag is set on the event; the default is <literal>#f</literal>. You should not have to
 worry about this unless you know what it means.
   </para>
   </refsect1>
@@ -2115,7 +2115,7 @@ context in the usual way. By default, both a press and a release are
 sent. However, the boolean parameters <parameter>key-press?</parameter> and <parameter>key-release?</parameter>
 allow you to specify which are sent individually. <parameter>propagate?</parameter> indicates
 whether the propagate flag is set on the event; the default is <literal>#f</literal>. You
-shouldn't have to worry about this unless you know what it means.
+should not have to worry about this unless you know what it means.
   </para>
   </refsect1>
   <refsect1>
@@ -2136,16 +2136,16 @@ shouldn't have to worry about this unless you know what it means.
   <para>
   Set the animation parameters to <parameter>vector</parameter>. <parameter>vector</parameter> is a vector of
 floats which give the fractions of the final position that the window
-should appear at. For intance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
-make the window appear at the initial positon, 1/4 of the way, 1/2 of
-the way, 3/4 of the way, overshoot the finall position slightly, and
+should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
+make the window appear at the initial position, 1/4 of the way, 1/2 of
+the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1835 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1834 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2187,7 +2187,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2726 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2725 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2251,8 +2251,8 @@ when the window is maximized.
   <title>Description</title>
   <para>
   Set the delay used in identifying mouse clicks and drags.
-<parameter>ctime</parameter> is specified in microseconds. After <parameter>ctime</parameter> usecs, a mouse-down
-without a mouse-up is considered a drag.  Also, after <parameter>ctime</parameter> usecs, a
+<parameter>ctime</parameter> is specified in microseconds. After <parameter>ctime</parameter> microseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after <parameter>ctime</parameter> microseconds, a
 single click is definitively identified as not a double click.
   </para>
   </refsect1>
@@ -2273,7 +2273,7 @@ single click is definitively identified as not a double click.
   <title>Description</title>
   <para>
   Determine whether a click-to-focus window receives the click.
-If <parameter>flag</parameter> is <literal>#t</literal>, the window will receive the event, if <literal>#f</literal>, the wm
+If <parameter>flag</parameter> is <literal>#t</literal>, the window will receive the event, if <literal>#f</literal>, scwm
 will not pass the event on to the client.
   </para>
   </refsect1>
@@ -2318,7 +2318,7 @@ window
 'mouse, indicating that the window under the mouse pointer should
 always have it's colormap installed, or 'focus to indicate that the
 window with the input focus should also get the colormap focus. This
-makes a difference onl when using focus policies other than 'mouse.
+makes a difference only when using focus policies other than 'mouse.
   </para>
   </refsect1>
   <refsect1>
@@ -2387,7 +2387,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3248 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3247 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2428,7 +2428,7 @@ Sets two parameters indicating how much resistance should be
 offered when scrolling things past the edge, in two different
 senses. <parameter>sr</parameter> is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
-scrolls. If this paramenter is greater than 10,000, the viewport will
+scrolls. If this parameter is greater than 10,000, the viewport will
 not scroll at all at the screen edge (FIXMS: that's a bogus way to
 indicate that.) <parameter>mr</parameter> is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it
@@ -2489,7 +2489,7 @@ wraparound is in effect
 <refentry>
   <refnamediv>
     <refname>set-force-icon!</refname>
-    <refpurpose>Set the wm-overriding property for WIN to boolean FLAG.</refpurpose>
+    <refpurpose>Set the window-manager-overriding property for WIN to boolean FLAG.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-force-icon! flag #&amp;optional win)</synopsis>
@@ -2497,15 +2497,15 @@ wraparound is in effect
   <refsect1>
   <title>Description</title>
   <para>
-  Set the wm-overriding property for <parameter>win</parameter> to boolean <parameter>flag</parameter>.
-If <literal>#t</literal>, the icon spcified for <parameter>win</parameter> by the wm will override an
-app-provided icon.  <parameter>win</parameter> defaults to the window context in the usual
+  Set the window-manager-overriding property for <parameter>win</parameter> to boolean <parameter>flag</parameter>.
+If <literal>#t</literal>, the icon specified for <parameter>win</parameter> by the user through scwm will override an
+application-provided icon.  <parameter>win</parameter> defaults to the window context in the usual
 way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3080 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3079 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2588,7 +2588,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3231 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3230 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2604,13 +2604,13 @@ not specified.
   <para>
   Set the image to use for the icon of <parameter>win</parameter> to <parameter>image</parameter>.
 As usual, an image object or a filename string may be given. <literal>#f</literal> May
-also be specified, ndicating no icon image. <parameter>win</parameter> defaults to the window
+also be specified, indicating no icon image. <parameter>win</parameter> defaults to the window
 context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3126 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3125 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2632,7 +2632,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2814 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2813 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2671,7 +2671,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3061 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3060 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2695,7 +2695,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3364 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3363 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2853,7 +2853,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3177 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3176 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2880,7 +2880,7 @@ makes sense any more.  FIXDOC.
 <refentry>
   <refnamediv>
     <refname>set-mwm-border!</refname>
-    <refpurpose>Set the mwm-border style flag of WIN to bealean FLAG.</refpurpose>
+    <refpurpose>Set the mwm-border style flag of WIN to boolean FLAG.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-mwm-border! flag #&amp;optional win)</synopsis>
@@ -2888,7 +2888,7 @@ makes sense any more.  FIXDOC.
   <refsect1>
   <title>Description</title>
   <para>
-  Set the mwm-border style flag of <parameter>win</parameter> to bealean <parameter>flag</parameter>.
+  Set the mwm-border style flag of <parameter>win</parameter> to boolean <parameter>flag</parameter>.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 <parameter>win</parameter> defaults to the window context in the usual way if not
 specified.
@@ -2896,7 +2896,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3033 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3032 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2918,7 +2918,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3017 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3016 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2933,13 +2933,13 @@ to the window context in the usual way if not specified.
   <title>Description</title>
   <para>
   Set whether or not Motif decoration hints are used for <parameter>win</parameter>.
-If <parameter>flag</parameter> is <literal>#t</literal>, the MWM decor hint will be given for <parameter>win</parameter>.  <parameter>win</parameter> defaults
+If <parameter>flag</parameter> is <literal>#t</literal>, the Mwm decor hint will be given for <parameter>win</parameter>.  <parameter>win</parameter> defaults
 to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3262 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3261 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2961,7 +2961,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3277 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3276 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -2982,7 +2982,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3308 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3307 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3022,13 +3022,13 @@ a rubber band instead.
 If <parameter>flag</parameter> is <literal>#t</literal>, the hint will be set, otherwise reset.  This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
-ignoring it is reccomended. <parameter>win</parameter> defaults to the window context in the
+ignoring it is recommended. <parameter>win</parameter> defaults to the window context in the
 usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3294 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3293 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3050,7 +3050,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2962 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2961 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3114,7 +3114,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3108 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3107 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3136,7 +3136,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3347 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3346 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3158,7 +3158,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2977 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2976 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3201,7 +3201,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3321 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3320 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3311,7 +3311,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2933 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2932 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3333,7 +3333,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2992 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2991 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3374,7 +3374,7 @@ if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2873 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2872 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3415,7 +3415,7 @@ if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2909 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2908 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3475,7 +3475,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2574 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2573 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3521,7 +3521,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1597 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1596 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3541,7 +3541,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2760 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2759 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3562,7 +3562,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1638 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1637 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3602,7 +3602,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2636 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2635 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3623,7 +3623,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1495 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1494 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3644,7 +3644,7 @@ way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2537 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2536 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3667,7 +3667,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1733 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1732 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3728,7 +3728,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1315 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1314 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3744,7 +3744,7 @@ window context in the usual way if not specified.
   <para>
   Unregister the loader, if any, for images ending in <parameter>extension</parameter>.
 <parameter>extension</parameter> must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
   </para>
   </refsect1>
@@ -3771,7 +3771,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1618 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1617 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3792,7 +3792,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2780 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2779 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3855,7 +3855,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1331 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1330 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3876,13 +3876,13 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2473 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2472 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>window-deletable?</refname>
-    <refpurpose>Return #t if WIN is deletable, #f otherwise.</refpurpose>
+    <refpurpose>Return #t if WIN is able to be deleted, #f otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-deletable?  #&amp;optional win)</synopsis>
@@ -3890,15 +3890,15 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return <literal>#t</literal> if <parameter>win</parameter> is deletable, <literal>#f</literal> otherwise.
-The wm may call <function>delete-window</function> on <parameter>win</parameter> only if this procedure returns
+  Return <literal>#t</literal> if <parameter>win</parameter> is able to be deleted, <literal>#f</literal> otherwise.
+Scwm may call <function>delete-window</function> on <parameter>win</parameter> only if this procedure returns
 <literal>#t</literal>. <parameter>win</parameter> defaults to the window context in the usual way if not
 specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1285 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1284 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3918,7 +3918,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2437 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2436 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3939,7 +3939,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2381 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2380 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3960,7 +3960,7 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3160 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3159 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -3975,13 +3975,13 @@ in the usual way if not specified.
   <title>Description</title>
   <para>
   Return the icon window title of <parameter>win</parameter>.
-This is the title as requested by the app. <parameter>win</parameter> defaults to the window
-context in the usual way if not specified.
+This is the title as requested by the application . <parameter>win</parameter> defaults to
+the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2461 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2460 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4002,7 +4002,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2368 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2367 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4023,7 +4023,7 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3212 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3211 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4044,7 +4044,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2330 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2329 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4064,7 +4064,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2485 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2484 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4088,7 +4088,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1665 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1664 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4109,7 +4109,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1776 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1775 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4130,13 +4130,13 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2349 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2348 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>window-title</refname>
-    <refpurpose>Return the window title of WIN, as requested by the app.</refpurpose>
+    <refpurpose>Return the window title of WIN, as requested by the application.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-title  #&amp;optional win)</synopsis>
@@ -4144,13 +4144,13 @@ in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the window title of <parameter>win</parameter>, as requested by the app. <parameter>win</parameter>
-defaults to the window context in the usual way if not specified.
+  Return the window title of <parameter>win</parameter>, as requested by the application.
+<parameter>win</parameter> defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2449 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2448 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4174,7 +4174,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1513 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1512 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4214,7 +4214,7 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 418 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 417 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -4231,13 +4231,13 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
-bits per color supported by the hadware, the visual class (one of
+bits per color supported by the hardware, the visual class (one of
 "StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
 or "TrueColor") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
-be shared anmong multiple machines.
+be shared among multiple machines.
   </para>
   </refsect1>
   <refsect1>
@@ -4440,7 +4440,7 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks
 <refentry>
   <refnamediv>
     <refname>mod-mask-meta</refname>
-    <refpurpose>Return the bitmask for the Meta modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Meta modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-meta)</synopsis>
@@ -4448,9 +4448,9 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Meta modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Meta, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Meta modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Meta, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -4461,7 +4461,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-alt</refname>
-    <refpurpose>Return the bitmask for the Alt modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Alt modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-alt)</synopsis>
@@ -4469,9 +4469,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Alt modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Alt, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Alt modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Alt, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -4482,7 +4482,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-hyper</refname>
-    <refpurpose>Return the bitmask for the Hyper modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Hyper modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-hyper)</synopsis>
@@ -4490,9 +4490,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Hyper modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Hyper, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Hyper modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Hyper, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -4503,7 +4503,7 @@ returns a power of two corresponding to the bitmask of the modifier
 <refentry>
   <refnamediv>
     <refname>mod-mask-super</refname>
-    <refpurpose>Return the bitmask for the Super modifier key, or #f.</refpurpose>
+    <refpurpose>Return the bit-mask for the Super modifier key, or #f.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(mod-mask-super)</synopsis>
@@ -4511,9 +4511,9 @@ returns a power of two corresponding to the bitmask of the modifier
   <refsect1>
   <title>Description</title>
   <para>
-  Return the bitmask for the Super modifier key, or <literal>#f</literal>.
-Returns <literal>#f</literal> iff there is no key bound to act as Super, otherwise
-returns a power of two corresponding to the bitmask of the modifier
+  Return the bit-mask for the Super modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as Super, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
@@ -4625,7 +4625,7 @@ timer hook that has already been triggered.
   <title>Description</title>
   <para>
   Add an input hook to run <parameter>proc</parameter> on input from <parameter>port</parameter>.
-Whenever input becomes availabe on <parameter>port</parameter>, procedure <parameter>proc</parameter> will be called
+Whenever input becomes available on <parameter>port</parameter>, procedure <parameter>proc</parameter> will be called
 with no arguments repeatedly until no unprocessed input remains on
 <parameter>port</parameter>. <parameter>port</parameter> must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
@@ -5269,7 +5269,7 @@ Sets two parameters indicating how much resistance should be
 offered when scrolling things past the edge, in two different
 senses. <parameter>sr</parameter> is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
-scrolls. If this paramenter is greater than 10,000, the viewport will
+scrolls. If this parameter is greater than 10,000, the viewport will
 not scroll at all at the screen edge (FIXMS: that's a bogus way to
 indicate that.) <parameter>mr</parameter> is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it
@@ -5423,12 +5423,12 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <para>
   Send a synthetic mouse press event.
 Create a synthetic event of a press of mouse button <parameter>button</parameter>, with modifier
-<parameter>modifier</parameter> and send the eent to window <parameter>win</parameter> if specified; otherwise the
+<parameter>modifier</parameter> and send the event to window <parameter>win</parameter> if specified; otherwise the
 window to be used defaults to the window context in the usual way. By
 default, both a press and a release are sent. However, the boolean
 parameters <parameter>button-press?</parameter> and <parameter>button-release?</parameter> allow you to specify
 which are sent individually. <parameter>propagate?</parameter> indicates whether the propagate
-flag is set on the event; the default is <literal>#f</literal>. You shouldn't have to
+flag is set on the event; the default is <literal>#f</literal>. You should not have to
 worry about this unless you know what it means.
   </para>
   </refsect1>
@@ -5455,7 +5455,7 @@ context in the usual way. By default, both a press and a release are
 sent. However, the boolean parameters <parameter>key-press?</parameter> and <parameter>key-release?</parameter>
 allow you to specify which are sent individually. <parameter>propagate?</parameter> indicates
 whether the propagate flag is set on the event; the default is <literal>#f</literal>. You
-shouldn't have to worry about this unless you know what it means.
+should not have to worry about this unless you know what it means.
   </para>
   </refsect1>
   <refsect1>
@@ -5821,7 +5821,7 @@ depth, it's color depth.
   <para>
   Register <parameter>proc</parameter> as the loader to use for images ending in <parameter>extension</parameter>.
 <parameter>extension</parameter> must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). <parameter>proc</parameter> will
 be called with the full pathname of the image and should return an
 image object, or <literal>#f</literal> if it succeeds.
@@ -5845,7 +5845,7 @@ image object, or <literal>#f</literal> if it succeeds.
   <para>
   Unregister the loader, if any, for images ending in <parameter>extension</parameter>.
 <parameter>extension</parameter> must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
   </para>
   </refsect1>
@@ -5868,7 +5868,7 @@ empty string (for files with no extension), or the strting "default"
   Loads an image from the file <parameter>name</parameter>.
 To load the image, the appropriate image loaders will be invoked as
 needed. If <parameter>name</parameter> starts with "/", "./" or "../", it is treated as a
-fully qulified pathname; otherwise, the image path is searched for an
+fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
   </para>
   </refsect1>
@@ -5880,7 +5880,7 @@ appropriate file.
 <refentry>
   <refnamediv>
     <refname>clear-image-cache-entry</refname>
-    <refpurpose>Images are cached by both name and full pathnme.</refpurpose>
+    <refpurpose>Images are cached by both name and full pathname.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(clear-image-cache-entry name)</synopsis>
@@ -5888,7 +5888,7 @@ appropriate file.
   <refsect1>
   <title>Description</title>
   <para>
-  Images are cached by both name and full pathnme. It is
+  Images are cached by both name and full pathname. It is
 remotely possible that the file that should be used for a particular
 name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
@@ -5918,7 +5918,7 @@ associated with <parameter>name</parameter> from the image cache.
 <parameter>menu-item</parameter> is a menuitem object, created by <function>make-menuitem</function>.  The
 returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
-unhover-action hotkey-prefs)
+unhover-action hotkey-preferences)
 Note that this is the same as the arguments to the <function>make-menuitem</function>
 primitive
   </para>
@@ -6068,7 +6068,7 @@ Applies to the current decor.
 <refentry>
   <refnamediv>
     <refname>capturing?</refname>
-    <refpurpose>Returns #t when the windows are being caputured.</refpurpose>
+    <refpurpose>Returns #t when the windows are being captured.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(capturing?)</synopsis>
@@ -6076,7 +6076,7 @@ Applies to the current decor.
   <refsect1>
   <title>Description</title>
   <para>
-  Returns <literal>#t</literal> when the windows are being caputured.
+  Returns <literal>#t</literal> when the windows are being captured.
 This happens at two times: both during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
@@ -6120,8 +6120,8 @@ this should not be needed.
   <title>Description</title>
   <para>
   Set the delay used in identifying mouse clicks and drags.
-<parameter>ctime</parameter> is specified in microseconds. After <parameter>ctime</parameter> usecs, a mouse-down
-without a mouse-up is considered a drag.  Also, after <parameter>ctime</parameter> usecs, a
+<parameter>ctime</parameter> is specified in microseconds. After <parameter>ctime</parameter> microseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after <parameter>ctime</parameter> microseconds, a
 single click is definitively identified as not a double click.
   </para>
   </refsect1>
@@ -6145,7 +6145,7 @@ single click is definitively identified as not a double click.
 'mouse, indicating that the window under the mouse pointer should
 always have it's colormap installed, or 'focus to indicate that the
 window with the input focus should also get the colormap focus. This
-makes a difference onl when using focus policies other than 'mouse.
+makes a difference only when using focus policies other than 'mouse.
   </para>
   </refsect1>
   <refsect1>
@@ -6310,7 +6310,7 @@ value <parameter>flag</parameter>.
   <title>Description</title>
   <para>
   Determine whether a click-to-focus window receives the click.
-If <parameter>flag</parameter> is <literal>#t</literal>, the window will receive the event, if <literal>#f</literal>, the wm
+If <parameter>flag</parameter> is <literal>#t</literal>, the window will receive the event, if <literal>#f</literal>, scwm
 will not pass the event on to the client.
   </para>
   </refsect1>
@@ -6415,13 +6415,13 @@ revision, the X server vendor, and the vendor release number.
   Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
-bits per color supported by the hadware, the visual class (one of
+bits per color supported by the hardware, the visual class (one of
 "StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
 or "TrueColor") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
-be shared anmong multiple machines.
+be shared among multiple machines.
   </para>
   </refsect1>
   <refsect1>
@@ -6551,7 +6551,7 @@ interaction. <literal>#t</literal> is always returned.
 <refentry>
   <refnamediv>
     <refname>default-placement-proc</refname>
-    <refpurpose>Use settable flags to call an appropriate placement function.</refpurpose>
+    <refpurpose>Use various flags to call an appropriate placement function.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(default-placement-proc win)</synopsis>
@@ -6559,11 +6559,11 @@ interaction. <literal>#t</literal> is always returned.
   <refsect1>
   <title>Description</title>
   <para>
-  Use settable flags to call an appropriate placement function.
+  Use various flags to call an appropriate placement function.
 This is the default placement procedure for non-transient windows. It
 tries <function>smart-place-window</function>, <function>clever-place-window</function>,
 <function>random-place-window</function>, or <function>interactive-move</function> (to achieve interactive
-placement) on <parameter>win</parameter> depending on several settable style flags. However,
+placement) on <parameter>win</parameter> depending on several style flags. However,
 if one of the following factors holds, the window will instead be
 placed exactly as requested by the program: the position was specified
 by the user, the position was specified by the program, and
@@ -6630,7 +6630,7 @@ It simply leaves the window <parameter>win</parameter> in place, exactly as requ
   Returns the a list of the menu properties of <parameter>menu</parameter>, a menu object.
 The properties returned are:
 '(menu-items side-image side-bg-color bg-color text-color image-bg
-font extra-options used-shortcutkeys)
+font extra-options used-shortcut-keys)
   </para>
   </refsect1>
   <refsect1>
@@ -6744,7 +6744,7 @@ scwm. <parameter>args</parameter> is ignored.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 418 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 417 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6774,7 +6774,7 @@ arguments)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 451 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 450 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6793,7 +6793,7 @@ arguments)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 482 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 481 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6812,7 +6812,7 @@ arguments)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 492 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 491 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6831,7 +6831,7 @@ arguments)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 503 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 502 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6848,15 +6848,15 @@ arguments)
   Select a window interactively.
 Use a special cursor and let the user click to select the window. The
 optional arguments <parameter>kill?</parameter> and <parameter>release?</parameter> indicate whether to use the
-"skull and crossbones" kill cursor (reccomended for destructive
+"skull and cross-bones" kill cursor (recommended for destructive
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
-placeholder until we have proper cursor support in scwm.
+place-holder until we have proper cursor support in scwm.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 869 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 868 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6878,7 +6878,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1224 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1223 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6900,13 +6900,13 @@ context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1254 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1253 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>window-deletable?</refname>
-    <refpurpose>Return #t if WIN is deletable, #f otherwise.</refpurpose>
+    <refpurpose>Return #t if WIN is able to be deleted, #f otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-deletable?  #&amp;optional win)</synopsis>
@@ -6914,15 +6914,15 @@ context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return <literal>#t</literal> if <parameter>win</parameter> is deletable, <literal>#f</literal> otherwise.
-The wm may call <function>delete-window</function> on <parameter>win</parameter> only if this procedure returns
+  Return <literal>#t</literal> if <parameter>win</parameter> is able to be deleted, <literal>#f</literal> otherwise.
+Scwm may call <function>delete-window</function> on <parameter>win</parameter> only if this procedure returns
 <literal>#t</literal>. <parameter>win</parameter> defaults to the window context in the usual way if not
 specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1285 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1284 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6943,7 +6943,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1298 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1297 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6962,7 +6962,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1315 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1314 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -6984,7 +6984,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1331 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1330 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7005,7 +7005,7 @@ context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1347 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1346 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7025,7 +7025,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1373 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1372 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7042,13 +7042,13 @@ the window context in the usual way if not specified.
   <parameter>winlist</parameter> is a list of windows. The first element of <parameter>winlist</parameter>
 will be kept in its current stacking order, the remainder will be
 stacked immediately below it in the order given. (Note: This will
-currently confuse the heck out of the pager and possibly other lagacy
+currently confuse the heck out of the pager and possibly other legacy
 fvwm2 modules).
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1392 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1391 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7069,7 +7069,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1478 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1477 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7090,7 +7090,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1495 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1494 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7114,7 +7114,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1513 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1512 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7136,7 +7136,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1540 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1539 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7158,7 +7158,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1566 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1565 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7179,7 +7179,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1582 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1581 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7202,7 +7202,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1597 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1596 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7223,7 +7223,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1618 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1617 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7244,7 +7244,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1638 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1637 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7268,7 +7268,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1665 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1664 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7291,7 +7291,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1733 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1732 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7312,7 +7312,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1776 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1775 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7328,16 +7328,16 @@ specified.
   <para>
   Set the animation parameters to <parameter>vector</parameter>. <parameter>vector</parameter> is a vector of
 floats which give the fractions of the final position that the window
-should appear at. For intance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
-make the window appear at the initial positon, 1/4 of the way, 1/2 of
-the way, 3/4 of the way, overshoot the finall position slightly, and
+should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
+make the window appear at the initial position, 1/4 of the way, 1/2 of
+the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1835 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1834 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7362,7 +7362,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1882 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1881 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7385,7 +7385,7 @@ usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 1968 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 1967 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7406,7 +7406,7 @@ usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2007 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2006 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7428,7 +7428,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2072 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2071 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7451,7 +7451,7 @@ way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2261 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2260 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7471,7 +7471,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2282 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2281 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7492,7 +7492,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2330 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2329 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7513,7 +7513,7 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2349 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2348 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7534,7 +7534,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2368 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2367 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7555,13 +7555,13 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2381 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2380 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>id->window</refname>
-    <refpurpose>Return the window object corresponding to an app WINDOW-ID.</refpurpose>
+    <refpurpose>Return the window object corresponding to an application WINDOW-ID.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(id->window window-id)</synopsis>
@@ -7569,14 +7569,14 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the window object corresponding to an app <parameter>window-id</parameter>.
+  Return the window object corresponding to an application <parameter>window-id</parameter>.
 <parameter>window-id</parameter> should be the X id of the application window. If there is no
 such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2394 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2393 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7591,13 +7591,13 @@ such window object, return <literal>#f</literal>.
   <title>Description</title>
   <para>
   Return the window object corresponding to a frame <parameter>window-id</parameter>.
-<parameter>window-id</parameter> should be the X id of wm frame window. If there is no
+<parameter>window-id</parameter> should be the X id of a scwm frame window. If there is no
 such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2415 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2414 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7617,13 +7617,13 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2437 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2436 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>window-title</refname>
-    <refpurpose>Return the window title of WIN, as requested by the app.</refpurpose>
+    <refpurpose>Return the window title of WIN, as requested by the application.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-title  #&amp;optional win)</synopsis>
@@ -7631,13 +7631,13 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the window title of <parameter>win</parameter>, as requested by the app. <parameter>win</parameter>
-defaults to the window context in the usual way if not specified.
+  Return the window title of <parameter>win</parameter>, as requested by the application.
+<parameter>win</parameter> defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2449 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2448 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7652,13 +7652,13 @@ defaults to the window context in the usual way if not specified.
   <title>Description</title>
   <para>
   Return the icon window title of <parameter>win</parameter>.
-This is the title as requested by the app. <parameter>win</parameter> defaults to the window
-context in the usual way if not specified.
+This is the title as requested by the application . <parameter>win</parameter> defaults to
+the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2461 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2460 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7679,7 +7679,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2473 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2472 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7699,7 +7699,7 @@ the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2485 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2484 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7719,7 +7719,7 @@ semi-arbitrary order that is convenient for the sake of circulation.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2497 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2496 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7740,7 +7740,7 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2515 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2514 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7761,7 +7761,7 @@ way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2537 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2536 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7782,7 +7782,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2558 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2557 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7803,7 +7803,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2574 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2573 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7823,7 +7823,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2605 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2604 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7844,7 +7844,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2636 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2635 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7865,7 +7865,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2649 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2648 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7887,7 +7887,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2683 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2682 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7908,7 +7908,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2713 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2712 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7928,7 +7928,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2726 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2725 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7948,7 +7948,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2760 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2759 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7969,7 +7969,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2780 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2779 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -7990,7 +7990,7 @@ the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2800 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2799 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8012,7 +8012,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2814 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2813 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8033,7 +8033,7 @@ if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2873 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2872 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8055,7 +8055,7 @@ if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2909 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2908 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8078,7 +8078,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2933 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2932 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8100,7 +8100,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2962 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2961 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8122,7 +8122,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2977 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2976 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8144,7 +8144,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 2992 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 2991 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8166,13 +8166,13 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3017 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3016 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>set-mwm-border!</refname>
-    <refpurpose>Set the mwm-border style flag of WIN to bealean FLAG.</refpurpose>
+    <refpurpose>Set the mwm-border style flag of WIN to boolean FLAG.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-mwm-border! flag #&amp;optional win)</synopsis>
@@ -8180,7 +8180,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Set the mwm-border style flag of <parameter>win</parameter> to bealean <parameter>flag</parameter>.
+  Set the mwm-border style flag of <parameter>win</parameter> to boolean <parameter>flag</parameter>.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 <parameter>win</parameter> defaults to the window context in the usual way if not
 specified.
@@ -8188,7 +8188,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3033 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3032 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8208,13 +8208,13 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3061 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3060 </para> </refsect1>
 </refentry>
 
 <refentry>
   <refnamediv>
     <refname>set-force-icon!</refname>
-    <refpurpose>Set the wm-overriding property for WIN to boolean FLAG.</refpurpose>
+    <refpurpose>Set the window-manager-overriding property for WIN to boolean FLAG.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-force-icon! flag #&amp;optional win)</synopsis>
@@ -8222,15 +8222,15 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Set the wm-overriding property for <parameter>win</parameter> to boolean <parameter>flag</parameter>.
-If <literal>#t</literal>, the icon spcified for <parameter>win</parameter> by the wm will override an
-app-provided icon.  <parameter>win</parameter> defaults to the window context in the usual
+  Set the window-manager-overriding property for <parameter>win</parameter> to boolean <parameter>flag</parameter>.
+If <literal>#t</literal>, the icon specified for <parameter>win</parameter> by the user through scwm will override an
+application-provided icon.  <parameter>win</parameter> defaults to the window context in the usual
 way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3080 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3079 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8253,7 +8253,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3108 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3107 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8269,13 +8269,13 @@ specified.
   <para>
   Set the image to use for the icon of <parameter>win</parameter> to <parameter>image</parameter>.
 As usual, an image object or a filename string may be given. <literal>#f</literal> May
-also be specified, ndicating no icon image. <parameter>win</parameter> defaults to the window
+also be specified, indicating no icon image. <parameter>win</parameter> defaults to the window
 context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3126 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3125 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8296,7 +8296,7 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3160 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3159 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8317,7 +8317,7 @@ to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3177 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3176 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8338,7 +8338,7 @@ in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3212 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3211 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8361,7 +8361,7 @@ not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3231 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3230 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8384,7 +8384,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3248 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3247 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8399,13 +8399,13 @@ defaults to the window context in the usual way if not specified.
   <title>Description</title>
   <para>
   Set whether or not Motif decoration hints are used for <parameter>win</parameter>.
-If <parameter>flag</parameter> is <literal>#t</literal>, the MWM decor hint will be given for <parameter>win</parameter>.  <parameter>win</parameter> defaults
+If <parameter>flag</parameter> is <literal>#t</literal>, the Mwm decor hint will be given for <parameter>win</parameter>.  <parameter>win</parameter> defaults
 to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3262 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3261 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8427,7 +8427,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3277 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3276 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8445,13 +8445,13 @@ specified.
 If <parameter>flag</parameter> is <literal>#t</literal>, the hint will be set, otherwise reset.  This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
-ignoring it is reccomended. <parameter>win</parameter> defaults to the window context in the
+ignoring it is recommended. <parameter>win</parameter> defaults to the window context in the
 usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3294 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3293 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8472,7 +8472,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3308 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3307 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8492,7 +8492,7 @@ window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3321 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3320 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8514,7 +8514,7 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3347 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3346 </para> </refsect1>
 </refentry>
 
 <refentry>
@@ -8538,7 +8538,7 @@ specified.
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>scwm/window.c</filename> at line 3364 </para> </refsect1>
+  <para> Defined in <filename>scwm/window.c</filename> at line 3363 </para> </refsect1>
 </refentry>
 
     </sect1>
