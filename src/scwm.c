@@ -124,6 +124,7 @@ XContext ScwmContext;		/* context for scwm windows */
 XContext MenuContext;           /* context for menus */
 
 Window JunkRoot, JunkChild;	/* junk window */
+Window JunkWindow;
 int JunkX = 0, JunkY = 0;
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;

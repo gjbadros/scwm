@@ -2409,19 +2409,50 @@ the window context in the usual way if not specified. */
 
 SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
           ())
-     /** Return a Scheme list of all of the windows. The list is in a
-semi-arbitrary order that is convenient for the sake of circulation.*/
+     /** Return a list of all of the top-level window objects. 
+
+The list is in a semi-arbitrary order that is convenient for the sake
+of circulation.*/
 #define FUNC_NAME s_list_all_windows
 { 
   ScwmWindow *psw; SCM result = SCM_EOL;
 
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
-    result = scm_cons(psw->schwin, result);
+    result = gh_cons(psw->schwin, result);
   }
 
   return result;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC (list_all_windows_in_stacking_order, "list-all-windows-in-stacking-order", 0, 0, 0,
+           ())
+     /** Return a list of all the top-level window objects, from top to bottom.
+The order is the stacking order of the windows. The first element is
+the topmost window, the last is the bottommost */
+#define FUNC_NAME s_list_all_windows_in_stacking_order
+{
+  SCM result = SCM_EOL;
+  Window *rgw;
+  int cw = 0;
+  int iw = 0;
+  
+  if (!XQueryTree(dpy, Scr.Root, &JunkWindow, &JunkWindow, &rgw, &cw))
+    return SCM_BOOL_F;
+
+  for (; iw < cw; ++iw) {
+    ScwmWindow *psw = PswFromWindow(dpy,rgw[iw]);
+    if (psw)
+      result = gh_cons(psw->schwin,result);
+  }
+
+  if (rgw) XFree(rgw);
+  return result;
+}
+#undef FUNC_NAME
+
+
 
 
 SCWM_PROC(keep_on_top, "keep-on-top", 0, 1, 0,

@@ -232,6 +232,7 @@ extern Boolean ShapesSupported;
 
 
 extern Window JunkChild, JunkRoot;
+extern Window JunkWindow;
 extern int JunkX, JunkY;
 extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
