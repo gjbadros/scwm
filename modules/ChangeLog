@@ -1,3 +1,10 @@
+Wed Apr  7 10:22:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c: Handle SIGFPE, too.
+
+	* xpm-menus/draw-xpm-menu.c, pie-menus/draw-pie-menu.c: Fix
+ 	spelling of highlight throughout.
+
 Mon Apr  5 15:15:35 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c: Copy the

@@ -1,3 +1,8 @@
+Wed Apr  7 10:38:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Use 'Primitive from (app scwm foo)' for C modules in 
+	directory foo/ as the module name.
+
 Fri Apr  2 10:44:42 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Drop -V, -O options for user-options stuff.  That is 

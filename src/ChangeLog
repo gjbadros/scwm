@@ -1,3 +1,13 @@
+Wed Apr  7 10:32:01 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_main): Handle SIGFPE, too
+
+	* resize.c (ConstrainSize): Be sure to not divide by zero.  Added
+	some warning messages if we would have so we can better track down 
+	the cause of the problem.
+
+	* events.c (HandleLeaveNotify): Remove unused variable.
+
 Wed Apr  7 07:48:44 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h, xmisc.c: Added WxGetWindowParent().
