@@ -1067,6 +1067,7 @@ from other processes.
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
 (bind-key 'all "C-S-F9" window-info)
 (bind-key 'all "C-M-S-e" resize-halfscreen)
+(bind-key 'all "C-M-S-d" resize-quarterscreen)
 (bind-key 'all "C-M-S-f" resize-fullscreen)
 
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
