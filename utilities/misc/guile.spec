@@ -1,6 +1,6 @@
 %define nam      guile
-%define ver      1.3.3
-%define rel      3gjb
+%define ver      1.3.4
+%define rel      1gjb
 %define prefix   /usr
 
 Summary: A GNU implementation of Scheme for application extensibility.
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/info/data-rep*
 
 %changelog
+* Wed Sep 25 1999 Greg J. Badros <gjb@cs.washington.edu>
+- Updated for guile-1.3.4
+
 * Wed Sep 15 1999 Greg J. Badros <gjb@cs.washington.edu>
 - Drop readline-activator.scm as it no longer exists
 
