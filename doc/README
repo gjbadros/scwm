@@ -1,0 +1,32 @@
+To build the html pages (i.e., for "make html") you need
+JADE (JAmes's DSSSL Engine) and the 
+DocBook DTD (Document Type Defintion) and html stylesheet.
+
+JADE is available from:
+
+http://www.jclark.com/jade/
+
+DocBook is available from:
+
+http://www.oreilly.com/davenport/
+
+
+Note that JADE uses the environment variable SGML_CATALOG_FILES
+to find out where the entities catalog is.  You'll need to 
+set that variable to point at a catalog file that you add
+pointers to various entities in.
+
+Some of the entities files may not be included in the two above
+sites.  The W3C page also has some useful pointers and files:
+
+http://www.w3c.org
+
+Improvements to this documentation are appreciated.  I'm a novice, 
+and got this working a while back after a bit of effort -- unfortunately 
+I can no longer remember the details, and cannot seem to find any
+more notes on what I did.
+
+Good luck,
+Greg
+
+--09/26/98 gjb
