@@ -99,7 +99,7 @@ the construction of a composition."
 				      (winnumlist (replace-windows-with-proxy args winlist)))
 				 (cons classname winnumlist)))
 			     cnlist))
-	     (msgwin ui-constraint-prompter-msgwin))
+	     (ui-constraint-prompter-msgwin ui-constraint-prompter-msgwin))
 	
 	(remove-hook! constraint-composition-record-hook add-constraint-to-composition)
 	(remove-hook! constraint-delete-hook remove-constraint-from-composition)
@@ -113,17 +113,22 @@ the construction of a composition."
 	       (begin
 		 (make-ui-constraint-class 
 		  name (string-append name " (User-recorded)") (length winlist) composition-ctr 
-		  (lambda () 
-		    (if (eqv? (length (selected-windows-list)) (length winlist))
-			(list (selected-windows-list) classlist)
-			(let ((winlst '())
-			      (win #t))
-			  (if (do ((i 1 (+ i 1)))
-				  ((or (> i (length winlist)) (not win)) win)
-				(set! win (select-window-interactively (string-append "Select window #" (number->string i) ": ") msgwin))
-				(set! winlst (cons win winlst)))
-			      (list winlst classlist)
-			      #f))))
+		  (eval
+		   `(begin
+		      (use-scwm-modules ui-constraints-classes)
+		      (lambda () 
+			(if (eqv? (length (selected-windows-list)) ,(length winlist))
+			    (list (selected-windows-list) ',classlist)
+			    (let ((winlst '())
+				  (win #t))
+			      (if (do ((i 1 (+ i 1)))
+				      ((or (> i ,(length winlist)) (not win)) win)
+				    (set! win (select-window-interactively 
+					       (string-append "Select window #" (number->string i) ": ") 
+					       ui-constraint-prompter-msgwin))
+				    (set! winlst (cons win winlst)))
+				  (list winlst ',classlist)
+				  #f))))))
 		  composition-draw-proc
 		  cl-is-constraint-satisfied?
 		  "composition.xpm" #f  ;; 
@@ -146,13 +151,13 @@ the construction of a composition."
 ;; the arguments may be lists of the form ('win <integer>).  These values need
 ;; to be transferred into window objects from the winlist.
 
-(define (cncat list)
+(define-public (cncat list)
   (if (null? list) 
       '()
       (append (ui-constraint-cn (car list)) (cncat (cdr list)))))
 
 ;; replace all windows in argument list with '('win <num>)
-(define (replace-proxies-with-windows alist wlist)
+(define-public (replace-proxies-with-windows alist wlist)
   (if (null? alist) 
       '()
       (let ((elem (car alist))

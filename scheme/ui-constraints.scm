@@ -103,6 +103,26 @@ SIDE-EFFECT: addes new class obj to the global class list."
     obj))
 
 
+(define-public (ui-constraint-class-creator class)
+  "Return a list that contains a code snippet can create CLASS.
+The resulting list can then be evaluated to create that constraint class.
+Be sure to (use-scwm-modules ui-constraints-classes ui-constraints-composition) 
+before evaling the list."
+  `(make-ui-constraint-class
+    ,(ui-constraint-class-name class)
+    ,(ui-constraint-class-description class)
+    ,(ui-constraint-class-num-windows class)
+    ,(procedure-source (ui-constraint-class-ctr class))
+    ,(procedure-source (ui-constraint-class-ui-ctr class))
+    ,(procedure-source (ui-constraint-class-draw-proc class))
+    ,(procedure-source (ui-constraint-class-satisfied-proc class))
+    ,(ui-constraint-class-pixmap-name class)
+    ,(ui-constraint-class-pixmap2-name class)
+    ,(procedure-source (ui-constraint-class-menuname-proc class))))
+
+;; (ui-constraint-class-creator (car global-constraint-class-list))
+;; (procedure-source ui-constraint-class-creator)
+
 ;; delete-ui-constraint-class
 
 ;; Removes the UI-CONSTRAINT-CLASS permanently
