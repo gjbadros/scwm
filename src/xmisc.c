@@ -261,6 +261,15 @@ ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch)
 #endif
 }
 
+XColor
+XColorFromPixel(Pixel p)
+{
+  XColor xc;
+  xc.pixel = p;
+  XQueryColor(dpy, Scr.ScwmRoot.attr.colormap, &xc);
+  return xc;
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

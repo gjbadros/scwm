@@ -120,16 +120,7 @@ value. */
   Atom aprop, atype;
   Window w;
 
-  if (win == sym_root_window) {
-    w = Scr.Root;
-  } else if (gh_number_p(win)) {
-    assert(sizeof(Window) == sizeof(unsigned long));
-    w = gh_scm2ulong(win);
-  } else if (WINDOWP(win)) {
-    w = PSWFROMSCMWIN(win)->w;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
 
   if (gh_number_p(name)) {
     aprop = gh_scm2long(name);

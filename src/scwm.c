@@ -1412,8 +1412,8 @@ SigDone(int ARG_IGNORE(ignored))
 SIGNAL_T
 SigDoneSegv(int ARG_IGNORE(ignored))
 {
-  scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with '--segv-reset-count 0' and report a bug!");
   if (segvs_to_reset-- > 0) {
+    scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with '--segv-reset-count 0' and report a bug!");
     scwm_msg(ERR, "SigDoneSegv","Trying to continue... save your work if you still can!");
     siglongjmp(envHandleEventsLoop,1);
   } else {

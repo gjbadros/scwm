@@ -324,9 +324,9 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
   c_path = gh_scm2newstr(full_path,&ignore);
 
   ci->im = Imlib_load_image(imlib_data, c_path);
-  if(ci->im == 0)
+  if (ci->im == 0)
   {
-    scwm_msg(WARN, FUNC_NAME, "Could not load(with imlib) image `%s'", c_path);
+    scwm_msg(WARN, FUNC_NAME, "load-imlib-image could not load image `%s'", c_path);
     result = SCM_BOOL_F;
   }
   else

@@ -51,6 +51,7 @@ char *SzExtractTextPropValue(const XTextProperty *pxtp);
 #endif
 
 int ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch);
+XColor XColorFromPixel(Pixel p);
 
 #endif /* XMISC_H__ */
 

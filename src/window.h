@@ -11,6 +11,7 @@
 
 #include <libguile.h>
 
+#include <assert.h>
 #include "scwm.h"
 #include "scwm-constraints.h"
 
@@ -23,6 +24,9 @@
 #define EXTERN extern
 #define EXTERN_SET(x,y) extern x
 #endif
+
+
+extern SCM sym_click, sym_root_window;
 
 
 /* See validate.h for a bit of description about these macros.
@@ -73,6 +77,19 @@
 #define VALIDATE_ARG_WIN_COPY(pos,arg,psw) \
   do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
        else psw = PSWFROMSCMWIN(arg); } while (0)
+
+#define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,w) \
+  do {  if (arg == sym_root_window) w = Scr.Root;                 \
+        else if (gh_number_p(arg)) {                              \
+          assert(sizeof(Window) == sizeof(unsigned long));        \
+          w = gh_scm2ulong(arg);                                  \
+        } else if (WINDOWP(arg)) {                                \
+          w = PSWFROMSCMWIN(arg)->w;                              \
+        } else {                                                  \
+          SCWM_WRONG_TYPE_ARG(pos, arg);                          \
+        }                                                         \
+  } while (0)
+
 
 
 struct ScwmDecor;		/* definition in screen.h */

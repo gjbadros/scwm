@@ -58,6 +58,10 @@ SCM get_scm_cursor_by_name(const char *);
 void init_cursor();
 void CreateScmGlobalCursors();
 
+#define VALIDATE_ARG_CURSOR(pos,arg) \
+  do { if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+
 #endif
 
 

@@ -12,6 +12,9 @@
 #include "cursor.h"
 #include "scwm.h"
 #include "window.h"
+#include "image.h"
+#include "screen.h"
+#include "xmisc.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -208,6 +211,28 @@ XCursorByNumber(int cursor_num)
 
 
 /* ========================================================================== */
+SCWM_PROC(set_window_cursor_x,"set-window-cursor!",2,0,0,
+          (SCM win, SCM cursor))
+     /** Set the default cursor for WIN to CURSOR. 
+If CURSOR is #f, this undefines the cursor for WIN and
+makes that window use its parent window's cursor.
+See `get-x-cursor', and `create-pixmap-cursor' for ways
+to create cursor objects. */
+#define FUNC_NAME s_set_window_cursor_x
+{
+  Window w;
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+  if (cursor == SCM_BOOL_F) {
+    XUndefineCursor(dpy, w);
+  } else {
+    VALIDATE_ARG_CURSOR(2,cursor);
+    XDefineCursor(dpy, w, XCURSOR(cursor));
+  }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(get_x_cursor,"get-x-cursor",1,0,0,
 	  (SCM name_or_number))
      /** Return the cursor object corresponding to NAME-OR-NUMBER.
@@ -231,6 +256,58 @@ this procedure.. */
   }
   scm_wrong_type_arg(FUNC_NAME,1,name_or_number);
 }
+#undef FUNC_NAME
+
+Pixmap
+Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg)
+{
+  int width, height;
+  Pixmap answer;
+  GC gc;
+
+  FXGetWindowSize(p, &width, &height);
+  answer = XCreatePixmap(dpy,Scr.Root,width,height,1);
+  gc = XCreateGC(dpy, answer, 0, NULL);
+  SetGCColors(gc,bg,bg);
+  XFillRectangle(dpy,answer,gc,0,0,width,height);
+  SetGCColors(gc,fg,bg);
+  XCopyPlane(dpy,p,answer,gc,0,0,width,height,0,0,1);
+  return answer;
+}
+
+
+SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,5,0,
+          (SCM image, SCM fg_color, SCM bg_color, SCM hotspot_x, SCM hotspot_y))
+     /** Create and return a new cursor object from the pixmap image.
+IMAGE specifies the look of the cursor that will be returned.
+FG-COLOR and BG-COLOR specify the foreground and background colors
+respectively.  HOTSPOT-X, HOTSPOT-Y give the x and y offset for the
+cursor's hot spot (from the top-left of the cursor). */
+#define FUNC_NAME s_create_pixmap_cursor
+{
+  int dpixX, dpixY;
+  VALIDATE_ARG_IMAGE(1,image);
+  VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(2,fg_color);
+  VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(3,bg_color);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,hotspot_x,dpixX,1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(5,hotspot_y,dpixY,1);
+  { /* scope */
+    scwm_image *pimg = IMAGE(image);
+    Pixel fg = XCOLOR(fg_color);
+    Pixel bg = XCOLOR(bg_color);
+    XColor c_fg = XColorFromPixel(fg);
+    XColor c_bg = XColorFromPixel(bg);
+    Pixmap source = Pixmap1DeepFromPixmap(pimg->image,fg,bg);
+    Pixmap mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
+    Cursor crsr = XCreatePixmapCursor(dpy, source, mask, &c_fg, &c_bg, dpixX, dpixY);
+
+    XFreePixmap(dpy,source);
+    XFreePixmap(dpy,mask);
+
+    return x_cursor_to_scm(crsr,FALSE);
+  }
+}
+#undef FUNC_NAME
 
 
 void

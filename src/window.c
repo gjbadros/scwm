@@ -88,9 +88,6 @@ SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
 SCWM_SYMBOL(sym_sloppy , "sloppy");
 SCWM_SYMBOL(sym_none , "none");
 
-extern SCM sym_click, sym_root_window;
-
-
 SCWM_SYMBOL(sym_sticky , "sticky");
 SCWM_SYMBOL(sym_desk   , "desk");
 SCWM_SYMBOL(sym_on_top , "on-top");
