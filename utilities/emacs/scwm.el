@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-25 Sat 12:42:00 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-28 Tue 10:40:21 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -83,6 +83,12 @@
  (defvar Info-history)          ; defined in info.el
  (defvar Info-current-file)     ; defined in info.el
  (defvar scheme-buffer)         ; defined in cmuscheme.el
+ (defvar font-lock-defaults-alist) ; defined in font-lock.el
+ (defvar scwm-mode-map)         ; kill warnings
+ (unless (fboundp 'quit-window)
+   (autoload 'quit-window "window") ; these are dumped with e20.3
+   (autoload 'help-xref-button "help") ; so the `autoload's are just to
+   (autoload 'help-setup-xref "help")) ; keep the compiler happy
  (autoload 'Info-find-node "info")
  (autoload 'inferior-scheme-mode "cmuscheme")
  (unless (fboundp 'with-output-to-string)
@@ -210,14 +216,14 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   "Create and return an obarray of SCWM symbols."
   ;; can't use read-from-string because "? " is read as 32
   ;; should we make the hash table bigger than 67?
-  (let ((scwm-obarray (make-vector 67 0)) (pos 2))
+  (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
     (with-temp-buffer
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
       (goto-char pos)
       (while (re-search-forward "[ ()]" nil t)
-        (intern (buffer-substring-no-properties pos (1- (point))) scwm-obarray)
+        (intern (buffer-substring-no-properties pos (1- (point))) oa)
         (setq pos (point)))
-      scwm-obarray)))
+      oa)))
 
 (defun scwm-obarray ()
   "Ensure `scwm-obarray' is initialized."
