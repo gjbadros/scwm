@@ -19,6 +19,11 @@ Thanks to:
 
   Francesco Tapparo -- maintainer of Debian Scwm package
 
+  Carl Witty - substantial documentation improvements and code cleanup
+
+  Jeff Nichols - initial implementation of message window feature,
+                 working with Greg on the user interface for constraints
+
 Bug reports and/or fixes and/or code snippets have been contributed by:
 
   Aleksandar Bakic
