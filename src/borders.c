@@ -90,7 +90,7 @@ SetShape(ScwmWindow *psw, int w)
 		       psw->title_height + psw->boundary_width,
 		       psw->w,
 		       ShapeBounding, ShapeSet);
-    if (psw->title_w) {
+    if (SHOW_TITLE_P(psw)) {
       /* windows w/ titles */
       rect.x = psw->xboundary_width;
       rect.y = psw->title_y;
@@ -1225,16 +1225,13 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
 		   bf, ReliefGC, ShadowGC, False, 0);
     }
 
-    if (!psw->fSquashedTitlebar) {
-      /* only relieve the title window if it's not a squashed titlebar */
-      if (!(tb_style & FlatButton)) {
-        if (tb_style & SunkButton)
-          RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
-                        ShadowGC, ReliefGC, BOTTOM_HILITE);
-        else
-          RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
-                        ReliefGC, ShadowGC, BOTTOM_HILITE);
-      }
+    if (!(tb_style & FlatButton)) {
+      if (tb_style & SunkButton)
+	RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
+		      ShadowGC, ReliefGC, BOTTOM_HILITE);
+      else
+	RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
+		      ReliefGC, ShadowGC, BOTTOM_HILITE);
     }
     if (psw->name != (char *) NULL) {
 #ifdef I18N
@@ -1635,10 +1632,8 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
 	if (i == 2 || i == 3) /* Bottom corners: SW, SE */
 	  xwc.y = h - xwc.height;
-	else if (i == 1) /* Top corner: NE */
+	else /* Top corners: NW, NE */
           xwc.y = (fSquashedTitlebar? psw->title_height : 0);
-        else /* Top corner: NW */
-	  xwc.y = 0;
 
 	if (!shaded || i==0 || (i == 1 && !fSquashedTitlebar)) { 
           /* do top left always, top right when shaded and not fSquashedTitlebar */
