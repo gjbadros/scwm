@@ -129,6 +129,8 @@
 		  send-string quote background
 		  property-respond xprop-extras
 		  esdsound dir-focus tile undo
+		  ui-constraints-toggle-menu
+		  ui-constraints-gtk-toggle-menu
 		  )
 
 (debug-display "Done reading modules\n")
@@ -1164,12 +1166,12 @@ union of all other window managers!
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
-    (menuitem "Turn on Constraint Solver" #:image-left pic-lambda-mini
-	      #:action (thunk enable-constraint-solver))
+    (menuitem "Constraint solver" #:image-left pic-lambda-mini
+	      #:submenu 'menu-constraints)
     menu-separator
-    (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
+    (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
-    (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
+    (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
 	      #:action (thunk scwm-help))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
 	      #:action 'menu-quit-verify))
@@ -1178,7 +1180,17 @@ union of all other window managers!
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
 
-(debug-display "before enable-constraint-solver\n")
+(define menu-constraints
+  (menu
+   (list
+    (menu-title "Constraints")
+    menu-separator
+    (menuitem "Constraints"
+	      #:submenu (lambda () (ui-constraints-toggle-menu)))
+    (menuitem "Constraint investigator"
+	      #:action (thunk ui-constraints-gtk-toggle-menu))
+    (menuitem "Turn on Constraint Solver"
+	      #:action (thunk enable-constraint-solver)))))
 
 (define (enable-constraint-solver)
   (if (scwm-is-constraint-enabled?)
@@ -1356,11 +1368,11 @@ union of all other window managers!
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
-    (resize-to (%x 49) (%y 90))))
+    (animated-resize-window (%x 49) (%y 90))))
 
 (define (resize-fullscreen)
   (let ((w (current-window-with-pointer)))
-    (resize-to (%x 90) (%y 90))))
+    (animated-resize-window (%x 90) (%y 90))))
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
@@ -1466,8 +1478,6 @@ union of all other window managers!
 (bind-key 'all "H-z" popup-root-start)
 
 (set-click-delay! 150)
-
-;;(define animation-delay 5)
 
 ;; Fluid, cartoon-like
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
