@@ -27,12 +27,6 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
-
-;; Turn off buffering so that we can see messages as
-;; they are displayed (an issue in >= guile-1.3.2)
-(if (> guile-version 1.3)
-    (setvbuf (current-output-port) _IONBF))
-
 (define debug #t)
 
 (define (debug-display arg)
