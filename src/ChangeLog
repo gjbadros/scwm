@@ -1,5 +1,8 @@
 Sat Mar 14 01:04:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* window.h: Remove or comment out some unused fields of the window
+ 	structure.
+
 	* screen.h: StdColor and StdRElief members of the ScreenInfo
  	struct are not used anywehere; removed.
 
