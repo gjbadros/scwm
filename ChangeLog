@@ -1,3 +1,14 @@
+Fri Aug 27 01:16:00 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Install Xsession instead of trying to patch it.
+	List %{prefix}/share/pixmaps/scwm/* in %files section (new
+	location of pixmap installations).
+
+Fri Aug 27 01:09:28 1999    <gjb@cs.washington.edu>
+
+	* pixmaps/*.xpm: Revised version from after talking with a graphic 
+	designer (K. Lundquist) about the icons.
+
 Fri Aug 27 01:06:11 1999    <gjb@cs.washington.edu>
 
 	* RH6-notes: Added -- notes for installing scwm on top of RH6
