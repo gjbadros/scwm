@@ -115,7 +115,7 @@
 
 ;; import the rest of the scwm modules
 (use-scwm-modules defoption optargs primopts 
-		  describe task-switcher
+		  describe task-switcher cursor
 		  winops winlist winlist-menu wininfo listops placement
 		  style stylist basic-styles
 		  face time-convert menus-extras
@@ -898,7 +898,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (bind-mouse 'frame-corners 1 resize-or-raise)
-(bind-mouse 'frame-sides 1 move-or-raise)
+(bind-mouse 'frame-sides 1 resize-or-raise)
 
 (define (play-window-flashing-start-sound ignored)
   (wavplay "Utopia Question.WAV"))
