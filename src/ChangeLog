@@ -1,3 +1,8 @@
+1998-10-27  Todd Larason  <jtlmolehill.org>
+
+	* menu.c (print_menu): be careful not to crash when printing a
+	menu with no title
+
 1998-10-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* add_window.c (AddWindow): Call `restoreWindowState'. I hope this 

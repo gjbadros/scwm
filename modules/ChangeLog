@@ -1,3 +1,18 @@
+1998-10-27  Todd Larason  <jtlmolehill.org>
+
+	* applefile: added directory, and Makefile.am, README,
+	applefile.[ch], applefile_int.h, applesingledouble.[ch], crc.h,
+	macbinary.[ch], make_crc_table.c, resource.[ch].  It compiles, and 
+	most of it works, not all of it's tested.  There's no guile
+	interface yet, and the directory isn't in the Makefile to be
+	compiled.
+
+	* pie-menus/draw-pie-menu.c: use 0 units for separators; this is
+	the best looking method I've found
+	(ConstructDynamicPieMenuInternal): guard against divide-by-zero if 
+	all the menu items are separators. It still won't work *well*, but 
+	crashes aren't acceptable
+
 1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xpm-menus/draw-xpm-menu.c (PaintMenuItem, PaintDynamicMenu,
