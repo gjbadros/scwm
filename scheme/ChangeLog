@@ -1,3 +1,12 @@
+Thu Apr 22 17:00:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Addes some sample code in comments
+
+Thu Apr 22 16:46:49 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Added `window-other-id' to access the
+	SCWM_OTHER_ID environment variable of the running process.
+
 Wed Apr 21 16:17:54 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winops.scm, group.scm: Switch order of args in get-window calls.
