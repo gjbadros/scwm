@@ -1,5 +1,11 @@
 Scwm 0.9beta1 is released.
 
+Warning! This is a beta release with known problems! Only use it if
+you are willing to report bugs. Some things already planned to be
+changed or fixed before the final 0.9 are listed at
+
+http://huis-clos.mit.edu/scwm/release-todo.html
+
 * What Scwm is:
 
 Scwm is the Scheme Configurable Window Manager. This is a highly
@@ -67,3 +73,56 @@ coming release.
 
 
 Here is what's new with 0.9beta1 (since 0.8):
+
+These are highlights only, see NEWS in the distribution for a more
+complete list.
+
+* Extensive session management support for use with xsm or
+gnome-session; see doc/session-management.
+
+* Much enhanced menu look configurability. Support for three new styles:
+ pie-menu-look and circle-pie-menu-look and xpm-shaped-menu-look in
+the (app scwm xpm-menus) module. This allows a very great degree of
+menu look configurability.
+
+* The beginnings of theme support. Example fvwm2, mwm and win95
+themefiles are included.
+
+* Support for dynamically loaded modules.
+
+* Ability to set backgrounds through a dynamic module.
+
+* Allow user to manipulate message window directly.
+
+* Tracking of focus order added. 
+
+* More window information, setting and action primitives.
+
+* New miscellaneous procedures.
+
+* Assorted new hooks: change-desk-hook, window-focus-change-hook,
+before-place-new-window-hook
+
+* Support for hooking into the interactive resize and move loops:
+interactive-resize-start-hook, interactive-resize-new-size-hook,
+interactive-resize-finish-hook, interactive-move-start-hook,
+interactive-move-new-position-hook, interactive-move-finish-hook
+
+* Improved documentation.
+
+* (app scwm cascade) module added to let you cascade your windows
+automatically.
+
+* Enhanced window list menu.
+
+* Enhanced (app scwm style)/(app scwm wininfo) package - support more
+general ways to select windows for styles nicely.
+
+* improved optional and keyword argument handling - errors on invalid
+keyword args.
+
+* Configurable shutdwon behavior using shutdown-options from the (app
+scwm shutdown-opts) module.
+
+* animated moves and window shading moved to loadable module.
+

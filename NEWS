@@ -2,7 +2,195 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
 See the end for copying conditions.
 
-Changes to scwm-0.8 (released XX-August-1998)
+Changes to scwm-0.9beta1 (since 0.8)
+
+* Extensive session management support for use with xsm or
+gnome-session; see doc/session-management.
+
+* Much enhanced menu look configurability. Support for different
+alignments for side images in the basic style, plus three new styles
+added, pie-menu-look and circle-pie-menu-look in the (app scwm
+pie-menus) module and xpm-shaped-menu-look in the (app scwm xpm-menus)
+module. This allows a very great degree of menu look configurability.
+
+* The beginnings of theme support. Include the (app scwm themes)
+module to use themes. Then you can use the following:
+    var: theme-path
+    window-style option: #:use-theme THEME
+    use-theme THEME #&key FOR-WINDOWS FOR-BACKGROUND
+
+(app scwm theme-impl) is an aid for theme implementers. fvwm2, mwm and
+win95 example themes are provided in the themes/ directory; there is
+also a brief theme-howto in the doc directory.
+
+For now themes only support window and background looks, but soon they
+will support icon and menu setups as well.
+
+* New (app scwm background) for setting backgrounds:
+    reset-background!
+    set-background-color! COLOR
+    set-background-image! IMAGE STYLE
+      ;; STYLE is 'tiled or 'centered
+    make-resized-image IMAGE WIDTH HEIGHT BGCOLOR
+
+* Allow user to manipulate message window directly, using
+  display-message MSG
+  hide-message
+  message-window-mapped?
+  set-message-window-position! X Y X_ALIGN Y_ALIGN
+
+* Tracking of focus order added. The followinf were added:
+    window-last-focus-time #&optional WIN
+    list-focus-order
+Also, #:by-focus keyword arguments were added to list-windows and
+show-window-list-menu, and #:show-last-focus-time to
+show-window-list-menu.
+
+* More window information, setting and action primitives:
+    window-frame-size #&optional WIN
+    resize-frame-to WIDTH HEIGHT #&optional WIN
+    window-icon-shaped? #&optional WIN
+    window-shaped? #&optional WIN
+    window-frame-border-width #&optional WIN
+    window-title-size #&optional WIN
+    get-window-colors #&optional WIN
+    get-highlight-window-colors #&optional WIN
+    set-window-highlight-foreground! COLOR #&optional WIN
+    set-window-highlight-background! COLOR #&optional WIN
+    get-window-focus #&optional WIN
+
+* New miscellaneous procedures:
+    X-rotate-cut-buffers
+    elapsed-time
+    user-name
+    user-home
+
+* Internal position handling changes. New move-window which moves a
+window in absolute virtual coordinates; move-to reimplemented in terms
+of move-window in (app scwm base). move-window and move-to both now
+take #f for X or Y meaning don't move along that coordinate.
+
+* Removed: 
+    set-menu-mwm-style!
+    menu-mwm-style
+
+* Assorted new hooks: 
+    change-desk-hook 
+    window-focus-change-hook
+    before-place-new-window-hook
+
+* Support for hooking into the interactive resize and move loops:
+    interactive-resize-start-hook
+    interactive-resize-new-size-hook
+    interactive-resize-finish-hook
+    interactive-move-start-hook
+    interactive-move-new-position-hook
+    interactive-move-finish-hook
+
+* Improved documentation.
+
+* Reworked X resource interface.
+
+* support fro explicitly managing the window context:
+    set-window-context! WIN
+    window-context
+    macro: with-window WIN STATEMENT ...
+
+* Support for grabbing the server from user code (for protocol
+atomicity, for instance).
+    macro: with-grabbed-server STATEMENT...
+    X-grab-server
+    X-ungrab-server
+
+
+* (app scwm file) and (app scwm listops) modules added to abstract out
+common file and list operations.
+
+* (app scwm cascade) module added to let you cascade your windows
+automatically:
+    cascade-windows WINDOWS #&key START-POS MAX-SIZE RESIZE RAISE
+       X-INCREMENT Y-INCREMENT
+			  
+    cascade #&key ONLY EXCEPT BY-STACKING BY-FOCUS REVERSE
+	ALL-VIEWPORTS DESK IGNORE-DEFAULT-EXCEPTIONS START-POS 
+        MAX-SIZE RESIZE RAISE X-INCREMENT Y-INCREMENT
+
+* Addede #:reverse keyword argument to list-windows and
+show-window-list-menu; Added #:ignore-winlist-skip option to
+show-window-list-menu. Also added #:unflash-window-proc and
+#:flash-window-proc so windows can be specially flashed when they are
+hilighted.
+
+* Enhanced (app scwm style)/(app scwm wininfo) package - support more
+general predicates on windows nicely. The following procedures return
+predicates on a window (or in a few cases are predicates on a window):
+
+	title-match?? STRING #&optional TYPE CASE-SENSITIVE
+	class-match?? STRING #&optional TYPE CASE-SENSITIVE
+	resource-match?? STRING #&optional TYPE CASE-SENSITIVE
+	icon-title-match?? STRING #&optional TYPE CASE-SENSITIVE
+	client-hostname-match?? STRING #&optional TYPE CASE-SENSITIVE
+	  Each of these returns a predicate which matches an appropriate
+ 	aspect of a window to the given pattern string; TYPE may be
+ 	'exact, 'regexp or 'wildcard; CASE-SENSITIVE may be #t or #f.
+
+	always? WIN
+	  Returns #t for any value of WIN.
+	never? WIN
+	  Returns #f for any value of WIN.
+
+	win-and?? . PREDICATES
+	win-or?? . PREDICATES
+	win-not?? PREDICATE
+	  Returns a predicate that, when applied to a window, is the
+ 	logical and, logical or, or logical not of the application of
+ 	PREDICATES or PREDICATE. Some simplification is done.
+
+	window-match?? STRING #&optional TYPE CASE-SENSITIVE
+	  Does the logical or of `title-match??', `class-match??'
+	and `resource-match??' on the same arguments. wildcard-matcher
+	should be deprecated in favor of this.
+
+(app scwm style) now has a `default-style-condition-handler' public
+variable and (app scwm wininfo) has `default-matcher-type' and
+`default-matcher-case-sensitive' so you can tweak how window-style
+commands are handled. For example, if you wanted window-style string
+conditions to be interpreted as regexps to match to the window class
+only, you could
+
+	 (set! default-style-condition-handler class-match??)
+	 (set! default-matcher-type 'regexp)
+	
+* (app scwm report-usage) Undocumented, please do not use for now.
+
+* improved optional and keyword argument handling - errors on invalid
+keyword args.
+
+* base.scm: Added `scwm-is-constraint-enabled?'
+
+* winops.scm (maximize, unmaximize): Various fixes to not move the
+window when unmaximizing, if it has been moved since being maximized.
+
+* No longer switches to viewport 0,0 and moves all windows there on
+shutdown; this is now settable using shutdown-options from the (app
+scwm shutdown-opts) module.
+
+* Remove optional arguments for animation and/or moving pointer from
+move-window, window-shade, un-window-shade; rename un-window-shade to
+window-unshade; remove set-animation! and extern declarations assorted
+variables holding animation parameters. The (app scwm animation)
+module now provides animated- versions of window-shade,
+window-unshade, move-window and move-to, as well as set-animation!.
+
+* Simplified XProperty interface.
+
+* Support for interning/looking up X Atoms.
+
+* Properly respect window size increments.
+
+* Numerous other bug fixes.
+
+Changes to scwm-0.8 (released 14-August-1998)
 
 * extract-docs documentation extraction system
 
