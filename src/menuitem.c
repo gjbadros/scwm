@@ -104,7 +104,7 @@ SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
 MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
 returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
-unhover-action hotkey-preferences)
+unhover-action hotkey-preferences force-submenu?)
 Note that this is the same as the arguments to the `make-menuitem'
 primitive. */
 #define FUNC_NAME s_menuitem_properties
@@ -119,6 +119,7 @@ primitive. */
 		 pmi->scmHover,
 		 pmi->scmUnhover,
 		 gh_str02scm(pmi->pchHotkeyPreferences),
+                 gh_bool2scm(pmi->fIsForcedSubmenu),
 		 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
