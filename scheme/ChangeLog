@@ -1,3 +1,21 @@
+Sun Nov 28 10:17:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Update for added file, below.
+
+	* debianapps-menu.scm: Added, from Francesco Tapparo.
+
+	* winops-menu.scm: Update for rename to make-menu-window-theme.
+
+	* std-menus.scm: Added menu-desk, menu-quit-verify from
+	system.scwmrc.  Rename menu-global-theme, menu-window-theme to
+	`make-menu-global-theme' and `make-menu-window-theme' since they
+	are procs that return menus, not bound directly to menus.
+
+Fri Nov 26 09:50:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Update file list for name change, new modules.
+	Thanks to Robert Chassell for bug report.
+
 Thu Nov 25 14:14:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* animation.scm: export new `animate-windows' primitive

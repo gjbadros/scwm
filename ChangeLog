@@ -1,3 +1,10 @@
+Fri Nov 26 14:49:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-bug-report-information: Fix some bugs from directory
+	restructure (look in src/* not scwm/* for files).  Added gcc/g++
+	version execution, cassowary-config info, and look for
+	GUILE_LOAD_PATH in environment variables.
+
 Thu Nov 25 14:18:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to pre0.99.6

@@ -10,6 +10,11 @@ Changes for scwm-0.99.6 (not yet released)
 * window-configuration.scm
 ** Now changes in global state animate all windows simultaneously, instead of sequentially
 
+* Changed procedures
+** Rename menu-global-theme, menu-window-theme to
+`make-menu-global-theme' and `make-menu-window-theme' since they are
+procs that return menus, not bound directly to menus.
+
 * New primitives
 ** `window-visibility' for reporting on current visibility state of a window
 ** `animate-windows' for permitting animations of multiple windows simultaneously

@@ -1,3 +1,13 @@
+Sun Nov 28 10:19:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Do not quote menus at use-sites.  They don't get
+	found if they're not in the root module when they're used quoted.
+	Move menu-desk and menu-quit-verify out into std-menus.scm.
+	Update for rename to make-menu-global-theme.  Move
+	menu-constraints to before its use.
+
+	* spare-blue.scwmr, sds.scwmrc: Minor tweaks.
+
 Thu Nov 25 14:08:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new name constraint-investigator instead of
