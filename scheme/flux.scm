@@ -48,7 +48,7 @@
   (menu (append! (list (menuitem "View" #:action (show-file file))
 		       (menuitem "Edit" #:action
 				 (string-append (or (getenv "EDITOR") "gvim")
-						file)))
+						" " file)))
 		 rest)))
 
 (define-public (quotify-single-quotes str)
