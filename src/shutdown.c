@@ -116,19 +116,18 @@ SCM
 restart(SCM command)
 {
   int dummy;
-  char *n;
+  char *sz;
 
   if (gh_string_p(command)) {
-    n = gh_scm2newstr(command, &dummy);
+    sz = gh_scm2newstr(command, &dummy);
   } else if (command == SCM_UNDEFINED) {
-    n = "scwm";
+    sz = "scwm";
   } else {
     scm_wrong_type_arg(s_restart, 1, command);
   }
 
-  Done(1, n);
-  free(n); /* Done shouldn't return, but you
-	      never know... */
+  Done(1, sz);  /* 1 == restart */
+  free(sz); /* Done shouldn't return, but you never know... */
   return SCM_UNSPECIFIED;	
 }
 
