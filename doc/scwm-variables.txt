@@ -49,13 +49,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:593]
+[From scwm/scwm.c:594]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:596]
+[From scwm/scwm.c:597]
 
 
 pie-menu-look
@@ -74,7 +74,7 @@ scwm-menu-look
 - 
 The default menu look for Scwm.
 Used as an argument to `set-menu-look'. 
-[From scwm/drawmenu.c:808]
+[From scwm/drawmenu.c:810]
 
 
 shaped-pie-menu-look
@@ -86,6 +86,6 @@ A menu-look that gives pie menus with only the labels visible
 xpm-shaped-menu-look
 - 
 The shaped XPM menu look. 
-[From modules/xpm-menus/draw-xpm-menu.c:1050]
+[From modules/xpm-menus/draw-xpm-menu.c:1054]
 
 

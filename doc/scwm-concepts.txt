@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3370]
+[From scwm/window.c:3346]
 
 
 Fonts
@@ -395,7 +395,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:655]
+[From scwm/scwm.c:656]
 
 
 SCWMEXEC Protocol
@@ -454,7 +454,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2068]
+[From scwm/window.c:2069]
 
 
 Themes
@@ -509,7 +509,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:953]
+[From scwm/window.c:954]
 
 
 Window Style
@@ -574,9 +574,9 @@ other-proc (window-style) from scheme/style.scm:279
 other-hint-proc (window-hint) from scheme/style.scm:281
 use-theme (window-style) from scheme/themes.scm:48
 winlist-skip (boolean-style) from scheme/winlist.scm:113
-circulate-skip (boolean-style) from scheme/winlist.scm:307
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:308
-start-maximized (window-style) from scheme/winops.scm:188
+circulate-skip (boolean-style) from scheme/winlist.scm:310
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:311
+start-maximized (window-style) from scheme/winops.scm:157
 
 [From scwm/face.c:542]
 
