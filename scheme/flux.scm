@@ -714,12 +714,17 @@ that corner fixed."
   (prev-window #:only (lambda (win) (and (visible? win) (focussable-window? win) (not (window-shaded? win))))
 	       #:except iconified?))
 
-(define-public (window-task-switcher-menu)
+(define*-public (window-task-switcher-menu #&optional (last? #f) #&rest rest)
   ;; Skip over the title and first window in the list (that win has focus already)
-  (show-window-list-menu 3 #t
-			 #:by-focus #t #:show-last-focus-time #t
-			 #:show-geometry #f))
+  (apply show-window-list-menu 
+	 (append (list (if last? -1 3) #t 
+		       #:by-focus #t #:show-last-focus-time #t #:show-geometry #f)
+		 rest)))
+
+;; (window-task-switcher-menu #f #:only (lambda (w) (not (iconified? w))))
   
+(define-public (window-task-switcher-menu-backwards . rest)
+  (apply window-task-switch-menu (cons #t rest)))
 
 (define-public (bind-wheel-mouse-prior-next matching-proc)
   (bind-mouse 'window 4
