@@ -399,3 +399,61 @@ See `move-window-relative.'"
   "Displays the X properties of WIN in a message window.
 WIN is a window object, an X window id, or 'root-window."
   (message (X-properties->string win)))
+
+;; (use-scwm-modules listops)
+
+;;; window-corners, enclosing-rectangle, tile-windows-interactively
+;;; By Greg J. Badros --07/04/99 gjb
+;;; Inspired by code suggested by Todd Larason -- 17-Apr-1999
+;; (window-corners (get-window))
+(define-public (window-corners win)
+  "Return the four coordinates of the corners of the location of WIN.
+Return value's car is the top left, cdr is the bottom right.
+That is, the returned list is: ((nw-x nw-y) se-x se-y).  Use
+`rect-nw-x', `rect-nw-y', `rect-se-x', `rect-se-y' to take apart
+the returned list."
+  (let ((p (window-position win))
+	(s (window-size win)))
+    (set-cdr! (cdr s) ())
+    (cons p (map + p s))))
+
+(define-public rect-nw car)
+(define-public rect-se cdr)
+(define-public rect-nw-x caar)
+(define-public rect-nw-y cadar)
+(define-public rect-se-x cadr)
+(define-public rect-se-y caddr)
+
+;; (enclosing-rectangle l)
+(define-public (enclosing-rectangle wins)
+  "Return the smallest rectangle that encloses the windows WINS.
+Return value's car is the top left of the rectangle, cdr is
+the bottom right.
+That is, the returned list is: ((nw-x nw-y) se-x se-y)."
+  (let ((window-corners (map window-corners wins)))
+    (let ((x1 (apply min (map rect-nw-x window-corners)))
+	  (y1 (apply min (map rect-nw-y window-corners)))
+	  (x2 (apply max (map rect-se-x window-corners)))
+	  (y2 (apply max (map rect-se-y window-corners))))
+      (cons (list x1 y1) (list x2 y2)))))
+
+;;(tile-windows-interactively)
+;;(tile-windows-interactively 'horizontal)
+(define*-public (tile-windows-interactively #&optional (order 'vertical))
+  "Tile a set of selected windows either vertically or horizontally based on ORDER.
+The windows used are selected either by `selected-windows-list' or `select-window-group'.
+If `selected-windows-list' is empty, then `select-window-group' is used.
+See also the undo module and `insert-undo-global' to save the window 
+configuration before executing this in case the effect is not what you
+expected."
+  (let* ((winlist (selected-windows-list))
+	 (wins (if (pair? winlist) winlist (select-window-group)))
+	 (r (enclosing-rectangle wins)))
+    (if (pair? winlist)
+	(unselect-all-windows)
+	(for-each unflash-window wins))
+    (tile-windows wins
+		  #:start-pos (rect-nw r)
+		  #:end-pos (rect-se r)
+		  #:order order)))
+

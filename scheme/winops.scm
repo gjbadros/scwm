@@ -60,12 +60,20 @@ WIN is only destroyed if it is not deleteable."
 (define-public toggle-window-shade 
   (make-toggling-winop window-shaded? window-unshade window-shade))
 
-
 (define-public toggle-on-top
   (make-toggling-winop kept-on-top? un-keep-on-top keep-on-top))
 
 (define-public toggle-titlebar
   (make-toggling-winop titlebar-shown? hide-titlebar show-titlebar))
+
+(define*-public (hide-titlebar-in-place #&optional (win get-window))
+  (hide-titlebar win #t))
+
+(define*-public (show-titlebar-in-place #&optional (win get-window))
+  (show-titlebar win #t))
+
+(define-public toggle-titlebar-in-place
+  (make-toggling-winop titlebar-shown? hide-titlebar-in-place show-titlebar-in-place))
 
 (define-public toggle-border
   (make-toggling-winop border-normal? plain-border normal-border))
