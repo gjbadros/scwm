@@ -1387,6 +1387,11 @@ union of all other window managers!
    ;;	  "xearth -once"
    ))
 
+(define (show-desk-name new old)
+  (display-message-briefly (string-append "Desk: " (number->string new))))
+
+(add-hook! change-desk-hook show-desk-name)
+
 (define* (unflash-window-if-not-selected #&optional (win (window-context)))
   (if (and win (not (window-is-selected? win)))
       (unflash-window win)))
