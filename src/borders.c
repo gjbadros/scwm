@@ -1406,32 +1406,40 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       if (ywidth < 2)
 	ywidth = 2;
 
-      /* position the four sides */
-      for (i = 0; i < 4; i++) {
-	if (i == 0) { /* top side */
-	  xwc.x = psw->corner_width;
-	  xwc.y = 0;
-	  xwc.height = psw->boundary_width;
-	  xwc.width = tbar_right - 2 * psw->corner_width + psw->bw;
-	} else if (i == 1) { /* right side */
-	  xwc.x = w - psw->boundary_width + psw->bw;
-	  xwc.y = psw->corner_width;
-	  xwc.height = ywidth;
-	  xwc.width = psw->boundary_width;
-	} else if (i == 2) { /* bottom side */
-	  xwc.x = psw->corner_width;
-	  xwc.y = h - psw->boundary_width + psw->bw;
-	  xwc.height = psw->boundary_width; /* FIXGJB: + psw->bw; */
-	  xwc.width = xwidth;
-	} else { /* left side */
-	  xwc.x = 0;
-	  xwc.y = psw->corner_width;
-	  xwc.width = psw->boundary_width;
-	  xwc.height = ywidth;
-	}
-	if (!shaded || (i != 2)) { /* skip bottom side when shaded */
-	  XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
+      if (psw->boundary_width + psw->bw > 0) {
+        /* position the four sides */
+        for (i = 0; i < 4; i++) {
+          if (i == 0) { /* top side */
+            xwc.x = psw->corner_width;
+            xwc.y = 0;
+            xwc.height = psw->boundary_width;
+            xwc.width = tbar_right - 2 * psw->corner_width + psw->bw;
+          } else if (i == 1) { /* right side */
+            xwc.x = w - psw->boundary_width + psw->bw;
+            xwc.y = psw->corner_width;
+            xwc.height = ywidth;
+            xwc.width = psw->boundary_width;
+          } else if (i == 2) { /* bottom side */
+            xwc.x = psw->corner_width;
+            xwc.y = h - psw->boundary_width + psw->bw;
+            xwc.height = psw->boundary_width; /* FIXGJB: + psw->bw; */
+            xwc.width = xwidth;
+          } else { /* left side */
+            xwc.x = 0;
+            xwc.y = psw->corner_width;
+            xwc.width = psw->boundary_width;
+            xwc.height = ywidth;
+          }
+          if (!shaded || (i != 2)) { /* skip bottom side when shaded */
+            XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
+            /* make sure sides are mapped */
+            XMapWindow(dpy,psw->sides[i]);
+          }
         }
+      } else {
+        /* no boundary/border, so no side windows visible */
+        for (i=0; i<4; ++i) 
+          XUnmapWindow(dpy,psw->sides[i]);
       }
 
       xwcm = CWX | CWY | CWWidth | CWHeight;

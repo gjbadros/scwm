@@ -43,7 +43,7 @@ PscwmFontForMenuItem(SCM scmFont)
 {
   scwm_font *scfont = DYNAMIC_SAFE_FONT(scmFont);
   if (!scfont) {
-    scfont = (scwm_font *)Scr.menu_font;
+    scfont = FONT(Scr.menu_font);
   }
   return scfont;
 }

@@ -102,6 +102,8 @@ SCM make_font(SCM fname);
 /* FIXGJB: this primitive should not be exposed */
 SCM set_title_font_x(SCM font);
 
+extern SCM scmFixedFont;
+
 #endif /* FONT_H */
 
 /* Local Variables: */

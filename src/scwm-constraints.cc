@@ -192,11 +192,17 @@ ChangeVirtualPosition(int vx, int vy, Bool fGrab)
       pssci->_vy.intValue() == vy)
     return;
 
+  /* Separated for debugging purposes */
   (*psolver)
     .addEditVar(pssci->_vx)
     .addEditVar(pssci->_vy)
-    .beginEdit()
-    .resolve(vx,vy);
+    .beginEdit();
+
+  (*psolver)
+    .suggestValue(pssci->_vx,vx)
+    .suggestValue(pssci->_vy,vy);
+
+  psolver->resolve();
   psolver->endEdit();
 
   MoveViewport_internal(pssci->_vx.intValue(),pssci->_vy.intValue(),fGrab);

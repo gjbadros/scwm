@@ -265,6 +265,9 @@ CreateGCs(void)
 
 /*
  * InitVariables - initialize scwm variables
+ * This happens after the display has been opened,
+ * so all sorts of X-related variables can be setup
+ * (e.g., fonts, GCs can be created, etc.)
  */
 static void 
 InitVariables(void)
@@ -305,6 +308,8 @@ InitVariables(void)
   Scr.msg_window_bg = WHITE_COLOR;
   Scr.MenuColors.bg = SCM_UNDEFINED;
   Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
+
+  scm_permanent_object(scmFixedFont = make_font(str_fixed));
 
 #ifndef NON_VIRTUAL
   Scr.VxMax = 2 * Scr.DisplayWidth;
@@ -1134,8 +1139,6 @@ CatchFatal(Display * dpy)
 XErrorHandler 
 ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 {
-  extern int last_event_type;
-
   /* some errors are acceptable, mostly they're caused by 
    * trying to update a lost  window */
   if ((event->error_code == BadWindow) || (event->request_code == X_GetGeometry) ||
@@ -1149,11 +1152,14 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 #ifdef HAVE_LIBXMU
   XmuPrintDefaultErrorMessage(dpy,event,stderr);
 #else
-  scwm_msg(ERR, "ScwmErrorHandler", "*** internal error ***");
-  scwm_msg(ERR, "ScwmErrorHandler", "Request %d, Error %d, EventType: %d",
-	   event->request_code,
-	   event->error_code,
-	   last_event_type);
+  { /* scope */
+    extern int last_event_type;
+    scwm_msg(ERR, "ScwmErrorHandler", "*** internal error ***");
+    scwm_msg(ERR, "ScwmErrorHandler", "Request %d, Error %d, EventType: %d",
+             event->request_code,
+             event->error_code,
+             last_event_type);
+  }
 #endif
   return 0;
 }

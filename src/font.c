@@ -55,6 +55,8 @@ once is not inefficient, as caching ensures that font objects are
 shared.
 */
 
+SCM scmFixedFont = SCM_UNDEFINED;
+
 static SCM font_hash_table = SCM_UNDEFINED;
 static SCM protected_fonts = SCM_UNDEFINED;
 
