@@ -132,6 +132,28 @@ FXWindowAccessible(Display *dpy, Window w)
 		      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
 }
 
+Bool
+XGetGeometryPositionOnly(Display *dpy, Window w, int *x_ret, int *y_ret)
+{
+  /* XGetGeometry returns true if the call was successful */
+  return XGetGeometry(dpy, w, &JunkRoot, x_ret, y_ret,
+		      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+}
+
+/* For some reason, when adding a window, we need to ask the X server
+   for a window geometry w/o caring about the results
+   Note that this happens to be identical to FXWindowAccessible,
+   but their names encode their separate uses (and making these
+   inline functions would avoid the extra space overhead)
+   --03/29/98 gjb */
+Bool
+XGetGeometryCacheIt(Display *dpy, Window w)
+{
+  return XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
+                      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+}
+
+
 /***********************************************************************
  *
  *  Procedure:
@@ -141,7 +163,7 @@ FXWindowAccessible(Display *dpy, Window w)
  *
  ************************************************************************/
 void 
-RestoreWithdrawnLocation(ScwmWindow * tmp, Bool restart)
+RestoreWithdrawnLocation(ScwmWindow * tmp, Bool fRestart)
 {
   int a, b, w2, h2;
   unsigned int bw, mask;
@@ -150,8 +172,7 @@ RestoreWithdrawnLocation(ScwmWindow * tmp, Bool restart)
   if (!tmp)
     return;
 
-  if (XGetGeometry(dpy, tmp->w, &JunkRoot, &xwc.x, &xwc.y,
-		   &JunkWidth, &JunkHeight, &bw, &JunkDepth)) {
+  if (XGetGeometryPositionOnly(dpy, tmp->w, &xwc.x, &xwc.y )) {
     XTranslateCoordinates(dpy, tmp->frame, Scr.Root, xwc.x, xwc.y,
 			  &a, &b, &JunkChild);
     xwc.x = a + tmp->xdiff;
@@ -173,13 +194,13 @@ RestoreWithdrawnLocation(ScwmWindow * tmp, Bool restart)
      * gpw -- 11/11/93
      *
      * Unfortunately, this does horrendous things during re-starts, 
-     * hence the "if(restart)" clause (RN) 
+     * hence the "if(!fRestart)" clause (RN) 
      *
      * Also, fixed so that it only does this stuff if a window is more than
      * half off the screen. (RN)
      */
 
-    if (!restart) {
+    if (!fRestart) {
       /* Don't mess with it if its partially on the screen now */
       if ((tmp->frame_x < 0) || (tmp->frame_y < 0) ||
 	  (tmp->frame_x >= Scr.MyDisplayWidth) ||
@@ -207,7 +228,7 @@ RestoreWithdrawnLocation(ScwmWindow * tmp, Bool restart)
 	XUnmapWindow(dpy, tmp->icon_pixmap_w);
     }
     XConfigureWindow(dpy, tmp->w, mask, &xwc);
-    if (!restart)
+    if (!fRestart)
       XSync(dpy, 0);
   }
 }
