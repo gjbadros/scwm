@@ -1,5 +1,8 @@
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
+	* configure.in, configure: Bumped version to 0.7a (forgot to do
+	this before).
+
 	* configure.in, configure: Add --with-guile-prefix=DIR and
 	--with-guile-exec-prefix=DIR to help people who have Guile
 	installed in a funny place. Substitute the new GUILE_INCLUDES
