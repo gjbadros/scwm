@@ -161,7 +161,7 @@
 		  send-string quote background
 		  property-respond xprop-extras
 		  wavplay dir-focus tile undo
-		  image-path-suggestor
+		  image-path-suggestor register window-configuration
 		  )
 
 (debug-display "Done reading modules\n")
@@ -1269,6 +1269,13 @@ from other processes.
 
 (bind-key 'all "C-M-S-s" toggle-stick)
 
+
+(bind-key 'all "H-j" jump-to-register)
+(bind-key 'all "H-f" focus-to-register)
+(bind-key 'all "H-c" window-configuration-to-register)
+(bind-key 'all "H-x" global-window-configuration-to-register)
+
+
 ;; Hyper-w
 ;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
@@ -1341,6 +1348,10 @@ from other processes.
   (display-message-briefly (string-append "Desk: " (number->string new))))
 
 (add-hook! change-desk-hook show-desk-name)
+
+(add-hook! X-ConfigureRequest-hook config-request-animate)
+
+(append-hook! after-new-window-hook push-window-configuration)
 
 ;; enable xterm patch's window flashing behaviour
 (start-property-respond)
