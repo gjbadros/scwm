@@ -766,3 +766,7 @@ order in which they appear in HOOK-LIST"
 ;; (define-public foo-hook '())
 ;; (add-hook! foo-hook write)
 ;; (add-hook! foo-hook display)
+
+(define-public (keycode->keysym keycode)
+  "Return a string containing the X11 keysym for key with code KEYCODE."
+  (keymask-keycode->string 0 keycode))
