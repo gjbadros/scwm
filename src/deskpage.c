@@ -42,10 +42,8 @@
 #endif
 
 
-SCM_PROC(s_set_current_desk_x, "set-current-desk!", 1, 0, 0,  set_current_desk_x);
-
-SCM 
-set_current_desk_x(SCM sx)
+SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
+          (SCM sx))
 {
   SCM_REDEFER_INTS;
 
@@ -61,10 +59,8 @@ set_current_desk_x(SCM sx)
 }
 
 
-SCM_PROC(s_set_viewport_position_x, "set-viewport-position!", 2, 0, 0,  set_viewport_position_x);
-
-SCM 
-set_viewport_position_x(SCM sx, SCM sy)
+SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
+          (SCM sx, SCM sy))
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(sx)) {
@@ -81,10 +77,8 @@ set_viewport_position_x(SCM sx, SCM sy)
 }
 
 
-SCM_PROC(s_set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,  set_edge_scroll_x);
-
-SCM 
-set_edge_scroll_x(SCM sx, SCM sy)
+SCWM_PROC(set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,
+          (SCM sx, SCM sy))
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(sx)) {
@@ -104,10 +98,8 @@ set_edge_scroll_x(SCM sx, SCM sy)
 }
 
 
-SCM_PROC(s_set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,  set_edge_wrap_x);
-
-SCM 
-set_edge_wrap_x(SCM sx, SCM sy)
+SCWM_PROC(set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,
+          (SCM sx, SCM sy))
 {
   SCM_REDEFER_INTS;
   if (!gh_boolean_p(sx)) {
@@ -134,10 +126,8 @@ set_edge_wrap_x(SCM sx, SCM sy)
 }
 
 
-SCM_PROC(s_set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,  set_edge_resistance_x);
-
-SCM 
-set_edge_resistance_x(SCM sr, SCM mr)
+SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
+          (SCM sr, SCM mr))
 {
   SCM_REDEFER_INTS;
 
@@ -157,10 +147,8 @@ set_edge_resistance_x(SCM sr, SCM mr)
 }
 
 
-SCM_PROC(s_set_desk_size_x, "set-desk-size!", 2, 0, 0,  set_desk_size_x);
-
-SCM 
-set_desk_size_x(SCM sx, SCM sy)
+SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
+          (SCM sx, SCM sy))
 {
   SCM_REDEFER_INTS;
 
@@ -189,10 +177,8 @@ set_desk_size_x(SCM sx, SCM sy)
 }
 
 
-SCM_PROC(s_display_size, "display-size", 0, 0, 0,  display_size);
-
-SCM 
-display_size()
+SCWM_PROC(display_size, "display-size", 0, 0, 0,
+          ())
 {
   return scm_listify(SCM_MAKINUM(Scr.MyDisplayWidth),
 		     SCM_MAKINUM(Scr.MyDisplayHeight),
@@ -200,10 +186,8 @@ display_size()
 }
 
 
-SCM_PROC(s_desk_size, "desk-size", 0, 0, 0,  desk_size);
-
-SCM 
-desk_size()
+SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
+          ())
 {
   return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.MyDisplayWidth + 1)),
                      SCM_MAKINUM((int) (Scr.VyMax / Scr.MyDisplayHeight + 1)),
@@ -211,10 +195,8 @@ desk_size()
 }
 
 
-SCM_PROC(s_viewport_position, "viewport-position", 0, 0, 0,  viewport_position);
-
-SCM 
-viewport_position()
+SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
+          ())
 {
   return scm_listify(SCM_MAKINUM(Scr.Vx),
 		     SCM_MAKINUM(Scr.Vy),
@@ -222,10 +204,8 @@ viewport_position()
 }
 
 
-SCM_PROC(s_current_desk, "current-desk", 0, 0, 0,  current_desk);
-
-SCM 
-current_desk()
+SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
+          ())
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
 }

@@ -116,10 +116,8 @@ SaveDesktopState()
   XSync(dpy, 0);
 }
 
-SCM_PROC(s_restart, "restart", 0, 1, 0, restart);
-
-SCM 
-restart(SCM command)
+SCWM_PROC(restart, "restart", 0, 1, 0,
+          (SCM command))
 {
   int dummy;
   char *sz;
@@ -137,10 +135,8 @@ restart(SCM command)
   return SCM_UNSPECIFIED;	
 }
 
-SCM_PROC(s_scwm_quit, "scwm-quit", 0, 1, 1, scwm_quit);
-
-SCM 
-scwm_quit(SCM args)
+SCWM_PROC(scwm_quit, "scwm-quit", 0, 1, 1,
+          (SCM args))
 {
   if (master_pid != getpid())
     kill(master_pid, SIGTERM);

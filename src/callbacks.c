@@ -238,9 +238,8 @@ scwm_body_eval_str (void *body_data)
 
 
 
-SCM_PROC (s_safe_load, "safe-load", 1, 0, 0, safe_load);
-
-SCM safe_load (SCM fname)
+SCWM_PROC (safe_load, "safe-load", 1, 0, 0,
+           (SCM fname))
 {
   SCM_STACKITEM stack_item;
   if (!gh_string_p(fname)) {
@@ -391,9 +390,8 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
 
 /* Timer hooks. */
 
-SCM_PROC(s_add_timer_hook_x, "add-timer-hook!", 2, 0, 0, add_timer_hook_x);
-
-SCM add_timer_hook_x(SCM usec, SCM proc)
+SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
+          (SCM usec, SCM proc))
 {
   SCM newcell;
   SCM p, last;
@@ -428,9 +426,8 @@ SCM add_timer_hook_x(SCM usec, SCM proc)
   return newcell;
 }
 
-SCM_PROC(s_remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0, remove_timer_hook_x);
-
-SCM remove_timer_hook_x(SCM handle)
+SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
+          (SCM handle))
 {
   SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
 
@@ -507,10 +504,8 @@ void run_timed_out_timers()
 static SCM input_hooks;
 static SCM new_input_hooks;
 
-SCM_PROC(s_add_input_hook_x, "add-input-hook!", 2, 0, 0, add_input_hook_x);
-
-SCM 
-add_input_hook_x (SCM port, SCM proc)
+SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
+          (SCM port, SCM proc))
 {
   SCM newcell;
   SCM p, last;
@@ -531,10 +526,8 @@ add_input_hook_x (SCM port, SCM proc)
   return newcell;
 }
 
-SCM_PROC(s_remove_input_hook_x, "remove-input-hook!", 1, 0, 0, remove_input_hook_x);
-
-SCM 
-remove_input_hook_x(SCM handle)
+SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
+          (SCM handle))
 {
   SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
 

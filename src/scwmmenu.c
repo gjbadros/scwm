@@ -111,10 +111,8 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCM_PROC(s_menu_p,"menu?", 1,0,0, menu_p);
-
-SCM 
-menu_p(SCM obj)
+SCWM_PROC(menu_p,"menu?", 1,0,0,
+          (SCM obj))
 {
   return SCM_BOOL_FromBool(MENU_P(obj));
 }
@@ -169,10 +167,8 @@ NewPchKeysUsed(DynamicMenu *pmd)
   return pch;
 }
 
-SCM_PROC(s_menu_properties, "menu-properties", 1, 0, 0, menu_properties);
-
-SCM
-menu_properties(SCM scmMenu)
+SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
+          (SCM scmMenu))
 {
   Menu *pmenu = SAFE_MENU(scmMenu);
   if (!pmenu) {
@@ -190,13 +186,11 @@ menu_properties(SCM scmMenu)
 }
 
 
-SCM_PROC(s_make_menu, "make-menu", 1, 7, 0, make_menu);
-
-SCM 
-make_menu(SCM list_of_menuitems,
-	  SCM picture_side, SCM side_bg_color,
-	  SCM bg_color, SCM text_color,
-	  SCM picture_bg, SCM font, SCM extra_options)
+SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
+          (SCM list_of_menuitems,
+           SCM picture_side, SCM side_bg_color,
+           SCM bg_color, SCM text_color,
+           SCM picture_bg, SCM font, SCM extra_options))
 {
   Menu *pmenu = (Menu *) safemalloc(sizeof(Menu));
   SCM answer;
@@ -1223,10 +1217,8 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
   }
 }
 
-SCM_PROC(s_popup_menu,"popup-menu", 1,1,0, popup_menu);
-
-SCM 
-popup_menu(SCM menu, SCM warp_to_first)
+SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
+          (SCM menu, SCM warp_to_first))
 {
   Bool fWarpToFirst = False;
   /* permit 'menu to be used, and look up dynamically */

@@ -25,10 +25,8 @@ extern Bool Restarting;
 
 SCM sym_focus;
 
-SCM_PROC(s_set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0, set_menu_mwm_style_x);
-
-SCM 
-set_menu_mwm_style_x(SCM should)
+SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
+          (SCM should))
 {
   SCM_REDEFER_INTS;
   if (SCM_IMP(should)) {
@@ -47,10 +45,8 @@ set_menu_mwm_style_x(SCM should)
 }
 
 
-SCM_PROC(s_set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0, set_rubber_band_mask_x);
-
-SCM 
-set_rubber_band_mask_x(SCM value)
+SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
+          (SCM value))
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -75,10 +71,8 @@ set_rubber_band_mask_x(SCM value)
 }
 
 
-SCM_PROC(s_set_title_justify,"set-title-justify!", 1, 0, 0, set_title_justify);
-
-SCM 
-set_title_justify(SCM just)
+SCWM_PROC(set_title_justify,"set-title-justify!", 1, 0, 0,
+          (SCM just))
 {
   ScwmDecor *fl;
 
@@ -107,10 +101,8 @@ set_title_justify(SCM just)
 }
 
 
-SCM_PROC(s_set_title_height, "set-title-height!", 1, 0, 0,  set_title_height);
-
-SCM 
-set_title_height(SCM height)
+SCWM_PROC(set_title_height, "set-title-height!", 1, 0, 0,
+          (SCM height))
 {
   int th, extra_height;
   ScwmDecor *fl;
@@ -145,29 +137,23 @@ set_title_height(SCM height)
   return (height);
 }
 
-SCM_PROC(s_restarted_p, "restarted?", 0, 0, 0, restarted_p);
-
-SCM
-restarted_p()
+SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
+          ())
 {
   return SCM_BOOL_FromBool(Restarting);
 }
 
 
-SCM_PROC(s_refresh, "refresh", 0, 0, 0,  refresh);
-
-SCM 
-refresh()
+SCWM_PROC(refresh, "refresh", 0, 0, 0,
+          ())
 {
   refresh_common(Scr.Root);
   return SCM_UNSPECIFIED;
 }
 
 
-SCM_PROC(s_set_click_time_x, "set-click-time!", 1, 0, 0,  set_click_time_x);
-
-SCM 
-set_click_time_x(SCM ctime)
+SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
+          (SCM ctime))
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(ctime)) {
@@ -180,10 +166,8 @@ set_click_time_x(SCM ctime)
 }
 
 
-SCM_PROC(s_set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,  set_colormap_focus_x);
-
-SCM 
-set_colormap_focus_x(SCM ftype)
+SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
+          (SCM ftype))
 {
   SCM_REDEFER_INTS;
   if (!gh_symbol_p(ftype)) {
@@ -203,10 +187,8 @@ set_colormap_focus_x(SCM ftype)
 }
 
 
-SCM_PROC(s_set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,  set_opaque_move_size_x);
-
-SCM 
-set_opaque_move_size_x(SCM size)
+SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
+          (SCM size))
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(size)) {
@@ -219,10 +201,8 @@ set_opaque_move_size_x(SCM size)
 }
 
 
-SCM_PROC(s_pointer_position, "pointer-position", 0, 0, 0, pointer_position);
-
-SCM 
-pointer_position()
+SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
+          ())
 {
   int x, y;
 
@@ -233,10 +213,8 @@ pointer_position()
 }
 
 
-SCM_PROC(s_move_pointer_to, "move-pointer-to", 2, 0, 0, move_pointer_to);
-
-SCM 
-move_pointer_to(SCM sx, SCM sy)
+SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
+          (SCM sx, SCM sy))
 {
   int x, y;
 
@@ -259,10 +237,8 @@ move_pointer_to(SCM sx, SCM sy)
 }
 
 
-SCM_PROC(s_recapture, "recapture", 0, 0, 0, recapture);
-
-SCM 
-recapture()
+SCWM_PROC(recapture, "recapture", 0, 0, 0,
+          ())
 {
   SCM_REDEFER_INTS;
   BlackoutScreen();		/* if they want to hide the recapture */
@@ -273,10 +249,8 @@ recapture()
 }
 
 
-SCM_PROC(s_wait_for_window, "wait-for-window", 1, 0, 0,  wait_for_window);
-
-SCM 
-wait_for_window(SCM predicate)
+SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
+          (SCM predicate))
 {
   Bool done = False;
   extern ScwmWindow *swCurrent;
@@ -301,20 +275,17 @@ wait_for_window(SCM predicate)
 }
 
 
-SCM_PROC(s_beep, "beep", 0, 0, 0, beep);
-
-SCM 
-beep()
+SCWM_PROC(beep, "beep", 0, 0, 0,
+          ())
 {
   XBell(dpy, 0);
   return SCM_UNSPECIFIED;
 }
 
 
-SCM_PROC(s_set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!", 1, 0, 0,  set_smart_placement_is_really_smart_x);
-
-SCM
-set_smart_placement_is_really_smart_x(SCM val)
+SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!", 
+          1, 0, 0,
+          (SCM val))
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-smart-placement-is-really-smart!",1,val);
@@ -326,10 +297,8 @@ set_smart_placement_is_really_smart_x(SCM val)
 /* FIXMS - the functionality related to the next three procedures
    should be implemented by adding new event bindings eventually */
 
-SCM_PROC(s_set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0, set_click_to_focus_passes_click_x);
-
-SCM
-set_click_to_focus_passes_click_x(SCM val)
+SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
+          (SCM val))
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-click-to-focus-passes-click!",1,val);
@@ -339,10 +308,8 @@ set_click_to_focus_passes_click_x(SCM val)
 }
 
 
-SCM_PROC(s_set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0, set_click_to_focus_raises_x);
-
-SCM
-set_click_to_focus_raises_x(SCM val)
+SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
+          (SCM val))
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-click-to-focus-raises!",1,val);
@@ -355,10 +322,8 @@ set_click_to_focus_raises_x(SCM val)
    must be a better way of implementing it. */
 
 
-SCM_PROC(s_set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0, set_mouse_focus_click_raises_x);
-
-SCM
-set_mouse_focus_click_raises_x(SCM val)
+SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
+          (SCM val))
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-mouse-focus-click-raises!",1,val);
@@ -368,19 +333,15 @@ set_mouse_focus_click_raises_x(SCM val)
 }
 
 
-SCM_PROC(s_scwm_version, "scwm-version", 0, 0, 0,  scwm_version);
-
-SCM
-scwm_version()
+SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
+          ())
 {
   return gh_str02scm(VERSION);
 }
 
 
-SCM_PROC(s_x_version_information, "X-version-information", 0, 0, 0, x_version_information);
-
-SCM
-x_version_information()
+SCWM_PROC(x_version_information, "X-version-information", 0, 0, 0,
+          ())
 {
   return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
 		     SCM_MAKINUM(ProtocolRevision(dpy)),
@@ -390,10 +351,8 @@ x_version_information()
 }
 
 
-SCM_PROC(s_x_display_information, "X-display-information", 0, 0, 0,  x_display_information);
-
-SCM
-x_display_information()
+SCWM_PROC(x_display_information, "X-display-information", 0, 0, 0,
+          ())
 {
   int Mscreen = DefaultScreen(dpy);
   Screen *screen = ScreenOfDisplay(dpy, Mscreen);

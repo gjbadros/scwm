@@ -77,10 +77,8 @@ print_xproperty(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCM_PROC (s_xproperty_p, "xproperty?", 1, 0, 0, xproperty_p);
-
-SCM
-xproperty_p (SCM obj)
+SCWM_PROC (xproperty_p, "xproperty?", 1, 0, 0,
+           (SCM obj))
 {
   return SCM_BOOL_FromBool(XPROPERTY_P(obj));
 }
@@ -106,10 +104,8 @@ make_xproperty (char *type, unsigned len, void *data)
   return answer;
 }
 
-SCM_PROC (s_set_window_text_property, "set-window-text-property", 3, 0, 0, set_window_text_property);
-
-SCM
-set_window_text_property(SCM win, SCM propname, SCM value)
+SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
+           (SCM win, SCM propname, SCM value))
 {
   Status status;
   if (!WINDOWP(win)) {
@@ -136,10 +132,8 @@ set_window_text_property(SCM win, SCM propname, SCM value)
 }
 
 
-SCM_PROC (s_window_xproperty, "window-xproperty", 2, 1, 0, window_xproperty);
-
-SCM
-window_xproperty(SCM win, SCM name, SCM consume)
+SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
+           (SCM win, SCM name, SCM consume))
 {
   SCM answer;
   Atom type, prop;
@@ -185,10 +179,8 @@ window_xproperty(SCM win, SCM name, SCM consume)
   return answer;
 }
 
-SCM_PROC (s_xproperty_to_string, "xproperty->string", 1, 0, 0, xproperty_to_string);
-
-SCM
-xproperty_to_string(SCM prop)
+SCWM_PROC (xproperty_to_string, "xproperty->string", 1, 0, 0,
+           (SCM prop))
 {
   if (!XPROPERTY_P(prop)) {
     scm_wrong_type_arg(s_xproperty_to_string, 1, prop);
@@ -197,10 +189,8 @@ xproperty_to_string(SCM prop)
   return gh_str2scm(XPROPERTYDATA(prop),XPROPERTYLEN(prop));
 }
 
-SCM_PROC (s_string_to_xproperty, "string->xproperty", 1, 0, 0, string_to_xproperty);
-
-SCM
-string_to_xproperty(SCM str)
+SCWM_PROC (string_to_xproperty, "string->xproperty", 1, 0, 0,
+           (SCM str))
 {
   char *string;
   int len;

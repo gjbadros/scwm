@@ -270,6 +270,7 @@ char *Lang,*territory,*tmp;
   init_xproperty();
   init_events();
   init_deskpage();
+  init_decor();
 
   szCmdConfig = (char *) safemalloc(1 * sizeof(char));
   

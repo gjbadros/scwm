@@ -35,7 +35,6 @@
 #include "colors.h"
 #include "system.h"
 #include "guile-compat.h"
-#include "scwm-snarf.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

@@ -302,10 +302,8 @@ compute_contexts(SCM contexts)
 
 /* FIXGJB: abstract out stuff-- lots of duplication
    between this and unbind_mouse */
-SCM_PROC(s_unbind_key, "unbind-key", 2, 0, 0,  unbind_key);
-
-SCM 
-unbind_key(SCM contexts, SCM key)
+SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
+          (SCM contexts, SCM key))
 {
   KeySym keysym;
   Bool fOkayKey;
@@ -360,10 +358,8 @@ unbind_key(SCM contexts, SCM key)
 }
 
 
-SCM_PROC(s_unbind_mouse, "unbind-mouse", 2, 0, 0,  unbind_mouse);
-
-SCM 
-unbind_mouse(SCM contexts, SCM button)
+SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
+          (SCM contexts, SCM button))
 {
   char *szButton = NULL;
   int cchButton = 0;
@@ -430,10 +426,8 @@ unbind_mouse(SCM contexts, SCM button)
 }
 
 
-SCM_PROC(s_bind_key, "bind-key", 3, 0, 0,  bind_key);
-
-SCM 
-bind_key(SCM contexts, SCM key, SCM proc)
+SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
+          (SCM contexts, SCM key, SCM proc))
 {
   KeySym keysym;
   int len = 0;
@@ -527,10 +521,8 @@ bind_key(SCM contexts, SCM key, SCM proc)
 }
 
 
-SCM_PROC(s_bind_mouse, "bind-mouse", 3, 0, 0,  bind_mouse);
-
-SCM 
-bind_mouse(SCM contexts, SCM button, SCM proc)
+SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
+          (SCM contexts, SCM button, SCM proc))
 {
   Binding *temp;
   char *szButton = 0;
@@ -704,32 +696,29 @@ clear_mouse_event_type()
 
 /* FIXGJB: a single, slow click with no movement should
    still count as a single click, see IsClick(), too */
-SCM_PROC(s_mouse_event_type, "mouse-event-type", 0, 0, 0,  mouse_event_type);
-
-SCM 
-mouse_event_type()
+SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
+          ())
 {
   return mouse_ev_type;
 }
 
 
-SCM_PROC(s_mod_mask_meta, "mod-mask-meta", 0, 0, 0, mod_mask_meta);
-SCM mod_mask_meta() { return gh_int2scm(MetaMask); }
+SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
+{ return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 
-SCM_PROC(s_mod_mask_alt, "mod-mask-alt", 0, 0, 0, mod_mask_alt);
-SCM mod_mask_alt() { return gh_int2scm(AltMask); }
+SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
+{ return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 
-SCM_PROC(s_mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, mod_mask_hyper);
-SCM mod_mask_hyper() { return gh_int2scm(HyperMask); }
-
-SCM_PROC(s_mod_mask_super, "mod-mask-super", 0, 0, 0, mod_mask_super);
-SCM mod_mask_super() { return gh_int2scm(SuperMask); }
+SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ()
+{ return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); })
 
 
-SCM_PROC(s_pointer_mapping, "X-pointer-mapping", 0, 0, 0, x_pointer_mapping);
+SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,()
+{ return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); })
 
-SCM
-x_pointer_mapping()
+
+SCWM_PROC(pointer_mapping, "X-pointer-mapping", 0, 0, 0,
+          ())
 {
   SCM mapping = SCM_EOL;
   int imap = cMouseButtons - 1;

@@ -45,6 +45,7 @@
 #include "color.h"
 #include "module-types.h"
 #include <stdlib.h>
+#include "scwm-snarf.h"
 
 extern char **g_argv;
 extern int g_argc;

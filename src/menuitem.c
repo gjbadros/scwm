@@ -88,9 +88,8 @@ menuitem_p(SCM obj)
 }
 
 
-SCM_PROC(s_menuitem_properties, "menuitem-properties", 1, 0, 0, menuitem_properties);
-SCM
-menuitem_properties(SCM menu_item)
+SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
+          (SCM menu_item))
 {
   MenuItem *pmi = SAFE_MENUITEM(menu_item);
   if (!pmi) {
@@ -108,12 +107,10 @@ menuitem_properties(SCM menu_item)
 }
 
 
-SCM_PROC(s_make_menuitem, "make-menuitem", 2,6,0, make_menuitem);
-
-SCM 
-make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
-	      SCM picture_left, SCM hover_action, SCM unhover_action,
-	      SCM hotkey_prefs)
+SCWM_PROC(make_menuitem, "make-menuitem", 2,6,0,
+          (SCM label, SCM action, SCM extra_label, SCM picture_above,
+           SCM picture_left, SCM hover_action, SCM unhover_action,
+           SCM hotkey_prefs))
 {
   MenuItem *pmi = (MenuItem *) safemalloc(sizeof(MenuItem));
   SCM answer;

@@ -85,10 +85,9 @@ void set_face_flag_x(SCM face, SCM flag, SCM flagval);
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
 
-SCM_PROC(s_make_face, "make-face",2,0,0, make_face);
-
-SCM 
-make_face(SCM flags, SCM specs) {
+SCWM_PROC(make_face, "make-face",2,0,0,
+          (SCM flags, SCM specs) )
+{
   SCM answer;
   scwm_face *sf;
   ButtonFace *bf;
@@ -499,10 +498,8 @@ ButtonFace *append_new_face(ButtonFace *bf) {
 extern ScwmDecor *cur_decor;
 
 
-SCM_PROC(s_set_title_face_x, "set-title-face!", 1 , 2, 0,  set_title_face_x);
-
-SCM
-set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
+SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
+          (SCM active_up, SCM active_down, SCM inactive))
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -531,10 +528,8 @@ set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC(s_set_button_face_x, "set-button-face!", 2, 2, 0,  set_button_face_x);
-
-SCM
-set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive) 
+SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
+          (SCM button, SCM active_up, SCM active_down, SCM inactive) )
 {
   int n;
   int left_p;
@@ -583,10 +578,8 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
 }
 
 
-SCM_PROC(s_set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,  set_button_mwm_flag_x);
-
-SCM
-set_button_mwm_flag_x(SCM button, SCM flag) 
+SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
+          (SCM button, SCM flag) )
 {
   int n;
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -612,10 +605,8 @@ set_button_mwm_flag_x(SCM button, SCM flag)
 }
 
 
-SCM_PROC(s_set_border_face_x, "set-border-face!", 1, 1, 0, set_border_face_x);
-
-SCM
-set_border_face_x(SCM active, SCM inactive) 
+SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
+          (SCM active, SCM inactive) )
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 

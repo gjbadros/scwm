@@ -133,20 +133,16 @@ mark_image(SCM obj)
   return SCM_BOOL_F;
 }
 
-SCM_PROC (s_image_p, "image?", 1, 0, 0, image_p);
-
-SCM 
-image_p(SCM obj)
+SCWM_PROC (image_p, "image?", 1, 0, 0,
+           (SCM obj))
 {
   return SCM_BOOL_FromBool(IMAGE_P(obj));
 }
 
 
 
-SCM_PROC (s_image_properties, "image-properties", 1, 0, 0, image_properties);
-
-SCM
-image_properties(SCM image)
+SCWM_PROC (image_properties, "image-properties", 1, 0, 0,
+           (SCM image))
 {
   scwm_image *psimg = SAFE_IMAGE(image);
   if (!psimg) {
@@ -194,10 +190,8 @@ make_empty_image(SCM name)
    with ones written in either C or Scheme. Scheme-based loaders could
    call external conversion programs for instance. */
 
-SCM_PROC (s_load_xbm, "load-xbm", 1, 0, 0, load_xbm);
-
-SCM
-load_xbm (SCM full_path)
+SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
+           (SCM full_path))
 {
   SCM result;
   scwm_image *ci;
@@ -227,10 +221,8 @@ load_xbm (SCM full_path)
 }
 
 
-SCM_PROC (s_load_xpm, "load-xpm", 1, 0, 0, load_xpm);
-
-SCM
-load_xpm (SCM full_path)
+SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
+           (SCM full_path))
 {
   SCM result;
   scwm_image *ci;
@@ -274,10 +266,8 @@ load_xpm (SCM full_path)
 }
 
 
-SCM_PROC (s_register_image_loader, "register-image-loader", 2, 0, 0, register_image_loader);
-
-SCM
-register_image_loader(SCM extension, SCM proc)
+SCWM_PROC (register_image_loader, "register-image-loader", 2, 0, 0,
+           (SCM extension, SCM proc))
 {
   if (!gh_string_p(extension)) {
     scm_wrong_type_arg(s_register_image_loader, 1, extension);
@@ -293,10 +283,8 @@ register_image_loader(SCM extension, SCM proc)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC (s_unregister_image_loader, "unregister-image-loader", 1, 0, 0, unregister_image_loader);
-
-SCM
-unregister_image_loader(SCM extension)
+SCWM_PROC (unregister_image_loader, "unregister-image-loader", 1, 0, 0,
+           (SCM extension))
 {
   if (!gh_string_p(extension)) {
     scm_wrong_type_arg(s_unregister_image_loader, 1, extension);
@@ -434,10 +422,8 @@ get_image_loader(SCM name)
 }
 
 
-SCM_PROC (s_make_image, "make-image", 1, 0, 0, make_image);
-
-SCM
-make_image(SCM name)
+SCWM_PROC (make_image, "make-image", 1, 0, 0,
+           (SCM name))
 {
   SCM result;
   SCM full_path;
@@ -498,9 +484,8 @@ make_image(SCM name)
 }
 
 
-SCM_PROC (s_clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0, clear_image_cache_entry);
-
-SCM clear_image_cache_entry(SCM name)
+SCWM_PROC (clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
+           (SCM name))
 {
   scm_hash_remove_x(image_hash_table, name);
   return SCM_UNSPECIFIED;

@@ -87,10 +87,8 @@ print_font(SCM obj, SCM port, scm_print_state * pstate)
    to load "fixed". Throw an error if this fails, else return
    a font object. */
 
-SCM_PROC (s_make_font, "make-font", 1, 0, 0, make_font);
-
-SCM 
-make_font(SCM fname)
+SCWM_PROC (make_font, "make-font", 1, 0, 0,
+           (SCM fname))
 {
   SCM answer;
   scwm_font *font;
@@ -216,19 +214,15 @@ make_font(SCM fname)
 }
 
 
-SCM_PROC (s_font_p, "font?", 1, 0, 0, font_p);
-
-SCM 
-font_p(SCM obj)
+SCWM_PROC (font_p, "font?", 1, 0, 0,
+           (SCM obj))
 {
   return SCM_BOOL_FromBool(FONT_P(obj));
 }
 
 
-SCM_PROC (s_font_properties, "font-properties", 1, 0, 0, font_properties);
-
-SCM
-font_properties(SCM font)
+SCWM_PROC (font_properties, "font-properties", 1, 0, 0,
+           (SCM font))
 {
   scwm_font *psfont = SAFE_FONT(font);
   if (!psfont) {
@@ -239,10 +233,8 @@ font_properties(SCM font)
 		 SCM_UNDEFINED);
 }
 
-SCM_PROC (s_set_icon_font_x, "set-icon-font!", 1, 0, 0, set_icon_font_x);
-
-SCM 
-set_icon_font_x(SCM font)
+SCWM_PROC (set_icon_font_x, "set-icon-font!", 1, 0, 0,
+           (SCM font))
 {
   if (gh_string_p(font)) {
     font = make_font(font);
@@ -260,9 +252,8 @@ set_icon_font_x(SCM font)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC (s_set_window_font_x, "set-window-font!", 1, 0, 0, set_window_font_x);
-SCM 
-set_window_font_x(SCM font)
+SCWM_PROC (set_window_font_x, "set-window-font!", 1, 0, 0,
+           (SCM font))
 {
   int extra_height;
   ScwmDecor *fl;
@@ -287,8 +278,6 @@ set_window_font_x(SCM font)
   redraw_titlebars(fl, extra_height);
   return font;
 }
-
-SCM_PROC (s_set_menu_font_x, "set-menu-font!", 1, 0, 0, set_menu_font_x);
 
 
 static
@@ -324,8 +313,8 @@ menu_font_update()
 }
 
 
-SCM 
-set_menu_font_x(SCM font)
+SCWM_PROC (set_menu_font_x, "set-menu-font!", 1, 0, 0,
+           (SCM font))
 {
 
   if (gh_string_p(font)) {
@@ -343,9 +332,9 @@ set_menu_font_x(SCM font)
   return (font);
 }
 
-SCM_PROC (s_clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0, clear_font_cache_entry);
 
-SCM clear_font_cache_entry(SCM name)
+SCWM_PROC (clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
+           (SCM name))
 {
   scm_hash_remove_x(font_hash_table, name);
   return SCM_UNSPECIFIED;

@@ -1667,12 +1667,9 @@ WindowGettingButtonEvent(Window w, int x, int y)
 
 /* Inspired by GWM 1.8c --gjb */
 /* FIXGJB: use button, not button + modifier */
-SCM_PROC(s_send_button_press, "send-button-press", 2,4,0,  send_button_press);
-
-SCM
-send_button_press(SCM button, SCM modifier, SCM win,
-		  SCM button_press_p, SCM button_release_p,
-		  SCM propagate_p)
+SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
+          (SCM button, SCM modifier, SCM win, 
+           SCM button_press_p, SCM button_release_p, SCM propagate_p))
 {
   int bnum;
   int mod_mask;
@@ -1747,12 +1744,9 @@ send_button_press(SCM button, SCM modifier, SCM win,
 }
 
 
-SCM_PROC(s_send_key_press, "send-key-press", 1,4,0,  send_key_press);
-
-SCM
-send_key_press(SCM key, SCM win,
-	       SCM button_press_p, SCM button_release_p,
-	       SCM propagate_p)
+SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
+          (SCM key, SCM win,
+           SCM button_press_p, SCM button_release_p, SCM propagate_p))
 {
   KeySym keysym;
   Bool fOkay;

@@ -69,9 +69,8 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
    fvwm-module-related stuff should go in a dynamically loadable
    module once I figure that stuff out. */
 
-SCM_PROC(s_marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0, marshal_fvwm2_config_info);
-
-SCM marshal_fvwm2_config_info (SCM win)
+SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
+          (SCM win))
 {
   ScwmWindow *psw;
   unsigned long info[24];

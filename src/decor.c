@@ -175,10 +175,8 @@ decor2scm(ScwmDecor * fl)
 };
 
 
-SCM_PROC(s_make_decor, "make-decor", 0, 1, 0,  make_decor);
-
-SCM 
-make_decor(SCM name)
+SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
+          (SCM name))
 {
   char *tag;
   int dummy;
@@ -200,19 +198,15 @@ make_decor(SCM name)
 }
 
 
-SCM_PROC(s_default_decor, "default-decor", 0, 0, 0,  default_decor);
-
-SCM 
-default_decor()
+SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
+          ())
 {
   return Scr.DefaultDecor.scmdecor;
 }
 
 
-SCM_PROC(s_set_current_decor_x, "set-current-decor!", 1, 0, 0,  set_current_decor_x);
-
-SCM 
-set_current_decor_x(SCM decor)
+SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
+          (SCM decor))
 {
   ScwmDecor *new_cur;
 
@@ -236,10 +230,8 @@ set_current_decor_x(SCM decor)
 }
 
 
-SCM_PROC(s_current_decor, "current-decor", 0, 0, 0,  current_decor);
-
-SCM 
-current_decor()
+SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
+          ())
 {
   if (cur_decor == NULL) {
     return SCM_BOOL_F;
@@ -249,10 +241,8 @@ current_decor()
 }
 
 
-SCM_PROC(s_set_window_decor_x, "set-window-decor!", 1, 1, 0,  set_window_decor_x);
-
-SCM 
-set_window_decor_x(SCM decor, SCM win)
+SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
+          (SCM decor, SCM win))
 {
   int x, y, width, height, old_height, extra_height;
   ScwmDecor *fl;
@@ -286,6 +276,17 @@ set_window_decor_x(SCM decor, SCM win)
 
   return SCM_UNSPECIFIED;
 }
+
+
+void
+init_decor()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "decor.x"
+#endif
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */
