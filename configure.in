@@ -638,6 +638,7 @@ AC_OUTPUT(Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
           utilities/scwmrepl/Makefile \
+          utilities/pidproperty/Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
           doc/Makefile \
