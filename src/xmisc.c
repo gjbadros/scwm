@@ -284,7 +284,7 @@ SzExtractTextPropValue(const XTextProperty *pxtp)
    Takes the font as an XFontStruct or an XFontSet depending
    on i18n support; the arg passed is XFONT(scmFont) */
 int
-ComputeXTextWidth(XFONT_TYPE *pxfs, const char *sz, int cch)
+ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch)
 {
   if (cch < 0)
     cch = strlen(sz);

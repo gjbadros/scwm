@@ -117,6 +117,7 @@ DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
 void 
 ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heightp)
 {
+  /*#define makemult(a,b) ((b==1) ? (a) : (((int)(((a)+(b)*.99)/(b))) * (b)) )*/
 #define makemult(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
@@ -534,9 +535,15 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, fOpaque);
             
       DisplaySize(psw, dragWidth, dragHeight, True);
+      /* remove the move edit constraint so that we can do the virtual paging--
+         without this, the endEdit on the virtual paging removes the edit
+         variables for the window move */
+      CassowaryEndEdit(psw);
       /* need to move the viewport */
       HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
 		   &delta_x, &delta_y, False);
+      /* now re-establish the window edit constraint */
+      CassowaryEditSize(psw);
       /* redraw outline if we paged - mab */
       if ((delta_x != 0) || (delta_y != 0)) {
 	origx -= delta_x;

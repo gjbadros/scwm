@@ -120,8 +120,8 @@ static
 void
 DrawUnderline(Window w, scwm_font *scfont, GC gc, char *sz, int x, int y, int posn) 
 {
-  int cpixStart = ComputeXTextWidth(scfont->xfs, sz, posn);
-  int cpixEnd = ComputeXTextWidth(scfont->xfs, sz, posn + 1) - 1;
+  int cpixStart = ComputeXTextWidth(XFONT_FONTTYPE(scfont), sz, posn);
+  int cpixEnd = ComputeXTextWidth(XFONT_FONTTYPE(scfont), sz, posn + 1) - 1;
   XDrawLine(dpy, w, gc, x + cpixStart, y + 2, x + cpixEnd, y + 2);
 }
 
@@ -358,7 +358,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
       pmiim->cpixOffsetY = total_height;
 
-      text_width = ComputeXTextWidth(scfont->xfs, pmi->szLabel, pmi->cchLabel);
+      text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), pmi->szLabel, pmi->cchLabel);
 
       DBUG(__FUNCTION__,"`%s' has width %d (%d chars)\n",
 	   pmi->szLabel,text_width,pmi->cchLabel);
@@ -368,7 +368,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       } else {
 	/* szLabel we know is not null, but szExtra can be */
 	if (pmi->szExtra) {
-          extra_text_width = ComputeXTextWidth(scfont->xfs, 
+          extra_text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), 
                                                pmi->szExtra, pmi->cchExtra);
 	}
       

@@ -81,15 +81,15 @@ public:
       maxHeight = psw->hints.max_height;
 
       // Required constraints
-      ClLinearInequality ineqMinWidth(_frame_width,cnGEQ,minWidth);
-      ClLinearInequality ineqMaxWidth(_frame_width,cnLEQ,maxWidth);
-      ClLinearInequality ineqMinHeight(_frame_height,cnGEQ,minHeight);
-      ClLinearInequality ineqMaxHeight(_frame_height,cnLEQ,maxHeight);
+      ClLinearInequality *pineqMinWidth = new ClLinearInequality(_frame_width,cnGEQ,minWidth);
+      ClLinearInequality *pineqMaxWidth = new ClLinearInequality(_frame_width,cnLEQ,maxWidth);
+      ClLinearInequality *pineqMinHeight = new ClLinearInequality(_frame_height,cnGEQ,minHeight);
+      ClLinearInequality *pineqMaxHeight = new ClLinearInequality(_frame_height,cnLEQ,maxHeight);
       (*psolver)
-        .addConstraint(ineqMinWidth)
-        .addConstraint(ineqMaxWidth)
-        .addConstraint(ineqMinHeight)
-        .addConstraint(ineqMaxHeight);
+        .addConstraint(*pineqMinWidth)
+        .addConstraint(*pineqMaxWidth)
+        .addConstraint(*pineqMinHeight)
+        .addConstraint(*pineqMaxHeight);
     }
 
   ScwmWindow *Psw() const

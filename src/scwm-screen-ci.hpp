@@ -64,15 +64,15 @@ public:
     {
       psolver->addStay(_vx,clsMedium(),1.0);
       psolver->addStay(_vy,clsMedium(),1.0);
-      ClLinearInequality minX(_vx,cnGEQ,0);
-      ClLinearInequality minY(_vy,cnGEQ,0);
-      ClLinearInequality maxX(_vx,cnLEQ,Scr.VxMax);
-      ClLinearInequality maxY(_vy,cnLEQ,Scr.VyMax);
+      ClLinearInequality *pminX = new ClLinearInequality(_vx,cnGEQ,0);
+      ClLinearInequality *pminY = new ClLinearInequality(_vy,cnGEQ,0);
+      ClLinearInequality *pmaxX = new ClLinearInequality(_vx,cnLEQ,Scr.VxMax);
+      ClLinearInequality *pmaxY = new ClLinearInequality(_vy,cnLEQ,Scr.VyMax);
       (*psolver)
-        .addConstraint(minX)
-        .addConstraint(minY)
-        .addConstraint(maxX)
-        .addConstraint(maxY);
+        .addConstraint(*pminX)
+        .addConstraint(*pminY)
+        .addConstraint(*pmaxX)
+        .addConstraint(*pmaxY);
       /*     psolver->addPointStay(_pointerx,_pointery); */
     }
 

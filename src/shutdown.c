@@ -62,14 +62,6 @@ run_restart_command(char *command) {
 void 
 Done(int restart_or_dump, char *command)
 {
-  if (restart_or_dump < 0) {
-    /* force seg fault -- need to use as an argument to a function
-       to be sure it doesn't get optimized away, so invoke a function
-       we're sure exists -- this same function! --07/23/98 gjb */
-    Done(*((int *)0),NULL); /* Force seg fault */
-    return; /* Never executed */
-  }
-
   /* need to be sure we've opened the display -- could
      seg fault during startup */
   if (dpy) {
@@ -95,7 +87,13 @@ Done(int restart_or_dump, char *command)
   }
   /* FIXGJB: Should restore cursor to original cursor before scwm started */
 
-  if (restart_or_dump > 0) {
+  if (restart_or_dump < 0) {
+    /* force seg fault -- need to use as an argument to a function
+       to be sure it doesn't get optimized away, so invoke a function
+       we're sure exists -- this same function! --07/23/98 gjb */
+    Done(*((int *)0),NULL); /* Force seg fault */
+    return; /* Never executed */
+  } else if (restart_or_dump > 0) {
     sleep(1);
     ReapChildren();
     run_restart_command(command);

@@ -1016,7 +1016,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
     StashEventTime(eventp);
 
     if (eventp->type == KeyPress) {
-      Keyboard_shortcuts(eventp, FinishEvent, *ppsw, False);
+      Keyboard_shortcuts(eventp, FinishEvent, 0, False);
     }
     if (eventp->type == FinishEvent) {
       fFinished = True;
@@ -1387,10 +1387,11 @@ DestroyScwmWindow(ScwmWindow *psw)
 
 SCWM_PROC(delete_window, "delete-window", 0, 1, 0,
           (SCM win))
-     /** Request that WIN remove itself from the display. This is the
-friendly way of closing a window, but it will not work if the
-application does not cooperate. WIN defaults to the window context in
-the usual way if not specified. */
+     /** Request that WIN remove itself from the display. 
+
+This is the friendly way of closing a window, but it will not work if
+the application does not cooperate. WIN defaults to the window context
+in the usual way if not specified. */
 #define FUNC_NAME s_delete_window
 {
   ScwmWindow *psw;
@@ -1417,10 +1418,11 @@ the usual way if not specified. */
 
 SCWM_PROC(destroy_window, "destroy-window", 0, 1, 0,
           (SCM win))
-     /** Forcibly remove WIN from the screen. This will kill the
-application without giving it a chance to save its state or do any
-other shutdown, but is guaranteed to work. WIN defaults to the window
-context in the usual way if not specified. */
+     /** Forcibly remove WIN from the screen.  
+
+This will kill the application without giving it a chance to save its
+state or do any other shutdown, but is guaranteed to work. WIN
+defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_destroy_window
 {
   ScwmWindow *psw;
@@ -1461,9 +1463,11 @@ specified. */
 
 SCWM_PROC(focus, "focus", 0, 1, 0,
           (SCM win))
-     /** Give WIN the input focus. This will typically result in
-drawing WIN's frame in a special style as well. WIN defaults to the
-window context in the usual way if not specified. */
+     /** Give WIN the input focus. 
+
+This will typically result in drawing WIN's frame in a special style
+as well. WIN defaults to the window context in the usual way if not
+specified. */
 #define FUNC_NAME s_focus
 {
   ScwmWindow *psw;
@@ -1493,10 +1497,11 @@ SCWM_PROC(unfocus, "unfocus", 0, 0, 0,
 
 SCWM_PROC(warp_to_window, "warp-to-window", 0, 1, 0,
           (SCM win))
-     /** Move the mouse pointer to the upper left corner of WIN.  If
-WIN is on a different desk or in a different viewport, these will be
-changed appropriately so that the window is visible. WIN defaults to
-the window context in the usual way if not specified. */
+     /** Move the mouse pointer to the upper left corner of WIN.  
+
+If WIN is on a different desk or in a different viewport, these will
+be changed appropriately so that the window is visible. WIN defaults
+to the window context in the usual way if not specified. */
 #define FUNC_NAME s_warp_to_window
 {
   SCM_REDEFER_INTS;

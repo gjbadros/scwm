@@ -38,11 +38,13 @@ char *SzExtractTextPropValue(const XTextProperty *pxtp);
 
 #ifdef I18N
 #define XFONT_TYPE XFontSet
+#define XFONT_FONTTYPE(X) ((X)->fontset)
 #else
-#define XFONT_TYPE XFontStruct
+#define XFONT_TYPE XFontStruct *
+#define XFONT_FONTTYPE(X) ((X)->xfs)
 #endif
 
-int ComputeXTextWidth(XFONT_TYPE *pxfs, const char *sz, int cch);
+int ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch);
 
 
 #undef ScwmWindow

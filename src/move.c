@@ -354,8 +354,14 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	if (paged == 0) {
 	  xl = Event.xmotion.x_root;
 	  yt = Event.xmotion.y_root;
+          /* remove the move edit constraint so that we can do the virtual paging--
+             without this, the endEdit on the virtual paging removes the edit
+             variables for the window move */
+          if (!psw->fIconified) CassowaryEndEdit(psw);
 	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xl, &yt,
 		       &delta_x, &delta_y, False);
+          /* now re-establish the window edit constraint */
+          if (!psw->fIconified) CassowaryEditPosition(psw);
 	  xl += XOffset;
 	  yt += YOffset;
 	  if ((delta_x == 0) && (delta_y == 0))
@@ -471,10 +477,10 @@ Keyboard_shortcuts(XEvent *Event, int ReturnEvent,
   Bool fOnYBoundary = False;
 
   Event->xany.window =
-    WXGetPointerOffsets(psw->frame, &x_root, &y_root, &x, &y);
+    WXGetPointerOffsets(psw?psw->frame:Scr.Root, &x_root, &y_root, &x, &y);
 
   /* Pick the size of the cursor movement */
-  if (fResize) {
+  if (fResize && psw) {
     xmove_size = psw->hints.width_inc;
     ymove_size = psw->hints.height_inc;
     if (Event->xkey.state & ShiftMask) {
@@ -490,14 +496,16 @@ Keyboard_shortcuts(XEvent *Event, int ReturnEvent,
     ymove_size = xmove_size;
   }
 
-  if (x >= (psw->frame_width - xmove_size) ||
-      (x <= xmove_size))
-    fOnXBoundary = True;
-
-  if (y >= (psw->frame_height - ymove_size) ||
-      (y <= ymove_size))
-    fOnYBoundary = True;
-
+  if (psw) {
+    if (x >= (psw->frame_width - xmove_size) ||
+        (x <= xmove_size))
+      fOnXBoundary = True;
+    
+    if (y >= (psw->frame_height - ymove_size) ||
+        (y <= ymove_size))
+      fOnYBoundary = True;
+  }
+    
   keysym = XLookupKeysym(&Event->xkey, 0);
 
   x_move = 0;
