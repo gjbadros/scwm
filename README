@@ -1,5 +1,4 @@
-
-SCWM 0.4
+SCWM 0.5
 
 This is a beta release of scwm, the Scheme Configurable Window
 Manager. SCWM is (currently) a hack of FVWM 2 with the fvwm
@@ -47,6 +46,6 @@ files in the scheme directory are under GPL (see scheme/COPYING). The
 files in the doc directory are all under the copyright specified by
 doc/COPYRIGHT.DOC.
 
- - Maciej Stachowiak <mstachow@mit.edu>  and
-      Greg J. Badros <gjb@cs.washington.edu>
+ - Maciej Stachowiak <mstachow@mit.edu>    and
+   Greg J. Badros <gjb@cs.washington.edu>
 
