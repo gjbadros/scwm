@@ -7,7 +7,7 @@ auto-raise.scm auto-shrink.scm auto-unobscure.scm \
 base.scm basic-styles.scm bincomm.scm \
 cascade.scm constraints.scm constraint-animation.scm corba.scm cursor.scm \
 debianapps-menu.scm decor.scm defoption.scm describe.scm \
-desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
+desk-background.scm dir-focus.scm doc.scm easyraise.scm edge-ops.scm \
 face.scm file.scm flash-window.scm flux.scm \
 focus-titlebar.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
 highlight-current-window.scm gnome-hints.scm gnome-panel-menus.scm \

@@ -510,7 +510,7 @@ the shortcut key for the menu item."
   (if (string? font) (set! font (make-font font)))
   (if (string? action)			;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))
-	(set! action (lambda () (execute program-name)))))
+	(set! action (lambda* () "" (execute program-name)))))
   (if (and (bound? action) (bound? submenu))
       (error "Cannot give both an action and a submenu"))
   (if (bound? submenu)
