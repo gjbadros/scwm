@@ -1,3 +1,11 @@
+Sat Sep 26 20:33:07 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.hpp: Make max/min size constraints take
+	decoration sizes into account (since the client specifies sizes
+	for the client window, and the constraints are on the frame
+	size).  Still not perfect since the decoration sizes aren't
+	exposed as constraint variables, but this is an improvement.
+
 1998-09-24  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Grab.c, ICCCM.c, add_window.c, binding.c, borders.c,

@@ -1,3 +1,9 @@
+Sat Sep 26 20:38:30 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `background-system' from Jim Blandy, as an
+	alternative to `scwm-system'.  We'll need to settle on one
+	function for this, but both are now present
+
 1998-09-25  Todd Larason  <jtl@teeny.molehill.org>
 
 	* flux.scm: Added set-message-window-position-align! as a more
