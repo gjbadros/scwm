@@ -1,3 +1,15 @@
+Wed Sep  2 13:11:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (window-icon-shaped?, window-shaped?): Added new
+	primitives.  Also fixed some uses of strings instead of FUNC_NAME
+	as args to VALIDATE* utility routine
+
+	* miscprocs.c (X-rotate-cut-buffers, elapsed-time): Added new
+	primitives.
+
+	* color.c (make-reversed-color): Added new primitive, use
+	invert_color helper.
+
 Wed Sep  2 10:42:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c: Update the docs -- mention 'root-window for

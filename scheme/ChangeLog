@@ -1,3 +1,21 @@
+Wed Sep  2 13:31:50 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Do not assume a color is a string -- check first when
+	redefining set-menu-{foreground,background}!
+
+	* winops.scm: Added `resize-window' as a synonym for `resize-to'
+	as the latter may soon be deprecated.
+
+Wed Sep  2 11:56:36 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Put opaque-{resize,move}-percent in the root module
+	by define-ing before the define-module (same hack as in base.scm)
+
+	* prefs-menu.scm: Check scwm-is-constraint-enabled? for
+	opaque-move menu -- use opaque-{move,resize}-percent variable
+
+	* base.scm: Added `scwm-is-constraint-enabled?'
+
 Wed Sep  2 10:57:00 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `X-cut-buffer-string'
