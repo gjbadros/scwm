@@ -58,11 +58,12 @@
 
 (define (make-class-button class pixmap?)
   (let* ((name   (ui-constraint-class-name class))
+	 (description (ui-constraint-class-description class))
 	 (button (gtk-button-new))
 	 (label  (gtk-label-new name))
 	 (pixmap (if pixmap? (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name class) 
 							      button) #f)))
-    (gtk-tooltips-set-tip buttons-tooltips button name "")
+    (gtk-tooltips-set-tip buttons-tooltips button description "")
     (if pixmap?
 	(if pixmap (gtk-container-add button pixmap))
 	(gtk-container-add button label))

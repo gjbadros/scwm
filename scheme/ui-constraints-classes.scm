@@ -19,9 +19,6 @@
 ;; (use-scwm-modules window-selection)
 ;; (use-scwm-modules xlib-drawing)
 
-
-;; (load "/home/gjb/scwm/scheme/ui-constraints-classes.scm")
-;; (set-current-module the-root-module)
 ;; (reset-constraints)
 
 ;;; GJB:FIXME:: we'd like to be able to use color, mode
@@ -183,13 +180,13 @@
 	  (unselect-all-windows)
 	  (list (car winlist) (nonant->dirvector (object-property (car winlist) 'nonant)))) ;; give the default nonant as the middle
 	(begin
-	  (message-window-set-message! msgwin "Select window to anchor")
-	  (message-window-show! msgwin)
-	  (let* ((winlist (select-viewport-position))
-		 (win (car winlist))
-		 (nonant (get-window-nonant winlist)))
-	    (message-window-hide! msgwin)
-	    (list win (nonant->dirvector nonant)))))))
+	  (message-window-set-message! msgwin "Window nonant to anchor?")
+	  (with-message-window-shown 
+	   msgwin
+	   (let* ((winlist (select-viewport-position))
+		  (win (car winlist))
+		  (nonant (get-window-nonant winlist)))
+	     (list win (nonant->dirvector nonant))))))))
 
 ;; (nonant->dirvector (get-window-nonant (select-viewport-position)))
 ;; (cnctr-anchor (select-window-interactively) #(#t #f #f #f) #t)
@@ -278,7 +275,13 @@
 ;; define the anchor type constraint
 (define-public uicc-anchor
   (make-ui-constraint-class 
-   "anchor" '(1 1) cnctr-anchor 
+   "Anchor"
+   "Anchor a window nonant.
+Keeps a window nonant in its current location. \
+You can anchor any of the 9 nonants of a window, \
+e.g., click in the middle and center of a window \
+to make it resize around its center." 
+   '(1 1) cnctr-anchor 
    ui-cnctr-anchor draw-cn-anchor 
    cl-is-constraint-satisfied? 
    "anchor.xpm" menuname-anchor))
@@ -304,17 +307,17 @@
 	      (slope #f)
 	      (nonant1 #f)
 	      (nonant2 #f))
-	  (message-window-set-message! msgwin "Select first window to align")
-	  (message-window-show! msgwin)
-	  (set! winlist (select-viewport-position))
-	  (set! win1 (car winlist))
-	  (set! nonant1 (get-window-nonant winlist))
-	  (message-window-set-message! msgwin "Select second window to align")
-	  (set! winlist (select-viewport-position))
-	  (set! win2 (car winlist))
-	  (set! nonant2 (get-window-nonant winlist))
-	  (message-window-hide! msgwin)
-	  (list (list win1 win2) (list nonant1 nonant2))))))
+	  (message-window-set-message! msgwin "First window nonant to align?")
+	  (with-message-window-shown
+	   msgwin
+	   (set! winlist (select-viewport-position))
+	   (set! win1 (car winlist))
+	   (set! nonant1 (get-window-nonant winlist))
+	   (message-window-set-message! msgwin "Second window nonant to align?")
+	   (set! winlist (select-viewport-position))
+	   (set! win2 (car winlist))
+	   (set! nonant2 (get-window-nonant winlist))
+	   (list (list win1 win2) (list nonant1 nonant2)))))))
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
@@ -380,7 +383,11 @@
 ;; define the horiz. alignment constraint
 (define-public uicc-halign
   (make-ui-constraint-class 
-   "horiz. align" '(2 '+) cnctr-halign 
+   "Horizontal alignment"
+   "Horizontal alignment.
+Keep windows together using a horizontal connecting bar. \
+Also can be used to glue top and bottom edges of windows together."
+   '(2 '+) cnctr-halign 
    ui-cnctr-align draw-cn-halign 
    cl-is-constraint-satisfied? 
    "cn-keep-tops-even.xpm" menuname-halign))
@@ -452,7 +459,11 @@
 ;; define the vert. alignment constraint
 (define-public uicc-valign
   (make-ui-constraint-class 
-   "vert. align" '(2 '+) cnctr-valign 
+   "Vertical alignment"
+   "Vertical alignment.
+Keep windows together using a vertical connecting bar. \
+Also can be used to glue left and right edges of windows together." 
+   '(2 '+) cnctr-valign 
    ui-cnctr-align draw-cn-valign 
    cl-is-constraint-satisfied? 
    "cn-keep-lefts-even.xpm" menuname-valign))
@@ -466,7 +477,10 @@
 
 ;; ui-constructor
 (define (ui-cnctr-hsize)
-  (two-window-or-more-prompter "relative hsize" "select first window" "select second window"))
+  (two-window-or-more-prompter
+   "Relative width"
+   "First window?"
+   "Second window?"))
 
 ;; constructor
 (define* (cnctr-hsize winlist #&optional (enable? #f))
@@ -504,7 +518,10 @@
 ;; declare horiz. relative size constraint
 (define-public uicc-hsize
   (make-ui-constraint-class
-   "horiz. relative size" '(2 '+) cnctr-hsize
+   "Relative width"
+   "Relative width.
+Resize the widths of windows together."
+   '(2 '+) cnctr-hsize
    ui-cnctr-hsize draw-cn-hsize
    cl-is-constraint-satisfied?
    "cn-relative-hsize.xpm" menuname-as-win-num))
@@ -513,7 +530,10 @@
 
 ;; ui-constructor
 (define (ui-cnctr-vsize)
-  (two-window-or-more-prompter "relative vsize" "select first window" "select second window"))
+  (two-window-or-more-prompter
+   "Relative height" 
+   "First window?"
+   "Second window?"))
 
 ;; constructor
 (define* (cnctr-vsize winlist #&optional (enable? #f))
@@ -549,7 +569,10 @@
 ;; declare the vert. relative size constraint
 (define-public uicc-vsize
   (make-ui-constraint-class
-   "vert. relative size" '(2 '+) cnctr-vsize
+   "Relative height"
+   "Relative height
+Resize the heights of windows together." 
+   '(2 '+) cnctr-vsize
    ui-cnctr-vsize draw-cn-vsize
    cl-is-constraint-satisfied?
    "cn-relative-vsize.xpm" menuname-as-win-num))
@@ -563,7 +586,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-minhsize)
-  (one-window-prompter "minimum hize"))
+  (one-window-prompter "Minimum width"))
 
 ;; constructor
 (define* (cnctr-minhsize win #&optional (enable? #f))
@@ -583,7 +606,10 @@
 ;; declare the min. horiz. size constraint
 (define-public uicc-minhsize
   (make-ui-constraint-class
-   "min. horiz. size" 1 cnctr-minhsize
+   "Minimum width"
+   "Minimum width.
+Do not let window get narrower than it is."
+   1 cnctr-minhsize
    ui-cnctr-minhsize draw-cn-minhsize
    cl-is-constraint-satisfied?
    "cn-min-hsize.xpm" menuname-as-class-name))
@@ -592,7 +618,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-minvsize)
-  (one-window-prompter "minimum vsize"))
+  (one-window-prompter "Minimum height"))
 
 ;; constructor
 (define* (cnctr-minvsize win #&optional (enable? #f))
@@ -612,7 +638,10 @@
 ;; declare the min. vert.  size constraint
 (define-public uicc-minvsize
   (make-ui-constraint-class
-   "min. vert. size" 1 cnctr-minvsize
+   "Minimum height"
+   "Minimum height.
+Do not let window get shorter than it is." 
+   1 cnctr-minvsize
    ui-cnctr-minvsize draw-cn-minvsize
    cl-is-constraint-satisfied?
    "cn-min-vsize.xpm" menuname-as-class-name))
@@ -626,7 +655,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-maxhsize)
-  (one-window-prompter "maximum hsize"))
+  (one-window-prompter "Maximum width"))
 
 ;; constructor
 (define* (cnctr-maxhsize win #&optional (enable? #f))
@@ -646,7 +675,10 @@
 ;; declare the max. horiz. size constraint
 (define-public uicc-maxhsize
   (make-ui-constraint-class
-   "max. horiz. size" 1 cnctr-maxhsize
+   "Maximum width"
+   "Maximum width.
+Do not let window get wider than it is." 
+   1 cnctr-maxhsize
    ui-cnctr-maxhsize draw-cn-maxhsize
    cl-is-constraint-satisfied?
    "cn-max-hsize.xpm" menuname-as-class-name))
@@ -655,7 +687,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-maxvsize)
-  (one-window-prompter "minimum vsize"))
+  (one-window-prompter "Maximum height"))
 
 ;; constructor
 (define* (cnctr-maxvsize win #&optional (enable? #f))
@@ -675,7 +707,10 @@
 ;; declare the max. vert. size constraint
 (define-public uicc-maxvsize
   (make-ui-constraint-class
-   "max. vert. size" 1 cnctr-maxvsize
+   "Maximum height"
+   "Maximum height.
+Do not let window get taller than it is." 
+   1 cnctr-maxvsize
    ui-cnctr-maxvsize draw-cn-maxvsize
    cl-is-constraint-satisfied?
    "cn-max-vsize.xpm" menuname-as-class-name))
@@ -687,7 +722,10 @@
 
 ;;  ui-constructor
 (define (ui-cnctr-strict-relpos)
-  (two-window-or-more-prompter "relative position" "select first window" "select second window"))
+  (two-window-or-more-prompter 
+   "Strict relative position" 
+   "First window?" 
+   "Second window?"))
 
 ;; utilities functions to create some cl-variables
 (define (window-clv-cx win) 
@@ -736,7 +774,10 @@
 ;; declare the strict relative position constraint
 (define-public uicc-strict-relpos
   (make-ui-constraint-class
-   "strict relative pos." '(2 '+) cnctr-strict-relpos
+   "Strict relative position"
+   "Strict relative position.
+Move windows around together." 
+   '(2 '+) cnctr-strict-relpos
    ui-cnctr-strict-relpos draw-cn-strict-relpos
    cl-is-constraint-satisfied?
    "cn-strict-relative-pos.xpm" menuname-as-win-num))
@@ -750,7 +791,9 @@
   
 ;; ui-constructor
 (define (ui-cnctr-keep-above)
-  (two-window-or-more-prompter "keep-above" "Window on top?" "Window below?"))
+  (two-window-or-more-prompter 
+   "Vertical separation"
+   "Window on top?" "Window below?"))
 
 ;; draw-proc
 (define (draw-cn-keep-above ui-constraint enable focus mode)
@@ -786,7 +829,10 @@
 ;; declare the keep-above constraint
 (define-public uicc-ka
   (make-ui-constraint-class 
-   "keep-above" 2 cnctr-keep-above
+   "Vertical separation"
+   "Vertical separation.
+Keep one window wholly above another."
+   2 cnctr-keep-above
    ui-cnctr-keep-above draw-cn-keep-above 
    cl-is-constraint-satisfied? 
    "cn-keep-above.xpm" menuname-as-win-num))
@@ -795,7 +841,9 @@
 
 ;; ui-constructor
 (define (ui-cnctr-keep-to-left-of)
-  (two-window-or-more-prompter "keep-to-left-of" "Window on left?" "Window on right?"))
+  (two-window-or-more-prompter 
+   "Horizontal separation"
+   "Window on left?" "Window on right?"))
 
 ;; draw-proc
 (define (draw-cn-keep-to-left-of ui-constraint enable focus mode)
@@ -824,7 +872,10 @@
 ;; declare the keep-to-left-of constraint
 (define-public uicc-klo
   (make-ui-constraint-class 
-   "keep-to-left-of" 2 cnctr-keep-to-left-of
+   "Horizontal separation"
+   "Horizontal separation.
+Keep one window wholly to the left of another."
+   2 cnctr-keep-to-left-of
    ui-cnctr-keep-to-left-of draw-cn-keep-to-left-of
    cl-is-constraint-satisfied? 
    "cn-keep-to-left-of.xpm" menuname-as-win-num))

@@ -62,7 +62,7 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
+(define-public (make-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
   "Creates a new ui-constraint-class object.
 CTR takes a set of arguments and installs the appropriate constraints in the solver.  A number of
 windows should be included in those arguments, falling somewhere in the range of NUM-WINDOWS.  
@@ -77,7 +77,7 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc))
+  (let ((obj (vector obid-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc))
 	(old (get-ui-constraint-class-by-name name)))
     (if (ui-constraint-class? old)
 	(delete-ui-constraint-class! old))
@@ -141,12 +141,19 @@ correct obid.  False otherwise."
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-name ui-constraint-class)
-  "Returns the name of the constraint class.  errors if UI-CONSTRAINT-CLASS
-is not a ui-constraint-class."
+  "Returns the name of the constraint class.
+Errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
   (if (ui-constraint-class? ui-constraint-class)
       (vector-ref ui-constraint-class 1)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
+
+(define-public (ui-constraint-class-description ui-constraint-class)
+  "Returns the description for the constraint class.  
+Erors if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 2)
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 ;; ui-constraint-class-num-windows
 
@@ -158,7 +165,7 @@ is not a ui-constraint-class."
   "Returns the number of windows constrainable by instances of the constraint 
 class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 2)
+      (vector-ref ui-constraint-class 3)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -171,7 +178,7 @@ class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
   "Returns the constructor for instance of the constraint class.  errors
 if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 3)
+      (vector-ref ui-constraint-class 4)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -184,7 +191,7 @@ if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
   "Returns the UI constructor for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 4)
+      (vector-ref ui-constraint-class 5)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -197,7 +204,7 @@ errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   "returns the drawing procedure for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 5)
+      (vector-ref ui-constraint-class 6)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 ;; ui-constraint-class-satisfied
@@ -210,7 +217,7 @@ errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   "Returns the satisfaction checking procedure for instances of the
 constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 6)
+      (vector-ref ui-constraint-class 7)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 ;; ui-constraint-class-pixmap-name
@@ -219,7 +226,7 @@ constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
   "Return the pixmap-name of UI-CONSTRAINT-CLASS.
 Errors if object is not a ui-constraint-class object."
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 7)
+      (vector-ref ui-constraint-class 8)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 ;; ui-constraint-class-menuname-proc
@@ -228,7 +235,7 @@ Errors if object is not a ui-constraint-class object."
   "Return the proc for determining the name for the constraint in
 the toggle menu.  Errors if object is not a ui-constraint-class object."
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 8)
+      (vector-ref ui-constraint-class 9)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
