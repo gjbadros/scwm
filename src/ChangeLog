@@ -1,3 +1,10 @@
+Tue Mar 24 15:14:16 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* miscprocs.c, miscprocs.h, scmprocs.c: Added restarted?
+  	primitive, which returns true if this is not an original
+ 	invocation of scwm, but rather one after a restart. Patch from
+ 	Robert Bihlmeyer <robbe@orcus.priv.at>
+
 Tue Mar 24 11:05:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmmenu.h: Added typedefs and pointers to functions for the
