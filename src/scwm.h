@@ -208,6 +208,11 @@ extern Atom _XA_OL_DECOR_RESIZE;
 extern Atom _XA_OL_DECOR_HEADER;
 extern Atom _XA_OL_DECOR_ICON_NAME;
 extern Atom XA_SCWM_EXECUTE;
+extern Atom XA_SCWMEXEC_LISTENER;
+extern Atom XA_SCWMEXEC_REQUEST;
+extern Atom XA_SCWMEXEC_REQWIN;
+extern Atom XA_SCWMEXEC_REPLY;
+extern Atom XA_SCWMEXEC_NOTIFY;
 
 
 #endif /* _SCWM_ */

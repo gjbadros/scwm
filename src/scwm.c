@@ -529,6 +529,10 @@ scwm_main(int argc, char **argv)
   XChangeProperty(dpy, Scr.Root, _XA_MIT_PRIORITY_COLORS,
 		  XA_CARDINAL, 32, PropModeReplace, NULL, 0);
 
+  /* Announce support for scwmexec protocol. */
+  XChangeProperty(dpy, Scr.Root, 
+		  XA_SCWMEXEC_LISTENER, XA_STRING,
+		  8, PropModeReplace, NULL, 0);
 
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
@@ -853,6 +857,12 @@ Atom _XA_OL_DECOR_HEADER;
 Atom _XA_OL_DECOR_ICON_NAME;
 Atom XA_SCWM_EXECUTE;
 Atom XA_SCWM_RESULT;
+Atom XA_SCWMEXEC_LISTENER;
+Atom XA_SCWMEXEC_REQWIN;
+Atom XA_SCWMEXEC_REQUEST;
+Atom XA_SCWMEXEC_REPLY;
+Atom XA_SCWMEXEC_NOTIFY;
+
 
 void 
 InternUsefulAtoms(void)
@@ -885,6 +895,12 @@ InternUsefulAtoms(void)
   _XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
   XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
   XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
+  XA_SCWMEXEC_LISTENER=XInternAtom(dpy,"SCWMEXEC_LISTENER", False);
+  XA_SCWMEXEC_REQWIN=XInternAtom(dpy,"SCWMEXEC_REQWIN", False);
+  XA_SCWMEXEC_REQUEST=XInternAtom(dpy,"SCWMEXEC_REQUEST", False);
+  XA_SCWMEXEC_REPLY=XInternAtom(dpy,"SCWMEXEC_REPLY", False);
+  XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
+
   return;
 }
 
@@ -1359,6 +1375,11 @@ Done(int restart, char *command)
   /* Close all my pipes */
 
   Reborder();
+
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
+
+  /* Pretty sure this should be done... */
+  XDeleteProperty(dpy, Scr.Root, _XA_MOTIF_WM);
 
   if (restart) {
     SaveDesktopState();		/* I wonder why ... */

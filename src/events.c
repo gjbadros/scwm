@@ -556,6 +556,59 @@ ScwmExecuteProperty()
   }
 }
 
+
+/* FIXMS: Could use a bit more robustness - find some nice way to handle two
+   requests in rapid succession - maybe use append mode and keep track of
+   where we are in the property string? */
+
+void
+HandleScwmExec()
+{
+  Window w;
+  Window *pw;
+  Atom type_ret;
+  int form_ret;
+  unsigned long nitems;
+  unsigned long bytes_after;
+  unsigned char *req;
+
+  /* Determine the request window. */
+  if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
+		     0, 4, True, AnyPropertyType, 
+		     &type_ret, &form_ret, &nitems, &bytes_after,
+			 &pw)==Success && pw!=NULL) {
+    w=*pw;
+    XFree(pw);
+
+    /* Get and delete its request. */
+    if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+		       0, 0, False, XA_STRING, 
+		       &type_ret, &form_ret, &nitems, &bytes_after,
+		       &req)==Success && 
+	XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+			   0, bytes_after*4, True, XA_STRING, 
+			   &type_ret, &form_ret, &nitems, &bytes_after,
+			   &req)==Success) {
+      SCM val;
+      SCM str_val;
+      char *ret;
+      int len;
+      val = gh_eval_str_with_catch(req,scwm_error_handler);
+      XFree(req);
+      str_val=scm_strprint_obj(val);
+      ret=gh_scm2newstr(str_val, &len);
+
+      XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
+		      32, PropModeReplace, ret, strlen(ret)+1);
+  
+      free(ret);
+      return;
+    }
+  }
+  /* scwm_msg(DBG, __FUNCTION__, "scwmexec protocol failure.\n"); */
+  return;
+}
+
 /***********************************************************************
  *
  *  Procedure:
@@ -574,6 +627,13 @@ HandlePropertyNotify()
     ScwmExecuteProperty();
     return;
   }
+
+  if (Event.xproperty.atom == XA_SCWMEXEC_REQWIN) {
+    HandleScwmExec();
+    puts("back");
+    return;
+  }
+
   if ((!swCurrent) || (XGetGeometry(dpy, swCurrent->w, &JunkRoot, &JunkX, &JunkY,
 			&JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0))
     return;

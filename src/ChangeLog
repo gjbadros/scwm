@@ -1,5 +1,17 @@
 Fri Feb 27 18:02:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c: Added new procedure HandleScwmExec to handle the new
+ 	scwmexec protocol. Values should be properly returned to the new
+ 	scwmexec utility. The old scwmsend protocol is still supported for
+ 	now, until all the tools that depend on it can be replaced. There
+ 	is no support for reporting errors back to scwmexec yet, but there
+ 	should be. ICElib turned out to be to complicated to be useful, so
+ 	the new solution still uses properties, but in a somewhat saner
+ 	way.
+ 
+	scwm.c, scwm.h: declare and intern atoms for the scwmexec
+ 	protocol.
+
 	* move.c: Fix problem with AnimatedShadeWindow which was making
  	the title bar get clobbered occasionally. Patch from Oleg Tihonov
  	<ost@benetnash.ffke-campus.mipt.ru>
