@@ -69,6 +69,7 @@ extern SCM sym_maximized, sym_no_side_decorations;
         : Inactive)
 
 
+/* GJB:FIXME:: ugh! dynamic scoping in a macro now here, too! --09/19/99 gjb */
 /* macro to change window background color/pixmap */
 #define ChangeWindowColor(window,valuemask) \
     do { if (NewColor) { \

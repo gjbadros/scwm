@@ -3476,12 +3476,58 @@ fg or bg may be #f, which means that the color is inherited from the decor.
 #undef FUNC_NAME
 
 
+
+SCWM_PROC(window_decoration_ids, "window-decoration-ids", 0, 1, 0,
+          (SCM win))
+     /** Returns a list of long integer window ids of various decoration windows.
+Returned list is ( frame title_w 
+(side-n side-e side-s side-w) (corner-nw corner-ne corner-se corner-sw) ). */
+#define FUNC_NAME s_window_decoration_ids
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
+#define s(x) gh_long2scm(psw->sides[(x)])
+#define c(x) gh_long2scm(psw->corners[(x)])
+  return gh_list( gh_long2scm(psw->frame),
+                  gh_long2scm(psw->title_w),
+                  gh_list(s(0),s(1),s(2),s(3),
+                          SCM_UNDEFINED),
+                  /* corners are in nw, ne, sw, se order internally,
+                     so make more sensible for scheme interface
+                     GJB:FIXME:: ultimately, fix inside, but deocr rewrite should */
+                  gh_list(c(0),c(1),c(3),c(2),
+                          SCM_UNDEFINED),
+                  SCM_UNDEFINED );
+#undef s
+#undef c
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_window_id_background_x, "set-window-id-background!", 1, 1, 0,
+          (SCM bg, SCM winid))
+     /** Set the background color of X11 window with id WINID. 
+This is not necessarily persistent.  In particular, if you set 
+the background color of a window decoration, that decoration
+will revert to its usual color.  See also `window-decoration-ids'. */
+#define FUNC_NAME s_set_window_id_background_x
+{
+  Window w;
+  VALIDATE_ARG_COLOR(1,bg);
+  VALIDATE_ARG_INT_COPY(2,winid,w);
+  XSetWindowBackground(dpy,w,XCOLOR(bg));
+  XSetWindowBorder(dpy,w,XCOLOR(bg));
+  XClearWindow(dpy,w);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
           (SCM fg, SCM win))
      /** Set the foreground color of WIN to FG.
 This color is used to draw the title text currently. In the future, it
 may have other uses as well. WIN defaults to the window context in the
-usual way if not specified. */
+usual way if not specified. See also `get-window-colors'.*/
 #define FUNC_NAME s_set_window_foreground_x
 {
   ScwmWindow *psw;
@@ -3500,13 +3546,14 @@ usual way if not specified. */
 #undef FUNC_NAME
 
 
+
 SCWM_PROC(set_window_background_x, "set-window-background!", 1, 1, 0,
           (SCM bg, SCM win))
      /** Set the background color of WIN to BG.
 This color is used to draw most of the window decorations, along with
 the relief colors generated from it, which are used to draw the
 window's 3-D bevels.  WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified. See also `get-window-colors'. */
 #define FUNC_NAME s_set_window_background_x
 {
   ScwmDecor * fl;
@@ -3539,7 +3586,7 @@ In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified. If FG is #f, then lets the decor highlight
 foreground color be used (turns off a special highlight
-color for WIN). */
+color for WIN). See also `get-window-highlight-colors'. */
 #define FUNC_NAME s_set_window_highlight_foreground_x
 {
   ScwmWindow *psw;
@@ -3568,7 +3615,7 @@ decorations, along with the relief colors generated from it, which are
 used to draw the window's 3-D bevels.  WIN defaults to the window context
 in the usual way if not specified. If BG is #f, then lets the decor
 highlight background color be used (turns off a special highlight color
-for WIN).   */
+for WIN).  See also `get-window-highlight-colors'. */
 #define FUNC_NAME s_set_window_highlight_background_x
 {
   ScwmDecor * fl;
