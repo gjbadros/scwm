@@ -23,8 +23,20 @@ Paricularly noticeable with the GIMP
 
 * Interactive specifications are now warned when violated.
 
-* Changed behaviours
-** system.scwmrc now has sides of windows do resizes (like Win) instead of moves
+* Changed behaviours to system.scwmrc
+** `load-user-file' written to permit user-customization files at strategic points, including:
+
+~/.scwm/startup
+~/.scwm/after-modules
+~/.scwm/after-applications
+~/.scwm/after-window-styles
+~/.scwm/after-menus
+~/.scwm/after-bindings
+~/.scwm/after-before-preferences
+~/.scwm/after-after-preferences
+~/.scwm/after-done
+
+** sides of windows do resizes (like Win) instead of moves
 ** C-S-M now raises the fvwm2 pager (which is no longer always on-top)
 ** window-configuration.scm
 *** Now changes in global state animate all windows simultaneously, instead of sequentially

@@ -1,3 +1,10 @@
+Mon Jan 10 19:10:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added `load-user-file' and use it to load a
+	variety of user-customization points for system.scwmrc.  Also
+	reordered some stuff, putting functions at the start of the file,
+	moving some bindings earlier.
+
 Sun Jan  9 19:08:32 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new `use-gtk-error-window-for-scwm'
