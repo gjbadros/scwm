@@ -6,7 +6,7 @@ scwm_module_LTLIBRARIES = libscwmgtkhelper.la
 libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c
 libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
 
-CFLAGS = @CFLAGS@ @GTK_CFLAGS@
+CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 libscwmgtkhelper_snarfs = scwmgtkhelper.x
 
 INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
