@@ -1,3 +1,22 @@
+Sun Feb 20 13:23:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* placement.c (SmartPlacement): Drop NO_STUBBORN_PLACEMENT
+	#define.  Make SmartPlacement and CleverPlacement both use the
+	passed-in x,y if they're okay values.  Also make them return a
+	boolean (instead of using x == -1) to designate failed placement.
+	Make helper procedures static.  Let `smart-place-window'
+	`clever-place-window', `random-place-window' each take 3 extra
+	arguments: NO-MOVE SUGG-X SUGG-Y to let them be more useful as
+	*re*-placement procedures.  NO-MOVE avoids moving the window and
+	just returns where the window would move to.
+
+Sun Feb 20 12:21:02 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_force_reset_window_frame_x): Do not reset the window 
+	frame if its not yet fully constructed.  This lets
+	no-side-decorations be a hint + style (i.e., a -both- style
+	option) so that it gets taken into account before placement.
+
 Sat Feb 19 19:33:29 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (MovePswToCurrentPosition): Don't force a sticky window 

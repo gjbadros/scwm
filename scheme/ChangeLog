@@ -1,3 +1,22 @@
+Sun Feb 20 12:21:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Moved hide-side-decorations, show-side-decorations
+	here from style.scm.
+	
+	* style.scm: Use winops.scm, since it has
+	{hide,show}-side-decorations, now.  Added option
+	`debug-style-handler-applications' to help debug that stuff.
+	Handle 'both style options correctly.  Eliminate
+	vector-{first,second,third} since they were trivial definitions.
+	Make no-side-decorations a 'both option, and no-titlebar works now 
+	as a both option (i.e., it gets placed properly, and existing
+	windows get updated)
+
+	* style-options.scm: `make-bool-handler' and
+	`make-property-handler' return procs that they give names to.
+
+	* wininfo.scm: Make define-string-matcher a public macro
+
 Wed Feb 16 19:20:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops-menu.scm: Added `window-applications-menu' and
