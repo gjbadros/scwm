@@ -210,7 +210,7 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
 (add-boolean-style-option #:sticky stick unstick)
 
-(add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
+(add-boolean-hint-option #:no-titlebar hide-titlebar show-titlebar)
 (add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
 (add-property-style-option #:squashed-titlebar 'squashed-titlebar)
 
