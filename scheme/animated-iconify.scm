@@ -87,6 +87,12 @@
 				 20 #f (lambda () (deiconify-to-current-viewport win))
 				 '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
 
+(define*-public (animated-toggle-iconify #&optional (win (get-window)))
+  (if win
+      (if (iconified? win)
+          (animated-deiconify win)
+          (animated-iconify win))))
+
 ;; (define w (select-window-interactively))
 ;; (begin (animate-iconify w) (sleep 1) (animate-deiconify w))
 
