@@ -7,13 +7,18 @@
   (use-modules (gtk gtk))
   
   (define w (gtk-window-new 'toplevel))
-  (define b (gtk-button-new-with-label "Testing guile-gtk under scwm."))
+  (define b (gtk-button-new-with-label "Name: "))
+  (define e (gtk-entry-new))
   (gtk-container-add w b)
+  (gtk-container-add w e)
+  (gtk-widget-show e)
   (gtk-widget-show b)
   (gtk-widget-show w)
   (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))
   (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))
   (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration)))
+
+(gtk-widget-unmap w)
 
 (define (handle-gtk-events)
   (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))

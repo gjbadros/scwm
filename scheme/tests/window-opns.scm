@@ -35,3 +35,16 @@
   (add-timer-hook! (sec->usec .5) (lambda () (set-window-background! "grey76" win))))
 
 (for-each (lambda (w) (flash-window w)) (list-all-windows-in-stacking-order))
+
+(define (wildcard->regexp wildcard)
+  (regexp-substitute/global 
+   #f "\\\\\\*|\\\\\\?" 
+   (regexp-quote wildcard) 
+   'pre 
+   (lambda (match) 
+     (case (string-ref (match:string match) (1+ (match:start match))) 
+       ((#\*) ".*")
+       ((#\?) "."))) 
+   'post))
+
+

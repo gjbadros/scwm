@@ -1,11 +1,10 @@
 ;; $Id$
 ;; (reset-scwm-exec-protocol)
 (begin
+  (define swi select-window-interactively)
   (define solver (make-cl-solver))
   (scwm-set-master-solver solver)
   ;(map (lambda (w) (add-stays-on-window w)) (list-all-windows))
-  (define wA (select-window-interactively "Pick window A"))
-  (define wB (select-window-interactively "Pick window B"))
   (define v (make-cl-variable "v"))
   (cl-add-stay solver v)
 
@@ -130,47 +129,61 @@
 ;; (window-position wA)
 ;; (window-position wB)
 
-(cl-constraint-list solver #f)
+(begin
+  (define wA (select-window-interactively "Pick window A"))
+  (define wB (select-window-interactively "Pick window B"))
+  (define wC (select-window-interactively "Pick C")))
 
-(define cn (car (cl-constraint-list solver)))
-
+(define cn (car (cl-constraint-list solver #f)))
 (cl-remove-constraint solver cn)
 
-(define wA (select-window-interactively "Pick A"))
-(define wB (select-window-interactively "Pick B"))
-(define wC (select-window-interactively "Pick C"))
-
-(keep-constant-width wA 200)
-(keep-at-left-edge wA)
-(keep-at-right-edge wB)
-
-(keep-constant-width wB 200)
-(keep-at-left-edge wB)
 (define cn-a-l-e (keep-at-left-edge wA))
-(keep-at-right-edge wB)
-
-
-(window-position w)
-
 (define cnl (keep-to-left-of wA wB))
 (define cnlt (keep-above wA wB))
+(define cnah (keep-adjacent-horizontal wA wB))
 
+(set-window-title! (swi) "XLOGO")
+(show-titlebar (swi))
+(hide-titlebar (swi))
 
-(define swi select-window-interactively)
+(cl-constraint? cnl)
+(cl-inequality? cnl)
+(cl-equation? cnl)
+(cl-constraint-list solver #f)
+(cl-windows-of-constraint cnl)
+
+;; Use blue for inequalities, red for equalities
+(define (flash-windows-of-constraint cn)
+  (let ((color (if (cl-inequality? cn) "blue" "red")))
+    (for-each 
+     (lambda (w) (flash-window w color)) 
+     (cl-windows-of-constraint cn))))
+
+(flash-windows-of-constraint cnl)
+(flash-windows-of-constraint cnlt)
+(flash-windows-of-constraint cnah)
+
 (define cnl (keep-to-left-of (swi) (swi)))
 
 (cl-is-constraint-satisfied? solver cnl)
 (cl-is-constraint-satisfied? solver cn-a-l-e)
+(keep-constant-width wA 200)
+(keep-at-left-edge wA)
+(keep-at-left-edge wB)
+(keep-at-right-edge wB)
+(keep-constant-width wB 200)
+
 
 (set-object-property! cnl 'description "Keep wA to left of wB")
 (object-property (car (cl-constraint-list solver)) 'description)
 
-(for-each (lambda (cn) (cl-remove-constraint solver cn)) (cl-constraint-list solver))
+;; remove all constraints
+(for-each (lambda (cn) (cl-remove-constraint solver cn))
+	  (cl-constraint-list solver))
 
 (cl-remove-constraint solver cnl)
 
 (keep-full-width wA wB)
-(keep-adjacent-horizontal wA wB)
 (keep-adjacent-vertical wA wB)
 (keep-adjacent-vertical (select-window-interactively) (select-window-interactively))
 (keep-full-height wA wB)
@@ -201,7 +214,7 @@
 (cl-value (window-clv-height wA))
 
 
-(for-each (lambda (x) (cl-set-solver-var solver v x) (usleep 100000))
+(for-each (lambda (x) (cl-set-solver-var solver v x) (usleep 1000000))
 	  '(10 20 30 40 50 60 70 80 90 100 110 120 130))
 
 (keep-to-left-of (current-window-with-focus) wA)
@@ -275,6 +288,6 @@ cls-required
 (for-each (lambda (w) (close-window w)) 
 	  (list-windows #:only (lambda (w) (string=? (window-title w) "xlogo"))))
 
-
+;;(load "/scratch/gjb/scwm/scheme/flux.scm")
 ;;; Local Variables:
 ;;; End:
