@@ -1,3 +1,8 @@
+1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* Makefile.am (noinst_HEADERS): Removed a nother reference to
+	mwmcom.h that I missed before.
+
 Thu Oct 22 14:23:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm.c: Remove scwm_gh_enter and scwm_gh_launch_pad defintions.
