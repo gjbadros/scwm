@@ -1,3 +1,8 @@
+Tue Apr  6 12:35:17 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.scwmrc: Replace hilight with highlight. Replace 'sidebar with
+	'frame-sides, 'frame with 'frame-corners.
+
 Mon Apr  5 15:17:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Comment out a bad binding.

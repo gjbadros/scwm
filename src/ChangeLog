@@ -1,3 +1,7 @@
+Tue Apr  6 12:51:52 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.[ch]: Use highlight instead of hilite or hilight.
+
 Mon Apr  5 15:29:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: Added protos for newhandler_doreset, newhandler

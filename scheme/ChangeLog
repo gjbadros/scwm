@@ -1,3 +1,7 @@
+Tue Apr  6 12:39:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.scm: Replace hilight with highlight. 
+
 Tue Apr  6 11:13:40 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Fix typo.

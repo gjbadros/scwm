@@ -112,6 +112,7 @@ returning #f which ultimately would cause an error somewhere
 
 * Misc. changed primitives
 ** `bind-keycode' allow release procs like new `bind-keycode'
+** `hilite' and `hilight' in primitives is now spelled correctly as `highlight'
 
 * Misc. new procedures
 ** `fold-menu-list-by-group', `rename-window-interactively'
