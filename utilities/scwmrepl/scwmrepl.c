@@ -84,7 +84,11 @@ int check_balance(char *expr) {
 	} while (i < end && expr[i]!='\"');
 	i++;
 	if (paren_count==0) {
-	  return i;
+	  if (i < end) {
+	    return i;
+	  } else {
+	    return 0;
+	  }
 	} else {
 	  prev_separator=1;
 	  non_whitespace_p=1;
@@ -104,11 +108,15 @@ int check_balance(char *expr) {
 	    if (i < end && expr[i]=='\\') {
 	      i++;
 	    }
-	  } while (i < end && !(expr[i]!='}' && i+1<end
+	  } while (i < end && !(expr[i]=='}' && i+1<end
 				&& expr[i+1]=='#'));
-	  i++;
+	  i+=2;
 	  if (paren_count==0) {
-	    return i;
+	    if (i < end) {
+	      return i;
+	    } else {
+	      return 0;
+	    }
 	  } else {
 	    prev_separator=1;
 	    non_whitespace_p=1;
