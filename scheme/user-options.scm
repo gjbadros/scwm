@@ -3,6 +3,8 @@
 
 ;; Each element of the list is '(var-name comment setter getter)
 (define-public user-options (list
+'(circle-pie-menu-look)
+'(context-map)
 '(default-auto-raise-delay)
 '(default-auto-raise-focus-proc)
 '(default-auto-raise-unfocus-delay)
@@ -13,9 +15,11 @@
 '(locale-language-territory)
 '(opaque-move-percent)
 '(opaque-resize-percent)
+'(pie-menu-look)
 '(remote-shell-command)
 '(scwm-menu-look)
 '(shadow-factor)
 '(use-scwm-system-proc)
+'(xpm-shaped-menu-look)
 '(xterm-command)
 ))
