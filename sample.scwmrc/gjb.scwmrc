@@ -1470,7 +1470,10 @@ union of all other window managers!
 
 ;; Remove the windows that are showing tail -f's on 
 ;; scwm error messages and .Xsession errors
-(system "test -r ${HOME}/.tracepids && { kill `cat ${HOME}/.tracepids`; rm -f ${HOME}/.tracepids }")
+(system "test -r ${HOME}/.tracepids && ( kill `cat ${HOME}/.tracepids` ; rm -f ${HOME}/.tracepids )")
+
+;; This lets me find out which shell `system' is using
+;;(system "echo $ZSH_VERSION $version $BASH_VERSION")
 
 ;; Be sure we have the users identity (scwm should be started
 ;; as 'ssh-agent scwm ...')
