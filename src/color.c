@@ -571,12 +571,12 @@ SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
 void 
 redraw_hilight_window()
 {
-  ScwmWindow *hilight;
-  
-  if ((Scr.flags & WindowsCaptured) && (Scr.Hilite != NULL)) {
-    hilight = Scr.Hilite;
+  if (Scr.fWindowsCaptured && (Scr.Hilite != NULL)) {
+    /* FIXGJB: why two calls in a row */
+#if 0
     SetBorder(Scr.Hilite, False, True, True, None);
-    SetBorder(hilight, True, True, True, None);
+#endif
+    SetBorderX(Scr.Hilite, True, True, True, None, True);
   }
 }
 
@@ -601,7 +601,7 @@ Applies to the current decor. */
   }
 
   redraw_hilight_window();
-  return (SCM_UNSPECIFIED);
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

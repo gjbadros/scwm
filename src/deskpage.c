@@ -140,25 +140,8 @@ wraparound is in effect */
 #define FUNC_NAME s_set_edge_wrap_x
 {
   SCM_REDEFER_INTS;
-  if (!gh_boolean_p(wx)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, wx);
-  }
-  if (!gh_boolean_p(wy)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 2, wy);
-  }
-  if (wx == SCM_BOOL_T) {
-    Scr.flags |= EdgeWrapX;
-  } else {
-    Scr.flags &= ~EdgeWrapX;
-  }
-  if (wy == SCM_BOOL_T) {
-    Scr.flags |= EdgeWrapY;
-  } else {
-    Scr.flags &= ~EdgeWrapY;
-  }
-
+  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapX,wx,1,FUNC_NAME);
+  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapY,wy,2,FUNC_NAME);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -219,8 +202,8 @@ virtual world 9 times the size of the physical display. */
   }
   Scr.VxMax = gh_scm2int(width);
   Scr.VyMax = gh_scm2int(height);
-  Scr.VxMax = Scr.VxMax * Scr.MyDisplayWidth - Scr.MyDisplayWidth;
-  Scr.VyMax = Scr.VyMax * Scr.MyDisplayHeight - Scr.MyDisplayHeight;
+  Scr.VxMax = Scr.VxMax * Scr.DisplayWidth - Scr.DisplayWidth;
+  Scr.VyMax = Scr.VyMax * Scr.DisplayHeight - Scr.DisplayHeight;
   if (Scr.VxMax < 0)
     Scr.VxMax = 0;
   if (Scr.VyMax < 0)
@@ -242,8 +225,8 @@ The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list. */
 #define FUNC_NAME s_display_size
 {
-  return scm_listify(SCM_MAKINUM(Scr.MyDisplayWidth),
-		     SCM_MAKINUM(Scr.MyDisplayHeight),
+  return scm_listify(SCM_MAKINUM(Scr.DisplayWidth),
+		     SCM_MAKINUM(Scr.DisplayHeight),
 		     SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -256,8 +239,8 @@ The returned value is in units of the physical screen size, as a list
 of the width and the height. */
 #define FUNC_NAME s_desk_size
 {
-  return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.MyDisplayWidth + 1)),
-                     SCM_MAKINUM((int) (Scr.VyMax / Scr.MyDisplayHeight + 1)),
+  return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.DisplayWidth + 1)),
+                     SCM_MAKINUM((int) (Scr.VyMax / Scr.DisplayHeight + 1)),
 		     SCM_UNDEFINED);
 }
 #undef FUNC_NAME

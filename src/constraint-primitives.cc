@@ -75,8 +75,11 @@ ScwmResolve(ClSimplexSolver *psolver)
 
 SCWM_PROC(add_stays_on_window, "add-stays-on-window", 1, 0, 0,
           (SCM win))
-  /** Add stay constraint on all window dimensions
-WIN is a window objects */
+  /** Add stay constraint on all window dimensions.
+WIN is a window object.  This is done automatically for all
+current windows when a solver is made the master solver via
+`scwm-set-master-solver' and is also done for all newly-created
+windows.   Occasions for using this primitive are rare. */
 #define FUNC_NAME s_add_stays_on_window
 {
   int iarg = 1;
@@ -87,6 +90,7 @@ WIN is a window objects */
   ScwmWindow const *const psw = PSWFROMSCMWIN(win);
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   pswci->AddStays(psolver);
+  pswci->AddSizeConstraints(psolver);
 
   /* FIXGJB: need to add hook to remove the stays if win disappears */
   return SCM_UNSPECIFIED;
@@ -109,6 +113,7 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
   /* now add stay constriants on all existing windows */
   for (ScwmWindow *psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
     psw->pswci->AddStays(psolver);
+    psw->pswci->AddSizeConstraints(psolver);
   }
 
   psolver->SetChangeClvCallback(ScwmClvChanged);

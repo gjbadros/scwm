@@ -101,7 +101,6 @@ static scm_smobfuns T ## _smobfuns = { \
 
 #define BW 1			/* border width */
 #define BOUNDARY_WIDTH 7	/* border width */
-#define CORNER_WIDTH 16		/* border width */
 
 # define HEIGHT_EXTRA 4		/* Extra height for texts in popus */
 # define HEIGHT_EXTRA_TITLE 4	/* Extra height for underlining title */
@@ -135,6 +134,25 @@ enum wm_client_functions {
 
 
 #define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
+
+#define FFromSCMBool(x) ((x) == SCM_BOOL_T)
+#define FInvertFromSCMBool(x) ((x) != SCM_BOOL_T)
+
+#define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_T) var = True; \
+  else if (flag == SCM_BOOL_F) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
+#define COPY_INVERT_BOOL_OR_ERROR(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_F) var = True; \
+  else if (flag == SCM_BOOL_T) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
+#define PackedBool(x) unsigned short x:1
 
 /*
    ** if you would like to see lots of debug messages from scwm, for debugging

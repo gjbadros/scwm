@@ -114,16 +114,16 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
   int loc_ok = False, tw, tx, ty, th;
   ScwmWindow *pswTest;
 
-  if (Scr.SmartPlacementIsClever) {	/* call clever placement instead? */
+  if (Scr.fSmartPlacementIsClever) {	/* call clever placement instead? */
     CleverPlacement(psw, x, y);
     return;
   }
   temp_h = height;
   temp_w = width;
 
-  while (((test_y + temp_h) < (Scr.MyDisplayHeight)) && (!loc_ok)) {
+  while (((test_y + temp_h) < (Scr.DisplayHeight)) && (!loc_ok)) {
     test_x = 0;
-    while (((test_x + temp_w) < (Scr.MyDisplayWidth)) && (!loc_ok)) {
+    while (((test_x + temp_w) < (Scr.DisplayWidth)) && (!loc_ok)) {
       loc_ok = True;
       pswTest = Scr.ScwmRoot.next;
       while ((pswTest != (ScwmWindow *) 0) && (loc_ok == True)) {
@@ -215,8 +215,8 @@ get_next_x(ScwmWindow *psw, int x, int y)
   ScwmWindow *testw;
 
   /* Test window at far right of screen */
-  xnew = Scr.MyDisplayWidth;
-  xtest = Scr.MyDisplayWidth - (FRAME_WIDTH(psw) + 2 * psw->bw);
+  xnew = Scr.DisplayWidth;
+  xtest = Scr.DisplayWidth - (FRAME_WIDTH(psw) + 2 * psw->bw);
   if (xtest > x)
     xnew = min(xnew, xtest);
   /* Test the values of the right edges of every window */
@@ -253,8 +253,8 @@ get_next_y(ScwmWindow * psw, int y)
   ScwmWindow *testw;
 
   /* Test window at far bottom of screen */
-  ynew = Scr.MyDisplayHeight;
-  ytest = Scr.MyDisplayHeight - (FRAME_HEIGHT(psw) + 2 * psw->bw);
+  ynew = Scr.DisplayHeight;
+  ytest = Scr.DisplayHeight - (FRAME_HEIGHT(psw) + 2 * psw->bw);
   if (ytest > y)
     ynew = min(ynew, ytest);
   /* Test the values of the bottom edge of every window */
@@ -294,9 +294,9 @@ test_fit(ScwmWindow * psw, int x11, int y11, int aoimin)
   x12 = x11 + FRAME_WIDTH(psw) + 2 * psw->bw;
   y12 = y11 + FRAME_HEIGHT(psw) + 2 * psw->bw;
 
-  if (y12 > Scr.MyDisplayHeight)	/* No room in y direction */
+  if (y12 > Scr.DisplayHeight)	/* No room in y direction */
     return -1;
-  if (x12 > Scr.MyDisplayWidth)	/* No room in x direction */
+  if (x12 > Scr.DisplayWidth)	/* No room in x direction */
     return -2;
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw == psw) || (testw->Desk != Scr.CurrentDesk))
@@ -406,14 +406,14 @@ keep_on_screen(ScwmWindow *psw)
   }
   
   if (FRAME_X(psw) + FRAME_WIDTH(psw) +
-      2 * psw->boundary_width > Scr.MyDisplayWidth) {
-    psw->attr.x = Scr.MyDisplayWidth - psw->attr.width
+      2 * psw->boundary_width > Scr.DisplayWidth) {
+    psw->attr.x = Scr.DisplayWidth - psw->attr.width
       - psw->old_bw + psw->bw - 2 * psw->boundary_width;
     Scr.randomx = 0;
   }
   if (FRAME_Y(psw) + 2 * psw->boundary_width + psw->title_height
-      + FRAME_HEIGHT(psw) > Scr.MyDisplayHeight) {
-    psw->attr.y = Scr.MyDisplayHeight - psw->attr.height
+      + FRAME_HEIGHT(psw) > Scr.DisplayHeight) {
+    psw->attr.y = Scr.DisplayHeight - psw->attr.height
       - psw->old_bw + psw->bw - psw->title_height -
       2 * psw->boundary_width;;
     Scr.randomy = 0;
@@ -431,7 +431,6 @@ returns #t. */
 {
   ScwmWindow *psw;
   int x, y;
-  int tmp_flag;
 
   if (!WINDOWP(win)) {
     scm_wrong_type_arg(FUNC_NAME, 1, win);
@@ -443,12 +442,14 @@ returns #t. */
      placement function itself, but make it not call CleverPlacement
      when called from here.. */
 
-
-  tmp_flag=Scr.SmartPlacementIsClever;
-  Scr.SmartPlacementIsClever=FALSE;
-  SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
-		 FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
-  Scr.SmartPlacementIsClever=tmp_flag;
+  { /* scope */
+    /* save state of fSmartPlacementIsClever */
+    Bool fSmartPlacementIsClever = Scr.fSmartPlacementIsClever;
+    Scr.fSmartPlacementIsClever = False;
+    SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
+                   FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
+    Scr.fSmartPlacementIsClever = fSmartPlacementIsClever;
+  }
 
   if (x < 0) {
     return SCM_BOOL_F;
@@ -521,13 +522,13 @@ interaction. #t is always returned. */
 
   psw=PSWFROMSCMWIN(win);
   
-  /* plase window in a random location */
-  if ((Scr.randomx += GetDecor(psw, TitleHeight)) > Scr.MyDisplayWidth / 2) {
-    Scr.randomx = GetDecor(psw, TitleHeight);
+  /* place window in a random location */
+  if ((Scr.randomx += GET_DECOR(psw, TitleHeight)) > Scr.DisplayWidth / 2) {
+    Scr.randomx = GET_DECOR(psw, TitleHeight);
   }
-  if ((Scr.randomy += 2 * GetDecor(psw, TitleHeight)) >
-      Scr.MyDisplayHeight / 2) {
-    Scr.randomy = 2 * GetDecor(psw, TitleHeight);
+  if ((Scr.randomy += 2 * GET_DECOR(psw, TitleHeight)) >
+      Scr.DisplayHeight / 2) {
+    Scr.randomy = 2 * GET_DECOR(psw, TitleHeight);
   }
 
   psw->attr.x = Scr.randomx - psw->old_bw;
@@ -573,7 +574,7 @@ by the user, the position was specified by the program, and
     SCM result=SCM_BOOL_F;
 
     if (psw->fSmartPlace) {
-      if (Scr.SmartPlacementIsClever) {
+      if (Scr.fSmartPlacementIsClever) {
 	result=clever_place_window(win);
       } else {
 	result=smart_place_window(win);

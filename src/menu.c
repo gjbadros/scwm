@@ -338,11 +338,11 @@ GetPreferredPopupPosition(DynamicMenu *pmd,
     *pxReturn = x - pmd->pmdi->cpixWidth/2;
     *pyReturn = y - pmd->rgpmiim[0]->cpixItemHeight/2;
   }
-  if (*pyReturn + pmd->pmdi->cpixHeight > Scr.MyDisplayHeight) {
-    *pyReturn = Scr.MyDisplayHeight-pmd->pmdi->cpixHeight;
+  if (*pyReturn + pmd->pmdi->cpixHeight > Scr.DisplayHeight) {
+    *pyReturn = Scr.DisplayHeight-pmd->pmdi->cpixHeight;
   }
-  if (*pxReturn + pmd->pmdi->cpixWidth > Scr.MyDisplayWidth) {
-    *pxReturn = Scr.MyDisplayWidth-pmd->pmdi->cpixWidth;
+  if (*pxReturn + pmd->pmdi->cpixWidth > Scr.DisplayWidth) {
+    *pxReturn = Scr.DisplayWidth-pmd->pmdi->cpixWidth;
   }
   if (*pxReturn < 0) *pxReturn = 0;
   if (*pyReturn < 0) *pyReturn = 0;
@@ -375,17 +375,17 @@ SetPopupMenuPositionFromMenuItem(DynamicMenu *pmd,
   MenuDrawingInfo *pmdiNew = pmd->pmdi;
   int cpixWidthNewMenu = pmdiNew->cpixWidth;
 
-  if (cpixXmenu + cpixWidthMenu + pmdiNew->cpixWidth <= Scr.MyDisplayWidth) {
+  if (cpixXmenu + cpixWidthMenu + pmdiNew->cpixWidth <= Scr.DisplayWidth) {
     pmd->pmdi->x = cpixXmenu + cpixWidthMenu - 2;
   } else {
     /* pop to the left */
     pmd->pmdi->x = cpixXmenu - cpixWidthNewMenu + pmdi->cpixSideImage;
   }
   pmd->pmdi->y = cpixYmenu + pmiimSelected->cpixOffsetY - 2;
-  if (pmd->pmdi->y + pmdiNew->cpixHeight > Scr.MyDisplayHeight) {
+  if (pmd->pmdi->y + pmdiNew->cpixHeight > Scr.DisplayHeight) {
     /* would go off the bottom edge of the screen;
        force it up from the bottom of the screen */
-    pmd->pmdi->y = Scr.MyDisplayHeight-pmdiNew->cpixHeight;
+    pmd->pmdi->y = Scr.DisplayHeight-pmdiNew->cpixHeight;
   }
 }
 

@@ -10,11 +10,9 @@
  *
  */
  
-/***********************************************************************
- *
- * scwm window border drawing code
- *
- ***********************************************************************/
+/*
+ * Scwm window border drawing code
+ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -45,8 +43,9 @@
 extern Window PressedW;
 
 /* macro rules to get button state */
+/* FIXGJB: ugh! dynamic scoping in a macro! --07/26/98 gjb */
 #define GetButtonState(window)						\
-        (onoroff ? ((PressedW == (window)) ? ActiveDown : ActiveUp)	\
+        (fHighlightOn ? ((PressedW == (window)) ? ActiveDown : ActiveUp) \
         : Inactive)
 
 
@@ -54,16 +53,14 @@ extern Window PressedW;
 #define ChangeWindowColor(window,valuemask) {				\
         if(NewColor)							\
         {								\
-          XChangeWindowAttributes(dpy,window,valuemask, &attributes);	\
-          XClearWindow(dpy,window);					\
+          XChangeWindowAttributes(dpy,(window),(valuemask), &attributes);\
+          XClearWindow(dpy,(window));					\
         }								\
       }
 
-/****************************************************************************
- *
- *  Draws a little pattern within a window (more complex)
- *
- ****************************************************************************/
+/*
+ *  Draws an arbitrary sequence of lines within a window (more complex)
+ */
 static void 
 DrawLinePattern(Window win,
 		GC ReliefGC,
@@ -83,11 +80,12 @@ DrawLinePattern(Window win,
   }
 }
 
-/****************************************************************************
- *
- *  Redraws buttons (veliaa@rpi.edu)
- *
- ****************************************************************************/
+/* initialized in init_borders */
+static GC TransMaskGC;
+
+/*
+ *  Redraws buttons (Derived from code by veliaa@rpi.edu)
+ */
 static void 
 DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
@@ -111,7 +109,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
     break;
 
 
-    /* FIXGJB: is this using an object property?  Cool! :-) */
+    /* FIXGJB: using an object property below */
   case VectorButton:
     if ((psw->fMWMButtons)
 	&& (stateflags & MWMButton)
@@ -173,9 +171,9 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
     if (height > h - y - border)
       height = h - y - border;
 
-    XSetClipMask(dpy, Scr.TransMaskGC, image->mask);
-    XSetClipOrigin(dpy, Scr.TransMaskGC, x, y);
-    XCopyArea(dpy, image->image, win, Scr.TransMaskGC,
+    XSetClipMask(dpy, TransMaskGC, image->mask);
+    XSetClipOrigin(dpy, TransMaskGC, x, y);
+    XCopyArea(dpy, image->image, win, TransMaskGC,
 	      0, 0, width, height, x, y);
     break;
 
@@ -195,7 +193,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
       bounds.height = h;
       flush_expose(win);
 
-      XSetClipMask(dpy, Scr.TransMaskGC, None);
+      XSetClipMask(dpy, TransMaskGC, None);
       if (type == HGradButton) {
 	register int i = 0, dw = bounds.width
 	/ bf->u.grad.npixels + 1;
@@ -203,8 +201,8 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	while (i < bf->u.grad.npixels) {
 	  unsigned short x = i * bounds.width / bf->u.grad.npixels;
 
-	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
-	  XFillRectangle(dpy, win, Scr.TransMaskGC,
+	  XSetForeground(dpy, TransMaskGC, bf->u.grad.pixels[i++]);
+	  XFillRectangle(dpy, win, TransMaskGC,
 			 bounds.x + x, bounds.y,
 			 dw, bounds.height);
 	}
@@ -215,8 +213,8 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	while (i < bf->u.grad.npixels) {
 	  unsigned short y = i * bounds.height / bf->u.grad.npixels;
 
-	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
-	  XFillRectangle(dpy, win, Scr.TransMaskGC,
+	  XSetForeground(dpy, TransMaskGC, bf->u.grad.pixels[i++]);
+	  XFillRectangle(dpy, win, TransMaskGC,
 			 bounds.x, bounds.y + y,
 			 bounds.width, dh);
 	}
@@ -339,7 +337,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 }
 
 static void 
-RelieveParts(ScwmWindow * psw, int i, GC hor, GC vert)
+RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
 {
   XSegment seg[2];
   int n = 0, hh = i & HH_HILITE;
@@ -529,16 +527,17 @@ RelieveParts(ScwmWindow * psw, int i, GC hor, GC vert)
   }
 }
 
+/* Set Border just calls SetBorderX with really_force == False */
 void
-SetBorder(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
+SetBorder(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	  Window expose_win)
 {
-  SetBorderX(psw, onoroff, force, Mapped, expose_win, False);
+  SetBorderX(psw, fHighlightOn, force, Mapped, expose_win, False);
 }
 
 
 void 
-SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
+SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	   Window expose_win, Bool really_force)
 {
   int y, i, x;
@@ -564,25 +563,22 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
   if (!psw)
     return;
 
-  if (onoroff) {
+  if (fHighlightOn) {
     /* don't re-draw just for kicks */
-    if ((!force) && (Scr.Hilite == psw))
+    if (!force && (Scr.Hilite == psw))
       return;
 
-    if (Scr.Hilite != psw)
+    if (Scr.Hilite != psw || really_force)
       NewColor = True;
 
-    if (really_force) {
-      NewColor = True;
-    }
     /* make sure that the previously highlighted window got unhighlighted */
     if ((Scr.Hilite != psw) && (Scr.Hilite != NULL))
       SetBorder(Scr.Hilite, False, False, True, None);
 
     /* are we using textured borders? */
-    if ((GetDecor(psw, BorderStyle.active->style)
+    if ((GET_DECOR(psw, BorderStyle.active->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton) {
-      SCM scmImage = GetDecor(psw, BorderStyle.active->u.image);
+      SCM scmImage = GET_DECOR(psw, BorderStyle.active->u.image);
       if (IMAGE_P(scmImage)) {
         scwm_image *simage = IMAGE(scmImage);
 	if (simage)
@@ -597,15 +593,15 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
       w = psw->icon_w;
     Scr.Hilite = psw;
 
-    TextColor = XCOLOR(GetDecor(psw, HiColors.fg));
+    TextColor = XCOLOR(GET_DECOR(psw, HiColors.fg));
     BackPixmap = Scr.gray_pixmap;
-    BackColor = XCOLOR(GetDecor(psw, HiColors.bg));
-    ReliefGC = GetDecor(psw, HiReliefGC);
-    ShadowGC = GetDecor(psw, HiShadowGC);
-    BorderColor = XCOLOR(GetDecor(psw, HiRelief.bg));
-  } else {
+    BackColor = XCOLOR(GET_DECOR(psw, HiColors.bg));
+    ReliefGC = GET_DECOR(psw, HiReliefGC);
+    ShadowGC = GET_DECOR(psw, HiShadowGC);
+    BorderColor = XCOLOR(GET_DECOR(psw, HiRelief.bg));
+  } else /* this case for !fHighlightOn */ {
     /* don't re-draw just for kicks */
-    if ((!force) && (Scr.Hilite != psw))
+    if (!force && (Scr.Hilite != psw))
       return;
 
     if (Scr.Hilite == psw) {
@@ -615,9 +611,9 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
     if (really_force) {
       NewColor = True;
     }
-    if ((GetDecor(psw, BorderStyle.inactive->style)
+    if ((GET_DECOR(psw, BorderStyle.inactive->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = IMAGE(GetDecor(psw, BorderStyle.inactive->u.image))->image;
+      TexturePixmap = IMAGE(GET_DECOR(psw, BorderStyle.inactive->u.image))->image;
 
     TextColor = XCOLOR(psw->TextColor);
     BackPixmap = Scr.light_gray_pixmap;
@@ -675,7 +671,7 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
     for (i = 0; i < Scr.nr_left_buttons; ++i) {
       if (psw->left_w[i] != None) {
 	enum ButtonState bs = GetButtonState(psw->left_w[i]);
-	ButtonFace *bf = GetDecor(psw, left_buttons[i].state[bs]);
+	ButtonFace *bf = GET_DECOR(psw, left_buttons[i].state[bs]);
 
 	if (flush_expose(psw->left_w[i]) || (expose_win == psw->left_w[i]) ||
 	    (expose_win == None)
@@ -691,22 +687,22 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
 				    notex_valuemask, &notex_attributes);
 	  XClearWindow(dpy, psw->left_w[i]);
 	  if (bf->style & UseTitleStyle) {
-	    ButtonFace *tsbf = GetDecor(psw, titlebar.state[bs]);
+	    ButtonFace *tsbf = GET_DECOR(psw, titlebar.state[bs]);
 
 	    for (; tsbf; tsbf = tsbf->next)
 	      DrawButton(psw, psw->left_w[i],
 			 psw->title_height, psw->title_height,
 			 tsbf, ReliefGC, ShadowGC,
-			 inverted, GetDecor(psw, left_buttons[i].flags));
+			 inverted, GET_DECOR(psw, left_buttons[i].flags));
 	  }
 	  for (; bf; bf = bf->next)
 	    DrawButton(psw, psw->left_w[i],
 		       psw->title_height, psw->title_height,
 		       bf, ReliefGC, ShadowGC,
-		       inverted, GetDecor(psw, left_buttons[i].flags));
+		       inverted, GET_DECOR(psw, left_buttons[i].flags));
 
-	  if (!(GetDecor(psw, left_buttons[i].state[bs]->style) & FlatButton)) {
-	    if (GetDecor(psw, left_buttons[i].state[bs]->style) & SunkButton)
+	  if (!(GET_DECOR(psw, left_buttons[i].state[bs]->style) & FlatButton)) {
+	    if (GET_DECOR(psw, left_buttons[i].state[bs]->style) & SunkButton)
 	      RelieveWindow(psw, psw->left_w[i], 0, 0,
 			    psw->title_height, psw->title_height,
 			    (inverted ? ReliefGC : ShadowGC),
@@ -725,7 +721,7 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
     for (i = 0; i < Scr.nr_right_buttons; ++i) {
       if (psw->right_w[i] != None) {
 	enum ButtonState bs = GetButtonState(psw->right_w[i]);
-	ButtonFace *bf = GetDecor(psw, right_buttons[i].state[bs]);
+	ButtonFace *bf = GET_DECOR(psw, right_buttons[i].state[bs]);
 
 	if (flush_expose(psw->right_w[i]) || (expose_win == psw->right_w[i]) ||
 	    (expose_win == None)
@@ -741,22 +737,22 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
 				    notex_valuemask, &notex_attributes);
 	  XClearWindow(dpy, psw->right_w[i]);
 	  if (bf->style & UseTitleStyle) {
-	    ButtonFace *tsbf = GetDecor(psw, titlebar.state[bs]);
+	    ButtonFace *tsbf = GET_DECOR(psw, titlebar.state[bs]);
 
 	    for (; tsbf; tsbf = tsbf->next)
 	      DrawButton(psw, psw->right_w[i],
 			 psw->title_height, psw->title_height,
 			 tsbf, ReliefGC, ShadowGC,
-			 inverted, GetDecor(psw, right_buttons[i].flags));
+			 inverted, GET_DECOR(psw, right_buttons[i].flags));
 	  }
 	  for (; bf; bf = bf->next)
 	    DrawButton(psw, psw->right_w[i],
 		       psw->title_height, psw->title_height,
 		       bf, ReliefGC, ShadowGC,
-		       inverted, GetDecor(psw, right_buttons[i].flags));
+		       inverted, GET_DECOR(psw, right_buttons[i].flags));
 
-	  if (!(GetDecor(psw, right_buttons[i].state[bs]->style) & FlatButton)) {
-	    if (GetDecor(psw, right_buttons[i].state[bs]->style) & SunkButton)
+	  if (!(GET_DECOR(psw, right_buttons[i].state[bs]->style) & FlatButton)) {
+	    if (GET_DECOR(psw, right_buttons[i].state[bs]->style) & SunkButton)
 	      RelieveWindow(psw, psw->right_w[i], 0, 0,
 			    psw->title_height, psw->title_height,
 			    (inverted ? ReliefGC : ShadowGC),
@@ -772,7 +768,7 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
 	}
       }
     }
-    SetTitleBar(psw, onoroff, False);
+    SetTitleBar(psw, fHighlightOn, False);
 
   }
   if (psw->fBorder) {
@@ -783,10 +779,9 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
     for (i = 0; i < 4; i++) {
       int vertical = i % 2;
 
-      int flags = onoroff
-      ? GetDecor(psw, BorderStyle.active->style)
-      : GetDecor(psw, BorderStyle.inactive->style);
-
+      int flags = fHighlightOn
+        ? GET_DECOR(psw, BorderStyle.active->style)
+        : GET_DECOR(psw, BorderStyle.inactive->style);
 
       ChangeWindowColor(psw->sides[i], valuemask);
       if ((flush_expose(psw->sides[i])) || (expose_win == psw->sides[i]) ||
@@ -942,7 +937,7 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
  *
  ****************************************************************************/
 void 
-SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
+SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
 {
   int hor_off, w, i;
   enum ButtonState title_state;
@@ -959,11 +954,11 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
   if (!SHOW_TITLE_P(psw))
     return;
 
-  if (onoroff) {
-    Forecolor = XCOLOR(GetDecor(psw, HiColors.fg));
-    BackColor = XCOLOR(GetDecor(psw, HiColors.bg));
-    ReliefGC = GetDecor(psw, HiReliefGC);
-    ShadowGC = GetDecor(psw, HiShadowGC);
+  if (fHighlightOn) {
+    Forecolor = XCOLOR(GET_DECOR(psw, HiColors.fg));
+    BackColor = XCOLOR(GET_DECOR(psw, HiColors.bg));
+    ReliefGC = GET_DECOR(psw, HiReliefGC);
+    ShadowGC = GET_DECOR(psw, HiShadowGC);
   } else {
     Forecolor = XCOLOR(psw->TextColor);
     BackColor = XCOLOR(psw->BackColor);
@@ -979,11 +974,11 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
 
   if (psw->name != (char *) NULL) {
 #ifdef I18N
-    XmbTextExtents(XFONT(GetDecor(psw,window_font)),
+    XmbTextExtents(XFONT(GET_DECOR(psw,window_font)),
 		   psw->name, strlen(psw->name), &dummy, &log_ret);
     w = log_ret.width;
 #else
-    w = XTextWidth(XFONT(GetDecor(psw, window_font)), psw->name, strlen(psw->name));
+    w = XTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, strlen(psw->name));
 #endif
     if (w > psw->title_width - 12)
       w = psw->title_width - 4;
@@ -993,8 +988,8 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
     w = 0;
 
   title_state = GetButtonState(psw->title_w);
-  tb_style = GetDecor(psw, titlebar.state[title_state]->style);
-  tb_flags = GetDecor(psw, titlebar.flags);
+  tb_style = GET_DECOR(psw, titlebar.state[title_state]->style);
+  tb_flags = GET_DECOR(psw, titlebar.flags);
   if (tb_flags & HOffCenter) {
     if (tb_flags & HRight)
       hor_off = psw->title_width - w - 10;
@@ -1004,17 +999,17 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
     hor_off = (psw->title_width - w) / 2;
 
 #ifdef I18N
-  NewFontAndColor(Scr.ScratchGC3,FONT(GetDecor(psw, window_font))->xfs->fid, Forecolor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,FONT(GET_DECOR(psw, window_font))->xfs->fid, Forecolor, BackColor);
 #else
-  NewFontAndColor(Scr.ScratchGC3,XFONT(GetDecor(psw, window_font))->fid, Forecolor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,XFONT(GET_DECOR(psw, window_font))->fid, Forecolor, BackColor);
 #endif
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */
   /* we need to check for UseBorderStyle for the titlebar */
   {
-    ButtonFace *bf = onoroff
-      ? GetDecor(psw, BorderStyle.active)
-      : GetDecor(psw, BorderStyle.inactive);
+    ButtonFace *bf = fHighlightOn
+      ? GET_DECOR(psw, BorderStyle.active)
+      : GET_DECOR(psw, BorderStyle.inactive);
 
     if ((tb_style & UseBorderStyle)
 	&& ((bf->style & ButtonFaceTypeMask) == TiledPixmapButton))
@@ -1038,17 +1033,17 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
 	      psw->title_height);
     if (psw->name != (char *) NULL) 
 #ifdef I18N
-      XmbDrawString(dpy, psw->title_w,XFONT(GetDecor(psw,window_font)),
+      XmbDrawString(dpy, psw->title_w,XFONT(GET_DECOR(psw,window_font)),
 		    Scr.ScratchGC3, hor_off,
-		    GetDecor(psw, window_font_y) + 1,
+		    GET_DECOR(psw, window_font_y) + 1,
 		    psw->name, strlen(psw->name));
 #else
       XDrawString(dpy, psw->title_w, Scr.ScratchGC3, hor_off,
-		  GetDecor(psw, window_font_y) + 1,
+		  GET_DECOR(psw, window_font_y) + 1,
 		  psw->name, strlen(psw->name));
 #endif
   } else {
-    ButtonFace *bf = GetDecor(psw, titlebar.state[title_state]);
+    ButtonFace *bf = GET_DECOR(psw, titlebar.state[title_state]);
 
     /* draw compound titlebar (veliaa@rpi.edu) */
     if (PressedW == psw->title_w) {
@@ -1071,13 +1066,13 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
     }
     if (psw->name != (char *) NULL) {
 #ifdef I18N
-      XmbDrawString(dpy, psw->title_w,XFONT(GetDecor(psw,window_font)),
+      XmbDrawString(dpy, psw->title_w,XFONT(GET_DECOR(psw,window_font)),
 		    Scr.ScratchGC3, hor_off,
-		    GetDecor(psw, window_font_y) + 1,
+		    GET_DECOR(psw, window_font_y) + 1,
 		    psw->name, strlen(psw->name));
 #else
       XDrawString(dpy, psw->title_w, Scr.ScratchGC3, hor_off,
-		  GetDecor(psw, window_font_y) + 1,
+		  GET_DECOR(psw, window_font_y) + 1,
 		  psw->name, strlen(psw->name));
 #endif
     }
@@ -1116,7 +1111,7 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
  *
  ****************************************************************************/
 void 
-RelieveWindow(ScwmWindow * psw, Window win,
+RelieveWindow(ScwmWindow *psw, Window win,
 	      int x, int y, int w, int h,
 	      GC ReliefGC, GC ShadowGC, int hilite)
 {
@@ -1229,7 +1224,7 @@ RelieveWindow(ScwmWindow * psw, Window win,
  */
 
 void 
-SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
+SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
            Bool fMoved, Bool fResized)
 {
   XWindowChanges xwc;
@@ -1241,19 +1236,18 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
   assert(!fMoved || fMoved == WAS_MOVED);
   assert(!fResized || fResized == WAS_RESIZED);
 
-  /* FIXMS: I think this can be safely removed, check RSN. */
-  /* if windows is not being maximized, save size in case of maximization */
-  if (!psw->fMaximized && !shaded) {
-    psw->orig_x = x;
-    psw->orig_y = y;
-    psw->orig_wd = w;
-    psw->orig_ht = h;
+  /* if windows is not shaded, save size for when unshaded
+     This used to apply for maximization, too, but Maciej
+     made those window properties --07/26/98 gjb */
+  if (/* !psw->fMaximized && FIXGJB */ !shaded) {
+    psw->orig_width = w;
+    psw->orig_height = h;
   }
 
-  if (x >= Scr.MyDisplayWidth + Scr.VxMax - Scr.Vx - 16)
-    x = Scr.MyDisplayWidth + Scr.VxMax - Scr.Vx - 16;
-  if (y >= Scr.MyDisplayHeight + Scr.VyMax - Scr.Vy - 16)
-    y = Scr.MyDisplayHeight + Scr.VyMax - Scr.Vy - 16;
+  if (x >= Scr.DisplayWidth + Scr.VxMax - Scr.Vx - 16)
+    x = Scr.DisplayWidth + Scr.VxMax - Scr.Vx - 16;
+  if (y >= Scr.DisplayHeight + Scr.VyMax - Scr.Vy - 16)
+    y = Scr.DisplayHeight + Scr.VyMax - Scr.Vy - 16;
 
 
 #ifndef NDEBUG
@@ -1280,7 +1274,7 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
 
     if (SHOW_TITLE_P(psw)) {
       DBUG(__FUNCTION__,"Has title!");
-      psw->title_height = GetDecor(psw, TitleHeight) + psw->bw;
+      psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
       DBUG(__FUNCTION__,"Reset height to %d",psw->title_height);
     }
     /* make the decoration buttons square */
@@ -1335,7 +1329,7 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
     }
     if (psw->fBorder) {
       DBUG(__FUNCTION__,"Has border!");
-      psw->corner_width = GetDecor(psw, TitleHeight) + psw->bw +
+      psw->corner_width = GET_DECOR(psw, TitleHeight) + psw->bw +
 	psw->boundary_width;
 
       if (w < 2 * psw->corner_width)
@@ -1450,7 +1444,7 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
  * 
  ****************************************************************************/
 void 
-SetShape(ScwmWindow * psw, int w)
+SetShape(ScwmWindow *psw, int w)
 {
   if (ShapesSupported) {
     XRectangle rect;
@@ -1472,6 +1466,22 @@ SetShape(ScwmWindow * psw, int w)
 			      0, 0, &rect, 1, ShapeUnion, Unsorted);
     }
   }
+}
+
+
+/* no primitives here, no .x file */
+void
+init_borders()
+{
+  XGCValues gcv;
+  gcv.line_width = 0;
+  gcv.function = GXcopy;
+  gcv.plane_mask = AllPlanes;
+  gcv.graphics_exposures = False;
+  TransMaskGC = XCreateGC(dpy, 
+                          Scr.Root, 
+                          GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth,
+                          &gcv);
 }
 
 /* Local Variables: */

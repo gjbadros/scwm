@@ -346,14 +346,14 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     /*  A title barm with no buttons in it
      * window gets a 1 pixel wide black border. */
     t->fTitle = True;
-    t->title_height = GetDecor(t, TitleHeight);
+    t->title_height = GET_DECOR(t, TitleHeight);
   }
   if (decor & MWM_DECOR_RESIZEH) {
     /* A wide border, with corner tiles is desplayed
      * (10 pixels - 2 relief, 2 shadow) */
     t->fBorder = True;
     t->boundary_width = resize_width;
-    t->corner_width = GetDecor(t, TitleHeight) + t->boundary_width;
+    t->corner_width = GET_DECOR(t, TitleHeight) + t->boundary_width;
   }
   if (!(decor & MWM_DECOR_MENU)) {
     /*  title-bar menu button omitted 

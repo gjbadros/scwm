@@ -126,8 +126,8 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heigh
   maxWidth = psw->hints.max_width;
   maxHeight = psw->hints.max_height;
 
-/*    maxWidth = Scr.VxMax + Scr.MyDisplayWidth;
-   maxHeight = Scr.VyMax + Scr.MyDisplayHeight; */
+/*    maxWidth = Scr.VxMax + Scr.DisplayWidth;
+   maxHeight = Scr.VyMax + Scr.DisplayHeight; */
 
   xinc = psw->hints.width_inc;
   yinc = psw->hints.height_inc;
@@ -305,6 +305,42 @@ InitializeOutlineRects(XRectangle rects[], int lastx, int lasty, int lastWidth, 
   rects[4].height = (lastHeight - 6);
 }
 
+static GC DrawRubberBandGC;
+
+/* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
+   fast to erase */
+SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
+          (SCM value))
+     /** Set the rubber band mask used when dragging or resizing.
+VALUE is XORed with the background when dragging non-opaque move or
+resize frames. VALUE should be an integer. */
+#define FUNC_NAME s_set_rubber_band_mask_x
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  SCM_REDEFER_INTS;
+
+  if (!gh_number_p(value)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(FUNC_NAME, 1, value);
+  }
+  gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
+  gcv.function = GXxor;
+  gcv.line_width = 0;
+  gcv.foreground = gh_scm2long(value);
+  gcv.subwindow_mode = IncludeInferiors;
+  if (NULL != DrawRubberBandGC) {
+    XFreeGC(dpy, DrawRubberBandGC);
+  }
+  DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  SCM_REALLOW_INTS;
+  return (value);
+}
+#undef FUNC_NAME
+
+
+
 /*
  * RedrawOutlineAtNewPosition
  *
@@ -331,7 +367,7 @@ RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
   /* undraw the old one, if any */
   if (lastWidth || lastHeight) {
     InitializeOutlineRects(rects,lastx,lasty,lastWidth,lastHeight);
-    XDrawRectangles(dpy, Scr.Root, Scr.DrawGC, rects, 5);
+    XDrawRectangles(dpy, Scr.Root, DrawRubberBandGC, rects, 5);
   }
 
   /* save the new position in the static variables */
@@ -343,7 +379,7 @@ RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
   /* draw the new one, if any */
   if (lastWidth || lastHeight) {
     InitializeOutlineRects(rects,lastx,lasty,lastWidth,lastHeight);
-    XDrawRectangles(dpy, Scr.Root, Scr.DrawGC, rects, 5);
+    XDrawRectangles(dpy, Scr.Root, DrawRubberBandGC, rects, 5);
   }
 }
 
@@ -365,6 +401,9 @@ specified. */
   int origy;
   int origWidth;
   int origHeight;
+  /* save state of edge wrap */
+  Bool fEdgeWrapX = Scr.fEdgeWrapX;
+  Bool fEdgeWrapY = Scr.fEdgeWrapY;
 
   int ymotion = 0, xmotion = 0;
 
@@ -374,7 +413,6 @@ specified. */
   Bool finished = False, done = False, abort = False;
   int x, y, delta_x, delta_y;
   Window ResizeWindow;
-  Bool flags;
 
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
@@ -405,8 +443,7 @@ specified. */
   }
 
   /* handle problems with edge-wrapping while resizing */
-  flags = Scr.flags;
-  Scr.flags &= ~(EdgeWrapX | EdgeWrapY);
+  Scr.fEdgeWrapX = Scr.fEdgeWrapY = False;
 
   XGetGeometry(dpy, (Drawable) ResizeWindow, &JunkRoot,
 	       &dragx, &dragy, (unsigned int *) &dragWidth,
@@ -571,7 +608,9 @@ specified. */
   xmotion = 0;
   ymotion = 0;
 
-  Scr.flags |= flags & (EdgeWrapX | EdgeWrapY);
+  /* restore edge wrap state */
+  Scr.fEdgeWrapX = fEdgeWrapX;
+  Scr.fEdgeWrapY = fEdgeWrapY;
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -581,6 +620,14 @@ specified. */
 void 
 init_resize()
 {
+  XGCValues gcv;
+  unsigned long gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
+  gcv.function = GXxor;
+  gcv.line_width = 0;
+  gcv.foreground = 37; /* randomish */
+  gcv.subwindow_mode = IncludeInferiors;
+  DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+
 #ifndef SCM_MAGIC_SNARFER
 #include "resize.x"
 #endif

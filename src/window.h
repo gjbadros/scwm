@@ -23,8 +23,6 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-#define PackedBool(x) unsigned short x:1
-
 struct ScwmDecor;		/* definition in screen.h */
 
 extern char NoName[];
@@ -173,15 +171,15 @@ typedef struct ScwmWindow {
   SCM icon_req_image;		/* the icon picture requested */
   SCM icon_image;               /* the icon picture used */
 
-  int orig_x;			/* unmaximized x coordinate */
-  int orig_y;			/* unmaximized y coordinate */
-  int orig_wd;			/* unmaximized window width */
-  int orig_ht;			/* unmaximized window height */
+  int orig_width;               /* unshaded/unmaximized window width */
+  int orig_height;               /* unshaded/unmaximized window height */
 
   int xdiff, ydiff;		/* used to restore window position on exit */
   int *mwm_hints;
   int ol_hints;
-  int functions;  /* was enum wm_client_functions, but causes problems for C++ --06/24/98 gjb */
+  int functions;                /* was enum wm_client_functions, 
+                                   but causes problems for C++ since it is
+                                   not used as an enumeration --06/24/98 gjb */
   Window *cmap_windows;		/* Colormap windows property */
   int number_cmap_windows;	/* Should generally be 0 */
   SCM ReliefColor;
@@ -192,7 +190,7 @@ typedef struct ScwmWindow {
   int IconBox[4];
 
   /* Not used, but I'm not sure what it used to mean, so leaving it
-     commented for now - MS 3-14-98 */
+     commented for now - MS 3-14-98 MSFIX: Can we blast this yet?--07/26/98 gjb*/
   /* int BoxFillMethod; */
   SCM schwin;
 } ScwmWindow;
@@ -236,20 +234,6 @@ SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 #define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
 
 #define VALIDATE_PRESS_ONLY(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
-
-#define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_T) var = True; \
-  else if (flag == SCM_BOOL_F) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
-
-#define COPY_INVERT_BOOL_OR_ERROR(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_F) var = True; \
-  else if (flag == SCM_BOOL_T) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
 
 typedef struct {
   ScwmWindow *psw;

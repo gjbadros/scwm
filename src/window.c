@@ -585,8 +585,8 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
     cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
-  dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
-  dy = (cy + Scr.Vy) / Scr.MyDisplayHeight * Scr.MyDisplayHeight;
+  dx = (cx + Scr.Vx) / Scr.DisplayWidth * Scr.DisplayWidth;
+  dy = (cy + Scr.Vy) / Scr.DisplayHeight * Scr.DisplayHeight;
 
   MoveViewport(dx, dy, True);
 #endif
@@ -604,8 +604,8 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
   /* If the window is still not visible, make it visible! */
   if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) ||
       (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
-      (FRAME_X(psw) > Scr.MyDisplayWidth) || 
-      (FRAME_Y(psw) > Scr.MyDisplayHeight)) {
+      (FRAME_X(psw) > Scr.DisplayWidth) || 
+      (FRAME_Y(psw) > Scr.DisplayHeight)) {
     SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, 
                WAS_MOVED, NOT_RESIZED);
     if (!psw->fClickToFocus)
@@ -648,8 +648,8 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
-  dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
-  dy = (cy + Scr.Vy) / Scr.MyDisplayHeight * Scr.MyDisplayHeight;
+  dx = (cx + Scr.Vx) / Scr.DisplayWidth * Scr.DisplayWidth;
+  dy = (cy + Scr.Vy) / Scr.DisplayHeight * Scr.DisplayHeight;
 
   MoveViewport(dx, dy, True);
 #endif
@@ -658,11 +658,11 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     x = psw->icon_xl_loc + psw->icon_w_width / 2 + 2;
     y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2 + 2;
   } else {
-    if (x_unit != Scr.MyDisplayWidth)
+    if (x_unit != Scr.DisplayWidth)
       x = FRAME_X(psw) + 2 + warp_x;
     else
       x = FRAME_X(psw) + 2 + (FRAME_WIDTH(psw) - 4) * warp_x / 100;
-    if (y_unit != Scr.MyDisplayHeight)
+    if (y_unit != Scr.DisplayHeight)
       y = FRAME_Y(psw) + 2 + warp_y;
     else
       y = FRAME_Y(psw) + 2 + (FRAME_HEIGHT(psw) - 4) * warp_y / 100;
@@ -676,8 +676,8 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
   /* If the window is still not visible, make it visible! */
   if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) || 
       (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
-      (FRAME_X(psw) > Scr.MyDisplayWidth) || 
-      (FRAME_Y(psw) > Scr.MyDisplayHeight)) {
+      (FRAME_X(psw) > Scr.DisplayWidth) || 
+      (FRAME_Y(psw) > Scr.DisplayHeight)) {
     SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
                WAS_MOVED, NOT_RESIZED);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
@@ -1735,14 +1735,14 @@ not specified. */
        reason to propagate that event if we can avoid it; perhaps
        substructure redirection is a solution here, but I don't know
        much about it --11/11/97 gjb */
-  }
-  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
-	     psw->title_height + psw->boundary_width, False, 
-             NOT_MOVED, WAS_RESIZED);
-  if (fAnimated) {
+
     /* need to reset the client window offset so that if
        if it's un-window-shaded w/o animation, things are ok */
     XMoveWindow(dpy,psw->w,0,0);
+  } else {
+    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
+               psw->title_height + psw->boundary_width, False, 
+               NOT_MOVED, WAS_RESIZED);
   }
 
   CoerceEnterNotifyOnCurrentWindow();
@@ -1787,10 +1787,11 @@ window context in the usual way if not specified. */
   SET_UNSHADED(psw);
   if (fAnimated) {
     AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
+  } else {
+    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
+               psw->orig_wd, psw->orig_ht, True,
+               NOT_MOVED, WAS_RESIZED);
   }
-  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
-	     psw->orig_wd, psw->orig_ht, True,
-             NOT_MOVED, WAS_RESIZED);
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -2040,8 +2041,8 @@ specified. */
   } else if (fMovePointer) {
     int x, y;
     FXGetPointerWindowOffsets(Scr.Root, &x, &y);
-    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-		 Scr.MyDisplayHeight, x + destX - startX, y + destY - startY);
+    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
+		 Scr.DisplayHeight, x + destX - startX, y + destY - startY);
   }
 
   move_finalize(w, psw, destX, destY);
@@ -2084,9 +2085,6 @@ usual way if not specified. */
     FXGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
   }
   InteractiveMove(w, psw, &x, &y, &event);
-#if 0 /* FIXGJBUNUSED */
-  move_finalize(w, psw, x, y);
-#endif
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }

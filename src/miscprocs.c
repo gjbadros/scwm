@@ -37,54 +37,12 @@ This option is currently ignored. */
 #define FUNC_NAME s_set_menu_mwm_style_x
 {
   SCM_REDEFER_INTS;
-  if (SCM_IMP(flag)) {
-    if (flag == SCM_BOOL_T || flag == SCM_UNDEFINED) {
-      Scr.flags |= MWMMenus;
-      SCM_REALLOW_INTS;
-      return (SCM_BOOL_T);
-    } else if (flag == SCM_BOOL_F) {
-      Scr.flags &= ~MWMMenus;
-      SCM_REALLOW_INTS;
-      return (SCM_BOOL_F);
-    }
-  }
+  COPY_BOOL_OR_ERROR(Scr.fMWMMenus,flag,1,FUNC_NAME);
   SCM_ALLOW_INTS;
-  scm_wrong_type_arg(FUNC_NAME, 1, flag);
+  return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
 
-
-/* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
-   fast to erase */
-SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
-          (SCM value))
-     /** Set the rubber band mask used when dragging or resizing.
-VALUE is XORed with the background when dragging non-opaque move or
-resize frames. VALUE should be an integer. */
-#define FUNC_NAME s_set_rubber_band_mask_x
-{
-  XGCValues gcv;
-  unsigned long gcm;
-
-  SCM_REDEFER_INTS;
-
-  if (!gh_number_p(value)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, value);
-  }
-  gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
-  gcv.function = GXxor;
-  gcv.line_width = 0;
-  gcv.foreground = gh_scm2long(value);
-  gcv.subwindow_mode = IncludeInferiors;
-  if (NULL != Scr.DrawGC) {
-    XFreeGC(dpy, Scr.DrawGC);
-  }
-  Scr.DrawGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  SCM_REALLOW_INTS;
-  return (value);
-}
-#undef FUNC_NAME
 
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
@@ -232,9 +190,9 @@ makes a difference only when using focus policies other than 'mouse. */
     scm_wrong_type_arg(FUNC_NAME, 1, ftype);
   }
   if (gh_eq_p(ftype, sym_focus)) {
-    Scr.ColormapFocus = COLORMAP_FOLLOWS_FOCUS;
+    Scr.fColormapFollowsMouse = False;
   } else if (gh_eq_p(ftype, sym_mouse)) {
-    Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
+    Scr.fColormapFollowsMouse = True;
   } else {
     SCM_ALLOW_INTS;
     scwm_error(FUNC_NAME, 10);
@@ -301,8 +259,8 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
   }
   x = gh_scm2int(sx);
   y = gh_scm2int(sy);
-  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-	       Scr.MyDisplayHeight, x, y);
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
+	       Scr.DisplayHeight, x, y);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -377,10 +335,7 @@ the window's smart-placement flag is on, according to the boolean
 value FLAG. */
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
-  if (!gh_boolean_p(flag)) {
-    scm_wrong_type_arg(FUNC_NAME,1,flag);
-  }
-  Scr.SmartPlacementIsClever= SCM_NFALSEP(flag) ? True : False;
+  COPY_BOOL_OR_ERROR(Scr.fSmartPlacementIsClever,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -395,10 +350,7 @@ If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client. */
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
-  if (!gh_boolean_p(flag)) {
-    scm_wrong_type_arg(FUNC_NAME,1,flag);
-  }
-  Scr.ClickToFocusPassesClick= SCM_NFALSEP(flag) ? True : False;
+  COPY_BOOL_OR_ERROR(Scr.fClickToFocusPassesClick,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -412,10 +364,7 @@ If FLAG is #t, clicks which transfer focus will also raise the target
 window */
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
-  if (!gh_boolean_p(flag)) {
-    scm_wrong_type_arg(FUNC_NAME,1,flag);
-  }
-  Scr.ClickToFocusRaises =  SCM_NFALSEP(flag) ? True : False;
+  COPY_BOOL_OR_ERROR(Scr.fClickToFocusRaises,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -434,10 +383,7 @@ If FLAG is #t it will raise the window. Not sure if this function
 makes sense any more.  FIXDOC. */
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
-  if (!gh_boolean_p(flag)) {
-    scm_wrong_type_arg(FUNC_NAME,1,flag);
-  }
-  Scr.MouseFocusClickRaises= SCM_NFALSEP(flag) ? True : False;
+  COPY_BOOL_OR_ERROR(Scr.fMouseFocusClickRaises,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;  
 }
 #undef FUNC_NAME

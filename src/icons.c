@@ -302,10 +302,10 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   if (final_y < 0)
     final_y = 0;
 
-  if (final_x + psw->icon_w_width >= Scr.MyDisplayWidth)
-    final_x = Scr.MyDisplayWidth - psw->icon_w_width - 1;
-  if (final_y + psw->icon_w_height >= Scr.MyDisplayHeight)
-    final_y = Scr.MyDisplayHeight - psw->icon_w_height - 1;
+  if (final_x + psw->icon_w_width >= Scr.DisplayWidth)
+    final_x = Scr.DisplayWidth - psw->icon_w_width - 1;
+  if (final_y + psw->icon_w_height >= Scr.DisplayHeight)
+    final_y = Scr.DisplayHeight - psw->icon_w_height - 1;
 
   psw->icon_x_loc = final_x;
   psw->icon_xl_loc = final_x;
@@ -396,10 +396,10 @@ DrawIconWindow(ScwmWindow * psw)
       TextColor = XCOLOR(Scr.DefaultDecor.HiColors.fg);
       BackColor = XCOLOR(Scr.DefaultDecor.HiColors.bg);
     } else {
-      Relief = GetDecor(psw, HiReliefGC);
-      Shadow = GetDecor(psw, HiShadowGC);
-      TextColor = XCOLOR(GetDecor(psw, HiColors.fg));
-      BackColor = XCOLOR(GetDecor(psw, HiColors.bg));
+      Relief = GET_DECOR(psw, HiReliefGC);
+      Shadow = GET_DECOR(psw, HiShadowGC);
+      TextColor = XCOLOR(GET_DECOR(psw, HiColors.fg));
+      BackColor = XCOLOR(GET_DECOR(psw, HiColors.bg));
     }
     /* resize the icon name window */
     if (psw->icon_w != None) {
@@ -563,29 +563,29 @@ AutoPlace(ScwmWindow *psw)
     base_x = 0;
     base_y = 0;
     /*Also, if its a stickyWindow, put it on the current page! */
-    new_x = FRAME_X(psw) % Scr.MyDisplayWidth;
-    new_y = FRAME_Y(psw) % Scr.MyDisplayHeight;
+    new_x = FRAME_X(psw) % Scr.DisplayWidth;
+    new_y = FRAME_Y(psw) % Scr.DisplayHeight;
     if (new_x < 0)
-      new_x += Scr.MyDisplayWidth;
+      new_x += Scr.DisplayWidth;
     if (new_y < 0)
-      new_y += Scr.MyDisplayHeight;
+      new_y += Scr.DisplayHeight;
     SetupFrame(psw, new_x, new_y,
 	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, WAS_MOVED, NOT_RESIZED);
     psw->Desk = Scr.CurrentDesk;
   } else {
-    base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.MyDisplayWidth) *
-      Scr.MyDisplayWidth - Scr.Vx;
-    base_y = ((FRAME_Y(psw) + Scr.Vy + (FRAME_HEIGHT(psw) >> 1)) / Scr.MyDisplayHeight) *
-      Scr.MyDisplayHeight - Scr.Vy;
+    base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *
+      Scr.DisplayWidth - Scr.Vx;
+    base_y = ((FRAME_Y(psw) + Scr.Vy + (FRAME_HEIGHT(psw) >> 1)) / Scr.DisplayHeight) *
+      Scr.DisplayHeight - Scr.Vy;
   }
   if (psw->fIconMoved) {
     /* just make sure the icon is on this screen */
-    psw->icon_x_loc = psw->icon_x_loc % Scr.MyDisplayWidth + base_x;
-    psw->icon_y_loc = psw->icon_y_loc % Scr.MyDisplayHeight + base_y;
+    psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
+    psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
     if (psw->icon_x_loc < 0)
-      psw->icon_x_loc += Scr.MyDisplayWidth;
+      psw->icon_x_loc += Scr.DisplayWidth;
     if (psw->icon_y_loc < 0)
-      psw->icon_y_loc += Scr.MyDisplayHeight;
+      psw->icon_y_loc += Scr.DisplayHeight;
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
     psw->icon_y_loc = psw->wmhints->icon_y;
@@ -618,10 +618,10 @@ AutoPlace(ScwmWindow *psw)
 	real_x = test_x;
 	real_y = test_y;
 
-	if (test_x + width > (Scr.MyDisplayWidth - 2 + base_x))
-	  real_x = Scr.MyDisplayWidth - width - 2 + base_x;
-	if (test_y + height > (Scr.MyDisplayHeight - 2 + base_y))
-	  real_y = Scr.MyDisplayHeight - height - 2 + base_y;
+	if (test_x + width > (Scr.DisplayWidth - 2 + base_x))
+	  real_x = Scr.DisplayWidth - width - 2 + base_x;
+	if (test_y + height > (Scr.DisplayHeight - 2 + base_y))
+	  real_y = Scr.DisplayHeight - height - 2 + base_y;
 	if (test_x < base_x)
 	  real_x = base_x;
 	if (test_y < base_y)

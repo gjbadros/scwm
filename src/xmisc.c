@@ -166,19 +166,19 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     if (!fRestart) {
       /* Don't mess with it if its partially on the screen now */
       if ((FRAME_X(psw) < 0) || (FRAME_Y(psw) < 0) ||
-	  (FRAME_X(psw) >= Scr.MyDisplayWidth) ||
-	  (FRAME_Y(psw) >= Scr.MyDisplayHeight)) {
+	  (FRAME_X(psw) >= Scr.DisplayWidth) ||
+	  (FRAME_Y(psw) >= Scr.DisplayHeight)) {
 	w2 = (FRAME_WIDTH(psw) >> 1);
 	h2 = (FRAME_HEIGHT(psw) >> 1);
-	if ((xwc.x < -w2) || (xwc.x > (Scr.MyDisplayWidth - w2))) {
-	  xwc.x = xwc.x % Scr.MyDisplayWidth;
+	if ((xwc.x < -w2) || (xwc.x > (Scr.DisplayWidth - w2))) {
+	  xwc.x = xwc.x % Scr.DisplayWidth;
 	  if (xwc.x < -w2)
-	    xwc.x += Scr.MyDisplayWidth;
+	    xwc.x += Scr.DisplayWidth;
 	}
-	if ((xwc.y < -h2) || (xwc.y > (Scr.MyDisplayHeight - h2))) {
-	  xwc.y = xwc.y % Scr.MyDisplayHeight;
+	if ((xwc.y < -h2) || (xwc.y > (Scr.DisplayHeight - h2))) {
+	  xwc.y = xwc.y % Scr.DisplayHeight;
 	  if (xwc.y < -h2)
-	    xwc.y += Scr.MyDisplayHeight;
+	    xwc.y += Scr.DisplayHeight;
 	}
       }
     }

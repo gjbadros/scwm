@@ -25,11 +25,9 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
 {
   int x, w, y, h;
   ScwmWindow *psw = Scr.ScwmRoot.next;
-  ScwmWindow *pswHilite = Scr.Hilite;
 
-  while (psw != NULL) {
+  for ( ; psw != NULL; psw = psw->next) {
     if (!psw->fTitle || psw->fl != fl) {
-      psw = psw->next;
       continue;
     }
     x = FRAME_X(psw);
@@ -38,11 +36,13 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
     h = FRAME_HEIGHT(psw) - extra_height;
     SetupFrame(psw, x, y, w, h, True, WAS_MOVED, WAS_RESIZED);
     /* FIXGJB: why two calls in a row? --07/14/98 gjb */
+#if 0
     SetTitleBar(psw, True, True);
+#endif
     SetTitleBar(psw, False, True);
     psw = psw->next;
   }
-  SetTitleBar(pswHilite, True, True);
+  SetTitleBar(Scr.Hilite, True, True);
 }
 
 
@@ -77,8 +77,8 @@ refresh_common(Window win_or_root)
   w = XCreateWindow(dpy,
 		    win_or_root,
 		    0, 0,
-		    (unsigned int) Scr.MyDisplayWidth,
-		    (unsigned int) Scr.MyDisplayHeight,
+		    (unsigned int) Scr.DisplayWidth,
+		    (unsigned int) Scr.DisplayHeight,
 		    (unsigned int) 0,
 		    CopyFromParent, (unsigned int) CopyFromParent,
 		    (Visual *) CopyFromParent, valuemask,

@@ -539,7 +539,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
       Scr.AllBindings->Thunk = proc;
       Scr.AllBindings->NextBinding = prev_binding;
       scm_protect_object(proc);
-      if (Scr.flags & WindowsCaptured) {
+      if (Scr.fWindowsCaptured) {
 	/* only grab the key if we have already captured,
 	   otherwise it's a waste of time since we will grab
 	   them all later when we do the initial capture;
@@ -676,7 +676,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->NextBinding = temp;
-  if (contexts & C_WINDOW && Scr.flags & WindowsCaptured) {
+  if (contexts & C_WINDOW && Scr.fWindowsCaptured) {
     /* only grab the button press if we have already captured,
        otherwise it's a waste of time since we will grab
        them all later when we do the initial capture;
@@ -687,7 +687,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
 
   scm_protect_object(proc);
   SCM_REALLOW_INTS;
-  if (fChangedNumButtons && Scr.flags & WindowsCaptured) {
+  if (fChangedNumButtons && Scr.fWindowsCaptured) {
   /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
      buttons */
 #ifdef FIXGJB /* this doesn't work, just want to redraw buttons on all windows */

@@ -172,14 +172,18 @@ void init_shutdown()
 {
   /**HOOK: shutdown-hook
 The procedures in shutdown-hook are called with no arguments right
-before scwm quits or restarts. 
+before scwm quits or restarts.  
   */
   SCWM_DEFINE_HOOK(shutdown_hook, "shutdown-hook");
 
   /**HOOK: startup-hook 
 The procedures in startup-hook are called with no arguments after scwm
 has processed the scwmrc and captured all application windows, and
-right before it enters the main event loop.
+right before it enters the main event loop.  Note that during
+processing of the .scwmrc startup file, windows have not already been
+captured, so the window-list (as reported by `list-all-windows') is
+empty.  To provide behviour conditioned on a property of an existing
+window, this hook should be used instead.
  */
 
   SCWM_DEFINE_HOOK(startup_hook, "startup-hook");

@@ -299,12 +299,12 @@ HandleHardFocus(ScwmWindow *psw)
   /* Do something to guarantee a new time stamp! */
   FXGetPointerWindowOffsets(Scr.Root, &x, &y);
   GrabEm(CURSOR_WAIT);
-  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-	       Scr.MyDisplayHeight,
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
+	       Scr.DisplayHeight,
 	       x + 2, y + 2);
   XSync(dpy, 0);
-  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-	       Scr.MyDisplayHeight,
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
+	       Scr.DisplayHeight,
 	       x, y);
   UngrabEm();
 }
@@ -335,7 +335,7 @@ HandleFocusIn()
 		XCOLOR(Scr.DefaultDecor.HiColors.fg),
 		XCOLOR(Scr.DefaultDecor.HiColors.bg),
 		0, 0);
-      if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
+      if (Scr.fColormapFollowsMouse) {
 	if (Scr.Hilite && !Scr.Hilite->fIconified) {
 	  InstallWindowColormaps(Scr.Hilite);
 	} else {
@@ -347,10 +347,10 @@ HandleFocusIn()
     SetBorder(pswCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
 	      pswCurrent->frame, (unsigned long) pswCurrent,
-	      XCOLOR(GetDecor(pswCurrent, HiColors.fg)),
-	      XCOLOR(GetDecor(pswCurrent, HiColors.bg)),
+	      XCOLOR(GET_DECOR(pswCurrent, HiColors.fg)),
+	      XCOLOR(GET_DECOR(pswCurrent, HiColors.bg)),
 	      0, 0);
-    if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
+    if (Scr.fColormapFollowsMouse) {
       if (Scr.Hilite && !Scr.Hilite->fIconified) {
 	InstallWindowColormaps(Scr.Hilite);
       } else {
@@ -1158,18 +1158,15 @@ HandleButtonPress()
 	(ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0)) {
     if (pswCurrent) {
       SetFocus(pswCurrent->w, pswCurrent, 1);
-      if (Scr.ClickToFocusRaises 
-	  /* FIXMS - these other conditions seem wrong to me. */
-#if 0
-	  ||
-	  ((Event.xany.window != pswCurrent->w) &&
-	   (Event.xbutton.subwindow != pswCurrent->w) &&
-	   (Event.xany.window != pswCurrent->Parent) &&
-	   (Event.xbutton.subwindow != pswCurrent->Parent))
-#endif
-	  )
-      {
+      if (Scr.fClickToFocusRaises) {
 	RaiseWindow(pswCurrent);
+      } else if ((Event.xany.window != pswCurrent->w) &&
+                 (Event.xbutton.subwindow != pswCurrent->w) &&
+                 (Event.xany.window != pswCurrent->Parent) &&
+                 (Event.xbutton.subwindow != pswCurrent->Parent)) {
+        scwm_msg(DBG,__FUNCTION__,"Would have raised window, but commented out");
+        /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
+           cond'n above --07/26/98 gjb */
       }
       KeepOnTop();
 
@@ -1177,18 +1174,16 @@ HandleButtonPress()
        * non-focusing windows! */
       if (!pswCurrent->fIconified) {
 	XSync(dpy, 0);
-	/* pass click event to just clicked to focus window? */
-	if (Scr.ClickToFocusPassesClick)
-	  XAllowEvents(dpy, ReplayPointer, CurrentTime);
-	else			/* don't pass click to just focused window */
-	  XAllowEvents(dpy, AsyncPointer, CurrentTime);
+        XAllowEvents(dpy, 
+                     (Scr.fClickToFocusPassesClick?ReplayPointer:AsyncPointer),
+                     CurrentTime);
 	XSync(dpy, 0);
 	return;
       }
     }
   } else if (pswCurrent && !pswCurrent->fClickToFocus &&
 	     (Event.xbutton.window == pswCurrent->frame) &&
-	     Scr.MouseFocusClickRaises) {
+	     Scr.fMouseFocusClickRaises) {
     if (pswCurrent != Scr.LastWindowRaised &&
 	(Event.xbutton.state &
 	 (ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0 &&
@@ -1293,7 +1288,7 @@ HandleEnterNotify()
 	!Scr.Focus->fSloppyFocus) {
       SetFocus(Scr.NoFocusWin, NULL, 1);
     }
-    if (Scr.ColormapFocus == COLORMAP_FOLLOWS_MOUSE) {
+    if (Scr.fColormapFollowsMouse) {
       InstallWindowColormaps(NULL);
     }
     return;
@@ -1309,7 +1304,7 @@ HandleEnterNotify()
       SetFocus(pswCurrent->w, pswCurrent, 0);
     }
   }
-  if (Scr.ColormapFocus == COLORMAP_FOLLOWS_MOUSE) {
+  if (Scr.fColormapFollowsMouse) {
     if (!pswCurrent->fIconified && (Event.xany.window == pswCurrent->w))
       InstallWindowColormaps(pswCurrent);
     else
@@ -1475,8 +1470,8 @@ HandleConfigureRequest()
      size. */
 
   if (SHADED_P(pswCurrent)) {
-    pswCurrent->orig_wd = width;
-    pswCurrent->orig_ht = height;
+    pswCurrent->orig_width = width;
+    pswCurrent->orig_height = height;
     height = FRAME_HEIGHT(pswCurrent);
   }
 

@@ -49,9 +49,9 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   /* need to move the viewport */
   if ((Scr.VxMax == 0 ||
-       (*xl >= SCROLL_REGION && *xl < Scr.MyDisplayWidth - SCROLL_REGION)) &&
+       (*xl >= SCROLL_REGION && *xl < Scr.DisplayWidth - SCROLL_REGION)) &&
       (Scr.VyMax == 0 ||
-       (*yt >= SCROLL_REGION && *yt < Scr.MyDisplayHeight - SCROLL_REGION)))
+       (*yt >= SCROLL_REGION && *yt < Scr.DisplayHeight - SCROLL_REGION)))
     return;
 
   total = 0;
@@ -83,8 +83,8 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     }
     /* check actual pointer location since PanFrames can get buried under
        a window being moved or resized - mab */
-    if ((x >= SCROLL_REGION) && (x < Scr.MyDisplayWidth - SCROLL_REGION) &&
-	(y >= SCROLL_REGION) && (y < Scr.MyDisplayHeight - SCROLL_REGION))
+    if ((x >= SCROLL_REGION) && (x < Scr.DisplayWidth - SCROLL_REGION) &&
+	(y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION))
       return;
   }
 
@@ -98,7 +98,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
   /* started at */
   if (x < SCROLL_REGION)
     *delta_x = -HorWarpSize;
-  else if (x >= Scr.MyDisplayWidth - SCROLL_REGION)
+  else if (x >= Scr.DisplayWidth - SCROLL_REGION)
     *delta_x = HorWarpSize;
   else
     *delta_x = 0;
@@ -106,7 +106,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     *delta_x = 0;
   if (y < SCROLL_REGION)
     *delta_y = -VertWarpSize;
-  else if (y >= Scr.MyDisplayHeight - SCROLL_REGION)
+  else if (y >= Scr.DisplayHeight - SCROLL_REGION)
     *delta_y = VertWarpSize;
   else
     *delta_y = 0;
@@ -115,51 +115,53 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   /* Ouch! lots of bounds checking */
   if (Scr.Vx + *delta_x < 0) {
-    if (!(Scr.flags & EdgeWrapX)) {
+    if (!Scr.fEdgeWrapX) {
       *delta_x = -Scr.Vx;
       *xl = x - *delta_x;
     } else {
-      *delta_x += Scr.VxMax + Scr.MyDisplayWidth;
-      *xl = x + *delta_x % Scr.MyDisplayWidth + HorWarpSize;
+      *delta_x += Scr.VxMax + Scr.DisplayWidth;
+      *xl = x + *delta_x % Scr.DisplayWidth + HorWarpSize;
     }
   } else if (Scr.Vx + *delta_x > Scr.VxMax) {
-    if (!(Scr.flags & EdgeWrapX)) {
+    if (!Scr.fEdgeWrapX) {
       *delta_x = Scr.VxMax - Scr.Vx;
       *xl = x - *delta_x;
     } else {
-      *delta_x -= Scr.VxMax + Scr.MyDisplayWidth;
-      *xl = x + *delta_x % Scr.MyDisplayWidth - HorWarpSize;
+      *delta_x -= Scr.VxMax + Scr.DisplayWidth;
+      *xl = x + *delta_x % Scr.DisplayWidth - HorWarpSize;
     }
-  } else
+  } else {
     *xl = x - *delta_x;
+  }
 
   if (Scr.Vy + *delta_y < 0) {
-    if (!(Scr.flags & EdgeWrapY)) {
+    if (!Scr.fEdgeWrapY) {
       *delta_y = -Scr.Vy;
       *yt = y - *delta_y;
     } else {
-      *delta_y += Scr.VyMax + Scr.MyDisplayHeight;
-      *yt = y + *delta_y % Scr.MyDisplayHeight + VertWarpSize;
+      *delta_y += Scr.VyMax + Scr.DisplayHeight;
+      *yt = y + *delta_y % Scr.DisplayHeight + VertWarpSize;
     }
   } else if (Scr.Vy + *delta_y > Scr.VyMax) {
-    if (!(Scr.flags & EdgeWrapY)) {
+    if (!Scr.fEdgeWrapY) {
       *delta_y = Scr.VyMax - Scr.Vy;
       *yt = y - *delta_y;
     } else {
-      *delta_y -= Scr.VyMax + Scr.MyDisplayHeight;
-      *yt = y + *delta_y % Scr.MyDisplayHeight - VertWarpSize;
+      *delta_y -= Scr.VyMax + Scr.DisplayHeight;
+      *yt = y + *delta_y % Scr.DisplayHeight - VertWarpSize;
     }
-  } else
+  } else {
     *yt = y - *delta_y;
+  }
 
   if (*xl <= SCROLL_REGION)
     *xl = SCROLL_REGION + 1;
   if (*yt <= SCROLL_REGION)
     *yt = SCROLL_REGION + 1;
-  if (*xl >= Scr.MyDisplayWidth - SCROLL_REGION)
-    *xl = Scr.MyDisplayWidth - SCROLL_REGION - 1;
-  if (*yt >= Scr.MyDisplayHeight - SCROLL_REGION)
-    *yt = Scr.MyDisplayHeight - SCROLL_REGION - 1;
+  if (*xl >= Scr.DisplayWidth - SCROLL_REGION)
+    *xl = Scr.DisplayWidth - SCROLL_REGION - 1;
+  if (*yt >= Scr.DisplayHeight - SCROLL_REGION)
+    *yt = Scr.DisplayHeight - SCROLL_REGION - 1;
 
   if ((*delta_x != 0) || (*delta_y != 0)) {
     if (Grab)
@@ -185,18 +187,17 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
  * Hermann Dunkel, HEDU, dunkel@cul-ipn.uni-kiel.de 1/94
  */
 
-/***************************************************************************
+/*
  * checkPanFrames hides PanFrames if they are on the very border of the
- * VIRTUELL screen and EdgeWrap for that direction is off. 
- * (A special cursor for the EdgeWrap border could be nice) HEDU
- ****************************************************************************/
+ * VIRTUAL screen and EdgeWrap for that direction is off. 
+ */
 void 
 checkPanFrames()
 {
-  int wrapX = (Scr.flags & EdgeWrapX);
-  int wrapY = (Scr.flags & EdgeWrapY);
+  Bool fWrapX = Scr.fEdgeWrapX;
+  Bool fWrapY = Scr.fEdgeWrapY;
 
-  if (!(Scr.flags & WindowsCaptured))
+  if (!(Scr.fWindowsCaptured))
     return;
 
   /* Remove Pan frames if paging by edge-scroll is permanently or
@@ -217,7 +218,7 @@ checkPanFrames()
     return;
 
   /* LEFT, hide only if EdgeWrap is off */
-  if (Scr.Vx == 0 && Scr.PanFrameLeft.isMapped && (!wrapX)) {
+  if (Scr.Vx == 0 && Scr.PanFrameLeft.isMapped && !fWrapX) {
     XUnmapWindow(dpy, Scr.PanFrameLeft.win);
     Scr.PanFrameLeft.isMapped = False;
   } else if (Scr.Vx > 0 && Scr.PanFrameLeft.isMapped == False) {
@@ -225,7 +226,7 @@ checkPanFrames()
     Scr.PanFrameLeft.isMapped = True;
   }
   /* RIGHT, hide only if EdgeWrap is off */
-  if (Scr.Vx == Scr.VxMax && Scr.PanFrameRight.isMapped && (!wrapX)) {
+  if (Scr.Vx == Scr.VxMax && Scr.PanFrameRight.isMapped && !fWrapX) {
     XUnmapWindow(dpy, Scr.PanFrameRight.win);
     Scr.PanFrameRight.isMapped = False;
   } else if (Scr.Vx < Scr.VxMax && Scr.PanFrameRight.isMapped == False) {
@@ -233,7 +234,7 @@ checkPanFrames()
     Scr.PanFrameRight.isMapped = True;
   }
   /* TOP, hide only if EdgeWrap is off */
-  if (Scr.Vy == 0 && Scr.PanFrameTop.isMapped && (!wrapY)) {
+  if (Scr.Vy == 0 && Scr.PanFrameTop.isMapped && !fWrapY) {
     XUnmapWindow(dpy, Scr.PanFrameTop.win);
     Scr.PanFrameTop.isMapped = False;
   } else if (Scr.Vy > 0 && Scr.PanFrameTop.isMapped == False) {
@@ -241,7 +242,7 @@ checkPanFrames()
     Scr.PanFrameTop.isMapped = True;
   }
   /* BOTTOM, hide only if EdgeWrap is off */
-  if (Scr.Vy == Scr.VyMax && Scr.PanFrameBottom.isMapped && (!wrapY)) {
+  if (Scr.Vy == Scr.VyMax && Scr.PanFrameBottom.isMapped && !fWrapY) {
     XUnmapWindow(dpy, Scr.PanFrameBottom.win);
     Scr.PanFrameBottom.isMapped = False;
   } else if (Scr.Vy < Scr.VyMax && Scr.PanFrameBottom.isMapped == False) {
@@ -290,7 +291,7 @@ initPanFrames()
   Scr.PanFrameTop.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, 0,
-		  Scr.MyDisplayWidth, PAN_FRAME_THICKNESS,
+		  Scr.DisplayWidth, PAN_FRAME_THICKNESS,
 		  0,		/* no border */
 		  CopyFromParent, InputOnly,
 		  CopyFromParent,
@@ -300,24 +301,24 @@ initPanFrames()
     XCreateWindow(dpy, Scr.Root,
 		  0, PAN_FRAME_THICKNESS,
 		  PAN_FRAME_THICKNESS,
-		  Scr.MyDisplayHeight - 2 * PAN_FRAME_THICKNESS,
+		  Scr.DisplayHeight - 2 * PAN_FRAME_THICKNESS,
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
   attributes.cursor = Scr.ScwmCursors[CURSOR_RIGHT];
   Scr.PanFrameRight.win =
     XCreateWindow(dpy, Scr.Root,
-	      Scr.MyDisplayWidth - PAN_FRAME_THICKNESS, PAN_FRAME_THICKNESS,
+	      Scr.DisplayWidth - PAN_FRAME_THICKNESS, PAN_FRAME_THICKNESS,
 		  PAN_FRAME_THICKNESS,
-		  Scr.MyDisplayHeight - 2 * PAN_FRAME_THICKNESS,
+		  Scr.DisplayHeight - 2 * PAN_FRAME_THICKNESS,
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
   attributes.cursor = Scr.ScwmCursors[CURSOR_BOTTOM];
   Scr.PanFrameBottom.win =
     XCreateWindow(dpy, Scr.Root,
-		  0, Scr.MyDisplayHeight - PAN_FRAME_THICKNESS,
-		  Scr.MyDisplayWidth, PAN_FRAME_THICKNESS,
+		  0, Scr.DisplayHeight - PAN_FRAME_THICKNESS,
+		  Scr.DisplayWidth, PAN_FRAME_THICKNESS,
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);

@@ -477,9 +477,9 @@ AddWindow(Window w)
 			   ButtonReleaseMask | EnterWindowMask |
 			   LeaveWindowMask | ExposureMask);
 
-  if ((GetDecor(psw, BorderStyle.inactive->style) & ButtonFaceTypeMask)
+  if ((GET_DECOR(psw, BorderStyle.inactive->style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
-    TexturePixmap = IMAGE (GetDecor(psw, 
+    TexturePixmap = IMAGE (GET_DECOR(psw, 
 				    BorderStyle.inactive->u.image))->image;
 
   if (TexturePixmap) {
@@ -576,7 +576,7 @@ AddWindow(Window w)
   for (i = 4; i >= 0; i--) {
     if ((i < Scr.nr_left_buttons) && (psw->left_w[i] > 0)) {
       if (TexturePixmap
-          && GetDecor(psw, left_buttons[i].flags) & UseBorderStyle) {
+          && GET_DECOR(psw, left_buttons[i].flags) & UseBorderStyle) {
         TexturePixmapSave = attributes.background_pixmap;
         attributes.background_pixmap = TexturePixmap;
         valuemask_save = valuemask;
@@ -591,7 +591,7 @@ AddWindow(Window w)
                       valuemask,
                       &attributes);
       if (TexturePixmap
-          && GetDecor(psw, left_buttons[i].flags) & UseBorderStyle) {
+          && GET_DECOR(psw, left_buttons[i].flags) & UseBorderStyle) {
         attributes.background_pixmap = TexturePixmapSave;
         valuemask = valuemask_save;
       }
@@ -600,7 +600,7 @@ AddWindow(Window w)
     
     if ((i < Scr.nr_right_buttons) && (psw->right_w[i] > 0)) {
       if (TexturePixmap
-          && GetDecor(psw, right_buttons[i].flags) & UseBorderStyle) {
+          && GET_DECOR(psw, right_buttons[i].flags) & UseBorderStyle) {
         TexturePixmapSave = attributes.background_pixmap;
         attributes.background_pixmap = TexturePixmap;
         valuemask_save = valuemask;
@@ -618,7 +618,7 @@ AddWindow(Window w)
                       valuemask,
                       &attributes);
       if (TexturePixmap
-          && GetDecor(psw, right_buttons[i].flags) & UseBorderStyle) {
+          && GET_DECOR(psw, right_buttons[i].flags) & UseBorderStyle) {
         attributes.background_pixmap = TexturePixmapSave;
         valuemask = valuemask_save;
       }
@@ -799,8 +799,8 @@ AddWindow(Window w)
     psw->attr.colormap = Scr.ScwmRoot.attr.colormap;
 
   if (NeedToResizeToo) {
-    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
-		 Scr.MyDisplayHeight,
+    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
+		 Scr.DisplayHeight,
 		 FRAME_X(psw) + (FRAME_WIDTH(psw) >> 1),
 		 FRAME_Y(psw) + (FRAME_HEIGHT(psw) >> 1));
     Event.xany.type = ButtonPress;

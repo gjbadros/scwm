@@ -137,9 +137,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
   Window wFrame = psw->frame;
   int width = FRAME_WIDTH(psw);
   int shaded_height = psw->title_height + 2 * (psw->boundary_width + psw->bw);
-  /* FIXGJB: using orig_ht doesn't seem right -- does it interact
-     correctly w/ maximization? */
-  int normal_height = psw->orig_ht;
+  int normal_height = psw->orig_height;
   int client_height = normal_height - shaded_height;
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
@@ -184,8 +182,8 @@ MapMessageWindow()
 
   /* center it onscreen */
   XMoveWindow(dpy, Scr.MsgWindow, 
-              Scr.MyDisplayWidth/2 - w/2,
-              Scr.MyDisplayHeight/2 - h/2);
+              Scr.DisplayWidth/2 - w/2,
+              Scr.DisplayHeight/2 - h/2);
   XMapRaised(dpy, Scr.MsgWindow);
 }
 
@@ -238,7 +236,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   xl += XOffset;
   yt += YOffset;
 
-  if (((!opaque_move) && (!(Scr.flags & MWMMenus))))
+  if (((!opaque_move) && (!(Scr.fMWMMenus))))
     RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
@@ -277,8 +275,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       break;
     case ButtonPress:
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
-      if (((Event.xbutton.button == 2) && (!(Scr.flags & MWMMenus))) ||
-	  ((Event.xbutton.button == 1) && (Scr.flags & MWMMenus) &&
+      if (((Event.xbutton.button == 2) && !Scr.fMWMMenus) ||
+	  ((Event.xbutton.button == 1) && Scr.fMWMMenus &&
 	   (Event.xbutton.state & ShiftMask))) {
 	NeedToResizeToo = True;
 	/* Fallthrough to button-release */
@@ -293,14 +291,14 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       yt = Event.xmotion.y_root + YOffset;
 
       /* Resist moving windows over the edge of the screen! */
-      if (((xl + Width) >= Scr.MyDisplayWidth) &&
-	  ((xl + Width) < Scr.MyDisplayWidth + Scr.MoveResistance))
-	xl = Scr.MyDisplayWidth - Width - psw->bw;
+      if (((xl + Width) >= Scr.DisplayWidth) &&
+	  ((xl + Width) < Scr.DisplayWidth + Scr.MoveResistance))
+	xl = Scr.DisplayWidth - Width - psw->bw;
       if ((xl <= 0) && (xl > -Scr.MoveResistance))
 	xl = 0;
-      if (((yt + Height) >= Scr.MyDisplayHeight) &&
-	  ((yt + Height) < Scr.MyDisplayHeight + Scr.MoveResistance))
-	yt = Scr.MyDisplayHeight - Height - psw->bw;
+      if (((yt + Height) >= Scr.DisplayHeight) &&
+	  ((yt + Height) < Scr.DisplayHeight + Scr.MoveResistance))
+	yt = Scr.DisplayHeight - Height - psw->bw;
       if ((yt <= 0) && (yt > -Scr.MoveResistance))
 	yt = 0;
 
@@ -311,21 +309,21 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     case MotionNotify:
       xl = Event.xmotion.x_root;
       yt = Event.xmotion.y_root;
-/*        HandlePaging(Scr.MyDisplayWidth,Scr.MyDisplayHeight,&xl,&yt,
+/*        HandlePaging(Scr.DisplayWidth,Scr.DisplayHeight,&xl,&yt,
    &delta_x,&delta_y,False);  mab */
       /* redraw the rubberband */
       xl += XOffset;
       yt += YOffset;
 
       /* Resist moving windows over the edge of the screen! */
-      if (((xl + Width) >= Scr.MyDisplayWidth) &&
-	  ((xl + Width) < Scr.MyDisplayWidth + Scr.MoveResistance))
-	xl = Scr.MyDisplayWidth - Width - psw->bw;
+      if (((xl + Width) >= Scr.DisplayWidth) &&
+	  ((xl + Width) < Scr.DisplayWidth + Scr.MoveResistance))
+	xl = Scr.DisplayWidth - Width - psw->bw;
       if ((xl <= 0) && (xl > -Scr.MoveResistance))
 	xl = 0;
-      if (((yt + Height) >= Scr.MyDisplayHeight) &&
-	  ((yt + Height) < Scr.MyDisplayHeight + Scr.MoveResistance))
-	yt = Scr.MyDisplayHeight - Height - psw->bw;
+      if (((yt + Height) >= Scr.DisplayHeight) &&
+	  ((yt + Height) < Scr.DisplayHeight + Scr.MoveResistance))
+	yt = Scr.DisplayHeight - Height - psw->bw;
       if ((yt <= 0) && (yt > -Scr.MoveResistance))
 	yt = 0;
 
@@ -360,7 +358,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	if (paged == 0) {
 	  xl = Event.xmotion.x_root;
 	  yt = Event.xmotion.y_root;
-	  HandlePaging(Scr.MyDisplayWidth, Scr.MyDisplayHeight, &xl, &yt,
+	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xl, &yt,
 		       &delta_x, &delta_y, False);
 	  xl += XOffset;
 	  yt += YOffset;
@@ -442,7 +440,7 @@ DisplayMessage(const char *sz, Bool fRelief)
   SetGCFg(gcShadow,XCOLOR(scmBgRelief));
   
   XMoveResizeWindow(dpy, Scr.MsgWindow, 
-                    (Scr.MyDisplayWidth-winwidth)/2,(Scr.MyDisplayHeight-winheight)/2,
+                    (Scr.DisplayWidth-winwidth)/2,(Scr.DisplayHeight-winheight)/2,
                     winwidth, winheight);
 
   if (fRelief) {
@@ -580,7 +578,7 @@ InteractiveMove(Window w, ScwmWindow * psw,
      then remove the Scr.OpaqueSize var and setters/getters
   */
   if (DragWidth * DragHeight <
-      (Scr.OpaqueSize * Scr.MyDisplayWidth * Scr.MyDisplayHeight) / 100)
+      (Scr.OpaqueSize * Scr.DisplayWidth * Scr.DisplayHeight) / 100)
     opaque_move = True;
   else
     XGrabServer_withSemaphore(dpy);

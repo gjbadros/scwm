@@ -55,12 +55,6 @@
 #define MAX_WINDOW_WIDTH 32767
 #define MAX_WINDOW_HEIGHT 32767
 
-
-/* colormap focus styes */
-#define COLORMAP_FOLLOWS_MOUSE 1	/* default */
-#define COLORMAP_FOLLOWS_FOCUS 2
-
-
 #ifndef NON_VIRTUAL
 typedef struct {
   Window win;
@@ -186,13 +180,15 @@ typedef struct ScwmDecor {
 
 EXTERN long scm_tc16_scwm_screen;
 
+/* Holds all the per-screen information;
+   these are the global variables and options */
 typedef struct ScreenInfo {
 
   unsigned long screen;
   int d_depth;			/* copy of DefaultDepth(dpy, screen) */
   int NumberOfScreens;		/* number of screens on display */
-  int MyDisplayWidth;		/* my copy of DisplayWidth(dpy, screen) */
-  int MyDisplayHeight;		/* my copy of DisplayHeight(dpy, screen) */
+  int DisplayWidth;		/* my copy of DisplayWidth(dpy, screen) */
+  int DisplayHeight;		/* my copy of DisplayHeight(dpy, screen) */
 
   ScwmWindow ScwmRoot;		/* the head of the scwm window list */
   Window Root;			/* the root window */
@@ -218,18 +214,18 @@ typedef struct ScreenInfo {
 
   char *DefaultIcon;		/* Icon to use when no other icons are found */
 
+  /* FIXGJB: These are no longer used by the menuing code, but MenuColors
+     are used elsewhere for colors */
   ColorPair MenuColors;
   ColorPair MenuStippleColors;
   ColorPair MenuRelief;
 
-  SCM menu_font;		 /* font structure for menus, resize/move gadgets */
-  SCM icon_font;                 /* for icon labels */
+  SCM menu_font;                /* font structure for menus, resize/move gadgets */
+  SCM icon_font;                /* for icon labels */
   SCM msg_window_font;          /* font for the size/position window */
-  SCM msg_window_fg;          /* fg color for the size/position window */
-  SCM msg_window_bg;          /* bg color for the size/position window */
+  SCM msg_window_fg;            /* fg color for the size/position window */
+  SCM msg_window_bg;            /* bg color for the size/position window */
 
-  GC TransMaskGC;		/* GC for transparency masks */
-  GC DrawGC;			/* GC to draw lines for move and resize */
   GC MenuGC;
   GC MenuStippleGC;
   GC MenuReliefGC;
@@ -237,7 +233,7 @@ typedef struct ScreenInfo {
   GC ScratchGC1;
   GC ScratchGC2;
   GC ScratchGC3;
-  int CornerWidth;		/* corner width for decoratedwindows */
+
   int BoundaryWidth;		/* frame width for decorated windows */
   int NoBoundaryWidth;		/* frame width for decorated windows */
 
@@ -260,32 +256,39 @@ typedef struct ScreenInfo {
   int EdgeScrollX;		/* #pixels to scroll on screen edge */
   int EdgeScrollY;		/* #pixels to scroll on screen edge */
   unsigned char buttons2grab;	/* buttons to grab in click to focus mode */
-  unsigned long flags;
-  int NumBoxes;
+
   int randomx;			/* values used for randomPlacement */
   int randomy;
   ScwmWindow *LastWindowRaised;	/* Last window which was raised. Used for raise
 				 * lower func. */
+
+  /* virtual screen information */
   int VxMax;			/* Max location for top left of virt desk */
   int VyMax;
   int Vx;			/* Current loc for top left of virt desk */
   int Vy;
+  int CurrentDesk;		/* The current desktop number */
 
-  int ClickTime;		/*Max button-click delay for Function built-in */
+  /* There aren't really enough of these to justify using a PackedBool
+     but what the heck... --07/26/98 gjb */
+  PackedBool(fWindowsCaptured); /* have the windows already been captured? */
+
+  /* global options */
+  PackedBool(fEdgeWrapX);       /* does the pointer wrap horizontally? */
+  PackedBool(fEdgeWrapY);       /* does the pointer wrap vertically? */
+  PackedBool(fMWMMenus);        /* MWM menu style (not really --07/26/98 gjb */
+  PackedBool(fColormapFollowsMouse);
+  /* these global options might better be window-specific options */
+  PackedBool(fSmartPlacementIsClever);
+  PackedBool(fClickToFocusPassesClick);
+  PackedBool(fClickToFocusRaises);
+  PackedBool(fMouseFocusClickRaises);
+
+  /* Global options */
+  int ClickTime;		/* Max button-click delay for distinguishing clicks/drags */
   int ScrollResistance;		/* resistance to scrolling in desktop */
   int MoveResistance;		/* res to moving windows over viewport edge */
-  int OpaqueSize;
-  int CurrentDesk;		/* The current desktop number */
-  int ColormapFocus;		/* colormap focus style */
-
-  /*
-     ** some additional global options which will probably become window
-     ** specific options later on:
-   */
-  int SmartPlacementIsClever;
-  int ClickToFocusPassesClick;
-  int ClickToFocusRaises;
-  int MouseFocusClickRaises;
+  int OpaqueSize;               /* percent of screen size for window before no opaque */
 
 } ScreenInfo;
 
@@ -302,14 +305,8 @@ SCM ScmFromPScreenInfo(ScreenInfo *psi);
    This saves an indirection in case you don't want
    the UseDecor mechanism.
  */
-#define GetDecor(window,part) ((window)->fl->part)
+#define GET_DECOR(window,part) ((window)->fl->part)
 
-
-/* for the flags value - these used to be seperate Bool's */
-#define WindowsCaptured            (1)
-#define EdgeWrapX                 (64)	/* Should EdgeScroll wrap around? */
-#define EdgeWrapY                (128)
-#define MWMMenus                (1024)
 #endif /* _SCREEN_ */
 
 /* Local Variables: */

@@ -84,6 +84,8 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 
 #define MAXHOSTNAME 255
 
+void init_borders(); /* borders.c */
+
 static char rcsid[] = "$Id$";
 
 int master_pid;			/* process number of 1st scwm process */
@@ -253,8 +255,6 @@ CreateGCs(void)
   Scr.ScratchGC1 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.ScratchGC2 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.ScratchGC3 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-
-  Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
 
@@ -283,12 +283,11 @@ InitVariables(void)
   Scr.ScwmRoot.number_cmap_windows = 0;
 
 
-  Scr.MyDisplayWidth = DisplayWidth(dpy, Scr.screen);
-  Scr.MyDisplayHeight = DisplayHeight(dpy, Scr.screen);
+  Scr.DisplayWidth = DisplayWidth(dpy, Scr.screen);
+  Scr.DisplayHeight = DisplayHeight(dpy, Scr.screen);
 
   Scr.NoBoundaryWidth = 1;
   Scr.BoundaryWidth = BOUNDARY_WIDTH;
-  Scr.CornerWidth = CORNER_WIDTH;
   Scr.Hilite = NULL;
   Scr.Focus = NULL;
   Scr.Ungrabbed = NULL;
@@ -302,8 +301,8 @@ InitVariables(void)
   Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
 
 #ifndef NON_VIRTUAL
-  Scr.VxMax = 2 * Scr.MyDisplayWidth;
-  Scr.VyMax = 2 * Scr.MyDisplayHeight;
+  Scr.VxMax = 2 * Scr.DisplayWidth;
+  Scr.VyMax = 2 * Scr.DisplayHeight;
 #else
   Scr.VxMax = 0;
   Scr.VyMax = 0;
@@ -340,11 +339,9 @@ InitVariables(void)
   Scr.ScrollResistance = Scr.MoveResistance = 0;
   Scr.OpaqueSize = 5;
   Scr.ClickTime = 150;
-  Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
+  Scr.fColormapFollowsMouse = True;
 
   /* set major operating modes */
-  Scr.NumBoxes = 0;
-
   Scr.randomx = Scr.randomy = 0;
   Scr.buttons2grab = 7;
 
@@ -353,10 +350,10 @@ InitVariables(void)
 
   Scr.DefaultDecor.tag = "default";
 
-  Scr.SmartPlacementIsClever = False;
-  Scr.ClickToFocusPassesClick = True;
-  Scr.ClickToFocusRaises = True;
-  Scr.MouseFocusClickRaises = False;
+  Scr.fSmartPlacementIsClever = False;
+  Scr.fClickToFocusPassesClick = True;
+  Scr.fClickToFocusRaises = True;
+  Scr.fMouseFocusClickRaises = False;
 
   init_image_colormap();
   return;
@@ -715,6 +712,7 @@ scwm_main(int argc, char **argv)
   
   CreateCursors();
   InitVariables();
+  init_borders();
 
   /* must come after variables are init'd */
   Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
@@ -909,7 +907,7 @@ CaptureAllWindows(void)
   }
   PPosOverride = True;
 
-  if (!(Scr.flags & WindowsCaptured)) {		/* initial capture? */
+  if (!(Scr.fWindowsCaptured)) {		/* initial capture? */
     /*
        ** weed out icon windows
      */
@@ -940,7 +938,7 @@ CaptureAllWindows(void)
 	HandleMapRequestKeepRaised(BlackoutWin);
       }
     }
-    Scr.flags |= WindowsCaptured;
+    Scr.fWindowsCaptured = True;
   } else {			/* must be recapture */
     /* reborder all windows */
     psw = Scr.ScwmRoot.next;
