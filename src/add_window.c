@@ -68,6 +68,7 @@
 #include "image.h"
 #include "module-interface.h"
 #include "icons.h"
+#include "placement.h"
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
@@ -672,6 +673,12 @@ AddWindow(Window w)
   KeepOnTop();
   XUngrabServer_withSemaphore(dpy);
 
+  /* Without calling XGetGeometryCacheIt(), windows will not restart
+     in their proper positions -- we do not need any return value from
+     the X server, but apparently we need to ask the server for the geometry
+     of the window.... go figure! --03/29/98 gjb */
+  XGetGeometryCacheIt(dpy, tmp_win->w);
+  
   XTranslateCoordinates(dpy, tmp_win->frame, Scr.Root, JunkX, JunkY,
 			&a, &b, &JunkChild);
   tmp_win->xdiff -= a;
