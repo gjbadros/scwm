@@ -155,7 +155,7 @@ while (<>) {
           " $filename:$line body:\n$body\n";
     }
     ProcessHookComment($filename, $line, $scheme_hookname, $body);
-  } elsif (m/SCWM_VAR(?:_READ_ONLY)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/) {
+  } elsif (m/SCWM_VAR(?:_READ_ONLY|_INIT)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/) {
     my $c_varname = $1;
     my $scheme_varname = $2;
     my $filename = $ARGV;
