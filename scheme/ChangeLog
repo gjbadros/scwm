@@ -1,3 +1,21 @@
+Sun May  9 14:44:11 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* property-respond.scm: Added; handles flash, flashing property
+	changes on windows.  Very useful with my xterm patch to permit a
+	control sequence to set an X property.
+
+	* flash-window.scm: Use "red" as the default, and make the color
+	inside the function, and use red when the make-color returns a
+	non-color.
+
+	* doc.scm (documentation): Permit matching the initial substring
+	of the line, since hooks now have the number of arguments appended 
+	to the end of the line in the scwm-hooks.txt file and they were
+	not matching.
+
+	* base.scm (maybe-make-color): Wrap in a catch to handle color
+	parse errors, and return #f in those cases.
+
 Fri May  7 08:37:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Default to 14 point font, not 24 pt.

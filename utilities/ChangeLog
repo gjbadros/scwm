@@ -1,3 +1,12 @@
+Sun May  9 14:50:01 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xterm-properties.diff: Added.  Patch to
+	http://www.clark.net/pub/dickey/xterm/xterm.html.  Adds a new
+	control sequence, "ESC ] 3 ; foo=bar ^G" to set X property foo to
+	bar.  "ESC ] 3; foo ^G" deletes property foo.  Integrates with
+	property-respond module.
+
+
 Fri Apr 23 17:16:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* dev/scwmdoc.in: Added -O, -V options back in.

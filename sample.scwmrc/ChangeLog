@@ -1,3 +1,8 @@
+Sun May  9 14:47:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added a key-binding for benchmarking 100 straight
+	reloads of Amaya.  Left it in, but commented out.
+
 Sat May  1 19:29:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use a subshell instead of { } when killing the

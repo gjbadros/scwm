@@ -1,3 +1,8 @@
+Sun May  9 14:37:54 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c: Invoke X-PropertyNotify-hook even when the property is 
+	deleted.
+
 Sun May  9 09:45:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* shutdown.c (restart): Fix FREE(sz) that was in error
