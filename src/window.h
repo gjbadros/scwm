@@ -468,6 +468,8 @@ SCM ScmWindowDeltaVP(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
 
 Bool FScmIsWindowDelta(SCM obj);
 
+SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
+
 #include "window.inl"
 
 #endif /* WINDOW_H__ */

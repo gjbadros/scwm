@@ -222,6 +222,9 @@ scwm_safe_call0 (SCM thunk)
 
 extern SCM sym_interactive;
 
+/* from window.c */
+extern SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
+
 SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
           (SCM thunk),
 "Invoke THUNK interactively.")
@@ -231,10 +234,20 @@ SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
   VALIDATE_ARG_PROC(1,thunk);
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
   if (UNSET_SCM(interactive_spec)) {
-    char *sz = gh_scm2newstr(scm_procedure_name(thunk), NULL);
-    scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", sz);
+    SCM procname = scm_procedure_name(thunk);
+    char *szProcname = "<anonymous procedure>";
+    if (gh_string_p(procname))
+      szProcname = gh_scm2newstr(procname, NULL);
+    scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
+    gh_free(szProcname);
   }
-  return scwm_safe_apply(thunk, SCM_EOL);
+  { /* scope */
+    SCM args = SCM_EOL;
+    if (gh_string_p(interactive_spec)) {
+      args = ScmArgsFromInteractiveSpec(interactive_spec,thunk);
+    }
+    return scwm_safe_apply(thunk, args);
+  }
 }
 #undef FUNC_NAME
 

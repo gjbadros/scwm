@@ -1710,7 +1710,7 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 
 SCWM_IPROC(delete_window, "delete-window", 0, 1, 0,
-           (SCM win), "%W",
+           (SCM win), "%K",
 "Request that WIN remove itself from the display.
 This is the friendly way of closing a window, but it will not work if
 the application does not cooperate. WIN defaults to the window context
@@ -4191,6 +4191,91 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
   return (win);
 }
 
+
+/**CONCEPT: Interactive specfications
+
+   Procedures can have an interactive specification that looks like:
+
+   <programlisting>(interactive)</programlisting>
+
+   or 
+
+   <programlisting>(interactive "%W")</programlisting>
+
+   This declaration must be the first s-exp after the docstring of
+   a procedure.  Primitive procedures may also have interactive
+   specifications and use the SCWM_IPROC macro to support them.
+
+   The interactive specification marks that a procedure may be
+   invoked interactively (i.e., bound to a mouse or keypress event).
+   The specification also is used to construct the arguments
+   when the procedure is invoked in an interactive context or
+   via `call-interactively'.  
+
+   The meaning of the various possible substrings in the interactive
+   specification are as follows:
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Interactive specifiers</title>
+<tgroup align="char" cols="2">
+<thead><row>
+ <entry>Marker</entry> <entry>Meaning</entry>
+</row></thead>
+<tbody><row>
+  <entry>%W</entry>
+    <entry>get-window</entry>
+ </row><row>
+  <entry>%K</entry>
+    <entry>get-window using skull & crossbones cursor</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+*/
+
+SCM
+ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
+{
+  char *sz = gh_scm2newstr(spec,NULL);
+  SCM args = SCM_EOL;
+  int num_args = 0;
+  while (*sz) {
+    SCM arg = SCM_UNDEFINED;
+    if (*sz == '%') ++sz;
+    switch (*sz) {
+    case 'W':
+      arg = get_window(SCM_BOOL_T, SCM_BOOL_F, SCM_BOOL_F);
+      break;
+    case 'K':
+      arg = get_window(SCM_BOOL_T, SCM_BOOL_F, SCM_BOOL_T);
+      break;
+    default:
+      { /* scope */
+        SCM procname = scm_procedure_name(proc);
+        char *szProcname = "<anonymous procedure>";
+        if (gh_string_p(procname))
+          szProcname = gh_scm2newstr(procname, NULL);
+        scwm_msg(WARN,szProcname,"Bad interactive spec: %s", sz);
+        gh_free(szProcname);
+      }
+    }
+    ++sz;
+    if (SCM_UNDEFINED != arg) {
+      ++num_args;
+      /* this builds the list of arguments up in reverse order */
+      args = gh_cons(arg,args);
+    }
+  }
+
+  if (num_args > 0) {
+    /* reverse the list so we have the arguments
+       in the order that corresponds to the interactive-spec decl */
+    args = scm_reverse(args);
+  }
+
+  gh_free(sz);
+  return args;
+}
 
 
 /* The next two functions are _intentionally_ not exported.
