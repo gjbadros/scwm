@@ -46,8 +46,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:sCd:V:O:';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O);
+my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N);
 
 my $scwm_version = "post-0.8";
 
@@ -58,6 +58,8 @@ sub script_usage ( ) {
 -D       Debugging output on
 -V file  Output user-options scheme module to file -- skip if not given
 -O file  Output user-options documentation to file -- skip if not given
+-H file  Output user hooks documentation to file -- skip if not given
+-N file  Output concepts documentation to file -- skip if not given
 -o file  Send sgml output to file -- no sgml output unless this is given
 -s       Run ispell on the comments and reports warnings for its responses
 -C       Only output concepts chapters
@@ -501,6 +503,57 @@ EOC
   }
 }
 
+if ($opt_H) {
+  my $file = $opt_H;
+  open (HOOKS_OUT,">$file") or
+    die "Could not open $file";
+  print STDERR "outputting hooks to $file\n";
+
+  foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
+    my $comment = $hooks{$hook}{comment};
+    my $file = $hooks{$hook}{file};
+    my $line = $hooks{$hook}{line};
+    my $module = $hooks{$hook}{module};
+
+    print HOOKS_OUT <<EOC;
+$hook
+- $module
+$comment
+[From $file:$line]
+
+
+EOC
+  }
+
+  close HOOKS_OUT;
+}
+  
+
+if ($opt_N) {
+  my $file = $opt_N;
+  open (CONCEPTS_OUT,">$file") or
+    die "Could not open $file";
+  print STDERR "outputting concepts to $file\n";
+
+  foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
+    my $comment = $concepts{$concept}{comment};
+    my $file = $concepts{$concept}{file};
+    my $line = $concepts{$concept}{line};
+
+    print CONCEPTS_OUT <<EOC;
+$concept
+-
+$comment
+[From $file:$line]
+
+
+EOC
+  }
+
+  close CONCEPTS_OUT;
+}
+  
+
 use Text::Balanced;
 
 sub ProcessSchemeHeader( $$$$$ ) {
@@ -782,7 +835,7 @@ sub ReadRestOfComment ( $$ ) {
   my ($comment, $fScheme) = @_;
   if ($fScheme) {
     while (defined($_ = <>) && m%^;;;\s*(.*)$%) {
-      $comment .= $1;
+      $comment .= "$1\n";
       if (eof) {
 	close(ARGV);
 	# FIXGJB: this might be wrong-- resetting too early?
@@ -791,6 +844,7 @@ sub ReadRestOfComment ( $$ ) {
     }
   } else {
     # read rest of C comment
+    $comment .= "\n";
     if ($comment !~ m%\*/%) {
       while (defined($_ = <>) && $_ !~ m%\*/%) {
 	$comment .= $_;
