@@ -531,8 +531,8 @@ AC_OUTPUT(Makefile \
           utilities/emacs/Makefile \
           doc/Makefile \
 	  themes/Makefile \
-	  utilities/dev/scwmdoc:utilities/dev/extract-docs \
-	  utilities/dev/scwmdoc.scm:utilities/dev/extract.scm \
+	  utilities/dev/scwmdoc \
+	  utilities/dev/scwmdoc.scm \
 	  utilities/dev/scwm-usage-counter \
 	  utilities/dev/X-error-describe \
 	  utilities/dev/create-dependency-dot-graph \
