@@ -275,7 +275,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
         }
 
 	call3_hooks(interactive_move_new_position_hook, psw->schwin,
-		    real_x, real_y); 
+		    gh_int2scm(real_x), gh_int2scm(real_y));
 	DisplayPosition(psw, real_x, real_y, True);
 
         /* prevent window from lagging behind mouse when paging - mab */
