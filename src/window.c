@@ -2135,7 +2135,6 @@ window context in the usual way if not specified. */
 
 void set_sticky (SCM win, SCM flag)
 {
-  puts("Here we are.");
   if (flag==SCM_BOOL_F) {
     unstick(win);
   } else {
