@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-07-06 Mon 10:43:28 EDT sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-08-15 Sat 19:59:03 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -62,11 +62,11 @@
   (exe (string-append "xlock " xlock-options " -mode " mode
                       (if lock "" " -nolock"))))
 
-;;; to use this, add the following to the menu of your choice:
-;;;   (menuitem "Screensaver" #:action (make-xlock-menu #f))
-;;; or
-;;;   (menuitem "Lock Screen" #:action (make-xlock-menu #t))
 (define*-public (make-xlock-menu #&optional (lock? #f))
+  "Create an xlock menu.
+To use this, add the following to the menu of your choice:
+   (menuitem \"Screensaver\" #:action (make-xlock-menu #f))
+or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
   (menu (append!
 	 (list (menuitem "Lock Screen" #f) menu-title menu-separator
 	       (menuitem "Random!" #:action (run-xlock "random" lock?))
@@ -76,15 +76,16 @@
 	  (map (lambda (str) (menuitem str #:action (run-xlock str lock?)))
 	       screensaver-modes)))))
 
-;;; to use this, add the following to the menu of your choice:
-;;; (menuitem "telnet" #:action (menu-hosts '("host1" "host2" ...)))
 (define*-public (make-hosts-menu host-list #&optional (user USER))
+  "Create a telnet menu.
+To use this, add the following to the menu of your choice:
+  (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
+An optional USER argument specifies the user to telnet as."
   (menu (fold-menu-list
          (map (lambda (hh)
                (menuitem hh #:action
                          (run-in-xterm
 			  (string-append "telnet -E -l " user " " hh)
-			  #:xterm-options
-                          (string-append "-T telnet:" hh " -n telnet "))))
+                          (string-append "-T telnet:" hh) "-n telnet"))))
              host-list))))
 
