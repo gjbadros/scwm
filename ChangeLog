@@ -1,3 +1,7 @@
+Sat Jul  3 00:24:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* HACKING: Some updates and clarifications.
+
 Fri Jul  2 09:54:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Change install directories from scwm-foo, to
