@@ -1,3 +1,8 @@
+Thu Aug  6 19:26:36 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Fix from Todd Larason <jtl@molehill.org> to use the
+	  display-size coordinates minus 1 as args to rectangle-overlap?
+
 Wed Aug  5 20:13:15 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Fix wildcard->regexp to turn ? into ., instead of
