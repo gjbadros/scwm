@@ -9,6 +9,8 @@ Changes for scwm-0.99.3 (not yet released)
 
 * New primitives
 ** `window-decoration-ids', `set-window-id-background!'
+** `set-window-highlighted-nonant!', `window-highlighted-nonant'
+** `set-nonant-highlight-color!', `nonant-highlight-color'
 ** `focussable-window?'
 
 

@@ -1,3 +1,11 @@
+Sun Sep 19 18:42:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* nonants.scm: Use new C primitives, define option
+	*nonant-highlight-color*
+
+	* viavoice.scm: Only do action if accepted.  Only tile if
+	selected-windows-list is non-empty.
+
 Sun Sep 19 16:18:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `window-background-color'

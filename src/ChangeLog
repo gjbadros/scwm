@@ -1,3 +1,26 @@
+Sun Sep 19 18:39:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added highlighted_nonant to ScwmWindow struct.
+
+	* window.c: Use new redraw_border utility fn, use
+	VALIDATE_ARG_WIN_COPY_USE_CONTEXT more.  Added
+	`set-window-highlighted-nonant!', `window-highlighted-nonant',
+	`set-nonant-highlight-color!', `nonant-highlight-color'
+	primitives.
+
+	* util.h, util.c: Added redraw_border().
+
+	* scwm.c: Initialize Scr.nonant_highlight_color.
+
+	* screen.h, screen.c:  Added nonant_highlight_color to ScreenInfo
+	struct, mark it.
+
+	* borders.c: Honour psw->highlighted_nonant and draw it
+	appropriately.
+
+	* add_window.c: Initialize psw->highlighted_nonant (and added
+	initialization of number_cmap_windows that appeared to be missing).
+
 Sun Sep 19 15:27:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c, focus.c: Doc fixes.
