@@ -28,6 +28,9 @@ provide some example uses of guile-gtk for scwm.
 * Advice (like emacs) mechanism for augmenting procedures 
 ** (Robert has done some work on this)
 
+* overlay plane support
+** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
+
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
 ** Respect gravity on resize-to
