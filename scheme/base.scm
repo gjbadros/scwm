@@ -727,7 +727,8 @@ operations like delete-window and destroy-window).
 The optional argument RELEASE? indicates whether to wait
 for a mouse release or act immediately on the click. 
 Returns #f if no window was selected."
-  (car (select-viewport-position cursor release?)))
+  (let ((win (car (select-viewport-position cursor release?))))
+    (if (window? win) win #f)))
 
 
 
