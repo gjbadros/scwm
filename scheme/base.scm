@@ -377,3 +377,7 @@ dimension to a number of pixels."
   "Lookup sym in the scwm user variable environment.
 Currently, this means in the-root-module."
   `(variable-ref (module-variable the-root-module ',sym)))
+
+(define-public (scwm-is-constraint-enabled?)
+  "Return #t if scwm has the constraint solver primitives, #f otherwise."
+  (bound? 'cl-set-solver))

@@ -74,19 +74,18 @@
 	      menu-separator
 	      (menuitem "Help" #:action (help-mesg "set-edge-scroll!")))))
 
-(define-public scwm-opaque-move-size 100)
-
+;; FIXGJB: windows can be bigger than the viewport so "all" is not accurate
 (define opaque-move-menu
   (menu (list (menuitem "All" #:action
-                        (lambda () (set! scwm-opaque-move-size 100)))
+                        (lambda () (set! opaque-move-percent 100)))
 	      (menuitem "50%" #:action
-                        (lambda () (set! scwm-opaque-move-size 50)))
+                        (lambda () (set! opaque-move-percent 50)))
 	      (menuitem "20%" #:action
-                        (lambda () (set! scwm-opaque-move-size 20)))
+                        (lambda () (set! opaque-move-percent 20)))
 	      (menuitem "Never" #:action
-			(lambda () (set! scwm-opaque-move-size 0)))
+			(lambda () (set! opaque-move-percent 0)))
 	      menu-separator
-	      (menuitem "Help" #:action (help-mesg "scwm-opaque-move-size")))))
+	      (menuitem "Help" #:action (help-mesg "opaque-move-percent")))))
 
 (define desk-size-menu
   (menu (list (menuitem "2x2" #:action (lambda () (set-desk-size! 2 2)))
@@ -169,7 +168,10 @@ the relief \"shadow\" color for the regular and h ilight background."
 			(menu (append!
 			       (list
 				(menuitem "Opaque Move" #:action
-					  opaque-move-menu)
+					  (if 
+					   (scwm-is-constraint-enabled?)
+					   #f
+					   opaque-move-menu))
 				(menuitem "Desk Size" #:action desk-size-menu)
 				(menuitem "Scrolling" #:action scroll-menu))
 			       (map (lambda (item)

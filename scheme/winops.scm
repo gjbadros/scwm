@@ -18,6 +18,11 @@
 ;;;; 
 
 
+;;; FIXMS: disgusting hack for now to get these in the root module.
+
+(define-public opaque-move-percent 50)
+(define-public opaque-resize-percent 35)
+
 
 (define-module (app scwm winops)
   :use-module (app scwm optargs)
@@ -98,9 +103,6 @@
 		     (resize-frame-to (caddr max-prop)
 				      (cadddr max-prop) w)
 		     (set-object-property! w 'maximized #f))))))
-
-(define-public opaque-move-percent 50)
-(define-public opaque-resize-percent 35)
 
 (define-public (window-frame-area win)
   (let* ((frame-size (window-frame-size win))
