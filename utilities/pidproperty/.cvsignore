@@ -1,1 +1,4 @@
+.deps
+.libs
 Makefile
+scwm_set_pid_property.lo
