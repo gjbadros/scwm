@@ -202,7 +202,7 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
 Bool fDocumentPrimitiveFormals = False;
-Bool segvs_to_reset = 100;
+Bool segvs_to_reset = 0;
 Bool fHandleSegv = True;
 
 

@@ -1580,6 +1580,15 @@ SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
     pmd->y = y - pmd->cpixHeight;
     break;
   }
+  /* Be sure the menu stays on screen */
+  if (pmd->y + pmd->cpixHeight > Scr.DisplayHeight) {
+    pmd->y = Scr.DisplayHeight-pmd->cpixHeight;
+  }
+  if (pmd->x + pmd->cpixWidth > Scr.DisplayWidth) {
+    pmd->x = Scr.DisplayWidth-pmd->cpixWidth;
+  }
+  if (pmd->x < 0) pmd->x = 0;
+  if (pmd->y < 0) pmd->y = 0;
   return;
 }
 
