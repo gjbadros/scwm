@@ -1,3 +1,8 @@
+1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
+
+	* dev/dynamic-modules: first draft of some dynamic module notes;
+	both how-to and some pointers to theory
+
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
 	* scwm.texi,scwm.info: add @dircategory/@direntry so install-info
