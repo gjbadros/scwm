@@ -1,3 +1,29 @@
+Mon Oct  5 12:25:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added KeyReleaseMask to the event mask used on the root
+	and NoFocusWin windows
+
+	* menu.c: Added KeyReleaseMask to the mask used in getting events
+	from a menu;  Permit XK_Tab to be used for advancing to the next
+	menu item, and set fPermitAltReleaseToSelect when it is so used.
+	Watch for KeyRelease events, and let Meta/Alt releases select the
+	current item if fPermitAltReleaseToSelect is true.  Changes
+	largely inspired by patch from Paul Sheer.
+
+	* focus.c (SetFocus): Set ttLastFocussed when a window receives
+	the focus.
+
+	* add_window.c (AddWindow): Init ttLastFocussed to current time
+	when a window is added.
+
+	* window.h: Added ttLastFocussed field to ScwmWindow
+
+	* window.c: Added `window-last-focus-time', `list-focus-order'
+	(latter from Paul Sheer)
+
+	* callbacks.c: struct cwssdr_data's handler field is now a
+	scm_catch_handler_t, not an SCM (eliminates warnings)
+
 Mon Oct  5 09:02:26 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, image.c, font.c, color.c: Use gh_make_vector instead

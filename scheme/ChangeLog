@@ -1,3 +1,11 @@
+Mon Oct  5 12:55:58 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Added #:by-focus option to list-windows; added
+	#:show-last-focus-time option to show-window-list-menu
+
+	* wininfo.scm: Added `time-t->seconds-ago' and use it in also
+	added `window-last-focus-time-string'
+
 Sun Oct  4 20:25:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-eval.scm ("Exec"): Don't attempt to apply string-append to
