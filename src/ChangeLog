@@ -1,3 +1,78 @@
+Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* miscprocs.c, screen.h: Remove OpaqueMoveSize,
+	set-opaque-move-size! primitive, since it's now an argument to
+	interactive-move and interactive-resize
+
+	* window.h, window.c:  Added SetScwmWindowPosition, and added
+	fOpaque flag to both it and SetScwmWindowGeometry
+
+	* scwm-constraints.h, scwm-constraints.c, add_window.c: Added
+	fOpaque flag to SuggestSizeWindowTo and SuggestMoveWindowTo
+
+	* resize.c: Display size in window units, not pixels
+
+1998-07-27  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: added move.x for interactive-move (was in window.x)
+
+	* font.h, icons.c, events.c, drawmenu.c, decor.c, borders.c:
+	  Cleanup the horrible I18N #ifdefs -- still more needs to be done
+	  with XDrawString vs. XmbDrawString, but stuff is better
+	  now. Added XFONTID to get at the ->fid field.
+
+	* binding.c, binding.h: Moved GrabKeys, GrabButtons into here.
+	  Fix bug with bind-mouse in not grabbing the new button (renamed
+	  context to wincontext so future bugs [confusion of var context
+	  with var contexts] will be more obvious).  Use for loops for
+	  iterating the windows, not while loops.
+
+	* add_window.h, add_window.c: Move Grab/Ungrab functions into
+	  binding.c.  Pretty major cleanup and documenting of AddWindow
+	  routine -- reduce redundancies, call XSaveContext right after
+	  creating each window
+	
+	* xmisc.h, xmisc.c: Added WXGetPointerOffsets, WXGetPointerChild,
+	  removed bogus XGetGeometryCacheIt since I found the bug that I
+	  introduced that fn for.  Added SzExtractTextPropValue,
+	  ComputeXTextWidth.  Renamed FXGetPointerWindowOffsets to
+	  WXGetPointerWindowOffsets, and have it return the child window
+	  (Changes throughout all source to use WXGetPointerWindowOffsets)
+
+	* window.h: document more ScwmWindow fields
+
+	* move.c, window.c: moved interactive_move into move.c from
+	  window.c;  added primitives: icon-position and
+	  window-diff-deltas
+
+	* scwm.h: comment out FFromSCMBool, FInvertFromSCMBool since
+	  gh_scm2bool exists.  Added
+	  COPY_BOOL_OR_ERROR_DEFAULT_{TRUE,FALSE}.  Drop externs of Window 
+	  BlackoutWin.
+
+	* scwm.c: Call init_move, move JunkVars into xmisc.c
+
+	* scwm-constraints.h: Added FRAME_X_NONVIRT, FRAME_Y_NONVIRT (stll 
+	  need to be used far more often to make viewport stuff work)
+
+	* resize.h, resize.c:  Added InteractiveResize, and make that in
+	  the public interface, instead of interactive_resize (which now
+	  mostly just calls the former).  Added fOpaque flag to
+	  InteractiveResize, option to interactive_resize primitive.
+
+	* move.h, move.c: Added fOpaque flag to InteractiveMove, option to 
+	  interactive_move primitive; fixed bugs in dealing with icons,
+	  move ComputeXTextWidth into xmisc.c, and make it take an extra
+	  arg, the length, or -1 to mean use strlen.  Move
+	  interactive-move primitive to here from window.c, and make
+	  move.x get generated.
+
+	* placement.c: save frame position in xdiff, ydiff using
+	  FRAME_X_NONVIRT, Y_NONVIRT
+	
+	* miscprocs.c: Added X-server-set-synchronize primitive
+
+	
 1998-07-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* xproperty.c: Forgotten inclusion of guile-compat.h prevented
