@@ -1,3 +1,9 @@
+Tue Oct 26 17:19:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Make mouse H-1 do select-window-toggle only in
+	'window... have it do move-after-deleting-inferred-constraints in
+	'title, 'frame-sides.  H-3 does move-after-deleting-constraints still.
+
 Tue Oct 26 11:44:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Do not xsetroot at end of startup.
