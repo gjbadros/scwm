@@ -35,6 +35,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+#include "window.h"
 #include "misc.h"
 #include "binding.h"
 
@@ -136,6 +137,18 @@ typedef struct {
   ButtonFace *state[MaxButtonState];
 } TitleButton;
 
+typedef struct FontWithInfo {
+  XFontStruct *font;		/* font structure */
+  int height;			/* height of the font */
+  int y;			/* Y coordinate to draw characters */
+} FontWithInfo;
+
+
+typedef struct ColorPair {
+  Pixel fore;
+  Pixel back;
+} ColorPair;
+
 typedef struct ScwmDecor {
   char *tag;			/* general style tag */
   ColorPair HiColors;		/* standard fore/back colors */
@@ -144,7 +157,7 @@ typedef struct ScwmDecor {
   GC HiShadowGC;		/* GC for highlighted window shadow */
 
   int TitleHeight;		/* height of the title bar window */
-  MyFont WindowFont;		/* font structure for window titles */
+  FontWithInfo WindowFont;	/* font structure for window titles */
 
   /* titlebar buttons */
   TitleButton left_buttons[5];
@@ -197,8 +210,8 @@ typedef struct ScreenInfo {
   ColorPair StdColors;		/* standard fore/back colors */
   ColorPair StdRelief;
 
-  MyFont StdFont;		/* font structure */
-  MyFont IconFont;		/* for icon labels */
+  FontWithInfo StdFont;		/* font structure */
+  FontWithInfo IconFont;	/* for icon labels */
 
   GC TransMaskGC;		/* GC for transparency masks */
   GC DrawGC;			/* GC to draw lines for move and resize */

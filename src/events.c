@@ -74,6 +74,11 @@
 #include "module-interface.h"
 
 
+#ifndef WithdrawnState
+#define WithdrawnState 0
+#endif
+
+
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
 extern int menuFromFrameOrWindowOrTitlebar;
@@ -228,7 +233,7 @@ HandleEvents()
   }
   #endif /* HAVE_SAFE_SCM_EVAL_STR */
 
-  while (TRUE) {
+  while (True) {
     last_event_type = 0;
     switch (XNextEvent_orTimeout(dpy, &Event)) {
     case 0:
@@ -1584,9 +1589,9 @@ send_button_press(SCM button, SCM modifier, SCM win,
 {
   int bnum;
   int mod_mask;
-  Bool fPropagate = FALSE;
-  Bool fPress = TRUE;
-  Bool fRelease = TRUE;
+  Bool fPropagate = False;
+  Bool fPress = True;
+  Bool fRelease = True;
   int iarg = 1;
   Window child;
   XButtonEvent event;
@@ -1650,9 +1655,9 @@ send_key_press(SCM key, SCM win,
   KeySym keysym;
   Bool fOkay;
   int mod_mask;
-  Bool fPropagate = FALSE;
-  Bool fPress = TRUE;
-  Bool fRelease = TRUE;
+  Bool fPropagate = False;
+  Bool fPress = True;
+  Bool fRelease = True;
   int iarg = 1;
   XKeyEvent event;
   ScwmWindow *sw;

@@ -482,7 +482,7 @@ AddWindow(Window w)
     valuemask = valuemask_save;
   }
 
-  attributes.save_under = FALSE;
+  attributes.save_under = False;
 
   /* Thats not all, we'll double-reparent the window ! */
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
@@ -632,7 +632,7 @@ AddWindow(Window w)
 
   /*
    * Reparenting generates an UnmapNotify event, followed by a MapNotify.
-   * Set the map state to FALSE to prevent a transition back to
+   * Set the map state to False to prevent a transition back to
    * WithdrawnState in HandleUnmapNotify.  Map state gets set correctly
    * again in HandleMapNotify.
    */

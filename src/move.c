@@ -195,7 +195,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	  break;
       }
     }
-    done = FALSE;
+    done = False;
     /* Handle a limited number of key press events to allow mouseless
      * operation */
     if (Event.type == KeyPress)
@@ -208,9 +208,9 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	  MoveOutline(Scr.Root, 0, 0, 0, 0);
 	*FinalX = tmp_win->frame_x;
 	*FinalY = tmp_win->frame_y;
-	finished = TRUE;
+	finished = True;
       }
-      done = TRUE;
+      done = True;
       break;
     case ButtonPress:
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
@@ -244,8 +244,8 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
       *FinalX = xl;
       *FinalY = yt;
 
-      done = TRUE;
-      finished = TRUE;
+      done = True;
+      finished = True;
       break;
 
     case MotionNotify:
@@ -307,7 +307,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	paged++;
       }				/* end while paged */
 
-      done = TRUE;
+      done = True;
       break;
 
     default:

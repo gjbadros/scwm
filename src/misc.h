@@ -5,6 +5,7 @@
 
 #include <ctype.h>
 #include "system.h"
+#include "window.h"
 
 /************************************************************************
  * ReapChildren - wait() for all dead child processes
@@ -107,6 +108,7 @@ extern char NoName[];
 extern char NoClass[];
 extern char NoResource[];
 
+
 /*
    ** message levels for scwm_msg:
  */
@@ -187,8 +189,6 @@ Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
 
 void MapIt(ScwmWindow * t);
 void do_save(void);
-void checkPanFrames(void);
-void raisePanFrames(void);
 void initPanFrames(void);
 int XNextEvent_orTimeout(Display * dpy, XEvent * event);
 

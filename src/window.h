@@ -16,6 +16,200 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+#define PackedBool(x) unsigned short x:1
+
+struct ScwmDecor;		/* definition in screen.h */
+
+/* for each window that is on the display, one of these structures
+ * is allocated and linked into a list 
+ */
+typedef struct ScwmWindow {
+  struct ScwmWindow *next;	/* next scwm window */
+  struct ScwmWindow *prev;	/* prev scwm window */
+  Window w;			/* the child window */
+  int old_bw;			/* border width before reparenting */
+  Window frame;			/* the frame window */
+  Window Parent;		/* Ugly Ugly Ugly - it looks like you
+				 * HAVE to reparent the app window into
+				 * a window whose size = app window,
+				 * or else you can't keep xv and matlab
+				 * happy at the same time! */
+  Window title_w;		/* the title bar window */
+  Window sides[4];              /* top, right, bottom, then left */
+  Window corners[4];		/* nw, ne, sw, se  coreners */
+  int nr_left_buttons;
+  int nr_right_buttons;
+  Window left_w[5];
+  Window right_w[5];
+  struct ScwmDecor *fl;
+  Window icon_w;		/* the icon window */
+  Window icon_pixmap_w;		/* the icon window */
+  int wShaped;			/* is this a shaped window */
+  int frame_x;			/* x position of frame */
+  int frame_y;			/* y position of frame */
+  int frame_width;		/* width of frame */
+  int frame_height;		/* height of frame */
+  int boundary_width;
+  int corner_width;
+  int bw;
+  int title_x;
+  int title_y;
+  int title_height;		/* height of the title bar */
+  int title_width;		/* width of the title bar */
+  int icon_x_loc;		/* icon window x coordinate */
+  int icon_xl_loc;		/* icon label window x coordinate */
+  int icon_y_loc;		/* icon window y coordiante */
+  int icon_w_width;		/* width of the icon window */
+  int icon_w_height;		/* height of the icon window */
+  int icon_t_width;		/* width of the icon title window */
+  char *name;			/* name of the window */
+  char *icon_name;		/* name of the icon */
+  XWindowAttributes attr;	/* the child window attributes */
+  XSizeHints hints;		/* normal hints */
+  XWMHints *wmhints;		/* WM hints */
+  XClassHint class;
+  int Desk;			/* Tells which desktop this window is on */
+  int StartDesk;		/* Tells which desktop this window is on */
+  int FocusDesk;		/* Where (if at all) was it focussed */
+  int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
+  Window transientfor;
+
+#ifdef FIXGJB_PACKED_BOOL_INSTEAD_OF_FLAGS
+  PackedBool(fStartIconic);
+  PackedBool(fOnTop);
+  PackedBool(fSticky);
+  PackedBool(fWindowListSkip);
+  PackedBool(fSuppressIcon);
+  PackedBool(fNoIconTitle);
+  PackedBool(fLenience);
+  PackedBool(fStickyIcon);
+  PackedBool(fCirculateSkip);
+  PackedBool(fClickToFocus);
+  PackedBool(fSloppyFocus);
+  PackedBool(fShowOnMap);
+  PackedBool(fBorder);
+  PackedBool(fTitle);
+  PackedBool(fMapped);
+  PackedBool(fIconified);
+  PackedBool(fTransient);
+  PackedBool(fRaised);
+  PackedBool(fVisible);
+  PackedBool(fIconOurs);
+  PackedBool(fPixmapOurs);
+  PackedBool(fShapedIcon);
+  PackedBool(fMaximized);
+  PackedBool(fDoesWmTakeFocus);
+  PackedBool(fDoesWmDeleteWindow);
+  PackedBool(fIconMoved);
+  PackedBool(fIconUnmapped);
+  PackedBool(fMapPending);
+  PackedBool(fHintOverride);
+  PackedBool(fMWMButtons);
+  PackedBool(fMWMBorders);
+  PackedBool(fWindowShaded);
+#endif
+
+  unsigned long flags;
+  SCM mini_icon_image;          /* A Scheme image object to use for the 
+				   mini-icon. */
+  char *szIconSavedFile;        /* save the filename here when we change
+				   to no icon, so it can be restored 
+				   properly */
+  SCM icon_image;		/* the icon picture */
+
+  int orig_x;			/* unmaximized x coordinate */
+  int orig_y;			/* unmaximized y coordinate */
+  int orig_wd;			/* unmaximized window width */
+  int orig_ht;			/* unmaximized window height */
+
+  int xdiff, ydiff;		/* used to restore window position on exit */
+  int *mwm_hints;
+  int ol_hints;
+  enum wm_client_functions functions;
+  Window *cmap_windows;		/* Colormap windows property */
+  int number_cmap_windows;	/* Should generally be 0 */
+  Pixel ReliefPixel;
+  Pixel ShadowPixel;
+  Pixel TextPixel;
+  Pixel BackPixel;
+  unsigned long buttons;
+  int IconBox[4];
+  int BoxFillMethod;
+  SCM schwin;
+} ScwmWindow;
+
+
+
+/***************************************************************************
+ * window flags definitions 
+ ***************************************************************************/
+/* The first 13 items are mapped directly from the style structure's
+ * flag value, so they MUST correspond to the first 13 entries in misc.h */
+#define STARTICONIC             (1<<0)
+#define ONTOP                   (1<<1)	/* does window stay on top */
+#define STICKY                  (1<<2)	/* Does window stick to glass? */
+#define WINDOWLISTSKIP          (1<<3)
+#define SUPPRESSICON            (1<<4)
+#define NOICON_TITLE            (1<<5)
+#define Lenience                (1<<6)
+#define StickyIcon              (1<<7)
+#define CirculateSkipIcon       (1<<8)
+#define CirculateSkip           (1<<9)
+#define ClickToFocus            (1<<10)
+#define SloppyFocus             (1<<11)
+#define SHOW_ON_MAP    (1<<12)	/* switch to desk when it gets mapped? */
+#define BORDER         (1<<13)	/* Is this decorated with border */
+#define TITLE          (1<<14)	/* Is this decorated with title */
+#define MAPPED         (1<<15)	/* is it mapped? */
+#define ICONIFIED      (1<<16)	/* is it an icon now? */
+#define TRANSIENT      (1<<17)	/* is it a transient window? */
+#define RAISED         (1<<18)	/* if its a sticky window, needs raising? */
+#define VISIBLE        (1<<19)	/* is the window fully visible */
+#define ICON_OURS      (1<<20)	/* is the icon window supplied by the app? */
+#define PIXMAP_OURS    (1<<21)	/* is the icon pixmap ours to free? */
+#define SHAPED_ICON    (1<<22)	/* is the icon shaped? */
+#define MAXIMIZED      (1<<23)	/* is the window maximized? */
+#define DoesWmTakeFocus		(1<<24)
+#define DoesWmDeleteWindow	(1<<25)
+/* has the icon been moved by the user? */
+#define ICON_MOVED              (1<<26)
+/* was the icon unmapped, even though the window is still iconified
+ * (Transients) */
+#define ICON_UNMAPPED           (1<<27)
+/* Sent an XMapWindow, but didn't receive a MapNotify yet. */
+#define MAP_PENDING             (1<<28)
+#define HintOverride            (1<<29)
+#define MWMButtons              (1<<30)
+#define MWMBorders              (1<<31)
+
+
+#define ALL_COMMON_FLAGS (STARTICONIC|ONTOP|STICKY|WINDOWLISTSKIP| \
+			  SUPPRESSICON|NOICON_TITLE|Lenience|StickyIcon| \
+			  CirculateSkipIcon|CirculateSkip|ClickToFocus| \
+			  SloppyFocus|SHOW_ON_MAP)
+
+
+/* we're sticking this at the end of the buttons window member
+   since we don't want to use up any more flag bits */
+#define WSHADE	(1<<31)
+
+#define SHADED_P(sw) ((sw)->buttons & WSHADE)
+#define SET_UNSHADED(sw) do { (sw)->buttons &= ~WSHADE; } while (0)
+#define SET_SHADED(sw) do { (sw)->buttons |= WSHADE; } while (0)
+
+
+/* flags to suppress/enable title bar buttons */
+#define BUTTON1     1
+#define BUTTON2     2
+#define BUTTON3     4
+#define BUTTON4     8
+#define BUTTON5    16
+#define BUTTON6    32
+#define BUTTON7    64
+#define BUTTON8   128
+#define BUTTON9   256
+#define BUTTON10  512
+
 SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 
 #define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F

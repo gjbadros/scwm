@@ -373,7 +373,7 @@ MoveViewport(int newx, int newy, Bool grab)
 		      t->icon_w_height + ICON_P_HEIGHT(t));
 	}
 	SetupFrame(t, t->frame_x + deltax, t->frame_y + deltay,
-		   t->frame_width, t->frame_height, FALSE);
+		   t->frame_width, t->frame_height, False);
       }
     }
     for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {

@@ -5,6 +5,8 @@
 #ifndef COLORMAPS_H
 #define COLORMAPS_H
 
+#include "window.h"
+
 void HandleColormapNotify(void);
 void ReInstallActiveColormap(void);
 void InstallWindowColormaps(ScwmWindow * tmp);

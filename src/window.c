@@ -434,13 +434,13 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
     *context = C_ROOT;
     XBell(dpy, Scr.screen);
     UngrabEm();
-    return TRUE;
+    return True;
   }
   *tmp_win = SwFromWindow(dpy,*w);
   if (*tmp_win == NULL) {
     XBell(dpy, Scr.screen);
     UngrabEm();
-    return (TRUE);
+    return (True);
   }
   if (*w == (*tmp_win)->Parent)
     *w = (*tmp_win)->w;
@@ -457,7 +457,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
       *context = C_ROOT;
       XBell(dpy, Scr.screen);
       UngrabEm();
-      return TRUE;
+      return True;
     }
   *context = GetContext(*tmp_win, eventp, &dummy);
 
@@ -465,7 +465,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   /* interactive operations should not use the stashed mouse position
      if we just selected the window. */
   have_orig_position = 0; 
-  return FALSE; 
+  return False; 
 }
 
 SCM 
@@ -834,7 +834,7 @@ move_finalize(Window w, ScwmWindow * sw, int x, int y)
 {
   if (w == sw->frame) {
     SetupFrame(sw, x, y,
-	       sw->frame_width, sw->frame_height, FALSE);
+	       sw->frame_width, sw->frame_height, False);
   } else {			/* icon window */
     sw->flags |= ICON_MOVED;
     sw->icon_x_loc = x;
@@ -1056,7 +1056,7 @@ resize_to(SCM w, SCM h, SCM win)
 
   ConstrainSize(tmp_win, &width, &height);
   SetupFrame(tmp_win, tmp_win->frame_x,
-	     tmp_win->frame_y, width, height, FALSE);
+	     tmp_win->frame_y, width, height, False);
 
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -1083,7 +1083,7 @@ SCM
 interactive_resize(SCM win)
 {
   ScwmWindow *tmp_win;
-  Bool finished = FALSE, done = FALSE, abort = FALSE;
+  Bool finished = False, done = False, abort = False;
   int x, y, delta_x, delta_y;
   Window ResizeWindow;
   extern int Stashed_X, Stashed_Y;
@@ -1183,7 +1183,7 @@ interactive_resize(SCM win)
 	if (Event.type == ButtonRelease)
 	  break;
       }
-    done = FALSE;
+    done = False;
     /* Handle a limited number of key press events to allow mouseless
      * operation */
     if (Event.type == KeyPress)
@@ -1194,15 +1194,15 @@ interactive_resize(SCM win)
     case KeyPress:
       /* simple code to bag out of move - CKH */
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
-	abort = TRUE;
-	finished = TRUE;
+	abort = True;
+	finished = True;
       }
-      done = TRUE;
+      done = True;
       break;
 
     case ButtonRelease:
-      finished = TRUE;
-      done = TRUE;
+      finished = True;
+      done = True;
       break;
 
     case MotionNotify:
@@ -1222,7 +1222,7 @@ interactive_resize(SCM win)
 
 	DoResize(x, y, tmp_win);
       }
-      done = TRUE;
+      done = True;
     default:
       break;
     }
@@ -1246,7 +1246,7 @@ interactive_resize(SCM win)
   if (!abort) {
     ConstrainSize(tmp_win, &dragWidth, &dragHeight);
     SetupFrame(tmp_win, dragx - tmp_win->bw,
-	       dragy - tmp_win->bw, dragWidth, dragHeight, FALSE);
+	       dragy - tmp_win->bw, dragWidth, dragHeight, False);
   }
   UninstallRootColormap();
   ResizeWindow = None;

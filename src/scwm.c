@@ -188,7 +188,7 @@ scwm_main(int argc, char **argv)
   char *display_string;
   char message[255];
   Bool single = False;
-  Bool option_error = FALSE;
+  Bool option_error = False;
 
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
@@ -295,14 +295,14 @@ scwm_main(int argc, char **argv)
       case ':':
 	scwm_msg(ERR, "main", "Missing option argument: `-%c'\n",
 		 (char)optopt);
-	option_error = TRUE; 
+	option_error = True; 
 	break;
       case '?': /* getopt's dunno return */
-	option_error = TRUE; 
+	option_error = True; 
 	break;
       default:  /* if we made an error */
 	scwm_msg(ERR, "main", "Unknown option: `-%c'\n",  (char)optopt);
-	option_error = TRUE; 
+	option_error = True; 
 	break;
       }
   }
@@ -371,7 +371,7 @@ scwm_main(int argc, char **argv)
       exit(0);
     } else {
       scwm_msg(ERR, "main", "Unknown option:  `%s'\n", argv[i]);
-      option_error = TRUE;
+      option_error = True;
     }
   }
 #endif
@@ -750,8 +750,8 @@ SetRCDefaults()
  *		put a scwm frame on the window
  *
  *  Returned Value:
- *	TRUE	- go ahead and frame the window
- *	FALSE	- don't frame the window
+ *	True	- go ahead and frame the window
+ *	False	- don't frame the window
  *
  *  Inputs:
  *	w	- the window to check

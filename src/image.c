@@ -267,14 +267,18 @@ load_xpm (SCM full_path)
     ci->height = xpm_attributes.height;
     ci->depth = xpm_attributes.depth; /* the Xpm manual implies this should
 					work, if not, fall back to the
-					code below. */
+					code below.
+				      I can't find where it describes this...
+				      --12/16/97 gjb */
     if (ci->depth > 32) {
       ci->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
+#ifdef FIXGJB_ALWAYS_BAD_NOT_SUPPOSED_TO_RETURN_DEPTH
       if (!fShowedBadDepthAttributeMessageAlready) {
 	fShowedBadDepthAttributeMessageAlready = True;
 	scwm_msg(WARN,__FUNCTION__,
 		 "Bad depths are returned from libXpm's XpmReadFileToPixmap -- using screen depth\nPlease report your Xpm library version to the scwm authors");
       }
+#endif
     }
   } else {
     /* warn that the image could not be loaded, then drop the result

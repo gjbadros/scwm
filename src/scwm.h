@@ -44,21 +44,8 @@
 #include <guile/gh.h>
 #include "color.h"
 #include "module-types.h"
+#include <stdlib.h>
 
-#ifndef WithdrawnState
-#define WithdrawnState 0
-#endif
-
-/* Some stubs to take care of the gone module stuff.
-   I don't want to delete the calls for two reasons, 
-   first, they will eventually be used to figure out
-   where hooks for the new external interface system 
-   should go, and second there are a lot and I don't
-   feel like commenting them all. */
-
-/* #define Broadcast(a,b,c,d,e,f,g,h,i) */
-/* #define BroadcastConfig(a,b) */
-/* #define BroadcastName(a,b,c,d,e) */
 
 #define STATIC_CAST(cast,val) ((cast) (val))
 #define min(a,b) (((a)<(b)) ? (a) : (b))
@@ -105,48 +92,6 @@
 #define SCROLL_REGION 2		/* region around screen edge that */
 				/* triggers scrolling */
 
-#ifndef TRUE
-#define TRUE	1
-#define FALSE	0
-#endif
-
-#define NULLSTR ((char *) NULL)
-
-/* contexts for button presses */
-#define C_NO_CONTEXT	0
-#define C_WINDOW	1
-#define C_TITLE		2
-#define C_ICON		4
-#define C_ROOT		8
-#define C_FRAME		16
-#define C_SIDEBAR       32
-#define C_L1            64
-#define C_L2           128
-#define C_L3           256
-#define C_L4           512
-#define C_L5          1024
-#define C_R1          2048
-#define C_R2          4096
-#define C_R3          8192
-#define C_R4         16384
-#define C_R5         32768
-#define C_RALL       (C_R1|C_R2|C_R3|C_R4|C_R5)
-#define C_LALL       (C_L1|C_L2|C_L3|C_L4|C_L5)
-#define C_ALL   (C_WINDOW|C_TITLE|C_ICON|C_ROOT|C_FRAME|C_SIDEBAR|\
-                 C_L1|C_L2|C_L3|C_L4|C_L5|C_R1|C_R2|C_R3|C_R4|C_R5)
-
-typedef struct MyFont {
-  XFontStruct *font;		/* font structure */
-  int height;			/* height of the font */
-  int y;			/* Y coordinate to draw characters */
-} MyFont;
-
-typedef struct ColorPair {
-  Pixel fore;
-  Pixel back;
-} ColorPair;
-
-struct ScwmDecor;		/* definition in screen.h */
 
 /* the set of functions that scwm perform on top 
    level windows;  
@@ -156,211 +101,6 @@ enum wm_client_functions {
   F_RESIZE = 100, F_ICONIFY = 106, F_MAXIMIZE = 109, 
   F_DELETE = 104, F_DESTROY = 103
 };
-
-/* for each window that is on the display, one of these structures
- * is allocated and linked into a list 
- */
-typedef struct ScwmWindow {
-  struct ScwmWindow *next;	/* next scwm window */
-  struct ScwmWindow *prev;	/* prev scwm window */
-  Window w;			/* the child window */
-  int old_bw;			/* border width before reparenting */
-  Window frame;			/* the frame window */
-  Window Parent;		/* Ugly Ugly Ugly - it looks like you
-				 * HAVE to reparent the app window into
-				 * a window whose size = app window,
-				 * or else you can't keep xv and matlab
-				 * happy at the same time! */
-  Window title_w;		/* the title bar window */
-  Window sides[4];              /* top, right, bottom, then left */
-  Window corners[4];		/* nw, ne, sw, se  coreners */
-  int nr_left_buttons;
-  int nr_right_buttons;
-  Window left_w[5];
-  Window right_w[5];
-  struct ScwmDecor *fl;
-  Window icon_w;		/* the icon window */
-  Window icon_pixmap_w;		/* the icon window */
-  int wShaped;			/* is this a shaped window */
-  int frame_x;			/* x position of frame */
-  int frame_y;			/* y position of frame */
-  int frame_width;		/* width of frame */
-  int frame_height;		/* height of frame */
-  int boundary_width;
-  int corner_width;
-  int bw;
-  int title_x;
-  int title_y;
-  int title_height;		/* height of the title bar */
-  int title_width;		/* width of the title bar */
-  int icon_x_loc;		/* icon window x coordinate */
-  int icon_xl_loc;		/* icon label window x coordinate */
-  int icon_y_loc;		/* icon window y coordiante */
-  int icon_w_width;		/* width of the icon window */
-  int icon_w_height;		/* height of the icon window */
-  int icon_t_width;		/* width of the icon title window */
-  char *name;			/* name of the window */
-  char *icon_name;		/* name of the icon */
-  XWindowAttributes attr;	/* the child window attributes */
-  XSizeHints hints;		/* normal hints */
-  XWMHints *wmhints;		/* WM hints */
-  XClassHint class;
-  int Desk;			/* Tells which desktop this window is on */
-  int StartDesk;		/* Tells which desktop this window is on */
-  int FocusDesk;		/* Where (if at all) was it focussed */
-  int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
-  Window transientfor;
-
-  unsigned long flags;
-  SCM mini_icon_image;          /* A Scheme image object to use for the 
-				   mini-icon. */
-  char *szIconSavedFile;        /* save the filename here when we change
-				   to no icon, so it can be restored 
-				   properly */
-  SCM icon_image;		/* the icon picture */
-
-  int orig_x;			/* unmaximized x coordinate */
-  int orig_y;			/* unmaximized y coordinate */
-  int orig_wd;			/* unmaximized window width */
-  int orig_ht;			/* unmaximized window height */
-
-  int xdiff, ydiff;		/* used to restore window position on exit */
-  int *mwm_hints;
-  int ol_hints;
-  enum wm_client_functions functions;
-  Window *cmap_windows;		/* Colormap windows property */
-  int number_cmap_windows;	/* Should generally be 0 */
-  Pixel ReliefPixel;
-  Pixel ShadowPixel;
-  Pixel TextPixel;
-  Pixel BackPixel;
-  unsigned long buttons;
-  int IconBox[4];
-  int BoxFillMethod;
-  SCM schwin;
-} ScwmWindow;
-
-/***************************************************************************
- * window flags definitions 
- ***************************************************************************/
-/* The first 13 items are mapped directly from the style structure's
- * flag value, so they MUST correspond to the first 13 entries in misc.h */
-#define STARTICONIC             (1<<0)
-#define ONTOP                   (1<<1)	/* does window stay on top */
-#define STICKY                  (1<<2)	/* Does window stick to glass? */
-#define WINDOWLISTSKIP          (1<<3)
-#define SUPPRESSICON            (1<<4)
-#define NOICON_TITLE            (1<<5)
-#define Lenience                (1<<6)
-#define StickyIcon              (1<<7)
-#define CirculateSkipIcon       (1<<8)
-#define CirculateSkip           (1<<9)
-#define ClickToFocus            (1<<10)
-#define SloppyFocus             (1<<11)
-#define SHOW_ON_MAP    (1<<12)	/* switch to desk when it gets mapped? */
-#define ALL_COMMON_FLAGS (STARTICONIC|ONTOP|STICKY|WINDOWLISTSKIP| \
-			  SUPPRESSICON|NOICON_TITLE|Lenience|StickyIcon| \
-			  CirculateSkipIcon|CirculateSkip|ClickToFocus| \
-			  SloppyFocus|SHOW_ON_MAP)
-
-#define BORDER         (1<<13)	/* Is this decorated with border */
-#define TITLE          (1<<14)	/* Is this decorated with title */
-#define MAPPED         (1<<15)	/* is it mapped? */
-#define ICONIFIED      (1<<16)	/* is it an icon now? */
-#define TRANSIENT      (1<<17)	/* is it a transient window? */
-#define RAISED         (1<<18)	/* if its a sticky window, needs raising? */
-#define VISIBLE        (1<<19)	/* is the window fully visible */
-#define ICON_OURS      (1<<20)	/* is the icon window supplied by the app? */
-#define PIXMAP_OURS    (1<<21)	/* is the icon pixmap ours to free? */
-#define SHAPED_ICON    (1<<22)	/* is the icon shaped? */
-#define MAXIMIZED      (1<<23)	/* is the window maximized? */
-#define DoesWmTakeFocus		(1<<24)
-#define DoesWmDeleteWindow	(1<<25)
-/* has the icon been moved by the user? */
-#define ICON_MOVED              (1<<26)
-/* was the icon unmapped, even though the window is still iconified
- * (Transients) */
-#define ICON_UNMAPPED           (1<<27)
-/* Sent an XMapWindow, but didn't receive a MapNotify yet. */
-#define MAP_PENDING             (1<<28)
-#define HintOverride            (1<<29)
-#define MWMButtons              (1<<30)
-#define MWMBorders              (1<<31)
-
-
-/* flags to suppress/enable title bar buttons */
-#define BUTTON1     1
-#define BUTTON2     2
-#define BUTTON3     4
-#define BUTTON4     8
-#define BUTTON5    16
-#define BUTTON6    32
-#define BUTTON7    64
-#define BUTTON8   128
-#define BUTTON9   256
-#define BUTTON10  512
-
-/* we're sticking this at the end of the buttons window member
-   since we don't want to use up any more flag bits */
-#define WSHADE	(1<<31)
-
-#define SHADED_P(sw) ((sw)->buttons & WSHADE)
-#define SET_UNSHADED(sw) do { (sw)->buttons &= ~WSHADE; } while (0)
-#define SET_SHADED(sw) do { (sw)->buttons |= WSHADE; } while (0)
-
-#include <stdlib.h>
-extern void Reborder(void);
-extern void SigDone(int);
-extern void Restart(int nonsense);
-extern void Done(int, char *);
-extern void BlackoutScreen(void);
-extern void UnBlackoutScreen(void);
-
-extern int master_pid;
-
-extern Display *dpy;
-
-extern XContext ScwmContext;
-
-extern Window BlackoutWin;
-
-extern Boolean ShapesSupported;
-
-extern Window JunkRoot, JunkChild;
-extern int JunkX, JunkY;
-extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
-
-#ifdef PAN_FRAMES
-extern void checkPanFrames();
-extern void raisePanFrames();
-
-#endif
-
-extern Atom _XA_MIT_PRIORITY_COLORS;
-extern Atom _XA_WM_CHANGE_STATE;
-extern Atom _XA_WM_STATE;
-extern Atom _XA_WM_COLORMAP_WINDOWS;
-extern Atom _XA_WM_PROTOCOLS;
-extern Atom _XA_WM_TAKE_FOCUS;
-extern Atom _XA_WM_SAVE_YOURSELF;
-extern Atom _XA_WM_DELETE_WINDOW;
-extern Atom _XA_WM_DESKTOP;
-extern Atom _XA_SCWM_STICKS_TO_GLASS;
-extern Atom _XA_SCWM_CLIENT;
-extern Atom _XA_OL_WIN_ATTR;
-extern Atom _XA_OL_WT_BASE;
-extern Atom _XA_OL_WT_CMD;
-extern Atom _XA_OL_WT_HELP;
-extern Atom _XA_OL_WT_NOTICE;
-extern Atom _XA_OL_WT_OTHER;
-extern Atom _XA_OL_DECOR_ADD;
-extern Atom _XA_OL_DECOR_DEL;
-extern Atom _XA_OL_DECOR_CLOSE;
-extern Atom _XA_OL_DECOR_RESIZE;
-extern Atom _XA_OL_DECOR_HEADER;
-extern Atom _XA_OL_DECOR_ICON_NAME;
-extern Atom XA_SCWM_EXECUTE;
-
 
 #ifndef HAVE_SCM_PUTS
 #define scm_putc(x,y) scm_gen_putc(x,y)
@@ -415,6 +155,58 @@ extern Atom XA_SCWM_EXECUTE;
 #endif
 
 /* end of configure.h */
+
+
+
+/* Prototypes for functions in scwm.c */
+void Reborder(void);
+void SigDone(int);
+void Restart(int nonsense);
+void Done(int, char *);
+void BlackoutScreen(void);
+void UnBlackoutScreen(void);
+
+
+/* Global variables */
+extern int master_pid;
+
+extern Display *dpy;
+
+extern XContext ScwmContext;
+
+extern Window BlackoutWin;
+
+extern Boolean ShapesSupported;
+
+extern Window JunkRoot, JunkChild;
+extern int JunkX, JunkY;
+extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
+
+extern Atom _XA_MIT_PRIORITY_COLORS;
+extern Atom _XA_WM_CHANGE_STATE;
+extern Atom _XA_WM_STATE;
+extern Atom _XA_WM_COLORMAP_WINDOWS;
+extern Atom _XA_WM_PROTOCOLS;
+extern Atom _XA_WM_TAKE_FOCUS;
+extern Atom _XA_WM_SAVE_YOURSELF;
+extern Atom _XA_WM_DELETE_WINDOW;
+extern Atom _XA_WM_DESKTOP;
+extern Atom _XA_SCWM_STICKS_TO_GLASS;
+extern Atom _XA_SCWM_CLIENT;
+extern Atom _XA_OL_WIN_ATTR;
+extern Atom _XA_OL_WT_BASE;
+extern Atom _XA_OL_WT_CMD;
+extern Atom _XA_OL_WT_HELP;
+extern Atom _XA_OL_WT_NOTICE;
+extern Atom _XA_OL_WT_OTHER;
+extern Atom _XA_OL_DECOR_ADD;
+extern Atom _XA_OL_DECOR_DEL;
+extern Atom _XA_OL_DECOR_CLOSE;
+extern Atom _XA_OL_DECOR_RESIZE;
+extern Atom _XA_OL_DECOR_HEADER;
+extern Atom _XA_OL_DECOR_ICON_NAME;
+extern Atom XA_SCWM_EXECUTE;
+
 
 #endif /* _SCWM_ */
 

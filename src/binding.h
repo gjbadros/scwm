@@ -5,6 +5,29 @@
 #ifndef BINDING_H
 #define BINDING_H
 
+/* contexts for button presses */
+#define C_NO_CONTEXT	0
+#define C_WINDOW	1
+#define C_TITLE		2
+#define C_ICON		4
+#define C_ROOT		8
+#define C_FRAME		16
+#define C_SIDEBAR       32
+#define C_L1            64
+#define C_L2           128
+#define C_L3           256
+#define C_L4           512
+#define C_L5          1024
+#define C_R1          2048
+#define C_R2          4096
+#define C_R3          8192
+#define C_R4         16384
+#define C_R5         32768
+#define C_RALL       (C_R1|C_R2|C_R3|C_R4|C_R5)
+#define C_LALL       (C_L1|C_L2|C_L3|C_L4|C_L5)
+#define C_ALL   (C_WINDOW|C_TITLE|C_ICON|C_ROOT|C_FRAME|C_SIDEBAR|\
+                 C_L1|C_L2|C_L3|C_L4|C_L5|C_R1|C_R2|C_R3|C_R4|C_R5)
+
 
 typedef struct Binding_tag {
   char IsMouse;			/* Is it a mouse or key binding 1= mouse; */

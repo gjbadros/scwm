@@ -613,8 +613,8 @@ static
 MenuItemInMenu *
 PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status)
 {
-  int fControlKey = Event->xkey.state & ControlMask? TRUE : FALSE;
-  int fShiftedKey = Event->xkey.state & ShiftMask? TRUE: FALSE;
+  int fControlKey = Event->xkey.state & ControlMask? True : False;
+  int fShiftedKey = Event->xkey.state & ShiftMask? True: False;
   KeySym keysym = XLookupKeysym(&Event->xkey,0);
   int index = -1;
   Menu *pmenu = pmd->pmenu;
@@ -626,7 +626,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   /* Is it okay to treat keysym-s as Ascii? */
 
   /* Try to match hot keys */
-  if (isascii(keysym) && isgraph(keysym) && fControlKey == FALSE) { 
+  if (isascii(keysym) && isgraph(keysym) && fControlKey == False) { 
     /* allow any printable character to be a keysym, but be sure control
        isn't pressed */
     MenuItemInMenu *pmiim;
@@ -678,7 +678,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     case XK_k: /* vi up */
     case XK_p: /* prior */
       if (isascii(keysym) && isgraph(keysym))
-	  fControlKey = FALSE; /* don't use control modifier 
+	  fControlKey = False; /* don't use control modifier 
 				  for k or p, since those might
 				  be shortcuts too-- C-k, C-p will
 				  always work to do a single up */
@@ -700,7 +700,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     case XK_j: /* vi down */
     case XK_n: /* next */
       if (isascii(keysym) && isgraph(keysym))
-	  fControlKey = FALSE; /* don't use control modifier
+	  fControlKey = False; /* don't use control modifier
 				  for j or n, since those might
 				  be shortcuts too-- C-j, C-n will
 				  always work to do a single down */
@@ -772,7 +772,7 @@ MenuInteraction(DynamicMenu *pmd)
   Bool fGotMouseMove = False;
   /* FIXGJB: need to make initial item selection */
   while (True) {
-    while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == FALSE) {
+    while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
       sleep_ms(10);
 
       if (c10ms_delays++ == MENU_POPUP_DELAY_MS/10) {
