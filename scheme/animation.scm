@@ -42,7 +42,6 @@
 		       animated-window-shade))
 
 
-;; MS:FIXME:: Figure out why this is needed (as well as move-to in base)
 (define*-public (animated-move-to x y #&optional (win (get-window))
 				  (move-pointer-too? #t))
   "Move WIN to viewport coordinates X, Y with animation. 
@@ -56,8 +55,3 @@ is #f."
 	  (if x (set! x (+ x (car pos))))
 	  (if y (set! y (+ y (cadr pos)))))))
   (animated-move-window x y win move-pointer-too?))
-
-;; (animated-move-window 0 0 (window-with-pointer))
-;; (animated-move-to -1 #f)
-;; (animated-move-to 0 #f)
-;; (animated-move-to #f -1 (window-with-pointer))
