@@ -73,7 +73,7 @@ void invalidate_window(SCM schwin)
 
 SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p) {
   if (win==SCM_UNDEFINED) {
-    win=get_window(kill_p);
+    win=get_window(kill_p,SCM_BOOL_T);
     if (win==SCM_BOOL_F) {
       return SCM_BOOL_F;
     }
@@ -102,13 +102,29 @@ SCM window_p(SCM obj) {
   return  ((SCM_NIMP(obj) && WINDOWP(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
-SCM get_window(SCM kill_p) 
+SCM get_window(SCM kill_p, SCM select_p) 
 {
+  if (kill_p==SCM_UNDEFINED) {
+    kill_p = SCM_BOOL_F;
+  } else if (!gh_boolean_p(kill_p)) {
+    scm_wrong_type_arg("get-window",1,kill_p);
+  }
+  if (select_p==SCM_UNDEFINED) {
+    select_p = SCM_BOOL_T;
+  } else if (!gh_boolean_p(select_p)) {
+    scm_wrong_type_arg("get-window",2,select_p);    
+  }
   if (window_context==SCM_UNDEFINED) {
-    return select_window(kill_p);
+    if (select_p==SCM_BOOL_T) {
+      return select_window(kill_p);
+    } else {
+      return SCM_BOOL_F;
+    }
   }
   return window_context;
 }
+
+
 
 
 SCM select_window(SCM kill_p) 
@@ -201,9 +217,11 @@ void FocusOn(ScwmWindow *t,int DeIconifyOnly);
 
 SCM focus(SCM win)
 {
+  ScwmWindow *tmp_win;
   SCM_REDEFER_INTS;
   VALIDATE(win,"focus");
-  FocusOn(SCWMWINDOW(win),0);
+  tmp_win=SCWMWINDOW(win);
+    FocusOn(tmp_win,0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
@@ -463,10 +481,13 @@ SCM move_to(SCM x, SCM y, SCM win)
   return SCM_BOOL_T;
 }
 
+extern int orig_x,orig_y,have_orig_position;
+
 SCM interactive_move(SCM win)
 {
   ScwmWindow *tmp_win;
   Window w;
+  XEvent event;
   int x,y;
   SCM_REDEFER_INTS;
   VALIDATE(win,"interactive-move");
@@ -480,7 +501,15 @@ SCM interactive_move(SCM win)
       w = tmp_win->icon_w;
     }
   }
-  InteractiveMove(&w,tmp_win,&x,&y,NULL);
+  if (have_orig_position) {
+    event.xbutton.x_root = orig_x;
+    event.xbutton.y_root = orig_y;
+  } else {
+    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+		  &event.xbutton.x_root, &event.xbutton.y_root,	
+		  &JunkX, &JunkY, &JunkMask);
+  }
+  InteractiveMove(&w,tmp_win,&x,&y,&event);
   move_finalize(w,tmp_win,x,y);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -924,13 +953,15 @@ SCM show_titlebar(SCM win)
 
  VALIDATE(win,"show-titlebar");
  tmp_win=SCWMWINDOW(win);
- tmp_win->flags |= TITLE;
- BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
- SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
-	    tmp_win->frame_width,
-	    tmp_win->frame_height+fl->TitleHeight,
-	    True);
- /* SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True); */
+ if (!(tmp_win->flags & TITLE)) {
+   tmp_win->flags |= TITLE;
+   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+   SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
+	      tmp_win->frame_width,
+	      tmp_win->frame_height+fl->TitleHeight,
+	      True);
+   /* SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True); */
+ }
  SCM_REALLOW_INTS;
  return SCM_BOOL_T;
 }
@@ -949,14 +980,15 @@ SCM hide_titlebar(SCM win)
   
   VALIDATE(win,"hide-titlebar");
   tmp_win=SCWMWINDOW(win);
-  tmp_win->flags &= ~TITLE;
-  tmp_win->title_height = 0;
-  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
-  SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
-	     tmp_win->frame_width,
-	     tmp_win->frame_height-fl->TitleHeight,
-	     True);
-  
+  if (tmp_win->flags & TITLE) {
+    tmp_win->flags &= ~TITLE;
+    tmp_win->title_height = 0;
+    BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+    SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
+	       tmp_win->frame_width,
+	       tmp_win->frame_height-fl->TitleHeight,
+	       True);
+  }
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
@@ -1465,6 +1497,19 @@ SCM set_skip_mapping_x(SCM val, SCM win)
     SCWMWINDOW(win)->flags &= ~SHOW_MAPPING;
   } else {
     scm_wrong_type_arg("set-skip-mapping!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
+
+SCM set_lenience_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-lenience!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= LENIENCE_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~LENIENCE_FLAG;
+  } else {
+    scm_wrong_type_arg("set-lenience!",1,val);
   }
   return SCM_BOOL_T;
 }  
