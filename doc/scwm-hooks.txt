@@ -21,7 +21,7 @@ from the "(app scwm style)" module provides a convenient interface to
 setting the relevant parameters when a new window is created. 
 
 See also `before-new-window-hook' and `before-place-new-window-hook'.
-[From src/add_window.c:128]
+[From src/add_window.c:129]
 
 
 before-new-window-hook (1 args)
@@ -38,7 +38,7 @@ interface to setting the relevant parameters when a new window is
 created.
 
 See also `before-place-new-window-hook' and `after-new-window-hook'. 
-[From src/add_window.c:105]
+[From src/add_window.c:106]
 
 
 before-place-new-window-hook (1 args)
@@ -50,7 +50,7 @@ This hook may be removed later since it is mostly redundant with the other
 two hooks, despite being invoked at a slightly different time. 
 
 See also `before-new-window-hook' and `after-new-window-hook'.
-[From src/add_window.c:119]
+[From src/add_window.c:120]
 
 
 broadcast-config-hook (2 args)
@@ -254,6 +254,22 @@ s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'
 [From src/callbacks.c:53]
 
 
+post-command-hook (2 args)
+- 
+This hook is invoked with two arguments after every `call-interactively' execution.
+The arguments are the procedure just called, and the list of the arguments passed.
+[From src/callbacks.c:64]
+
+
+pre-command-hook (2 args)
+- 
+This hook is invoked with two arguments before every `call-interactively' execution.
+The arguments are the procedure to be called, and a list of the arguments passed.
+Global variable `this-command' and `this-command-args' can be modified to change 
+either of these.
+[From src/callbacks.c:58]
+
+
 scwm-test-hook-0 (0 args)
 - 
 Just a test hook that takes no arguments.
@@ -338,7 +354,7 @@ It is invoked on deletes, destroys, or for any reason that a window
 is closed. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures.
-[From src/add_window.c:142]
+[From src/add_window.c:143]
 
 
 window-enter-hook (1 args)

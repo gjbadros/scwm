@@ -85,7 +85,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From src/binding.c:727]
+[From src/binding.c:728]
 
 
 Face Flags
@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3404]
+[From src/window.c:3440]
 
 
 Fonts
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From src/callbacks.c:328]
+[From src/callbacks.c:302]
 
 
 Image Loaders
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From src/callbacks.c:913]
+[From src/callbacks.c:891]
 
 
 Interactive specifications
@@ -351,7 +351,7 @@ Interactive specifications
 </tgroup>
 </table>
 
-[From src/window.c:4195]
+[From src/window.c:4263]
 
 
 Key Specifier
@@ -458,7 +458,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:614]
+[From src/events.c:616]
 
 
 Shadow and Highlight Factors
@@ -498,7 +498,7 @@ Sticky
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop.
-[From src/window.c:2094]
+[From src/window.c:2130]
 
 
 Themes
@@ -521,7 +521,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From src/callbacks.c:769]
+[From src/callbacks.c:747]
 
 
 Viewports
@@ -553,7 +553,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From src/window.c:1012]
+[From src/window.c:1048]
 
 
 Window Style
@@ -633,7 +633,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From src/window.c:493]
+[From src/window.c:502]
 
 
 X atoms

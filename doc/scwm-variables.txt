@@ -16,7 +16,7 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2356]
+[From src/events.c:2360]
 
 
 cursor-icon
@@ -64,13 +64,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From src/scwm.c:647]
+[From src/scwm.c:648]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From src/scwm.c:650]
+[From src/scwm.c:651]
 
 
 pie-menu-look
@@ -96,6 +96,20 @@ shaped-pie-menu-look
 - 
 A menu-look that gives pie menus with only the labels visible 
 [From modules/pie-menus/draw-pie-menu.c:1365]
+
+
+this-command
+- 
+The current command when executing the `pre-command-hook';  may be mutated to affect 
+      what command is run.  See also `this-command-args'. 
+[From src/callbacks.c:1103]
+
+
+this-command-args
+- 
+The arguments to the current command when executing the `post-command-hook'; may be
+      mutated to affect the arguments when the command is run.  See also `this-command'. 
+[From src/callbacks.c:1106]
 
 
 xpm-shaped-menu-look
