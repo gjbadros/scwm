@@ -23,10 +23,6 @@
 #include "colors.h"
 #include "util.h"
 
-#ifndef HAVE_GH_LENGTH
-#define gh_length gh_list_length
-#endif /* HAVE_GH_LENGTH */
-
 long scm_tc16_scwm_face;
 
 int 

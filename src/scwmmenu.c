@@ -32,10 +32,6 @@
 #include "screen.h"
 #include "color.h"
 
-#ifndef HAVE_GH_LENGTH
-#define gh_length gh_list_length
-#endif /* HAVE_GH_LENGTH */
-
 #define scmBLACK load_color(gh_str02scm("black"))
 #define scmWHITE load_color(gh_str02scm("white"))
 
@@ -239,7 +235,7 @@ GetPreferredPopupPosition(DynamicMenu *pmd,
     *pyReturn = y;
   } else {
     *pxReturn = x - pmd->pmdi->cpixWidth/2;
-    *pyReturn = y - pmd->rgpmiim[0]->cpixHeight/2;
+    *pyReturn = y - pmd->rgpmiim[0]->cpixItemHeight/2;
   }
   return;
 }
@@ -344,7 +340,7 @@ MenuInteraction(DynamicMenu *pmd)
 	  break;
 	} /* switch */
 	
-      /* FIXGJB: Now handle new menu items, whether it is from a keypress or
+      /* FIXGJB: Now handle newly selected menu items, whether it is from a keypress or
 	 a pointer motion event */
       XFlush(dpy);
     } /* while next event */
@@ -376,9 +372,8 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     rgpmiim[imiim] = pmiim;
     pmiim->pmi = pmi;
 
-    pmiim->cpixLabelX = -1;	/* just init: gets set in drawing code */
-    pmiim->cpixExtraX = -1;     /* just init: gets set in drawing code */
-    pmiim->cpixHeight = -1;     /* just init: gets set in drawing code */
+    pmiim->cpixItemHeight = -1;	/* just init: gets set in drawing code */
+    pmiim->cpixOffsetY = -1;	/* just init: gets set in drawing code */
     pmiim->fOnTopEdge = False;	/* just init: gets set in drawing code */
     pmiim->fOnBottomEdge = False; /* just init: gets set in drawing code */
 
@@ -409,6 +404,15 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
 
   InitializeDynamicMenu(pmd);	/* add drawing independent fields */
   ConstructDynamicMenu(pmd);	/* update/create pmd->pmdi */
+
+  { /* scope */
+    /* Get the right events -- don't trust the drawing code to do this */
+    XSetWindowAttributes attributes;
+    attributes.event_mask = (ExposureMask | EnterWindowMask);
+    XChangeWindowAttributes(dpy,pmd->pmdi->w,CWEventMask,&attributes);
+  }
+
+  /* Connect the window to the dynamic menu, pmd */
   XSaveContext(dpy,pmd->pmdi->w,ScwmMenuContext,(caddr_t)pmd);
 
   { /* scope */

@@ -34,7 +34,9 @@ typedef struct MenuDrawingInfo_tag
   int cpixWidth;		/* the width of the window */
   int ccol;			/* the number of columns in the menu */
   int cpixItemOffset;		/* how far from the left edge are items */
-  int cpixItemWidth;		/* how wide are items */
+  int cpixLeftPicWidth;		/* how wide are the left images */
+  int cpixTextWidth;		/* how wide are the text items */
+  int cpixExtraTextWidth;	/* how wide are the text items */
   /* cpixItemOffset + ccol * cpixItemWidth == cpixWidth */
   Pixel BGColor;		/* the background color */
   Pixel SideBGColor;		/* the side image bg color */

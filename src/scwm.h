@@ -344,7 +344,9 @@ extern Atom XA_SCWM_EXECUTE;
 #define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)
 #endif
 
-
+#ifndef HAVE_GH_LENGTH
+#define gh_length gh_list_length
+#endif /* HAVE_GH_LENGTH */
 
 
 /*
