@@ -308,12 +308,32 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
 #undef FUNC_NAME
 #else /* USE_IMLIB */
 
+Bool
+MakeScwmImageFromImlibImage(scwm_image *ci,ImlibImage *pimg)
+{
+  ci->im = pimg;
+  ci->width = pimg->rgb_width;
+  ci->height = pimg->rgb_height;
+  
+  if (!Imlib_render(imlib_data, pimg, ci->width, ci->height)) {
+    return False;
+  }
+  else {
+    ci->image = Imlib_move_image(imlib_data, pimg);
+    ci->mask = Imlib_move_mask(imlib_data, pimg);
+    ci->depth = imlib_data->x.depth;
+  }
+  return True;
+}
+
+
 SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
            (SCM full_path))
      /** Load an image file using imlib identified by the pathname FULL-PATH. */
 #define FUNC_NAME s_load_imlib_image
 {
   SCM result;
+  ImlibImage *pimg = NULL;
   scwm_image *ci;
   int ignore;
   char *c_path;
@@ -323,34 +343,19 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
 
   c_path = gh_scm2newstr(full_path,&ignore);
 
-  ci->im = Imlib_load_image(imlib_data, c_path);
-  if (ci->im == 0)
-  {
+  pimg = Imlib_load_image(imlib_data, c_path);
+  if (!pimg) {
     scwm_msg(WARN, FUNC_NAME, "load-imlib-image could not load image `%s'", c_path);
     result = SCM_BOOL_F;
-  }
-  else
-  {
-    ci->width = ci->im->rgb_width;
-    ci->height = ci->im->rgb_height;
-    
-    if(!Imlib_render(imlib_data, ci->im, ci->width, ci->height))
-    {
+  } else {
+    if (!MakeScwmImageFromImlibImage(ci,pimg)) {
       scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmaps from "
                "image `%s'", c_path);
-      result = SCM_BOOL_F;
-    }
-    else
-    {
-      ci->image = Imlib_move_image(imlib_data, ci->im);
-      ci->mask = Imlib_move_mask(imlib_data, ci->im);
-      ci->depth = imlib_data->x.depth;
     }
   }
 
   gh_free(c_path);
   return result;
-  
 }
 #undef FUNC_NAME
 
@@ -592,6 +597,7 @@ appropriate file. */
 #undef FUNC_NAME
 
 
+/* GJB:FIXME:: make name == #t do a clear of all entries (ie. reset hash table). */
 SCWM_PROC(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
            (SCM name))
      /** Images are cached by both name and full pathname. It is
@@ -607,6 +613,39 @@ associated with NAME from the image cache.*/
 }
 #undef FUNC_NAME
 
+
+#ifdef USE_IMLIB
+SCWM_PROC(window_to_image,"window->image", 1, 4, 0,
+          (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height))
+     /** Return an image with the contents of window WIN.
+WIN can be a window id (as a long), a window object, or
+the symbol 'root-window. */
+#define FUNC_NAME s_window_to_image
+{
+  Window w;
+  int x, y, wd, ht;
+  int win_width, win_height;
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,x_offset,x,0);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,y_offset,y,0);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,width,wd,-1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(5,height,ht,-1);
+  FXGetWindowSize(w,&win_width,&win_height);
+  if (wd < 0) wd = win_width - x;
+  if (ht < 0) ht = win_height - y;
+  { /* scope */
+    ImlibImage *pimg = Imlib_create_image_from_drawable(imlib_data,
+                                                        w, None, x, y, wd, ht);
+    SCM result = make_empty_image(gh_str02scm("by window->image"));
+    scwm_image *ci = IMAGE(result);
+    if (!MakeScwmImageFromImlibImage(ci,pimg)) {
+      scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmaps from window");
+    }
+    return result;
+  }
+}
+#undef FUNC_NAME
+#endif          
 
 SCM
 make_image_from_pixmap(char *szDescription,
