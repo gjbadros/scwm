@@ -530,7 +530,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   int origHeight;
 
   int ymotion = 0, xmotion = 0;
-  Bool finished = False, done = False, abort = False;
+  Bool finished = False, done = False;
   int x, y, delta_x, delta_y;
 
   /* save state of edge wrap */
@@ -636,7 +636,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     case KeyPress:
       /* simple code to bag out of move - CKH */
       if (XLookupKeysym(&(ResizeEvent.xkey), 0) == XK_Escape) {
-	abort = True;
+	dragx = origx;
+	dragy = origy;
+	dragWidth = origWidth;
+	dragHeight = origHeight;
 	finished = True;
       }
       done = True;

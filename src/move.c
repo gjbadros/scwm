@@ -164,7 +164,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 {
   Bool finished = False;
   Bool done;
-  int xl, yt, paged, real_x, real_y; 
+  int xl, yt, paged, real_x, real_y, saved_x, saved_y; 
   
   /* show the size/position window */
   MapMessageWindow();
@@ -178,13 +178,15 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     RedrawOutlineAtNewPosition(Scr.Root, xl, yt, OutlineWidth, OutlineHeight);
   }
 
-  DisplayPosition(psw, 
-                  FRAME_X_VP(psw), FRAME_Y_VP(psw),
-                  True);
-
-  if (!psw->fIconified) {
+  if (psw->fIconified) {
+    saved_x = ICON_X_VP(psw);
+    saved_y = ICON_Y_VP(psw);
+  } else {
+    saved_x = FRAME_X_VP(psw);
+    saved_y = FRAME_Y_VP(psw);
     CassowaryEditPosition(psw);
   }
+  DisplayPosition(psw, saved_x, saved_y, True);
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -209,6 +211,16 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     case KeyPress:
       /* simple code to bag out of move - CKH */
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
+	if (psw->fIconified) {
+          psw->icon_x_loc = saved_x + ICON_VP_OFFSET_X(psw);
+          psw->icon_xl_loc = saved_x -
+            (psw->icon_w_width - psw->icon_p_width) / 2 +
+            ICON_VP_OFFSET_X(psw);
+          psw->icon_y_loc = saved_y + ICON_VP_OFFSET_Y(psw);
+	} else {
+	  xl = saved_x;
+	  yt = saved_y;
+	}
 	finished = True;
       }
       SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
