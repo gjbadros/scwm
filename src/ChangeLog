@@ -1,3 +1,21 @@
+Thu Sep 17 09:10:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added set-window-context!, window-context to support
+	`with-window' macro
+
+	* window.c: Fix FIsPartiallyInViewport to use x+width && y+height, 
+	not the other way around. Thanks Todd Larason!
+
+	* scwm.c (RestoreWithdrawnLocation): Use FRAME_Y_VP, not
+	FRAME_X_VP for xwc.y when undoing gravity adjustments.  Thanks
+	Todd Larason!
+
+	* module-interface.c (BroadcastIconInfo): Use ICON_[XY]_VIRT, not
+	_VP when broadcasting icon positions (so sticky icons show up on
+	the current desk.
+
+	* events.c (HandleConfigureRequest): Use FRAME_[XY]_VP, not FRAME_[XY]
+
 Wed Sep 16 15:54:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: Move struct ScwmWindow up before

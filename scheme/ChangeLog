@@ -1,3 +1,12 @@
+Thu Sep 17 09:16:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `delta-position' and `move-window-relative' (the 
+	latter uses new `with-window' macro
+
+	* base.scm:  Make bell an alias for beep (instead of a macro).
+	Added `with-window' macro using new `set-window-context!' and
+	`window-context' primitives
+
 Wed Sep 16 08:56:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm (maximize, unmaximize): Use
