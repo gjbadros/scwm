@@ -1,5 +1,8 @@
 Fri Mar  6 06:46:20 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* window.c: Fix to smart-placement, patch from Hideki Sakurada
+ 	<sakurada@kuis.kyoto-u.ac.jp>
+
 	* scwm.c (init_scwm_load_path): New function to add the contents
  	of the SCWM_LOAD_PATH environement varibale and the compiled-in
 	load path to guile's load path.
