@@ -11,6 +11,7 @@
 #include <X11/keysym.h>
 
 #include <guile/gh.h>
+#include <limits.h>
 
 #define BINDING_IMPLEMENTATION
 #include "binding.h"
@@ -1271,10 +1272,12 @@ ScmBindingDescriptionFromPbnd(const Binding *pbnd)
   return gh_list(mouse_p,contexts,modmask,keybut,proc1,proc2,SCM_UNDEFINED);
 }
 
-SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 1, 0,
-          (SCM proc))
-     /** Return any bindings that invoke PROC.
-If PROC is omitted, return all bindings.
+SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 2, 0,
+          (SCM proc, SCM context))
+     /** Return any bindings that invoke PROC in context CONTEXT.
+If PROC is omitted or #f, match all bindings in context CONTEXT.
+If CONTEXT is omitted or #f, match bindings regardless of context.
+If both PROC and CONTEXT are omitted or #f, return all bindings.
 The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
@@ -1283,14 +1286,22 @@ symbols. */
 {
   SCM bindings = SCM_EOL;
   Binding *pbnd;
+  int cont = 0;
   VALIDATE_ARG_PROC_USE_F(1,proc);
+  VALIDATE_ARG_SYM_USE_DEF(2,context,SCM_BOOL_F);
+  
+  if (SCM_BOOL_F != context)
+    cont = lookup_context(context);
 
   for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
     if (SCM_BOOL_F == proc || 
         (pbnd->Thunk == proc || pbnd->ReleaseThunk == proc)) {
-      /* got a hit */
-      SCM bind = ScmBindingDescriptionFromPbnd(pbnd);
-      bindings = gh_cons(bind,bindings);
+      /* got a proc hit */
+      if (cont == 0 || pbnd->Context == cont) {
+        /* got a total hit (context matched, too) */
+        SCM bind = ScmBindingDescriptionFromPbnd(pbnd);
+        bindings = gh_cons(bind,bindings);
+      }
     }
   }
   return bindings;
