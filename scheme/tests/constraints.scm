@@ -99,13 +99,19 @@
   
   (define (keep-at-left-edge w)
     (let ((w-xl (window-clv-xl w)))
-      (let ((cn (make-cl-constraint w-xl = 0 cls-weak .1)))
+      (let ((cn (make-cl-constraint w-xl = 0 cls-strong .1)))
+	(cl-add-constraint solver cn)
+	cn)))
+
+  (define (keep-at-top-edge w)
+    (let ((w-yt (window-clv-yt w)))
+      (let ((cn (make-cl-constraint w-yt = 0 cls-strong .1)))
 	(cl-add-constraint solver cn)
 	cn)))
 
   (define (keep-at-right-edge w)
     (let ((w-xr (window-clv-xr w)))
-      (let ((cn (make-cl-constraint w-xr = 1152 cls-weak .1)))
+      (let ((cn (make-cl-constraint w-xr = 1152 cls-strong .1)))
 	(cl-add-constraint solver cn)
 	cn)))
   
@@ -122,6 +128,22 @@
     (cl-end-edit s))
   )
 
+(begin
+  (define wA (select-window-interactively "Pick window A"))
+  (define wB (select-window-interactively "Pick window B"))
+  (define wC (select-window-interactively "Pick window C")))
+
+(begin
+  (keep-at-top-edge wA)
+  (keep-full-height wA wB)
+  (keep-adjacent-vertical wA wB))
+
+(begin
+  (keep-at-left-edge wA)
+  (keep-full-width wA wB)
+  (keep-adjacent-horizontal wA wB))
+
+
 ;;(for-each (lambda (w) (write w) (write (window-position w))) (list-all-windows))
 ;;(for-each (lambda (w) (iconify w)) (list-all-windows))
 ;; (move-to 0 0 (id->window 29360129))
@@ -133,11 +155,6 @@
 ;; (window-viewport-position w)
 
 ;; (move-to -20 -20)
-
-(begin
-  (define wA (select-window-interactively "Pick window A"))
-  (define wB (select-window-interactively "Pick window B"))
-  (define wC (select-window-interactively "Pick window C")))
 
 (define cn (car (cl-constraint-list solver #f)))
 (cl-remove-constraint solver cn)
@@ -193,10 +210,15 @@
 
 (cl-remove-constraint solver cnl)
 
-(keep-full-width wA wB)
-(keep-adjacent-vertical wA wB)
+(begin
+  (keep-at-left-edge wA)
+  (keep-full-width wA wB)
+  (keep-adjacent-horizontal wA wB))
+(begin
+  (keep-at-top-edge wA)
+  (keep-full-height wA wB)
+  (keep-adjacent-vertical wA wB))
 (keep-adjacent-vertical (select-window-interactively) (select-window-interactively))
-(keep-full-height wA wB)
 (keep-full-height (select-window-interactively) (select-window-interactively))
 (keep-to-left-of (current-window-with-focus) wA)
 (keep-bottoms-even wA wB)
