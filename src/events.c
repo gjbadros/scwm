@@ -268,25 +268,25 @@ InitEventHandlerJumpTable(void)
   for (i = 0; i < LASTEvent; i++) {
     EventHandlerJumpTable[i] = NULL;
   }
-  EventHandlerJumpTable[Expose] = HandleExpose;
-  EventHandlerJumpTable[DestroyNotify] = HandleDestroyNotify;
-  EventHandlerJumpTable[MapRequest] = HandleMapRequest;
-  EventHandlerJumpTable[MapNotify] = HandleMapNotify;
-  EventHandlerJumpTable[UnmapNotify] = HandleUnmapNotify;
-  EventHandlerJumpTable[ButtonPress] = HandleButtonPress;
-  EventHandlerJumpTable[EnterNotify] = HandleEnterNotify;
-  EventHandlerJumpTable[LeaveNotify] = HandleLeaveNotify;
-  EventHandlerJumpTable[FocusIn] = HandleFocusIn;
+  EventHandlerJumpTable[Expose          ] = HandleExpose;
+  EventHandlerJumpTable[DestroyNotify   ] = HandleDestroyNotify;
+  EventHandlerJumpTable[MapRequest      ] = HandleMapRequest;
+  EventHandlerJumpTable[MapNotify       ] = HandleMapNotify;
+  EventHandlerJumpTable[UnmapNotify     ] = HandleUnmapNotify;
+  EventHandlerJumpTable[ButtonPress     ] = HandleButtonPress;
+  EventHandlerJumpTable[EnterNotify     ] = HandleEnterNotify;
+  EventHandlerJumpTable[LeaveNotify     ] = HandleLeaveNotify;
+  EventHandlerJumpTable[FocusIn         ] = HandleFocusIn;
   EventHandlerJumpTable[ConfigureRequest] = HandleConfigureRequest;
-  EventHandlerJumpTable[ClientMessage] = HandleClientMessage;
-  EventHandlerJumpTable[PropertyNotify] = HandlePropertyNotify;
-  EventHandlerJumpTable[KeyPress] = HandleKeyPress;
-  EventHandlerJumpTable[KeyRelease] = HandleKeyRelease;
+  EventHandlerJumpTable[ClientMessage   ] = HandleClientMessage;
+  EventHandlerJumpTable[PropertyNotify  ] = HandlePropertyNotify;
+  EventHandlerJumpTable[KeyPress        ] = HandleKeyPress;
+  EventHandlerJumpTable[KeyRelease      ] = HandleKeyRelease;
   EventHandlerJumpTable[VisibilityNotify] = HandleVisibilityNotify;
-  EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
-  EventHandlerJumpTable[MappingNotify] = HandleMappingNotify;
-  EventHandlerJumpTable[MotionNotify] = HandleMotionNotify;
-  EventHandlerJumpTable[SelectionNotify] = HandleSelectionNotify;
+  EventHandlerJumpTable[ColormapNotify  ] = HandleColormapNotify;
+  EventHandlerJumpTable[MappingNotify   ] = HandleMappingNotify;
+  EventHandlerJumpTable[MotionNotify    ] = HandleMotionNotify;
+  EventHandlerJumpTable[SelectionNotify ] = HandleSelectionNotify;
 
   if (ShapesSupported)
     EventHandlerJumpTable[ShapeEventBase + ShapeNotify] = HandleShapeNotify;
@@ -561,10 +561,15 @@ HandleKeyEvent(Bool fPress)
   unsigned int modifier;
   /* Here's a real hack - some systems have two keys with the
    * same keysym and different keycodes. This converts all
-   * the cases to one keycode. */
-  unsigned int keycode = 
+   * the cases to one keycode.  The first part breaks binding
+   * of keycodes that don't have a corresponding keysym.  This
+   * whole thing should be replaced with something that remembers
+   * the keycode or keysym that the user actually asked to bind.  */
+  unsigned int keycode =
     XKeysymToKeycode(dpy, 
                      XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
+  if(keycode == 0)
+    keycode = Event.xkey.keycode;
 
   DBUG_EVENT((DBG,"HandleKeyPress", "Entered"));
     
@@ -607,7 +612,7 @@ HandleKeyEvent(Bool fPress)
     XAllowEvents(dpy, ReplayKeyboard, CurrentTime);
 #else
     /* if we get here, no function key was bound to the key.  Send it
-     * to the client if it was in a window we know abou
+     * to the client if it was in a window we know about
      */
     if (pswCurrent) {
       if (Event.xkey.window != pswCurrent->w) {
