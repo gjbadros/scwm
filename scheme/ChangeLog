@@ -1,3 +1,17 @@
+Mon Mar 30 15:38:00 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* auto-raise.scm: New auto-raise module. The #:auto-raise,
+ 	#:auto-raise-delay, #:auto-raise-focus-proc,
+ 	#:auto-raise-unfocus-proc and #:auto-raise-unfocus-delay window
+ 	style options added by this module control auto-raise. Still not
+ 	as general as I'd like (it should be possible to set an arbitrary
+ 	number of independent focus-unfocus pairs so you could do typical
+ 	autoraise and the maximize-unmaximize hack independently with
+ 	different timeouts), but will e eventually. See the file for
+ 	exaple usage.
+
+	Makefile.in: Install auto-raise.scm
+
 Sun Mar 29 18:19:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-module.scm: Define and export kill-all-fvwm-modules which
