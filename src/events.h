@@ -45,7 +45,7 @@ void DispatchEvent(void);
 
 void InitEventHandlerJumpTable(void);
 
-int NextScwmEvent(Display * dpy, XEvent * event);
+int NextScwmEvent(Display *dpy, XEvent *event, Bool fNoBlock);
 int NoEventsScwmUpdate(Bool fNoBlock);
 
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);

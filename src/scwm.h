@@ -201,7 +201,8 @@ void reset_signal_handler(int sig);
 void newhandler(int sig);
 void newhandler_doreset(int sig);
 void newsegvhandler(int sig);
-
+SCM scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList);
+SCM scwm_make_igsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList);
 
 /* Global variables */
 extern int master_pid;

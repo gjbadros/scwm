@@ -322,7 +322,7 @@ HandleEvents(void)
 
   while (True) {
     last_event_type = 0;
-    if (!NextScwmEvent(dpy, &Event)) {
+    if (!NextScwmEvent(dpy, &Event, False)) {
       DispatchEvent();
     }
   }
@@ -337,7 +337,7 @@ of a long computation. */
 {
   int cevents = 0;
   last_event_type = 0;
-  while (!NextScwmEvent(dpy, &Event)) {
+  while (!NextScwmEvent(dpy, &Event, True)) {
     ++cevents;
     DispatchEvent();
   }
@@ -1979,7 +1979,7 @@ NoEventsScwmUpdate(Bool fNoBlock)
  * or for input from an input hook (e.g., the fvwm2 module pipe)
  */
 int 
-NextScwmEvent(Display * dpy, XEvent * event)
+NextScwmEvent(Display *dpy, XEvent *event, Bool fNoBlock)
 {
 #define FUNC_NAME "NextScwmEvent"
   DBUG((DBG,FUNC_NAME, "Entered"));
@@ -1996,7 +1996,7 @@ NextScwmEvent(Display * dpy, XEvent * event)
     return 0;
   }
   DBUG((DBG,FUNC_NAME, "no X events waiting - calling NoEventsScwmUpdate"));
-  NoEventsScwmUpdate(False);
+  NoEventsScwmUpdate(fNoBlock);
   DBUG((DBG,FUNC_NAME, "leaving"));
   return 1;
 }

@@ -537,7 +537,7 @@ InitUserData()
 int
 main(int argc, char **argv)
 {
-#ifdef HAVE_SCM_INIT_HEAP_SIZE_FACTOR
+#if 0 || defined(HAVE_SCM_INIT_HEAP_SIZE_FACTOR)
   scm_init_heap_size_factor = 24;
 #endif
   scwm_gh_enter(argc, argv, scwm_main);
@@ -832,9 +832,6 @@ Repository Timestamp: %s\n",
   DBUG((DBG,"main", "Done parsing args"));
   
   DBUG((DBG,"main", "Installing signal handlers"));
-  
-  newhandler(SIGINT); /* later change this to do a reset
-                         don't want it to try to longjmp too soon, though */
 
   /* this code is coupled with the code that restores this
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
@@ -1136,8 +1133,10 @@ Repository Timestamp: %s\n",
   /* this code is coupled with the code that restores this
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler_doreset(SIGHUP);
-  newhandler_doreset(SIGINT);
   newhandler_doreset(SIGFPE);
+#ifdef SCWM_CATCH_SIGINT
+  newhandler_doreset(SIGINT);
+#endif
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
   return;
