@@ -1,3 +1,8 @@
+1998-07-21  Maciej Stachowiak  <maciej@roc-ny3-18.ix.netcom.com>
+
+	* events.c (HandleScwmExec): Examined this function. I could not
+	find a problem, but added many explanatory comments.
+
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.h: Update proto for
@@ -10,7 +15,8 @@
 
 	* miscprocs.c: Add period to docstring
 
-	* placement.c, borders.c: Send extra arg to CassowarySetCValuesAndSolve.
+	* placement.c, borders.c: Send extra arg to 
+	CassowarySetCValuesAndSolve.
 
 	* add_window.c: Added second param to CassowarySetCValuesAndSolve, 
 	a bool to tell whether should solve (or just set the values).
@@ -25,8 +31,8 @@
 	* miscprocs.c: Fix misuse of flag formal in
 	set_smart_placement_is_really_smart_x
 
-	* binding.c, miscprocs.c: fix mismatches between c func name and primitive
-	name, as warning by extract-docs
+	* binding.c, miscprocs.c: fix mismatches between c func name and
+	primitive name, as warning by extract-docs
 
 	* module-interface.c: quote "M_ICONIFY" in the comment docstring
 	since it is not an argument.

@@ -465,19 +465,30 @@ HandleScwmExec()
   unsigned long last_offset=0;
   unsigned long saved_bytes_after=0;
   
-      
+  /* The SCWMEXEC_REQWIN property is treated as a queue of window IDs
+     from which the request will be read. There may be more than one
+     (or fewer than one in some cases) by the time we get here. We
+     will loop and keep reading until we have snarfed the whole
+     property, to make sure we can safely delete it. */
   do {
-    /* Determine the request window. */
+    /* Read a single request window from the queue. */
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
                           (unsigned char **) &pw)==Success && pw!=NULL) {
+      /* This is the window we want to look at: */
       w=*pw;
       XFree(pw);
+      /* Increment the offset at which to read within the property. It
+	 will not get deleted until we read the very last bytes at the
+	 end. */
       ++last_offset;
+      /* Save an indication of wether we need to read more or not. */
       saved_bytes_after=bytes_after;
       
-      /* Get and delete its request. */
+      /* Get and delete its SCWMEXEC_REQUEST property. We do
+         XGetWindowProperty twice, once to get the length, and again
+         to read the whole length's worth. */
       if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
 			     0, 0, False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
@@ -496,12 +507,14 @@ HandleScwmExec()
 	/* Temporarily redirect output and error to string ports. 
 	   Note that the port setting functions return the current previous
 	   port. */
-	
 	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
 	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
+
+	/* Workaround for a problem with older Guiles */
 	saved_def_e_port = scm_def_errp;
 	scm_def_errp = scm_current_error_port();
 
+	/* Evaluate the request expression and free it. */
 	val = scwm_safe_eval_str((char *) req);
 	XFree(req); 
 	str_val=scm_strprint_obj(val);
@@ -512,9 +525,13 @@ HandleScwmExec()
 	e_port=scm_set_current_error_port(e_port);
 	scm_def_errp = saved_def_e_port;
 
-	output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),&olen);
-	error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),&elen);
+	/* Retrieve output and errors */
+	output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),
+						 &olen);
+	error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),
+						&elen);
 	
+	/* Set the output, error and reply properties appropriately. */
 	XChangeProperty(dpy, w, XA_SCWMEXEC_OUTPUT, XA_STRING,
 			8, PropModeReplace, output, olen);
 	XChangeProperty(dpy, w, XA_SCWMEXEC_ERROR, XA_STRING,
@@ -529,7 +546,7 @@ HandleScwmExec()
       }
     }
   } while (saved_bytes_after != 0);
-  /* Repeat until we get a real_bytes_after of 0 on reading SCWMEXEC_REQWIN,
+  /* Repeat until we get a saved_bytes_after of 0 on reading SCWMEXEC_REQWIN,
      indicating that we read it all and it was deleted. It may well have
      been re-created before we exit, but that doesn't matter because we'll
      get a PropertyNotify and re-enter, but the offset to use will correctly
