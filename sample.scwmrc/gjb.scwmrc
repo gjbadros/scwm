@@ -37,11 +37,13 @@
 	     (app scwm std-menus)
 	     (app scwm prefs-menu)
 	     (app scwm doc)
+	     (app scwm virtual)
 	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     (app scwm cached-program-exists)
 	     (app scwm animation)
 	     (app scwm message-window)
+	     (app scwm animate-iconify-window)
 	     )
 
 (set! debug-fvwm-module #f)
@@ -267,12 +269,23 @@
 (define (popup-root-start)
   (popup-menu 'menu-root-start #t))
 
+
+(define*-public (animate-deiconify-to-current-viewport-focus-raise #&optional (win (get-window)))
+  (cond
+   (win (animate-deiconify-to-current-viewport win)
+	(focus win)
+	(raise-window win)
+	(warp-to-window win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
+
 (define (show-icon-list-menu)
-  (show-window-list-menu #:only iconified? #:warp-to-first #t))
+  (show-window-list-menu #:only iconified? #:warp-to-first #t 
+			 #:proc animate-deiconify-to-current-viewport-focus-raise))
 
 (define (show-xterm-window-list-menu)
   (show-window-list-menu #:only (lambda (w) (string=? (window-class w) "XTerm")) 
 			 #:warp-to-first #t
+			 #:proc deiconify-to-current-viewport-focus-raise
 			 #:flash-window-proc flash-window
 			 #:unflash-window-proc unflash-window))
 
@@ -352,12 +365,6 @@
 ;; (window-style "*" #:sticky-icon #f)
 ;; (window-style "*" #:sticky-icon #t)
 ;; (window-style "*" #:random-placement #f #:smart-placement #f)
-
-(define* (deiconify-to-current-viewport #&optional (win (get-window)))
-  (let ((vpx (/ (viewport-x-position) display-width))
-	(vpy (/ (viewport-y-position) display-height)))
-    (deiconify win)
-    (move-window-to-viewport vpx vpy win)))
 
 ;; (deiconify-to-current-viewport (select-window-interactively))
 
@@ -603,7 +610,7 @@
     (add-right-button close-button-face close-window))
 
 (add-right-button tall-maximize-button-face vertical-toggle-maximize)
-(add-right-button iconify-button-face iconify)
+(add-right-button iconify-button-face animate-iconify)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
@@ -1009,7 +1016,7 @@
     (menuitem (if (iconified? w)
 		   "Unmi&nimize"
 		   "Mi&nimize") #:image-left "mini-iconify.xpm" 
-		   #:action iconify)
+		   #:action animate-iconify)
     (menuitem (if (maximized? w) 
 			    "Unma&ximize" 
 			    "Ma&ximize") #:action both-toggle-maximize)
@@ -1079,7 +1086,7 @@
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (animate-deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 default-winlist-proc) ;; was deiconify
@@ -1166,7 +1173,7 @@
 (define (percent-display x y)
   (list (%x x) (%y y)))
 
-(bind-key 'all "C-S-Down" iconify)
+(bind-key 'all "C-S-Down" animate-iconify)
 (bind-key 'all "C-M-Return" toggle-raise)
 (bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
 
