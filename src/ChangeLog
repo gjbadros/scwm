@@ -1,5 +1,11 @@
 Thu Mar 12 00:27:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c: Delete the SCWMEXEC_REQUEST property after reading it.
+
+	* miscprocs.c (scwm_version), miscprocs.h, scmprocs.c: New
+ 	procedure scwm-version, returns a string of the current scwm
+ 	version.
+
 	* scwm.c, events.c: Remove support for --interactive mode;
  	scwmrepl should now be an adequate replacement.
 
