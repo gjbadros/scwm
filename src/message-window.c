@@ -217,7 +217,8 @@ CreateMessageWindow( scwm_msgwindow* msg )
 
   const int width = 50; /* just some starting place-- we'll figure it out later */
   XSetWindowAttributes attributes;
-  unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity | CWEventMask);
+  unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity | 
+                             CWEventMask | CWSaveUnder);
 
   attributes.border_pixel = XCOLOR(msg->fg_color);
   attributes.background_pixel = XCOLOR(msg->bg_color);

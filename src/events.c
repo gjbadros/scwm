@@ -1832,7 +1832,7 @@ HandleConfigureRequest()
     height = FRAME_HEIGHT(pswCurrent);
   }
 
-  if ((fX_spec || fY_spec) && (fWidth_spec || fHeight_spec)) {
+  if ((fX_spec || fY_spec)) {
 #ifdef SCWM_DEBUG_RESIZE_MSGS
     scwm_msg(DBG,FUNC_NAME,"MoveResize to %d,%d %dx%d", 
              x, y, width, height);
