@@ -2189,18 +2189,18 @@ necessary.  See `add-motion-handler' and `remove-motion-handler'. */
 
 /* Inspired by GWM 1.8c --gjb */
 
-SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
-          (SCM key, SCM win,
-           SCM key_press_p, SCM key_release_p, SCM propagate_p))
-     /** Send a synthetic press of KEY. The usual key specification
-format (with modifiers) is used. The event is sent to window WIN if
-specified; otherwise the window to be used defaults to the window
-context in the usual way. By default, both a press and a release are
-sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
-allow you to specify which are sent individually. PROPAGATE? indicates
-whether the propagate flag is set on the event; the default is #f. You
-should not have to worry about this unless you know what it means. */
-#define FUNC_NAME s_send_key_press
+SCWM_PROC(send_key, "send-key", 1,4,0,
+          (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p))
+     /** Send a synthetic press/release of KEY.  
+The usual key specification format (with modifiers) is used. The event
+is sent to window WIN if specified; otherwise the window to be used
+defaults to the window context in the usual way. By default, both a
+press and a release are sent. However, the boolean parameters
+KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent
+individually. PROPAGATE? indicates whether the propagate flag is set
+on the event; the default is #f. You should not have to worry about
+this unless you know what it means. */
+#define FUNC_NAME s_send_key
 {
   KeySym keysym;
   Bool fOkay;
@@ -2239,9 +2239,9 @@ should not have to worry about this unless you know what it means. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(send_button_press, "send-button-press", 1, 3, 0,
-          (SCM button, SCM win, SCM kind, SCM propagate_p))
-     /** Send a synthetic mouse press event.
+SCWM_PROC(send_button, "send-button", 1, 5, 0,
+          (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy))
+     /** Send a synthetic mouse button/release event.
 Create a synthetic event of a press of mouse button BUTTON. The usual
 mouse button specification format (with modifiers) is used. Send the
 event to window WIN if specified; otherwise the window to be used
@@ -2251,7 +2251,7 @@ press and a release are sent---a click. KIND can be one of 'press, 'release,
 PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means. */
-#define FUNC_NAME s_send_button_press
+#define FUNC_NAME s_send_button
 {
   int bnum;
   int mod_mask;
@@ -2261,12 +2261,15 @@ this unless you know what it means. */
   XButtonEvent event;
   int x = 0, y = 0, x_root = 0 , y_root = 0;
   int x2 = 0, y2 = 0;
+  int wx_offset, wy_offset;
   Window w;
   Window pointer_win;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(2, win,w);
   VALIDATE_ARG_SYM_USE_DEF(3,kind,sym_click);
   VALIDATE_ARG_BOOL_COPY_USE_T(4, propagate_p, fPropagate);
+  VALIDATE_ARG_INT_COPY_USE_DEF(5, dx, wx_offset, -1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(6, dy, wy_offset, -1);
 
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME, False);
 
@@ -2284,6 +2287,16 @@ this unless you know what it means. */
   /* and now find the offset within that window */
   XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
 			&x, &y, &JunkChild);
+
+  if (!UNSET_SCM(dx)) {
+    x_root += (wx_offset - x);
+    x = wx_offset;
+  }
+
+  if (!UNSET_SCM(dy)) {
+    y_root += (wx_offset - y);
+    y = wy_offset;
+  }
 
   if (kind == sym_click || kind == sym_press ) {
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 

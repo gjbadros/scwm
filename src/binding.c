@@ -35,7 +35,7 @@
 
 Bool fQuotingKeystrokes = False;
 
-/* also used by window.c's set-window-focus!, event.c's send-button-press */
+/* also used by window.c's set-window-focus!, event.c's send-button */
 SCWM_GLOBAL_SYMBOL(sym_click,"click");
 
 SCWM_SYMBOL(sym_motion,"motion");
