@@ -1108,7 +1108,7 @@ sub CreateMarkupBody ( $$$$$$$ ) {
 
 sub MarkupUsage( $ ) {
   my ($markup_usage) = @_;
-  $markup_usage =~ s%&(optional|key|allow-other-keys)%&amp;$1%g;
+  $markup_usage =~ s%&(optional|key|allow-other-keys|rest)%&amp;$1%g;
   $markup_usage =~ s%(\s+)&(\s+)%$1&amp;$2%g;
   $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
   $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
