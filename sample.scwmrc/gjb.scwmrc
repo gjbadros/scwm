@@ -34,10 +34,9 @@
 (define logo-image-sequence
   (list->vector
    (map (lambda (deg) (make-image
-		       (string-append "scwm-logo"
-				      deg ".xpm")))
-	'("-0" "-45" "-90" "-135" "-180" "-225" "-270" "-315"))))
-
+		       (string-append "scwm-logo-"
+				      (number->string deg) ".xpm")))
+	(iota 24))))
 
 (define scwm-logo-msgwin 
   (make-message-window-with-image 
@@ -49,17 +48,17 @@
 (define next-logo-image
   (let ((i 0))
     (lambda ()
-      (set! i (modulo (+ i 1) 8))
+      (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
       (message-window-set-image! scwm-logo-msgwin 
 				 (vector-ref logo-image-sequence i) #f #f #t))))
 
 
-;; (message-window-set-image! scwm-logo-msgwin (vector-ref logo-image-sequence 1) #f #f #t)
+;; (message-window-set-image! scwm-logo-msgwin (vector-ref logo-image-sequence 13) #f #f #t)
 ;; (message-window-show! scwm-logo-msgwin)
 
 (define (next-logo-image-timer)
   (next-logo-image)
-  (add-timer-hook! 500000 next-logo-image))
+  (add-timer-hook! 500000 next-logo-image-timer))
 
 ;; (add-timer-hook! 500000 next-logo-image-timer)
 
@@ -374,6 +373,15 @@
 	(warp-to-window win)
 	(move-pointer (w%x 20 win) (w%y 20 win)))))
 
+(define*-public (animated-deiconify-to-viewport-focus-raise #&optional (win (get-window)))
+  (cond
+   (win (animated-deiconify-to-last-viewport-position win)
+	(focus win)
+	(raise-window win)
+	(warp-to-window win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
+
+
 ;;; there is a race condition with the mouse-focus
 ;;; giving focus to the new window... 
 ;;; we really need a new hook for this that is
@@ -388,7 +396,7 @@
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified? #:warp-to-first #t 
-			 #:proc animated-deiconify-to-current-viewport-focus-raise))
+			 #:proc animated-deiconify-to-viewport-focus-raise))
 
 (define (show-xterm-window-list-menu)
   (show-window-list-menu #:only (lambda (w)
@@ -396,7 +404,7 @@
 				   (string=? (window-class w) "XTerm")
 				   (string=? (window-class w) "NXTerm")) )
 			 #:warp-to-first #t
-			 #:proc animated-deiconify-to-current-viewport-focus-raise
+			 #:proc animated-deiconify-to-viewport-focus-raise
 			 #:flash-window-proc flash-window
 			 #:unflash-window-proc unflash-window))
 
@@ -486,6 +494,7 @@
 ;; (window-style "*" #:show-icon #t #:sticky-icon #f)
 ;; (window-style "*" #:show-icon #t #:sticky-icon #t)
 ;; (window-style "xterm" #:use-theme (load-theme "gjb"))
+;; (window-style "xterm" #:show-icon #t)
 ;; (window-style "*" #:show-icon #t)
 ;; (window-style "*" #:show-icon #f)
 ;; (window-style "*" #:sticky-icon #t)
@@ -710,28 +719,28 @@
 
 
 (define left-button-number 1)
-(define right-button-number 2)
+(define right-button-number 1)
 
 ;;(set-button-face! 1 mini-icon-button-face)
 ;; (set! left-button-number 1)
-;; (set! right-button-number 2)
+;; (set! right-button-number 1)
 
 (define* (add-left-button button-face hook #&optional (immed-hook #f))
-  (set-button-face! left-button-number button-face)
+  (set-left-button-face! left-button-number button-face)
   (bind-mouse (string->symbol 
-	       (string-append "button-" 
+	       (string-append "left-button-" 
 			      (number->string left-button-number)))
 	      1 hook immed-hook)
-  (set! left-button-number (+ 2 left-button-number)))
+  (set! left-button-number (+ 1 left-button-number)))
 
 
 (define* (add-right-button button-face hook #&optional (immed-hook #f))
-  (set-button-face! right-button-number button-face)
+  (set-right-button-face! right-button-number button-face)
   (bind-mouse (string->symbol 
-	       (string-append "button-" 
+	       (string-append "right-button-" 
 			      (number->string right-button-number)))
 	      1 hook immed-hook)
-  (set! right-button-number (+ 2 right-button-number)))
+  (set! right-button-number (+ 1 right-button-number)))
 
 ;;; window buttons
 ;(bind-mouse 'button-1 1 popup-small-ops)
@@ -1736,8 +1745,9 @@ union of all other window managers!
 ;; let them take priority over anything I do in here
 (load-preferences)
 
-(define (next-logo-image) #f)
 (message-window-hide! scwm-logo-msgwin)
+(set! next-logo-image (lambda () #f))
+(set! logo-image-sequence #f)
 
 (remove-hook! load-processing-hook next-logo-image-n)
 ;;(remove-hook! load-processing-hook move-scwm-logo-msgwin)
