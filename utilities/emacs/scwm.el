@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-30 Thu 10:03:32 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-04 Tue 12:25:05 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -76,8 +76,9 @@
 
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
- (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
- (or (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t)))
+ ;; this is for those who load this uncompiled.
+ (unless (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t))
+ (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos")))
 (eval-when-compile
  (require 'cl)                  ; for `gensym'
  (defvar Info-history)          ; defined in info.el
@@ -85,12 +86,16 @@
  (defvar scheme-buffer)         ; defined in cmuscheme.el
  (defvar font-lock-defaults-alist) ; defined in font-lock.el
  (defvar scwm-mode-map)         ; kill warnings
- (unless (fboundp 'quit-window)
-   (autoload 'quit-window "window") ; these are dumped with e20.3
-   (autoload 'help-xref-button "help") ; so the `autoload's are just to
-   (autoload 'help-setup-xref "help")) ; keep the compiler happy
+ ;; these three are dumped with e20.3
+ (unless (fboundp 'quit-window) (defalias 'quit-window 'ignore))
+ (unless (fboundp 'help-xref-button) (defalias 'help-xref-button 'ignore))
+ (unless (fboundp 'help-setup-xref) (defalias 'help-setup-xref 'ignore))
+ ;; why aren't these autoloaded by default?
  (autoload 'Info-find-node "info")
  (autoload 'inferior-scheme-mode "cmuscheme")
+ ;; cater to the inferior emacs implementations :-)
+ (unless (fboundp 'save-current-buffer)
+   (defalias 'save-current-buffer 'save-excursion))
  (unless (fboundp 'with-current-buffer)
    (defmacro with-current-buffer (buffer &rest body)
      "Execute the forms in BODY with BUFFER as the current buffer.
@@ -168,7 +173,6 @@ you have to (require 'font-lock) first.  Sorry.")
   'scwm-goto-guile-procedure-node)
 (define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
 
-
 ;;;###autoload
 (defun scwm-run ()
   "Run scwm interaction or pop to an existing one.
@@ -179,7 +183,9 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
       (if (and (consp ff) (eq (car ff) 'autoload)) (load (cadr ff))
 	  (error "no `inferior-scheme-mode' and no place to get it from."))))
   (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl)))
-  (inferior-scheme-mode))
+  (inferior-scheme-mode)
+  (define-key inferior-scheme-mode-map [(control h)]
+    (lookup-key scwm-mode-map [(control h)])))
 
 (defsubst scwm-eval (sexp out)
   "Evaluate the SEXP with scwm-exec and print the results to OUT."
@@ -288,8 +294,7 @@ Returns a string which is present in the `scwm-obarray'."
 (defun scwm-documentation (pat)
   "Query scwm for documentation for the symbol PAT."
   (interactive (list (scwm-complete-symbol)))
-  (when (fboundp 'help-setup-xref)
-    (help-setup-xref (list 'scwm-documentation pat) (interactive-p)))
+  (help-setup-xref (list 'scwm-documentation pat) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
     (with-current-buffer "*Help*"
       (with-face 'highlight
@@ -308,10 +313,10 @@ Returns a string which is present in the `scwm-obarray'."
       (with-face 'highlight (princ "procedure-documentation"))
       (princ ":\n\n")
       (scwm-safe-call "procedure-documentation" pat standard-output)
-      (when (fboundp 'help-xref-button) ; add buttons to the help message
-        (goto-char 1) (forward-line 8) ; skip the header and value
-        (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
-          (help-xref-button 1 #'scwm-documentation (match-string 1))))
+      ;; add buttons to the help message
+      (goto-char 1) (forward-line 8) ; skip the header and value
+      (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
+        (help-xref-button 1 #'scwm-documentation (match-string 1)))
       (help-mode) (goto-char 1) (print-help-return-message))))
 
 ;;;###autoload
