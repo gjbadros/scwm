@@ -120,6 +120,9 @@ order in which they appear in HOOK-LIST"
     (define-public (hook? h) 
       (and (pair? h) (eq? (car h) 'hook))))
 
+(define-public (append-hook! hook proc)
+  "Add PROC to HOOK at the end of the list."
+  (add-hook! hook proc #t))
 
 ;; GJB:FIXME:: this should not be public,
 ;; but I leave it public for now for easier debugging --07/03/99 gjb

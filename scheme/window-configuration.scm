@@ -25,6 +25,7 @@
 (define-module (app scwm window-configuration)
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs)
+  :use-module (app scwm animation)
   :use-module (app scwm base)
   :use-module (app scwm winlist))
 
@@ -46,12 +47,12 @@
 
 ;; (define c (window-configuration))
 
+;; GJB:FIXME:: make animation optional.
 (define*-public (copy-window-configuration configuration #&optional (win (get-window)))
   "Apply a saved state CONFIGURATION to window WIN."
-  (with-window
-   win
-   (apply move-window (list-ref configuration 2))
-   (apply resize-frame (list-ref configuration 3))))
+  (apply animated-resize-frame
+	 (append (list-ref configuration 3) (list win)
+		 (list-ref configuration 2))))
 
 ;; (copy-window-configuration c)
 
