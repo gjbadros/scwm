@@ -75,8 +75,8 @@
 				    (lambda ()
 				      (enable-ui-constraint (make-ui-constraint-interactively d)))))
 	      cn-buttons ui-constraint-classes)
-    (for-each (lambda (p) (if p (gtk-widget-show p))) cn-pixmaps)
     (for-each gtk-widget-show cn-buttons)
+    (for-each (lambda (p) (if p (gtk-widget-show p))) cn-pixmaps)
     (gtk-widget-show hbox)
     (gtk-widget-show toplevel)
     ;; return the close procedure

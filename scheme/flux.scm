@@ -19,6 +19,8 @@
   :use-module (app scwm winlist)
   :use-module (app scwm message-window)
   :use-module (app scwm winops)
+  :use-module (app scwm listops)
+  :use-module (app scwm group)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
@@ -383,14 +385,42 @@ returned list can be used to un-highlight the windows:
 ;; (for-each (lambda (w) (unflash-window w)) (list-all-windows))
 ;; (unflash-window)
 
-(define-public (select-window-interactively-and-highlight)
-  "Select a single window interactively and highlight it.
+(define selected-windows '())
+;;(set! selected-windows '())
+
+(define-public (selected-windows-list)
+  "Returns the list of windows selected by `select-window-interactively-and-highlight'."
+  selected-windows)
+
+;;(define w (select-window-interactively))
+;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
+
+(define*-public (select-window-and-toggle-highlight #&optional (w (get-window)))
+  "Select a single window and highlight it.
 The selected window is returned and will remain highlighted
-until `unflash-window' is called on that window."
-  (let ((w (select-window-interactively)))
-    (flash-window w #:unflash-delay #f)
-    w))
-;; (unflash-window (select-window-interactively))
+until `unflash-window' is called on that window.  The selected
+window is also added to a selected-windows list that can be
+accessed via `selected-windows-list'."
+  (if (member w selected-windows)
+      (begin
+	(unflash-window w)
+	(set! selected-windows (filter (lambda (x) (not (eq? w x))) selected-windows)))
+      (begin
+	(flash-window w #:unflash-delay #f)
+	(set! selected-windows (cons w selected-windows))
+	w)))
+
+;; (unflash-window)
+;; (member (get-window) selected-windows)
+
+;; (begin (move-group-relative 10 10 selected-windows) (unselect-all-windows))
+
+(define-public (unselect-all-windows)
+  "Unselect all windows selected via `select-window-and-highlight'."
+  (for-each unflash-window selected-windows)
+  (set! selected-windows '()))
+
+;; (bind-mouse 'all "H-1" (thunk select-window-and-toggle-highlight))
 
 
 ;; Returns them in reverse the order they were selected
@@ -456,6 +486,7 @@ notion of what the command line was used to run the application."
   (let ((prop (X-property-get win "WM_COMMAND")))
     (and (list? prop) (car prop))))
 
+;;(define win (select-window-interactively))
 ;; We need accessors for window background information,
 ;; and window-highlight background information
 (define*-public (flash-window #&optional (win (get-window)) #&key
@@ -464,14 +495,17 @@ notion of what the command line was used to run the application."
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
 UNFLASH-DELAY may be #f to not automatically revert back to the original
 color.  See `unflash-window'."
-  (set-object-property! win 'old-bg (cadr (get-window-colors win)))
-  (set-object-property! win 'old-hi-bg (cadr (get-window-highlight-colors win)))
-  (set-window-background! color win)
-  (set-window-highlight-background! color win)
-  (if (number? unflash-delay)
-      (add-timer-hook! (sec->usec unflash-delay)
-		       (lambda ()
-			 (unflash-window win)))))
+  (if (and (eq? (object-property win 'old-bg) #f)
+	   (eq? (object-property win 'old-hi-bg) #f))
+      (begin
+	(set-object-property! win 'old-bg (cadr (get-window-colors win)))
+	(set-object-property! win 'old-hi-bg (cadr (get-window-highlight-colors win)))
+	(set-window-background! color win)
+	(set-window-highlight-background! color win)
+	(if (number? unflash-delay)
+	    (add-timer-hook! (sec->usec unflash-delay)
+			     (lambda ()
+			       (unflash-window win)))))))
 ;; (flash-window (get-window) #:unflash-delay #f)
 ;; (unflash-window)
 ;; (object-properties (get-window))
@@ -482,7 +516,6 @@ color.  See `unflash-window'."
 ;; (color? (object-property win 'old-hi-bg))
 ;; (define win (get-window))
 
-
 (define*-public (unflash-window #&optional (win (get-window)))
   "Revert WIN's titlebar and boundary color to state before a `flash-window'."
   (let ((old-bg (object-property win 'old-bg))
@@ -491,7 +524,9 @@ color.  See `unflash-window'."
     (if (color? old-bg)
 	(set-window-background! old-bg win))
     ;; set-window-highlight-background! can take #f, too, so just do it
-    (set-window-highlight-background! old-hi-bg win)))
+    (set-window-highlight-background! old-hi-bg win)
+    (set-object-property! win 'old-bg #f)
+    (set-object-property! win 'old-hi-bg #f)))
 
 (define-public (make-string-usable-for-resource-key string)
   "Return a converted string from STRING that can be used as an X resource key.

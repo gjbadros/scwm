@@ -47,5 +47,5 @@ Can restart with a fresh solver by using `start-constraints'."
   
   (bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu))
 
-;; and now start everything
-(start-constraints)
+;; this starts everything
+;; (start-constraints)

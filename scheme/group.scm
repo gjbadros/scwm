@@ -39,11 +39,15 @@ GROUP can be any window belonging to the group."
 (define-public (group->windows group)
   "Returns a list of windows belonging to GROUP.
 GROUP can be any window belonging to the group. All its peers, including
-itself, are returned."
-  (let ((leader (group-leader-id group)))
-    (if leader
-	(list-windows #:only (lambda (w) (equal? (group-leader-id w) leader)))
-	(list group))))
+itself, are returned.  If GROUP is a list, it is treated
+as the list of windows and is just returned.  This permits
+all the group action procedures to be used on lists of windows, too."
+  (if (list? group)
+      group
+      (let ((leader (group-leader-id group)))
+	(if leader
+	    (list-windows #:only (lambda (w) (equal? (group-leader-id w) leader)))
+	    (list group)))))
 
 (for-each (lambda (group-op window-op)
 	    (eval `(define*-public (,group-op #&optional (group (get-window)))
