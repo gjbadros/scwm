@@ -11,7 +11,7 @@ AC_INIT(src/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.6pre2)
+AM_INIT_AUTOMAKE(scwm, 0.99.6pre3)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -567,7 +567,10 @@ AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(setlinebuf setvbuf)
 AC_CHECK_FUNCS(setenv)
 
-dnl # Check for bleeding-edge guile funcs
+dnl # Check for recent guile funcs
+
+saved_LDFLAGS="$LDFLAGS"
+LDFLAGS="$GUILE_LIBS"
 
 dnl This checks (roughly) if the guile lib is a sufficiently recent snapshot
 dnl to have a scm_eval_string that is safe against re-entry by continuations. 
@@ -608,6 +611,8 @@ AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
 AC_CHECK_LIB(guile, scm_make_smob_type_mfpe, AC_DEFINE(HAVE_SCM_MAKE_SMOB_TYPE_MFPE), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_strport_to_string, AC_DEFINE(HAVE_SCM_STRPORT_TO_STRING), ,$GUILE_LIBS)
+
+LDFLAGS="${saved_LDFLAGS}"
 
 dnl check for scm_the_last_fluid in place of scm_the_last_stack_var
 
@@ -773,12 +778,13 @@ AC_ARG_ENABLE(warnings,
 ])
 AC_SUBST(CPPEXTRAFLAGS)
 
-AC_OUTPUT(Makefile \
+AC_OUTPUT([Makefile \
           scwm.spec \
           ANNOUNCE \
           README \
           sample.scwmrc/Makefile \
           src/Makefile \
+          src/scwm-doc-snarf \
           scheme/Makefile \
           pixmaps/Makefile \
           app/Makefile \
@@ -811,4 +817,5 @@ AC_OUTPUT(Makefile \
 	  utilities/dev/scwm-usage-counter \
 	  utilities/dev/X-error-describe \
 	  utilities/dev/create-dependency-dot-graph \
+],[chmod +x src/scwm-doc-snarf src/scwm-snarf ] \
 )
