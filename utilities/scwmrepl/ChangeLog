@@ -1,0 +1,5 @@
+Sun Mar  8 23:56:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmrepl.c: Coreected check_balance to correctly detect
+ 	expression boundaries.
+
