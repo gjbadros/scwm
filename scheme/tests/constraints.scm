@@ -71,9 +71,34 @@
       (cl-add-constraint
        solver
        (make-cl-constraint w1-bottom-y = w2-y))))
+
+  (define (keep-at-left-edge w)
+    (let ((w-x (window-clv-x w)))
+      (cl-add-constraint solver (make-cl-constraint w-x = 0 cls-medium))))
+
+  (define (keep-at-right-edge w)
+    (let ((w-right (cl-plus (window-clv-x w) (window-clv-width w))))
+      (cl-add-constraint solver (make-cl-constraint w-right = 1152 cls-medium .5))))
+
+  (define (keep-constant-width w width)
+    (let ((w-width (window-clv-width w)))
+      (cl-add-constraint solver (make-cl-constraint w-width = width cls-strong .5))))
+
   )
 
+
+
 (define w (select-window-interactively "Pick w"))
+
+(keep-constant-width wA 200)
+(keep-at-left-edge wA)
+(keep-at-right-edge wA)
+
+(keep-constant-width wB 200)
+(keep-at-left-edge wB)
+(keep-at-right-edge wB)
+
+
 (window-position w)
 
 (screen-clv-vx)
