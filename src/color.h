@@ -62,6 +62,9 @@ typedef struct {
 
 #define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):0)
 
+#define SAFE_XCOLOR_OR_WHITE(X) (COLOR_P((X))?XCOLOR((X))->pixel:XCOLOR(WHITE_COLOR)->pixel)
+#define SAFE_XCOLOR_OR_BLACK(X) (COLOR_P((X))?XCOLOR((X))->pixel:XCOLOR(BLACK_COLOR)->pixel)
+
 #define COLOR_OR_SYMBOL_P(x) (COLOR_P((x)) || gh_symbol_p((x)))
 
 #define DYNAMIC_COLOR_P(X) (gh_symbol_p((X))? \
