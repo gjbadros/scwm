@@ -487,3 +487,17 @@ that corner fixed."
 	(set-window-gravity! 
 	 (nonant->gravity (get-window-nonant win-pos))
 	 win))))
+
+(define-public (describe-key)
+  (add-timer-hook! 
+   (ms->usec 150) ; GJB:FIXME:: why do I have to do this for
+                  ; describe-key to work from emacs scwmrepl
+                  ; (otherwise I get the C-j keystroke)
+   (lambda ()
+     (let* ((key (get-key-event))
+	    (proc (lookup-key 'all key)))
+       (display-message-briefly
+	(string-append key " is bound to " 
+		       (if (and proc (pair? proc) (procedure? (car proc)))
+			   (or (procedure-name (car proc)) "anonymous proc")
+			   "nothing")))))))
