@@ -1,4 +1,9 @@
 /****************************************************************************
+ * This module has been significantly modified by Maciej Stachowiak.
+ * It may be used under the terms indicated by the copyright below.
+ * Changes Copyright 1997, Maciej stachowiak
+ ****************************************************************************/
+/****************************************************************************
  * This module is all original code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
