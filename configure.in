@@ -46,6 +46,15 @@ AM_CONFIG_HEADER(include/config.h)
 
 dnl ## Checks for programs ##
 
+AC_ARG_ENABLE(cflags,
+[  --enable-cflags=FLAGS   Set CFLAGS to FLAGS [-g -O2]],
+[case "$enableval" in
+   yes|no) echo "Please specify a parameter for --enable-cflags"
+	   exit;;
+ esac
+ CFLAGS="$enableval"
+])
+
 AC_PROG_CC
 AC_PROG_CXX
 
@@ -168,15 +177,6 @@ AC_SUBST(GUILE)
 AC_PATH_PROGS(PERL, perl perl5, no)
 
 AC_SUBST(PERL)
-
-AC_ARG_ENABLE(cflags,
-[  --enable-cflags=FLAGS   Set CFLAGS to FLAGS [-g -O2]],
-[case "$enableval" in
-   yes|no) echo "Please specify a parameter for --enable-cflags"
-	   exit;;
- esac
- CFLAGS="$enableval"
-])
 
 dnl ## Find paths ##
 
@@ -526,7 +526,7 @@ if test x"$enable_imlib" = x"no"; then
 	AC_MSG_RESULT(Not using imlib due to --disable-imlib option)
 elif test ! -z "$IMLIB_LIBS"  ; then
         LIBS="$LIBS $IMLIB_LIBS"
-        CFLAGS="$CFLAGS $IMLIB_CFLAGS"
+##        CFLAGS="$CFLAGS $IMLIB_CFLAGS"  # this does not affect anything --07/01/99 gjb
         USE_IMLIB="true"
 	AC_DEFINE(USE_IMLIB)
 fi
