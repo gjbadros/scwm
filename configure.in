@@ -53,7 +53,7 @@ guile_lib_path=""
 if test "NONE" = "$exec_prefix"; then
         guile_lib_path="$ac_default_prefix/lib"
 else
-        guile_lib_path="-L$exec_prefix/lib"
+        guile_lib_path="$exec_prefix/lib"
 fi
 if test "NONE" = "$prefix"; then
         GUILE_INCLUDES="-I$ac_default_prefix/include"
