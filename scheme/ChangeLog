@@ -1,3 +1,9 @@
+Tue Jul 21 14:31:08 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* tests/constraints.scm: Added sample of how to write constriants
+	using embedded cassowary constraint solver. Constraints are now
+	available at the scheme in nearly their full generality.
+
 1998-07-20  Maciej Stachowiak  <maciej@roc-ny5-21.ix.netcom.com>
 
 	* fvwm-module.scm: Ignore SIGPIPE if using fvwm modules; they have
