@@ -567,10 +567,11 @@ static SCM make_output_strport(char *fname)
 		       fname);
 }
 
-static SCM get_strport_string(SCM port)
+#ifndef HAVE_SCM_STRPORT_TO_STRING
+static SCM scm_strport_to_string(SCM port)
 {
   SCM answer;
-  {
+  { /* scope */
     gh_defer_ints();
     answer = scm_makfromstr (SCM_CHARS (gh_cdr (SCM_STREAM (port))),
 			     SCM_INUM (gh_car (SCM_STREAM (port))),
@@ -579,7 +580,7 @@ static SCM get_strport_string(SCM port)
   }
   return answer;
 }
-
+#endif
 
 
 /**CONCEPT: SCWMEXEC Protocol 
@@ -709,9 +710,9 @@ HandleScwmExec()
           scm_def_errp = saved_def_e_port;
           
           /* Retrieve output and errors */
-          output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),
+          output = (unsigned char *) gh_scm2newstr(scm_strport_to_string(o_port),
                                                    &olen);
-          error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),
+          error = (unsigned char *) gh_scm2newstr(scm_strport_to_string(e_port),
                                                   &elen);
           
           /* Set the output, error and reply properties appropriately. */
