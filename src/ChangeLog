@@ -1,3 +1,28 @@
+Thu Jul  1 16:28:00 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c: Use new VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY macro
+	for `X-property-set!'
+
+	* xmisc.h, xmisc.c: Added XColorFromPixel().
+
+	* window.h, window.c: Added VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY
+ 	macro, make sym_root_window extern in header, not in window.c
+
+	* scwm.c: Suppress msg about runing w/ --segv-reset-count 0 if the 
+	reset count is zero.
+
+	* image.c: Improve warning message.
+
+	* cursor.h: Added VALIDATE_ARG_CURSOR macro
+
+	* cursor.c: Added `set-window-cursor!' and `create-pixmap-cursor', 
+	along with helper Pixmap1DeepFromPixmap.
+
+Thu Jul  1 10:02:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* face.c, colors.c: Added fixme comments re: gradient stuff using
+	colorname strings instead of color objects.
+
 Wed Jun 30 10:39:15 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* image.h: Added VALIDATE_ARG_IMAGE macro
