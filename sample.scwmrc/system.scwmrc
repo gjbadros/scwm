@@ -794,7 +794,7 @@
 (define (popup-style-menu)
   (let ((w (get-window)))
     (popup-menu-from-decoration 
-     (window-style-menu w) w 1))
+     (make-window-style-menu w) w 1))
   #f)
 	 
 
@@ -906,7 +906,7 @@
     menu-separator
     (menuitem "Group" #:submenu (lambda () (make-window-group-menu (window-context))))
     (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
-    (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
+;;    (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
     menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
@@ -1173,7 +1173,7 @@ union of all other window managers!
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
-    (menuitem "Turn on Constraint Solver"
+    (menuitem "Turn on Constraint Solver" #:image-left pic-lambda-mini
 	      #:action (thunk enable-constraint-solver))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
@@ -1320,11 +1320,11 @@ union of all other window managers!
 (bind-mouse 'window "H-2" #f interactive-move-rubberband)
 (bind-mouse 'window "H-3" #f interactive-resize-rubberband)
 
-(bind-mouse 'all "H-1" #f select-window-add-selection)
-(bind-mouse 'all "H-S-1" #f select-window-add-selection)
-(bind-mouse 'all "H-A-1" #f select-window-add-selection)
+(bind-mouse 'all "H-1" #f select-window-toggle)
+(bind-mouse 'all "H-S-1" #f select-window-toggle)
+(bind-mouse 'all "H-A-1" #f select-window-toggle)
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
-(bind-mouse 'title "C-1" #f select-window-add-selection)
+(bind-mouse 'title "C-1" #f select-window-toggle)
 (bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
