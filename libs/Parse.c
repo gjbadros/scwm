@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 
 /*
 ** PeekToken: returns next token from string, leaving string intact

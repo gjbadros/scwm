@@ -1,4 +1,4 @@
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -7,7 +7,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 
 /*
 ** loads font or "fixed" on failure

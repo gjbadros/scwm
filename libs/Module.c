@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 #include "../scwm/module.h"
 
 

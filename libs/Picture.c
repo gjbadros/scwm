@@ -14,7 +14,7 @@
  *
  ****************************************************************************/
 
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -33,7 +33,7 @@
 #include <X11/xpm.h>
 #endif
 
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 
 
 static Picture *PictureList=NULL;

@@ -17,7 +17,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 
 #ifndef NULL
 #define NULL 0

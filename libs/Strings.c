@@ -7,7 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "scwmlib.h"
+#include <scwm/scwmlib.h>
 
 /************************************************************************
  *
