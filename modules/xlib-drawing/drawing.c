@@ -74,15 +74,11 @@ resize frames. VALUE should be an integer. */
 
   VALIDATE_ARG_INT_MIN_COPY(1,value,0,val);
 
-  gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
+  gcm = GCFunction | GCForeground;
   gcv.function = GXxor;
-  gcv.line_width = 0;
   gcv.foreground = val;
   gcv.subwindow_mode = IncludeInferiors;
-  if (NULL != DrawingGC) {
-    XFreeGC(dpy, DrawingGC);
-  }
-  DrawingGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  XChangeGC(dpy, DrawingGC, Scr.Root, gcm, &gcv);
   return (value);
 }
 #undef FUNC_NAME
@@ -195,7 +191,7 @@ should be given as STYLE. */
 
 
 static void
-init_drawing_gcs()
+init_drawing_gc()
 {
   XGCValues gcv;
   unsigned long gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
@@ -214,7 +210,7 @@ init_drawing()
 #ifndef SCM_MAGIC_SNARFER
 #include "drawing.x"
 #endif
-  init_drawing_gcs();
+  init_drawing_gc();
 }
 
 void scm_init_app_scwm_xlib_drawing_module()
