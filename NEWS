@@ -2,6 +2,22 @@ Guile NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
 
+Changes to scwm-0.3
+
+Fixed prev-window and next-window to deal with windows that do not
+accept the window focus. 
+
+Fixed the wildcard matching mechanism.
+
+Removed much unused C code. 
+
+Many bug fixes to the distribution and configuration script; libm and
+libdl are checked for, libguile is checked for more accurately, and
+the srcdir/VPATH mechanism works.
+
+Assorted fixes to the C files, including a fix of the longstanding bug
+in interactive move that made moves start in the wrong place.
+
 Changes to scwm-0.2
 
 Autoconf configurability. No more futzing with imake, now you can just
