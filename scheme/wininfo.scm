@@ -104,7 +104,8 @@ is non-empty."
 Note that this just checks if WIN is in the current viewport
 and on the current desk.  It may still return #t if WIN is completely
 obscured by other windows."
-  (if win (and (on-current-desk? win)
+  (if win (and (not (iconified? win))
+	       (on-current-desk? win)
 	       (in-viewport-any-desk? win))))
 
 (define*-public (percent-visible #&optional (win (get-window)))
