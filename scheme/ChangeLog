@@ -1,3 +1,8 @@
+Sun May  2 18:03:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flash-window.scm: Added #:continually option to flash-window,
+	added `stop-flashing-window' to turn the flashing off.
+
 Sun May  2 15:29:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Added commented out code for 
