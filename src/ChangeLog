@@ -1,3 +1,9 @@
+1999-07-27  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* virtual.c: Modified viewport-position-change-hook to
+	return two additional arguments, the delta x and y values
+	from the previous viewport position.
+
 Tue Jul 27 10:49:12 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c: Uncomment the C-level logic for the window focus on
@@ -15,6 +21,15 @@ Tue Jul 27 08:42:40 1999  Greg Badros  <gjb@cs.washington.edu>
 	* virtual.c (changeDesks): Added some ifdeffed-out code for
 	setting the focus to the current window on a change of desks.
 	Better to use the change-desk-hook, if that works.
+
+1999-07-26  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* message-window.c: Values returned from message-window-position
+	and message-window-size are placed in gh_int2scm or gh_double2scm
+	converters as appropriate.  Also modified message-window-size to
+	return the current size of the message window, regardless of whether
+	certain dimensions are set to auto-size.  (Perhaps another method
+	could be added to return which dimensions are autosizing)
 
 Mon Jul 26 12:19:57 1999  Greg Badros  <gjb@cs.washington.edu>
 

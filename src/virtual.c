@@ -54,11 +54,11 @@ It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number.  It
 is called after the desk is changed. See also `change-desk-hook'. */
 
-
-SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 2);
+SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 4);
 /** This hook is invoked whenever the viewport position is changed.
-It is called with two arguments, both integers, which are the x and y
-coordinates of the new viewport position in pixels. */
+It is called with four arguments, all integers.  The first two are 
+the x and y coordinates of the new viewport position in pixels and
+the second two are the change in x and y from the previous position. */
 
 SCWM_HOOK(edge_enter_hook,"edge-enter-hook", 1);
 /** This hook is invoked whenever the mouse pointer enters a screen edge.
@@ -496,6 +496,8 @@ MoveViewport_internal(int newx, int newy)
 {
   ScwmWindow *psw;
 
+  int diffx, diffy;
+
   if (newx < 0)
     newx = 0;
   else if (newx > Scr.VxMax)
@@ -509,6 +511,8 @@ MoveViewport_internal(int newx, int newy)
   if (newx == Scr.Vx && newy == Scr.Vy)
     return;
 
+  diffx = newx - Scr.Vx;
+  diffy = newy - Scr.Vy;
   Scr.Vx = newx;
   Scr.Vy = newy;
 
@@ -521,7 +525,7 @@ MoveViewport_internal(int newx, int newy)
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_Y,
 		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vy, 1);
 
-  call2_hooks(viewport_position_change_hook, gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy)); 
+  call4_hooks(viewport_position_change_hook, gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy), gh_int2scm(diffx), gh_int2scm(diffy)); 
 
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
