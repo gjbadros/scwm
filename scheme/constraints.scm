@@ -28,13 +28,13 @@ constraints is reset to empty)."
 
 (define ui-constraints-window #f)
 
-(define*-public (start-constraints #&key (draw-constraints-with-focus #f))
+(define*-public (start-constraints #&key (draw-constraints-with-focus #f) (draw-disabled-constraints #t))
   "Start using the constraint solver.
 DRAW-CONSTRAINTS-WITH-FOCUS is used to specify whether
 you'd like all constraints drawn or just the ones which
 are associated with the current focus window."
   (reset-constraints)
-  (install-constraints-ui-features draw-constraints-with-focus)
+  (install-constraints-ui-features draw-constraints-with-focus draw-disabled-constraints)
   (set! ui-constraints-window
     (start-ui-constraints-buttons)))
 
@@ -44,13 +44,16 @@ Can restart with a fresh solver by using `start-constraints'."
   (close-ui-constraints-buttons ui-constraints-window)
   (reset-constraints))
 
-(define (install-constraints-ui-features draw-with-focus)
+(define ui-constraints-draw-disabled #t)  ;; used by drawing functions
+
+(define (install-constraints-ui-features draw-with-focus draw-disabled)
   (and XKM_CONTROL_L XKM_ALT_L XKM_SHIFT_L XKM_HYPER_L
        (bind-four-modifier-key-events 
 	XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L XKM_HYPER_L
 	;; (37 . 4) (115 . 16) (50 . 1)
-	(if draw-with-focus draw-constraints-with-focus draw-all-constraints)
-	(if draw-with-focus undraw-constraints-with-focus undraw-all-constraints)))
+	(if draw-with-focus draw-constraints-with-focus (lambda () (draw-all-constraints #:draw-disabled draw-disabled)))
+	(if draw-with-focus undraw-constraints-with-focus (lambda () (undraw-all-constraints #:draw-disabled draw-disabled)))))
+  (set! ui-constraints-draw-disabled draw-disabled)
   (bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu))
 
 
@@ -60,20 +63,20 @@ Can restart with a fresh solver by using `start-constraints'."
 ;; hooks
 
 (define (draw-focus-change-hook win)
-  (if win (draw-constraints-of-window win)))
+  (if win (draw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled)))
 
 (define (draw-focus-lost-hook win)
-  (undraw-constraints-of-window win))
+  (undraw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
 
 (define (draw-constraints-with-focus)
   (let ((win (current-window-with-focus)))
-    (if win (draw-constraints-of-window win))
+    (if win (draw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
     (add-hook! window-focus-change-hook draw-focus-change-hook)
     (add-hook! window-focus-lost-hook   draw-focus-lost-hook)))
 
 (define (undraw-constraints-with-focus)
   (let ((win (current-window-with-focus)))
-    (if win (undraw-constraints-of-window win))
+    (if win (undraw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
     (remove-hook! window-focus-change-hook draw-focus-change-hook)
     (remove-hook! window-focus-lost-hook   draw-focus-lost-hook)))
 

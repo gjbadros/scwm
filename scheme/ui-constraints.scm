@@ -567,34 +567,47 @@ an ui-constraint."
   (do-draw-constraint ui-constraint #f))
 
 
+;; helpers for the following draw many constraint functions.
+
+(define (draw-enabled cn)
+  (if (ui-constraint-enabled? cn)
+      (draw-constraint cn)))
+
+(define (undraw-enabled cn)
+  (if (ui-constraint-enabled? cn)
+      (undraw-constraint cn)))
+
+;; (use-scwm-modules optargs)
+
 ;; draw-constraints-of-window
 
-(define*-public (draw-constraints-of-window #&optional (win (get-window)))
+(define*-public (draw-constraints-of-window win #&key (draw-disabled #t))
   "Draw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
-  (map draw-constraint (ui-constraints-involving-window win)))
+  (map (if draw-disabled draw-constraint draw-enabled) (ui-constraints-involving-window win)))
 
 
 ;; undraw-constraints-of-window
 
-(define*-public (undraw-constraints-of-window #&optional (win (get-window)))
+(define*-public (undraw-constraints-of-window win #&key (draw-disabled #t))
   "Undraw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
-  (map undraw-constraint (ui-constraints-involving-window win)))
+  (map (if draw-disabled undraw-constraint undraw-enabled) (ui-constraints-involving-window win)))
 
 
 ;; draw-all-constraints
 
-(define-public (draw-all-constraints)
+(define*-public (draw-all-constraints #&key (draw-disabled #t))
   "Draw all constraints in the global instance list."
-  (map draw-constraint global-constraint-instance-list))
+  (map (if draw-disabled draw-constraint draw-enabled) global-constraint-instance-list))
 
 
 ;; undraw-all-constraints
 
-(define-public (undraw-all-constraints)
+(define*-public (undraw-all-constraints #&key (draw-disabled #t))
   "Undraw all constraints in the global instance list."
-  (map undraw-constraint global-constraint-instance-list))
+  (map (if draw-disabled undraw-constraint undraw-enabled) global-constraint-instance-list))
+
 
 ;; disable-all-constraints
 
