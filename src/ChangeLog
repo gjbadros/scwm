@@ -1,4 +1,16 @@
-Wed Jan 12 00:35:25 2000    <gjb@cs.washington.edu>
+Wed Jan 12 21:22:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* add_window.c, binding.c, callbacks.c, events.c, focus.c,
+	icons.c, miscprocs.c, module-interface.c, move.c, placement.c,
+	resize.c, shutdown.c, virtual.c, window.c: Add \n\ on empty lines
+	that split string literals, and on lines in SCWM_IPROC and
+	SCWM_HOOK macros.  Thanks Harald Meland!
+
+	* scwm-doc-snarf.in: Use @PERL@ so that the perl interpreter
+	specified at configure time is used.  (Thanks Harald Meland for
+	noticing this bug!)
+
+Wed Jan 12 00:35:25 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Reliably turn on/off backtraces based on the command
 	line flag.  (Finally committing the Sep 25, 1999 change from my

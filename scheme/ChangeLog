@@ -1,4 +1,4 @@
-Wed Jan 12 00:28:56 2000    <gjb@cs.washington.edu>
+Wed Jan 12 00:28:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops-menu.scm: Added `make-menu-focus-options'
 
