@@ -1,3 +1,10 @@
+Sun Feb 20 15:09:57 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc, spare-blue.scwmrc, simple.scwmrc, sds.scwmrc,
+ 	robbe.scwmrc, mstachow.scwmrc, juhp.scwmrc, gnome.scwmrc,
+ 	decor.scwmrc: Drop set-smart-placement-is-really-smart!,
+ 	#:random-placement, #:smart-placement.
+
 2000-02-20  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Don't xsetroot.

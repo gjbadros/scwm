@@ -2,6 +2,29 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
+Changes for scwm-0.99.6.2 (not yet released)
+* Bug fixes
+
+* Major cleanup of placement procedures and *-place-window routines
+
+** Removed primitives
+*** `set-smart-placement-is-really-smart!', `smart-placement-is-really-smart?'
+*** `set-random-placement!', `set-smart-placement!'
+
+** Changed primitives
+*** `smart-place-window', `clever-place-window', `random-place-window'
+All take extra optional arguments NO-MOVE SUGGESTED-X SUGGESTED-Y
+
+** Added primitives
+*** `initial-place-window', `null-place-window'
+
+** Added procedure
+*** `standard-place-window'
+
+** Added global variables
+*** default-placement-proc, default-transient-placement-proc
+
+
 Changes for scwm-0.99.6.1 (released 29-January-2000)
 * Bug fixes
 ** More robust

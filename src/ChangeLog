@@ -1,3 +1,27 @@
+Sun Feb 20 14:22:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Drop fRandomPlace, fSmartPlace fields from struct
+	ScwmWindow.  
+
+	* window.c: Drop `set-random-placement!', `set-smart-placement!'
+	since those were used in default_placement_proc whic is now gone.
+
+	* screen.h, scwm.c: Drop Scr.fSmartPlacementIsClever;  that's gone
+	now as it was stupid.
+
+	* placement.c: Overhaul of placement code.  No longer care about
+ 	smart-placement-is-really-smart.  Added `initial-place-window',
+ 	`null-place-window', `interactive-place-window'.  Added variable
+ 	`default-placement-proc', `default-transient-placement-proc'.
+  	Make pre-existing `smart-place-window', `clever-place-window' and
+ 	`random-place-window' all take optional arguments to permit *not*
+ 	actually moving the window and instead just returning the new
+ 	location, and also take suggested position arguments to try to put
+ 	the window near there.
+
+	* miscprocs.c: Drop `set-smart-placement-is-really-smart!',
+	`smart-placement-is-really-smart?'.
+
 Sun Feb 20 13:23:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* placement.c (SmartPlacement): Drop NO_STUBBORN_PLACEMENT

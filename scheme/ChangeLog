@@ -1,3 +1,12 @@
+Sun Feb 20 15:13:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* stylist.scm, style.scm: Drop mention of #:random-placement,
+ 	#:smart-placement-- they're gone now.
+
+	* minimal.scm: Added `standard-place-window' and initialize
+	default-placement-proc to it, default-transient-placement-proc to
+	null-place-window.
+	
 Sun Feb 20 12:21:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Moved hide-side-decorations, show-side-decorations
