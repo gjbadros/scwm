@@ -29,6 +29,10 @@ SCM set_click_to_focus_raises_x(SCM val);
 SCM set_mouse_focus_click_raises_x(SCM val);
 
 SCM scwm_version();
+
+SCM x_version_information();
+SCM x_display_information();
+
 SCM restarted_p();
 
 #endif	/* MISCPROCS_H */

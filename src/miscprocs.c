@@ -4,6 +4,7 @@
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
 
+#include <X11/Xlib.h>
 #include <unistd.h>
 #include <guile/gh.h>
 #include <signal.h>
@@ -354,12 +355,70 @@ set_mouse_focus_click_raises_x(SCM val)
 }
 
 SCM
-scwm_version ()
+scwm_version()
 {
   return gh_str02scm(VERSION);
 }
 
+SCM
+x_version_information()
+{
+  return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
+		     SCM_MAKINUM(ProtocolRevision(dpy)),
+		     gh_str02scm(ServerVendor(dpy)),
+		     SCM_MAKINUM(VendorRelease(dpy)),
+		     SCM_UNDEFINED);
+}
 
+
+SCM
+x_display_information()
+{
+  int Mscreen = DefaultScreen(dpy);
+  Screen *screen = ScreenOfDisplay(dpy, Mscreen);
+  Visual *visual = DefaultVisualOfScreen(screen);
+#define RESOLUTION(pixels, mm) ((((pixels) * 100000 / (mm)) + 50) / 100)
+  int xres = RESOLUTION(screen->width, screen->mwidth);
+  int yres = RESOLUTION(screen->height, screen->mheight);
+#undef Resolution
+  int planes = DisplayPlanes(dpy,Mscreen);
+  int bits_per_rgb = visual->bits_per_rgb;
+  char *vc = NULL;
+  Bool fColor = visual->class != StaticGray && visual->class != GrayScale;
+
+  switch(visual->class) 
+  {
+    case(StaticGray):
+      vc = "StaticGray";
+      break;
+    case(GrayScale):
+      vc = "GrayScale";
+      break;
+    case(StaticColor):
+      vc = "StaticColor";
+      break;
+    case(PseudoColor):
+      vc = "PseudoColor";
+      break;
+    case(TrueColor):
+      vc = "TrueColor";
+      break;
+    case(DirectColor):
+      vc = "DirectColor";
+      break;
+    default:
+      vc = "NonStandard";
+      break;
+  }
+
+  return scm_listify(SCM_MAKINUM(xres),
+		     SCM_MAKINUM(yres),
+		     SCM_MAKINUM(planes),
+		     SCM_MAKINUM(bits_per_rgb),
+		     gh_str02scm(vc), /* class */
+		     fColor? SCM_BOOL_T : SCM_BOOL_F,
+		     SCM_UNDEFINED);
+}
 
 
 /* Local Variables: */
