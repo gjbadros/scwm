@@ -1,3 +1,9 @@
+Wed Jun 10 02:19:58 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* auto-raise.scm, flux.scm: minor typos fixed, thanks to Shuji
+ 	Narazaki <narazaki@dai.comp.kyutech.ac.jp> for the bug report and
+ 	patch.
+
 Mon Jun  1 20:34:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: regenerated with automake 1.3

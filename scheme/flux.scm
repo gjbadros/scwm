@@ -72,7 +72,7 @@
   (let ((xx (car sz)) (yy (cadr sz)))
     (string-append (number->string xx) sep (number->string yy))))
 
-(define*-public (window-info #&optional (ww (selected-window)))
+(define*-public (window-info #&optional (ww (get-window)))
   (message
    "Window ID:\t\t" (number->string (window-id ww))
    "\nWindow Frame ID:\t" (number->string (window-frame-id ww))

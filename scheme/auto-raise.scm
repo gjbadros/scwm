@@ -147,7 +147,7 @@
 		(set-object-property! last-focus-window 
 				      'window-last-unfocus-handle
 				      (add-timer-hook! delay func)))
-	(set! last-focus-window window)))))
+	(set! last-focus-window window)))))))))
 	  
 
 (add-hook! broadcast-hook auto-raise-hook-proc)
