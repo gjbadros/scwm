@@ -34,10 +34,10 @@ if [ x"$DISPLAY" = x ]; then
     # we need to start an Xserver
     mcookie=`mcookie`
     serverargs="-auth $HOME/.Xauthority"
-    display=:0
+    : ${display:=:0}  # let "display=:1 startscwm" work
     xauth add $display . $mcookie
     xauth add `hostname -f`$display . $mcookie
-    exec xinit $0 "$@" -- $serverargs
+    exec xinit $0 "$@" -- $display $serverargs
 fi
 
 # Now we know an X server is running and DISPLAY is set.
@@ -70,7 +70,7 @@ export DISPLAY FULLDISPLAY DISPLAYHOST
 
 echo $FULLDISPLAY > $HOME/.Xdisplay
 
-WM=$SCWMDIR/scwm/scwm; export WM
+WM=$SCWMDIR/src/scwm;  export WM
 if [ ! -x $WM ]; then
   WM=scwm
 else
@@ -115,7 +115,7 @@ for f in $userresources $HOME/.Xresources-local; do
 done
 
 # do keyboard mappings
-for f in $sysmodmap $usermodmap $usersysmodmap; do
+for f in $HOME/.Xmodmap $HOME/.Xmodmap-local $HOME/.Xmodmap-${HOSTNAME%%.*}; do
   if [ -r $f ]; then
     echo "xmodmap $f" 1>&2
     xmodmap $f
