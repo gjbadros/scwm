@@ -38,7 +38,8 @@ SRCS = \
 	errors.c \
 	util.c \
 	window.c \
-	menu.c
+	menu.c \
+	paths.c
  
 OBJS = \
 	add_window.o \
