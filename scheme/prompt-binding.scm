@@ -18,6 +18,15 @@
 ;;;; 
 
 
+;;; TODO
+;;; click on column heading to sort on that column
+;;;
+;;; cache the information about bindings list and command list
+;;; in local data structures so it's faster to re-sort, etc.
+;;;
+
+
+
 (define-module (app scwm prompt-binding)
   :use-module (ice-9 session)
   :use-module (app scwm reflection)
@@ -50,7 +59,7 @@
     (right-button-3 . "when the pointer is in the 3rd rightmost button of the title bar (if any).")
     (right-button-4 . "when the pointer is in the 4th rightmost button of the title bar (if any).")
     (right-button-5 . "when the pointer is in the 5th rightmost button of the title bar (if any).")))
-  
+
 (define descr-prefix-string
   "Keymap containing bindings active ")
 
@@ -64,17 +73,22 @@
 	 (string-append (keymask-keycode->string modmask keybut))))
    binding))
 
+
 (define (populate-clist-with-bindings-from clist context)
-    (let ((x #("Key" "Command" "Release/Immed.")))
-      (map (lambda (binding)
-	     (let ((key (raw-binding->key-descriptor binding))
-		   (procname (procedure->string (list-ref binding 4)))
-		   (procname2 (procedure->string (list-ref binding 5))))
-	       (vector-set! x 0 key)
-	       (vector-set! x 1 procname)
-	       (vector-set! x 2 procname2)
-	       (gtk-clist-append clist x)))
-	   (lookup-procedure-bindings #f context))))
+  (let ((x #("Key" "Command" "Release/Immed.")))
+    (map (lambda (binding)
+	   (let ((key (raw-binding->key-descriptor binding))
+		 (procname (procedure->string (list-ref binding 4)))
+		 (procname2 (procedure->string (list-ref binding 5))))
+	     (vector-set! x 0 key)
+	     (vector-set! x 1 procname)
+	     (vector-set! x 2 procname2)
+	     (gtk-clist-append clist x)))
+	 (sort!
+	  (lookup-procedure-bindings #f context)
+	  (lambda (a b)
+	    (string-ci<? (raw-binding->key-descriptor a)
+			 (raw-binding->key-descriptor b)))))))
 
 (define (populate-cmd-clist-with-procedures clist)
   (let ((x #("procname" "modulename")))
@@ -109,6 +123,9 @@
 	 (clist (gtk-clist-new-with-titles #("Key" "Command" "Release/Immed.")))
 	 (scroller (gtk-scrolled-window-new)))
     
+    (gtk-widget-set-state insert 'insensitive)
+    (gtk-widget-set-state delete 'insensitive)
+
     (gtk-widget-set-usize context-label 400 32)
     (gtk-widget-set-usize scroller 400 250)
     (gtk-box-set-spacing vbox ui-box-spacing)
@@ -128,110 +145,127 @@
     (gtk-container-add ins-del-bbox insert)
     (gtk-container-add ins-del-bbox delete)
     (populate-clist-with-bindings-from clist (caar contexts-and-descriptions))
-    
-    (gtk-signal-connect insert "clicked" 
-			;; prompt-binding:insert
-			(lambda ()
-			  noop))
-    (gtk-signal-connect delete "clicked" 
-			;; prompt-binding:delete
-			(lambda ()
-			  noop))
-    (gtk-signal-connect clist "select_row" 
-			;; prompt-binding:select-row
-			(lambda (row col event)
-			  noop))
+
     (gtk-box-pack-start vbox-2 context-label)
     (gtk-label-set-justify context-label 'left)
     (gtk-label-set-line-wrap context-label #t)
     (gtk-container-add vbox-2 vbox)
     (gtk-container-add context-frame vbox-2)
-  (let*
-      ((hbox-1 (gtk-hbox-new #f 0))
-       (vbox-2 (gtk-vbox-new #f 0))
-       (vbox (gtk-vbox-new #f 0))
-       (entry (gtk-entry-new))
-       (map-clist (gtk-clist-new-with-titles #("Context")))
-       (doc-frame (gtk-frame-new "Procedure Documentation"))
-       (cmd-clist (gtk-clist-new-with-titles #("Commands" "Module")))
-       (scroller (gtk-scrolled-window-new))
-       (scroller-2 (gtk-scrolled-window-new))
-       (doc-textbox (gtk-text-new #f #f))
-       (scroller-doc (gtk-scrolled-window-new)))
+    (let*
+	((hbox-1 (gtk-hbox-new #f 0))
+	 (vbox-2 (gtk-vbox-new #f 0))
+	 (vbox (gtk-vbox-new #f 0))
+	 (entry (gtk-entry-new))
+	 (map-clist (gtk-clist-new-with-titles #("Context")))
+	 (doc-frame (gtk-frame-new "Procedure Documentation"))
+	 (cmd-clist (gtk-clist-new-with-titles #("Commands" "Module")))
+	 (scroller (gtk-scrolled-window-new))
+	 (scroller-2 (gtk-scrolled-window-new))
+	 (doc-textbox (gtk-text-new #f #f))
+	 (scroller-doc (gtk-scrolled-window-new)))
 
-;;    (gtk-box-pack-start doc-frame scroller-doc)
-    (gtk-box-set-spacing hbox-1 ui-box-spacing)
-    (gtk-container-border-width hbox-1 ui-box-border)
-    (gtk-box-set-spacing vbox-2 ui-box-spacing)
-    (gtk-container-border-width vbox-2 ui-box-border)
-    (gtk-box-set-spacing vbox ui-box-spacing)
-    (gtk-container-border-width vbox ui-box-border)
-    (gtk-scrolled-window-set-policy scroller-doc 'automatic 'automatic)
+      ;;    (gtk-box-pack-start doc-frame scroller-doc)
+      (gtk-box-set-spacing hbox-1 ui-box-spacing)
+      (gtk-container-border-width hbox-1 ui-box-border)
+      (gtk-box-set-spacing vbox-2 ui-box-spacing)
+      (gtk-container-border-width vbox-2 ui-box-border)
+      (gtk-box-set-spacing vbox ui-box-spacing)
+      (gtk-container-border-width vbox ui-box-border)
+      (gtk-scrolled-window-set-policy scroller-doc 'automatic 'automatic)
 
-    ;; 1. the key and command editing widget
-    (gtk-scrolled-window-set-policy scroller 'automatic 'automatic)
-    (gtk-widget-set-usize scroller 200 100)
-    (gtk-container-add scroller cmd-clist)
-    (map (lambda (i) 
-	   (gtk-clist-set-column-resizeable cmd-clist i #t)
-	   (gtk-clist-set-column-justification cmd-clist i 'left))
-	 (iota 2))
-    (gtk-clist-set-column-width cmd-clist 0 120)
-    (gtk-clist-set-column-width cmd-clist 1 120)
+      ;; 1. the key and command editing widget
+      (gtk-scrolled-window-set-policy scroller 'automatic 'automatic)
+      (gtk-widget-set-usize scroller 200 100)
+      (gtk-container-add scroller cmd-clist)
+      (map (lambda (i) 
+	     (gtk-clist-set-column-resizeable cmd-clist i #t)
+	     (gtk-clist-set-column-justification cmd-clist i 'left))
+	   (iota 2))
+      (gtk-clist-set-column-width cmd-clist 0 120)
+      (gtk-clist-set-column-width cmd-clist 1 120)
 
-    (populate-cmd-clist-with-procedures cmd-clist)
+      (populate-cmd-clist-with-procedures cmd-clist)
 
-    (gtk-container-add vbox-2 entry)
-    (gtk-container-add vbox-2 scroller)
-    (gtk-signal-connect cmd-clist "select_row"
-			;; prompt-binding:set-command
-			(lambda (row col event)
-			  (display "cmd-clist: ")
-			  (display row)
-			  (newline)))
-    (gtk-signal-connect entry "changed"
-			;; prompt-binding:set-event
+      (gtk-container-add vbox-2 entry)
+      (gtk-container-add vbox-2 scroller)
+
+      ;; 2. the keymap selection widget
+      (gtk-scrolled-window-set-policy scroller-2 'automatic 'automatic)
+      (gtk-clist-set-column-auto-resize map-clist 0 #t)
+      (gtk-clist-set-selection-mode map-clist 'browse)
+      (gtk-widget-set-usize scroller-2 100 100)
+      (gtk-widget-set-usize scroller-doc 100 50)
+      (gtk-container-add scroller-2 map-clist)
+      (gtk-container-add hbox-1 scroller-2)
+      (gtk-container-add scroller-doc doc-textbox)
+      (gtk-container-add hbox-1 vbox-2)
+      
+      (let ((x #("")))
+	(map (lambda (name)
+	       (vector-set! x 0 name)
+	       (gtk-clist-append map-clist x))
+	     (map (lambda (i) (symbol->string (car i))) contexts-and-descriptions)))
+
+      (gtk-clist-select-row map-clist 0 0)
+      (gtk-container-add doc-frame scroller-doc)
+      (gtk-container-add vbox context-frame)
+      (gtk-container-add vbox hbox-1)
+      (gtk-container-add vbox doc-frame)
+
+      ;; the context list left, second from bottom
+      (gtk-signal-connect map-clist "select_row"
+			  ;; prompt-binding:select-context
+			  (lambda (row col event)
+			    (let ((sym-and-descr (list-ref 
+						  contexts-and-descriptions
+						  row)))
+			      (gtk-frame-set-label context-frame 
+						   (symbol->string (car sym-and-descr)))
+			      (gtk-label-set-text 
+			       context-label 
+			       (string-append descr-prefix-string 
+					      (cdr sym-and-descr)))
+			      (gtk-clist-clear clist)
+			      (populate-clist-with-bindings-from
+			       clist (car sym-and-descr))
+			      )))
+
+      ;; the command list right, second from bottom
+      (gtk-signal-connect cmd-clist "select_row"
+			  ;; prompt-binding:set-command
+			  (lambda (row col event)
+			    (display "cmd-clist: ")
+			    (display row)
+			    (newline)))
+
+      ;; the text entry just about the command list
+      (gtk-signal-connect entry "changed"
+			  ;; prompt-binding:set-event
+			  (lambda ()
+			    noop))
+
+      ;; the insert button in the binding frame at the top
+      (gtk-signal-connect insert "clicked" 
+			  ;; prompt-binding:insert
 			(lambda ()
 			  noop))
 
-    ;; 2. the keymap selection widget
-    (gtk-scrolled-window-set-policy scroller-2 'automatic 'automatic)
-    (gtk-clist-set-column-auto-resize map-clist 0 #t)
-    (gtk-clist-set-selection-mode map-clist 'browse)
-    (gtk-widget-set-usize scroller-2 100 100)
-    (gtk-widget-set-usize scroller-doc 100 50)
-    (gtk-container-add scroller-2 map-clist)
-    (gtk-container-add hbox-1 scroller-2)
-    (gtk-container-add scroller-doc doc-textbox)
-    (gtk-container-add hbox-1 vbox-2)
-    (let ((x #("")))
-      (map (lambda (name)
-	     (vector-set! x 0 name)
-	     (gtk-clist-append map-clist x))
-	   (map (lambda (i) (symbol->string (car i))) contexts-and-descriptions)))
-    (gtk-signal-connect map-clist "select_row"
-			;; prompt-binding:select-context
-			(lambda (row col event)
-			  (let ((sym-and-descr (list-ref 
-						 contexts-and-descriptions
-						 row)))
-			    (gtk-frame-set-label context-frame 
-						 (symbol->string (car sym-and-descr)))
-			    (gtk-label-set-text 
-			     context-label 
-			     (string-append descr-prefix-string 
-					    (cdr sym-and-descr)))
-			    (gtk-clist-clear clist)
-			    (populate-clist-with-bindings-from
-			     clist (car sym-and-descr))
-			    )))
-    (gtk-clist-select-row map-clist 0 0)
-    (gtk-container-add doc-frame scroller-doc)
-    (gtk-container-add vbox context-frame)
-    (gtk-container-add vbox hbox-1)
-    (gtk-container-add vbox doc-frame)
-    
-    vbox)))
+      ;; the delete button in the binding frame at the top
+      (gtk-signal-connect delete "clicked" 
+			  ;; prompt-binding:delete
+			  (lambda ()
+			    noop))
+
+      ;; the bindings list, top
+      (gtk-signal-connect clist "select_row" 
+			  ;; prompt-binding:select-row
+			  (lambda (row col event)
+			    (display "clist")
+			    (display row) (display ",") (display col)
+			    (newline)
+			    noop))
+      
+      vbox)))
 
 (define*-public (prompt-binding #&optional (title "Bindings"))
   (let* ((toplevel (gtk-window-new 'dialog))
