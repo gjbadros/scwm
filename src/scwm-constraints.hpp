@@ -107,23 +107,17 @@ public:
       // these sizes are client window sizes,
       // but the constraints are frame sizes -- 
       // correct for decorations just below
-      minWidth = psw->hints.min_width;
-      minHeight = psw->hints.min_height;
+      minWidth = MinFrameWidth(psw);
+      minHeight = MinFrameHeight(psw);
 
-      maxWidth = psw->hints.max_width;
-      maxHeight = psw->hints.max_height;
+      maxWidth = MaxFrameWidth(psw);
+      maxHeight = MaxFrameHeight(psw);
       
-      // now correct for decorations
       // GJB:FIXME:: these constraints need to be affected by
       // later changes in the variables -- the decoration
       // geometry variables need to be ClVariables ultimately,
       // or the constraints need to be about client sizes instead
       // of frame sizes.
-      minWidth += 2*psw->xboundary_width;
-      maxWidth += 2*psw->xboundary_width;
-
-      minHeight += 2*psw->boundary_width + psw->title_height;
-      maxHeight += 2*psw->boundary_width + psw->title_height;
 
       // Required constraints
       ClLinearInequality *pineqMinWidth = new ClLinearInequality(_frame_width,cnGEQ,minWidth);

@@ -455,11 +455,7 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
 
 void notify_new_desk(ScwmWindow *psw, int desk, int old);
 
-__inline__ int DecorationWidth(const ScwmWindow *psw);
-__inline__ int DecorationHeight(const ScwmWindow *psw);
-__inline__ int DecorationXOffset(const ScwmWindow *psw);
-__inline__ int DecorationYOffset(const ScwmWindow *psw);
-
+#include "window.inl"
 
 #endif /* WINDOW_H__ */
 

@@ -76,7 +76,7 @@ borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h scwm_msg.h \
 color.h cursor.h icons.h session-manager.h colormaps.h image.h shutdown.h \
 colors.h log-usage.h string_token.h menu.h syscompat.h scwm-guile.h \
 constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
-decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
+decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h window.inl \
 drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
 move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
 events.h scm_init_funcs.h dbug_resize.h message-window.h validate.h winprop.h\

@@ -112,14 +112,14 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
   dwidth -= 2 * psw->xboundary_width;
   dheight -= (psw->title_height + 2 * psw->boundary_width);
 
-  minWidth = psw->hints.min_width;
-  minHeight = psw->hints.min_height;
+  minWidth = MinFrameWidth(psw);
+  minHeight = MinFrameHeight(psw);
 
   baseWidth = psw->hints.base_width;
   baseHeight = psw->hints.base_height;
 
-  maxWidth = psw->hints.max_width;
-  maxHeight = psw->hints.max_height;
+  maxWidth = MaxFrameWidth(psw);
+  maxHeight = MaxFrameHeight(psw);
 
   /* Could bound the max dimensions by Scr.VxMax + Scr.DisplayWidth
      and Scr.VyMax + Scr.DisplayHeight */

@@ -583,50 +583,6 @@ MoveTo(ScwmWindow *psw, int x, int y)
   CassowaryEndEdit(psw);
 }
 
-__inline__
-int
-DecorationWidth(const ScwmWindow *psw)
-{
-  return 2 * psw->xboundary_width;
-}
-
-__inline__
-int
-DecorationXOffset(const ScwmWindow *psw)
-{
-  return psw->xboundary_width; 
-  /* + psw->bw; GJB:FIXME:: do I need this? --10/01/99 gjb */
-}
-
-__inline__
-int
-DecorationHeight(const ScwmWindow *psw)
-{
-  return 2 * psw->boundary_width + psw->title_height;
-}
-
-__inline__
-int
-DecorationYOffset(const ScwmWindow *psw)
-{
-  return psw->title_height + psw->boundary_width;
-  /* + psw->bw; GJB:FIXME:: do I need this? --10/01/99 gjb */
-}
-
-
-__inline__
-int
-ClientWidth(const ScwmWindow *psw)
-{
-  return FRAME_WIDTH(psw) - DecorationWidth(psw);
-}
-
-__inline__
-int
-ClientHeight(const ScwmWindow *psw)
-{
-  return FRAME_HEIGHT(psw) - DecorationHeight(psw);
-}
 
 
 void
