@@ -428,13 +428,18 @@ static scm_smobfuns image_smobfuns =
 };
 
 
-void init_image() 
+void 
+init_image_colormap() 
 {
   XWindowAttributes root_attributes;
-  SCM val_load_xbm, val_load_xpm;
-
   XGetWindowAttributes(dpy, Scr.Root, &root_attributes);
   ImageColorMap = root_attributes.colormap;
+}
+
+void init_image() 
+{
+  SCM val_load_xbm, val_load_xpm;
+
 
   /* Include registration of procedures and other things. */
 # include "image.x"
@@ -451,6 +456,7 @@ void init_image()
   image_loader_hash_table = 
     scm_make_vector (SCM_MAKINUM(IMAGE_LOADER_HASH_SIZE), SCM_EOL, 
 		     SCM_BOOL_F);
+  scm_protect_object(image_loader_hash_table);
 
   /* Register the standard loaders. */
 

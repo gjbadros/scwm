@@ -78,6 +78,7 @@ SCM unregister_image_loader(SCM extension);
 SCM load_image(SCM name);
 SCM make_image(SCM name);
 
+void init_image_colormap();
 void init_image();
 
 #endif IMAGE_H
