@@ -1,3 +1,9 @@
+Mon Nov 17 20:58:58 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in, acconfig.h, configure, include/config.h.in: Check
+ 	for the usleep() function; define HAVE_USLEEP if
+ 	available. Regenerated configure and include/config.h.in
+
 Wed Nov 12 23:04:39 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Improve scwm-buffer.el a bit more-- add C-M-z to send the s-exp
