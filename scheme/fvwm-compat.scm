@@ -30,6 +30,8 @@
 (define fvwm-exec-shell "/bin/sh")
 
 (define*-public (fvwm-exec-use-shell #&optional (shell #f))
+  "Use SHELL when emulating fvwm \"EXEC\" commands.
+Defaults to <envar>$SHELL</envar> or <filename>/bin/sh</filename>."
   (set! fvwm-exec-shell 
 	(cond
 	 (command => id)
@@ -39,16 +41,14 @@
 
 
 (define-public (fvwm-exec command)
+  "Run COMMAND as fvwm would.
+See also `fvwm-exec-use-shell'."
   (if (eq? 0 (primitive-fork))
       (catch #t (lambda ()
 		  (execl
 		   fvwm-exec-shell fvwm-exec-shell "-c" 
 		   (string-append "exec " command)))
 	     (lambda args (primitive-exit 100)))))
-
-(define*-public (fvwm-none thunk #&key (only '()) (except '()))
-  (if (null? (list-windows #:only only #:except except))
-      (thunk)))
 
 (define-public (fvwm-pipe-read command)
   (let* ((command-pipes (pipe))

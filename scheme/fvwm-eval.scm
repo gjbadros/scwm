@@ -419,6 +419,10 @@
 		 #:proc (lambda(x)(eval-fvwm-command
 				   (extract-command args) fmod x)))))
 
+(define* (fvwm-none thunk #&key (only '()) (except '()))
+  (if (null? (list-windows #:only only #:except except))
+      (thunk)))
+
 (define-fvwm-command "None"
   (let ((c (parse-conditions args)))
     (fvwm-none (lambda () 

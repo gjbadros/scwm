@@ -163,8 +163,11 @@ See also `message'."
 ;;(first-word "foo	bar") => "foo"
 ;;(first-word "foobar") => "foo"
 
-(define-public (start-program-in-xterm binary title resources)
-  (string-append binary " -T" title " -name " resources))
+(define-public (start-program-in-xterm program title resource-name)
+  "Return a string to be the arguments to xterm for starting PROGRAM in it.
+TITLE is the desired title, and RESOURCE-NAME is the desired Xrdb resource
+property."
+  (string-append program " -T" title " -name " resource-name))
 
 (define*-public (start-xlogo)
   "Start an XLogo window."
