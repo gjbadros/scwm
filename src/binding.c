@@ -1188,7 +1188,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
 
 SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
            (SCM keymask, SCM keycode))
-     /** Return a string representing the key press with mask KEYMASK, code KEYCODE
+     /** Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". */
 #define FUNC_NAME s_keymask_keycode_to_string
 {
