@@ -1,0 +1,29 @@
+Just a cleaned up but totally non-functional version of FvwmPager
+It's been reindented, and uninteresting code has been removed.
+Interface code and drawing stuff still remains.  
+
+The issues that we'll need to resolve are:
+
+o Adding hooks on old module events (i.e., when fvwm2 used to
+  talk to a module over the pipe, have each communication
+  take place over a hook with the appropriate items);  the module
+  docs are probably a reasonable starting specification for this.
+
+o Linking in dynamically-loadable primitives;  need this for
+  other stuff too, obviously.
+
+o Allowing events relating to windows created by dynamically-loaded
+  C code and/or scheme code to get propagated back to that code;
+  this seems related to the problem with handling multiple event loops
+  that linking to any GUI interface will introduce
+
+Idea: We should implement something like the below as an experiment!
+
+  Sample hello_world application that is dynamically loaded, is 
+brought up, e.g., whenever a window is added, and just adds a simple
+top level window;  it also instructs scwm that events pertaining to
+that window should go to a specific dispatch routine, or perhaps
+a scheme callback.  Clicking in the window could then remove the
+window.
+
+Greg J. Badros, 11/10/97
