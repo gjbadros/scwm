@@ -100,6 +100,8 @@
 #define WithdrawnState 0
 #endif
 
+extern SCM sym_root_window;
+
 SCM x_propertynotify_hook;
 SCM x_root_propertynotify_hook;
 SCM x_mappingnotify_hook;
@@ -825,6 +827,8 @@ HandlePropertyNotify()
 void 
 HandleClientMessage()
 {
+  ScwmWindow *psw;
+  SCM win;
 
   DBUG((DBG,"HandleClientMessage", "Routine Entered"));
 
@@ -872,10 +876,19 @@ HandleClientMessage()
       }
       break;
     } /* end switch */
-    call3_hooks(client_message_hook,
-                gh_long2scm(Event.xclient.message_type),
-                gh_int2scm(Event.xclient.format),
-                data);
+    if (Event.xclient.window == Scr.Root) {
+      win = sym_root_window;
+    } else if (NULL != (psw = PswFromWindow(dpy,Event.xclient.window))) {
+      win = psw->schwin;
+    } else {
+      win = SCM_BOOL_F;
+    }
+
+    apply_hooks(client_message_hook,
+		      gh_list(win,
+			      gh_long2scm(Event.xclient.message_type),
+			      gh_int2scm(Event.xclient.format),
+			      data, SCM_UNDEFINED));
   }
 
   /*
@@ -1870,6 +1883,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
 #undef FUNC_NAME
 
 
+
 /* Inspired by GWM 1.8c --gjb */
 
 SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
@@ -2014,7 +2028,6 @@ this unless you know what it means. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
 
 
 

@@ -1,3 +1,8 @@
+1999-02-08  Maciej Stachowiak  <mstachow@racerx.viewlogic.com>
+
+	* events.c: Pass window (or 'root-window or #f if unrecognized)
+	based on Event.xclient.window to client-message-hook.
+
 Fri Feb  5 20:39:37 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
         * binding.c (remove_binding): Ungrab key when removing a
