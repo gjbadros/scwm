@@ -34,6 +34,7 @@
 #include "events.h"
 #include "xmisc.h"
 #include "util.h"
+#include "cursor.h"
 
   SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
   /** This hook is invoked at the start of an interactive resize.
@@ -397,7 +398,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   CassowaryModifyOpaqueFlag(&fOpaque);
 
   InstallRootColormap();
-  if (!GrabEm(CURSOR_MOVE)) {
+  if (!GrabEm(XCursorByNumber(XC_fleur))) {
     call0_hooks(cannot_grab_hook);
     return False;
   }

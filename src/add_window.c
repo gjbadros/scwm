@@ -72,6 +72,7 @@
 #include "icons.h"
 #include "placement.h"
 #include "callbacks.h"
+#include "cursor.h"
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
 #endif
@@ -226,6 +227,8 @@ AddWindow(Window w)
   }
   psw->w = w;
   ResetAllFlags(psw);
+
+  psw->icon_cursor=SCM_UNDEFINED;
 
   psw->cmap_windows = NULL;
   psw->ttLastFocussed = time(NULL);
@@ -416,7 +419,8 @@ AddWindow(Window w)
 
   attributes.border_pixel = SAFE_COLOR(psw->ShadowColor);
 
-  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
+  psw->frame_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
+  attributes.cursor = XCURSOR(psw->frame_cursor);
   attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |
 			   ButtonReleaseMask | EnterWindowMask |
 			   LeaveWindowMask | ExposureMask);
@@ -460,7 +464,7 @@ AddWindow(Window w)
      and height as the client window (keeps more applications
      happy).  This Parent window is the child of the frame window, and
      holds the client window. --07/27/98 gjb */
-  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
+  attributes.cursor = XCURSOR(psw->frame_cursor);
   DBUG((DBG,FUNC_NAME,"Creating child of frame: %d %d, %d x %d, %d",
        psw->boundary_width, psw->boundary_width + psw->title_height,
        psw->attr.width, psw->attr.height, psw->bw));
@@ -502,7 +506,14 @@ AddWindow(Window w)
     /* Just dump the decoration windows at 0,0 and
        let SetupFrame move them to their appropriate positions */
     for (i = 0; i < 4; i++) {
-      attributes.cursor = Scr.ScwmCursors[CURSOR_TOP_LEFT + i];
+      unsigned int cursors[4]={
+	XC_top_left_corner,
+	XC_top_right_corner,
+	XC_bottom_left_corner,
+	XC_bottom_right_corner
+      };
+      psw->corner_cursors[i]=get_scm_cursor_by_number(cursors[i]);
+      attributes.cursor = XCURSOR(psw->corner_cursors[i]);
       psw->corners[i] =
 	XCreateWindow(dpy, psw->frame, 0, 0,
 		      psw->corner_width, psw->corner_width,
@@ -521,7 +532,8 @@ AddWindow(Window w)
   /* We always create the title bar since we can dynamically show or hide it */
   psw->title_x = psw->boundary_width + psw->title_height + 1;
   psw->title_y = psw->boundary_width;
-  attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
+  psw->title_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
+  attributes.cursor = XCURSOR(psw->title_cursor);
   DBUG((DBG,FUNC_NAME,"Creating title window: %d %d, %d x %d",
        psw->title_x, psw->title_y,
        psw->title_width, psw->title_height));
@@ -532,7 +544,8 @@ AddWindow(Window w)
                   valuemask, &attributes);
   XSaveContext(dpy, psw->title_w, ScwmContext, (caddr_t) psw);
 
-  attributes.cursor = Scr.ScwmCursors[CURSOR_SYS];
+  psw->sys_cursor=get_scm_cursor_by_number(XC_hand2);
+  attributes.cursor = XCURSOR(psw->sys_cursor);
   for (i = 4; i >= 0; i--) {
     if ((i < Scr.nr_left_buttons) && (psw->left_w[i] > 0)) {
       if (TexturePixmap
@@ -596,7 +609,14 @@ AddWindow(Window w)
       valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
     }
     for (i = 0; i < 4; i++) {
-      attributes.cursor = Scr.ScwmCursors[CURSOR_TOP + i];
+      unsigned int cursors[4]={
+	XC_top_side,
+	XC_right_side,
+	XC_bottom_side,
+	XC_left_side
+      };
+      psw->side_cursors[i]=get_scm_cursor_by_number(cursors[i]);
+      attributes.cursor = XCURSOR(psw->side_cursors[i]);
       DBUG((DBG,FUNC_NAME,"Creating side %d",i));
       psw->sides[i] =
 	XCreateWindow(dpy, psw->frame, 0, 0, psw->boundary_width,
@@ -700,10 +720,10 @@ AddWindow(Window w)
       if (Scr.buttons2grab & (1 << i)) {
 	XGrabButton(dpy, (i + 1), 0, psw->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_SYS]);
+		    XCursorByNumber(XC_hand2));
 	XGrabButton(dpy, (i + 1), LockMask, psw->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_SYS]);
+		    XCursorByNumber(XC_hand2));
       }
   }
 
@@ -1005,3 +1025,7 @@ void init_add_window()
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+
+/*
+ * vim:ts=8:sw=2:sta
+ */

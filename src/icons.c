@@ -43,6 +43,7 @@
 #include "focus.h"
 #include "xmisc.h"
 #include "callbacks.h"
+#include "cursor.h"
 
 SCWM_HOOK(iconify_hook, "iconify-hook", 2);
   /** This hook is invoked when a window is iconified.
@@ -77,20 +78,20 @@ GrabIconButtons(ScwmWindow *ARG_UNUSED(psw), Window w)
 	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
       else {
 	XGrabButton(dpy, 1, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	XGrabButton(dpy, 2, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	XGrabButton(dpy, 3, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
       }
     }
     MouseEntry = MouseEntry->NextBinding;
@@ -312,7 +313,8 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   attributes.background_pixel = XCOLOR(Scr.NotMenuColors.bg);
   valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
   attributes.border_pixel = XCOLOR(Scr.NotMenuColors.fg);
-  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
+  psw->icon_cursor=get_scm_cursor_by_number(XC_top_left_arrow);
+  attributes.cursor = XCURSOR(psw->icon_cursor);
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			   VisibilityChangeMask |
 			   ExposureMask | KeyPressMask | EnterWindowMask |
@@ -352,13 +354,13 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 
   if (psw->icon_w != None) {
     XSaveContext(dpy, psw->icon_w, ScwmContext, (caddr_t) psw);
-    XDefineCursor(dpy, psw->icon_w, Scr.ScwmCursors[CURSOR_DEFAULT]);
+    XDefineCursor(dpy, psw->icon_w, XCURSOR(psw->icon_cursor));
     GrabIconButtons(psw, psw->icon_w);
     GrabIconKeys(psw, psw->icon_w);
   }
   if (psw->icon_pixmap_w != None) {
     XSaveContext(dpy, psw->icon_pixmap_w, ScwmContext, (caddr_t) psw);
-    XDefineCursor(dpy, psw->icon_pixmap_w, Scr.ScwmCursors[CURSOR_DEFAULT]);
+    XDefineCursor(dpy, psw->icon_pixmap_w, XCURSOR(psw->icon_cursor));
     GrabIconButtons(psw, psw->icon_pixmap_w);
     GrabIconKeys(psw, psw->icon_pixmap_w);
   }

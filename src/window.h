@@ -82,35 +82,7 @@ extern char NoName[];
 extern char NoClass[];
 extern char NoResource[];
 
-
-/* Cursor types */
-enum cursor {
- CURSOR_POSITION,		/* upper Left corner cursor */
- CURSOR_TITLE,			/* title-bar cursor */
- CURSOR_DEFAULT,		/* cursor for apps to inherit */
- CURSOR_SYS,			/* sys-menu and iconify boxes cursor */
- CURSOR_MOVE,			/* resize cursor */
- CURSOR_WAIT,			/* wait a while cursor */
- CURSOR_MENU,			/* menu cursor */
- CURSOR_SELECT,			/* dot cursor for f.move, etc. from menus */
- CURSOR_DESTROY,		/* skull and cross bones, f.destroy */
- /* Order dependency on these cursors! */
- CURSOR_TOP,			/*  */
- CURSOR_RIGHT,			/*  */
- CURSOR_BOTTOM,			/*  */
- CURSOR_LEFT,			/*  */
- CURSOR_TOP_LEFT,		/*  */
- CURSOR_TOP_RIGHT,		/*  */
- CURSOR_BOTTOM_LEFT,		/*  */
- CURSOR_BOTTOM_RIGHT,		/*  */
- CURSOR_MAX_CURSORS		/*  */
-};
-
-
 struct ScwmWindowConstraintInfo;
-
-
-
 
 typedef struct gravity_info_tag {
   unsigned short x:2; /* how many times the border width difference should we 
@@ -145,6 +117,14 @@ struct ScwmWindow {
   Window title_w;		/* the title bar window */
   Window sides[4];              /* top, right, bottom, then left */
   Window corners[4];		/* nw, ne, sw, se  coreners */
+
+  SCM corner_cursors[4];
+  SCM side_cursors[4];
+  SCM title_cursor;
+  SCM sys_cursor;
+  SCM frame_cursor;
+  SCM icon_cursor;
+
   int nr_left_buttons;
   int nr_right_buttons;
   Window left_w[5];
@@ -382,7 +362,7 @@ void MoveTo(ScwmWindow *psw, int x, int y);
 void ResizeTo(ScwmWindow *psw, int width, int height);
 void MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height);
 
-Bool GrabEm(enum cursor);
+Bool GrabEm(Cursor);
 void UngrabEm(void);
 
 void invalidate_window(SCM schwin);

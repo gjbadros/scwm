@@ -80,6 +80,12 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+#define VALIDATE_ARG_INT_RANGE_COPY(pos,scm,low,high,cvar) \
+  do { \
+  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = gh_scm2long(scm); \
+  if (cvar < low || cvar > high) scm_misc_error(FUNC_NAME,"Argument out of range.",SCM_EOL); \
+  } while (0)
 
 /* Sample Usage:
   VALIDATE_ARG_INT_COPY_USE_DEF(1,pixels,cpixMoveAmount,10);

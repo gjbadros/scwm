@@ -40,6 +40,7 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "callbacks.h"
+#include "cursor.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -1575,7 +1576,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   }
 
   PopupMenu(pmd);
-  GrabEm(CURSOR_MENU);
+  GrabEm(XCursorByNumber(XC_sb_left_arrow));
   pmi = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
   UngrabEm();
   PopdownMenu(pmd);

@@ -14,6 +14,7 @@ scwm_SOURCES =  Grab.c \
                 colormaps.c \
                 colors.c \
                 complex.c \
+                cursor.c \
                 decor.c \
                 decorations.c \
                 deskpage.c \
@@ -70,7 +71,7 @@ EXTRA_scwm_SOURCES = $(cassowary_srcs) $(session_manager_srcs)
 noinst_HEADERS = Grab.h events.h placement.h ICCCM.h face.h resize.h \
 add_window.h focus.h screen.h binding.h font.h scwm-constraints.h \
 borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h \
-color.h icons.h session-manager.h colormaps.h image.h shutdown.h \
+color.h cursor.h icons.h session-manager.h colormaps.h image.h shutdown.h \
 colors.h log-usage.h string_token.h complex.h menu.h syscompat.h \
 constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
 decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
@@ -90,7 +91,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
 guile_snarfs = Grab.x ICCCM.x add_window.x binding.x callbacks.x color.x \
-constraint-primitives.x \
+constraint-primitives.x cursor.x \
 decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \
 menulook.x message-window.x miscprocs.x module-interface.x move.x placement.x resize.x \
 screen.x session-manager.x shutdown.x virtual.x window.x xproperty.x xrm.x winprop.x \

@@ -93,6 +93,7 @@
 #include "drawmenu.h"
 #include "events.h"
 #include "message-window.h"
+#include "cursor.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
@@ -131,7 +132,6 @@ XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
 XIOErrorHandler CatchFatal(Display *);
 XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
 
-void CreateCursors(void);
 void ChildDied(int nonsense);
 void SetMWM_INFO(Window window);
 void StartupStuff(void);
@@ -597,6 +597,7 @@ scwm_main(int argc, char **argv)
   init_virtual();
   init_icons();
   init_ICCCM();
+  init_cursor();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
@@ -927,7 +928,6 @@ Repository Timestamp: %s\n",
   
   BlackoutScreen();           /* if they want to hide the capture/startup */
   
-  CreateCursors();
   InitVariables();
   init_image_colormap();
   init_borders();
@@ -1293,37 +1293,6 @@ Restart(int ARG_IGNORE(ignored))
   Done(1, *g_argv);
   SIGNAL_RETURN;
 }
-
-/***********************************************************************
- *
- *  Procedure:
- *	CreateCursors - Loads scwm cursors
- *
- ***********************************************************************
- */
-void 
-CreateCursors(void)
-{
-  /* define cursors */
-  Scr.ScwmCursors[CURSOR_POSITION] = XCreateFontCursor(dpy, XC_top_left_corner);
-  Scr.ScwmCursors[CURSOR_DEFAULT] = XCreateFontCursor(dpy, XC_top_left_arrow);
-  Scr.ScwmCursors[CURSOR_SYS] = XCreateFontCursor(dpy, XC_hand2);
-  Scr.ScwmCursors[CURSOR_TITLE] = XCreateFontCursor(dpy, XC_top_left_arrow);
-  Scr.ScwmCursors[CURSOR_MOVE] = XCreateFontCursor(dpy, XC_fleur);
-  Scr.ScwmCursors[CURSOR_MENU] = XCreateFontCursor(dpy, XC_sb_left_arrow);
-  Scr.ScwmCursors[CURSOR_WAIT] = XCreateFontCursor(dpy, XC_watch);
-  Scr.ScwmCursors[CURSOR_SELECT] = XCreateFontCursor(dpy, XC_dot);
-  Scr.ScwmCursors[CURSOR_DESTROY] = XCreateFontCursor(dpy, XC_pirate);
-  Scr.ScwmCursors[CURSOR_LEFT] = XCreateFontCursor(dpy, XC_left_side);
-  Scr.ScwmCursors[CURSOR_RIGHT] = XCreateFontCursor(dpy, XC_right_side);
-  Scr.ScwmCursors[CURSOR_TOP] = XCreateFontCursor(dpy, XC_top_side);
-  Scr.ScwmCursors[CURSOR_BOTTOM] = XCreateFontCursor(dpy, XC_bottom_side);
-  Scr.ScwmCursors[CURSOR_TOP_LEFT] = XCreateFontCursor(dpy, XC_top_left_corner);
-  Scr.ScwmCursors[CURSOR_TOP_RIGHT] = XCreateFontCursor(dpy, XC_top_right_corner);
-  Scr.ScwmCursors[CURSOR_BOTTOM_LEFT] = XCreateFontCursor(dpy, XC_bottom_left_corner);
-  Scr.ScwmCursors[CURSOR_BOTTOM_RIGHT] = XCreateFontCursor(dpy, XC_bottom_right_corner);
-}
-
 
 /* RestoreWithdrawnLocation
  * 

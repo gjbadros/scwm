@@ -35,7 +35,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <X11/cursorfont.h>
 
 #include "binding.h"
 #include "window.h"
@@ -211,8 +210,6 @@ typedef struct ScreenInfo {
 				   colormap windows */
   ScwmWindow *pushed_window;	/* saved window to install when pushes drops
 				   to zero */
-  Cursor ScwmCursors[CURSOR_MAX_CURSORS];
-
   char *DefaultIcon;		/* Icon to use when no other icons are found */
 
   struct ScwmScreenConstraintInfo *pssci; /* Constraint information for this screen */

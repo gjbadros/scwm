@@ -25,6 +25,7 @@
 #include "add_window.h"
 #include "xmisc.h"
 #include "syscompat.h"
+#include "cursor.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -383,12 +384,12 @@ GrabButtonWithModifiers(int button, int modifier,
     XGrabButton(dpy, button, modifier, psw->w,
 		True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None,
-		Scr.ScwmCursors[CURSOR_DEFAULT]);
+		XCursorByNumber(XC_top_left_arrow));
     if (modifier != AnyModifier) {
       XGrabButton(dpy, button, (modifier | LockMask), psw->w,
 		  True, ButtonPressMask | ButtonReleaseMask,
 		  GrabModeAsync, GrabModeAsync, None,
-		  Scr.ScwmCursors[CURSOR_DEFAULT]);
+		  XCursorByNumber(XC_top_left_arrow));
     }
   } else {
     int i = 1;
@@ -437,50 +438,50 @@ GrabButtons(ScwmWindow * psw)
 		    psw->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	if (MouseEntry->Modifier != AnyModifier) {
 	  XGrabButton(dpy, MouseEntry->Button_Key,
 		      (MouseEntry->Modifier | LockMask),
 		      psw->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+		      XCursorByNumber(XC_top_left_arrow));
 	}
       } else {
 	XGrabButton(dpy, 1, MouseEntry->Modifier,
 		    psw->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	XGrabButton(dpy, 2, MouseEntry->Modifier,
 		    psw->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	XGrabButton(dpy, 3, MouseEntry->Modifier,
 		    psw->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+		    XCursorByNumber(XC_top_left_arrow));
 	if (MouseEntry->Modifier != AnyModifier) {
 	  XGrabButton(dpy, 1,
 		      (MouseEntry->Modifier | LockMask),
 		      psw->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+		      XCursorByNumber(XC_top_left_arrow));
 	  XGrabButton(dpy, 2,
 		      (MouseEntry->Modifier | LockMask),
 		      psw->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+		      XCursorByNumber(XC_top_left_arrow));
 	  XGrabButton(dpy, 3,
 		      (MouseEntry->Modifier | LockMask),
 		      psw->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+		      XCursorByNumber(XC_top_left_arrow));
 	}
       }
     }

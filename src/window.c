@@ -51,6 +51,7 @@
 #include "dbug_resize.h"
 #include "winprop.h"
 #include "xproperty.h"
+#include "cursor.h"
 
 
 SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
@@ -122,7 +123,7 @@ char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
 static int DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
-                          enum cursor cursor, int FinishEvent,
+                          Cursor cursor, int FinishEvent,
                           int *px, int *py);
 
 unsigned long
@@ -431,10 +432,21 @@ SCM
 mark_window(SCM obj)
 {
   if (VALIDWINP(obj)) {
+    int i;
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
     if (psw->fl != NULL) {
       scm_gc_mark(psw->fl->scmdecor);
     }
+    scm_gc_mark(psw->mini_icon_image);
+    for (i=0;i<4;i++) {
+      scm_gc_mark(psw->corner_cursors[i]);
+      scm_gc_mark(psw->side_cursors[i]);
+    }
+    scm_gc_mark(psw->title_cursor);
+    scm_gc_mark(psw->sys_cursor);
+    scm_gc_mark(psw->frame_cursor);
+    scm_gc_mark(psw->icon_cursor);
+
     scm_gc_mark(psw->mini_icon_image);
     scm_gc_mark(psw->icon_req_image);
     scm_gc_mark(psw->icon_image);
@@ -869,19 +881,19 @@ map is actually performed.
 
 
 SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
-          (SCM kill_p, SCM release_p))
-     /** Select a viewport position and return the window there.
-Use a special cursor and let the user click to select a viewport position
-Returns a list of three items: (selected-window viewport-x viewport-y).
-selected-window is either the window object corresponding to the selected
-window or #f if no window was selected.
+          (SCM release_p, SCM cursor))
+     /** Select a viewport position and return the window there.  
+Use a special cursor and let the user click to select a viewport
+position Returns a list of three items: (selected-window viewport-x
+viewport-y).  selected-window is either the window object
+corresponding to the selected window or #f if no window was selected.
 viewport-x and viewport-y give the position in the viewport that the
-cursor was located when the selection was finalized.
-The optional arguments KILL? and RELEASE? indicate whether to use the
-"skull and cross-bones" kill cursor (recommended for destructive
-operations like delete-window and destroy-window), and whether to wait
-for a mouse release or act immediately on the click. The former is a
-place-holder until we have proper cursor support in scwm. */
+cursor was located when the selection was finalized.  RELEASE?
+indicates whether to whether to wait for a mouse release or act
+immediately on the click.  CURSOR is the cursor object to use, or
+#t for the "skull and cross-bones" kill cursor
+(recommended for destructive operations like delete-window and
+destroy-window), or #f or omitted for the standard circle cursor. */
 #define FUNC_NAME s_select_viewport_position
 {
   XEvent ev;
@@ -890,16 +902,21 @@ place-holder until we have proper cursor support in scwm. */
   SCM win = SCM_BOOL_F;
   int x = 0, y = 0;
 
+  Cursor x_cursor;
+
   SCM_REDEFER_INTS;
   w = Scr.Root;
 
   psw = &Scr.ScwmRoot;
 
-  if (kill_p == SCM_UNDEFINED) {
-    kill_p = SCM_BOOL_F;
-  } else if (!gh_boolean_p(kill_p)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, kill_p);
+  x_cursor=XCURSOR(cursor);
+  if (x_cursor==None) {
+    if (cursor == SCM_UNDEFINED) {
+      cursor = SCM_BOOL_F;
+    } else if (!gh_boolean_p(cursor)) {
+      gh_allow_ints();
+      SCWM_WRONG_TYPE_ARG(1, cursor);
+    }
   }
 
   if (release_p == SCM_UNDEFINED) {
@@ -911,7 +928,13 @@ place-holder until we have proper cursor support in scwm. */
 
 
   if (DeferExecution(&ev, &w, &psw,
-		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
+		     (x_cursor==None)?(
+		       (cursor != SCM_BOOL_F ?
+			 XCursorByNumber(XC_pirate):
+			 XCursorByNumber(XC_dot))
+		       ):(
+		         x_cursor
+		       ),
 		     (release_p != SCM_BOOL_F ? ButtonRelease :
 		      ButtonPress),
                      &x, &y)) {
@@ -943,24 +966,24 @@ it may be changed entirely. */
 /* FIXMS: consider reordering the arguments for get-window */
 
 SCWM_PROC(get_window, "get-window", 0, 3, 0,
-          (SCM kill_p, SCM select_p, SCM release_p))
+          (SCM select_p, SCM release_p, SCM cursor))
      /** Retrieve the window context or select interactively.
 If there is no window context, a window is selected interactively.
-The optional boolean argument KILL?  (default #f) determines whether
-to use the "kill" cursor when selecting interactively. The boolean
-SELECT? argument (default #t) determines whether or not a window
-should be selected interactively if there is no current window
-context. And finally the RELEASE? argument (default #t) determines
-whether or not interactive selection (if any) should wait for a mouse
-release event or just a press. The latter behavior is useful if the
-action being performed on the window is an interactive one involving
-mouse drags. */
+The boolean SELECT? argument (default #t) determines whether or not a
+window should be selected interactively if there is no current window
+context. The RELEASE? argument (default #t) determines whether or not
+interactive selection (if any) should wait for a mouse release event
+or just a press. The latter behavior is useful if the action being
+performed on the window is an interactive one involving mouse
+drags. The CURSOR argument is either a cursor object or #t to use
+the "skull and crossbones" cursor, or #f to use the standard
+circle cursor. */
 #define FUNC_NAME s_get_window
 {
-  if (kill_p == SCM_UNDEFINED) {
-    kill_p = SCM_BOOL_F;
-  } else if (!gh_boolean_p(kill_p)) {
-    SCWM_WRONG_TYPE_ARG(1, kill_p);
+  if (cursor == SCM_UNDEFINED) {
+    cursor = SCM_BOOL_F;
+  } else if (!gh_boolean_p(cursor) && !IS_CURSOR(cursor)) {
+    SCWM_WRONG_TYPE_ARG(1, cursor);
   }
   if (select_p == SCM_UNDEFINED) {
     select_p = SCM_BOOL_T;
@@ -974,7 +997,7 @@ mouse drags. */
   }
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
-      SCM win = gh_car(select_viewport_position(kill_p,release_p));
+      SCM win = gh_car(select_viewport_position(release_p,cursor));
       if (SCM_BOOL_F == win)
         call0_hooks(invalid_interaction_hook);
       return win;
@@ -1214,7 +1237,7 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
  * Grab the pointer and keyboard
  */
 Bool
-GrabEm(enum cursor cursor)
+GrabEm(Cursor cursor)
 {
   int i = 0, val = 0;
   unsigned int mask;
@@ -1232,7 +1255,7 @@ GrabEm(enum cursor cursor)
   while ((i < 5) &&
          (val = XGrabPointer(dpy, Scr.Root, True, mask,
                              GrabModeAsync, GrabModeAsync, Scr.Root,
-                             Scr.ScwmCursors[cursor],
+                             cursor,
                              CurrentTime) != GrabSuccess)) {
     i++;
     /* If you go too fast, other windows may not get a change to release
@@ -1319,7 +1342,7 @@ PswSelectInteractively(Display *ARG_UNUSED(dpy))
 {
   /* GJB:FIXME:: this should be the primitive that select_window calls,
      and this should replace DeferExecution. --07/25/98 gjb */
-  SCM result = gh_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
+  SCM result = gh_car(select_viewport_position(SCM_BOOL_T, SCM_BOOL_F));
   if (result == SCM_BOOL_F)
     return NULL;
   return PSWFROMSCMWIN(result);
@@ -1347,7 +1370,7 @@ extern Bool have_orig_position;
  */
 static int
 DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
-	       enum cursor cursor, int FinishEvent,
+	       Cursor cursor, int FinishEvent,
                int *px, int *py)
 {
   Bool fDone = False;
@@ -4103,3 +4126,7 @@ init_window()
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+
+/*
+ * vim:ts=8:sw=2:sta
+ */

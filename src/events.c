@@ -88,6 +88,7 @@
 #include "xrm.h"
 #include "dbug_resize.h"
 #include "virtual.h"
+#include "cursor.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
@@ -388,7 +389,7 @@ HandleHardFocus(ScwmWindow *psw)
   Scr.Focus = NULL;
   /* Do something to guarantee a new time stamp! */
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
-  GrabEm(CURSOR_WAIT);
+  GrabEm(XCursorByNumber(XC_watch));
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
 	       x + 2, y + 2);

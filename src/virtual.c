@@ -32,6 +32,7 @@
 #include "xmisc.h"
 #include "syscompat.h"
 #include "callbacks.h"
+#include "cursor.h"
 
 SCWM_SYMBOL(sym_north,"north");
 SCWM_SYMBOL(sym_east,"east");
@@ -411,7 +412,7 @@ initPanFrames()
 			   VisibilityChangeMask);
   valuemask = (CWEventMask | CWCursor);
 
-  attributes.cursor = Scr.ScwmCursors[CURSOR_TOP];
+  attributes.cursor = XCursorByNumber(XC_top_side);
   Scr.PanFrameTop.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, 0,
@@ -420,7 +421,7 @@ initPanFrames()
 		  CopyFromParent, InputOnly,
 		  CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[CURSOR_LEFT];
+  attributes.cursor = XCursorByNumber(XC_left_side);
   Scr.PanFrameLeft.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, PAN_FRAME_THICKNESS,
@@ -429,7 +430,7 @@ initPanFrames()
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[CURSOR_RIGHT];
+  attributes.cursor = XCursorByNumber(XC_right_side);
   Scr.PanFrameRight.win =
     XCreateWindow(dpy, Scr.Root,
 	      Scr.DisplayWidth - PAN_FRAME_THICKNESS, PAN_FRAME_THICKNESS,
@@ -438,7 +439,7 @@ initPanFrames()
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[CURSOR_BOTTOM];
+  attributes.cursor = XCursorByNumber(XC_bottom_side);
   Scr.PanFrameBottom.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, Scr.DisplayHeight - PAN_FRAME_THICKNESS,
@@ -599,3 +600,7 @@ init_virtual()
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+
+/*
+ * vim:ts=8:sw=2:sta
+ */

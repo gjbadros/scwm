@@ -43,6 +43,7 @@
 #include "xmisc.h"
 #include "callbacks.h"
 #include "util.h"
+#include "cursor.h"
 
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
@@ -480,7 +481,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   have_orig_position = False;
   InstallRootColormap();
 
-  if (!GrabEm(CURSOR_MOVE)) {
+  if (!GrabEm(XCursorByNumber(XC_fleur))) {
     /* GJB:FIXME:: xmag caused this to run
        when click-to place (no auto/smart placement)
        and it should not, IMO --09/22/98 gjb

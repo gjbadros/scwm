@@ -66,9 +66,10 @@
 #define ARG_UNUSED(x) x ## _unused
 #endif
 
+#define ARRAY_SIZE(x) ((long)(sizeof((x))/sizeof(*(x))))
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <X11/cursorfont.h>
 #include <X11/Intrinsic.h>
 
 #include <guile/gh.h>
