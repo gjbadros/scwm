@@ -1,3 +1,11 @@
+Wed Mar 25 15:01:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* drawmenu.c: Set cpixSideImage to 0 when there is no side image
+
+	* color.c: Use SCM_FALSEP(scm_number_p(xxx)), not
+	!scm_number_p(xxx) since SCM_BOOL_F still evaluates to "true" as a 
+	C expression.
+
 Tue Mar 24 15:57:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scmprocs.c, miscprocs.c, miscprocs.h: Added

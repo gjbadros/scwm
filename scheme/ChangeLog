@@ -1,3 +1,11 @@
+Wed Mar 25 14:38:03 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: use-module (ice-9 regex)
+
+	* prefs-menu.scm: define-module misnamed the module -- removed
+	trailing `s' from the name so prefs-menu matches the file name.
+	Also added a comment about ask-string and how it might work...
+
 Tue Mar 24 16:43:32 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.in (install): install flux.scm
