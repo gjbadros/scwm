@@ -1,3 +1,22 @@
+Sat Mar 30 03:29:51 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* undo.scm: Documented public variables.
+	Updated and greatly improved documentation.
+	Deprecated 'decrement-undo-index', 'increment-undo-index',
+	'insert-undo-global', and 'insert-undo-state'.  The first 2
+	should be private and the last 2 were broken and had bizarre
+	semantics to begin with so I decided to deprecate instead of
+	fix.
+
+	Fixed bug in undo/redo that would result in having to do 2
+	undos/redos in a row to reverse the effect of the last redo/undo.
+
+	Implemented paying attention to undo-max-entries so that we don't
+	just keep growing memory in the comon usage case.  Added function
+	'truncate-undo-list' in the process to constrain the undo-list to
+	be no larger than a given number.  Exported as public since may be
+	useful to users.
+
 Tue Mar 26 23:40:09 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* window-configuration.scm: Added storing state of iconified?,
