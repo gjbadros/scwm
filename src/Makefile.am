@@ -88,9 +88,8 @@ guile_snarfs = Grab.x add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
 miscprocs.x module-interface.x move.x placement.x resize.x \
 screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x \
-drawmenu.x menulook.x
+drawmenu.x menulook.x virtual.x
 # draw-pie-menu.x 
-# FIXME:casso
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
