@@ -91,6 +91,10 @@
    C-level support for hooks. */
 #undef HAVE_SCM_MAKE_HOOK
 
+/* Define this if your libguile has scm_strport_to_string
+   (added sometime after guile-1.3) */
+#undef HAVE_SCM_STRPORT_TO_STRING
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
