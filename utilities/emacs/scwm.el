@@ -61,6 +61,9 @@
 (defvar scwm-repl "scwmrepl" "The path to scwmrepl.")
 (defvar scwm-exec "scwmexec" "The path to scwmexec.")
 
+;; Use scheme major mode
+(require 'scheme)
+
 ;;; pacify the compiler (XEmacs only)
 (eval-and-compile (autoload 'id-select-symbol "id-select"))
 
@@ -178,12 +181,11 @@ Returns a string."
 
 ;;; keybindings
 ;;; -----------
-
-(define-key scheme-mode-map "\C-j" 'scwm-eval-print)
-(define-key scheme-mode-map "\C-c\C-s" 'scwm-run)
-(define-key scheme-mode-map "\C-x\C-j" 'scwm-eval-to-minibuffer)
-(define-key scheme-mode-map "\C-h\C-s" 'scwm-documentation)
-(define-key scheme-mode-map "\C-h\C-a" 'scwm-apropos)
+(define-key scheme-mode-map [(control j)] 'scwm-eval-print)
+(define-key scheme-mode-map [(control c) (control s)] 'scwm-run)
+(define-key scheme-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
+(define-key scheme-mode-map [(control h) (control s)] 'scwm-documentation)
+(define-key scheme-mode-map [(control h) (control a)] 'scwm-apropos)
 (define-key scheme-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
 
 (provide 'scwm)
