@@ -168,6 +168,16 @@ See `move-window' if you wish to move a window to a virtual position."
 ;; FIXGJB: Can this have a doc string?
 (define-public move-window-viewport-position move-to)
 
+(define*-public (window-title-height #&optional (win (get-window)))
+  "Return WIN's titlebar's height.
+See also `window-title-size', `window-title-width'."
+  (cadr (window-title-size WIN)))
+
+(define*-public (window-title-width #&optional (win (get-window)))
+  "Return WIN's titlebar's width.
+See also `window-title-size', `window-title-height'."
+  (car (window-title-size WIN)))
+
 (define*-public (window-viewport-position #&optional (win (get-window)))
   "Return the position of WIN in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y

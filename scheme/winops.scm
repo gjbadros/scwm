@@ -98,19 +98,19 @@ pulling down a window shade on a window."
 (define*-public (maximize nw nh #&optional (win (get-window)))
   "Maximize WIN to new width NW and new height NH.
 If NW or NH is 0, that dimension is not changed."
-  (if win (let* ((pos (window-position win))
-	       (size (window-frame-size win))
-	       (x (car pos))
-	       (y (cadr pos))
-	       (width (car size))
-	       (height (cadr size)))
-	  (if (not (maximized? win))
-	      (set-object-property! win 'maximized 
-				    (list x y width height)))
-	  (move-to (if (> nw 0) 0 x)
-		   (if (> nh 0) 0 y) win)
-	  (resize-frame-to (if (> nw 0) nw width)
-			   (if (> nh 0) nh height) win))))
+  (if win (let* ((pos (window-viewport-position win))
+		 (size (window-frame-size win))
+		 (x (car pos))
+		 (y (cadr pos))
+		 (width (car size))
+		 (height (cadr size)))
+	    (if (not (maximized? win))
+		(set-object-property! win 'maximized 
+				      (list x y width height)))
+	    (move-to (if (> nw 0) 0 x)
+			 (if (> nh 0) 0 y) win)
+	    (resize-frame-to (if (> nw 0) nw width)
+			     (if (> nh 0) nh height) win))))
 
 (define*-public (maximized? #&optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
@@ -121,12 +121,12 @@ If NW or NH is 0, that dimension is not changed."
   "Unmaximize WIN so it returns to its size before maximization.
 This should use client units, but currently uses frame-size in pixels."
   (if win (let ((max-prop (object-property win 'maximized)))
-	  (cond
-	   (max-prop (move-to (car max-prop)
-			      (cadr max-prop) win)
-		     (resize-frame-to (caddr max-prop)
-				      (cadddr max-prop) win)
-		     (set-object-property! win 'maximized #f))))))
+	    (cond
+	     (max-prop (move-to (car max-prop)
+				    (cadr max-prop) win)
+		       (resize-frame-to (caddr max-prop)
+					(cadddr max-prop) win)
+		       (set-object-property! win 'maximized #f))))))
 
 (define-public (window-frame-area win)
   "Return the number of square pixels of area that WIN is."
@@ -193,12 +193,11 @@ motion does `interactive-move-maybe-opaque', and double-click does
   "Resize WINDOW interactively and opaquely."
   (if win (interactive-resize win #t)))
 
-
 (define*-public (toggle-maximize nw nh #&optional (win (get-window)))
   "Maximize to width NW, height NH if not maximized, or unmaximize."
   (if win (if (maximized? win)
-	    (unmaximize win)
-	    (maximize nw nh win))))
+	      (unmaximize win)
+	      (maximize nw nh win))))
 
 ;; add a style option for maximizing
 (add-window-style-option #:start-maximized 
