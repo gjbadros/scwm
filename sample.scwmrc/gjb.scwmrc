@@ -7,6 +7,8 @@
 	     (app scwm wininfo)
              (app scwm style))
 
+(use-modules posix)
+
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 (define xterm-user-shell-options "-e start-zsh")
@@ -88,17 +90,10 @@
 ;	      #:icon "unknown1.xpm" 
 	      #:icon #f        ;; MS - specify #f to not get an icon.
 ;	      #:icon-box (list (x- 70) 1 69 (y- 141))
-	      #:border-width 6 
+	      #:border-width 3 
 	      #:focus 'mouse
-;	      #:handle-width 3 ;; FIXGJB use nil for no handles
-	                       ;; MS - there is no handle-width option,
-	                       ;; it seemed silly to me to set the width
-	                       ;; a different way depending on wether
-	                       ;; the window has handles or not. To get
-	                       ;; no handles, use #:plain-border #t
-;	      #:sticky-icon #t ;; FIXGJB
-	                       ;; MS - the #:sticky-icon option works for me,
-	                       ;; does it not work for you?
+	      #:plain-border #t ;; replaces handle-width
+	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #t
@@ -397,6 +392,12 @@
 (define root-size-x (car (display-size)))
 (define root-size-y (cadr (display-size)))
 
+;; FIXGJB: where is setenv?
+;;(setenv "height" (number->string root-size-x))
+(putenv (string-append "height=" (number->string root-size-y)))
+(putenv (string-append "width=" (number->string root-size-x)))
+;; PLANES? FVWM_DIR? FVWM_VERSION?  want these exported too
+
 ;; Ahhhh now I get what (%x ..) does!
 (define (percent-display x y)
   (list (%x x) (%y y)))
@@ -464,6 +465,16 @@
 (bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
 (bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
 
+;; FIXGJB: modifiers interface could be better... mimic off Emacs?
+(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
+(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2 0)))
+(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
+
+;; This one is experimental-- sends only the buttonpress event, no buttonrelease
+(bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 0 (get-window) #t #f)))
+
 (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
+
+
 
 ;(recapture)
