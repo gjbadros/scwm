@@ -1,5 +1,9 @@
 Thu Mar 26 11:32:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* fvwm-module.scm: Send more information to the module in
+ 	send-window-list (still not quite all that fvwm sends). Also a few
+ 	minor bug fixes. FvwmWinList now works.
+
 	* fvwm-eval.scm: Added support for "Focus" and "Iconify" fvwm
  	builtins, reportedly needed by TkDesk.
 
