@@ -1,6 +1,6 @@
 %define nam      guile-gtk
 %define ver      26Aug99
-%define rel      1gjb
+%define rel      2gjb
 %define prefix   /usr
 
 Name: %nam
