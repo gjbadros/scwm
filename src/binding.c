@@ -1219,10 +1219,10 @@ ScmBindingDescriptionFromPbnd(const Binding *pbnd)
   return gh_list(mouse_p,contexts,modmask,keybut,proc1,proc2,SCM_UNDEFINED);
 }
 
-SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 1, 0, 0,
+SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 1, 0,
           (SCM proc))
      /** Return any bindings that invoke PROC.
-If PROC is #f, return all bindings.
+If PROC is omitted, return all bindings.
 The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
@@ -1231,7 +1231,7 @@ symbols. */
 {
   SCM bindings = SCM_EOL;
   Binding *pbnd;
-  VALIDATE_ARG_PROC(1,proc);
+  VALIDATE_ARG_PROC_USE_F(1,proc);
 
   for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
     if (SCM_BOOL_F == proc || 
