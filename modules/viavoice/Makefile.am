@@ -12,6 +12,7 @@ AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 if HAVE_VIAVOICE
 scwm_module_LTLIBRARIES = libscwmviavoice.la
 BUILT_SOURCES = $(libscwmviavoice_snarfs) $(GRAMMARS)
+scwm_viavoice_grammar_DATA = $(GRAMMARS)
 endif
 
 libscwmviavoice_snarfs = scwmviavoice.x
