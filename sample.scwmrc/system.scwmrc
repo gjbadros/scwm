@@ -735,7 +735,7 @@
     menu-separator
     (menuitem "Switch to..." #:action
 	       (lambda () 
-		 (show-window-list-menu #f #:show-geometry #t)))
+		 (show-window-list-menu #f #f #:show-geometry #t)))
     (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
 	       #:action (thunk refresh)))))
 
@@ -1026,10 +1026,10 @@ from other processes.
 		  (make-window-list-menu #:by-resource #t)))))))
 
 (define (show-window-list-by-focus-with-geometry)
-  (show-window-list-menu #f #:by-focus #t #:show-geometry #t))
+  (show-window-list-menu #f #f #:by-focus #t #:show-geometry #t))
 
 (define (show-window-list-by-resource-with-geometry)
-  (show-window-list-menu #f #:by-resource #t #:show-geometry #t))
+  (show-window-list-menu #f #f #:by-resource #t #:show-geometry #t))
 
 (if (and
      gnome-sm
