@@ -1,6 +1,7 @@
 
 noinst_DATA = scwm
 
+DISTCLEANFILES = scwm
 
 scwm: ${top_srcdir}/scheme
 	if [ "$(LN_S)" = "ln -s" ]; then \

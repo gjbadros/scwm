@@ -1,5 +1,8 @@
 Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* app/Makefile.am: Add scwm to DISTCLEANFILES to comply with GNU
+ 	Makefile standards. Patch from Francesco Tapparo.
+
 	* README, ANNOUNCE, scwm.lsm: Updated for 0.9beta1. No new feature
  	hilight list in ANNOUNCE yet.
 
