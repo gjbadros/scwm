@@ -8,6 +8,8 @@ Race conditions cause scwm to hang when talking to fvwm2 modules when, e.g.,
 recapturing.
 May have just been forgetting the O_NONBLOCK flag... --09/17/98 gjb
 -------------
+emacs lisp files get installed under / if no emacs (from forcer --09/23/98 gjb)
+-------------
 1. I pop up an xterm
 2. I do a horizontal-toggle-maximize
 3. I change to a smaller font.
