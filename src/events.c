@@ -1433,8 +1433,8 @@ HandleMotionNotify()
   DBUG_EVENT((DBG,"HandleMotionNotify","Entered"));
   if (psw) {
     win = psw->schwin;
-    x = gh_int2scm(pev->x_root - psw->frame_x);
-    y = gh_int2scm(pev->y_root - psw->frame_y);
+    x = gh_int2scm(pev->x_root - FRAME_X_VP(psw));
+    y = gh_int2scm(pev->y_root - FRAME_Y_VP(psw));
   }
   call6_hooks(x_motionnotify_hook,
               x_root,y_root,state,win,x,y);
