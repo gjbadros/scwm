@@ -123,7 +123,7 @@
 		  face time-convert menus-extras
 		  std-menus xlock-menus doc virtual prompt-color
 		  flux flux-gtk flash-window key-mover shove-window
-		  titlebar-buttons gtk
+		  titlebar-buttons gtk gtk-about
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify last-mapped-window
 		  modifier-key-bindings window-selection
