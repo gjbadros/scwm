@@ -207,7 +207,7 @@ Use the optional second argument as the separator."
 	   (set! i (+ 1 i)))))
 
 ;;(define-public doc-files '("/usr/src/scwm/doc/scwm-procedures.txt"))
-(define-public doc-files (list (append (scwm-path-prefix) "/scwm/scwm-procedures.txt")))
+(define-public doc-files (list (string-append (scwm-path-prefix) "/scwm/scwm-procedures.txt")))
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
 Return #t if found anything, #f if no documentation."
