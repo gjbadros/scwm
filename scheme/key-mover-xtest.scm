@@ -8,6 +8,7 @@
 
 
 (define-module (app scwm key-mover-xtest)
+  :use-module (app scwm optargs)
   :use-module (app scwm base)
   :use-module (app scwm scwmxtest))
 
