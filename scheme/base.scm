@@ -344,6 +344,7 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 	  (list->string (reverse return-key-char-list)))))
 
 (define*-public (menuitem label #&key image-above image-left
+			  (fg #f) (bg #f) (font #f)
 			  extra-label action submenu hover-action unhover-action
 			  hotkey-prefs)
   "Return a menuitem object with the given attributes.
@@ -371,6 +372,9 @@ the shortcut key for the menu item."
       (set! image-above (make-image image-above)))
   (if (string? image-left)
       (set! image-left (make-image image-left)))
+  (if (string? bg) (set! bg (make-color bg)))
+  (if (string? fg) (set! fg (make-color fg)))
+  (if (string? font) (set! font (make-font font)))
   (if (string? action)			;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))
 	(set! action (lambda () (execute program-name)))))
@@ -378,8 +382,13 @@ the shortcut key for the menu item."
       (error "Cannot give both an action and a submenu"))
   (if (bound? submenu)
       (set! action submenu))
-  (make-menuitem label action extra-label image-above image-left
-		 hover-action unhover-action hotkey-prefs (bound? submenu)))
+  (let ((mi
+	 (make-menuitem label action extra-label image-above image-left
+			hover-action unhover-action hotkey-prefs (bound? submenu))))
+    (if (or fg bg) (set-menuitem-colors! mi fg bg))
+    (if font (set-menuitem-font! mi font))
+    mi))
+
 
 (define*-public (menu list-of-menuitems #&key
 		      (image-side 'menu-side-image)

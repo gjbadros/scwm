@@ -101,7 +101,9 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 		(else (mcs-complain "Unknown" (symbol->keyword key)))))))))))
 
 
-(define-public default-style-condition-handler window-match??)
+(define-public default-style-condition-handler resource-match??)
+;;(define-public default-style-condition-handler class-match??)
+;;(define-public default-style-condition-handler window-match??)
 
 (define (condition->predicate condition)
   (cond

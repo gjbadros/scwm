@@ -34,7 +34,11 @@
 ;;; window and remains ("hovers") over the window for a brief period
 ;;; of time.  The window can also be focused by clicking on the window
 ;;; just as with the "#:focus 'click" policy on which hover-focus is
-;;; built.
+;;; built.  Setting hover-focus for a window automatically changes
+;;; that windows built-in focus style to 'click; resetting hover-focus
+;;; for a window (i.e., turning it off) reverts the windows focus
+;;; style back to whatever it was before turning hover-focus on.
+;;; (intervening set-window-focus! commands will be undone).
 ;;;
 ;;; To make hover-focus the focus policy requires that hover-focus be
 ;;; included in a use-modules list, that the #:focus policy be set to
@@ -55,10 +59,10 @@
 (define-scwm-option *default-hover-focus-delay* 300
   "Number of ms to delay before focusing the window that the pointer enters.
 This can be overridden on a per-window basis using `set-hover-focus-delay!'."
-  :type 'integer
-  :group 'focus
-  :range '(0 . 10000)
-  :favorites '(0 100 300 500 1000 2000 3000))
+  #:type 'integer
+  #:group 'focus
+  #:range '(0 . 10000)
+  #:favorites '(0 100 300 500 1000 2000 3000))
 
 (define*-public (set-hover-focus-delay! delay #&optional (win (get-window)))
   "Set the hover-focus delay to DELAY (in ms) for WIN.
@@ -69,7 +73,6 @@ hover-focus on or off for a given window."
 
 (add-window-style-option #:hover-focus-delay set-hover-focus-delay!)
 
-
 ;;; hover-focus: setter and style options
 
 (define*-public (set-hover-focus! hover-focus? #&optional (win (get-window)))
@@ -77,12 +80,25 @@ hover-focus on or off for a given window."
 hover-focus makes a window automatically get focus when the mouse pointer
 remains in a window frame.  See `set-hover-focus-delay!' for controlling
 the delay before the window gets focus."
-  (if win (set-object-property! win 'hover-focus hover-focus?)))
+  (if win 
+      (begin
+	(set-object-property! win 'hover-focus hover-focus?)
+	(if hover-focus? 
+	    ;; turning it on
+	    (begin
+	      (set-object-property! win 'hover-old-focus-style (get-window-focus win))
+	      (set-window-focus! 'click win))
+	    ;; turning it off
+	    (let ((old-focus (object-property win 'hover-old-focus-style)))
+	      (if (and old-focus (symbol? old-focus))
+		  (set-window-focus! old-focus win)))))))
 
 (add-window-style-option #:hover-focus set-hover-focus!)
 
 
 ;;; private hover-focus variables and functions
+
+(define hover-focus-window #f)
 
 (define hover-focus-timer '()) ; expires on hover delay expiration
 
@@ -106,7 +122,7 @@ the delay before the window gets focus."
   (cond ((window-is-hoverable? window)
         (set! hover-focus-window window)
         (let ((delay (* 1000 (or (object-property window 'hover-focus-delay)
-                                 default-hover-focus-delay))))
+                                 *default-hover-focus-delay*))))
           (set! hover-focus-timer
                 (add-timer-hook! delay (lambda () (focus window))))))))
 
@@ -121,3 +137,10 @@ the delay before the window gets focus."
   (set! hover-focus-window #f))
 
 (add-hook! window-leave-hook hover-focus-leave-proc)
+
+(define-public (uninstall-hover-focus)
+  "Remove the hover-focus procedures from the Scwm hooks.
+This will turn off hover focus for any windows that it was
+on for."
+  (remove-hook! window-leave-hook hover-focus-leave-proc)
+  (remove-hook! window-enter-hook hover-focus-enter-proc))
