@@ -279,7 +279,7 @@ extern ScreenInfo Scr;
    This saves an indirection in case you don't want
    the UseDecor mechanism.
  */
-#define GetDecor(window,part) ((window)->fl->##part)
+#define GetDecor(window,part) ((window)->fl->part)
 
 /* some protos for the decoration structures */
 void LoadDefaultLeftButton(ButtonFace * bf, int i);
