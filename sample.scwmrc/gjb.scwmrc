@@ -23,6 +23,15 @@
 (define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 100)))
 
+(define (horizontal-toggle-maximize)
+  (toggle-maximize (%x 100) 0))
+
+(define (both-toggle-maximize)
+  (toggle-maximize (%x 100) (%y 100)))
+
+(define (vertical-toggle-maximize-partial)
+  (toggle-maximize 0 (%y 95)))
+
 (define font12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (define font14 
@@ -54,7 +63,6 @@
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
-(set-hilight-colors! "white" "blueviolet")
 (set-xor-value! 255)  ;; FIXGJB: rename to rubber-band-mask?
 
 ;;-------------------------------;;
@@ -78,7 +86,6 @@
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
 ;	      #:icon "unknown1.xpm" 
-	      #:icon 'nil
 	      #:icon #f        ;; MS - specify #f to not get an icon.
 ;	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 6 
@@ -101,8 +108,7 @@
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
-;; FIXGJB: make-inherited-style;  any other way to do something like this?
-;; MS - this does the right thing, since style options are applied in order.
+;; MS - this does the right thing-- style options are applied in order.
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
@@ -288,6 +294,10 @@
 
 ;; now set some mouse and key bindings ;;
 
+(define (show-icon-list-menu)
+  (show-window-list-menu #:only iconified?))
+
+
 ;; first our root menus
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 (lambda () 
@@ -378,43 +388,82 @@
 (bind-key 'all "C-M-S-x" start-xterm)
 
 (bind-key 'all "C-S-F1" popup-small-ops)
-;;(bind-key 'all "C-S-F2" window-list)
-
+(bind-key 'all "C-S-F2" show-window-list-menu)
 
 (define (float->integer x)
-	 (inexact->exact (round x)))
+	 (inexact->exact x))
 
+;; These are useful!
+(define root-size-x (car (display-size)))
+(define root-size-y (cadr (display-size)))
+
+;; Ahhhh now I get what (%x ..) does!
 (define (percent-display x y)
-  (let ((root-size-x (car (display-size)))
-	(root-size-y (cadr (display-size))))
-    (list (float->integer (/ (* root-size-x x) 100)) 
-	  (float->integer (/ (* root-size-y y) 100)))))
-
+  (list (%x x) (%y y)))
 
 (bind-key 'all "C-S-Down" iconify)
 ;;(bind-key 'all "C-M-Return" raise-window)
 (bind-key 'all "C-M-Return" toggle-raise)
-;; MS - not sure if toggle-maximize is what you want, but try this out.
-;; also, while percent-display is more efficient than using %x and %y,
-;; I think (maximize (%x 0) (%y 95)) is easier to read than 
+(bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)
+(bind-key 'all "C-S-Right" horizontal-toggle-maximize)
+(bind-key 'all "C-S-Left" both-toggle-maximize)
+;; MS thinks (maximize (%x 0) (%y 95)) is easier to read than 
 ;; (apply maximize (percent-display 0 95)), but that's a matter of taste.
 (bind-key 'all "C-S-Up" (lambda () (apply toggle-maximize (percent-display 0 95))))
 (bind-key 'all "C-S-Right" (lambda () (apply toggle-maximize (percent-display 100 0))))
 (bind-key 'all "C-S-Left" (lambda () (apply toggle-maximize (percent-display 100 95))))
 
-;; FIXGJB: window-list does not exist
-;; MS - Are you looking for a window list menu, or a persistent window list?
-;; if the former, this should work. See the binding for mouse button 2
+;; See the binding for mouse button 2
 ;; to add geometry strings to this as well.
-(bind-key 'all "C-S-Return" show-window-list-menu)
+(bind-key 'all "C-S-Return" show-icon-list-menu)
 
 (bind-key 'all "C-S-M-z" (lambda () (popup menu-root-start)))
 
 (set-click-time! 150)
 
 (set-hilight-colors! "white" "navyblue")
-(recapture)
-
 
 ;(unbind-mouse 'all "C-S-M-1")
 ;(unbind-mouse 'all "C-S-M-2")
+
+(define (animated-move-to x y)
+  (let* ((w (get-window))
+	 (size (window-size w))
+	 (width (car size))
+	 (height (cadr size))
+	 (position (window-position w))
+	 (oldx (car position))
+	 (oldy (cadr position)))
+    ;;; FIXGJB: is there a better way to correct for width, height, etc
+    (if (equal? x 'x) (set! x oldx))
+    (if (equal? y 'y) (set! y oldy))
+    (if (< x 0) (set! x (- root-size-x (abs x) width)))
+    (if (< y 0) (set! y (- root-size-y (abs y) height)))
+    (raise-window w)
+    (move-to x y w 'animated 'move-pointer-to)))
+
+(define animation-ms-delay 50)
+
+;; Fluid, cartoon-like
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
+
+;; Linear, mechanical
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
+
+;; Fluid, cartoon-like, overshoots target
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
+
+
+(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
+(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
+(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
+(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
+
+(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
+(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
+(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
+(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
+
+(bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
+
+;(recapture)

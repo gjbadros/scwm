@@ -1,3 +1,18 @@
+Sat Oct 25 21:42:36 1997  unknown  <gjb@cs.washington.edu>
+
+	* Added extra args to do animated moves to (move-to), also permit
+	equivalent movement of the pointer as an option;  added
+	AnimatedMoveWindow() to support this, and have it recognize
+	"animation-ms-delay" variable; also wrote (set-animation! ..) to
+	set the other animation parameters
+
+	* Fix (get-window)/DeferExecution bug
+
+	* Rename sleep_a_little to sleep_ms(), and take ms, not microsecs
+
+	* Updated BUGS, TODO
+	
+
 Fri Oct 24 23:31:54 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Added (unbind-key), (unbind-mouse)
