@@ -1,3 +1,9 @@
+Tue Jan 11 13:27:53 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* netscape.scm (netscape-google-search): Let word == #f mean just
+	go to google home page.  This better handles the case of no
+	selection.
+
 Tue Jan 11 09:30:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am, gtk-message.scm: Added.  Original version contributed by
