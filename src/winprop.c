@@ -111,9 +111,9 @@ window property primitives should be considered in flux. */
 
   if (handler != SCM_BOOL_F) {
     puts("Here.");
-    printf("%x\n",PROPERTY_HANDLER(handler));
+    printf("%p\n",PROPERTY_HANDLER(handler));
     puts("Here2.");
-    printf("%x\n",(PROPERTY_HANDLER(handler)->setter));
+    printf("%p\n",(PROPERTY_HANDLER(handler)->setter));
     puts("Here3.");
     (*(PROPERTY_HANDLER(handler)->setter))(win, val);
     puts("Here5");

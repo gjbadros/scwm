@@ -2003,13 +2003,6 @@ void set_sticky (SCM win, SCM flag)
 }
 
 
-scwm_property_handler sticky_handler =
-{
-  &set_sticky,
-  &sticky_p
-};
-
-
 SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is "sticky", #f otherwise.
@@ -2021,6 +2014,12 @@ window context in the usual way if not specified. */
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSticky);
 }
 #undef FUNC_NAME
+
+scwm_property_handler sticky_handler =
+{
+  &set_sticky,
+  &sticky_p
+};
 
 
 
