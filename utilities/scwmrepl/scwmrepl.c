@@ -198,7 +198,7 @@ main(int argc, char **argv)
   char *gather=calloc(1,1);
 
   if (argc != 1)
-    die("Usage: scwmrepl");
+    die("Usage: scwmrepl\n");
   if (!init_display())
     die("Could not connect to server. Check your DISPLAY environment variable.\n");
 
