@@ -12,6 +12,7 @@ bin_dir=@exec_prefix@/bin
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
 scwm_scheme_dir=@guile_scheme_prefix@/app/scwm
+mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -24,7 +25,9 @@ all:
 depend:
 
 # XXX - this way of doing it sucks. Fix it later when we figure out Automake.
+# Or something.
 install: 
+	$(mkinstalldirs) ${scwm_scheme_dir}
 	${INSTALL_DATA} base.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} optargs.scm ${scwm_scheme_dir}
 	${INSTALL_DATA} style.scm ${scwm_scheme_dir} 
