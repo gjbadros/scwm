@@ -42,7 +42,9 @@
 /* need to get prototype for XrmUniqueQuark for XUniqueContext call */
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_SHAPE
 #include <X11/extensions/shape.h>
+#endif
 
 #ifdef HAVE_LIBXMU
 #include <X11/Xmu/Error.h>
@@ -176,6 +178,8 @@ static char l_g_bits[] =
 int ShapeEventBase, ShapeErrorBase;
 Bool ShapesSupported = False;
 
+int XTestEventBase, XTestErrorBase, XTestMajorP, XTestMinorP;
+Bool XTestSupported = False;
 
 long isIconicState = 0;
 extern XEvent Event;
@@ -220,6 +224,9 @@ Atom XA_SCWMEXEC_REPLY;
 Atom XA_SCWMEXEC_NOTIFY;
 Atom XA_SCWMEXEC_OUTPUT;
 Atom XA_SCWMEXEC_ERROR;
+
+Atom XA_SCWM_VIEWPORT_OFFSET_X;
+Atom XA_SCWM_VIEWPORT_OFFSET_Y;
 
 /*
 #define GNOME_SUPPORT_IN_C
@@ -273,6 +280,9 @@ InternUsefulAtoms(void)
   XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
   XA_SCWMEXEC_OUTPUT=XInternAtom(dpy,"SCWMEXEC_OUTPUT", False);
   XA_SCWMEXEC_ERROR=XInternAtom(dpy,"SCWMEXEC_ERROR", False);
+
+  XA_SCWM_VIEWPORT_OFFSET_X = XInternAtom(dpy,"SCWM_VIEWPORT_OFFSET_X", False);
+  XA_SCWM_VIEWPORT_OFFSET_Y = XInternAtom(dpy,"SCWM_VIEWPORT_OFFSET_Y", False);
 
   return;
 }
@@ -907,7 +917,14 @@ Repository Timestamp: %s\n",
     scwm_msg(ERR, "main", "Screen %d is not a valid screen", (char *) Scr.screen);
     exit(1);
   }
+#ifdef HAVE_SHAPE
   ShapesSupported = XShapeQueryExtension(dpy, &ShapeEventBase, &ShapeErrorBase);
+#endif
+
+#ifdef HAVE_XTEST
+  XTestSupported = XTestQueryExtension(dpy, &XTestEventBase, &XTestErrorBase,
+                                       &XTestMajorP,&XTestMinorP);
+#endif
   
   /* Need to do this after Scr.Root gets set */
   InternUsefulAtoms();

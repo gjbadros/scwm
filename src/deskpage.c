@@ -301,7 +301,7 @@ size of the physical display. */
 {
   int w, h;
   VALIDATE_ARG_INT_MIN_COPY(1,width,1,w);
-  VALIDATE_ARG_INT_MIN_COPY(2,height,2,h);
+  VALIDATE_ARG_INT_MIN_COPY(2,height,1,h);
   Scr.VxMax = w;
   Scr.VyMax = h;
   Scr.VxMax = Scr.VxMax * Scr.DisplayWidth - Scr.DisplayWidth;

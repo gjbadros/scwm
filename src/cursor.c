@@ -269,24 +269,6 @@ this procedure.. */
 }
 #undef FUNC_NAME
 
-Pixmap
-Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg)
-{
-  int width, height;
-  Pixmap answer;
-  GC gc;
-
-  FXGetWindowSize(p, &width, &height);
-  answer = XCreatePixmap(dpy,Scr.Root,width,height,1);
-  gc = XCreateGC(dpy, answer, 0, NULL);
-  SetGCColors(gc,bg,bg);
-  XFillRectangle(dpy,answer,gc,0,0,width,height);
-  SetGCColors(gc,fg,bg);
-  XCopyPlane(dpy,p,answer,gc,0,0,width,height,0,0,1);
-  return answer;
-}
-
-
 SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
           (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot))
      /** Create and return a new cursor object from the pixmap image.

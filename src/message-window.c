@@ -346,22 +346,39 @@ The message will be MESSAGE.*/
 }
 #undef FUNC_NAME
 
-SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 0, 0,
-          (SCM mwn, SCM image))
-     /** Changes the background image for the message window MWN to IMAGE. */
+SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 3, 0,
+          (SCM mwn, SCM image, SCM fg_color, SCM bg_color, SCM shaped_p))
+     /** Changes the background image for the message window MWN to IMAGE. 
+FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it
+should use a shaped message window. */
 #define FUNC_NAME s_message_window_set_image_x
 {
   scwm_msgwindow *msg;
   scwm_image *pimg;
+  Bool fShaped;
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
   VALIDATE_ARG_IMAGE(2,image);
+  VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(3,fg_color);
+  VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(4,bg_color);
+  VALIDATE_ARG_BOOL_COPY_USE_F(5,shaped_p,fShaped);
 
   pimg = IMAGE(image);
 
   msg->bg_image = image;
 
-  XSetWindowBackgroundPixmap(dpy, msg->win, pimg->image);
+  { /* scope */
+    Pixel fg = XCOLOR(fg_color);
+    Pixel bg = XCOLOR(bg_color);
+    Pixmap mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
+    XSetWindowBackgroundPixmap(dpy, msg->win, pimg->image);
+#ifdef HAVE_SHAPE
+    if (fShaped) {
+      XShapeCombineMask(dpy,msg->win,ShapeBounding,0,0,mask,ShapeSet);
+    }
+#endif
+  }
+    
   ResizeMessageWindow( msg );
 
   return SCM_UNSPECIFIED;

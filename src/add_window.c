@@ -48,7 +48,9 @@
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_SHAPE
 #include <X11/extensions/shape.h>
+#endif
 
 #include <guile/gh.h>
 
@@ -267,6 +269,7 @@ AddWindow(Window w)
 
   psw->old_bw = psw->attr.border_width;
 
+#ifdef HAVE_SHAPE
   if (ShapesSupported) {
     int xws, yws, xbs, ybs;
     unsigned wws, hws, wbs, hbs;
@@ -278,6 +281,7 @@ AddWindow(Window w)
 		       &clipShaped, &xbs, &ybs, &wbs, &hbs);
     psw->fShaped = boundingShaped;
   }
+#endif
 
 
   /* if the window is in the NoTitle list, or is a transient,

@@ -29,7 +29,9 @@
 
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
+#ifdef HAVE_SHAPE
 #include <X11/extensions/shape.h>
+#endif
 
 #include "icons.h"
 

@@ -59,7 +59,9 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_SHAPE
 #include <X11/extensions/shape.h>
+#endif
 #include <assert.h>
 
 #include <guile/gh.h>
@@ -93,6 +95,10 @@
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
+#endif
+
+#if 0 && defined(HAVE_XTEST)
+#include <X11/extensions/XTest.h>
 #endif
 
 #ifdef USE_DMALLOC
@@ -463,6 +469,12 @@ HandleKeyEvent(Bool fPress)
 {
   Binding *pbnd = NULL;
   unsigned int modifier;
+  /* Here's a real hack - some systems have two keys with the
+   * same keysym and different keycodes. This converts all
+   * the cases to one keycode. */
+  unsigned int keycode = 
+    XKeysymToKeycode(dpy, 
+                     XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
 
   if (!fQuotingKeystrokes) {
     modifier = (Event.xkey.state & mods_used);
@@ -473,11 +485,7 @@ HandleKeyEvent(Bool fPress)
     Context = GetContext(pswCurrent, &Event, &PressedW);
     PressedW = None;
     
-    /* Here's a real hack - some systems have two keys with the
-     * same keysym and different keycodes. This converts all
-     * the cases to one keycode. */
-    Event.xkey.keycode =
-      XKeysymToKeycode(dpy, XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
+    Event.xkey.keycode = keycode;
     
     pbnd = PBindingFromKey(Event.xkey.keycode, modifier, Context);
   }
@@ -504,16 +512,21 @@ HandleKeyEvent(Bool fPress)
        HandleKeyEvent never gets called --07/04/99 gjb */
     XAllowEvents(dpy, ReplayKeyboard, CurrentTime);
 #else
-/* GJB:FIXME:NOW: this code seems bogus -- synthetic events
-   are no substitute for the real thing; could use XTest
-   extension, but would rather not rely on that */
     /* if we get here, no function key was bound to the key.  Send it
      * to the client if it was in a window we know abou
      */
     if (pswCurrent) {
       if (Event.xkey.window != pswCurrent->w) {
         Event.xkey.window = pswCurrent->w;
+#if 0 && defined(HAVE_XTEST)
+        /* this is no good, since Scwm still has the grab for the keystroke
+           and just gets stuck in a loop resending the faked keystroke 
+           --07/16/99 gjb */
+        XTestFakeKeyEvent(dpy, keycode,fPress,CurrentTime);
+        fQuotingKeystrokes = False;
+#else
         XSendEvent(dpy, pswCurrent->w, False, KeyPressMask, &Event);
+#endif
       }
     }
 #endif
@@ -1656,6 +1669,7 @@ HandleConfigureRequest()
 		     cre->value_mask & (CWSibling | CWStackMode), &xwc);
     sendEvent = True;
   }
+#ifdef HAVE_SHAPE
   if (ShapesSupported) {
     int xws, yws, xbs, ybs;
     unsigned wws, hws, wbs, hbs;
@@ -1665,6 +1679,7 @@ HandleConfigureRequest()
 		       &hws, &clipShaped, &xbs, &ybs, &wbs, &hbs);
     pswCurrent->fShaped = boundingShaped;
   }
+#endif
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
   x = FRAME_X_VP(pswCurrent);
@@ -1732,6 +1747,7 @@ HandleConfigureRequest()
 void 
 HandleShapeNotify(void)
 {
+#ifdef HAVE_SHAPE
   DBUG((DBG,"HandleShapeNotify", "Routine Entered"));
 
   if (ShapesSupported) {
@@ -1744,6 +1760,7 @@ HandleShapeNotify(void)
     pswCurrent->fShaped = sev->shaped;
     SetShape(pswCurrent, FRAME_WIDTH(pswCurrent));
   }
+#endif
 }
 
 /***********************************************************************

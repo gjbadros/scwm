@@ -320,6 +320,8 @@ extern Atom XA_SCWMEXEC_NOTIFY;
 extern Atom XA_SCWMEXEC_OUTPUT;
 extern Atom XA_SCWMEXEC_ERROR;
 
+extern Atom XA_SCWM_VIEWPORT_OFFSET_X;
+extern Atom XA_SCWM_VIEWPORT_OFFSET_Y;
 
 #endif /* SCWM_H__ */
 

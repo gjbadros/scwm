@@ -24,7 +24,9 @@
 #include <assert.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#ifdef HAVE_SHAPE
 #include <X11/extensions/shape.h>
+#endif
 
 #include <guile/gh.h>
 
@@ -82,6 +84,7 @@ extern SCM sym_maximized, sym_no_side_decorations;
 void 
 SetShape(ScwmWindow *psw, int w)
 {
+#ifdef HAVE_SHAPE
   if (ShapesSupported) {
     XRectangle rect;
 
@@ -101,11 +104,13 @@ SetShape(ScwmWindow *psw, int w)
 			      0, 0, &rect, 1, ShapeUnion, Unsorted);
     }
   }
+#endif
 }
 
 void 
 SetShapedTitlebar(ScwmWindow *psw, int w)
 {
+#ifdef HAVE_SHAPE
   if (ShapesSupported) {
     Boolean fSet = False;
     XRectangle rect;
@@ -131,6 +136,7 @@ SetShapedTitlebar(ScwmWindow *psw, int w)
 			      0, 0, &rect, 1, fSet? ShapeUnion: ShapeSet, Unsorted);
     }
   }
+#endif
 }
 
 

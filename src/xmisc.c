@@ -270,6 +270,24 @@ XColorFromPixel(Pixel p)
   return xc;
 }
 
+Pixmap
+Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg)
+{
+  int width, height;
+  Pixmap answer;
+  GC gc;
+
+  FXGetWindowSize(p, &width, &height);
+  answer = XCreatePixmap(dpy,Scr.Root,width,height,1);
+  gc = XCreateGC(dpy, answer, 0, NULL);
+  SetGCColors(gc,bg,bg);
+  XFillRectangle(dpy,answer,gc,0,0,width,height);
+  SetGCColors(gc,fg,bg);
+  XCopyPlane(dpy,p,answer,gc,0,0,width,height,0,0,1);
+  return answer;
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */
