@@ -1,3 +1,12 @@
+Sun Oct 17 17:55:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use ,(optget *xterm-command*) in
+	utilities-available-program-information var.
+
+Sun Oct 17 16:17:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use rotating lambda by passing #t to logo-setup.
+
 Sun Oct 17 11:30:35 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new lambda-startup-logo module, move that
