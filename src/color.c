@@ -28,6 +28,7 @@
 #include "decor.h"
 #include "colors.h"
 #include "guile-compat.h"
+#include "module-interface.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -683,6 +684,7 @@ static void
 redraw_highlight_window()
 {
   if (Scr.fWindowsCaptured && (Scr.Hilite != NULL)) {
+    BroadcastConfig(M_CONFIGURE_WINDOW, Scr.Hilite);
     SetBorderX(Scr.Hilite, True, True, True, None, True);
   }
 }

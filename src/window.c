@@ -3470,6 +3470,7 @@ usual way if not specified. */
   psw->TextColor = fg;
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3500,6 +3501,7 @@ way if not specified. */
 
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3528,6 +3530,7 @@ color for WIN). */
   psw->HiTextColor = fg;
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3563,6 +3566,7 @@ for WIN).   */
 
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
