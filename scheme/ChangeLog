@@ -1,3 +1,13 @@
+Wed Jan  5 15:51:54 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Added orientation option to
+	two-window-or-more-nonant-prompter.  Change make-ui-cnctr-align's
+	argument to a symbol from a string.
+
+	* nonants.scm: Update `get-window-with-nonant-interactively' to
+	respect the orientation and highlight whole edges for, e.g.,
+	alignment constraints.
+
 Wed Jan  5 12:46:59 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* constraint-investigator.scm: Make the enable/disable all

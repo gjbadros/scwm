@@ -1,5 +1,14 @@
 
 (use-scwm-modules window-locations optargs flash-window)
+(define w (get-window))
+
+(map (lambda (v) 
+       (set-window-highlighted-nonant! v w)
+       (eq? v (window-highlighted-nonant w))
+       (sleep 1))
+     '(0 1 2 3 4 5 6 7 8 left hcenter right top vmiddle bottom))
+(set-window-highlighted-nonant! 'right w)
+(window-highlighted-nonant w)
 
 (define (get-window-with-nonant)
   (let* ((selinf (select-viewport-position))

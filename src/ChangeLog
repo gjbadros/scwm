@@ -1,3 +1,26 @@
+Wed Jan  5 15:54:34 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added some enums for SCWM_NONANT_* to describe whole
+	edges for nonant highlighting code.
+
+	* window.c: Added IntFromNonantSymbol(), NonantSymbolFromInt() to
+	convert back and forth.  Permit `set-window-highlighted-nonant!'
+	to take symbols and return appropriate values from
+	`window-highlighted-nonant'. 
+
+	* borders.c: Highlight appropriate sides and corners for the new
+ 	edge nonant designations.
+
+	* add_window.c: Init psw->highlighted_nonant using
+	SCWM_NONANT_NONE instead of its value (-1).
+
+Wed Jan  5 13:51:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (make_window): Set win->schwin and protect answer
+	before setting the window valid flag.  (I think it's possible a
+	collection could've occurred when making the vector which would've 
+	thrown the assertion in mark_window).
+
 Wed Jan  5 12:38:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ChangeLog-1997-1999: Added
