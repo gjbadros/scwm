@@ -140,6 +140,7 @@
 (define cn-a-l-e (keep-at-left-edge wA))
 (define cnl (keep-to-left-of wA wB))
 (define cnlt (keep-above wA wB))
+(define cnlt (keep-above wB wC))
 (define cnah (keep-adjacent-horizontal wA wB))
 
 (set-window-title! (swi) "XLOGO")
@@ -171,8 +172,12 @@
 (keep-at-left-edge wA)
 (keep-at-left-edge wB)
 (keep-at-right-edge wB)
-(keep-constant-width wB 200)
+(define cnw (keep-constant-width wB 200))
 
+(window-clv-width wB)
+(window-clv-xl wB)
+
+(cl-remove-constraint solver cnw)
 
 (set-object-property! cnl 'description "Keep wA to left of wB")
 (object-property (car (cl-constraint-list solver)) 'description)
