@@ -2,6 +2,8 @@
 
 For scwm 0.9:
 
+* Use only gh_ interface to guile -- remove uses of scm_ calls
+
 * Finish C-level API review, renaming things, adding getters, etc
 
 * Move scheme documentation into .scm files as doc strings
