@@ -13,11 +13,10 @@ Definitely:
  procedures with 0, 1 or n arguments, evaluate strings, etc. Also
  uniform support for hooks, in particular, make the places where hooks
  are handled (and where it would be appropriate) provide uniform access
- to a list of hooks, with abiltiy to append, prepend, insert and remove
+ to a list of hooks, with ability to append, prepend, insert and remove
  hooks.
  * organize support code properly (make autoconf testing more regular,
  don't provide copies of stuff that's in the local libc, etc)
- * Remove old scwmsend stuff.
  * Clarify copyright/license status of files.
 
  (features:)
@@ -48,4 +47,8 @@ Possibly:
  "Imlib" - this supports many image formats natively, supports many
  more non-natively, and dithers images nicely down to a uniform
  colormap shared with other apps.
+
+
+Done:
  * Figure out what's going wrong with window shading.
+ * Remove old scwmsend stuff.
