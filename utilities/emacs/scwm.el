@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-07 Tue 12:56:47 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-09 Thu 13:03:54 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -75,14 +75,9 @@
 ;; also available: type C-h C-a for apropos and C-h C-s for documentation.
 ;; Type M-TAB to complete symbol at point.
 
-;; Note that this uses `with-output-to-string', which is broken in
-;; XEmacs and absent from Emacs 19.  File lisp/subr.el from the Emacs
-;; distribution contains the corrent version.  You can get the file from
-;; http://sourcery.naggum.no.
-;; let's try to do something about it:
-
 (eval-and-compile
- (or (fboundp 'unless) (require 'cl))
+ (unless (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
+ (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
      "Execute BODY, return the text it sent to `standard-output', as a string."
@@ -143,7 +138,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (interactive)
   (unless (fboundp 'inferior-scheme-mode)
     (let ((ff (symbol-function 'run-scheme)))
-      (if (and (consp ff) (eq (car ff) 'autoload)) (load (second ff))
+      (if (and (consp ff) (eq (car ff) 'autoload)) (load (cadr ff))
 	  (error "no `inferior-scheme-mode' and no place to get it from."))))
   (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl)))
   (inferior-scheme-mode))
