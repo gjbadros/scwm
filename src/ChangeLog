@@ -1,3 +1,8 @@
+1998-07-23  Maciej Stachowiak  <maciej@roc-ny1-20.ix.netcom.com>
+
+	* callbacks.c: Replace "Timer" with "Input" in the input hook
+	concept documentation (whoops).
+	
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Fixed a couple little problems that

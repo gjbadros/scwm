@@ -543,7 +543,7 @@ void run_timed_out_timers()
 /* Input hooks. */
 
 /**CONCEPT: Input Hooks 
-  Timer hooks are a special form of hook that is called whenever input
+  Input hooks are a special form of hook that is called whenever input
 is available on a praticular port. They are treated differently than
 normal hooks - use `add-input-hook!' and `remove-input-hook!' to
 manipulate them. Like regular hooks and unlike timer hooks, input
