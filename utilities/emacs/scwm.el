@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-09-02 Wed 17:44:16 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-09-04 Fri 14:34:08 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -380,7 +380,7 @@ Returns a string which is present in the `scwm-obarray'."
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
       (princ "Click mouse-2 for documentation.\n\nSCWM apropos `")
-      (with-face 'highlight (princ ) (princ pat))
+      (with-face 'highlight (princ pat))
       (princ "':\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
