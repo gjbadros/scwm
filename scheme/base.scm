@@ -1,21 +1,21 @@
 ;;;; $Id$
 ;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
-;;;; 
+;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
 ;;;; the Free Software Foundation; either version 2, or (at your option)
 ;;;; any later version.
-;;;; 
+;;;;
 ;;;; This program is distributed in the hope that it will be useful,
 ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;; GNU General Public License for more details.
-;;;; 
+;;;;
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with this software; see the file COPYING.  If not, write to
 ;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;;; Boston, MA 02111-1307 USA
-;;;; 
+;;;;
 
 
 ;;; FIXMS: disgusting hack for now to get these in the root module.
@@ -64,7 +64,7 @@
   "Return a pixel height Y percent of the height of window W."
   (inexact->exact (truncate (/ (* y (cadr (window-frame-size w))) 100))))
 
-(define-public (execute command) 
+(define-public (execute command)
   "Execute COMMAND in the background."
   (system (string-append "exec " command " &")))
 
@@ -76,15 +76,15 @@ Returns #f otherwise."
 
 ;; FIXMS: gross hack alert!
 (let ((old-smfg! set-menu-foreground!))
-  (set! set-menu-foreground! 
-	(lambda (fg) 
-	  (old-smfg! fg) 
+  (set! set-menu-foreground!
+	(lambda (fg)
+	  (old-smfg! fg)
 	  (set! menu-text-color (make-color fg)))))
 
 ;; (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
 (let ((old-smbg! set-menu-background!))
   (set! set-menu-background!
-	(lambda (bg) 
+	(lambda (bg)
 	  (old-smbg! bg)
 	  (set! menu-bg-color (make-color bg)))))
 
@@ -94,7 +94,7 @@ Returns #f otherwise."
 ;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
 ;;  (set-window-colors! fg #f w))
 
-;;(define*-public (set-window-background! bg #&optional (w (get-window))) 
+;;(define*-public (set-window-background! bg #&optional (w (get-window)))
 ;;  (set-window-colors! #f bg w))
 
 (define*-public (set-window-colors! #&optional (bg #f) (fg #f) (w (get-window)))
@@ -115,7 +115,7 @@ negative, and Y pixels vertically, down if positive, up if negative."
   (let ((pos (viewport-position)))
     (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
-(define*-public (menu-style #&key 
+(define*-public (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (stipple #f) font mwm mwm-style)
@@ -142,7 +142,7 @@ FONT is a font, HEIGHT is a number, JUSTIFY is a legal argument
 to `set-title-justify' such as 'left, 'right, or 'center."
   (if (bound? font)
       (set-title-font! font))
-  (if (bound? height) 
+  (if (bound? height)
       (set-title-height! height))
   (if (bound? justify)
       (set-title-justify! justify)))
@@ -162,7 +162,7 @@ to `set-title-justify' such as 'left, 'right, or 'center."
 	(return-label-char-list ()))
     (while (not (null? char-list))
 	   (if (equal? (car char-list) #\&)
-	       (set! return-key-char-list (cons (cadr char-list) 
+	       (set! return-key-char-list (cons (cadr char-list)
 						return-key-char-list))
 	       (set! return-label-char-list (cons (car char-list)
 						  return-label-char-list)))
@@ -182,7 +182,7 @@ ACTION is a menu object or a procedure; if it is a menu object,
 the item will popup ACTION as a sub-menu, if it is a procedure,
 the procedure will be invoked when the item is selected.
 HOVER-ACTION is an procedure to be invoked when the item is
-highlighted but not invoked for a moment; UNHOVER-ACTION is 
+highlighted but not invoked for a moment; UNHOVER-ACTION is
 a procedure to be invoked after the HOVER-ACTION is invoked
 when the item is unhighlighted.  HOTKEY-PREFS is a string listing
 the characters which are appropriate shortcut-keys for the item;
@@ -206,7 +206,7 @@ the shortcut key for the menu item."
 
 
 (define*-public (menu list-of-menuitems #&key
-		      image-side 
+		      image-side
 		      (color-bg-image-side 'menu-bg-color)
 		      (image-bg #f)
 		      (color-text 'menu-text-color)
@@ -252,7 +252,7 @@ See `color-properties' for a list of the keys."
 ;;; ----------------------------------------------
 ;;; General functionality for splitting long menus
 ;;; ----------------------------------------------
-; the max number of lines in a menu
+;;; the max number of lines in a menu
 (define-public default-max-fold-lines 30)
 
 (define (split-list ls max)
@@ -261,18 +261,16 @@ See `color-properties' for a list of the keys."
 	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
 	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
 
-(define*-public (fold-menu-list 
+(define*-public (fold-menu-list
 		ml #&optional (max-lines default-max-fold-lines))
   "Split ML into chained menus of no more than MAX-LINES items.
-ML is a list of menuitem objects. MAX-LINES is a number."
-  ; split the menu list into groups of max-lines
+ML is a list of menuitem objects. MAX-LINES is a number, which
+defaults to `default-max-fold-lines'."
   (if (<= (length ml) max-lines) ml
       (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
 	   (split-list ml max-lines))))
 
-;; Convenience function to return a precedure that will run a system
-;; command.
-(define-public (exe command) 
+(define-public (exe command)
   "Return a procedure that runs the system command COMMAND."
   (lambda () (execute command)))
 
@@ -280,13 +278,15 @@ ML is a list of menuitem objects. MAX-LINES is a number."
 
 (define-public remote-shell-command "telnet")
 
-(define*-public (run-in-xterm cmd #&key (xterm-options ""))
+(define-public (run-in-xterm cmd . opts)
   "Return a procedure that runs CMD in an xterm.
-Uses the variable \"xterm-command\" to determine how
+Uses the variable `xterm-command' to determine how
 to run an xterm.  CMD may include options to the command.
-Options to the xterm should be given as a string for the optional
-keyword argument xterm-options."
-  (exe (string-append xterm-command " " xterm-options " -e " cmd)))
+The rest of the arguments are passed as options to the xterm command."
+  (exe (string-append xterm-command
+                      (apply string-append
+                             (map (lambda (st) (string-append " " st)) opts))
+                      " -e " cmd)))
 
 ;; MSFIX:
 ;; this is redundant w/ below
@@ -296,10 +296,10 @@ keyword argument xterm-options."
 
 ;; Only define if not already defined by Guile
 (if (not (defined? 'remove-hook!))
-	   (defmacro-public remove-hook! (hook proc)
-	     `(if (memq ,proc ,hook)
-		  (set! ,hook
-			(delq! ,proc ,hook)))))
+    (defmacro-public remove-hook! (hook proc)
+      `(if (memq ,proc ,hook)
+           (set! ,hook
+                 (delq! ,proc ,hook)))))
 
 (defmacro-public thunk (proc)
   `(lambda args (apply ,proc args)))
