@@ -1,6 +1,10 @@
 ;;; File: <scwm.el - 1998-03-03 Tue 08:33:34 EST sds@mute.eaglets.com>
 ;;;
 ;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
+;;;
+;;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
+;;;    03/11/98 gjb
+;;;
 ;;; This file is distributed under the GPL. See
 ;;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
 ;;; for further details.
@@ -26,6 +30,7 @@
 ;; (load "scwm")
 ;; (define-key scheme-mode-map "\C-j" 'scwm-eval-print)
 ;; (define-key scheme-mode-map "\C-x\C-j" 'scwm-eval-to-minibuffer)
+;; (define-key scheme-mode-map [tab] 'scwm-complete-symbol)
 
 ;; Now you do M-x scwm-run to get the *scwm* buffer, where you can type
 ;; commands to be sent to scwm; while you can type C-x C-e in your
@@ -57,14 +62,53 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (interactive) (newline-and-indent)
   (call-process scwm-exec nil t nil
 		(buffer-substring-no-properties
-		 (point) (save-excursion (backward-sexp) (point)))))
+		 (point) (save-excursion (backward-sexp) (point))))
+  (newline))
 
 (defun scwm-eval-to-minibuffer ()
   "Evaluate the last SEXP and show the result in the minibuffer."
   (interactive)
-  (message
-   (with-output-to-string
-     (call-process scwm-exec nil standard-output nil
-		   (buffer-substring-no-properties
-		    (point) (save-excursion (backward-sexp) (point)))))))
+  (let* ((start (point))
+	 (end (save-excursion (backward-sexp) (point)))
+	 (arg (buffer-substring-no-properties start end))
+	 (string (with-output-to-string
+		   (call-process scwm-exec nil standard-output nil arg))))
+    (message string)))
 
+(defun make-list-of-symbols ()
+  "Return a list of all the s-expressions in the current buffer from point on"
+  (let ((sexp-list nil)
+	(old-point (point))
+	(done nil))
+    (while (not done)
+      (forward-sexp)
+      (if (looking-at ")")
+	  (setq done 't))
+      (setq sexp-list (cons (intern (buffer-substring-no-properties old-point (point))) sexp-list))
+      (setq old-point (+ 1 (point))))
+    sexp-list))
+
+;; This is rough, but can be the foundation of something
+;; a lot fancier and cleaner
+(defun scwm-complete-symbol ()
+  "Complete the current symbol by querying scwm using apropos-internal."
+  (interactive)
+  (let* ((start (point))
+	 (end (save-excursion (forward-word -1) (point)))
+	 (arg (buffer-substring-no-properties start end))
+	 (bfr (get-buffer-create "*scwm-completions*"))
+	 (choices (save-excursion
+		     (set-buffer bfr)
+		     (erase-buffer)
+		     (lisp-mode)
+		     (call-process scwm-exec nil t nil (concat "(apropos-internal \"^" arg "\")"))
+		     (goto-char 2)
+		     (make-list-of-symbols))))
+    ;; This cannot possibly be right, but it works for now
+    (completer-complete-goto
+     "^ \t\n\(\)[]{}'`" completer-words (vconcat choices) (lambda (test) t))))
+
+;;; Make C-x C-e do the right thing
+(defun advertised-xscheme-send-previous-expression ()
+  (interactive)
+  (scwm-eval-to-minibuffer))
