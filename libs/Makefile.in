@@ -3,6 +3,7 @@ SHELL=/bin/sh
 
 @SET_MAKE@
 
+VPATH=@srcdir@
 top_srcdir=@top_srcdir@
 srcdir=@srcdir@
 prefix=@prefix@
