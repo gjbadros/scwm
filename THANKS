@@ -24,6 +24,8 @@ Thanks to:
   Jeff Nichols - initial implementation of message window feature,
                  working with Greg on the user interface for constraints
 
+  Glenn Trigg - implementations of ScwmButtons and simplebiff modules.
+
 Bug reports and/or fixes and/or code snippets have been contributed by:
 
   Aleksandar Bakic
@@ -70,6 +72,7 @@ Bug reports and/or fixes and/or code snippets have been contributed by:
   Andrei Tcherepanov
   Stephen Tell
   Oleg Tihnov
+  Glenn Trigg
   James Troup
   Drew Whitehouse
   Carl R. Witty
