@@ -2,7 +2,16 @@
  * Picture.c
  * By Greg J. Badros -- Nov 8, 1997
  * Loosely descended from code by Robert Nation, 1993, for fvwm
+ * May be distributed under the terms below.
  */
+/****************************************************************************
+ * This module is all original code 
+ * by Rob Nation 
+ * Copyright 1993, Robert Nation
+ *     You may use this code for any purpose, as long as the original
+ *     copyright remains in the source code and all documentation
+ ****************************************************************************/
+
 
 #define PICTURE_IMPLEMENTATION
 
