@@ -92,5 +92,6 @@
 (define*-public (make-wmconfig-menu 
 		 #&optional (wmconfig-title default-wmconfig-title)
 		 (wmconfig-dir default-wmconfig-dir))
+  "Return a menu object for the window-manager configuration menu."
   (menu (append! (list (menuitem wmconfig-title #f) menu-title menu-separator)
 		 (wmc-regroup (wmc-process-directory wmconfig-dir)))))

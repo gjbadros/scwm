@@ -124,7 +124,10 @@
       #f))
 
 (define*-public (wildcard-matcher wildcard #&key (full-regexp #f)
-				  (regexp-options `(,regexp/icase))) 
+				  (regexp-options `(,regexp/icase)))
+  "Return a procedure that matches WILDCARD using the supplied options.
+If FULL-REGEXP is #t, the WILDCARD is considered to be a regular-expression
+instead of a shell-like wildcard."
   (let ((wc-rgx (apply 
 		 make-regexp 
 		 (if full-regexp
