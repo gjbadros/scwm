@@ -299,9 +299,16 @@ my %rules =
 	    },
    ],
    "function" =>
-   [    '\s+\"?(' . $id_char_seq . ')\"?',
-	sub { my ($funcname) = (@_);
-	      return "(fvwm2-func-$funcname)";
+   [    '\s+\"?(' . $id_char_seq . ')\"?(?:\s*(.*))',
+	sub { my ($funcname,$rest) = (@_);
+	      my $s = "(fvwm2-func-$funcname";
+	      if (defined($rest)) {
+		$s .= " " . join(" ",
+				 map { dquoted_if_string($_) } 
+				 split(/\s+/,$rest));
+	      }
+	      $s .= ")";
+	      return $s;
 	    },
    ],
    "popup" =>
@@ -386,7 +393,7 @@ my %rules =
 	    },
    ],
    "cursormove" =>
-   [    '\s+([+-]?' . $num_or_arg_seq . ')\s+([+-]?' .$num_or_arg_seq. ')',
+   [    \&get_two_nums_or_args,
 	sub { my ($x,$y) = (@_);
 	      # GJB:FIXME:: new feature in fvwm-compat, below
 	      return "(move-pointer (%x-permit-negative $x) (%y-permit-negative $y))";
@@ -509,6 +516,11 @@ print <<"PRESCRIPT"
 ;;(define thank-scwm-authors-with-usage-note #t)
 
 (set! image-load-path '())
+
+(define (fvwm2-mods-and-keysym-converter keysym mods)
+  ;; This relies on a new feature from 2-Apr-99 snapshot of Scwm
+  ;; that lets (bind-key "CSM-Left" ... ) work
+  (string-append mods "-" keysym))
 
 ;;; BEGIN CONVERTED FILE
 PRESCRIPT
@@ -773,6 +785,15 @@ sub dquoted {
   return "\"$str\"";
 }
 
+sub dquoted_if_string {
+  my ($str) = (@_);
+  if ($str =~ m/^\d*$/) {
+    return $str; # it is just a number
+  }
+  $str =~ s/"/\\"/g;
+  return "\"$str\"";
+}
+
 
 sub convert_where {
   my ($where) = (@_);
@@ -829,6 +850,11 @@ sub convert_mouse_butnum {
 
 sub convert_keysym {
   my ($keysym,$mods) = (@_);
+  if ($mods =~ m/^\$/ || $keysym =~ m/^\$/) {
+    $keysym = dquoted($keysym) if ($keysym !~ m/^\$/);
+    $mods = dquoted($mods) if ($mods !~ m/^\$/);
+    return "(fvwm2-mods-and-keysym-converter $keysym $mods)";
+  }
   if ($mods =~ m/^a$/i) {
     return dquoted($keysym);
   }
@@ -876,6 +902,9 @@ sub convert_fvwm_command {
     # the argument scanner is a sub
     my $parser = $re_or_parse_sub;
     @args = &$parser($_);
+    if (!defined($args[0])) {
+      warn "Scanning function failed for $_";
+    }
   }
   my $scheme_expr = &$coderef(@args);
   return $scheme_expr;
@@ -943,7 +972,7 @@ sub convert_function {
   }
   my $answer = "(define (fvwm2-func-$name";
   if ($lastarg >= 0) {
-    $answer .= " " . join(" ",map { "arg$_" } (0..$lastarg));
+    $answer .= " " . join(" ",map { "\$$_" } (0..$lastarg));
   }
   $answer .= ")\n";
   
@@ -962,10 +991,12 @@ sub convert_function {
   #  This is where we miss the Scheme equivalent of string interpolation
   #  or the '.' operator.
 
-  # GJB:FIXME:: may need hex-win-id procedure
   # DAM:FIXME:GJB: 'xev', at least, takes window IDs in c-style 
   # int notation, so decimal works OK.  Don't know what else you'd 
   # use it for.
+  # GJB:FIXME:DAM: may need hex-win-id procedure -- I was more
+  # referring to the need to use `window->id', but fvwm2 does
+  # explicitly replace $w with the hex winid of the current window
   
   my @lines = (split /\n/,$text);
   # first handle "I" functions
@@ -1006,25 +1037,6 @@ sub convert_function {
     $answer .= ")";		# close the "let"
   }
   $answer .= ")";
-
-#  return $answer;
-
-  # (DAM) Now, handle the arguments.  We assume (to make the regex
-  # easier) that the Scheme string we generate will not be split
-  # across line boundaries, which I'm pretty sure that this script
-  # doesn't do.
-  
-  @lines = split(/\n/, $answer);
-  for my $l (@lines) {
-    next unless $l =~ /\$[w\d]/;  # may false-positive?
-    $l =~ s!([^\\])"\$(\d)"!$1arg$2!g;  # special case
-    $l =~ s!("[^"\\]*(\\.[^"\\]*)*")!(string-append $1)!g or next;#) SYNTAXFIX 
-    $l =~ s!\$(\d)!" arg$1 "!g;
-    $l =~ s!\$w!" win-id "!g;
-    $l =~ s!\(string-append\s+("[^"\\]*(\\.[^"\\]*)*")\)!$1!g; # clean up
-    $l =~ s! ""!!g;  # and clean up some more
-  }
-  $answer = join("\n", @lines);
 
   return $answer;
 }
@@ -1184,4 +1196,19 @@ sub HandleMoveResizeArgs {
     }
   }
   return "$answer";
+}
+
+sub coerce_num {
+  my ($s) = (@_);
+  if ($s =~ /^-(\$\d)$/) {
+    $s = "(- $1)";
+  }
+  return $s;
+}
+
+sub get_two_nums_or_args {
+  if (m/\s+([+-]?$num_or_arg_seq)\s+([+-]?$num_or_arg_seq)/o) {
+    my ($a1,$a2) = (coerce_num($1),coerce_num($2));
+    return $a1, $a2;
+  }
 }
