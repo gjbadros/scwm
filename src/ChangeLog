@@ -1,3 +1,14 @@
+Sun Jul  5 23:13:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c (restack_windows): Added new primitive restack-windows
+ 	which takes a single argument, a list of windows. The windows will
+ 	be restacked in the following manner: the first will be left in
+ 	its current position in the stacking order, and the following
+ 	windows will be restacked immediately below it, in
+ 	order. Currently this is of limited usefulness, since it is
+ 	impossible to introspect the stacking order from the Scheme level,
+ 	but this will soon be remedied.
+
 1998-07-05  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Mark SCM_SYMBOL and SCWM_PROC macros for etags.
