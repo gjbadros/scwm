@@ -23,20 +23,6 @@ ERRORSFILE=$HOME/.SCWM-errors; export ERRORSFILE
 : ${SCWMDIR:=$HOME/scwm}
 MODULEPATH=/usr/X11/lib/X11/fvwm2:$HOME/lib/fvwm2/modules/$UNAME:/uns/lib/fvwm2; export MODULEPATH
 
-# Restart as a child of ssh-agent[12] if we are not already
-if which ssh-add >/dev/null && \
-    { which ssh-agent1 >/dev/null || which ssh-agent2 >/dev/null } && \
-    ! ssh-add -l >/dev/null; then
-  # Check if we have secure shell capabilities
-  # string them together if necessary!
-  SSA=""
-  which ssh-agent2 >/dev/null && SSA="ssh-agent2 $SSA"
-  which ssh-agent1 >/dev/null && SSA="ssh-agent1 $SSA"
-  exec $SSA $0 > $ERRORSFILE 2>&1
-else
-  exec > $ERRORSFILE 2>&1
-fi
-
 #test -r /etc/profile && . /etc/profile
 
 if [ x"$DISPLAY" = x ]; then
@@ -64,6 +50,7 @@ if [ x"$DISPLAY" = x ]; then
 
     # This stuff is all from /etc/X11/xdm/Xsession
     # and would normally get run from there or from .xsession
+    sleep 5  # GJB:FIXME:: race condition... how do I tell when I can connect?
     userresources=$HOME/.Xresources 
     usermodmap=$HOME/.Xmodmap 
     sysresources=/usr/X11R6/lib/X11/xinit/.Xresources 
@@ -88,6 +75,21 @@ if [ x"$DISPLAY" = x ]; then
 fi
 
 # Now we know an X server is running and DISPLAY is set.    
+
+# Restart as a child of ssh-agent[12] if we are not already
+if which ssh-add >/dev/null && \
+    { which ssh-agent1 >/dev/null || which ssh-agent2 >/dev/null } && \
+    ! ssh-add -l >/dev/null; then
+  # Check if we have secure shell capabilities
+  # string them together if necessary!
+  SSA=""
+  which ssh-agent2 >/dev/null && SSA="ssh-agent2 $SSA"
+  which ssh-agent1 >/dev/null && SSA="ssh-agent1 $SSA"
+  exec $SSA $0 > $ERRORSFILE 2>&1
+else
+  exec > $ERRORSFILE 2>&1
+fi
+
 
 DISPLAYHOST=${DISPLAY%%:*}
 if [ ! x = x"$DISPLAYHOST" ]; then
