@@ -1,3 +1,8 @@
+Mon Jul 19 15:17:01 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Do not invoke set-rubber-band-mask! -- that gets
+	done via C code to ensure that the GC is already initialized.
+
 Sun Jul 18 16:31:26 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Update describe-key to handle new list format for

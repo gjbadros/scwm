@@ -1,3 +1,15 @@
+Mon Jul 19 15:25:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Only display warning message about unbound modifiers
+	for modifiers that are actually unbound, not for every modifier
+	given on a binding that contains an unbound modifier.  Also,
+	return #t on successful binding/unbinding of keys instead of
+	SCM_UNSPECIFIED (was returning #f on errors, but need to be
+	consistent).
+
+	* resize.c (s_set_rubber_band_mask_x): Return SCM_UNSPECIFIED, not 
+	the passed in value.
+
 Sun Jul 18 17:28:51 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Thanks to Stephen Tell for scwm/3 scwm/4 bugs re: building on
