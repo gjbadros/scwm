@@ -43,3 +43,9 @@ those files automatically.
 For details on libSM and libICE, see:
 
 ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/{SM,ICE}/*.PS.gz
+
+If you send in a patch, please do so using "diff -ub".  Patches
+relative to the current head of the relevant CVS branch are the
+most useful.
+
+THANKS!
