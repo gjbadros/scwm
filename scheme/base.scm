@@ -687,14 +687,8 @@ start the shell remotely."
       (lambda () ,@body)
       (lambda () (and (message-window? msgwin) (message-window-hide! msgwin))))))
   
-(define-public bell beep)
-
-(add-hook! invalid-interaction-hook
-	   (lambda () (beep) (display "scwm: invalid interaction\n")))
-
-(add-hook! cannot-grab-hook
-	   (lambda () (beep) (display "scwm: cannot grab\n")))
-
+(define-public (bell)
+  (beep))
 
 (define-public (set-edge-resistance! s m)
   "Set the edge scroll delay to S, and the edge move threshold to M.

@@ -27,13 +27,13 @@
 
 
 
-(define-public animate-windows animate-windows)
-(define-public animated-move-window animated-move-window)
-(define-public animated-window-shade animated-window-shade)
-(define-public animated-window-unshade animated-window-unshade)
-(define-public animated-resize-window animated-resize-window)
-(define-public animated-resize-frame animated-resize-frame)
-(define-public set-animation! set-animation!)
+(export animate-windows)
+(export animated-move-window)
+(export animated-window-shade)
+(export animated-window-unshade)
+(export animated-resize-window)
+(export animated-resize-frame)
+(export set-animation!)
 (export animation-delay)
 
 (define-public animated-toggle-window-shade

@@ -32,6 +32,10 @@
   :use-module (app scwm scwmgtkhelper))
 
 
+(restore-scwm-handlers)
+
+(define-public scwm-gtk-timer-hook-enabled? #t)
+
 ;; see note above
 (if (and (bound? gdk-get-leader-window-id) (procedure? gdk-get-leader-window-id))
     (set! gdk-leader-window (gdk-get-leader-window-id)))
@@ -44,23 +48,15 @@ to the main event loop"
       (while (not (= 0 (gtk-events-pending)))
 	     (gtk-main-iteration))))
 
-(restore-scwm-handlers)
-
-(add-input-hook! (fdopen (scwm-gdk-X-fdes) "w+") scwm-gtk-sync)
-
-(define-public scwm-gtk-timer-hook-enabled? #t)
-
 (define-public sync-and-add-timer-hook
   (lambda () 
     (scwm-gtk-sync)
     (if scwm-gtk-timer-hook-enabled?
 	(add-timer-hook! 150 sync-and-add-timer-hook))))
 
-;; (remove-timer-hook! ((@ app scwm gtk) 'sync-and-add-timer-hook))
-
-(sync-and-add-timer-hook)
-;;(((@ app scwm gtk) 'sync-and-add-timer-hook))
-;;(set! scwm-gtk-timer-hook-enabled? #f)
+(define-public (start-handling-gtk-events)
+  (add-input-hook! (fdopen (scwm-gdk-X-fdes) "w+") scwm-gtk-sync)
+  (sync-and-add-timer-hook))
 
 (define-public (gtk-pixmap-new-search-scwm-path pixmap-name button)
   "Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-load-path for it."
@@ -86,6 +82,23 @@ not support this procedure (you should upgrade!)."
   (if (not (bound? gtk-window-get-window-id))
       #f
       (id->window (gtk-window-get-window-id gtkwin))))
+
+
+(define (add-the-hook)
+  (add-hook! error-hook gtk-show-error))
+
+(define*-public (use-gtk-error-window-for-scwm #&optional (on #t))
+  (if on
+      (if (done-startup?)
+	  (add-the-hook)
+	  (append-hook! startup-hook add-the-hook))
+      (if (done-startup?)
+	  (remove-hook! error-hook gtk-show-error)
+	  (remove-hook! startup-hook add-the-hook))))
+  
+(if (done-startup?) 
+    (start-handling-gtk-events)
+    (add-hook! startup-hook start-handling-gtk-events))
 
 ;; (define f (gtk-window-new 'toplevel))
 ;; (gtk-window-get-window-id f)
