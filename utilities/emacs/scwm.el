@@ -5,14 +5,14 @@
 
 ;; Copyright (c) 1998, 1999 by Sam Steingold and Greg J. Badros
 
-;; File: <scwm.el - 1999-04-06 Tue 09:43:50 EDT sds@eho.eaglets.com>
-;; Authors: Sam Steingold <sds@usa.net>, Greg J. Badros <gjb@cs.washington.edu>
+;; File: <scwm.el - 1999-04-06 Tue 09:43:50 EDT sds@gnu.org>
+;; Authors: Sam Steingold <sds@gnu.org>, Greg J. Badros <gjb@cs.washington.edu>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
 
 
 ;; LCD Archive Entry:
-;; scwm|Sam Steingold|sds@usa.net|
+;; scwm|Sam Steingold|sds@gnu.org|
 ;; Functions for editing and running SCWM code under Emacs|
 ;; $Date$|$Revision$||
 
