@@ -37,8 +37,14 @@ extern Bool Restarting, PPosOverride;
 extern Bool fHandleSegv;
 
 SCWM_SYMBOL(sym_focus, "focus");
+
 SCWM_HOOK(scwm_test_hook_0,"scwm-test-hook-0",0);
+/** Just a test hook that takes no arguments.
+See `scwm-run-test-hook-0'. */
+
 SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1);
+/** Just a test hook that takes one argument.
+See `scwm-run-test-hook-1'. */
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
@@ -883,7 +889,7 @@ XFetchBytes is called. */
 
 SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
 	  (SCM string))
-     /** Set the cut buffer by calling XStoreBytes. */
+     /** Set the cut buffer to STRING by calling XStoreBytes. */
 #define FUNC_NAME s_X_store_bytes
 {
   char *sz;
@@ -902,7 +908,7 @@ SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
 /* GJB:FIXME:  Need to link with Intrinsics
    to get XtGetSelectionValue;  maybe not worth it */
 #if 0
-SCWM_PROC(X_get_primary_selection, "X-get-primary-selection", 1, 0, 0,
+SCWM_PROC(X_get_primary_selection, "X-get-primary-selection", 0, 0, 0,
 	  ())
      /** Return the X primary selection. */
 #define FUNC_NAME s_X_get_primary_selection
