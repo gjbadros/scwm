@@ -99,6 +99,5 @@ cls-required
 
 
 ;;; Local Variables:
-;;; eval: (load "scwm")
-;;; eval: (scwm-mode)
+;;; eval: (progn (load "scwm") (scwm-mode))
 ;;; End:
