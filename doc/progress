@@ -12,8 +12,6 @@ seekrit undocumented functions:
   {"Raise_it",     raise_it_func,    F_RAISE_IT,            FUNC_NO_WINDOW},
 
 /* module */
-  {"SendToModule", SendStrToModule,  F_SEND_STRING,         FUNC_NO_WINDOW},
-/* module */
   {"Send_WindowList",send_list_func, F_SEND_WINDOW_LIST,    FUNC_NO_WINDOW},
 /* module */
   {"Send_ConfigInfo",SendDataToModule, F_CONFIG_LIST,       FUNC_NO_WINDOW},
@@ -25,105 +23,96 @@ seekrit undocumented functions:
 documented functions
 
 
-NAME					STATUS
+NAME				
 
 AddButtonStyle 
 AddTitleStyle 
 AddToDecor 
 AddToMenu
-AddToFunc				define
-Beep					(define (beep) (display ""))
+AddToFunc			
+Beep				
 BorderStyle
 ButtonStyle
 ChangeDecor
-ClickTime 				set-click-time
-Close					delete-window,destroy-window,
-					window-deletable?
-ColormapFocus				set-colormap-focus!
+ClickTime 			
+Close				
+ColormapFocus			
 CursorMove 
-Delete					delete-window
+Delete				
 Desk 
 DeskTopSize 
-Destroy					destroy-window
-DestroyFunc				undefine
+Destroy				
+DestroyFunc			
 DestroyDecor
 DestroyMenu
 DestroyModuleConfig
-Echo					display
+Echo				
 EdgeResistance
 EdgeScroll
-Exec					(define (execute . command)
-						(system (string-append
-						   "exec " command " &")))
-ExecUseShell 				[is there a point to this?]
+Exec				
+ExecUseShell 			
 FlipFocus
-Focus					focus
-Function				[useless]
-GlobalOpts 				[left unimplemented for now]
+Focus				
+Function			
+GlobalOpts 			
 GotoPage
-HilightColor				set-highlight-colors!
-IconFont				set-icon-font!
-Iconify					iconify,deiconify,iconified?
+HilightColor			
+IconFont			
+Iconify				
 IconPath
-Key					bind-key
+Key				
 KillModule
-Lower					lower-window
+Lower				
 Maximize
 Menu
-MenuStyle				set-menu-font!,set-menu-colors!,
-					set-menu-mwm-style!
-					[eventually set-meny-style! proc to
-					encapsulate these?]
+MenuStyle			
 Module 
 ModulePath
-Mouse 					bind-mouse
-Move					move-to,interactive-move
-Nop					[useless]
+Mouse 		
+Move		
+Nop		
 Next
 None
-OpaqueMoveSize				set-opaque-move-size!
-PipeRead				[no need, you can probably do anything
-					you'd want this for in Scheme. May
-					hack one up later for compatability's
-					sake or something]
+OpaqueMoveSize	
+PipeRead	
 PixmapPath
 Popup
 Prev
-Quit					[hmm, will probably need to rebind 
-					(quit)]
-Raise					raise-window
-RaiseLower				raised?,raise-window,lower-window
-Read					load
+Quit		
+Raise		
+RaiseLower	
+Read		
 Recapture
-Refresh					refresh
-RefreshWindow				refresh-window
-Resize					resize-to,interactive-resize
+Refresh		
+RefreshWindow	
+Resize		
 Restart
 SendToModule
 Scroll
-Stick					stick,unstick,sticky?
+Stick		
 Style
-Title					[not needed]
+Title		
 TitleStyle
 UpdateDecor
-WarpToWindow				warp-to-window
+WarpToWindow	
 Wait
 WindowsDesk
-WindowFont				set-window-font!
-WindowId				[not needed - there is a window type]
+WindowFont	
+WindowId	
 WindowList
-WindowShade				shade-window, unshade-window, 
-					window-shaded?
-XORvalue				set-xor-value!
+WindowShade	
+XORvalue	
 
-75 total
+77 total
+
 
 Functions provided by guile or unnecessary with it:
 
 AddToFunc				define
 Beep					(define (beep) (display ""))
 DestroyFunc				undefine
-Exec command				(define (run . args)
+Echo					display
+Exec					(define (run . args)
 						(if (= 0 (primitive-fork))
 							(apply execlp args)))
 ExecUseShell 				[is there a point to this?]
@@ -133,13 +122,13 @@ PipeRead				[no need, you can probably do anything
 					you'd want this for in Scheme. May
 					hack one up later for compatability's
 					sake or something]
-Quit					[hmm, will probably need to rebind 
-					(quit)]
 Read					load
 Title					[not needed]
 DestroyMenu				undefine
 
 12 total
+
+
 
 
 Functions implemented by scwm :
@@ -175,32 +164,43 @@ ClickTime				set-click-time!
 ColormapFocus				set-colormap-focus!
 OpaqueMoveSize				set-opaque-move-size!
 AddToMenu				make-menu
+Quit					quit
 Menu					popup
 Popup					popup
+CursorMove				move-pointer-to, get-pointer-position
+Recapture 				recapture
+Restart					restart
+Wait 					wait-for-window
+IconPath				set-icon-path!
+PixmapPath				set-pixmap-path!
+WindowsDesk				move-window-to-desk
+Desk					set-current-desk!, get-current-desk
+DeskTopSize				set-desk-size!, get-desk-size
+GotoPage				set-viewport-position!, 
+					get-display-size
+EdgeResistance				set-edge-resistance!
+EdgeScroll				set-edge-scroll!, set-edge-wrap!
+Scroll					set-viewport-position!, 
+					get-viewport-position
 
-28 total
+41 total
+
 
 Intentionally Omitted:
 GlobalOpts				[these options are really obscure]
 KillModule
 Module 
 ModulePath
+DestroyModuleConfig
+SendToModule
 
-4 total
-
-
-
-;; have to figure out this mess...
-WindowsDesk
-(move-window-to-desk [W]) (?)
+6 total
 
 
 
 
 
-
-
-styles:
+6 styles:
 AddButtonStyle 
 AddTitleStyle 
 BorderStyle
@@ -208,46 +208,36 @@ ButtonStyle
 Style
 TitleStyle
 
-decors:
+4 decors:
 AddToDecor 
 ChangeDecor
 DestroyDecor
 UpdateDecor
 
-desks and pages:
-Desk 
-DeskTopSize 
-GotoPage
-EdgeResistance
-EdgeScroll
 
-modules:
+4 modules:
 DestroyModuleConfig
 KillModule
 Module 
 SendToModule
 
-paths:
-IconPath
+1 paths:
 ModulePath
-PixmapPath
 
-window selection:
+4 window selection:
 Next
 None
 Prev
 WindowList
 
-miscellaneous actions:
-CursorMove 
-Restart
-Recapture
-Scroll
-Wait
+1 misc settings:
+GlobalOpts
 
-window ops:
-WindowsDesk
+3 window ops:
 FlipFocus
+
+23
+
 
 
 

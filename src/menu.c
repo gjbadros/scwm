@@ -63,14 +63,14 @@ size_t free_menu (SCM obj)
 
 
 SCM mark_menu (SCM obj) {
-  SCM_SETGC8MARK (obj);
   MenuItem *mi,*tmp2;
   MenuRoot *mr = MENUROOT(obj);
 
+  SCM_SETGC8MARK (obj);
   mi = mr->first;
   while(mi != NULL) {
     if (mi->thunk != SCM_UNDEFINED) {
-      gc_set_mark(mit->thunk);
+      scm_gc_mark(mi->thunk);
     }
     mi = mi->next;
   }
@@ -130,7 +130,7 @@ SCM make_menu(SCM title, SCM args)
     } else if (gh_eq_p(centry,sym_separator)) {
       AddToMenu(MENUROOT(answer), 
 		"", "Nop");
-      MENUROOT(answer)->last->thunk=SCM_UNDEFINED);
+      MENUROOT(answer)->last->thunk=SCM_UNDEFINED;
     } else if (gh_pair_p(centry) && gh_string_p(SCM_CAR(centry)) &&
 	       gh_pair_p(SCM_CDR(centry)) && 
 	       ((procp=gh_procedure_p(gh_cadr(centry)))

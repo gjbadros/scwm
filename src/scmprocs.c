@@ -9,6 +9,8 @@
 #include "window.h"
 #include "miscprocs.h"
 #include "menu.h"
+#include "paths.h"
+#include "deskpage.h"
 
 void init_scwm_procs(void)
 {
@@ -63,6 +65,30 @@ void init_scwm_procs(void)
   gh_new_procedure1_0("font?",font_p);
   gh_new_procedure1_0("window?",window_p);
   gh_new_procedure0_0("scwm-quit",scwm_quit);
+  gh_new_procedure0_0("get-pointer-position",get_pointer_position);
+  gh_new_procedure2_0("move-pointer-to",move_pointer_to);
+  gh_new_procedure0_0("recapture",recapture);
+  gh_new_procedure1_0("restart",restart);
+  gh_new_procedure1_0("wait-for-window",wait_for_window);
+  gh_new_procedure1_0("set-pixmap-path!",set_pixmap_path_x);
+  gh_new_procedure1_0("set-icon-path!",set_icon_path_x);
+  gh_new_procedure1_1("move-window-to-desk",move_window_to_desk);
+  gh_new_procedure1_0("set-current-desk!",set_current_desk_x);
+  gh_new_procedure2_0("set-viewport-position!",set_viewport_position_x);
+  gh_new_procedure2_0("set-edge-scroll!",set_edge_scroll_x);
+  gh_new_procedure2_0("set-edge-wrap!",set_edge_wrap_x);
+  gh_new_procedure2_0("set-edge-resistance!",set_edge_resistance_x);
+  gh_new_procedure2_0("set-desk-size!",set_desk_size_x);
+  gh_new_procedure0_0("get-display-size",get_display_size);
+  gh_new_procedure0_0("get-desk-size",get_desk_size);
+  gh_new_procedure0_0("get-viewport-position",get_viewport_position);
+  gh_new_procedure0_0("get-current-desk",get_current_desk);
+  gh_new_procedure0_1("get-window-position",get_window_position);
+  gh_new_procedure0_1("get-window-size",get_window_size);
+  gh_new_procedure0_1("get-window-id",get_window_id);
+  gh_new_procedure0_1("get-window-desk",get_window_desk);
+  gh_new_procedure0_1("get-window-title",get_window_title);
+  gh_new_procedure0_0("get-window-list",get_window_list);
 }
 
 

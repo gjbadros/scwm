@@ -1338,7 +1338,7 @@ void SetDeskSize(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 }
 
 #ifdef XPM
-char *PixmapPath = SCWM_ICONDIR;
+extern char *PixmapPath;
 void setPixmapPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                    unsigned long context, char *action,int* Module)
 {
@@ -1356,7 +1356,7 @@ void setPixmapPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 }
 #endif
 
-char *IconPath = SCWM_ICONDIR;
+extern char *IconPath;
 void setIconPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                  unsigned long context, char *action,int* Module)
 {

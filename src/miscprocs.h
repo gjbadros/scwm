@@ -15,4 +15,10 @@ SCM set_opaque_move_size_x(SCM size);
 
 SCM scwm_quit();
 
+SCM get_pointer_position();
+SCM move_pointer_to(SCM sx, SCM sy);
+SCM recapture();
+SCM restart(SCM command);
+SCM wait_for_window(SCM name);
+
 #endif MISCPROCS_H

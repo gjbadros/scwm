@@ -30,7 +30,7 @@ static scm_smobfuns window_smobfuns= {
 };
 
 static scm_smobfuns menu_smobfuns= {
-  &scm_mark0,
+  &mark_menu,
   &free_menu,
   &print_menu,
   0

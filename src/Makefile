@@ -644,9 +644,9 @@ SCWM_DEPLIB = $(SCWM_SRCDIR)/libs/lib$(LIB).a
 
    LINTLIBS = $(LINTXLIB)
 
-SRCS = 	add_window.c 	bindings.c 	borders.c 	builtins.c 	colormaps.c 	colors.c 	complex.c 	decorations.c 	events.c 	focus.c 	functions.c 	scwm.c 	icons.c 	menus.c 	misc.c 	module.c 	move.c 	placement.c 	read.c 	resize.c 	style.c 	virtual.c 	windows.c 	scmprocs.c 	scmtypes.c 	font.c 	color.c 	miscprocs.c 	binding.c 	errors.c 	util.c 	window.c 	menu.c
+SRCS = 	add_window.c 	bindings.c 	borders.c 	builtins.c 	colormaps.c 	colors.c 	complex.c 	decorations.c 	events.c 	focus.c 	functions.c 	scwm.c 	icons.c 	menus.c 	misc.c 	module.c 	move.c 	placement.c 	read.c 	resize.c 	style.c 	virtual.c 	windows.c 	scmprocs.c 	scmtypes.c 	font.c 	color.c 	miscprocs.c 	binding.c 	errors.c 	util.c 	window.c 	menu.c 	paths.c 	deskpage.c
 
-OBJS = 	add_window.o 	bindings.o 	borders.o 	builtins.o 	colormaps.o 	colors.o 	complex.o 	decorations.o 	events.o 	focus.o 	functions.o 	scwm.o 	icons.o 	menus.o 	misc.o 	module.o 	move.o 	placement.o 	read.o 	resize.o 	style.o 	virtual.o 	windows.o 	scmprocs.o 	scmtypes.o 	font.o 	color.o 	miscprocs.o 	binding.o 	errors.o 	util.o 	window.o 	menu.o
+OBJS = 	add_window.o 	bindings.o 	borders.o 	builtins.o 	colormaps.o 	colors.o 	complex.o 	decorations.o 	events.o 	focus.o 	functions.o 	scwm.o 	icons.o 	menus.o 	misc.o 	module.o 	move.o 	placement.o 	read.o 	resize.o 	style.o 	virtual.o 	windows.o 	scmprocs.o 	scmtypes.o 	font.o 	color.o 	miscprocs.o 	binding.o 	errors.o 	util.o 	window.o 	menu.o 	paths.o 	deskpage.o
 
 LOCAL_LIBRARIES = $(SCWM_LIBS) $(XLIB)
 
@@ -690,6 +690,10 @@ read.o:	 $(SCWM_SRCDIR)/Scwm.tmpl read.c
 	 $(CC) -c $(CFLAGS)  $(PATH_DEFINES) $*.c
 
 scwm.o:	 $(SCWM_SRCDIR)/Scwm.tmpl scwm.c
+	$(RM) $@
+	 $(CC) -c $(CFLAGS)  $(PATH_DEFINES) $*.c
+
+paths.o:	 $(SCWM_SRCDIR)/Scwm.tmpl paths.c
 	$(RM) $@
 	 $(CC) -c $(CFLAGS)  $(PATH_DEFINES) $*.c
 

@@ -58,6 +58,14 @@ SCM resize_to(SCM w, SCM h, SCM win);
 SCM interactive_resize(SCM win);
 SCM refresh_window(SCM win);
 
+SCM move_window_to_desk(SCM which, SCM win);
+SCM get_window_position(SCM win);
+SCM get_window_size(SCM win);
+SCM get_window_id(SCM win);
+SCM get_window_desk(SCM win);
+SCM get_window_title(SCM win);
+SCM get_window_list();
+
 #endif /* WINDOW_H */
 
 

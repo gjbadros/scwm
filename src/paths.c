@@ -4,7 +4,7 @@
 #include "screen.h"
 #include "errors.h"
 #include "util.h"
-
+#include "paths.h"
 
 
 #ifdef XPM
@@ -14,7 +14,11 @@ SCM set_pixmap_path_x(SCM newpath)
 {
   static char *ptemp = NULL;
   char *tmp;
-  in dummy;
+  int dummy;
+
+  if (!gh_string_p(newpath)) {
+    scm_wrong_type_arg("set-pixmap-path!",1,newpath);
+  }
 
   if(ptemp == NULL)
     ptemp = PixmapPath;
@@ -35,6 +39,10 @@ SCM set_icon_path_x(SCM newpath)
   static char *ptemp = NULL;
   char *tmp;
   int dummy;
+
+  if (!gh_string_p(newpath)) {
+    scm_wrong_type_arg("set-icon-path!",1,newpath);
+  }
 
   if(ptemp == NULL)
     ptemp = IconPath;

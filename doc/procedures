@@ -10,7 +10,7 @@ sample system.scwmrc file for examples.
 Documentation style:
 
 A procedure documented as 
-(foo BAR BAZ [QUUX XYZZY] . ARGS) 
+(foo BAR BAZ #&optional QUUX XYZZY . ARGS) 
 
 is called foo and has required arguments BAR and BAZ, optional
 arguments QUUX and XYZZY, and accepts any variable number of arguments
@@ -49,12 +49,12 @@ load-color basically works like load-font, except
 (color? OBJ)
 Returns #t if OBJ is a color object, else #f.
 
-(set-hilight-colors! [FG BG])
+(set-hilight-colors! #&optional FG BG)
 
 Sets the hilight foreground and background colors. If you pass #f for
 either one, it is left unchanged.
 
-(set-menu-colors! [FG BG STIPPLE])
+(set-menu-colors! #&optional FG BG STIPPLE)
 
 This sets the menu foreground, background and stipple colors. As
 above, #f indicates that the relevant color should not be changed.
@@ -155,6 +155,19 @@ MISCELLANEOUS OPERATIONS:
 
 Refreshes the whole screen.
 
+(get-pointer-position)
+
+Returns a list of the current x and y coordinates of the mouse cursor.
+
+(move-pointer-to X Y)
+
+Moves the pointer to the absolute position X,Y.
+
+(recapture)
+
+(restart NEW-WM)
+
+(wait-for-window NAME)
 
 WINDOWS: 
 
@@ -179,78 +192,80 @@ window context. This makes it convenient to bind window operations to
 key or mouse events. It also means that in most cases, you won't need
 to use the optional W argument, but sometimes it is needed. 
 
-(focus [W])
+(focus #&optional W)
 Give W the keyboard focus.
 
-(warp-to-window [W])
+(warp-to-window #&optional W)
 Warp the mouse pointer to the window W.
 
-(delete-window [W])
+(delete-window #&optional W)
 Delete W, in other words, close it politely. This may not always work.
 
-(destroy-window [W]) 
+(destroy-window #&optional W) 
 Destroy W, in other words, close it rudely. This always works, but
 will not give the application the chance to do special shutdown
 actions, like asking for confirmation.
 
-(window-deletable? [W])
+(window-deletable? #&optional W)
 Returns #t if delete-window will work on W, else #f.
 
-(lower-window [W])
+(lower-window #&optional W)
 Lowers W to the bottom of the window stack.
 
-(raise-window [W])
+(raise-window #&optional W)
 Raises W to the top of the window stack.
 
-(raised? [W])
+(raised? #&optional W)
 Returns #t if W is currently raised, else #f.
 
-(iconify [W]) 
+(iconify #&optional W) 
 Iconifies window W.
 
-(deiconify [W]) 
+(deiconify #&optional W) 
 Deiconifies window W.
 
-(iconified? [W])
+(iconified? #&optional W)
 Determines if W is iconified.
 
-(stick [W])
+(stick #&optional W)
 "Sticks" window W. This makes it remain in the same position on the screen
 when desks or pages are switched.
 
-(unstick [W])
+(unstick #&optional W)
 Reverses the effects of "stick."
 
-(sticky? [W])
+(sticky? #&optional W)
 Determines if a window is currently "sticky."
 
-(window-shade [W])
+(window-shade #&optional W)
 Rolls up the window into just a title bar, like a window shade.
 
-(un-window-shade [W])
+(un-window-shade #&optional W)
 Reverses the effect of window-shade.
 
-(window-shaded? [W])
+(window-shaded? #&optional W)
 Determines if the window is currently shaded.
 
-(move-to X Y [W])
+(move-to X Y #&optional W)
 Moves the window to X,Y on the current screen.
 
-(interactive-move [W]) 
+(interactive-move #&optional W) 
 Begins an interactive move operation. The user can adjust the position
 of the window with the mouse or arrow keys.
 
-(resize-to X Y [W])
+(resize-to X Y #&optional W)
 Resizes the window to X by Y. 
 
-(interactive-resize [W]) 
+(interactive-resize #&optional W) 
 Begins an interactive resize operation. The user can adjust the
 position of the window with the mosue or arrow keys.
 
-(refresh-window [W])
+(refresh-window #&optional W)
 Refreshes the window, ensuring that its contents and decorations  are
 up to date and properly displayed.
 
+(move-window-to-desk DESK #&optional W)
+Moves the window to a new desk, specified by 
 
 MENUS:
 
@@ -270,11 +285,35 @@ specified for submenus rather than a procedure which uses popup to
 display the menu, because 
 
 
-(popup MENU [STICK?])
+(popup MENU #&optional STICK?)
 
 Pops up the menu. If stick is specified, it determines if the menu
 stays up when the mouse is released, assuming it was started in
 response to a mouse click. The default is #f.
+
+
+PATHS:
+
+(set-icon-path! PATH)
+(set-pixmap-path! PATH)
+
+
+VIRTUAL DESKTOP:
+
+(set-current-desk! DESK)
+(set-viewport-position! X Y)
+(set-edge-scroll! X Y)
+(set-edge-wrap! X Y)
+(set-edge-resistance! SCROLL-RESISTANCE MOVE-RESISTANCE)
+(set-desk-size! X Y)
+(get-display-size)
+(get-desk-size)
+(get-viewport-position)
+(get-current-desk)
+
+
+
+
 
 
 
@@ -302,19 +341,19 @@ now they are just defined in the system.scwmrc. I reccomend copying
 them to the top of your own .scwmrc file until they are a proper module.
 The first bunch are more useful compound window operations:
 
-(close-window [W])
+(close-window #&optional W)
 Delete the window if possible, otherwise destroy it.
 
-(toggle-raise [W])
+(toggle-raise #&optional W)
 Raise the window if it is not already on top. If it is, lower it.
 
-(toggle-iconify [W])
+(toggle-iconify #&optional W)
 Iconify the window if it isn't already, else deiconify it.
 
-(toggle-stick [W])
+(toggle-stick #&optional W)
 Stick the window if it isn't already, else unstick it.
 
-(toggle-window-shade [W])
+(toggle-window-shade #&optional W)
 window-shade the window if it isn't already, else un-window-shade it.
 
 Now some other miscellaneous front ends:

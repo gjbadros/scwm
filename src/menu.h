@@ -18,6 +18,7 @@ extern long scm_tc16_scwm_menu;
 
 size_t free_menu (SCM obj);
 int print_menu (SCM obj, SCM port, scm_print_state *pstate);
+SCM mark_menu (SCM obj);
 
 SCM make_menu(SCM title, SCM args);
 SCM popup(SCM menu, SCM sticks);

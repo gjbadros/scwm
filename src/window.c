@@ -740,21 +740,28 @@ SCM get_window_id(SCM win) {
   return SCM_MAKINUM(tmp_win->w);
 }
 
-
 SCM get_window_desk(SCM win) {
   ScwmWindow *tmp_win;
 
   VALIDATE(win,"get-window-desk");
-  return SCWMWINDOW(win)->desk;
+  return SCM_MAKINUM(SCWMWINDOW(win)->Desk);
+}
+
+SCM get_window_title(SCM win) {
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win,"get-window-title");
+  return gh_str02scm(SCWMWINDOW(win)->name);
 }
 
 SCM get_window_list() {
   ScwmWindow *t;
   SCM result=SCM_EOL;
 
-  for (t=Scr.ScwmRoot.next; NULL!=NULL; t=t->next) {
+  for (t=Scr.ScwmRoot.next; NULL!=t; t=t->next) {
     result=scm_cons(t->schwin,result);
   }
   return result;
 }
+
 

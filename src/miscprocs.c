@@ -272,3 +272,79 @@ SCM scwm_quit() {
     kill(master_pid, SIGTERM);
   Done(0,NULL);
 }
+
+SCM get_pointer_position() {
+  int x,y;
+  XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
+                 &x,&y,&JunkX, &JunkY, &JunkMask);
+  return scm_listify(SCM_MAKINUM(x),SCM_MAKINUM(y),SCM_UNDEFINED);
+}
+
+SCM move_pointer_to(SCM sx, SCM sy) {
+  int x,y;
+
+  if (!gh_number_p(sx)) {
+    scm_wrong_type_arg("move-pointer-to",1,sx);
+  }
+  if (!gh_number_p(sy)) {
+    scm_wrong_type_arg("move-pointer-to",2,sy);
+  }
+
+  x=gh_scm2int(sx);
+  y=gh_scm2int(sy);
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth, 
+	       Scr.MyDisplayHeight, x, y);
+}
+
+
+SCM recapture()
+{
+  BlackoutScreen(); /* if they want to hide the recapture */
+  CaptureAllWindows();
+  UnBlackoutScreen();
+  return SCM_UNSPECIFIED;
+}
+
+SCM restart(SCM command)
+{
+  int dummy;
+  char *n;
+  if(!gh_string_p(command)) {
+    scm_wrong_type_arg("restart",1,command);
+  }
+  n=gh_scm2newstr(command,&dummy);
+  Done(1,n);
+  free(n);
+}
+
+
+SCM wait_for_window(SCM name)
+{
+  Bool done = False;
+  extern ScwmWindow *Tmp_win;
+  char *n;
+  int dummy;
+  if(!gh_string_p(name)) {
+    scm_wrong_type_arg("wait-for-window",1,name);
+  }
+  n=gh_scm2newstr(name,dummy);
+  while(!done)
+  {
+    if(My_XNextEvent(dpy, &Event))
+    {
+      DispatchEvent ();
+      if(Event.type == MapNotify)
+      {
+        if((Tmp_win)&&(matchWildcards(n,Tmp_win->name)==True))
+          done = True;
+        if((Tmp_win)&&(Tmp_win->class.res_class)&&
+           (matchWildcards(n,Tmp_win->class.res_class)==True))
+          done = True;
+        if((Tmp_win)&&(Tmp_win->class.res_name)&&
+           (matchWildcards(n,Tmp_win->class.res_name)==True))
+          done = True;
+      }
+    }
+  }
+  return SCM_UNSPECIFIED;
+}
