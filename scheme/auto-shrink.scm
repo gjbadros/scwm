@@ -10,7 +10,8 @@
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
   :use-module (app scwm style)
-  :use-module (app scwm style-options))
+  :use-module (app scwm style-options)
+  :use-module (app scwm time-convert))
 
 ;;(window-last-focus-time (get-window))
 ;;(current-time)
@@ -35,17 +36,19 @@ Never let it get smaller than MIN-WIDTH by MIN-HEIGHT."
       (resize-frame new-wid new-ht win))))
 
 (define*-public (not-focussed-for? seconds #&optional (win (get-window)))
+  "Returns #t if WIN did not have the focus in the last SECONDS seconds."
   (let ((lf (window-last-focus-time win))
 	(ct (current-time)))
     (> (- ct lf) seconds)))
 
 (define*-public (shrink-inactive-windows delay-seconds)
+  "Shrink all windows that haven't been focussed in the last DELAY-SECONDS seconds."
   (for-each 
    (lambda (win) (shrink-window #:win win))
    (list-windows #:only (lambda (win) (and
 				       (not (iconified-window? win))
 				       (not (eq? (window-with-focus) win))
-				       (not-focussed-for? 10 win))))))
+				       (not-focussed-for? delay-seconds win))))))
 
 
 (define reinstall-autoshrink #t)

@@ -1,3 +1,11 @@
+Sat Mar 30 03:56:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* auto-shrink.scm: Made 'shrink-inactive-windows' use the delay-seconds
+	parameter it is passed.  Added missing :use-module line for
+	(app scwm time-convert).
+
+	Added doc strings to public functions missing them.
+
 Sat Mar 30 03:29:51 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* undo.scm: Documented public variables.
