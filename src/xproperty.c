@@ -107,7 +107,7 @@ WIN is the window to set the X property on, an X window id, or 'root-window.
 NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
-If FORMAT is 8, VALUE may be a string or a list of null-terminated STRINGS.
+If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.
 Otherwise it will be a vector of FORMAT-bit integers.
 ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
 how the new VALUE should be merged (if at all) with the existing
