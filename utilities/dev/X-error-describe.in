@@ -1,4 +1,4 @@
-#!/uns/bin/perl -wp
+#!@PERL@ -wp
 # Written for scwm, to convert numbers into more meaningful descriptions
 # Usage: scwm &| pty X-error-describe
 # Just annotates the input lines that match the appropriate pattern

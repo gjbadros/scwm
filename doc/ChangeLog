@@ -1,3 +1,9 @@
+Wed Sep 30 19:20:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Use scwmdoc, not extract-docs. Note that because
+ 	scwmdoc is generated from a template, building the docs w/ build
+ 	dir != source dir should now work.
+
 Tue Sep  8 17:14:54 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added -O option for scwm-variables.txt output

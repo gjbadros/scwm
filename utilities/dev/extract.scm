@@ -1,5 +1,5 @@
 #!/bin/sh
-exec guile -l $0 -- --run-from-shell "$@"
+exec @GUILE@ -l $0 -- --run-from-shell "$@"
 !#
 ;;; extract.scm
 ;;; Copyright (C) 1998, Harvey J. Stein, hjstein@bfr.co.il
@@ -1268,3 +1268,4 @@ exec guile -l $0 -- --run-from-shell "$@"
        ;;;(debug-enable 'backtrace)
        (process-cmd-line (cddr (command-line)) '() '())
        (exit)))
+

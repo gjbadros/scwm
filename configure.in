@@ -33,6 +33,7 @@ dnl ## Checks for programs ##
 AC_PROG_CC
 AC_PROG_CXX
 
+
 dnl Ensure compiler sanity on pathological platforms
 AC_ISC_POSIX
 AC_AIX
@@ -90,6 +91,7 @@ else
 	AC_PATH_PROG(BUILD_GUILE, build-guile, no, ${GUILE_BIN_DIR})
 fi
 
+
 if test "no" != "$BUILD_GUILE"; then
   AC_MSG_CHECKING(whether build-guile works)
   if (${BUILD_GUILE} link) >/dev/null 2>&1; then
@@ -101,6 +103,18 @@ if test "no" != "$BUILD_GUILE"; then
 else
   build_guile_works=no
 fi
+
+if test -z "${GUILE_BIN_DIR}"; then
+	AC_PATH_PROG(GUILE, guile, no)
+else
+	AC_PATH_PROG(GUILE, guile, no, ${GUILE_BIN_DIR})
+fi
+
+AC_SUBST(GUILE)
+
+AC_PATH_PROGS(PERL, perl perl5, no)
+
+AC_SUBST(PERL)
 
 dnl ## Find paths ##
 
@@ -449,11 +463,17 @@ AC_OUTPUT(Makefile \
           sample.scwmrc/Makefile \
           scwm/Makefile \
           scheme/Makefile \
-          app/Makefile \
+         app/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
           utilities/scwmrepl/Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
-          doc/Makefile)
+          doc/Makefile \
+	  utilities/dev/scwmdoc:utilities/dev/extract-docs \
+	  utilities/dev/scwmdoc.scm:utilities/dev/extract.scm \
+	  utilities/dev/scwm-usage-counter \
+	  utilities/dev/X-error-describe \
+	  utilities/dev/create-dependency-dot-graph \
+)

@@ -1,4 +1,4 @@
-#!/uns/bin/perl -w
+#!@PERL@ -w
 # usage-counter -*- perl -*-
 # By Greg J. Badros -- 7-August-1998
 # Modified from simple example in

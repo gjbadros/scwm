@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!@PERL@ -w
 # $Id$ -*- perl -*-
 # extract-docs
 # By Greg J. Badros -- 7-July-1998
