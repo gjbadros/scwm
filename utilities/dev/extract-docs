@@ -88,9 +88,15 @@ $fReallyQuiet = TRUE if $opt_Q;
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
 my %procedure = ();
+
 # maps from a filename to a list reference containing the names of 
 # primitives defined in that file
 my %file_funcs = ();
+
+# Maps from concepts/hooks to a hash containing
+# "comment", "markup", "file", "line"
+my %concepts = ();
+my %hooks = ();
 
 
 use FileHandle;
@@ -105,12 +111,35 @@ while (<>) {
   close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
     $header = $_;
+    my $filename = $ARGV;
+    my $line = $.;
     while (($_ = <>) !~ m/^\s*\{/) {
       $header .= $_;
     }
     $header .= $_;
-    ProcessHeader($header);
+    ProcessHeader($filename, $line, $header);
     $header = "";
+  } elsif (m%/\*\*\s*(\w[^:]*):\s*(.*?)\s*$%) {
+    my $type = $1;
+    my $description = $2;
+    if ($type eq "" || $description eq "") {
+      print STDERR "$ARGV:$.:**** Improper /**-style comment: got type = \`$type\', description = \`$description\'.\n";
+      next;
+    }
+    if (uc($type) eq "HOOK") {
+      my $filename = $ARGV;
+      my $line = $.;
+      my $body = ReadRestOfComment("");
+      ProcessHookComment($filename, $line, $description,$body);
+    } elsif (uc($type) eq "CONCEPT") {
+      my $filename = $ARGV;
+      my $line = $.;
+      my $body = ReadRestOfComment("");
+      ProcessConceptComment($filename, $line, $description,$body);
+    } else {
+      print STDERR "$ARGV:$.:**** Unrecognized type for /**-style comment = \`$type\'\n";
+      next;
+    }
   }
 }
 
@@ -200,14 +229,18 @@ EOC
   }
 }
 
+# End the procedures chapter
 if ($opt_o) {
-  # FIXGJB: use links, not re-output!  Probably just
-  # use an index for alpha ordering?
-  print MARKUP_OUT <<END_CHAP_PRIM_IN_ALPHA
-  </chapter>
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+
+# Now output primitives by defined-in file
+if ($opt_o) {
+  print MARKUP_OUT <<START_PROC_BY_FILE
   <chapter>
     <title>Primitives By Defined-in File</title>
-END_CHAP_PRIM_IN_ALPHA
+START_PROC_BY_FILE
   ;
   
   foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
@@ -224,7 +257,49 @@ END_CHAP_PRIM_IN_ALPHA
       print MARKUP_OUT "    </itemizedlist> </sect1>\n";
     }
   }
+  print MARKUP_OUT "  </chapter>\n";
+}
 
+
+# Now output hooks chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_HOOKS_CHAPTER
+  <chapter>
+    <title>Hooks</title>
+START_HOOKS_CHAPTER
+  ;
+  foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
+    my $markup = $hooks{$hook}{markup};
+    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook</title><para>\n$markup
+    </para></sect1>\n";
+  }
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+
+# Now output concepts chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_CONCEPTS_CHAPTER
+  <chapter>
+    <title>Concepts</title>
+START_CONCEPTS_CHAPTER
+   ;
+  foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
+    my $markup = $concepts{$concept}{markup};
+    my $concept_id = $concept;
+    $concept_id =~ tr/ _/--/;
+    print MARKUP_OUT "    <sect1 id=\"$concept_id\"><title>$concept</title><para>\n$markup
+    </para></sect1>\n";
+  }
+
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+
+
+
+# Now output sgml trailer
+if ($opt_o) {
   print MARKUP_OUT <<END_TRAILER
 </chapter>
 </book>
@@ -242,11 +317,9 @@ END_TRAILER
 
 
 sub ProcessHeader( $ ) {
-  my ($header) = @_;
+  my ($filename, $line, $header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
-  my $filename = $ARGV;
-  my $line = $.;
   if (!defined($cprimname)) {
     print STDERR "$filename:$.:****ERROR:could not parse argument list\n";
     return FALSE;
@@ -397,18 +470,7 @@ sub ProcessHeader( $ ) {
 
   # Now want to do the markup of $comment, and set $markup_comment
   # FIXGJB: fold into testing, above
-  my $markup_comment = $comment;
-
-  # convert & into &amp; space-delimited <, > into &lt; and &gt;
-  $markup_comment =~ s%&%&amp;%g;
-  $markup_comment =~ s%<%&lt;%g;
-  $markup_comment =~ s%>%&lt;%g;
-  my $markup_usage = $usage;
-
-  $markup_usage =~ s%&%&amp;%g;
-  $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
-  $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
-
+  my $markup_comment = MarkupComment($comment);
 
   # Mark formals within comment with <parameter> tag
   # must sort by length so longer formals get replaced first
@@ -418,12 +480,12 @@ sub ProcessHeader( $ ) {
   foreach my $formal (sort { length($b) <=> length($a) } keys %argnames) {
     $markup_comment =~ s%(\Q$formal\E)%<parameter>\L$1\E</parameter>%g;
   }
-  # Mark #t and #f within comment with <literal> tag
-  $markup_comment =~ s%(\#[tf])%<literal>$1</literal>%g;
 
-  # Replace `procedure' with <function>procedure</function>
-  $markup_comment =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%
-    "<link linkend=\"" . ScmIdToSgmlId($1) . "\"><function>$1</function></link>"%eg;
+  # Just do simple markup of the usage
+  my $markup_usage = $usage;
+  $markup_usage =~ s%&%&amp;%g;
+  $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
+  $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
 
   # FIXGJB: use some sgml perl library!
 
@@ -495,4 +557,61 @@ sub ScmIdToSgmlId ( $ ) {
   $id =~ s/!$/-x/;
   $id =~ s/->/-to-/g;
   return $id;
+}
+
+sub ReadRestOfComment ( $ ) {
+  my ($comment) = @_;
+  while (($_ = <>) !~ m%\*/%) {
+    $comment .= $_;
+  }
+  $comment .= $_;
+  return $comment;
+}
+
+sub ProcessConceptComment ( $ ) {
+  my ($filename,$line,$description,$comment) = @_;
+  $comment =~ s%\*/\s*$%%m;
+  if ($fDebug) {
+    print STDERR "Concept \`$description\' with body = \n$comment\n";
+  }
+  my $markup = MarkupComment($comment);
+
+  $concepts{$description} = { comment => $comment,
+			      markup => $markup,
+			      file => $filename,
+			      line => $line,
+			    };
+}
+
+sub ProcessHookComment ( $ ) {
+  my ($filename,$line,$description,$comment) = @_;
+  $comment =~ s%\*/\s*$%%m;
+  if ($fDebug) {
+    print STDERR "Hook \`$description\' with body = \n$comment\n";
+  }
+  my $markup = MarkupComment($comment);
+  $hooks{$description} = { comment => $comment,
+			   markup => $markup,
+			   file => $filename,
+			   line => $line,
+			 };
+}
+
+# FIXGJB
+sub MarkupComment( $ ) {
+  my ($body) = @_;
+
+  # convert & into &amp; space-delimited <, > into &lt; and &gt;
+  $body =~ s%&%&amp;%g;
+  $body =~ s%(\s+)<(\s+)%$1&lt;$2%g;
+  $body =~ s%(\s+)>(\s+)%$1&gt;$2%g;
+
+  # Mark #t and #f within comment with <literal> tag
+  $body =~ s%(\#[tf])%<literal>$1</literal>%g;
+
+  # Replace `procedure' with <function>procedure</function>
+  $body =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%
+    "<link linkend=\"" . ScmIdToSgmlId($1) . "\"><function>$1</function></link>"%eg;
+
+  return $body;
 }
