@@ -11,3 +11,8 @@
 ;;; weird interactions with this?
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
 	    #:font menu-font #:mwm #f)
+
+
+;;; Local Variables:
+;;; eval: (progn (load "scwm") (scwm-mode))
+;;; End:
