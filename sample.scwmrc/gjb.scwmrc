@@ -1197,9 +1197,9 @@
 (bind-key 'all "C-M-KP_1" 
 	  (lambda () (with-window (get-window)
 		       (animated-move-to 0 (y- (w%y 100))))))
-(bind-key 'all "C-M-KP_3" (lambda ()
+(bind-key 'all "C-M-KP_3"
  	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) (y- (w%y 100)))))))
+		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
 
 (bind-key 'all "C-M-KP_8" (lambda () (animated-move-to #f 0)))
 (bind-key 'all "C-M-KP_6" 
