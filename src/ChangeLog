@@ -1,3 +1,10 @@
+Fri Jan 15 10:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.c (MenuInteraction): Guard derefs of pmiim in case no item
+	is yet selected-- fixes bug reported by Sam Falkner whereby
+	bringing up a menu via a keyboard shortcut and immediately
+	pressing <Return> resulted in a core dump.  Thanks Sam!
+
 1999-01-14  Todd Larason  <jtl@molehill.org>
 
 	* session-manager.c (doneSM, setSMProperties): Split variable
