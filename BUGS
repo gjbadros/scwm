@@ -6,6 +6,10 @@ Out of color errors need to be reported better.
 closing the Fvwm pager causes a deadlock that makes Scwm hang;
 kill -1 twice wakes it up, but need real fix.
 --tlau
+-------------
+Race conditions cause scwm to hang when talking to fvwm2 modules when, e.g.,
+recapturing.
+May have just been forgetting the O_NONBLOCK flag... --09/17/98 gjb
 -------
 dialog popups that grab the keyboard focus should return focus better
 after they are unmap (e.g., with tlau's fugu's search dialog, and escape
@@ -18,22 +22,7 @@ using (gtk gtk) before (app scwm gtk) causes a premature exit.
 How can we force app scwm gtk to be called when (gtk gtk) module is loaded?
 --10/02/99 gjb
 -------
-Sticky windows do not de-iconify properly.
--------
 XEmacs pixmap icon doesn't survive after a restart (James Achtung Crippe) --09/15/99 gjb
--------
-There seems to be a bug in window size (or allowable size) 
-communication between scwm & applications. 
- 
-For example, bring up a netscape window.  Maximize its height.  It 
-very nicely stretches from the top of the window to the bottom.  Now 
-start giving it lots of Alt-Ns to pop up new netscape windows. 
-Netscape always starts up new windows the same size as the netscape 
-window last created or adjusted in size.  So, all the windows being 
-poped up should be the same size.  However, each window poped up ends 
-up one pixel larger in height. 
-
---Harvey Stein
 -------
 > btw, you might check for dl support before building utilities/pidproperty/, 
 > at least obsd didn't recognize the RTLD_GLOBAL flag on dlopen, had to 
@@ -41,11 +30,6 @@ up one pixel larger in height.
 > to remove -ldl from the Makefile too. (aren't there some dlopen tests 
 > done in configure already ?) 
 Bob Pepin bob@sendar.prophecy.lu
-
--------
-By-window-resource group menus should auto-select the first window in
-the sub-menus (they currently require a motion event for the menu item to
-get highlighted).
 --------
 kept-on-top windows cannot be restacked relative to each other. I
 tried finding some quick fixes but they cause segfaults, thus this is
@@ -58,13 +42,6 @@ and Scwm (perhaps related to bitmaps that Applixware puts on the windows)
 Squashed titlebar feature:
   it'd be nice if they could be squashed to the right, or centered,
      instead of always only left-justified.
--------------
-Incorrect usage of keyword arguments by a scheme function fails silently.
-Both wrong keyword names and missing arguments should be reported.
--------------
-Race conditions cause scwm to hang when talking to fvwm2 modules when, e.g.,
-recapturing.
-May have just been forgetting the O_NONBLOCK flag... --09/17/98 gjb
 -------------
 emacs lisp files get installed under / if no emacs (from forcer --09/23/98 gjb)
 -------------
@@ -150,9 +127,37 @@ callbacks should run from a new dynamic root.
 outside the callback handler - the code would lose big on this -ms]
 
 
+GONE??? (but didn't note resolving them here)
+-------
+--01/09/00 gjb
+By-window-resource group menus should auto-select the first window in
+the sub-menus (they currently require a motion event for the menu item to
+get highlighted).
+-------------
+--01/09/00 gjb
+Incorrect usage of keyword arguments by a scheme function fails silently.
+Both wrong keyword names and missing arguments should be reported.
+-------------
+
+
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+Sticky windows do not de-iconify properly. --01/09/00 gjb
+-------
+--01/09/00 gjb
+There seems to be a bug in window size (or allowable size) 
+communication between scwm & applications. 
+ 
+For example, bring up a netscape window.  Maximize its height.  It 
+very nicely stretches from the top of the window to the bottom.  Now 
+start giving it lots of Alt-Ns to pop up new netscape windows. 
+Netscape always starts up new windows the same size as the netscape 
+window last created or adjusted in size.  So, all the windows being 
+poped up should be the same size.  However, each window poped up ends 
+up one pixel larger in height. 
+
+--Harvey Stein
 -------
 Changing desktops on elements GWS machines (as tzoompy) crashes Scwm;  I can't
 reproduce as gjb

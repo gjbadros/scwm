@@ -1,3 +1,13 @@
+Sun Jan  9 19:01:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added fDoneStartup variable, and set it.
+
+	* miscprocs.c: Added `done-startup?' primitive to return above
+	var.
+
+	* add_window.c: Fix off-by-one error reported by Harvey Stein in
+	the sizes of new windows with titlebars.
+
 Sun Jan  9 17:17:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c: Fix #define FUNC_NAME mismatch caught by scwmdoc.

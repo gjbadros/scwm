@@ -59,6 +59,7 @@ for supporting whole-edge highlighting for better constraint interface
 ** `window-visibility' for reporting on current visibility state of a window
 ** `animate-windows' for permitting animations of multiple windows simultaneously
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
+** `done-startup?' to let us tell whether we're still initializing or not
 
 * New procedures
 ** `X-handle-selection-string', `netscape-goto-selection-url', `netscape-google-search-selection-url'

@@ -1,3 +1,15 @@
+Sun Jan  9 19:03:20 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gtk.scm: Added `use-gtk-error-window-for-scwm' procedure, and
+	have it use done-startup to ensure that the hooks aren't added
+	prematurely.
+
+	* base.scm: Remove adding procs to invalid-interaction-hook and
+	cannot-grab-hook.  Define bell in terms of beep using a function,
+	not in terms of the proc variables.
+
+	* animation.scm: Use export, instead of (define-public foo foo)
+
 Sun Jan  9 17:55:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* animated-iconify.scm: Fix `animated-deiconify-to-viewport' to
