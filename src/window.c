@@ -497,7 +497,8 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
    MoveTo or MoveResizeTo or ResizeTo, and this will get invoked as
    needed.  */
 void
-SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque)
+SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, 
+                      Bool fOpaque)
 {
   Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
   Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);

@@ -104,7 +104,9 @@ void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y, Bool fOpaque) {
 void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
   SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }
-void CassowaryEndEdit(ScwmWindow *psw) { /* empty */ }
+void CassowaryEndEdit(ScwmWindow *psw) {
+  ResizePswToCurrentSize(psw);
+}
 #endif
 
 

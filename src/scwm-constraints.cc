@@ -162,8 +162,10 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
 void 
 CassowaryEndEdit(PScwmWindow psw)
 {
-  if (!psolver)
+  if (!psolver) {
+    ResizePswToCurrentSize(psw);
     return;
+  }
   psolver->endEdit();
 }
 

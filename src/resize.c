@@ -573,6 +573,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   /* pop down the size window */
   UnmapMessageWindow();
 
+  SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
 
   UninstallRootColormap();

@@ -375,7 +375,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     RemoveRubberbandOutline(Scr.Root);
 
   if (!psw->fIconified) {
-    SuggestMoveWindowTo(psw,xl,yt,opaque_move);
+    SuggestMoveWindowTo(psw,xl,yt,True);
     CassowaryEndEdit(psw);
   } else if (!opaque_move) {
     /* need to move the real windows for the icon */
