@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-04 Tue 13:09:04 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-04 Tue 22:59:26 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -83,8 +83,9 @@
  (require 'cl)                  ; for `gensym'
  (defvar Info-history)          ; defined in info.el
  (defvar Info-current-file)     ; defined in info.el
- (defvar scheme-buffer)         ; defined in cmuscheme.el
  (defvar font-lock-defaults-alist) ; defined in font-lock.el
+ (defvar scheme-buffer)         ; defined in cmuscheme.el
+ (defvar inferior-scheme-mode-map) ; defined in cmuscheme.el
  (defvar scwm-mode-map)         ; kill warnings
  ;; these three are dumped with e20.3
  (unless (fboundp 'quit-window) (defalias 'quit-window 'ignore))
@@ -281,14 +282,27 @@ Returns a string which is present in the `scwm-obarray'."
 ;; help
 ;; ----
 
+(defvar scwm-bug "scwm-discuss@huis-clos.mit.edu"
+  "The address to send bug reports on SCWM.")
+
+;;;###autoload
+(defun scwm-bug ()
+  "Send a bug report about scwm."
+  (interactive) (compose-mail scwm-bug)
+  (save-excursion
+    (search-forward mail-header-separator nil t) (forward-line 1)
+    (call-process "uname" nil t nil "-a")
+    (scwm-eval "(use-modules (app scwm flux))" nil)
+    (let ((pos (point)))
+      (scwm-eval "(system-info-string)" t)
+      (delete-char -1) (goto-char pos) (delete-char 1))))
+
 (defmacro with-face (face &rest body)
   "Execute body, which prints to `standard-output', then highlight the output."
   (let ((pp (gensym "wh")))
     `(let ((,pp (point)))
       ,@body
       (put-text-property ,pp (point) 'face ,face standard-output))))
-
-;; (macroexpand '(with-face 'highlight (print "zz")))
 
 ;;;###autoload
 (defun scwm-documentation (pat)
@@ -319,10 +333,12 @@ Returns a string which is present in the `scwm-obarray'."
                          " (display \"This Guile version lacks "
                          "`procedure-documentation'.\n\"))")
                  standard-output)
-      ;; add buttons to the help message
-      (goto-char 1) (forward-line 8) ; skip the header and value
-      (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
-        (help-xref-button 1 #'scwm-documentation (match-string 1)))
+      (let ((st (syntax-table))) ; add buttons to the help message
+        (set-syntax-table scwm-mode-syntax-table)
+        (goto-char 1) (forward-line 8) ; skip the header and value
+        (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
+          (help-xref-button 1 #'scwm-documentation (match-string 1)))
+        (set-syntax-table st))
       (help-mode) (goto-char 1) (print-help-return-message))))
 
 ;;;###autoload
