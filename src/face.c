@@ -288,7 +288,6 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       memcpy(&(bf->vector), &vc, sizeof(struct vector_coords));
       bf->style &= ~ButtonFaceTypeMask;
       bf->style |= VectorButton;
-      puts("Did it.");
     } else {
       /* FIXMS give a better error message */
       scm_wrong_type_arg("add_spec_to_face_x",3,arg);
