@@ -12,9 +12,16 @@ Changes for scwm-0.99.4 (released )
 * New modules
 ** last-mapped-window.scm for remembering the last window that got mapped
 
+* Changed procedures
+** X-cut-buffer-string now uses X-fetch-bytes primitive
+** X-set-cut-buffer-string! now uses X-store-bytes primitive
+
 * Changed primitives
 ** `animated-deiconify-to-last-viewport-position' to `animated-deiconify-to-viewport'
 ** Drop `animated-deiconify-to-current-viewport'
+
+* New primitives
+** `X-fetch-bytes', `X-store-bytes' for better primary cut buffer handling
 
 
 Changes for scwm-0.99.3 (released 25-September-1999)

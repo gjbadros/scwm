@@ -1,3 +1,15 @@
+Fri Oct  1 21:54:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraints.scm: Do not use bind-four-modifier-key-events here.
+	Leave keybindings to .scwmrc.
+
+1999-10-01  E. Jay Berkenbilt  <ejb@ql.org>
+
+	* xprop-extras.scm (X-cut-buffer-string): changed to use
+	X-fetch-bytes, just added to miscprocs.c.
+	(X-set-cut-buffer-string!): changed to use X-store-bytes, just
+	added to miscprocs.c.
+
 Fri Oct  1 16:35:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Drop commented out rubber-band-mask setting.

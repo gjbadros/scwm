@@ -1,3 +1,12 @@
+1999-10-01  E. Jay Berkenbilt  <ejb@ql.org>
+
+	* miscprocs.c (s_X_fetch_bytes): added this function for cut
+	buffer manipulation.
+	(s_X_store_bytes): added this functino for cut buffer
+	manipulation.  Simply setting the X property seems insufficient
+	for clearing the cut buffer.  This code was basically stolen from
+	gwm.
+	
 Thu Sep 30 17:22:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* resize.c: Patched to make InteractiveResize use the current
