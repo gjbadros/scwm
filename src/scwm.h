@@ -153,8 +153,8 @@ typedef struct ScwmWindow {
 				 * or else you can't keep xv and matlab
 				 * happy at the same time! */
   Window title_w;		/* the title bar window */
-  Window sides[4];
-  Window corners[4];		/* Corner pieces */
+  Window sides[4];              /* top, right, bottom, then left */
+  Window corners[4];		/* nw, ne, sw, se  coreners */
   int nr_left_buttons;
   int nr_right_buttons;
   Window left_w[5];
