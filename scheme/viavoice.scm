@@ -26,6 +26,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
+  :use-module (app scwm task-switcher)
   :use-module (app scwm tile)
   :use-module (app scwm cascade)
   :use-module (app scwm undo)
