@@ -36,3 +36,8 @@ In short, do:
 Most of the time this should be unnecessary; as soon as you have
 configured once with --enable-maintainer-mode, make should rebuild
 those files automatically.
+
+For details on libSM and libICE, see:
+
+ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/{SM,ICE}/*.PS.gz
+
