@@ -1,0 +1,37 @@
+Random thoughts on a decoration rewrite, probably largely conflicting
+------------------------------------------------------------------------------
+o All decoration styles currently possible should still be possible
+o Simple styles should be simple to specify
+  -  the decor vs. style distinction is confusing
+o Accurate reproduction of looks&feels of other X WMs and non-X GUIs should
+  be possible
+  -  pixel-level positioning of buttons required?  or can this always be 
+     simulated with appropriate pixmaps?  Consider the different spacing
+     between the right three buttons in w95
+  -  per-window settings/overrides need to be possible, even in a system where
+     window schemes are shared - motif maximize button, for instance
+  -  wm2/wmx-style doesn't fit at all in the fvwm2 modle; it should be
+     allowed and generalized
+o themes for other X WMs should be usable and/or simulatable
+  -  best case, scheme-level support for parsing the configuration files
+
+
+
+Sites of interest:
+------------------
+o http://www.themes.org/ and all the subsidiary sites, for examples of themes
+  for other WMs; note that most of these fit fairly well into an fvwm-ish
+  framework
+o http://www.PLiG.org/xwinman/ for screenshots of various WMs;
+  http://www.PLiG.org/xwinman/screenshots/wm2-default.gif in particular
+  for a nice look/feel that doesn't fit the fvwm-ish framework at all.
+  Not visible in this screenshot is the resize bar in the SE corner
+  (maybe that is WMX only) - a small triangular piece that actually overlays
+  the client window
+o http://www.enlightenment.org/ - Enlightenment, a WM that is devoted to flash.
+  We should be able to be just as flashy for users who want it, hopefully 
+  straight from their config files, without giving up the substance.
+
+
+-- jtl, 6 November 1998.  Additional thoughts and discussion very much 
+   appreciated

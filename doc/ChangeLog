@@ -1,3 +1,8 @@
+1998-11-06  Todd Larason  <jtlmolehill.org>
+
+	* dev/decorations: New file, very prelimiary thoughts on the goals 
+	of a decoration rewrite
+
 1998-11-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* session-management: New file.
