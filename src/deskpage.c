@@ -17,52 +17,69 @@
 
 SCM set_current_desk_x(SCM sx)
 {
+  SCM_REDEFER_INTS;
 
   if (!gh_number_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-current-desk!",1,sx);
   }
 
   /* XXX - should do something useful if desk is out of range. */
   changeDesks(0,gh_scm2int(sx));
+
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
 
 SCM set_viewport_position_x(SCM sx, SCM sy)
 {
+  SCM_REDEFER_INTS;
   if (!gh_number_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-viewport-position!",1,sx);
   }
   if (!gh_number_p(sy)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-viewport-position!",2,sy);
   }
 
   MoveViewport(gh_scm2int(sx),gh_scm2int(sy),True);
+  SCM_REALLOW_INTS;
   return(SCM_UNSPECIFIED);
 }
 
 
 SCM set_edge_scroll_x(SCM sx, SCM sy)
 {
+  SCM_REDEFER_INTS;
   if (!gh_number_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-scroll!",1,sx);
   }
   if (!gh_number_p(sy)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-scroll!",2,sy);
   }
 
   Scr.EdgeScrollX = gh_scm2int(sx)/100;
   Scr.EdgeScrollY = gh_scm2int(sy)/100;
   checkPanFrames();
+
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
 }
 
 
 SCM set_edge_wrap_x(SCM sx, SCM sy)
 {
+  SCM_REDEFER_INTS;
   if (!gh_boolean_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-wrap!",1,sx);
   }
   if (!gh_boolean_p(sy)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-wrap!",2,sy);
   }
 
@@ -77,30 +94,42 @@ SCM set_edge_wrap_x(SCM sx, SCM sy)
     Scr.flags &= ~EdgeWrapY;
   }
   
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
 
 SCM set_edge_resistance_x(SCM sr, SCM mr)
 {
+  SCM_REDEFER_INTS;
+
   if (!gh_number_p(sr)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-resistence!",1,sr);
   }
   if (!gh_number_p(mr)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-edge-resistance!",2,mr);
   }
   
   Scr.ScrollResistance = gh_scm2int(sr);
   Scr.MoveResistance = gh_scm2int(mr);
+
+  SCM_REALLOW_INTS;
+  return SCM_USPECIFIED;
 }
 
 
 SCM set_desk_size_x(SCM sx, SCM sy)
 {
+  SCM_REDEFER_INTS;
+
   if (!gh_number_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-desk-size!",1,sx);
   }
   if (!gh_number_p(sy)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-desk-size!",2,sy);
   }
 
@@ -115,6 +144,8 @@ SCM set_desk_size_x(SCM sx, SCM sy)
   Broadcast(M_NEW_PAGE,5,Scr.Vx,Scr.Vy,Scr.CurrentDesk,Scr.VxMax,Scr.VyMax,0,0);
 
   checkPanFrames();
+
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
