@@ -1,3 +1,10 @@
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* Makefile.am (SUBDIRS): Only build in scwmgtkhelper directory
+	conditionally.
+	* scwmgtkhelper/Makefile.am: Don't try to conditionalize. These
+	changes are for Automake 1.4 compatibility.
+	
 Sat Jan 23 16:33:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Replace uses of iarg with literal
