@@ -1,3 +1,24 @@
+Sun Jul  4 22:56:39 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added psym to struct gravity_info_tag so I can map
+	between symbols and X gravities, and the table.
+
+	* window.c: Introduce gravity symbols, make ResizeTo honour the
+	window gravity, added `window-gravity' and `set-window-gravity!'.
+	Remvoed some #ifdef 0'd symbol definitions (no-top-border,
+	no-side-borders, no-border).
+
+	* validate.h: Added VALIDATE_ARG_DBL_COPY,
+	VALIDATE_ARG_DBL_COPY_USE_DEF macros (for message-window)
+
+	* placement.h, placement.c: Added sym_grav_XXX to grav_table
+	array. Added SetPswGravity, GravityFromSym.
+
+	* message-window.c: Updated doc string for
+	message-window-set-position! -- it had arg description wrong, I
+	think.  Greatly simplify that procedure, too, by using VALIDATE
+	macros.
+
 Sun Jul  4 21:36:47 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added @XTST_LIB@ to link scwm_LDADD
