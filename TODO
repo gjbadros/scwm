@@ -1,5 +1,11 @@
 - Use guile-snarf pervasively
 
+- Better system than calling scwm_error with a number?
+
+- Hook callback on scwm_msg-s, instead of just writing to stderr
+
+- side images should have optional alignment to top, center, or bottom
+
 - color scheme wrappers need reference counting; whole rewrite like image?
 
 - replace ColorPair struct w/ scheme-object based
