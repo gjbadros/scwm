@@ -1,3 +1,11 @@
+Thu Apr  2 16:21:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* image.c, scwm.c: include "scwmpaths.h"
+	miscprocs.c, scw.c: don't include "../version.h"
+
+	These changes are to work with the new automake-based build system
+ 	(see the top-level ChangeLog).
+	
 Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* callbacks.c: Fixed bug in run_timed_out_timers() - was failing
