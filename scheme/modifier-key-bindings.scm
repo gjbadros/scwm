@@ -6,6 +6,9 @@
 (define-public (bind-two-modifier-key-events 
 		modkey1 modkey2 
 		proc-press proc-release)
+  "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (let ((keycode1 (car modkey1))
 	(mod1 (cdr modkey1))
 	(keycode2 (car modkey2))
@@ -21,6 +24,9 @@
 (define-public (bind-three-modifier-key-events 
 		modkey1 modkey2 modkey3
 		proc-press proc-release)
+  "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (let ((keycode1 (car modkey1))
 	(mod1 (cdr modkey1))
 	(keycode2 (car modkey2))

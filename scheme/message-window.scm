@@ -18,7 +18,7 @@
 (define-public (gravity->alignments gravity)
   "Return a list of two numeric alignments corresponding to a GRAVITY.
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
-(or spelled-out versions of these)."
+or spelled-out versions of these."
    (case gravity
      ((nw northwest north-west) '(  0    0))
      ((n  north)                '(-.5    0))
@@ -35,7 +35,7 @@ GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
 (define-public (position-message-window! msgwin x y gravity)
   "Move the move/resize message window's GRAVITY point to (X,Y).
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
-(see `gravity->alignments')."
+or spelled-out versions of these. See also `gravity->alignments'."
   (apply
    (lambda (xa ya)
      (message-window-set-position! msgwin x y xa ya))

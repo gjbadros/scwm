@@ -132,7 +132,7 @@ Run PROC immediately if MODULE has already been loaded."
       (proc)
       (set! *scwm-modules* (cons (cons module proc) *scwm-modules*))))
 
-(define-public (process-use-scwm-module module)
+(define (process-use-scwm-module module)
   (if (symbol? module)
       (set! module (append '(app scwm) (list module))))
   (catch #t
