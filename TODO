@@ -20,6 +20,8 @@ an xor-value, as an option
 
 - Opaque resize -- afterstep and others do this
 
+- Rename scwm/scwm directory to scwm/src
+
 -- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable
 
 - Quote key feature -- like C-q in Emacs, C-v in shells

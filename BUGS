@@ -36,3 +36,7 @@ there needs to be a way to remove mouse bindings; unbind_key added 10/24/97, gjb
 
 start interactive moves and resizes right, so that initial mouse motion is not
 lost.  ~ 10/15/97, MS
+
+Oleg Tihonov <oleg@benetnash.ffke-campus.mipt.ru>'s bug re: bind-mouse
+and unbind-mouse.  bind-mouse grabbed for all windows unnecessarily, and 
+unbind-mouse did not permit `1' to mean moust button 1 --gjb 11/27/97 
