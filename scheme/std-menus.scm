@@ -134,20 +134,22 @@ The selection must contain a single full pathname."
 
 
 ;; contributed by Glenn Trig
-(define-public menu-window-theme
+(define*-public (menu-window-theme #&optional force?)
   (menu  
    (map 
     (lambda (x) 
       (menuitem x #:action 
-		(lambda () (style-one-window (get-window) #:use-theme (load-cached-theme x))))) 
-        (theme-names))))
+		(lambda () (style-one-window (get-window) 
+					     #:use-theme (load-cached-theme x force?))))) 
+    (theme-names))))
 
 
 ;; contributed by Glenn Trig
-(define-public menu-global-theme
+(define*-public (menu-global-theme #&optional force?)
   (menu  
    (map 
     (lambda (x) 
       (menuitem x #:action 
-		(lambda () (window-style "*" #:use-theme (load-cached-theme x))))) 
+		(lambda () (window-style "*" 
+					 #:use-theme (load-cached-theme x force?))))) 
     (theme-names))))
