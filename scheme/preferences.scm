@@ -508,7 +508,7 @@ value."
 			 (with-output-to-string 
 			   (lambda ()
 			     (let ((value (scwm-option-symget s)))
-			       (if (list? value) (display "'"))
+			       (if (or (list? value) (symbol? value)) (display "'"))
 			       (write value))))
 			 ")))\n"))
 	    syms)))
