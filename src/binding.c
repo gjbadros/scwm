@@ -1104,7 +1104,7 @@ SCWM_PROC(unbind_keycode, "unbind-keycode", 2, 1, 0,
      /** Unbind the given KEYCODE within the CONTEXTS.
 KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
 */
-#define FUNC_NAME s_bind_keycode
+#define FUNC_NAME s_unbind_keycode
 {
   int min, max;
   int context, keycd, modmask;
