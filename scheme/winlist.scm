@@ -53,16 +53,21 @@
 
 
 (define*-public (list-windows #&key (only '()) (except '())
-			      (by-stacking #f))
+			      (by-stacking #f)
+			      (by-focus #f))
   "Return the list of windows matching ONLY or not matching EXCEPT.
 The windows are returned their stacking order (top first) if
-BY-STACKING is #t.  ONLY and EXCEPT each are procedures which
+BY-STACKING is #t.  They are returned sorted by their last focussed
+time (most recently focussed first) if BY-FOCUS is #t.
+ONLY and EXCEPT each are procedures which
 take a single window argument and returns #t if the window
 should be included (for ONLY) or excluded (for EXCEPT), or #f otherwise."
   (filter-only-except 
    (if by-stacking
        (list-stacking-order)
-       (list-all-windows)) only except))
+       (if by-focus
+	   (list-focus-order)
+	   (list-all-windows))) only except))
 
 (define*-public (winlist-hit #&optional (win (get-window)))
   "Permit WIN to be displayed in the window list by default.
@@ -84,10 +89,12 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
+				       (by-focus #f)
 				       (proc window-list-proc)
 				       (flash-window-proc #f)
 				       (unflash-window-proc #f)
 				       (show-geometry #f)
+				       (show-last-focus-time #f)
 				       (warp-to-first #f)
 				       (ignore-winlist-skip #f)
 				       (show-mini-icon #t))
@@ -98,6 +105,9 @@ PROC is the procedure which will be called on the selected window.
 
 If SHOW-GEOMETRY is #t, the geometries of the windows will be listed
 in each menuitem.  
+
+If SHOW-LAST-FOCUS-TIME is #t, the last focus time of the windows will be listed
+in each menuitem.
 
 If SHOW-MINI-ICON is #t, the mini-icon of the windows will be
 displayed with each menuitem.
@@ -112,27 +122,34 @@ menuitem (see `popup-menu').
 				#f #f #f #f #f)
 		 menu-title)
 		(map (lambda (x)
-		       (make-menuitem (window-title x)
-				      (lambda () (proc x))
-				      (if show-geometry
-					  (window-geometry-string x) #f)
-				      #f 
-				      (if show-mini-icon
-					  (window-mini-icon x) #f)
-				      (if flash-window-proc
-					  (lambda () (flash-window-proc x))
-					  #f)
-				      (if unflash-window-proc
-					  (lambda () (unflash-window-proc x))
-					  #f)
-				      #f))
+		       (let ((extra-label-string 
+			      (if show-geometry (window-geometry-string x) #f)))
+			 (if show-last-focus-time
+			     (set! extra-label-string 
+				   (string-append (or extra-label-string "")
+						  (if extra-label-string ", " "")
+						  (window-last-focus-time-string x))))
+			 (make-menuitem (window-title x)
+					(lambda () (proc x))
+					extra-label-string
+					#f 
+					(if show-mini-icon
+					    (window-mini-icon x) #f)
+					(if flash-window-proc
+					    (lambda () (flash-window-proc x))
+					    #f)
+					(if unflash-window-proc
+					    (lambda () (unflash-window-proc x))
+					    #f)
+					#f)))
 		     (list-windows #:only only #:except 
 				   (if ignore-winlist-skip
 				       except
 				       (cons 
 					winlist-skip?
 					(listify-if-atom except)))
-				   #:by-stacking by-stacking))))
+				   #:by-stacking by-stacking
+				   #:by-focus by-focus))))
 	      warp-to-first))
 
 (define (rotate-around w wl)

@@ -125,6 +125,16 @@ looks like, e.g., FIXGJB."
 			   "+" (number->string (cadr pos))
 			   (if i ")" "")))))
 
+(define-public (time-t->seconds-ago timet)
+  "Return the number of seconds that have passed since TIMET was the current time."
+  (- (current-time) timet))
+
+(define*-public (window-last-focus-time-string #&optional (win (get-window)))
+  "Return a string corresponding to the last focus time for WIN."
+  (string-append 
+   (number->string (time-t->seconds-ago (window-last-focus-time win)))
+   " sec"))
+
 
 ;; quote all regexp meta-characters, then turn \* and \? into
 ;; .* and . respectively.
