@@ -293,6 +293,10 @@ EXTERN SCM cannot_grab_hook;
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))
 /* SCWMWINDOW should disappear-- PSWFROMSCMWIN is a better name, IMO--07/17/98 gjb*/
+
+/* MS:FIXME:GJB: I disagree, functions and especially macros with FROM
+   in the name rather than TO are unintuitive. */
+
 /* #define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw) */
 #define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
 #define VALIDWINP(X) (((scwm_window *)gh_cdr(X))->valid)
@@ -357,6 +361,9 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
                                        int width, int height, 
                                        int *px_units,
                                        int *py_units);
+
+void notify_new_desk(ScwmWindow *psw, int desk, int old);
+
 
 #endif /* WINDOW_H__ */
 

@@ -2386,6 +2386,15 @@ way if not specified. */
 }
 #undef FUNC_NAME
 
+void
+notify_new_desk(ScwmWindow *psw, int desk, int old)
+{
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+  
+  signal_window_property_change(psw->schwin, sym_desk,
+                                gh_int2scm(desk), gh_int2scm(old));
+}
+
 
 SCWM_PROC(move_window_to_desk, "move-window-to-desk", 1, 1, 0,
           (SCM desk, SCM win))
@@ -2428,12 +2437,8 @@ defaults to the window context in the usual way if not specified. */
       psw->Desk = val1;
     }
   }
-  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  
-  signal_window_property_change(win, sym_desk, desk,
-                                gh_int2scm(old));
 
-
+  notify_new_desk(psw, val1, old);
 
   return SCM_UNSPECIFIED;;
 }

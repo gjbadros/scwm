@@ -452,6 +452,9 @@ changeDesks(int val1, int val2)
     } else {
       /* Window is sticky */
       psw->Desk = Scr.CurrentDesk;
+
+      notify_new_desk(psw, val1, oldDesk);
+
       if (Scr.Focus == psw) {
 	psw->FocusDesk = oldDesk;
 	StickyWin = psw;
