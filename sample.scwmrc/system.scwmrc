@@ -1001,10 +1001,13 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-mouse 'title "C-1" #f select-window-toggle)
 (bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
 
-(bind-mouse 'title (hyper "1") #f move-after-deleting-inferred-constraints)
-(bind-mouse 'title (hyper "3") #f move-after-deleting-constraints)
-(bind-mouse 'frame-sides (hyper "1") #f move-after-deleting-inferred-constraints)
-(bind-mouse 'frame-sides (hyper "3") #f move-after-deleting-constraints)
+(if (scwm-is-constraint-enabled?)
+    (begin
+      (bind-mouse 'title (hyper "1") #f move-after-deleting-inferred-constraints)
+      (bind-mouse 'title (hyper "3") #f move-after-deleting-constraints)
+      (bind-mouse 'frame-sides (hyper "1") #f move-after-deleting-inferred-constraints)
+      (bind-mouse 'frame-sides (hyper "3") #f move-after-deleting-constraints)
+      ))
 
 (bind-mouse 'all (hyper "M-3") #f popup-window-ops)
 ;;(bind-mouse 'left-button-1 3 popup-style-menu)

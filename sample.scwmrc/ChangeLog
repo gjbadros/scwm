@@ -1,3 +1,14 @@
+Sat Jan 15 16:27:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Ensure scwm-is-constraint-enabled? befroe using
+	move-after-deleting-inferred-constraints,
+	move-after-deleting-constraints.
+
+	* system.scwmrc: Typo fix 
+
+	* simple.scwmrc: Update for 0.99.6-- use `interactive' specs,
+	added some missing use-modules.
+
 Wed Jan 12 00:39:18 2000    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Bind C-A-S-n to `show-netscape-window-list-menu'
