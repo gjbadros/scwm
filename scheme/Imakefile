@@ -1,0 +1,16 @@
+/*
+ * Imakefile for scwm 0.0.0 -- sample.fvwmrc
+ */
+
+SCWM_SRCDIR=..
+#include "../Scwm.tmpl"
+
+NullMake()
+
+
+InstallNonExecFile(base.scm,$(SCWM_SCHEMEDIR))
+InstallNonExecFile(optargs.scm,$(SCWM_SCHEMEDIR))
+InstallNonExecFile(wininfo.scm,$(SCWM_SCHEMEDIR))
+InstallNonExecFile(winlist.scm,$(SCWM_SCHEMEDIR))
+InstallNonExecFile(winops.scm,$(SCWM_SCHEMEDIR))
+
