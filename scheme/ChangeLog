@@ -1,3 +1,26 @@
+Sun Jul  4 19:01:13 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* prompt-color.scm: Make favorites default to
+	*favorite-colors*. Fixed bug in not setting title in advance, and
+	calling prompt-color-hbox with arguments in the wrong order.
+
+	* preferences.scm: Added option `*favorite-colors*'
+
+	* edge-ops.scm: Move module variables before the scwm-option that
+	uses one of them.
+
+	* base.scm: Drop #:favorites from color options -- Thanks Carl
+	Witty for this suggestion!
+
+Sun Jul  4 14:02:03 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* fvwm-module.scm: Fix bug: M_ICONIFY_WINDOW was used, not
+	M_ICONIFY.  Can we get better error messages (e.g., a backtrace)
+	on a packet eval?  This was way too hard to find given how simple
+	the bug is.
+
+	* fvwm-eval.scm: Added some comments.
+
 Sat Jul  3 22:42:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* prompt-proc.scm: Fix let* bug in prompt-proc-hbox. Also, return
