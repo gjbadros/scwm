@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.2h from Makefile.am
+# Makefile.in generated automatically by automake 1.3 from Makefile.am
 
 # Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -114,8 +114,9 @@ install-lispLISP: $(lisp_LISP) $(ELCFILES)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(lispdir)
 	@list='$(lisp_LISP)'; for p in $$list; do \
-	  echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(lispdir)/$$p"; \
-	  $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(lispdir)/$$p; \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p; \
 	  if test -f $${p}c; then \
 	    echo " $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c"; \
 	    $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c; \
