@@ -2247,7 +2247,10 @@ mouse button specification format (with modifiers) is used. Send the
 event to window WIN if specified; otherwise the window to be used
 defaults to the window context in the usual way. By default, both a
 press and a release are sent---a click. KIND can be one of 'press, 'release,
-'click, 'desk-press, 'desk-release, or 'desk-click,
+'click, 'desk-press, 'desk-release, or 'desk-click.
+If DX or DY is set, that value is used as the offset within WIN for
+the button events to occur.  If one is not specified or #f, then the
+pointer offset of that coordinate is used instead.
 PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means. */
