@@ -1397,6 +1397,11 @@ HandleConfigureRequest()
     xwc.width = cre->width;
     xwc.height = cre->height;
     xwc.border_width = cre->border_width;
+#ifdef SCWM_DEBUG_RESIZE_MSGS
+    scwm_msg(DBG,__FUNCTION__,"!pswCurrent && configure to %d,%d", xwc.x, xwc.y);
+#endif
+    /* FIXGJB: this is just moving the icon, but when
+       icon positions are exposed to cassowary, it'll need fixing */
     XConfigureWindow(dpy, Event.xany.window, xwcm, &xwc);
 
     if (pswCurrent) {
@@ -1483,7 +1488,13 @@ HandleConfigureRequest()
     height = FRAME_HEIGHT(pswCurrent);
   }
 
-  MoveResizeTo(pswCurrent, x, y, width, height);
+#ifdef SCWM_DEBUG_RESIZE_MSGS
+  scwm_msg(DBG,__FUNCTION__,"MoveResize to %d,%d %dx%d", 
+           x, y, width, height);
+#endif
+  MoveResizeTo(pswCurrent, 
+               x + WIN_VP_OFFSET_X(pswCurrent),
+               y + WIN_VP_OFFSET_Y(pswCurrent), width, height);
   KeepOnTop();
 }
 

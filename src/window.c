@@ -61,6 +61,8 @@ char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
+static Bool FIsPartiallyInViewport(const ScwmWindow *psw);
+
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
 {
@@ -505,6 +507,15 @@ void
 MovePswToCurrentPosition(const ScwmWindow *psw)
 {
   int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
+#ifndef NDEBUG
+  if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
+    scwm_msg(ERR,__FUNCTION__,"Window %s is sticky but not on screen --\n\
+correcting from %d,%d",
+             psw->name,x,y);
+    MoveTo((ScwmWindow *)psw,0,0);
+  }
+#endif
+    
   XMoveWindow(dpy, psw->frame, x, y);
   SendClientConfigureNotify(psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
