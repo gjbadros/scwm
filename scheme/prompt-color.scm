@@ -109,7 +109,7 @@ See also `prompt-color'."
     (gtk-widget-show hbox)
     (gtk-signal-connect selbut "pressed"
 			(lambda ()
-			  (let ((dialog (gtk-color-selection-dialog-new "Font Selection Dialog")))
+			  (let ((dialog (gtk-color-selection-dialog-new "Color Selection Dialog")))
 			    (gtk-signal-connect
 			     (gtk-color-selection-dialog-ok-button dialog)
 			     "clicked" (lambda () 

@@ -1,3 +1,7 @@
+Sun Apr  4 01:24:34 1999  Carl R. Witty  <cwitty@newtonlabs.com>
+
+	* prompt-color.scm (prompt-color-hbox): Fix cut-and-paste bug.
+
 Thu Apr  8 09:00:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gtk.scm: Use name `gdk-get-leader-window-id' for the proc that I 
