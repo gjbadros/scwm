@@ -12,7 +12,8 @@
 
 (define*-public (flash-window #&optional (win (get-window)) #&key
 			      (color (make-color "red"))
-			      (unflash-delay .5))
+			      (unflash-delay .5)
+			      (continually #f))
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
 UNFLASH-DELAY may be #f to not automatically revert back to the original
 color.  See `unflash-window'."
@@ -21,13 +22,21 @@ color.  See `unflash-window'."
       (begin
 	(set-object-property! win 'old-bg (cadr (get-window-colors win)))
 	(set-object-property! win 'old-hi-bg (cadr (get-window-highlight-colors win)))
+	(if continually (set-object-property! win 'flashing #t))
 	(set-window-background! color win)
 	(set-window-highlight-background! color win)
 	(if (number? unflash-delay)
 	    (add-timer-hook! (sec->usec unflash-delay)
 			     (lambda ()
-			       (unflash-window win)))))))
-
+			       (unflash-window win)
+			       (if (object-property win 'flashing)
+				   (add-timer-hook! (sec->usec unflash-delay)
+						    (lambda ()
+						      (flash-window win #:color color
+								    #:unflash-delay unflash-delay
+								    #:continually #f))))))))))
+;; (flash-window (get-window) #:continually #t)
+;; (stop-flashing-window)
 
 (define*-public (unflash-window #&optional (win (get-window)))
   "Revert WIN's titlebar and boundary color to state before a `flash-window'."
@@ -40,6 +49,10 @@ color.  See `unflash-window'."
     (set-window-highlight-background! old-hi-bg win)
     (set-object-property! win 'old-bg #f)
     (set-object-property! win 'old-hi-bg #f)))
+
+(define*-public (stop-flashing-window #&optional (win (get-window)))
+  (set-object-property! win 'flashing #f)
+  (unflash-window win))
 
 ;;; Debugging, testing code.
 ;; (flash-window (get-window) #:unflash-delay #f)
