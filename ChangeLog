@@ -1,5 +1,9 @@
 Tue Oct 21 09:23:13 1997  Greg Badros  <gjb@cs.washington.edu>
 
+	* Added scwm-buffer.el to utilities/emacs
+
+	* Build the utilities/scwmsend makefiles, and build scwmsend.c
+
 	* Provide support for scwmsend
 
 	* Fix some build problems
