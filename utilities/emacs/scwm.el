@@ -168,13 +168,20 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (interactive) (newline-and-indent)
   (scwm-eval-last t) (newline))
 
+(defun quote-percents (str)
+  "Replace all % with %% in str to quote them for use as an arg to message."
+  (string-match "^" str)
+  (while (string-match "%" str (+ 1 (match-end 0)))
+    (setq str (replace-match "%%" t t str)))
+  str)
+
 ;;;###autoload
 (defun scwm-eval-to-minibuffer ()
   "Evaluate the last SEXP and show the result in the minibuffer."
   (interactive)
   (let ((last (buffer-substring-no-properties
 	       (point) (save-excursion (backward-sexp) (point)))))
-    (message (with-output-to-string (scwm-eval last standard-output)))))
+    (message (quote-percents (with-output-to-string (scwm-eval last standard-output))))))
 
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-to-minibuffer)
