@@ -1,3 +1,30 @@
+Sun Jul 18 16:39:45 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Added `undo-all-passive-grabs',
+	`redo-all-passive-grabs', `undo-passive-grab', `redo-passive-grab'
+
+	* events.c (HandleKeyEvent): Added USE_XALLOW_EVENTS cpp check for 
+	commenting out some code.  Drop the use of XTest since that won't
+	work anyway.
+
+	* miscprocs.c (get_mouse_event,get_key_event): Return lists
+	containing the string as the car, but the raw information in the
+	cdr. 
+
+Sun Jul 18 14:50:01 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Fix VALIDATE_... call for lookup-procedure-bindings
+	to really work when passing #f or no arguments to return the list
+	of all bindings.
+
+Sun Jul 18 13:45:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c: Removed #if 0 from the HandleVisibilityNotify() event
+	handler.  Invoke new window-*obscured-hooks on these events.
+
+	* add_window.c: Only display message about moving a window if
+	a restart_vp_offset_x/y is nonzero.
+
 Sun Jul 18 01:41:54 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* add_window.c (AddWindow): Move the windows to their correct

@@ -1,3 +1,17 @@
+Sun Jul 18 16:31:26 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Update describe-key to handle new list format for
+	get-key-event.  Added `describe-mouse'.
+
+	* quote.scm: Added; for quoting keystroke and mouse events.
+	Requires xtest extension for now, and includes other useful xtest
+	abstractions.
+
+Sun Jul 18 13:44:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added WIN args to a lot of procs that used to only
+	work on the curent-window.
+
 Sun Jul 18 01:31:32 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Get rid of add-timer-hook for describe-key;  fixed
