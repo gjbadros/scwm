@@ -4,12 +4,21 @@
 ;;;;
 ;;;; Copyright (C) 1997-1999 Greg J. Badros
 ;;;;
-;;;; Feel free to use and reuse code contained herein
-;;;; as permitted by the GNU GPL
+;;;; This program is free software; you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published by
+;;;; the Free Software Foundation; either version 2, or (at your option)
+;;;; any later version.
 ;;;;
-;;;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK
-;;;; It works for me and I like it, but you might not!
-;;;; Comments are appreciated -- email gjb@cs.washington.edu
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this software; see the file COPYING.  If not, write to
+;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+;;;; Boston, MA 02111-1307 USA
+;;;;
 
 
 ;; Uncomment the below to send a single UDP packet to
@@ -40,6 +49,29 @@
 ;;(set-ignore-dubious-modifiers! #f)
 
 (define suppress-xclients #f)
+
+(define xlock-command "xlock -remote -nice -19 -mode blank")
+;; (define xlock-command "xlock-both")
+
+(define server-hosts 
+  '(pahtoo glacier june amaebi bauhaus)
+  )
+
+(define other-hosts 
+  '( sturgeon thresher coho ;; Ultrix
+	      forbidden pinnacle copper ;; AIX
+	      pintail edgar bugs-bunny ;; DEC OSF
+	      fireweed anemone bugbane buttercup ;; IRIX
+	      ))
+
+(define linux-hosts
+  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani))
+
+(define solaris-hosts
+  '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
+
+(define favorite-hosts
+  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu scwm.mit.edu))
 
 ;; If you want to use the gnome panel, stick
 ;; "panel &" in your $HOME/.xclients file (and be sure it is u+x)
@@ -442,9 +474,6 @@
 ;;	      #:mini-icon pic-xterm-mini)
 	      #:mini-icon pic-lambda-mini)
 
-(window-style "*" 
-	      #:icon-box (list 0 1 69 (y- 141)))
-
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
 (set-smart-placement-is-really-smart! #t)
@@ -474,14 +503,11 @@
 ;;			    (90 70 #f) (90 76 #f) (10 76 #t)))))
 )
 
-;; For testing
-;;(set-button-face! 3 sticky-button-face)
-
-
 ;; But can also use a (make-image  "file.xpm")
-(define sysutils-button-face
+(define style-button-face
   (make-face '((relief flat))
 	     '((pixmap "mini-lightbolt-full.xpm")))
+
 ;;  (make-face '((relief raised))
 ;; ;;; Big Lighting Bolt (Fat at top, comes to a point)
 ;;	     '((relief-pattern
@@ -548,7 +574,6 @@
     (popup-menu-from-decoration 
      (make-window-style-menu w) w 1))
   #f)
-	 
 
 ;; the "1" at the end of the prior line is the button number from which 
 ;; this is popped.
@@ -562,9 +587,9 @@
 ;; the fvwm2 "MWMButton" concept whereby a button reverses its vector 
 ;; pattern when the window is maximized. It should be much more general, 
 ;; of course.
-(add-left-button sticky-button-face #f toggle-stick)
+;; (add-left-button sticky-button-face #f toggle-stick)
 
-(add-left-button sysutils-button-face #f popup-style-menu)
+(add-left-button style-button-face #f popup-style-menu)
 
 (if want-close-button
     (add-right-button close-button-face close-window))
@@ -675,17 +700,17 @@
 	       #:action (thunk vertical-toggle-maximize))
     (menuitem "Maximize &Wide/Reset" #:image-left "mini-maxwide.xpm"
 	       #:action (thunk horizontal-toggle-maximize))
-    (menuitem "Animated S&hade/Reset" 
+    (menuitem "S&hade/Reset" 
 	       #:action (thunk animated-toggle-window-shade))
-    (menuitem "Shade/Reset" 
-	       #:action (thunk toggle-window-shade))
+    menu-separator
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
-    (menuitem "Mo&ve" #:image-left "win-pos-center.xpm"
-	      #:action menu-window-move)
-    menu-separator
+    (menuitem "Sho&ve" #:image-left "win-pos-center.xpm"
+	      #:action menu-window-shove)
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
-    (menuitem "&Print" #:action (thunk print-window))
+    (if (defined? 'print-window)
+	(menuitem "&Print" #:action (thunk print-window))
+	#f)
     menu-separator
     (menuitem "Group" #:submenu (lambda () (make-window-group-menu (window-context))))
     (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
@@ -732,10 +757,8 @@ from other processes.
 (define (start-xlogo)
   (execute "xlogo"))
 
-;;(define (exec-xlock)
-;;  (execute "xlock -remote -nice -19 -mode blank"))
 (define (exec-xlock)
-  (execute "xlock-both"))
+  (execute xlock-command))
 
 (define menu-quit-verify
   (menu 
@@ -764,9 +787,12 @@ from other processes.
 (define menu-utilities
   (menu (cons
 	 (menu-title "Utilities")
-	 (make-menuitems-from-menu-information-list
-	  utilities-available-program-information)
-	 )))
+	 (append
+	  (make-menuitems-from-menu-information-list
+	   utilities-available-program-information)
+	  (list
+	   (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
+		     #:action 'menu-screensaver))))))
 
 (define menu-multimedia
   (menu (cons
@@ -785,26 +811,6 @@ from other processes.
 (define (xterm-other-host hostname)
   (exe (string-append xterm-program-name " -name remotexterm -T " hostname " -n " hostname 
 		      " -e sh -c '" *remote-shell-command* hostname "'")))
-
-(define server-hosts 
-  '(pahtoo glacier june amaebi bauhaus)
-  )
-
-(define other-hosts 
-  '( sturgeon thresher coho ;; Ultrix
-	      forbidden pinnacle copper ;; AIX
-	      pintail edgar bugs-bunny ;; DEC OSF
-	      fireweed anemone bugbane buttercup ;; IRIX
-	      ))
-
-(define linux-hosts
-  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani))
-
-(define solaris-hosts
-  '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
-
-(define favorite-hosts
-  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu scwm.mit.edu))
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
@@ -850,7 +856,6 @@ from other processes.
 
 (define menu-prefs-gjb
   (menu (list (menu-title "Preferences") menu-separator
-	      (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
 	      (menuitem "Change background color..."
 			#:action (lambda () 
 				   (prompt-color 
@@ -862,26 +867,16 @@ from other processes.
 			(exe "xrdb -merge ${HOME}/.Xresources"))
 	      (menuitem "Reload .Xresources-cpp" #:action
 			(exe "xrdbcpp -merge ${HOME}/.Xresources-cpp"))
-	      (menuitem "View all icons" #:action
-			(exe (apply string-append "xv "
-				    (map (lambda (st) (string-append st "/* "))
-					 image-load-path))))
 	      (menuitem "Scwm interaction" #:action
 			(run-in-xterm "scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info))))
 
 (define menu-preferences menu-prefs-gjb)
 
-(define menu-system-utilities
-  (menu
-   (list
-    (menu-title "System utilities"))))
-
 (define menu-screensaver
   (make-xlock-menu #f))
 
 (define menu-root-start
-  ;;  (menu "RootStart" "Start %mini-exp.xpm%"
   (menu
    (list 
     (menu-title "Start" #:image-left "mini-exp.xpm")
@@ -896,37 +891,37 @@ from other processes.
 	      #:action 'menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
 	      #:action 'menu-games)
-    menu-separator
-    (menuitem "H&osts - Servers" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-servers)
-    (menuitem "Hosts - Linux" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-linux)
-    (menuitem "Hosts - Solaris" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-solaris)
-    (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-other)
-;;    (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
-;;	      #:action 'menu-system-utilities)
-    (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-window-ops)
-    (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action 'menu-prefs-gjb)
-    menu-separator
-    (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
-	      #:action 'menu-screensaver)
-    (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
-	      #:action (thunk exec-xlock))
-    menu-separator
-    (menuitem "Constraint solver" #:image-left pic-lambda-mini
+    (menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
 	      #:submenu 'menu-constraints)
     menu-separator
+    (menuitem "H&osts - Servers" #:image-left "mini-term.xpm" 
+	      #:action 'menu-hosts-servers)
+    (menuitem "Hosts - Linux" #:image-left "mini-term.xpm" 
+	      #:action 'menu-hosts-linux)
+    (menuitem "Hosts - Solaris" #:image-left "mini-term.xpm" 
+	      #:action 'menu-hosts-solaris)
+    (menuitem "Hosts - Other" #:image-left "mini-term.xpm" 
+	      #:action 'menu-hosts-other)
+    menu-separator
+    (menuitem "&Window Operations" #:image-left "mini-zoom.xpm" 
+	      #:action 'menu-window-ops)
+    (menuitem "Windows &list" #:image-left "mini-windows.xpm" 
+	      #:submenu (lambda () (make-window-list-menu)))
+    (menuitem "Windows by &resource" #:image-left "mini-windows.xpm" 
+	      #:submenu (lambda () (make-window-list-menu #:by-resource #t)))
+    menu-separator
+    (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
+    (menuitem "Other &Preferences" #:image-left "mini-prefs.xpm" 
+	      #:action 'menu-prefs-gjb)
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
 	      #:action (thunk scwm-help))
+    menu-separator
+    (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
+	      #:action (thunk exec-xlock))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
 	      #:action 'menu-quit-verify))
-;;   #:image-side "linux-menu.xpm"
    #:image-side "scwm-gnu-linux.xpm"
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
@@ -934,13 +929,11 @@ from other processes.
 (define menu-constraints
   (menu
    (list
-    (menu-title "Constraints")
-    menu-separator
-    (menuitem "Constraints"
+    (menuitem "&Constraints"
 	      #:submenu (lambda () (ui-constraints-toggle-menu)))
-    (menuitem "Constraint investigator"
+    (menuitem "Constraint &investigator"
 	      #:action (thunk ui-constraints-gtk-toggle-menu))
-    (menuitem "Turn on Constraint Solver"
+    (menuitem "Turn &on Constraint Solver"
 	      #:action (thunk enable-constraint-solver)))))
 
 (define (enable-constraint-solver)
@@ -967,7 +960,9 @@ from other processes.
     (cons (menuitem "Scwm" #:extra-label "C-S-M-z" 
 		    #:image-left pic-lambda-mini #:submenu menu-root-start)
 	  (cdadr (menu-properties
-		  (make-window-list-menu #:by-resource #t)))))))
+		  (make-window-list-menu #:by-resource #t))))
+    #:popup-delay #f
+    #:hover-delay 0)))
 
 (define (show-window-list-by-focus-with-geometry)
   (show-window-list-menu #f #f #:by-focus #t #:show-geometry #t))
@@ -1057,6 +1052,7 @@ from other processes.
 (bind-mouse 'window "H-3" #f interactive-resize-rubberband)
 
 (bind-mouse 'all "H-1" #f select-window-toggle)
+(bind-key 'all "H-S-s" select-window-toggle)
 (bind-mouse 'all "H-S-1" #f select-window-toggle)
 (bind-mouse 'all "H-A-1" #f select-window-toggle)
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
@@ -1090,8 +1086,8 @@ from other processes.
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 
 ;; avoid lots of warnings.... test for this first...
-(define have-kp-keysyms (if (keysym->keycode "KP_Left") #t #f))
-(define have-kp-num-keysyms (if (keysym->keycode "KP_4") #t #f))
+(define have-kp-keysyms (if (null? (keysym->keycode "KP_Left")) #f #t))
+(define have-kp-num-keysyms (if (null? (keysym->keycode "KP_4")) #f #t))
 
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
@@ -1200,22 +1196,37 @@ from other processes.
       ))
 
 (define (shove-window-prefix)
-  (display-message-briefly "Shove window...")
-  (let* ((next-key-event (get-key-event))
-	 (key (string->symbol (car next-key-event))))
-    (case key
-      ((j) (animated-move-to-w))
-      ((l) (animated-move-to-e))
-      ((i) (animated-move-to-n))
-      ((comma) (animated-move-to-s))
-      ((period) (animated-move-to-se))
-      ((o) (animated-move-to-ne))
-      ((u) (animated-move-to-nw))
-      ((m) (animated-move-to-sw))
-      ((k) (animated-move-to-center))
-      )))
+  (let ((mwn (make-message-window-clone-default "Shove window... [uiojklm,.]")))
+    (with-message-window-shown 
+     mwn
+     (let* ((next-key-event (get-key-event))
+	    (key (string->symbol (car next-key-event))))
+       (case key
+	 ((j) (animated-move-to-w))
+	 ((l) (animated-move-to-e))
+	 ((i) (animated-move-to-n))
+	 ((comma) (animated-move-to-s))
+	 ((period) (animated-move-to-se))
+	 ((o) (animated-move-to-ne))
+	 ((u) (animated-move-to-nw))
+	 ((m) (animated-move-to-sw))
+	 ((k) (animated-move-to-center))
+	 )))))
 
 (bind-key 'all "H-p" shove-window-prefix)
+
+(define last-mapped-window #f)
+
+(define (save-last-mapped-window win)
+  (set! last-mapped-window win))
+
+(add-hook! X-MapRequest-hook save-last-mapped-window)
+
+(define (focus-last-mapped-window)
+  (and (window-valid? last-mapped-window)
+       (focus-change-warp-pointer last-mapped-window)))
+
+(bind-key 'all "H-e" focus-last-mapped-window)
 
 (define (send-button-press-1) (send-button-press 1))
 ;;(define (send-button-press-1) (xtest-fake-button-event 1 #t))

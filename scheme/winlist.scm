@@ -220,7 +220,9 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 	    "Window list") #:extra-label (if show-geometry "Geometry" #f))
        menu-separator)
       (if split-by-resource
-	  (fold-menu-list-by-group menuitems-with-window-resource)
+	  (fold-menu-list-by-group menuitems-with-window-resource 
+				   #:hover-delay hover-delay
+				   #:popup-delay popup-delay)
 	  (map (lambda (x) (cdr x)) menuitems-with-window-resource)))
      #:popup-delay popup-delay
      #:hover-delay hover-delay)))

@@ -24,6 +24,7 @@
   :use-module (app scwm defoption)
   :use-module (app scwm c-animation)
   :use-module (app scwm base)
+  :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
   :use-module (app scwm sort))
 
@@ -242,13 +243,12 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 
 
 ;; Printing
-(define*-public (print-window #&optional (win (get-window)))
-  "Print WIN using xpr and lpr."
-  (if win (execute (string-append "xwd -id " 
-				(number->string (window-id win))
-				" | xpr | lpr"))))
-
-
+(if (cached-program-exists? "xpr")
+    (define*-public (print-window #&optional (win (get-window)))
+      "Print WIN using xpr and lpr."
+      (if win (execute (string-append "xwd -id " 
+				      (number->string (window-id win))
+				      " | xpr | lpr")))))
 
 (define*-public (resize-window w h #&optional (win (get-window)) x y)
   "Resize WIN's client area to a size of W by H in pixels. 

@@ -188,12 +188,13 @@ order in which they appear in the lists."
 
 ;; GJB:FIXME:MS: it'd be nice if this ignored unspecified values
 ;; too so that if's don't need the gratuitous #f third clause (e.g., in menus)
+;; e.g., (filter-map id (list 1 2 3 #f 5 (if #f 0))) => (1 2 3 5)
 (define-public (filter-map proc first . rest)
   "Process FIRST and the lists comprising REST as `map' would.
 However, do not include any false returns from PROC in the result
 list."
   (if (null? rest)
-     (let loop ((accum ())
+      (let loop ((accum ())
 		 (l first))
 	(cond
 	 ((null? l) (reverse accum))

@@ -22,6 +22,7 @@
   :use-module (app scwm gtk)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
+  :use-module (app scwm prompting-shell)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
   :use-module (app scwm optargs))

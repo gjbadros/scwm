@@ -571,7 +571,7 @@ that corner fixed."
   (end-highlighting-current-window)
   (unselect-all-windows))
 
-(define-public menu-window-move
+(define-public menu-window-shove
   (menu
    (list
     (menu-title "Move window") menu-separator
@@ -621,7 +621,7 @@ that corner fixed."
 			      "Do not keep on top"
 			      "Keep on top") 
 			  #:action toggle-on-top))))
-    (menuitem "Move" #:submenu menu-window-move)
+    (menuitem "Sho&ve" #:submenu menu-window-shove)
     (menuitem "Title"
 	      #:submenu
 	      (menu
@@ -647,8 +647,8 @@ that corner fixed."
 	 (nstr (number->string n))
 	 (sel? (window-is-selected? w))
 	 (wop (if sel? "Unselect" "Select"))
-	 (resource (window-resource w))
-	 (class (window-class w)))
+	 (resource (if w (window-resource w) #f))
+	 (class (if w (window-class w) #f)))
     (menu
      (append
       (filter-map 
@@ -656,16 +656,20 @@ that corner fixed."
        (list
 	(menu-title "Window Group") menu-separator
 	(menuitem 
-	 (string-append "&" wop " this window")
+	 (string-append "&" wop (if w " this" " a") " window")
 	 #:action select-window-toggle)
-	(menuitem
-	 (string-append wop " windows &named `" resource "'")
-	 #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
-			      (resource-match?? resource))))
-	(menuitem
-	 (string-append wop " windows of &class `" class "'")
-	 #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
-			      (class-match?? class))))
+	(if resource
+	    (menuitem
+	     (string-append wop " windows &named `" resource "'")
+	     #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+				  (resource-match?? resource))))
+	    #f)
+	(if class
+	    (menuitem
+	     (string-append wop " windows of &class `" class "'")
+	     #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+				  (class-match?? class))))
+	    #f)
 	(if wla? (menuitem "Unselect &all windows" 
 			   #:action unselect-all-windows)
 	    #f)))
