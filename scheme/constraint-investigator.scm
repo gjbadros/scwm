@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1999 Jeff W. Nichols
+;;;; Copyright (C) 1999 Greg J. Badros and Jeff W. Nichols
 ;;;; Based on ui-constraints-buttons.scm, Copyright (C) 1999 Greg J. Badros
 ;;;; Some elements copied from ui-constraints-toggle-menu.scm,
 ;;;;                                 also Copyright (C) 1999 Greg J. Badros
@@ -20,19 +20,13 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;; 
 
-;; toggle-menu.scm
+;; constraint-investigator.scm
 ;;
-;; My attempt to make a better constraint menu using GTK+.
-;; Ideally, this menu should provide obvious methods for
-;; setting the enable of a constraint, deletion of a 
-;; constraint, and especially some easy way to organize
-;; constraints.
-
 ;; (use-scwm-modules ui-constraints-gtk-toggle-menu)
 ;; (ui-constraints-gtk-toggle-menu)
 
 
-(define-module (app scwm ui-constraints-gtk-toggle-menu)
+(define-module (app scwm constraint-investigator)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
@@ -95,15 +89,17 @@
     (gtk-signal-connect bt2 "clicked"
 			(lambda () 
 			  (delete-ui-constraint! n)
+			  ;; (refresh)
 			  (if close? (gtk-widget-hide toplevel))))
     (gtk-signal-connect bt1 "clicked"
 			(lambda () 
 			  (if allow-enable-hooks?
 			      (begin
 				(set! allow-enable-hooks? #f)
-				(if (ui-constraint-enabled? n)
-				    (disable-ui-constraint n)
-				    (enable-ui-constraint n))
+				((if (ui-constraint-enabled? n)
+				     disable-ui-constraint 
+				     enable-ui-constraint) n)
+				;; (refresh)
 				(set! allow-enable-hooks? #t)))
 			  (if close? (gtk-widget-hide toplevel))))
     (gtk-signal-connect bt1 "enter"
@@ -173,9 +169,7 @@
 (define ui-box-spacing 4)
 (define ui-box-border 5)
 
-(define*-public (initialize-gtk-toggle-menu #&optional (close? #f))
-  "Creates the GTK resources for the gtk-toggle-menu.
-To display the toggle menu, call ui-constraint-gtk-toggle-menu."
+(define* (initialize-gtk-toggle-menu #&optional (close? #f))
   (let* ((toplevel gtk-toggle-window)
 	 (vboxcn gtk-instance-box)
 	 (vbox (gtk-vbox-new #f 3))
@@ -213,9 +207,8 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
     (set! is-toggle-initialized? #t)))
 
 
-(define-public (ui-constraints-gtk-toggle-menu)
-  "Displays the GTK version of the constraints toggle menu."
+(define-public (start-constraint-investigator)
+  "Start the GTk+-based constraint investigator window."
   (if (not is-toggle-initialized?)
       (initialize-gtk-toggle-menu))
   (gtk-widget-show gtk-toggle-window))
-
