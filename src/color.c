@@ -43,8 +43,14 @@
 static SCM color_hash_table = SCM_UNDEFINED;
 static SCM protected_colors = SCM_UNDEFINED;
 
-/* Not as inefficient as it looks - after the first time, this just
-   amounts to a hash lookup. */
+/**CONCEPT: Colors
+  Colors are first-class objects. However, anywhere that a color is
+taken as an argument, a string containing an X color specification
+will also be accepted, and will be automatically converted to the
+proper color object. Using the same color specifier string more than
+once is not inefficient, as caching ensures that color objects are
+shared.
+*/
 
 
 
@@ -81,6 +87,7 @@ print_color(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC (color_p, "color?", 1, 0, 0, 
            (SCM obj))
+     /** Returns #t if OBJ is a color object, otherwise #f. */
 {
   return SCM_BOOL_FromBool(COLOR_P(obj));
 }
@@ -90,6 +97,9 @@ SCWM_PROC (color_p, "color?", 1, 0, 0,
 
 SCWM_PROC (color_properties, "color-properties", 1, 0, 0,
            (SCM color))
+     /** Return an association list giving some properties of
+COLOR. Currently defined properties are 'name, the string name of the
+color, and 'pixel, the X pixel value it uses. */
 {
   VALIDATE_COLOR (color, s_color_properties, 1);
 
@@ -98,8 +108,14 @@ SCWM_PROC (color_properties, "color-properties", 1, 0, 0,
 		 SCM_UNDEFINED);
 }
 
+/* Not as inefficient as it looks - after the first time, this just
+   amounts to a hash lookup. */
+
 SCWM_PROC (make_color, "make-color", 1, 0, 0,
            (SCM cname))
+     /** Return the color object corresponding to the X color
+specifier CNAME. If CNAME is not a valid X color name, or cannot be
+allocated, an error results. */
 {
   SCM answer;
   XColor color;
@@ -163,6 +179,11 @@ SCWM_PROC (make_color, "make-color", 1, 0, 0,
 
 SCWM_PROC (clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
            (SCM name))
+     /** Colors are cached by name. It is remotely possible that the
+meaning of a particular string as a color will change in your X
+server, if you try hard enough. For this unlikely eventuality,
+`clear-color-cache-entry' is provided - it removes the color
+associated with NAME from the color cache.*/
 {
   scm_hash_remove_x(color_hash_table, name);
   return SCM_UNSPECIFIED;
@@ -341,6 +362,11 @@ adjust_brightness (SCM color, double factor) {
 
 SCWM_PROC (make_relief_color, "make-relief-color", 2, 0, 0,
            (SCM color, SCM factor))
+     /** Multiply the luminosity and saturation of COLOR by the
+positive floating point number FACTOR. Using a FACTOR smaller than 1
+will result in a dimmer color, suitable for use as a darker
+relief. Using a factor greater than 1 will result in a brighter color
+which is suitable for use as a hilight. */
 {
   double f;
 
@@ -401,6 +427,8 @@ static void reset_menu_relief()
 
 SCWM_PROC (set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
            (SCM factor))
+     /** Use positive floating point number FACTOR to generate hilight
+colors in the current decor. */
 {
   double f;
   ScwmDecor *fl;
@@ -420,6 +448,7 @@ SCWM_PROC (set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
 
 SCWM_PROC (hilight_factor, "hilight-factor", 0, 0, 0,
            ())
+     /** Return the current hilight factor. */
 {
   ScwmDecor *fl;
 
@@ -431,6 +460,8 @@ SCWM_PROC (hilight_factor, "hilight-factor", 0, 0, 0,
 
 SCWM_PROC (set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
            (SCM factor))
+     /** Use positive floating point number FACTOR to generate shadow
+colors in the current decor. */
 {
   double f;
   ScwmDecor *fl;
@@ -451,6 +482,7 @@ SCWM_PROC (set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
 
 SCWM_PROC (shadow_factor, "shadow-factor", 0, 0, 0,
            ())
+     /** Return the current shadow factor. */
 {
   ScwmDecor *fl;
 
@@ -466,6 +498,8 @@ double menu_shadow_factor_val = 0.5;
 
 SCWM_PROC (set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
            (SCM factor))
+     /** Use positive floating point number FACTOR to generate hilight
+colors for menus. */
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
@@ -481,6 +515,7 @@ SCWM_PROC (set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
 
 SCWM_PROC (menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
            ())
+     /** Return the current menu hilight factor. */
 {
   return (gh_double2scm(menu_hilight_factor_val));
 }
@@ -488,6 +523,8 @@ SCWM_PROC (menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
 
 SCWM_PROC (set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
            (SCM factor))
+     /** Use positive floating point number FACTOR to generate shadow
+colors for menus. */
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
@@ -503,6 +540,7 @@ SCWM_PROC (set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
 
 SCWM_PROC (menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
            ())
+     /** Return the current menu shadow factor. */
 {
   return (gh_double2scm(menu_shadow_factor_val));
 }
@@ -527,6 +565,8 @@ redraw_hilight_window()
 
 SCWM_PROC (set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
            (SCM fg) )
+     /** Use FG as the foreground color for the window with focus in
+the current decor. */
 { 
   ScwmDecor *fl;
 
@@ -552,6 +592,8 @@ SCWM_PROC (set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
 
 SCWM_PROC (set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
            (SCM bg))
+     /** Use BG as the background color for the window with focus in
+the current decor. */
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -603,6 +645,7 @@ SCWM_PROC (set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
 
 SCWM_PROC (set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
            (SCM fg) )
+     /** Use FG as the default foreground color for menus. */
 { 
   XGCValues gcv;
   unsigned long gcm;
@@ -627,6 +670,7 @@ SCWM_PROC (set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
 
 SCWM_PROC (set_menu_background_x, "set-menu-background!", 1, 0, 0,
            (SCM bg) )
+     /** Use BG as the default foreground color for menus. */
 { 
   XGCValues gcv;
   unsigned long gcm;
@@ -678,6 +722,8 @@ SCWM_PROC (set_menu_background_x, "set-menu-background!", 1, 0, 0,
 
 SCWM_PROC (set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
+     /** Use ST as the default stipple color for menus. (NOTE: I am
+not sure this is used for anything any more. */
 {
   XGCValues gcv;
   unsigned long gcm;

@@ -693,7 +693,6 @@ AddWindow(Window w)
    * again in HandleMapNotify.
    */
   psw->fMapped = False;
-
 #ifdef USE_CASSOWARY
   psw->frame_x.set_value(frame_x);
   psw->frame_y.set_value(frame_y);
@@ -986,7 +985,30 @@ GetWindowSizeHints(ScwmWindow * psw)
 
 void init_add_window()
 {
+  /**HOOK: before-new-window-hook 
+  This hook is invoked when a new window structure is first starting
+to be created. Only a subset of the usual window paramenters should be
+set here, in particular, those that control what hints will be
+respected for this window, and those that control how the window will
+be placed.
+
+This hook does not typically need to be used directly by the user;
+`window-style' from the (app scwm style) module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. */
   SCWM_DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");
+
+  /**HOOK: after-new-window-hook
+  This hook is invoked when a new window has been completely created
+and placed on the screen. Any window operations may be performed at
+this time. However, it is recommended that placement-related
+operations, such as setting the position, desk, viewport location and
+z-ordering of a window be done in the placement procedure instead.
+
+This hook does not typically need to be used directly by the user;
+`window-style' from the (app scwm style) module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. */
   SCWM_DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
 }
 

@@ -1,3 +1,17 @@
+1998-07-18  Maciej Stachowiak  <maciej@roc-ny2-05.ix.netcom.com>
+
+	* add_window.c: Documented all hooks.
+
+	* deskpage.c: Documented all primitives and concepts.
+
+1998-07-17  Maciej Stachowiak  <maciej@roc-ny3-16.ix.netcom.com>
+
+	* decor.c: Documented all primitives and concepts.
+
+	* color.c: Documented all primitives and concepts.
+
+	* callbacks.c: Documented all primitives, hooks and concepts.
+
 Fri Jul 17 18:46:18 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am, scwm-constraints.c: Added scwm_constraints.c

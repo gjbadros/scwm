@@ -239,6 +239,10 @@ scwm_body_eval_str (void *body_data)
 
 SCWM_PROC (safe_load, "safe-load", 1, 0, 0,
            (SCM fname))
+     /** Load file FNAME, trapping and displaying errors on each
+	 individual top-level expression. Should be used if you need
+	 to make sure most of a file loads, even if it may contain
+	 errors. */
 {
   SCM_STACKITEM stack_item;
   if (!gh_string_p(fname)) {
@@ -279,6 +283,17 @@ WarnBadHook(SCM hook)
 }
 
 /* Hooks. */
+
+/* GJBFIX: We need a way to cross-reference concepts in docs. */
+
+/**CONCEPT: Hooks
+  Hooks are used throughout scwm to provide a convenient mechanism for
+user callbacks on particular events. Fundamentally, a hook is just a
+variable that contains a list of procedures that are called in order
+when the relevant event occurs. However, several convenience macros
+are provided for manipulating hooks; see `add-hook!', `remove-hook!'
+and `reset-hook!'. 
+*/
 
 SCM call0_hooks (SCM hook)
 {
@@ -389,8 +404,21 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
 
 /* Timer hooks. */
 
+/**CONCEPT: Timer Hooks 
+  Timer hooks are a special form of hook that is called after a
+specified amount of time has passed. They are treated differently than
+normal hooks - use `add-timer-hook!' and `remove-timer-hook!' to
+manipulate them. Timer hooks, unlike regular hooks, are one-shot -
+once the time limit expires and the timer hook is triggered, it is
+removed.
+*/
+
 SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
           (SCM usec, SCM proc))
+     /** Add a timer hook; when at least USEC microseconds have
+passed, procedure PROC will be called with no arguments. A
+handle suitable for passing to `remove-timer-hook!' is
+returned. */
 {
   SCM newcell;
   SCM p, last;
@@ -427,6 +455,10 @@ SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
 
 SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
           (SCM handle))
+/** Remove a timer hook identified by HANDLE, which should be an
+object that was returned by `add-timer-hook!'. No warning or
+error will occur if HANDLE is for a timer hook that has
+already been triggered. */
 {
   SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
 
@@ -500,11 +532,28 @@ void run_timed_out_timers()
 
 /* Input hooks. */
 
+/**CONCEPT: Input Hooks 
+  Timer hooks are a special form of hook that is called whenever input
+is available on a praticular port. They are treated differently than
+normal hooks - use `add-input-hook!' and `remove-input-hook!' to
+manipulate them. Like regular hooks and unlike timer hooks, input
+hooks are not one-shot - they trigger every time input is made
+available on the particular port, and do not go away until explicitly
+removed. An input hook may safely remove itself from within it's own
+invocation.
+*/
+
 static SCM input_hooks;
 static SCM new_input_hooks;
 
 SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
           (SCM port, SCM proc))
+     /** Add a timer hook; whenever input becomes availabe on PORT,
+procedure PROC will be called with no arguments repeatedly until no
+unprocessed input remains on PORT. PORT must be open, it must be an
+input port, and it must be a file port (this includes pipes and
+sockets, but not string ports or soft ports). A handle suitable for
+passing to `remove-input-hook!' is returned. */
 {
   SCM newcell;
   SCM p, last;
@@ -527,6 +576,9 @@ SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
 
 SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
           (SCM handle))
+     /** Remove an input hook identified by HANDLE, which should be an
+object that was returned by `add-input-hook!'. An input hook may
+safely remove itself. */
 {
   SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
 
@@ -596,6 +648,15 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
+  /*FIXGJB: what's the right way to document hooks for the extractor?  */
+
+  /**HOOK: error-hook
+  Whenever an error or other uncaught throw occurs on any callback,
+whether a hook, a mouse binding, a key binding, a menu entry, a file
+being processed, or anything else, error-hook will be invoked. Each
+procedure in the hook will be called with the throw arguments; these
+will generally include information about the nature of the error. 
+*/
   SCWM_DEFINE_HOOK(error_hook, "error-hook");
   gettimeofday(&last_timeval, NULL);
 

@@ -31,6 +31,21 @@
 #include "dmalloc.h"
 #endif
 
+/**CONCEPT: Decors
+
+  Decors are a hack. In the original Fvwm code, there were many
+options that could only be set globally, although they affected window
+appearance. Decors are a compromise between leaving them global and
+making them fully settable per window. These quasi-global options may
+be set in a particular decor, and a decor may be attached to one or
+more windows.
+
+  Having to use decors to change certain aspects of the look and feel
+is confusing. Scwm will probably move to some way of making these
+options directly settable per-window at some point, especially if we
+can figure out a way to not increase the memory overhead much.
+*/
+
 
 size_t 
 free_decor(SCM obj)
@@ -177,6 +192,9 @@ decor2scm(ScwmDecor * fl)
 
 SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
           (SCM name))
+     /** Create a new decor object. NAME optionally provides a string
+that is used to name the decor, and is displayed when the decor is
+printed. */
 {
   char *tag;
   int dummy;
@@ -200,6 +218,7 @@ SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
 
 SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
           ())
+     /** Return the default decor. */
 {
   return Scr.DefaultDecor.scmdecor;
 }
@@ -207,6 +226,9 @@ SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
 
 SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
           (SCM decor))
+     /** Set the current decor to DECOR. Operations described as
+setting options "in the current decor" will now operate on this
+one. */
 {
   ScwmDecor *new_cur;
 
@@ -232,6 +254,7 @@ SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
 
 SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
           ())
+     /* Return the current decor. */
 {
   if (cur_decor == NULL) {
     return SCM_BOOL_F;
@@ -243,6 +266,8 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
 
 SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
           (SCM decor, SCM win))
+     /** Set WIN's decor to DECOR. If WIN is not given, it defaults to
+the window context in the usual way. */
 {
   int x, y, width, height, old_height, extra_height;
   ScwmDecor *fl;
