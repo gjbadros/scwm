@@ -909,23 +909,22 @@ destroy-window), or #f or omitted for the standard circle cursor. */
 
   psw = &Scr.ScwmRoot;
 
+  if (release_p == SCM_UNDEFINED) {
+    release_p = SCM_BOOL_T;
+  } else if (!gh_boolean_p(release_p)) {
+    gh_allow_ints();
+    SCWM_WRONG_TYPE_ARG(1, release_p);
+  }
+
   x_cursor=XCURSOR(cursor);
   if (x_cursor==None) {
     if (cursor == SCM_UNDEFINED) {
       cursor = SCM_BOOL_F;
     } else if (!gh_boolean_p(cursor)) {
       gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(1, cursor);
+      SCWM_WRONG_TYPE_ARG(2, cursor);
     }
   }
-
-  if (release_p == SCM_UNDEFINED) {
-    release_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(release_p)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(2, release_p);
-  }
-
 
   if (DeferExecution(&ev, &w, &psw,
 		     (x_cursor==None)?(
@@ -977,20 +976,20 @@ the "skull and crossbones" cursor, or #f to use the standard
 circle cursor. */
 #define FUNC_NAME s_get_window
 {
-  if (cursor == SCM_UNDEFINED) {
-    cursor = SCM_BOOL_F;
-  } else if (!gh_boolean_p(cursor) && !IS_CURSOR(cursor)) {
-    SCWM_WRONG_TYPE_ARG(1, cursor);
-  }
   if (select_p == SCM_UNDEFINED) {
     select_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(select_p)) {
-    SCWM_WRONG_TYPE_ARG(2, select_p);
+    SCWM_WRONG_TYPE_ARG(1, select_p);
   }
   if (release_p == SCM_UNDEFINED) {
     release_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(release_p)) {
-    SCWM_WRONG_TYPE_ARG(3, release_p);
+    SCWM_WRONG_TYPE_ARG(2, release_p);
+  }
+  if (cursor == SCM_UNDEFINED) {
+    cursor = SCM_BOOL_F;
+  } else if (!gh_boolean_p(cursor) && !IS_CURSOR(cursor)) {
+    SCWM_WRONG_TYPE_ARG(3, cursor);
   }
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
