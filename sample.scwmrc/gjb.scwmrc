@@ -34,14 +34,14 @@
 (define logo-image-sequence
   (list->vector
    (map (lambda (deg) (make-image
-		       (string-append "/scratch/gjb/scwm/pixmaps/scwm-logo"
+		       (string-append "scwm-logo"
 				      deg ".xpm")))
 	'("" "-45" "-90" "-135" "-180" "-225" "-270" "-315"))))
 
 
 (define scwm-logo-msgwin 
   (make-message-window-with-image 
-   (make-image "/scratch/gjb/scwm/pixmaps/scwm-logo.xpm")))
+   (make-image "scwm-logo.xpm")))
 (set-X-server-synchronize! #t)
 (message-window-show! scwm-logo-msgwin)
 (set-X-server-synchronize! #f)
@@ -116,7 +116,7 @@
 
 
 (define mail-spool-dir (getenv "MAIL"))
-
+(define sounds-dir (or (getenv "SCWMSOUNDS") "/scratch/gjb/Media"))
 (define scwmdir (or (getenv "SCWMDIR") "/scratch/gjb/scwm"))
 
 (set! doc-files
@@ -584,7 +584,7 @@
     (define (wavplay filename)
       (system (string-append "wavplay " filename "&"))))
 
-(define download-closed-wav "/scratch/gjb/Media/tada.wav")
+(define download-closed-wav (string-append sounds-dir "tada.wav")) 
 
 ;; GJB:FIXME:: make the time below (5) an option
 (define (netscape-download-closed-action win)
