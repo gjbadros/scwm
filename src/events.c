@@ -1570,47 +1570,45 @@ fill_x_keypress_event(XKeyEvent *evt, int type, KeySym keysym, int modifier,
   evt->state = modifier;
 }
 
-
+static
 Window
 WindowGettingButtonEvent(Window w, int x, int y)
 {
-    int x2, y2;
-    Window child, w2 = w;
-    XWindowAttributes wa;
-    int c = 0;
+  int x2, y2;
+  Window child, w2 = w;
+  XWindowAttributes wa;
+  int c = 0;
 
  find_window:
-    XTranslateCoordinates(dpy, w, w2, x, y, &x2, &y2, &child);
-    if (child) {
-	x = x2;
-	y = y2;
-	w = w2;
-	w2 = child;
-	c++;
-	if (c>1000) {
-	  scwm_msg(ERR,__FUNCTION__,"Infinite loop");
-	  goto find_listener;
-	}
-	goto find_window;
-    }
+  XTranslateCoordinates(dpy, w, w2, x, y, &x2, &y2, &child);
+  if (child) {
     x = x2;
     y = y2;
     w = w2;
+    w2 = child;
+    c++;
+    if (c>1000) {
+      scwm_msg(ERR,__FUNCTION__,"Infinite loop");
+      goto find_listener;
+    }
+    goto find_window;
+  }
+  w = w2;
 
  find_listener:
-    XGetWindowAttributes(dpy, w, &wa);
-    if (!(wa.all_event_masks & (ButtonPressMask | ButtonReleaseMask))) {
-	Window d1, *d3, parent;
-	unsigned int d4;
+  XGetWindowAttributes(dpy, w, &wa);
+  if (!(wa.all_event_masks & (ButtonPressMask | ButtonReleaseMask))) {
+    Window d1, *d3, parent;
+    unsigned int d4;
 	
-	XQueryTree(dpy, w, &d1, &parent, &d3, &d4);
-	if (d3) XFree(d3);
-	if (parent) {
-	    w = parent;
-	    goto find_listener;
-	}
+    XQueryTree(dpy, w, &d1, &parent, &d3, &d4);
+    if (d3) XFree(d3);
+    if (parent) {
+      w = parent;
+      goto find_listener;
     }
-    return w;
+  }
+  return w;
 }
 
 /* Inspired by GWM 1.8c --gjb */
@@ -1628,9 +1626,12 @@ send_button_press(SCM button, SCM modifier, SCM win,
   int iarg = 1;
   Window child;
   XButtonEvent event;
-  int x = 0, y = 0, x_root = 0 , y_root = 0, x2, y2;
+  int x = 0, y = 0, x_root = 0 , y_root = 0;
+  int x2 = 0, y2 = 0;
   ScwmWindow *sw;
   Window w;
+  Window pointer_win;
+
 
   SCM_REDEFER_INTS;
 
@@ -1658,8 +1659,18 @@ send_button_press(SCM button, SCM modifier, SCM win,
   bnum = gh_scm2int(button);
   mod_mask = gh_scm2int(modifier);
 
+
+  /* First fill in x_root, y_root */
+  XQueryPointer( dpy, w, &JunkRoot, &pointer_win,
+                 &x_root,&y_root,&x, &y, &JunkMask);
+
+  /* Now find the window we're in */
   child = WindowGettingButtonEvent(w,x,y);
   x2 = x; y2 = y;
+
+  /* and now find the offset within that window */
+  XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
+			&x, &y, &JunkChild);
 
   if (fPress) {
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
@@ -1671,7 +1682,6 @@ send_button_press(SCM button, SCM modifier, SCM win,
   if (fRelease) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
 			x, y, x_root, y_root, child, 0);
-    /* FIXGJB: was PointerWindow before -- why did that work? */
     XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
 	       (XEvent *) &event);
     DBUG(__FUNCTION__,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
