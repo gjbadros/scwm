@@ -774,32 +774,10 @@ that corner fixed."
 ;; (make-X-geometry #:x-size 50 #:y-size 20 #:x-offset 10 #:y-offset -20)
 
 
-;; From robbe.scwmrc
 (define-public (toggle-focus)
   "Focus window that had the focus before the current one."
-  (focus-change-warp-pointer 
-   (extreme (lambda (win1 win2) (> (last-focussed win1)
-				   (last-focussed win2)))
-	    (list-all-windows))))
-
-
-;;; there is a race condition with the mouse-focus
-;;; giving focus to the new window... 
-;;; we really need a new hook for this that is
-;;; for focus changing from an external program
-
-;; Was rb:warp in robbe.scwmrc
-(define*-public (focus-change-warp-pointer #&optional (win (get-window)))
-  "Warp to WIN to give it the keyboard focus.
-May deiconify WIN and will raise WIN."
-  (cond
-   (win (deiconify win)
-	(raise-window win)
-	(warp-to-window win)
-	(focus win)
-	(move-pointer (w%x 20 win) (w%y 20 win)))))
-;; GJB:FIXME:: make above parameters
-
+  (focus-change-warp-pointer
+   (cadr (list-windows #:by-focus #t))))
 
 (define*-public (animated-deiconify-to-current-vp-focus #&optional (win (get-window)))
   "Deiconify WIN to the current viewport, and give it the focus"

@@ -48,8 +48,9 @@ you can do something like:
 ;;(set-object-property! (select-window-interactively) 'warp-placement '(80 25))
 ;;(warp-placement (select-window-interactively))
 
-(define*-public (default-winlist-proc #&optional (win (get-window)))
-  "The default behaviour when WIN is selected from the window list."
+(define*-public (focus-change-warp-pointer #&optional (win (get-window)))
+  "Deiconify, focus, raise, and warp-to WIN.
+This is initially the default behaviour when WIN is selected from the window list."
   (cond
    (win (deiconify win)
 	(focus win)
@@ -61,7 +62,7 @@ you can do something like:
 (define (listify-if-atom l)
   (if (or (pair? l) (null? l)) l (list l)))
 
-(define-public window-list-proc default-winlist-proc)
+(define-public window-list-proc focus-change-warp-pointer)
 
 (define (filter-only-except l only except)
   (filter (lambda (item)
