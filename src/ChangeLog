@@ -1,3 +1,19 @@
+Thu Jul  1 22:40:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.h: Added macros: MSGWINDOW_IMAGE(),
+	VALIDATE_ARG_MSGWINDOW{,_COPY}.  Added scwm_msgwindow struct
+	members width, height, and bg_image.
+
+	* message-window.c: Added background images, manual sizing.  Clean 
+	up lots of argument handling (use VALIDATE_* macros), many bug
+	fixes, documentation improvements.
+
+Thu Jul  1 22:23:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* image.c: Added MakeScwmImageFromImlibImage() helper. Use it in
+	load-imlib-image, and for new `window->image' primitive for
+	capturing a window's contents as an image.
+
 Thu Jul  1 16:28:00 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c: Use new VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY macro
