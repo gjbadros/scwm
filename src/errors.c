@@ -60,10 +60,11 @@ static char *scwm_errors[] =
   "Bad height argument; must be from 5 to 256.",
   "No binding contexts specified.",
   "Invalid binding context.",
-  "Colormap focus must be \'focus or \'mouse."
-  "Bad menu entry specifier."
-  "Bad event for binding."
-  "Window focus must be \'click, \'mouse, \'sloppy or \'none."
+  "Colormap focus must be \'focus or \'mouse.",
+  "Bad menu entry specifier.",
+  "Bad event for binding.",
+  "Window focus must be \'click, \'mouse, \'sloppy or \'none.",
+  "Unable to load picture."
 };
 
 

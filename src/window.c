@@ -1765,6 +1765,9 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
     tmp_win->picIcon = CachePicture(dpy, Scr.Root, szPicturePath, name);
+    if (tmp_win->picIcon==NULL) {
+      scwm_error("set-icon!",ERROR_LOAD_PICTURE);
+    }
     tmp_win->szIconFile = tmp_win->picIcon->name;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
