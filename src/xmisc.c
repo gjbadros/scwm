@@ -6,6 +6,8 @@
  * Miscellaneous abstractions of X11 routines for scwm
  */
 
+#include <config.h>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include "scwm.h"

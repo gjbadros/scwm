@@ -6,6 +6,8 @@
  * scheme code which can then talk to a module via the old mechanisms
  */
 
+#include <config.h>
+
 #include <X11/X.h>
 #include <guile/gh.h>
 #include <stdarg.h>

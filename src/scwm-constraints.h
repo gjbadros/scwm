@@ -7,9 +7,11 @@
 #ifndef SCWM_CONSTRAINTS_H__
 #define SCWM_CONSTRAINTS_H__
 
+#include <config.h>
+
 #ifdef USE_CASSOWARY
 
-#include "Cl/ClVariable.h"
+#include "ClVariable.h"
 
 typedef ClVariable ScwmClVariable;
 
@@ -23,7 +25,8 @@ class ClSimplexSolver;
 /* defined in scwm.c for now */
 extern ClSimplexSolver solver;
 
-#else
+#else 
+/* !USE_CASSOWARY code */
 
 typedef int ScwmClVariable;
 
