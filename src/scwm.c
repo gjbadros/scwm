@@ -247,6 +247,15 @@ InternUsefulAtoms(void)
   return;
 }
 
+/* if the XA_SCWMEXEC_REQWIN window is already set at 
+   startup, the first scwm-exec protocol request will cause
+   lots of X errors */
+static void
+ResetScwmexecProtocol()
+{
+  XDeleteProperty(dpy,Scr.Root,XA_SCWMEXEC_REQWIN);
+}
+
 
 /*
  * CreateGCs - create all the needed GC's.  done only once during startup
@@ -780,6 +789,7 @@ Repository Timestamp: %s\n",
   /* Need to do this after Scr.Root gets set */
   menu_init_gcs();
   InternUsefulAtoms();
+  ResetScwmexecProtocol();
   init_modifiers();
   init_pointer_mapping();
 #ifdef HAVE_LIBSM_LIBICE

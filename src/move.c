@@ -85,6 +85,9 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
   lastX = startX;
   lastY = startY;
 
+  if (deltaX == 0 && deltaY == 0)
+    return;
+
   do {
     currentX = (int) (startX + deltaX * (*ppctMovement));
     currentY = (int) (startY + deltaY * (*ppctMovement));
