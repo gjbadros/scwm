@@ -164,7 +164,7 @@ PscwmFontForMenuItem(SCM scmFont)
 {
   scwm_font *scfont = DYNAMIC_SAFE_FONT(scmFont);
   if (!scfont) {
-    scfont = FONT(Scr.menu_font);
+    scfont = FONT(scmFixedFont);
   }
   return scfont;
 }
@@ -749,9 +749,6 @@ init_drawmenu()
   drawmenu_menu_look = make_menulook("scwm-menu-look", SCM_UNDEFINED, pmdvt);
 
   SCWM_VAR_READ_ONLY(NULL,"scwm-menu-look",drawmenu_menu_look);
-  /** The standard SCWM menu look. */
-
-  Scr.menu_look = drawmenu_menu_look;
   
 #ifndef SCM_MAGIC_SNARFER
 #include "drawmenu.x"

@@ -201,7 +201,7 @@ typedef struct ScreenInfo {
   PanFrame PanFrameTop, PanFrameLeft, PanFrameRight, PanFrameBottom;
 #endif
 
-  Pixmap gray_bitmap;		/*dark gray pattern for shaded out menu items */
+  Pixmap gray_bitmap;		/*dark gray pattern for shaded out menu items*/
   Pixmap gray_pixmap;		/* dark gray pattern for inactive borders */
   Pixmap light_gray_pixmap;	/* light gray pattern for inactive borders */
   Pixmap sticky_gray_pixmap;	/* light gray pattern for sticky borders */
@@ -222,14 +222,13 @@ typedef struct ScreenInfo {
 
   /* FIXGJB: These are no longer used by the menuing code, but MenuColors
      are used elsewhere for colors */
-  ColorPair MenuColors;
-  ColorPair MenuStippleColors;
-  ColorPair MenuRelief;
+  /* FIXJTL: Renamed to reduce confusion and to try to encourage better
+     separation */
+  ColorPair NotMenuColors;
+  ColorPair NotMenuRelief;
 
   SCM schscreen;                /* back pointer to the scheme-level screen obj */
 
-  SCM menu_font;                /* font structure for menus, resize/move gadgets */
-  SCM menu_look;		/* current default menu look */
   SCM icon_font;                /* for icon labels */
   SCM msg_window_font;          /* font for the size/position window */
   SCM msg_window_fg;            /* fg color for the size/position window */

@@ -18,7 +18,6 @@ scwm_SOURCES =  Grab.c \
                 decorations.c \
                 deskpage.c \
                 drawmenu.c \
-		draw-xpm-menu.c \
                 errors.c \
                 events.c \
                 face.c \
@@ -78,9 +77,9 @@ util.h virtual.h window.h xmisc.h
 noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
-	      @SM_LIB@ @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+	      @SM_LIB@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
-
+scwm_LDFLAGS = @x_ldflags@ -export-dynamic
 scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
@@ -89,7 +88,7 @@ guile_snarfs = Grab.x add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
 miscprocs.x module-interface.x move.x placement.x resize.x \
 screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x \
-drawmenu.x draw-xpm-menu.x menulook.x
+drawmenu.x menulook.x
 # draw-pie-menu.x 
 # FIXME:casso
 
@@ -142,6 +141,7 @@ scwmpaths.h: ../config.status
 	@echo '#define SCWMDIR "@scwmrcdir@"' >> scwmpaths.tmp
 	@echo '#define SCWMRC ".$(PACKAGE)rc"' >> scwmpaths.tmp
 	@echo '#define SCWM_LOAD_PATH "@scwm_load_path@"' >> scwmpaths.tmp
+	@echo '#define SCWM_BIN_LOAD_PATH "@scwm_bin_load_path@"' >> scwmpaths.tmp
 	@echo '#define SCWM_IMAGE_LOAD_PATH "@scwm_image_load_path@"' >> scwmpaths.tmp
 	@mv scwmpaths.tmp scwmpaths.h
 

@@ -324,7 +324,6 @@ InitVariables(void)
   Scr.Focus = NULL;
   Scr.Ungrabbed = NULL;
 
-  Scr.menu_font = SCM_UNDEFINED;
   Scr.icon_font = SCM_UNDEFINED;
   Scr.msg_window_font = make_font(str_fixed);
   Scr.msg_window_fg = BLACK_COLOR;
@@ -333,7 +332,7 @@ InitVariables(void)
   Scr.msg_window_y = Scr.DisplayHeight/2;
   Scr.msg_window_x_align = -.5;
   Scr.msg_window_y_align = -.5;
-  Scr.MenuColors.bg = SCM_UNDEFINED;
+  Scr.NotMenuColors.bg = SCM_UNDEFINED;
   Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
 
   scm_permanent_object(scmFixedFont = make_font(str_fixed));
@@ -532,7 +531,6 @@ scwm_main(int argc, char **argv)
   init_menu();
   init_menulook();
   init_drawmenu();
-  init_draw_xpm_menu();
   init_binding();
   init_window();
   init_resize();
@@ -910,13 +908,13 @@ Repository Timestamp: %s\n",
   if (Scr.d_depth < 2) {
     Scr.gray_pixmap =
       XCreatePixmapFromBitmapData(dpy, Scr.Root, g_bits, g_width, g_height,
-				  XCOLOR(Scr.MenuColors.fg), 
-				  XCOLOR(Scr.MenuColors.bg),
+				  XCOLOR(Scr.NotMenuColors.fg), 
+				  XCOLOR(Scr.NotMenuColors.bg),
 				  Scr.d_depth);
     Scr.light_gray_pixmap =
       XCreatePixmapFromBitmapData(dpy, Scr.Root, l_g_bits, l_g_width, l_g_height,
-				  XCOLOR(Scr.MenuColors.fg),
-				  XCOLOR(Scr.MenuColors.bg),
+				  XCOLOR(Scr.NotMenuColors.fg),
+				  XCOLOR(Scr.NotMenuColors.bg),
 				  Scr.d_depth);
   }
   { /* scope */
@@ -1438,6 +1436,7 @@ void init_scwm_load_path()
 
   path = *pscm_pct_load_path;
   path = gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
+  path = gh_cons(gh_str02scm(SCWM_BIN_LOAD_PATH),path);
   path = scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
   *pscm_pct_load_path = path;
 }

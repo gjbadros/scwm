@@ -37,7 +37,6 @@
 #include "util.h"
 #include "icons.h"
 #include "decor.h"
-#include "drawmenu.h"
 #include "guile-compat.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -57,7 +56,6 @@ shared.
 SCM scmFixedFont = SCM_UNDEFINED;
 
 static SCM font_hash_table = SCM_UNDEFINED;
-static SCM protected_fonts = SCM_UNDEFINED;
 
 SCM_SYMBOL (sym_name,"name");
 SCM_SYMBOL (sym_height,"height");
@@ -267,8 +265,6 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
     scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
-  gh_vector_set_x(protected_fonts,SCM_MAKINUM(0),font);
-
   Scr.icon_font = font;
 
   redraw_icon_titles();
@@ -329,38 +325,6 @@ SCWM_PROC(title_font, "title-font", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
-           (SCM font))
-     /** Set the default font used for drawing menus to FONT. */
-#define FUNC_NAME s_set_menu_font_x
-{
-
-  if (gh_string_p(font)) {
-    font = make_font(font);
-  }
-  if (!FONT_P(font)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, font);
-  }
-
-  gh_vector_set_x(protected_fonts,SCM_MAKINUM(1),font);
-
-  Scr.menu_font=font;
-
-  return font;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC(menu_font, "menu-font", 0, 0, 0,
-           ())
-     /** Return the font used by default for drawing menus. */
-#define FUNC_NAME s_menu_font
-{
-  return Scr.menu_font;
-}
-#undef FUNC_NAME
-
-
 SCWM_PROC(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
            (SCM name))
      /** Fonts are cached by name. It is remotely possible that the
@@ -391,10 +355,6 @@ void init_font()
   font_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
   scm_permanent_object(font_hash_table);
-
-  protected_fonts =
-    gh_make_vector (SCM_MAKINUM(2), SCM_EOL);
-  scm_permanent_object(protected_fonts);
 
   gh_allow_ints();
 #ifndef SCM_MAGIC_SNARFER

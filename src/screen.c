@@ -57,8 +57,6 @@ mark_screen(SCM obj)
   SCM_SETGC8MARK(obj);
 
   /* Mark the hilight colors and relief colors */
-  GC_MARK_SCM_IF_SET(psi->menu_font);
-  GC_MARK_SCM_IF_SET(psi->menu_look);
   GC_MARK_SCM_IF_SET(psi->icon_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_fg);

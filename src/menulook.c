@@ -57,14 +57,14 @@ SCWM_PROC (menulook_p, "menulook?", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCM
-make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
+static SCM
+make_menulook_internal(SCM name, SCM extra, MenuDrawingVtable * mdvt)
 {
   SCM result;
   scwm_menulook * pml;
 
   pml = NEW(scwm_menulook);
-  pml->name = gh_str02scm(szName);
+  pml->name = name;
   pml->extra = extra;
   pml->mdvt = mdvt;
 
@@ -75,18 +75,36 @@ make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
   return result;
 }
 
-SCWM_PROC(set_menu_look_x, "set-menu-look!", 1, 0, 0,
-           (SCM menulook))
-/** Set the default menu look used for drawing menus to MENULOOK. */
-#define FUNC_NAME s_set_menu_look_x
+SCM
+make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
 {
-  if (!MENULOOK_P(menulook)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, menulook);
+  return make_menulook_internal(gh_str02scm(szName), extra, mdvt);
+}
+
+SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
+	  (SCM original_menulook, SCM name, SCM extra))
+/** FIXJTL: document */
+#define FUNC_NAME s_copy_menu_look
+{
+  int iarg = 0, dummy;
+  scwm_menulook * pmlOrig;
+  
+  iarg++;
+  if (!DYNAMIC_MENULOOK_P(original_menulook)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,original_menulook);
   }
+  pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menulook);
 
-  Scr.menu_look = menulook;
+  iarg++;
+  if (!gh_string_p(name)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,name);
+  }
+  
+  iarg++;
+  if (UNSET_SCM(extra)) 
+    extra = pmlOrig->extra;
 
-  return menulook;
+  return make_menulook_internal(name, extra, pmlOrig->mdvt);
 }
 #undef FUNC_NAME
 

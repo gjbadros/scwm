@@ -11,6 +11,8 @@
 #include <config.h>
 #endif
 
+#include <math.h>
+
 #include <guile/gh.h>
 
 #include "drawmenu.h"
@@ -28,12 +30,19 @@
 extern SCM sym_top, sym_center, sym_bottom;
 
 /* FIXGJB: comment these! */
-#define MENU_EDGE_VERT_SPACING 4
+
+/* Space to leave above and below menu contents; for best results,
+   should be beveled - so, 2, eh? */
+#define MENU_EDGE_VERT_SPACING 2
 #define MENU_EDGE_HORIZ_SPACING 4
 #define MENU_TEXT_SPACING 8
 #define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 8
-#define MENU_ITEM_EXTRA_VERT_SPACE 8
-#define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 4
+
+/* Space to leave above and below each menu item */
+#define MENU_ITEM_EXTRA_VERT_SPACE 2
+
+/* Space to leave for menu labels, in addition to font height */
+#define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 2
 #define MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE 8
 #define MENU_SIDE_IMAGE_SPACING 10
 #define MENU_ITEM_RR_SPACE 4
@@ -45,7 +54,59 @@ static GC MenuStippleGC;
 static GC MenuReliefGC;
 static GC MenuShadowGC;
 
+struct MenuDrawingInfo_tag
+{
+  int cpixXcenter;
+  int cpixYcenter;
+  double rSliceSize;
+  
+  int cpixItemOffset;		/* how far from the left edge are items */
+  int cpixLeftPicWidth;		/* how wide is the left image */
+  int cpixTextWidth;		/* how wide are the text items */
+  int cpixExtraTextWidth;	/* how wide are the text items */
+  int cpixSideImage;		/* how wide is the side image */
+  Pixel BGColor;		/* the background color */
+  Pixel SideBGColor;		/* the side image bg color */
+  Pixel TextColor;		/* the text color */
+  Pixel StippleColor;		/* the stipple color */
+  scwm_font *scfont;		/* To use scwm_font instead of XFont */
+  void *p;			/* extra information needed by the client drawing code */
+};
+
+struct MenuItemDrawingInfo_tag
+{
+  int cpixOffsetX;		/* left x offset of the item */
+  int cpixOffsetY;		/* top y offset of the item */
+  double rBeginSlice;		/* the beginning of this slice, in radians */
+  Bool fOnTopEdge;		/* is this item on the top edge? */
+  Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
+};
+
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
+
+static double
+PieAtan2(MenuDrawingInfo * pmdi, int cpixXoffset, double cpixYoffset)
+{
+  int cartX, cartY;
+  double cartRadians;
+  double xRadians;
+  
+  /* the input are X coordinates, offsets from the upper left of the
+     window, counting positive to the right and down; first, convert
+     to cartesian, with origin at the center of the pie */
+
+  cartX = cpixXoffset - pmdi->cpixXcenter;
+  cartY = pmdi->cpixXcenter - cpixYoffset;
+
+  cartRadians = atan2(cartY, cartX);
+
+  /* We now have an angle from the positive X axis in [-pi/2, pi/2];
+     we want an angle from the positive Y axis in [0, 2pi] */
+  xRadians = cartRadians + M_PI/2;
+  if (xRadians < 0)
+    xRadians += M_PI;
+  return xRadians;
+}
 
 static void
 MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
@@ -91,10 +152,12 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   XChangeGC(dpy, MenuGC, gcm, &gcv);
 
   gcm = GCForeground | GCBackground;
-  gcv.foreground = pmd->pmdi->TextColor;
+/*  gcv.foreground = pmd->pmdi->TextColor; */
+  gcv.foreground = pmd->pmdi->StippleColor;
   gcv.background = pmd->pmdi->BGColor;
   if (Scr.d_depth < 2) {
     gcm |= GCStipple | GCFillStyle;
+    gcv.foreground = XCOLOR(BLACK_COLOR);
     gcv.stipple = Scr.gray_bitmap;
     gcv.fill_style = FillStippled;
   }
@@ -102,7 +165,7 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   gcm |= GCFont;
   gcv.font = scfont->xfs->fid;
 #endif
-  XChangeGC(dpy, MenuGC, gcm, &gcv);
+  XChangeGC(dpy, MenuStippleGC, gcm, &gcv);
 }
 
 static
@@ -111,7 +174,7 @@ PscwmFontForMenuItem(SCM scmFont)
 {
   scwm_font *scfont = DYNAMIC_SAFE_FONT(scmFont);
   if (!scfont) {
-    scfont = FONT(Scr.menu_font);
+    scfont = FONT(scmFixedFont);
   }
   return scfont;
 }
@@ -235,10 +298,10 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   scwm_font *scfont = pmdi->scfont;
   int label_font_height = scfont->height;
   MenuItem *pmi = pmiim->pmi;
-  int y_offset = pmiim->cpixOffsetY;
+  int y_offset = pmiim->pmidi->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
-  int width = pmdi->cpixWidth;
-  int item_height = pmiim->cpixItemHeight;
+  int width = pmd->cpixWidth;
+  int item_height = pmiim->pmidi->cpixItemHeight;
   GC ShadowGC = MenuShadowGC;
   GC ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
   GC currentGC;
@@ -267,19 +330,19 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
      want to redraw it when we have too (i.e. on expose event) */
 
   /* Top of the menu */
-  if (pmiim->fOnTopEdge) {
+  if (pmiim->pmidi->fOnTopEdge) {
     DrawSeparator(w, ReliefGC,ReliefGC, 
 		  0, width-1,0, -1);
     RelieveHalfRectangle(w, 0, 0, width, y_offset, ReliefGC, ShadowGC);
   } 
 
   /* Bottom of the menu */
-  if (pmiim->fOnBottomEdge) {
+  if (pmiim->pmidi->fOnBottomEdge) {
     DrawSeparator(w, ShadowGC, ShadowGC, 
-		  0, width-1, pmdi->cpixHeight - 2,
+		  0, width-1, pmd->cpixHeight - 2,
 		  1);
     RelieveHalfRectangle(w, 0, y_offset + item_height,
-			 width, pmdi->cpixHeight - y_offset,
+			 width, pmd->cpixHeight - y_offset,
 			 ReliefGC, ShadowGC);
   }
 
@@ -380,7 +443,7 @@ static
 void 
 PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 {
-  Window w = pmd->pmdi->w;
+  Window w = pmd->w;
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
   int cmiim = pmd->cmiim;
@@ -388,8 +451,10 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 
   for (imiim = 0; imiim < cmiim; imiim++) {
     MenuItemInMenu *pmiim = rgpmiim[imiim];
-    if (pxe->xexpose.y < (pmiim->cpixOffsetY  + pmiim->cpixItemHeight) &&
-	(pxe->xexpose.y + pxe->xexpose.height) > pmiim->cpixOffsetY) {
+    if (pxe->xexpose.y < (pmiim->pmidi->cpixOffsetY +
+			  pmiim->pmidi->cpixItemHeight) &&
+	(pxe->xexpose.y + pxe->xexpose.height) > pmiim->pmidi->cpixOffsetY) {
+      DBUG((DBG,__FUNCTION__,"Painting menu item"));
       PaintMenuItem(w,pmd,pmiim);
     }
   }
@@ -397,27 +462,149 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   { /* scope */
     scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
-      PaintSideImage(w,pmdi->SideBGColor,pmdi->cpixHeight,psimgSide,
+      DBUG((DBG,__FUNCTION__,"Painting side image"));
+      PaintSideImage(w,pmdi->SideBGColor,pmd->cpixHeight,psimgSide,
 		     pmd->pmenu->scmSideAlign);
     }
   }
   XSync(dpy,0);
 }
 
+static
+void
+SetPopupMenuPositionFromMenuItem(DynamicMenu *pmdNew, 
+				 MenuItemInMenu *pmiimSelected)
+{
+  DynamicMenu *pmdOld = pmiimSelected->pmd;
+  MenuDrawingInfo *pmdiOld = pmdOld->pmdi;
+  int cpixXmenu = pmdOld->x;
+  int cpixYmenu = pmdOld->y;
+  int cpixWidthMenu = pmdOld->cpixWidth;
+  MenuDrawingInfo * pmdiNew = pmdNew->pmdi;
+  int cpixWidthNewMenu = pmdNew->cpixWidth;
 
-/* ConstructDynamicMenu should try to do all the computations for the paint
-   routine -- little should be done in the painting, as it'd be really
-   hard to maintain the two routines in synch.  pmd->pmdi and pmd->rgpmiim should
-   have all the information needed for drawing in response to expose events */
+  if (cpixXmenu + cpixWidthMenu + cpixWidthNewMenu <= Scr.DisplayWidth) {
+    pmdNew->x = cpixXmenu + cpixWidthMenu - 2;
+  } else {
+    /* pop to the left */
+    pmdNew->x = cpixXmenu - cpixWidthNewMenu + pmdiOld->cpixSideImage;
+  }
+  pmdNew->y = cpixYmenu + pmiimSelected->pmidi->cpixOffsetY - 2;
+  if (pmdNew->y + pmdNew->cpixHeight > Scr.DisplayHeight) {
+    /* would go off the bottom edge of the screen;
+       force it up from the bottom of the screen */
+    pmdNew->y = Scr.DisplayHeight-pmdNew->cpixHeight;
+  }
+}
+
+static
+void
+WarpPointerToPmiim(MenuItemInMenu *pmiim)
+{
+  DynamicMenu *pmd; 
+  MenuDrawingInfo *pmdi;
+  int x, y;
+
+  if (!pmiim)
+    return;
+
+  pmd = pmiim->pmd;
+  pmdi = pmd->pmdi;
+
+  /* FIXGJB: make fraction of menu that pointer goes to configurable */
+  x = pmdi->cpixItemOffset + 2*(pmd->cpixWidth - pmdi->cpixItemOffset)/3;
+  y = pmiim->pmidi->cpixOffsetY + pmiim->pmidi->cpixItemHeight/2;
+  XWarpPointer(dpy, 0, pmd->w, 0, 0, 0, 0, x, y);
+}
+
+static
+MenuItemInMenu *
+PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
+{
+  int ipmiim;
+  for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
+    MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
+    int item_y_offset = pmiim->pmidi->cpixOffsetY;
+    if (y > item_y_offset && y <= item_y_offset + pmiim->pmidi->cpixItemHeight) {
+      DBUG((DBG,__FUNCTION__,"pmiim->pmi->szLabel = %s @ %d,%d", pmiim->pmi->szLabel,x,y));
+      return pmiim;
+    }
+  }
+  return NULL;
+}
+
+static int
+InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
+{
+  return cpixXoffset > pmiim->pmd->cpixWidth*3/4;
+}
+
+/* px and py are in & out parameters; return the x,y location for the
+   top left of a child popup when the mouse was clicked at x,y; This
+   function doesn't have to concern itself with screen borders */
+static void
+GetChildPopupPosition(DynamicMenu * pmd, int *px, int *py)
+{
+  *px = pmd->x + pmd->cpixWidth - 5;
+}
+
+/* px and py are in & out parameters; return the x,y location for the
+   top left of the popup when the mouse was clicked at x,y; This function
+   doesn't have to concern itself with screen borders or with being
+   popped up from another menu or decoration */
+static void
+GetPreferredPopupPosition(DynamicMenu * pmd, int *px, int *py)
+{
+  *px = *px - pmd->cpixWidth/2;
+  *py = *py - pmd->rgpmiim[0]->pmidi->cpixItemHeight/2 - MENU_EDGE_VERT_SPACING;
+}
+
+static
+void
+FreePmdi(MenuDrawingInfo * pmdi)
+{
+  FREE(pmdi);
+}
+
+static
+void
+FreePmidi(MenuItemDrawingInfo * pmidi)
+{
+  FREE(pmidi);
+}
+
+/* ConstructDynamicPieMenu should try to do all the computations for
+   the paint routine -- little should be done in the painting, as it'd
+   be really hard to maintain the two routines in synch.  pmd->pmdi
+   and pmd->rgpmiim should have all the information needed for drawing
+   in response to expose events */
 void
 ConstructDynamicPieMenu(DynamicMenu *pmd)
 {
-
+  static MenuDrawingVtable mdv = {
+    ConstructDynamicPieMenu,
+    PaintDynamicMenu,
+    PaintMenuItem,
+    SetPopupMenuPositionFromMenuItem,
+    WarpPointerToPmiim,
+    PmiimFromPmdXY,
+    InPopupZone,
+    GetChildPopupPosition,
+    GetPreferredPopupPosition,
+    FreePmdi,
+    FreePmidi
+  };
+  
   if (pmd->pmdi != NULL)
     return;
+
+
+  /* FIXJTL: Things left out for now:
+     extra text
+     left/right/above images
+  */
   /* remember how to paint this menu */
-  pmd->fnPaintDynamicMenu = PaintDynamicMenu;
-  pmd->fnPaintMenuItem = PaintMenuItem;
+  pmd->pmdv = &mdv;
   { /* scope */
     Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
@@ -429,30 +616,35 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
     int imiim = 0;
     int total_height = MENU_EDGE_VERT_SPACING;
     int max_text_width = 0;
-    int max_extra_text_width = 0;
-    int max_left_image_width = 0;
-    int max_right_image_width = 0;
-    int max_above_image_width = 0;
     int label_font_height = 0;
     int max_item_width = 0;
-
-    MenuDrawingInfo *pmdi = pmd->pmdi =
-      NEW(MenuDrawingInfo);
-
+    int rows;
+    double rSliceSize;
+    
+    MenuDrawingInfo *pmdi = pmd->pmdi = NEW(MenuDrawingInfo);
+    
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
     pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
- 
+    pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
+    
     scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
  
-    /* FIXGJB:    MakeGcsForDynamicMenu(pmenu); */
-
     label_font_height = scfont->height;
     
-    pmdi->x = 0;		/* just init: gets set elsewhere */
-    pmdi->y = 0;		/* just init: gets set elsewhere */
-    pmdi->ccol = 1;
+    pmd->x = 0;		/* just init: gets set elsewhere */
+    pmd->y = 0;		/* just init: gets set elsewhere */
 
+    
+    /* Figure out how many rows of text there are */
+    rows = (cmiim / 2) + (cmiim % 2);
+    /* Hopefully the rounding error here isn't too bad */
+    pmdi->rSliceSize = (M_PI*2)/cmiim;
+
+    item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2 +
+      label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+    
+      
     for (imiim = 0; imiim < cmiim; imiim++) {
       MenuItemInMenu *pmiim = rgpmiim[imiim];
       MenuItem *pmi = pmiim->pmi;
@@ -461,7 +653,10 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
       int text_width;
       int extra_text_width = 0;
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
-      pmiim->cpixOffsetY = total_height;
+
+      pmiim->pmidi = NEW(MenuItemDrawingInfo);
+      
+      pmiim->pmidi->cpixOffsetY = total_height;
 
       text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), pmi->szLabel, pmi->cchLabel);
 
@@ -478,8 +673,8 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
 	}
       
 	/* These are easy when using only one column */
-	pmiim->fOnTopEdge = (imiim == 0);
-	pmiim->fOnBottomEdge = (imiim == (cmiim - 1));
+	pmiim->pmidi->fOnTopEdge = (imiim == 0);
+	pmiim->pmidi->fOnBottomEdge = (imiim == (cmiim - 1));
 
 	if (pmi->cchLabel != 0 || pmi->cchExtra != 0) {
 	  item_height += label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
@@ -504,7 +699,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
 	  INCREASE_MAYBE(max_right_image_width, MENU_POPUP_ARROW_WIDTH);
 	}
       }
-      pmiim->cpixItemHeight = item_height;
+      pmiim->pmidi->cpixItemHeight = item_height;
       total_height += item_height;
     }
 
@@ -523,7 +718,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
     pmdi->cpixLeftPicWidth = max_left_image_width;
     pmdi->cpixTextWidth = max_text_width + MENU_TEXT_SPACING;
     pmdi->cpixExtraTextWidth = max_extra_text_width + MENU_TEXT_SPACING;
-    pmdi->cpixHeight = total_height;
+    pmd->cpixHeight = total_height;
 
     /* use the width of the largest above image if it is greater than the sum of
        the widths of the other components */
@@ -533,7 +728,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
 			 max_right_image_width,
 			 max_above_image_width);
 
-    pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
+    pmd->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
       MENU_ITEM_RR_SPACE*2 + MENU_EDGE_HORIZ_SPACING*2;
 
     DBUG((DBG,__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
@@ -548,18 +743,17 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
       attributes.cursor = Scr.ScwmCursors[CURSOR_MENU];
       attributes.save_under = True;
 
-      pmdi->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmdi->cpixWidth,
-			      pmdi->cpixHeight, 0, CopyFromParent, InputOutput,
-			      CopyFromParent, valuemask, &attributes);
+      pmd->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmd->cpixWidth,
+			     pmd->cpixHeight, 0, CopyFromParent, InputOutput,
+			     CopyFromParent, valuemask, &attributes);
 
       if (psimgBackground) {
-	XSetWindowBackgroundPixmap(dpy, pmdi->w, psimgBackground->image);
+	XSetWindowBackgroundPixmap(dpy, pmd->w, psimgBackground->image);
       }
     }
   }
 }
 #undef INCREASE_MAYBE
-
 
 void 
 drawpiemenu_init_gcs()
@@ -578,19 +772,6 @@ drawpiemenu_init_gcs()
   MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
-
-
-SCWM_PROC (make_menus_pie_X, "make-menus-pie!", 0, 0, 0,
-           ())
-     /**
-      */
-#define FUNC_NAME s_make_menus_pie_X
-{
-  *pscm_construct_menu_primitive =
-    gh_ulong2scm((unsigned long)ConstructDynamicPieMenu);
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
 
 void
 init_draw_pie_menu()

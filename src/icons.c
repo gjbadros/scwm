@@ -304,9 +304,9 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   psw->icon_y_loc = final_y;
 
   /* clip to fit on screen */
-  attributes.background_pixel = XCOLOR(Scr.MenuColors.bg);
+  attributes.background_pixel = XCOLOR(Scr.NotMenuColors.bg);
   valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
-  attributes.border_pixel = XCOLOR(Scr.MenuColors.fg);
+  attributes.border_pixel = XCOLOR(Scr.NotMenuColors.fg);
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			   VisibilityChangeMask |
@@ -406,8 +406,8 @@ DrawIconWindow(ScwmWindow * psw)
     if (Scr.d_depth < 2) {
       /* FIXJTL: Is this what was intended before? Does it make any
          sense? */
-      SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(Scr.MenuColors.fg));
-      SetGCBg(Relief,XCOLOR(Scr.MenuColors.bg));
+      SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(Scr.NotMenuColors.fg));
+      SetGCBg(Relief,XCOLOR(Scr.NotMenuColors.bg));
       Shadow = Relief;
     } else {
       /* now set the fg colors for the two GCs we'll use to draw with */

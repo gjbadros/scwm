@@ -455,18 +455,6 @@ static void reset_decor_relief()
   }
 }
 
-
-static void reset_menu_relief()
-{
-  /* FIXMS: Other menu colors? */
-
-  if (Scr.MenuColors.bg != SCM_UNDEFINED) {
-    set_menu_background_x(Scr.MenuColors.bg);
-  }
-
-}
-
-
 SCWM_PROC(set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
            (SCM factor))
      /** Use FACTOR to generate highlight colors for the current decor.
@@ -546,7 +534,7 @@ SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-
+/* FIXJTL: these should go away */
 SCWM_PROC(set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
            (SCM factor))
      /** Use FACTOR to generate hilight colors for menus. 
@@ -560,8 +548,6 @@ FACTOR is a positive floating point number */
 
   menu_hilight_factor_val = f;
 
-  /* Redraw hilights. */
-  reset_menu_relief();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -589,8 +575,6 @@ FACTOR is a positive floating point number */
 
   menu_shadow_factor_val = f;
 
-  /* Redraw shadows. */
-  reset_menu_relief();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -726,101 +710,66 @@ Applies to the current decor. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
+SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
            (SCM fg) )
-     /** Use FG as the default foreground color for menus. */
-#define FUNC_NAME s_set_menu_foreground_x
+     /** Use FG as the default foreground color for non-menus. */
+#define FUNC_NAME s_set_not_menu_foreground_x
 { 
   VALIDATE_COLOR(fg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
-    Scr.MenuColors.fg = fg;
+    Scr.NotMenuColors.fg = fg;
   } else {
-    Scr.MenuColors.fg = BLACK_COLOR;
+    Scr.NotMenuColors.fg = BLACK_COLOR;
   }
 
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(0),Scr.MenuColors.fg);
+  gh_vector_set_x(protected_colors,SCM_MAKINUM(0),Scr.NotMenuColors.fg);
 
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
 
-SCWM_PROC (menu_foreground, "menu-foreground", 0, 0, 0,
+SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
            () )
      /** Return the default foreground color for menus. */
-#define FUNC_NAME s_menu_foreground
+#define FUNC_NAME s_not_menu_foreground
 { 
-  return (Scr.MenuColors.fg);
+  return (Scr.NotMenuColors.fg);
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
+SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
            (SCM bg) )
      /** Use BG as the default foreground color for menus. */
-#define FUNC_NAME s_set_menu_background_x
+#define FUNC_NAME s_set_not_menu_background_x
 { 
   VALIDATE_COLOR(bg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
-    Scr.MenuColors.bg = bg;
-    Scr.MenuRelief.bg = adjust_brightness (bg, menu_shadow_factor_val);
-    Scr.MenuRelief.fg = adjust_brightness (bg, menu_hilight_factor_val);
-    Scr.MenuStippleColors.bg = Scr.MenuColors.bg;
+    Scr.NotMenuColors.bg = bg;
+    Scr.NotMenuRelief.bg = adjust_brightness (bg, menu_shadow_factor_val);
+    Scr.NotMenuRelief.fg = adjust_brightness (bg, menu_hilight_factor_val);
   } else {
-    Scr.MenuColors.bg = WHITE_COLOR;
-    Scr.MenuRelief.bg = BLACK_COLOR;
-    Scr.MenuRelief.fg = WHITE_COLOR;
-    Scr.MenuStippleColors.bg = WHITE_COLOR;
+    Scr.NotMenuColors.bg = WHITE_COLOR;
+    Scr.NotMenuRelief.bg = BLACK_COLOR;
+    Scr.NotMenuRelief.fg = WHITE_COLOR;
   }
 
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(1),Scr.MenuColors.bg);
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(2),Scr.MenuRelief.fg);
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(3),Scr.MenuRelief.bg);
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(4),Scr.MenuStippleColors.bg);
+  gh_vector_set_x(protected_colors,SCM_MAKINUM(1),Scr.NotMenuColors.bg);
+  gh_vector_set_x(protected_colors,SCM_MAKINUM(2),Scr.NotMenuRelief.fg);
+  gh_vector_set_x(protected_colors,SCM_MAKINUM(3),Scr.NotMenuRelief.bg);
 
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC (menu_background, "menu-background", 0, 0, 0,
+SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
            () )
      /** Return the default background color for menus. */
 #define FUNC_NAME s_menu_background
 { 
-  return (Scr.MenuColors.bg);
-}
-#undef FUNC_NAME
-
-
-/* FIXGJB: I am not sure this is used for anything any more. */
-SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
-           (SCM st) )
-     /** Use ST as the default stipple color for menus. 
-May not be used any longer. */
-#define FUNC_NAME s_set_menu_stipple_x
-{
-  VALIDATE_COLOR(st, FUNC_NAME, 1);
-
-  if (Scr.d_depth > 2) {
-    Scr.MenuStippleColors.fg = st;
-  } else {
-    Scr.MenuStippleColors.fg = BLACK_COLOR;
-  }
-
-  gh_vector_set_x(protected_colors,SCM_MAKINUM(5),Scr.MenuStippleColors.fg);
-  return (SCM_UNSPECIFIED);
-
-}
-#undef FUNC_NAME
-
-SCWM_PROC (menu_stipple, "menu-stipple", 0, 0, 0,
-           () )
-     /** Return the default stipple color for menus.
-May not be used any more. */
-#define FUNC_NAME s_menu_stipple
-{ 
-  return (Scr.MenuStippleColors.fg);
+  return (Scr.NotMenuColors.bg);
 }
 #undef FUNC_NAME
 
@@ -835,7 +784,7 @@ init_color()
     scm_make_weak_value_hash_table (gh_int2scm(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
 
-  protected_colors = gh_make_vector (gh_int2scm(6), SCM_EOL);
+  protected_colors = gh_make_vector (gh_int2scm(4), SCM_EOL);
   scm_protect_object(protected_colors);
 
   scm_protect_object(str_black=gh_str02scm("black"));

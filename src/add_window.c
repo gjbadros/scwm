@@ -244,10 +244,10 @@ AddWindow(Window w)
   /* FIXMS: need to find better way to ensure colors are valid before
      window comes under GC control. */
 
-  psw->TextColor = Scr.MenuColors.fg;
-  psw->ReliefColor = Scr.MenuRelief.fg;
-  psw->ShadowColor = Scr.MenuRelief.bg;
-  psw->BackColor = Scr.MenuColors.bg;
+  psw->TextColor = Scr.NotMenuColors.fg;
+  psw->ReliefColor = Scr.NotMenuRelief.fg;
+  psw->ShadowColor = Scr.NotMenuRelief.bg;
+  psw->BackColor = Scr.NotMenuColors.bg;
   psw->HiTextColor = SCM_BOOL_F;
   psw->HiReliefColor = SCM_BOOL_F;
   psw->HiShadowColor = SCM_BOOL_F;

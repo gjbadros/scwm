@@ -68,6 +68,14 @@ typedef struct {
 #define MENULOOK(X) ((scwm_menulook *)gh_cdr(X))
 #define SAFE_MENULOOK(X) (MENULOOK_P(X)? MENULOOK(X) : NULL)
 
+#define MENULOOK_OR_SYMBOL_P(X) (MENULOOK_P(X) || gh_symbol_p(X))
+#define DYNAMIC_MENULOOK_P(X) (gh_symbol_p(X) ? \
+                              MENULOOK_P(scm_symbol_binding(SCM_BOOL_F,(X))) :\
+                              MENULOOK_P(X))
+#define DYNAMIC_SAFE_MENULOOK(X) (gh_symbol_p(X) ? \
+				  SAFE_MENULOOK(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+				  SAFE_MENULOOK(X))
+
 EXTERN long scm_tc16_scwm_menulook;
 
 SCM make_menulook(char * szName, SCM extra, MenuDrawingVtable * pmdvt);

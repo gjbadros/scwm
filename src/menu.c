@@ -220,28 +220,30 @@ image-bg font extra-options used-shortcut-keys) */
    somehow, or restructure hwo make-menu works.  Maybe it's time to move
    side picture stuff into extra_options?  Or maybe an alist or keyword list
    for all the args? */
-SCWM_PROC(make_menu, "make-menu", 1, 9, 0,
-          (SCM list_of_menuitems, 
-           SCM picture_side, SCM picture_align, SCM side_bg_color,
-           SCM bg_color, SCM text_color, SCM stipple_color,
-           SCM picture_bg, SCM font, SCM extra_options /*, SCM menu_look */))
+SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
+          (SCM list_of_menuitems,
+           SCM bg_color, SCM text_color, SCM stipple_color, SCM font,
+           SCM picture_side, SCM side_picture_align, SCM side_bg_color,
+           SCM picture_bg, SCM extra_options
+/*, SCM menu_look */))
 /** Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
+BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
+FONT is a font object or symbol;
 PICTURE-SIDE is an image object to draw on the left side of the menu;
-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
-SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects;
+SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
+SIDE-BG-COLOR is a color object or symbol;
 PICTURE-BG is an image object;
-FONT is a font object;
 EXTRA-OPTIONS can be anything understood by the menu-look
 */
 /* FIXJTL MENU-LOOK is a menulook object (not currently implemented). */
-
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
   SCM answer;
   int iarg = 1;
 
+  /* LIST-OF-MENUITEMS: Required */
   if (!gh_list_p(list_of_menuitems)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,list_of_menuitems);
   }
@@ -250,6 +252,36 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   }
   pmenu->scmMenuItems = list_of_menuitems;
 
+  /* BG-COLOR: Required */
+  iarg++;
+  if (!COLOR_OR_SYMBOL_P(bg_color)) { /* why not DYNAMIC_COLOR_P? */
+    scm_wrong_type_arg(FUNC_NAME,iarg,bg_color);
+  }
+  pmenu->scmBGColor = bg_color;
+
+  /* TEXT-COLOR: Required */
+  iarg++;
+  if (!COLOR_OR_SYMBOL_P(text_color)) { /* again */
+    scm_wrong_type_arg(FUNC_NAME,iarg,text_color);
+  }
+  pmenu->scmTextColor = text_color;
+
+  /* STIPPLE-COLOR: Required */
+  iarg++;
+  if (!COLOR_OR_SYMBOL_P(stipple_color)) { /* And again */
+    scm_wrong_type_arg(FUNC_NAME,iarg,stipple_color);
+  }
+  pmenu->scmStippleColor = stipple_color;
+
+  /* FONT: Required */
+  iarg++;
+  if (!FONT_OR_SYMBOL_P(font)) { /* DYNAMIC_FONT_P ? */
+    scm_wrong_type_arg(FUNC_NAME,iarg,font);
+  }
+  pmenu->scmFont = font;
+
+
+  /* PICTURE-SIDE: Optional */
   iarg++;
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
@@ -258,18 +290,20 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   } 
   pmenu->scmImgSide = picture_side;
 
+  /* SIDE-PICTURE-ALIGN: Optional */
   iarg++;
-  if (UNSET_SCM(picture_align)) {
-    picture_align = sym_top;
-  } else if (!gh_symbol_p(picture_align) ||
-	     (picture_align != sym_top &&
-	      picture_align != sym_center &&
-	      picture_align != sym_bottom)) {
-    scm_misc_error(FUNC_NAME,"PICTURE-ALIGN must be 'top, 'center or 'bottom'",
+  if (UNSET_SCM(side_picture_align)) {
+    side_picture_align = sym_top;
+  } else if (!gh_symbol_p(side_picture_align) ||
+	     (side_picture_align != sym_top &&
+	      side_picture_align != sym_center &&
+	      side_picture_align != sym_bottom)) {
+    scm_misc_error(FUNC_NAME,"SIDE-PICTURE-ALIGN must be 'top, 'center or 'bottom'",
 		   SCM_EOL);
   }
-  pmenu->scmSideAlign = picture_align;
-  
+  pmenu->scmSideAlign = side_picture_align;
+
+  /* SIDE-BG-COLOR: Optional */
   iarg++;
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = WHITE_COLOR;
@@ -278,30 +312,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   }
   pmenu->scmSideBGColor = side_bg_color;
 
-  iarg++;
-  if (UNSET_SCM(bg_color)) {
-    bg_color = Scr.MenuColors.bg; 
-  } else if (!COLOR_OR_SYMBOL_P(bg_color)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,bg_color);
-  }
-  pmenu->scmBGColor = bg_color;
-
-  iarg++;
-  if (UNSET_SCM(text_color)) {
-    text_color =  Scr.MenuColors.fg;
-  } else if (!COLOR_OR_SYMBOL_P(text_color)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,text_color);
-  }
-  pmenu->scmTextColor = text_color;
-
-  iarg++;
-  if (UNSET_SCM(stipple_color)) {
-    stipple_color = Scr.MenuStippleColors.fg;
-  } else if (!COLOR_OR_SYMBOL_P(stipple_color)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,stipple_color);
-  }
-  pmenu->scmStippleColor = stipple_color;
-  
+  /* PICTURE-BG: Optional */
   iarg++;
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
@@ -310,17 +321,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   } 
   pmenu->scmImgBackground = picture_bg;
 
-  iarg++;
-  /* FIXGJB: order dependency on menu_font being set before making
-     the menu -- is there a better default -- maybe we should just
-     always have some font object for "fixed" */
-  if (UNSET_SCM(font) && Scr.menu_font != SCM_UNDEFINED) {
-    font = Scr.menu_font;
-  } else if (!FONT_OR_SYMBOL_P(font)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,font);
-  }
-  pmenu->scmFont = font;
-
+  /* EXTRA-OPTIONS: Optional */
   iarg++;
   pmenu->scmExtraOptions = extra_options;
 
@@ -333,7 +334,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   }
   pmenu->scmMenuLook = menu_look;
   */
-  pmenu->scmMenuLook = Scr.menu_look;
+  pmenu->scmMenuLook = SCM_BOOL_F;
 
   pmenu->pchUsedShortcutKeys = NULL;
 
@@ -368,6 +369,32 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
   return answer;
+}
+#undef FUNC_NAME
+
+/* FIXJTL: this is a very unfortunate naming system; maybe all the
+   set-menu-* funcs should be set-default-menu-*?  Or something like
+   the window (with-style (set-menu-look! ...)) system? */
+SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
+           (SCM menu, SCM menu_look) )
+/** Use MENU-LOOK as the menu-look for MENU */
+#define FUNC_NAME s_set_menu_menu_look_x
+{
+  int iarg = 0;
+
+  iarg++;
+  if (!MENU_P(menu)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,menu);
+  }
+
+  iarg++;
+  if (!MENULOOK_OR_SYMBOL_P(menu_look)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,menu_look);
+  }
+
+  MENU(menu)->scmMenuLook = menu_look;
+  
+  return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
 
@@ -1192,8 +1219,8 @@ static
 DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
-
   DynamicMenu *pmd = NEW(DynamicMenu);
+  scwm_menulook * pml;
   pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
   pmd->pmdPrior = pmdPoppedFrom;
@@ -1201,11 +1228,14 @@ NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   pmd->fPinned = False;
 
   InitializeDynamicMenu(pmd);	/* add drawing independent fields */
-  /* FIXGJB: this ConstructDynamicMenu needs to possibly call a different
-     ConstructDynamicMenu == should be through a function pointer */
 
-  MENULOOK(pmenu->scmMenuLook)->mdvt->fnConstructDynamicMenu(pmd);
-
+  pml = DYNAMIC_SAFE_MENULOOK(pmenu->scmMenuLook);
+  if (pml) {
+    pml->mdvt->fnConstructDynamicMenu(pmd);
+  } else {
+    ConstructDynamicMenu(pmd);
+  }
+  
   { /* scope */
     /* Get the right events -- don't trust the drawing code to do this */
     XSetWindowAttributes attributes;
