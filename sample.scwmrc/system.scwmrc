@@ -904,6 +904,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
 
 (bind-key 'all "H-A-M-C-d" delete-window)
+;; (delete-window)
+;; (call-interactively delete-window)
 ;; (lookup-key 'all "H-A-M-C-d")
 
 
