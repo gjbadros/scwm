@@ -16,7 +16,7 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2354]
+[From src/events.c:2356]
 
 
 cursor-icon

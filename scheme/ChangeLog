@@ -1,3 +1,7 @@
+Sun Dec  5 16:40:39 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* key-mover-xtest.scm: Make returned procedures be interactive.
+
 Sun Dec  5 15:25:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_gtk_scheme): Added gtk-about.scm

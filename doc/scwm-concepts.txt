@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3406]
+[From src/window.c:3404]
 
 
 Fonts
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From src/callbacks.c:293]
+[From src/callbacks.c:322]
 
 
 Image Loaders
@@ -306,7 +306,52 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From src/callbacks.c:878]
+[From src/callbacks.c:907]
+
+
+Interactive specfications
+-
+
+
+   Procedures can have an interactive specification that looks like:
+
+   <programlisting>(interactive)</programlisting>
+
+   or 
+
+   <programlisting>(interactive "%W")</programlisting>
+
+   This declaration must be the first s-exp after the docstring of
+   a procedure.  Primitive procedures may also have interactive
+   specifications and use the SCWM_IPROC macro to support them.
+
+   The interactive specification marks that a procedure may be
+   invoked interactively (i.e., bound to a mouse or keypress event).
+   The specification also is used to construct the arguments
+   when the procedure is invoked in an interactive context or
+   via `call-interactively'.  
+
+   The meaning of the various possible substrings in the interactive
+   specification are as follows:
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Interactive specifiers</title>
+<tgroup align="char" cols="2">
+<thead><row>
+ <entry>Marker</entry> <entry>Meaning</entry>
+</row></thead>
+<tbody><row>
+  <entry>%W</entry>
+    <entry>get-window</entry>
+ </row><row>
+  <entry>%K</entry>
+    <entry>get-window using skull & crossbones cursor</entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+
+[From src/window.c:4195]
 
 
 Key Specifier
@@ -413,7 +458,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:612]
+[From src/events.c:614]
 
 
 Shadow and Highlight Factors
@@ -453,7 +498,7 @@ Sticky
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop.
-[From src/window.c:2096]
+[From src/window.c:2094]
 
 
 Themes
@@ -476,7 +521,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From src/callbacks.c:734]
+[From src/callbacks.c:763]
 
 
 Viewports
