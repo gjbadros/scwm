@@ -162,7 +162,6 @@ void SetTimer(int);
 void RaiseThisWindow(int);
 int GetContext(ScwmWindow *, XEvent *, Window * dummy);
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);
-void SetFocus(Window, ScwmWindow *, Bool FocusByMouse);
 void CheckAndSetFocus(void);
 void initModules(void);
 void HandleModuleInput(Window w, int channel);
