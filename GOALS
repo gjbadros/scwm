@@ -1,0 +1,51 @@
+Maciej's goals for 0.7:
+
+Definitely:
+
+ (infrastructure:)
+ * better scheme wrappers for colors
+ * use automake and libtool, and make use of autoconf more correct
+ * fix error/warning system - provide useful error messages (with line
+ numbers where feasible), support user hooks for displaying warnings,
+ possibly also errors.
+ * review menu oddities (visual effects, API)
+ * uniform way of doing callbacks - a file of support functions to call
+ procedures with 0, 1 or n arguments, evaluate strings, etc. Also
+ uniform support for hooks, in particular, make the places where hooks
+ are handled (and where it would be appropriate) provide uniform access
+ to a list of hooks, with abiltiy to append, prepend, insert and remove
+ hooks.
+ * organize support code properly (make autoconf testing more regular,
+ don't provide copies of stuff that's in the local libc, etc)
+ * Remove old scwmsend stuff.
+ * Clarify copyright/license status of files.
+
+ (features:)
+ * improve fvwm legacy module support - make tkgoodstuff work (work with
+ Richard A. Guay <guay.thailand@juno.com> on this)
+ * guile-gtk support as a test of loadable modules
+ * possibly experiment with breaking out some more stuff into loadable
+ binary modules
+ * fix more bugs
+
+Possibly:
+
+ * Fix modifier key stuff should support Alt, Hyper, Super, Meta
+ properly, perhaps also provide physical modifiers
+ ("1-","2-","3-","4-") that would map straight to mod1-mod4, ignoring
+ the keysyms. Maybe steal from GNU Emacs or XEmacs? RMS claims mixing
+ GPL with the old Twm license is kosher...
+ * review broadcast and input hooks - improve to the state where the
+ latter at least can be documented.
+ * Add timer hooks.
+ * review add_window.c
+ * add getters for some setters
+ * placement functions
+ * convert to bitfield-style window flags?
+ * start on window structure rewrite - window-property interface
+ * do some revision of decors and faces?
+ * Provide a loadable module that loads images through Rasterman's
+ "Imlib" - this supports many image formats natively, supports many
+ more non-natively, and dithers images nicely down to a uniform
+ colormap shared with other apps.
+ * Figure out what's going wrong with window shading.
