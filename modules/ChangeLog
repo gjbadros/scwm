@@ -1,7 +1,7 @@
-Sun Mar 28 20:12:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+Mon Mar 29 08:17:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* c-animation/c-animation.c (s_animated_move_window): Added
-	default 4th param to animated_move_window.
+	* c-animation/c-animation.c (s_animated_move_window): Fix default
+	to FALSE for 4th param to animated_move_window.
 
 Sun Mar 28 18:18:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 
