@@ -46,7 +46,8 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
 #ifdef HAVE_SCM_PUTS
   scm_puts("#<decor ", port);
   if (NULL == name) {
-    scm_write(gh_int2scm((int) DECOR(obj)), port);
+    /* FIXGJB: not 64 bit compatible -- cast to long instead? --04/07/98 gjb */
+    scm_write(gh_int2scm((long) DECOR(obj)), port);
   } else {
     scm_puts(name, port);
   }
@@ -54,7 +55,8 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
 #else /* !HAVE_SCM_PUTS */
   scm_gen_puts(scm_regular_port, "#<decor ", port);
   if (NULL == name) {
-    scm_write(gh_int2scm((int) DECOR(obj)), port);
+    /* FIXGJB: not 64 bit compatible */
+    scm_write(gh_int2scm((long) DECOR(obj)), port);
   } else {
     scm_gen_puts(scm_regular_port, name, port);
   }
