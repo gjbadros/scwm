@@ -239,3 +239,12 @@
 ;; we still need a reset-hook! though
 (defmacro-public reset-hook! (hook)
   `(set! ,hook ()))
+
+(defmacro-public bell ()
+  `(beep))
+
+(add-hook! invalid-interaction-hook
+	   (lambda () (beep) (display "inv interaction\n")))
+
+(add-hook! cannot-grab-hook
+	   (lambda () (beep) (display "cannot grab\n")))
