@@ -1,0 +1,145 @@
+Sent to wm-spec-list@gnome.org --07/04/99 gjb
+
+First let me introduce myself: I'm one of the two primary developers on
+the Scwm project -- the Scheme Constraints (or Configurable) Window
+Manager.  Before starting on Scwm with Maciej, I did some work on fvwm2,
+most notably a rewrite of its menuing code.
+
+You may be familiar with my "TheNextLevel" m4-based fvwm2/fvwm95
+configuration popularized by Redhat (who knew they were going to put it
+in Redhat 4??  My apologies for inflicting fvwm2+m4 on the user
+community--I just packaged up my configuration and documented it a bit
+for the desktop competition).  Scwm is, in some ways, a response to the
+concerns raised by the desire for better abstraction without a horrible
+macro language.
+
+I have some fundamental concerns about Matthias Ettrich's first draft
+that I think might not yet have been expressed on this list (and are
+largely still not addressed in Marko's 1.9a draft).  Most importantly, I
+notice that the draft doesn't seem to make any distinction between two
+broad classes of needs we are trying to address:
+
+Class 1: Client Window Semantics
+----------------------------------
+Client applications need to be able to expose semantic information hints
+to provide the window manager details of the roles that various windows
+play.  Some properties of this class of hints include:
+
+ o they are really hints-- they do not have to be honoured
+ o they are uni-directional-- application sets them on client windows
+   once and then they are only read by the wm
+
+Class 2: State synchronization and interaction of clients
+---------------------------------------------------------
+2) Client applications, applets, desktop environments, etc. want to be
+able to maintain synchronous state with the window manager.  This is
+presumably to offload some functionality that the window manager might
+be able to do.  Examples include a virtual desk pager and a task list.
+Properties of these "hints" include:
+
+ o the exchanged information reflects reality
+ o the changes are bi-directional: when the wm changes a windows state,
+   it needs to update the corresponding property;  when an applet/client
+   wants to make the change it can request it via a client message
+
+
+
+I am completely in favor of the first type of hints, but as others have
+pointed out, they are largely already handled by the ICCCM/MWM hints.
+The one possibly useful extension is the suggested
+_NET_WM_DECORATION_TOOL property.  Though this at first glance seems
+very similar to the existing WM_TRANSIENT_FOR property, there is a
+distinction worth making between transient dialogs and rip-off items
+such as toolbars.  But, we should learn from WM_TRANSIENT_FOR, and
+preserve as much semantic content as possible in the hint: instead of
+the proposed _NET_WM_DECORATION_TOOL, I think we should have a
+_NET_RIPOFF_FOR that is analogous to WM_TRANSIENT_FOR -- it specifies
+the controlling window as its value.  The other _NET_WM_DECORATION
+properties overlap with the pre-existing MWM hints, and are not needed.
+the ..._TINY hint is not specifically covered, but it's too
+visually-oriented.  If someone can characterize better the class of
+windows it is meant to encompass, maybe I'd be more pleased by a
+conceptual categorization which a WM could implement using a reduced
+decoration.
+
+As another general comment about the first type of hints, I think they
+are specified at a level too close to implementation.  Picking the layer
+that a window should go in is not the chore of the application.  The
+application should hint about what a window is used for, and leave the
+mapping of those uses to specific layers for the window manager to
+decide.  For example, a client might want to specify that a top-level
+window is a document window, or a toolbar, a floating menu, or whatever.
+Having agreed upon hints for these different classes makes sense, and we
+could have a _NET_WIN_CLASS_OF_USE property that holds a number for
+them.  But explicitly exposing the layers to the client seems like the
+wrong level of abstraction.  Note that the idea of grip windows, which I
+like, makes sense in this regard-- it simply permits a top-level window
+to inform the window manager of a special use of one of its client
+windows.  (I'm less certain of the soundness of specifying specific
+resize directions-- I don't have a visual picture of why this would make
+sense... when I want to resize a window, I shouldn't have to decide
+first which way I want to resize it, and cannot imagine client window
+decorations that would represent such resizing restrictions).
+
+As I mentioned before w.r.t. _NET_RIPOFF_FOR, is makes more sense to
+preserve as much semantics as possible.  It might be better to have
+a _NET_WIN_EDITING_DOCUMENT property that holds the name of the document 
+currently being edited (and annotates the window as such) rather than
+just _NET_WIN_CLASS_OF_USE = DOCUMENT_EDIT.  Also a
+_NET_WIN_DIRTY_CONTENTS property seems useful -- I can imagine a user
+wanting to list all windows that should be attended to before leaving
+for the night, or closing a session (maybe there is some interaction
+with session-management stuff here).
+
+
+
+The second type of "hints" are very different.  They are needed only
+when you want an external process to be able to introspect on your WM's
+data structure or manipulate other top level windows.  In an ideal world
+(i.e., one in which everyone is running Scwm :-) ), the only of these
+proposals that seems necessary is the opaque resizing WM_PROTOCOLS
+extension.  I'm not sure that client messages are needed, though-- seems
+like a WM could just set a property _NET_WM_RESIZING_OPAQUELY when an
+opaque resize begins, and delete the property when it ends.  Interested
+clients could then do the right thing.  The rest of this
+state-maintenance and communication mess seems like it'd be better
+handled via some more universal communication mechanism.  Miguel's
+suggestion of CORBA seems reasonable if the Corba implementation is
+sufficiently advanced.  Alternatively, just some sort of simplified
+message passing technique would suffice.
+
+The real question is: do we really need external processes to
+communicate so tightly with the window manager?  One approach is to keep 
+the window manager small, and have other applets or the desktop
+environment do a lot of work.  Another possibility is to let the WM grow 
+to be the desktop environment.  Scwm is unique in that it can do very
+little or a whole lot, depending on what modules the user chooses to
+use.  Why funnel data about where windows are, what the desktop names
+are, etc., through a straw when you can just have the task manager or
+pager running as part of the window manager process?  (There are
+certainly good answers to this, but there are a lot of benefits of
+having all the window managing functionality in the window manager).
+E.g., in Scwm the GUI options dialog is just a GTK notebook widget that
+the WM itself pops up-- it's not a separate application that needs to
+communicate with Scwm through some private protocol. (And even if it
+did, we can send arbitrary s-expressions to the window manager to
+evaluate -- we have a single general protocol that lets us do
+almost anything).
+
+Since it's not a perfect world, and I do see some benefits to having
+desktop environments standardized and able to talk to various window
+managers, I think what we need is a standardized interface of commands
+that an applet can give-to/query-of the window manager.  This could be a 
+CORBA interface, but also could just be a libICE-based text channel.
+Part of the interface can be registering interest in window-manager
+events (so, e.g., a pager applet could be asked to be notified when a
+new window is created).
+
+If this proposal intends to cover both kinds of needs that I've
+outlined, that's fine, but I think future drafts should be organized
+around the purpose of the hints instead of the mechanism of delivery.
+
+Greg J. Badros
+gjb@cs.washington.edu
+Seattle, WA  USA
+http://www.cs.washington.edu/homes/gjb
