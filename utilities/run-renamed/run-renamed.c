@@ -1,11 +1,11 @@
 /* $Id$ 
  * run-renamed.c
- * (C) 1999 By Ken Pizzini and Greg J. Badros
+ * Copyright (C) 1999, 2000 By Ken Pizzini and Greg J. Badros
  * GPL'd
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <unistd.h> 

@@ -1,5 +1,5 @@
 /* $Id$
- * Copyright (C) 1997-1999, Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-2000, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include "../libscwmexec/scwmexec.h"
