@@ -92,7 +92,6 @@ Display *dpy;			/* which display are we talking to */
 Window BlackoutWin = None;	/* window to hide window captures */
 
 char *szCmdConfig;
-int interactive = 0;
 
 static char *szLoad_pre = "(primitive-load \"";
 static char *szLoad_post = "\")";
@@ -269,7 +268,6 @@ scwm_main(int argc, char **argv)
 	  {"display", 1, NULL, 'd'},
 	  {"file", 1, NULL, 'f'},
 	  {"expression", 1, NULL, 'e'},
-	  {"interactive", 0, NULL, 'i'},
 	  {"help", 0, NULL, 'h'},
           {"blackout", 0, NULL, 'b'},
           {"version", 0, NULL, 'V'},
@@ -321,9 +319,6 @@ scwm_main(int argc, char **argv)
 	  szCmdConfig = strcat(szCmdConfig, optarg);
 	  break;
 	}
-      case 'i':
-	interactive = 1; 
-	break;
       case 'h':
 	usage(); 
 	exit(0);
@@ -396,9 +391,6 @@ scwm_main(int argc, char **argv)
 			     (strlen(szCmdConfig) + strlen(argv[i]) + 1));
 	szCmdConfig = strcat(szCmdConfig, argv[i]);
       }
-    } else if ((strncasecmp(argv[i], "-i", 2) == 0) ||
-	       (strncasecmp(argv[i], "--interactive",13) == 0)) {
-      interactive = 1;
     } else if ((strncasecmp(argv[i], "-h", 2) == 0) ||
 	       (strncasecmp(argv[i], "--help", 6) == 0)) {
       usage();
@@ -1492,7 +1484,7 @@ usage(void)
   fprintf(stderr, "\nScwm Version %s\n", VERSION);
   fprintf(stderr, "Usage: %s [--display|-d dpy] [--debug]"
 	  "[--expression|-e expression]\n"
-	  "      [--file|-f rc_file] [--single-screen|-s] [--interactive|-i]\n"
+	  "      [--file|-f rc_file] [--single-screen|-s] \n"
 	  "      [--blackout|-b] [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);
 }

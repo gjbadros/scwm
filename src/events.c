@@ -94,9 +94,6 @@ ScwmWindow *swCurrent;		/* the current scwm window */
 int last_event_type = 0;
 Window last_event_window = 0;
 
-extern int interactive;
-int repl_fd;
-
 extern int ShapeEventBase;
 void HandleShapeNotify(void);
 
@@ -183,66 +180,13 @@ DispatchEvent()
 void 
 HandleEvents()
 {
-  SCM repl_th;
-
-  repl_th = SCM_UNDEFINED;
 
   DBUG("HandleEvents", "Routine Entered");
 
-#ifdef HAVE_SAFE_SCM_EVAL_STRING
-  if (interactive) {
-    repl_fd = SCM_INUM(scm_fileno(scm_current_input_port()));
-
-    repl_th = gh_eval_str( 
-			  /* FIXMS - gross hack alert: pretend we don't
-			     have Scheme access to readline if we do so
-			     that scwm -i works. Do this right later. */
-#ifdef HAVE_SCM_READLINE
-			   "(delq! 'readline *features*)"
-#endif /* HAVE_SCM_READLINE */
-			   "(letrec "
-			   "    ((wrap-port-continuing-read "
-			   "      (lambda (port cont) "
-			   "	(make-soft-port (vector #f #f #f "
-			   "				(lambda () "
-			   "				  (let* ((pcont "
-    "					  (call-with-current-continuation "
-		  "					   (lambda (c) c))) "
-		     "					 (escape-to-read "
-	"					  (lambda () (pcont pcont)))) "
-		   "				    (if (char-ready? port) "
-		     "					(read-char port) "
-			   "					(cont escape-to-read)))) #f) \"r\")))"
-			   "     (continuing-top-repl "
-			   "      (lambda () "
-			   "	(call-with-current-continuation "
-			   "	 (lambda (cont) "
-			   "	   (let ((wrapped-input "
-    "		  (wrap-port-continuing-read (current-input-port) cont))) "
-			 "		 (with-input-from-port wrapped-input "
-			   "		   (lambda () "
-			   "		     (catch #t "
-			   "			    (lambda () (top-repl)) "
-			   "			    (lambda args args)))) "
-			   "	     (close-port wrapped-input)))))))"
-			   "  (set-repl-prompt! \"scwm> \")"
-			   "  (continuing-top-repl))");
-    if (!gh_procedure_p(repl_th)) {
-      interactive = 0;
-    }
-  }
-  #endif /* HAVE_SAFE_SCM_EVAL_STR */
-
   while (True) {
     last_event_type = 0;
-    switch (XNextEvent_orTimeout(dpy, &Event)) {
-    case 0:
+    if (!XNextEvent_orTimeout(dpy, &Event)) {
       DispatchEvent();
-      break;
-    case 1:
-      gh_call0(repl_th);
-    case 2:
-      break;
     }
   }
 }
@@ -1548,11 +1492,7 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
 
   FD_ZERO(&in_fdset);
   FD_SET(x_fd, &in_fdset);
-#ifdef HAVE_SAFE_SCM_EVAL_STRING
-  if (interactive) {
-    FD_SET(repl_fd, &in_fdset);
-  }
-#endif /* HAVE_SAFE_SCM_EVAL_STRING */
+
   add_hook_fds_to_set(&in_fdset);
 
   FD_ZERO(&out_fdset);
@@ -1567,14 +1507,8 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
 
   run_input_hooks(&in_fdset);
 
-#ifdef HAVE_SAFE_SCM_EVAL_STRING
-  if (interactive && FD_ISSET(repl_fd, &in_fdset)) {
-    return 1;
-  }
-#endif /* HAVE_SAFE_SCM_EVAL_STRING */
-
   DBUG(__FUNCTION__, "leaving");
-  return 2;
+  return 1;
 }
 
 static SCM input_hooks;
