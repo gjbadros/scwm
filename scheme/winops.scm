@@ -17,6 +17,16 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;; 
 
+(define move-opaquely?
+;;;**VAR
+;;; User-settable predicate to determine if windows should be moved opaquely.
+ #f)
+
+(define resize-opaquely?
+;;;**VAR
+;;; User-settable predicate to determine if windows should be resized opaquely.
+ #f)
+
 
 
 (define-module (app scwm winops)
@@ -212,19 +222,10 @@ If opaque-move-percent is a boolean, not a number, just return it."
 	(<= (window-frame-area win)
 	    (* display-area (/ p 100))))))
 
-
-(define-public move-opaquely?
-;;;**VAR
-;;; User-settable predicate to determine if windows should be moved opaquely.
- default-move-opaquely?)
-
-(define-public resize-opaquely?
-;;;**VAR
-;;; User-settable predicate to determine if windows should be resized opaquely.
- default-resize-opaquely?)
-
 (define*-public (interactive-move #&optional (win (get-window #f #t #f))
-				  (opaquely? (if win (move-opaquely? win))))
+				  (opaquely? (if win 
+						 ((or move-opaquely? default-move-opaquely?) 
+						  win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
@@ -234,7 +235,8 @@ opaquely if that returns #t and uses a rubber-band if it returns #f."
 
 (define*-public (interactive-resize #&optional (win (get-window #f #t #f))
 				    (opaquely? (if win 
-						   (resize-opaquely? win))))
+						   ((or resize-opaquely? default-resize-opaquely?)
+						    win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be resized opaquely, or using a rubber-band. If it is not
