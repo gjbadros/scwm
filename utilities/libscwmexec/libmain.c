@@ -1,4 +1,5 @@
-/*      Copyright (C) 1997, 1998 Maciej Stachowiak
+/* $Id$
+ * Copyright (C) 1997, 1998 Maciej Stachowiak
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,15 +104,16 @@ char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
   int got_output = 0; 
   int got_error = 0;
 
+  /* X event handling - wait for XA_SCWMEXEC_REPLY on w 
+     This needs to be before the ChangeProperty, otherwise
+     there is a race condition. --09/15/98 gjb*/
+  XSelectInput(dpy,w,PropertyChangeMask);
+
   XChangeProperty(dpy, w, XA_SCWMEXEC_REQUEST, XA_STRING,
 		  8, PropModeReplace, req, strlen(req)+1);
 
   XChangeProperty(dpy, root, XA_SCWMEXEC_REQWIN, 1,
 		  32, PropModeAppend, (unsigned char *) &w, 1);
-
-  /* X event handling - wait for XA_SCWMEXEC_REPLY on w */
-  XSelectInput(dpy,w,PropertyChangeMask);
-
 
   do {
     XIfEvent (dpy, &ev, (PredicateFn) FPropertyNotifyOnWindow, (XPointer) &w);
@@ -124,6 +126,10 @@ char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
 	got_error = 1;
       }
     }
+#ifdef DEBUG_REPLIES
+    fprintf(stderr, "Got {reply,output,error} = {%d,%d,%d}\n",
+            got_reply, got_output, got_error);
+#endif
   } while (!got_reply || !got_output || !got_error);
 
   *error=NULL;
