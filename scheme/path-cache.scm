@@ -9,12 +9,18 @@
 
 (define programs-that-exist #f)
 
+(define-public (program-exists? program-name)
+  "Return #t iff PROGRAM-NAME is in the current $PATH."
+  (search-path (separate-fields-discarding-char #\: (getenv "PATH") list)
+	       program-name))
+
+
 (define-public (initialize-programs-that-exist)
   "Initializes the cache with programs that exist in the current $PATH.
 This creates a list that `cached-program-exists?' then checks when
 queried whether a program exists or not.  Currently, this procedure
 spawns a zsh process to get the list of files in the $PATH very quickly."
-  (if (= 0 (system "which zsh >/dev/null"))
+  (if (program-exists? "zsh")
       (let ((progs-pipe (open-input-pipe
 			 "zsh -fc 'print -l $^path/*(N:t)'")))
 	(set! programs-that-exist 
@@ -26,7 +32,7 @@ spawns a zsh process to get the list of files in the $PATH very quickly."
 (if (not programs-that-exist)
     (initialize-programs-that-exist)
     (if (not programs-that-exist)
-	(display "Failed to initialize list of programs from $PATH using zsh")))
+	(display "Failed to initialize list of programs from $PATH using zsh\n")))
 
 (define-public (cached-program-exists? program-name)
   "Return #t if PROGRAM-NAME is in the cache of programs that exist.
@@ -39,10 +45,7 @@ it reverts to the (inefficient) implementation of `program-exists?'."
 	  (if (member program-name programs-that-exist) 
 	      (begin (display "hit ") (display program-name) (newline) #t)
 	      (begin (display "miss ") (display program-name) (newline) #f))
-	  (begin
-	    (display "using which") (newline)
-	    (= 0 (system (string-append "which " program-name " >/dev/null" ))))))
-  (if programs-that-exist
-      (if (member program-name programs-that-exist) #t #f)
-      (= 0 (system (string-append "which " program-name " >/dev/null" )))))
-
+	  (program-exists? program-name))
+      (if programs-that-exist
+	  (if (member program-name programs-that-exist) #t #f)
+	  (program-exists? program-name))))
