@@ -1,5 +1,8 @@
 ## autogen.sh - generate all the twisty little files.
 
+here=`pwd`
+cd `dirname $0`
+
 # Clean up these files -- maybe we should not have them in CVS? GJB:FIXME::
 rm -f ltconfig ltmain.sh
 
@@ -25,11 +28,13 @@ autoconf
 #  user may need to run config.status from their builddir(s) manually)
 #test -x ./config.status && ./config.status || true
 
+cd $here
+
 # Instead of rerunning config.status, re-run configure from scratch
 if [ -r config.status ]; then
   CMD=`awk '/^#.*\/?configure .*/ { $1 = ""; print; exit }' < config.status`
   echo "Running: $CMD $@" 1>&2
 else
-  CMD=./configure
+  CMD=`dirname $0`/configure
 fi
 $CMD "$@" && echo && echo "Now type 'make' to compile Scwm, and install via 'make install'."
