@@ -1,3 +1,7 @@
+Fri Sep 24 09:26:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* wavplay.scm: Use (getenv "SCWMDIR") instead of scwmdir.
+
 1999-09-23  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Added nonant support to 

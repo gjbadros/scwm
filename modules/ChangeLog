@@ -1,3 +1,8 @@
+Fri Sep 24 09:27:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c (xlib-set-drawing-mask!): Use XChangeGC
+ 	instead of creating a new GC.
+
 Thu Sep 23 17:55:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c (s_xlib_set_drawing_mask_x): Do not
