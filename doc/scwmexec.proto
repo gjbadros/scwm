@@ -1,0 +1,101 @@
+
+A brief description of the scwmexec protocol
+
+* The scwmexec protocol on a particular X screen involves one server
+and one or more clients. The following steps are involved in
+negotiating the protocol:
+
+0) On startup, the server advertises availability of the scwmexec
+protocol on a given screen by setting the "SCWMEXEC_LISTENER" property
+on the root window. It then waits for clients to initiate transactions
+by setting the SCWMEXEC_REQWIN property on the root window.
+
+1) Clients use a dedicated window for the transaction. An ordinary app
+window may be used, however, the library code creates a separate
+window for simplicities sake. The client first sets the
+SCWMEXEC_REQUEST property on the window with the command language
+expression it would like to have evaluated. 
+
+2) Then it sets the SCWMEXEC_REQWIN propert on the root window to the
+32 bit window ID of the window that has the request, and listens for
+property changes
+
+3) The server, upon being notified of the SCWMEXEC_REQWIN change,
+determines the window that is making the request and deletes the
+SCWMEXEC_REQWIN property.
+
+4) The server reads the SCWMEXEC_REQUEST property on the request
+window, deleting it in the process. 
+
+5) The server evaluates this expression and sets the SCWMEXEC_REPLY
+property on the client window to a string representation of the
+result.
+
+6) The client, upon notification of the SCWMEXEC_REPLY change, reads
+the reply, delting it in the process.
+
+Note that a given client is only allowed to have one active request at
+a time to avoid races.
+
+
+Possible extensions:
+
+* Set SCWMEXEC_REQWIN property in append mode, and have the server
+serve all requests it finds in the property on a PropertyNotify before
+deleting the property. This should make the protocol 100% safe against
+race conditions.
+
+* PropertyNotify events are delievered for all property changes to
+clients that listen to them; this means that if separate windows are
+used, the SCWMEXEC_REQWIN step of the protocol may be unnecessary; the
+server can just handle SCWMEXEC_REQUEST property changes on all
+windows. Any good reason not to do this? Would also solve the race
+issue.
+
+* Error reporting: If evaluating the expression results in an error,
+the server should not set SCWMEXEC_REPLY on the request window, but
+rather SCWMEXEC_ERROR, which should contain an appropriate error
+string.
+
+* Output redirection: Cake, just set SCWMEXEC_OUTPUT in addition to
+SCWMEXEC_REPLY or _ERROR.
+
+* Input redirection: This one is tricky, the server would have to
+request further input from the client in the middle of handling a
+request, this would require hacking the lib a lot.
+
+* Suppress printing of unspecified values: this could be solved in the
+client, but this is not 100% robust; both the unspecified value and
+'#{#<unspecified>}# print as #<unspecified> in guile. OTOH, do we
+really care? In any case, some notification mechanism could be used.
+
+* Use of ClientMessages: use ClientMessage events to send the server
+reply to the client client, it should be easier to filter these out
+for a specific window than property notifications. This should solve
+the eating of PropertyNotify problem below. But can arbitrary-length
+strings easily be sent through ClientMessages? (Answer: no, but you
+could just set the properties and use the ClientMessage to notify the
+client that they are ready).
+
+* Provide a gdk/gtk version of the scwmexec library, allowing
+notification to be implemented through signals and thus not hosing the
+event loop. This should make asynchronous operation of the protocol a
+piece of cake for gtk-based graphical apps.
+
+* Maybe versions for other toolkits too.
+
+
+
+Caveats:
+
+* The scwmexec library code may block indefinitely. Solution: a
+timeout should be added. However, since scwm operations may take
+indefinitely long, it may be useful for some clients to keep running
+their UI while waiting for a result. Solutions too this include
+threads or integrating the protocol into the client event loop.
+
+* The library code will also eat all PropertyNotify events while
+waiting for the server reply. This is bad for programs that otherwise
+use X11. Solutions include integrating scwmexec protocol management
+into the app's event loop, oor using a separate connection to the
+display to use the scwmexec protocol.
