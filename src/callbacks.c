@@ -55,6 +55,17 @@ SCWM_HOOK(load_processing_hook,"load-processing-hook",1,
 The hook procedures are invoked with one argument, the count of the
 s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'.");
 
+SCWM_HOOK(pre_command_hook,"pre-command-hook",2,
+"This hook is invoked with two arguments before every `call-interactively' execution.
+The arguments are the procedure to be called, and a list of the arguments passed.
+Global variable `this-command' and `this-command-args' can be modified to change 
+either of these.");
+
+SCWM_HOOK(post_command_hook,"post-command-hook",2,
+"This hook is invoked with two arguments after every `call-interactively' execution.
+The arguments are the procedure just called, and the list of the arguments passed.");
+
+
 SCM timer_hooks;
 
 struct scwm_body_apply_data {
@@ -219,46 +230,6 @@ scwm_safe_call0 (SCM thunk)
 {
   return scwm_safe_apply (thunk, SCM_EOL);
 }
-
-extern SCM sym_interactive;
-
-/* from window.c */
-extern SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
-
-SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
-          (SCM thunk, SCM debug),
-"Invoke THUNK interactively.
-Write a debug message if DEBUG is #t.")
-#define FUNC_NAME s_call_interactively
-{
-  SCM interactive_spec = SCM_BOOL_F;
-  Bool fDebugThisCommand = False;
-  VALIDATE_ARG_PROC(1,thunk);
-  VALIDATE_ARG_BOOL_COPY_USE_F(2,debug,fDebugThisCommand);
-  interactive_spec = scm_procedure_property(thunk,sym_interactive);
-  if (UNSET_SCM(interactive_spec)) {
-    SCM procname = scm_procedure_name(thunk);
-    /* char *szProcname = strdup("<anonymous procedure>"); 
-       only warn about non-anonymous non-interactive procedures;
-       it's a pain to use (lambda* "" () ..) to create procs for bindings */
-    if (gh_string_p(procname)) {
-      char *szProcname = gh_scm2newstr(procname, NULL);
-      scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
-      gh_free(szProcname);
-    }
-  }
-  { /* scope */
-    SCM args = SCM_EOL;
-    if (gh_string_p(interactive_spec)) {
-      args = ScmArgsFromInteractiveSpec(interactive_spec,thunk);
-    }
-    if (fDebugThisCommand) {
-      scm_write(gh_list(thunk,interactive_spec,args,SCM_UNDEFINED),scm_current_output_port());
-    }
-    return scwm_safe_apply(thunk, args);
-  }
-}
-#undef FUNC_NAME
 
 SCM
 scwm_safe_call1 (SCM proc, SCM arg)
@@ -1074,8 +1045,63 @@ run_input_hooks(fd_set *in_fdset)
 }
 /* Initialization. */
 
+extern SCM sym_interactive;
+
+/* from window.c */
+extern SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
+
+static SCM *pscm_this_command;
+static SCM *pscm_this_command_args;
+
+SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
+          (SCM thunk, SCM debug),
+"Invoke THUNK interactively.
+Write a debug message if DEBUG is #t.")
+#define FUNC_NAME s_call_interactively
+{
+  SCM interactive_spec = SCM_BOOL_F;
+  Bool fDebugThisCommand = False;
+  VALIDATE_ARG_PROC(1,thunk);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,debug,fDebugThisCommand);
+  interactive_spec = scm_procedure_property(thunk,sym_interactive);
+  if (UNSET_SCM(interactive_spec)) {
+    SCM procname = scm_procedure_name(thunk);
+    /* char *szProcname = strdup("<anonymous procedure>"); 
+       only warn about non-anonymous non-interactive procedures;
+       it's a pain to use (lambda* "" () ..) to create procs for bindings */
+    if (gh_string_p(procname)) {
+      char *szProcname = gh_scm2newstr(procname, NULL);
+      scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
+      gh_free(szProcname);
+    }
+  }
+  { /* scope */
+    SCM args = SCM_EOL;
+    SCM answer;
+    if (gh_string_p(interactive_spec)) {
+      args = ScmArgsFromInteractiveSpec(interactive_spec,thunk);
+    }
+    if (fDebugThisCommand) {
+      scm_write(gh_list(thunk,interactive_spec,args,SCM_UNDEFINED),scm_current_output_port());
+    }
+    *pscm_this_command = thunk;
+    *pscm_this_command_args = args;
+    scwm_run_hook(pre_command_hook,gh_list(thunk,args,SCM_UNDEFINED));
+    thunk = *pscm_this_command;
+    args = *pscm_this_command_args;
+    answer = scwm_safe_apply(thunk, args);
+    scwm_run_hook(post_command_hook,gh_list(thunk,args,SCM_UNDEFINED));
+
+    return answer;
+  }
+}
+#undef FUNC_NAME
+
+
 void init_callbacks()
 {
+  SCWM_VAR_INIT(this_command,"this-command",SCM_BOOL_F);
+  SCWM_VAR_INIT(this_command_args,"this-command-args",SCM_EOL);
 
   gettimeofday(&last_timeval, NULL);
 

@@ -671,7 +671,6 @@ scwm_main(int argc, char **argv)
   init_miscprocs();
   init_menuitem();
   init_menulook();
-  init_message_window();
   init_drawmenu();
   init_menu();
   init_binding();
@@ -1043,6 +1042,7 @@ Repository Timestamp: %s\n",
   BlackoutScreen();           /* if they want to hide the capture/startup */
   
   InitVariables();
+  init_message_window();
   init_image_colormap();
   init_borders();
   init_resize_gcs();
