@@ -301,7 +301,7 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 	  (list->string (reverse return-key-char-list)))))
 
 (define*-public (menuitem label #&key image-above image-left
-			  extra-label action hover-action unhover-action
+			  extra-label action submenu hover-action unhover-action
 			  hotkey-prefs)
   "Return a menuitem object with the given attributes.
 LABEL is a string for the name on the item.
@@ -331,8 +331,12 @@ the shortcut key for the menu item."
   (if (string? action)			;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))
 	(set! action (lambda () (execute program-name)))))
+  (if (and (bound? action) (bound? submenu))
+      (error "Cannot give both an action and a submenu"))
+  (if (bound? submenu)
+      (set! action submenu))
   (make-menuitem label action extra-label image-above image-left
-		  hover-action unhover-action hotkey-prefs))
+		 hover-action unhover-action hotkey-prefs (bound? submenu)))
 
 (define*-public (menu list-of-menuitems #&key
 		      (image-side 'menu-side-image)
@@ -344,6 +348,7 @@ the shortcut key for the menu item."
 		      (color-stipple 'menu-stipple-color)
 		      (font 'menu-font)
 		      (look 'menu-look)
+		      popup-delay hover-delay
 		      (extra #f))
   "Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
@@ -371,6 +376,8 @@ specific to the menu look used for this menu."
 			 font 
 			 image-side image-align color-bg-image-side image-bg
 			 extra)))
+    (if (bound? popup-delay) (set-menu-popup-delay! menu popup-delay))
+    (if (bound? hover-delay) (set-menu-hover-delay! menu hover-delay))
     (set-menu-menu-look! menu look)
     menu))
 
@@ -514,7 +521,7 @@ Currently, this means in the-root-module."
 
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
-  (bound? scwm-set-master-solver))
+  (bound? scwm-set-master-solver!))
 
 (define-public (scwm-system cmd)
   "Run CMD using /bin/sh -c CMD and return the exit status.

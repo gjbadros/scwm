@@ -178,6 +178,23 @@ for details."
  'splicing)
 
 
+;; GJB:FIXME:: these should probably not be public
+(define-public (hide-side-decorations win)
+  (set-object-property! win 'no-side-decorations #t)
+  (force-reset-window-frame! win))
+
+(define-public (show-side-decorations win)
+  (set-object-property! win 'no-side-decorations #f)
+  (force-reset-window-frame! win))
+
+(define-public (squash-titlebar-decoration win)
+  (set-object-property! win 'squashed-titlebar #t)
+  (force-reset-window-frame! win))
+
+(define-public (unsquash-titlebar-decoration win)
+  (set-object-property! win 'squashed-titlebar #f)
+  (force-reset-window-frame! win))
+
 
 ;; some useful style options
 (add-window-style-option #:border-width set-border-width!)
@@ -197,12 +214,8 @@ for details."
 (add-boolean-style-option #:sticky stick unstick)
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
-
-;; GJB:FIXME:: This still needs to force the squashing to take effect
-;; right now it is delayed until, e.g., the window is resized
-(add-window-style-option #:squashed-titlebar
-			 (lambda (arg w)
-			   (set-object-property! w 'squashed-titlebar arg)))
+(add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
+(add-boolean-style-option #:squashed-titlebar squash-titlebar-decoration unsquash-titlebar-decoration)
 
 ; clashes with maximized so make it hint-only for now
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)
