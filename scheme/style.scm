@@ -19,15 +19,72 @@
 
 
 (define-module (app scwm style)
+  :use-module (app scwm base)
   :use-module (app scwm winlist)
   :use-module (app scwm winops)
-  :use-module (app scwm wininfo))
+  :use-module (app scwm wininfo)
+  :use-module (ice-9 common-list))
 
 
 
+(define-public (window-style condition . args)
+  (let ((predicate (cond
+		    ((or (eq? #t condition) 
+			 (and (string? condition) (string=? "*" condition))) 
+		     (lambda (w) #t))
+		    ((string? condition) (wildcard-matcher condition))
+		    ((procedure? condition) condition)
+		    (else (error "Bad window specifier for window-style.")))))
+    (let* ((the-style (apply make-style args))
+	   (style-proc (car the-style))
+	   (hint-proc (cdr the-style))
+	   (new-style-hook
+	     (lambda (w) 
+	       (if (predicate w)
+		   (style-proc w))))
+	   (new-hint-hook
+	     (lambda (w) 
+	       (if (predicate w)
+		   (hint-proc w)))))
+      (set! window-style-hooks (append window-style-hooks 
+				       (list new-style-hook)))
+      (set! window-hint-hooks (append window-hint-hooks 
+				      (list new-hint-hook)))
+      (for-each new-style-hook (list-all-windows)))))
+
+
+(define-public (style-one-window w . args)
+  (let ((the-style (apply make-style args)))
+    ((car the-style) w)))
+
+(define-public (make-style . args)
+  (let ((style-procs-and-args 
+	 (pick id (map-by-twos 
+		   (lambda (key val)
+		     (let ((hr (hashq-ref window-style-options key)))
+		       (if hr (cons hr val) #f))) args)))
+	(hint-procs-and-args 
+	 (pick id (map-by-twos 
+		   (lambda (key val)
+		     (let ((hr (hashq-ref window-hint-options key)))
+		       (if hr (cons hr val) #f))) args))))
+    (cons
+     (lambda (w)
+       (for-each (lambda (x) 
+		   ((car x) (cdr x) w)) style-procs-and-args))
+     (lambda (w)
+       (for-each (lambda (x) ((car x) (cdr x) w)) hint-procs-and-args)))))
+    
+
+(define (map-by-twos proc l)
+  (if (or (null? l) (null? (cdr l)))
+      '()
+      (cons (proc (car l) (cadr l))
+	    (map-by-twos proc (cddr l)))))
+
+
 (define window-style-options (make-hash-table 40))
 (define window-hint-options (make-hash-table 10))
-
 
 (define-public (add-window-style-option key handler)
   (hashq-set! window-style-options key handler))
@@ -41,34 +98,12 @@
 (define-public (add-window-hint-option key handler)
   (hashq-set! window-hint-options key handler))
 
+(define-public (add-boolean-hint-option key t-handler f-handler)
+  (hashq-set! window-hint-options key (lambda (val win)
+		    (if val
+			(t-handler win)
+			(f-handler win)))))
 
-(define (map-by-twos proc l)
-  (if (or (null? l) (null? (cdr l)))
-      #f
-      (cons (proc (car l) (cadr l))
-	    (map-by-twos proc (cddr l)))))
-
-(define-public (make-style . args)
-  (let ((style-procs-and-args 
-	 (filter id (map-by-twos 
-		     (lambda (key val)
-		       (let ((hr (hashq-ref window-style-options key)))
-			 (if hr (cons hr val) #f))))))
-	(hint-procs-and-args 
-	 (filter id (map-by-twos 
-		     (lambda (key val)
-		       (let ((hr (hashq-ref window-hint-options key)))
-			 (if hr (cons hr val) #f)))))))
-    (cons
-     (lambda (w)
-       (map (lambda (x) ((car x) (cdr x) w)) style-procs-and-args))
-     (lambda (w)
-       (map (lambda (x) ((car x) (cdr x) w)) hint-procs-and-args)))))
-    
-
-(define-public (style-one-window w . args)
-  (let ((the-style (apply make-style args)))
-    ((car the-style) w)))
 
 
 (define old-new-window-handler #f)
@@ -77,41 +112,22 @@
 (define window-style-hooks '())
 (define window-hint-hooks '())
 
-(define (window-style condition . args)
-  (let ((predicate (cond
-		    ((string? condition) (make-wildcard-matcher condition))
-		    ((boolean? condition) (lambda (w) condition))
-		    ((procedure? condition) condition)
-		    (else (error "Bad window specifier for window-style.")))))
-    (let* ((the-style (apply make-style args))
-	   (style-proc (car the-style))
-	   (hint-proc (cdr the-style))
-	   (new-style-hook
-	     (lambda () 
-	       (let ((w (get-window)))
-		 (if (predicate w)
-		     (style-proc w)))))
-	   (new-hint-hook
-	     (lambda () 
-	       (let ((w (get-window)))
-		 (if (predicate w)
-		     (hint-proc w))))))
-      (append! window-style-hooks new-style-hook)
-      (append! window-hint-hooks new-hint-hook)
-      (map new-style-hook (list-all-windows)))))
 
 (set! old-new-window-handler 
       (bind-event 'new-window
 		  (lambda ()
-		    (map (lambda (hook) (hook)) window-style-hooks)
+		    (for-each (lambda (hook) 
+				(hook (get-window)))
+			 window-style-hooks)
 		    (if old-new-window-handler
 			(old-new-window-handler)))))
 
 (set! old-new-window-hint-handler 
       (bind-event 'new-window-hint
 		  (lambda ()
-		    (map (lambda (hook) (hook)) window-hint-hooks)
-		    (if old-new-hint-window-handler
+		    (for-each (lambda (hook) (hook (get-window))) 
+			 window-hint-hooks)
+		    (if old-new-window-hint-handler
 			(old-new-window-hint-handler)))))
 
 
@@ -127,8 +143,9 @@
 (add-window-style-option #:focus set-window-focus!)
 (add-boolean-style-option #:plain-border plain-border normal-border)
 (add-window-style-option #:icon-title set-icon-title!)
-(add-window-style-option #:icon-box (lambda args
-				      (apply set-icon-box! args)))
+(add-window-style-option #:icon-box (lambda (args w)
+				      (apply set-icon-box! (append args 
+								   (list w)))))
 (add-boolean-style-option #:sticky-icon stick-icon unstick-icon)
 (add-boolean-style-option #:start-iconified iconify deiconify)
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
@@ -157,9 +174,9 @@
 
 
 (add-window-style-option #:use-style 
-			 (lambda (the-style w) ((car the-style w))))
+			 (lambda (the-style w) ((car the-style) w)))
 (add-window-hint-option #:use-style 			 
-			(lambda (the-style w) ((cdr the-style w))))
+			(lambda (the-style w) ((cdr the-style) w)))
 
 ;; use-decor not implemented for now
 
@@ -171,19 +188,6 @@
 				(unmaximize w))))
 (add-boolean-style-option #:start-lowered lower-window raise-window)
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
-
-
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
-
-
-
-
-
-
-
-
-
-
-
 

@@ -59,8 +59,6 @@
   (make-toggling-winop icon-sticky? unstick-icon stick-icon))
 
 (define*-public (maximize nw nh #&optional (w (get-window)))
-  (display 'maximizing)
-  (newline)
   (if w (let* ((pos (window-position w))
 	       (size (window-size w))
 	       (x (car pos))

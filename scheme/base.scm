@@ -29,6 +29,18 @@
 (define-public (%y y)
   (inexact->exact (truncate (/ (* y (cadr (display-size))) 100))))
 
+(define-public (x- x)
+  (- (car (display-size)) x))
+
+(define-public (y- y)
+  (- (cadr (display-size)) y))
+
+(define-public (%x- x)
+  (inexact->exact (truncate (/ (* (- 100 x) (car (display-size))) 100))))
+
+(define-public (%y- y)
+  (inexact->exact (truncate (/ (* (- 100 y) (cadr (display-size))) 100))))
+
 (define*-public (w%x x #&optional (w (get-window)))
   (inexact->exact (truncate (/ (* x (car (window-size w))) 100))))
 
@@ -53,11 +65,15 @@
   (let ((pos (pointer-position)))
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
+(define-public (move-viewport x y)
+  (let ((pos (viewport-position))
+    (set-viewport-position! (+ x (car pos)) (+ y (cdr pos))))))
+
 (define*-public (menu-style #&key 
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (stipple #f) font mwm mwm-style)
-  (set-menu-colors! (or fg foreground) (or bg backgrounf stipple))
+  (set-menu-colors! (or fg foreground) (or bg backgroung) stipple)
   (if (bound? font)
       (set-menu-font! font))
   (if (bound? mwm)
@@ -72,8 +88,5 @@
       (set-title-height! height))
   (if (bound? justify)
       (set-title-justify! justify)))
-
-
-
 
 

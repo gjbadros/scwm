@@ -19,7 +19,8 @@
 
 
 (define-module (app scwm wininfo)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (ice-9 regex))
 
 
 
@@ -70,15 +71,33 @@
 			 (if i ")" "")))))
 
 
-(define-public (wildcard-matcher wildcard) 
-  (let ((wc-rgx (make-regexp 
-		 (regexp-substitute/global #f "\\*" wildcard 
-					   'pre ".*" 'post))))
+;; quote all regexp meta-characters, then turn \* and \? into .* and
+;; .? respectively.
+(define (wildcard->regexp wildcard)
+  (regexp-substitute/global 
+   #f "\\\\\\*|\\\\\\?" 
+   (regexp-quote wildcard) 
+   'pre 
+   (lambda (match) 
+     (case (string-ref (match:string match) (1+ (match:start match))) 
+       ((#\*) ".*")
+       ((#\?) ".?"))) 
+   'post))
+
+
+(define*-public (wildcard-matcher wildcard #&key (full-regexp #f)
+				  (regexp-options `(,regexp/icase))) 
+  (let ((wc-rgx (apply 
+		 make-regexp 
+		 (if full-regexp
+		     (wildcard->regexp wildcard)
+		     wildcard)
+		 regexp-options)))
     (lambda* (#&optional (w (get-window)))
       (or
        (let* ((title (window-title w))
-  	      (result (regexp-exec wc-rgx title)))
- 	 (and result (= (match:end result) (string-length title))))
+	      (result (regexp-exec wc-rgx title)))
+	 (and result (= (match:end result) (string-length title))))
        (let* ((class (window-class w))
 	      (result (regexp-exec wc-rgx class)))
 	 (and result (= (match:end result) (string-length class))))
@@ -86,6 +105,8 @@
 	      (result (regexp-exec wc-rgx resource)))
 	 (and result (= (match:end result) (string-length resource))))))))
 
-(define*-public (wildcard-match? wildcard #&optional (w (get-window)))
-  ((wildcard-matcher wildcard) w))
-
+(define*-public (wildcard-match? wildcard #&optional (w (get-window))
+				 #&key (full-regexp #f)
+				 (regexp-options `(,regexp/icase)))
+  ((wildcard-matcher wildcard #:full-regexp full-regexp 
+		     #:regexp-options regexp-options) w))
