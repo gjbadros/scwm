@@ -127,6 +127,7 @@ returning #f which ultimately would cause an error somewhere
 
 * New hooks
 ** `window-enter-hook', `window-leave-hook'
+** `select-window-enter-hook', `select-window-leave-hook'
 ** `edge-enter-hook', `edge-leave-hook', `edge-scroll-hook'
 ** `window-property-change-hook'
 ** `desk-size-change-hook', `viewport-position-change-hook'
