@@ -5,7 +5,7 @@
   :use-module (app scwm base))
 
 (define (half n)
-  (truncate (/ n 2)))
+  (round/ n 2))
 
 (define-public (pair-virtual->viewport pt)
   "Convert a pair point from virtual to viewport coordinates.
@@ -102,3 +102,23 @@ relative to the current viewport."
 	 (w (car size))
 	 (h (cadr size)))
     (cons (+ xl w) (+ yt h))))
+
+;; (window-viewport-position-of 'center (get-window))
+(define-public (window-viewport-position-of sym win)
+  "Return a list (X Y) that is the viewport position of the SYM part of WIN.
+SYM is one of northwest north northeast west center east southwest south southeast."
+  (let ((pos
+	 ((case sym
+	    ((north) window-center-top)
+	    ((northeast) window-right-top)
+	    ((east) window-right-middle)
+	    ((southeast) window-right-bottom)
+	    ((south) window-center-bottom)
+	    ((southwest) window-left-bottom)
+	    ((west) window-left-middle)
+	    ((northwest) window-left-top)
+	    ((center) window-center-middle)
+	    (else (error "SYM must be one of northwest north northeast west center east southwest south southeast")))
+	  win)))
+    (list (car pos) (cdr pos))))
+  

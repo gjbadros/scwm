@@ -22,6 +22,7 @@
 (define-module (app scwm placement)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm window-locations)
   :use-module (app scwm virtual))
 
 
@@ -45,7 +46,7 @@ This is equivalent to `move-window-to-desk', just named
 differently for clarity and convenience."
   (move-window-to-desk desk win))
 
-(define*-public (interactive-place win #&key (resize #f))
+(define*-public (place-interactively win #&key (resize #f))
   "Place WIN interactively.
 
 Firts WIN is moved interactively with a rubber-band style move, then,
@@ -71,7 +72,7 @@ centered at the mouse pointer position."
   (place-at-point-internal win offset proportional-offset))
 
 
-(define-public (center-placement win)
+(define-public (place-at-center win)
   "Place window in the center of the current viewport."
   (let* ((sz (window-size win))
 	 (w (car sz))
@@ -88,7 +89,6 @@ centered at the mouse pointer position."
   "Return a procedure that takes a window and places it in viewport (XX, YY).
 The procedure will act just like calling `place-in-viewport' on the
 window with the same XX and YY arguments."
-
   (lambda (win) (place-in-viewport win xx yy)))
 
 (define-public (on-desk-placement desk)
@@ -139,6 +139,37 @@ a window at the pointer position."
      (place-at-point-internal win offset proportional-offset))))
 
 
+
+(define*-public (near-window-placement window-getter #&key (offset '(0 0))
+				       (proportional-offset '(-0.5 -0.5))
+				       (relative-to 'center))
+  "Return a procedure that places a window near the window returned by WINDOW-GETTER.
+
+If RELATIVE-TO is specified, it gives a symbolic location in the
+existing window returned by WINDOW-GETTER to use as the control point
+for the window placement.  RELATIVE-TO may be any of northwest north
+northeast west center east southwest south southeast.
+
+If OFFSET is specified, it is interpreted as a list of x and y offsets
+to add to the control point.
+
+If PROPORTIONAL-OFFSET is specified, it is interpreted as a list of
+numbers to multiply by the being-placed window's width and height, and
+is treated as an extra offset added to the control point.
+
+The defaults are (0 0) for OFFSET and (-0.5 -0.5) for
+PROPORTIONAL-OFFSET, with the result that by default the window is
+centered at the control point of the existing window."
+  (lambda (win)
+    (let* ((nearwin (window-getter))
+	   (ns-pos (window-viewport-position-of relative-to nearwin))
+	   (final-pos
+	    (map (lambda (pp ws o po)
+		   (+ pp o (inexact->exact (round (* ws po)))))
+		 ns-pos (window-frame-size win)
+		 offset proportional-offset)))
+      (with-window win (apply move-to final-pos)))))
+
 ;; conveniences
 
 (define*-public (virtual-switch-placement proc #&key (switch #t) (return #f))
@@ -181,5 +212,3 @@ respectively."
   (rubber-band-move win)
   (if resize
       (rubber-band-resize win)))
-
-

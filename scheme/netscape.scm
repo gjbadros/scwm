@@ -11,6 +11,9 @@
   :use-module (app scwm defoption)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
+  :use-module (app scwm wavplay)
+  :use-module (app scwm style)
+  :use-module (app scwm placement)
   :use-module (app scwm xprop-extras)
   :use-module (app scwm message-window)
   :use-module (app scwm winops)
@@ -20,7 +23,20 @@
 (define-scwm-option *netscape-new-window* #f
   "If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window."
   #:type 'boolean
-  #:group 'system)
+  #:group 'netscape)
+
+(define-scwm-option *netscape-download-closed-wav* "tada.wav"
+  "The filename of the sound to play when a netscape finishes a download."
+  #:type 'sound
+  #:group 'netscape)
+
+(define-scwm-option *netscape-download-closed-threshold-seconds* 5
+  "The minimum duration of a netscape download for playing the sound."
+  #:type 'integer
+  #:group 'netscape
+  #:range '(0 . 600)
+  #:favorites '(0 3 5 10 15 30 60 120 240 360 480 600))
+
 
 ;; Get a visible netscape window, or any netscape window
 ;; if none are visible
@@ -96,3 +112,24 @@ It defaults to `*netscape-new-window*'."
 See `X-cut-buffer' and `netscape-goto-url'.  NEW can be #f to
 not open a new netscape frame."
   (netscape-goto-url (X-cut-buffer-string) display-message-briefly new))
+
+;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
+;; instead of just placement-proc, even though I've explicitly
+;; named the window
+(window-style "findDialog_popup" #:transient-placement-proc 
+	      (near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+
+(define-public (netscape-download-closed-action win)
+  (let ((time-up (- (current-time) (window-creation-time win))))
+    (if (> time-up *netscape-download-closed-threshold-seconds*)
+	(wavplay *netscape-download-closed-wav*))))
+
+(define (call-netscape-download-closed-action win)
+  (if (and (string=? (window-class win) "Netscape")
+	   (string=? (window-resource win) "Download"))
+      (netscape-download-closed-action win)))
+
+(define-public (enable-dynamic-netscape-actions)
+  (window-style "findDialog_popup" #:transient-placement-proc 
+		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+  (add-hook! window-close-hook call-netscape-download-closed-action))

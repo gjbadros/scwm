@@ -124,12 +124,14 @@ if it were on top (unobscured)."
 		    (display-size))))
 	 (apply * (window-frame-size win)))))
 
+;; GJB:FIXME:: get rid of this -- window-center-middle returns viewport position
+;; but otherwise does the same thing.
 (define-public (window-center-position win)
-  "Return the coordinates of the center of WIN as a list of the X and Y coordinate."
+  "Return the virtual coordinates of the center of WIN as a list of the X and Y coordinate."
   (map (lambda (wp ws) 
 	 (+ wp (round/ ws 2)))
        (window-position win)
-       (window-size win)))
+       (window-frame-size win)))
 
 (define*-public (window-geometry-string #&optional (win (get-window)))
   "Return a string corresponding to the geometry specifications for WIN.

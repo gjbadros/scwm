@@ -86,9 +86,17 @@
   (add-hook! vv-recognition-hook vv-recognition-actions)
   (add-hook! vv-recognition-hook vv-recognition-debug))
 
+(define-public (vv-terminate)
+  "Use this to terminate ViaVoice recognition.
+This will release /dev/dsp for other uses.  Use
+`vv-initialize' to restart (when /dev/dsp is no
+longer in use by another process."
+  (if (vv-connected?)
+      (begin
+	(vv-disconnect)
+	(vv-close))))
+
 ;; (vv-connected?)
-;; (vv-disconnect)
-;; (vv-close)
 ;; (vv-connect (lambda (status) (vv-use-grammar "/home/gjb/scwm/modules/viavoice/scwmgrammar.fsg")))
 
 ;; viavoice
