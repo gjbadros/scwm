@@ -147,6 +147,21 @@ void initSM() {
   IceSMconn = SmcGetIceConnection(SMconn);
   setSMProperties();
 }
+
+/* cleanly exit the session.
+   Don't let the SM restart us if automatic_restart is 0. */
+void doneSM(int automatic_restart)
+{
+  CARD8 restartStyle = SmRestartIfRunning;
+  SmPropValue restartStyleVal = { 1, &restartStyle };
+  SmProp restartStyleProp = { SmRestartStyleHint, SmCARD8,
+			      1, &restartStyleVal };
+
+  if (!automatic_restart)
+    SmcSetProperties(SMconn, 1, &restartStyleProp);
+  SmcCloseConnection(SMconn, 0, NULL);
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

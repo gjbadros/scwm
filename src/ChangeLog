@@ -1,3 +1,11 @@
+1998-10-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* session-manager.c (doneSM): New function to cleanly exit session.
+
+	* session-manager.h: Prototype it.
+
+	* shutdown.c (Done): Use it.
+
 1998-10-20  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* scwm.c (InitUserData): UserHome was not set in all cases.

@@ -31,5 +31,6 @@ EXTERN_SET(SmcConn SMconn, NULL);
 EXTERN_SET(char *SmcId, NULL);
 
 void initSM();
+void doneSM(int);
 
 #endif /* SESSION_MANAGER_H__ */

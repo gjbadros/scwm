@@ -98,6 +98,10 @@ Done(int restart_or_dump, char *command)
                       8, PropModeReplace, "", 0);
     }
 
+#ifdef HAVE_LIBSM_LIBICE
+    doneSM(restart_or_dump < 0);
+#endif
+
     /* Really make sure that the connection is closed and cleared! */
     XUngrabServer(dpy);
     XDefineCursor(dpy, Scr.Root, None);
