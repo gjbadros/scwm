@@ -1,11 +1,11 @@
 /* $Id$
  * add_window.c
+ * (C) 1999 Greg J. Badros and Maciej Stachowiak
  */
 
-/* This module is derived from code
- * based on Twm, but has been siginificantly modified 
- * by Rob Nation
- */
+/* This module is derived from code based on fvwm2 which was in turn
+ * based on code derived from Twm.  It was siginificantly modified by
+ * Rob Nation for fvwm2 */
 
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/

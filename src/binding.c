@@ -717,16 +717,15 @@ There are various event contexts that are used as arguments
 to the binding procedures.  Among these are:
 
   'window
-  'titlebar (or 'title)
+  'title
   'icon
   'root
-  'frame-corners (or 'frame)
-  'frame-sides (or 'sidebar)
+  'frame-corners
+  'frame-sides
   'client-window
   'root-window
   'left-button-N  (N=1-5)
   'right-button-N (N=1-5)
-  'button-N (N=1-10) [deprecated]
 
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
@@ -859,7 +858,7 @@ SCWM_PROC(lookup_key, "lookup-key", 2, 0, 0,
           (SCM contexts, SCM key))
      /** Return the procedures bound to KEY within the CONTEXTS.
 KEY is a modifiers and keysym string.
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding. */
 #define FUNC_NAME s_lookup_key
@@ -906,7 +905,7 @@ if there is no matching binding. */
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
      /** Remove any bindings attached to KEY in given CONTEXTS.
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
 The return value is #t if the binding was removed successfully, #f 
 otherwise.  */
@@ -976,7 +975,7 @@ is not a valid keysym. */
 SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
           (SCM contexts, SCM button))
      /** Remove any bindings attached to mouse BUTTON in given CONTEXTS.
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 BUTTON is a string or integer giving the mouse button number */
 #define FUNC_NAME s_unbind_mouse
 {
@@ -1005,7 +1004,7 @@ SCWM_PROC(bind_key, "bind-key", 3, 1, 0,
      /** Bind the given KEY within the CONTEXTS to invoke PROC.
 Return value is #t if the binding was made successfully, #f otherwise
 (e.g., if unbound modifiers or an unknown keysym is used, the binding will fail).
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar)) KEY is
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides)) KEY is
 a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure that will be invoked (with no arguments) when the
 specified key is pressed in the specified context. The optional
@@ -1013,11 +1012,11 @@ argument RELEASE-PROC, if specified, is a procedure that will be
 invoked when the key is released.  The contexts include:
 
 'window
-'titlebar (or 'title)
+'title
 'icon
 'root
-'frame-corners (or 'frame)
-'frame-sides (or 'sidebar)
+'frame-corners
+'frame-sides
 'client-window
 'root-window
 'left-button-N  (N=1-5)
