@@ -1,0 +1,2 @@
+#!/bin/sh
+indent -bad -bap -i2 -br -ce -ss -npcs -cs -psl -lp -lps -v "$@"
