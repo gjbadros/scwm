@@ -1,3 +1,8 @@
+Thu Apr  8 18:21:52 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Fix the shaped window before animated 
+	unshading (for squashed windows)
+
 Wed Apr  7 10:22:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c: Handle SIGFPE, too.
