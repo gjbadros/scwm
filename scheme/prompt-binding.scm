@@ -24,11 +24,18 @@
 ;;; cache the information about bindings list and command list
 ;;; in local data structures so it's faster to re-sort, etc.
 ;;;
+;;; Handle all-modifier key-bindings
+;;; 
+;;; Make the type option-menu show the current setting when a new binding is selected
+;;;
+;;; update the type option-menu to display the right pair of
+;;; possibilities depending on the kind of event (mouse/key)
 
 
 
 (define-module (app scwm prompt-binding)
   :use-module (ice-9 session)
+  :use-module (ice-9 regex)
   :use-module (app scwm reflection)
   :use-module (app scwm doc)
   :use-module (gtk gtk)
@@ -63,7 +70,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 COLS is a list of strings."
   (let ((i 0))
     (for-each (lambda (val)
-		(gtk-clist-set-row clist row i val)
+		(gtk-clist-set-text clist row i val)
 		(set! i (1+ i)))
 	      cols)))
 
@@ -173,6 +180,7 @@ COLS is a list of strings."
 
 (define-public pb-cmd-clist #f)
 (define current-type "unset")
+(define current-context "all")
 
 (define (make-type-option-menu types)
   (let ((menu (gtk-menu-new))
@@ -194,14 +202,56 @@ COLS is a list of strings."
 (define (make-key-type-option-menu)
   (make-type-option-menu (list "Press" "Release")))
 
-(define (remove-binding key type command)
-  noop)
+;; GJB:FIXME:: this does not do error checking
+(define (add-remove-binding key type command mouse-proc key-proc)
+  "MOUSE-PROC is either `bind-mouse' or `unbind-mouse'.
+KEY-PROC is either `bind-key' or `unbind-key'."
+  (let ((proc
+	 (let ((m (string-match "^(.*-)Button([1-5])$" key) )
+	       (cmd-sym (string->symbol command))
+	       (context-sym (string->symbol current-context)))
+	   (if m
+	       (let ((prefix (match:substring m 1))
+		     (butnum (match:substring m 2)))
+		 (lambda ()
+		   (mouse-proc context-sym
+			       (string-append prefix butnum)
+			       (if (not (string=? type "Immed"))
+				   (eval cmd-sym) #f)
+			       (if (string=? type "Immed")
+				   (eval cmd-sym) #f)
+			       )))
+	       ;; not a mouse binding, so hopefully a keyboard one
+	       (lambda ()
+		 (key-proc context-sym
+			   key 
+			   (if (not (string=? type "Release"))
+				(eval cmd-sym) #f)
+			   (if (string=? type "Release")
+			       (eval cmd-sym) #f)))))))
+    (if (string=? key "Null") #f proc)))
 
 (define (remove-binding-for-row clist row)
   (apply remove-binding (gtk-clist-get-row-values clist row 2)))
 
+(define (remove-binding key type command)
+  (let ((proc (add-remove-binding key type command unbind-mouse unbind-key)))
+    (if proc (proc))))
+
 (define (add-binding key type command)
-  #f)
+  (add-remove-binding key type command bind-mouse bind-key))
+
+;; (use-scwm-modules (ice-9 regex))
+;; (begin (set! current-context "all") (add-binding "H-Button1" "Immed" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-Button1" "Complex" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-Button1" "foo" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-1" "bar" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-1" "Press" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-1" "Release" "send-key-press-prior"))
+;; (begin (set! current-context "all") (add-binding "H-1" "bar" "send-key-press-prior"))
+;; (begin (set! current-context "root") (add-binding "H-1" "bar" "send-key-press-prior"))
+;; (define p (add-binding "H-1" "Press" "next-window"))  (p)
+;; (list (procedure-source p) (procedure-environment p))
 
 (define-public (prompt-binding-vbox)
   (let* ((name (symbol->string (caar contexts-and-descriptions)))
@@ -342,8 +392,8 @@ COLS is a list of strings."
 			    (let ((sym-and-descr (list-ref 
 						  contexts-and-descriptions
 						  row)))
-			      (gtk-frame-set-label context-frame 
-						   (symbol->string (car sym-and-descr)))
+			      (set! current-context (symbol->string (car sym-and-descr)))
+			      (gtk-frame-set-label context-frame current-context)
 			      (gtk-label-set-text 
 			       context-label 
 			       (string-append descr-prefix-string 
@@ -365,6 +415,7 @@ COLS is a list of strings."
 	   (set! current-cmd-row row)
 	   (set! current-documented-command cmd)
 	   (gtk-text-replace doc-textbox (if (string? docs) docs ""))
+	   (gtk-scrolled-window-set-vadjustment-value scroller-doc 0)
 	   (gtk-frame-set-label doc-frame cmd)
 	 )))
 
@@ -398,6 +449,7 @@ COLS is a list of strings."
 			  ;; prompt-binding:copy
 			  (lambda ()
 			    (let* ((vals (gtk-clist-get-row-values clist current-binding-row 2)))
+			      (set-car! vals "Null")
 			      (gtk-clist-insert clist current-binding-row vals)
 			      (gtk-clist-select-row clist current-binding-row 0))))
 
@@ -415,12 +467,19 @@ COLS is a list of strings."
 			      (let ((code-to-add-binding (add-binding key-name current-type proc-name)))
 				;; above gives #f if the binding is no good
 				(if code-to-add-binding
-				    (begin
+				    (let ((answer #f))
 				      (remove-binding-for-row clist current-binding-row)
-				      (code-to-add-binding)
+				      (catch #t
+					     (lambda ()
+					       (set! answer (code-to-add-binding)))
+					     (lambda args
+					       (caught-error "Error adding binding!\n" args)
+					       (beep)))
 				      (clist-set-row-text clist 
 							  current-binding-row 
-							  (list key-name current-type proc-name)))
+							  (list key-name current-type proc-name))
+				      (if (not answer) 
+					  (begin (beep) (gtk-entry-select-region key 0 -1))))
 				    (beep))))))
 
       ;; the delete button in the binding frame at the top
@@ -440,7 +499,7 @@ COLS is a list of strings."
       ;; the "grab" button next to the event descriptor (e.g., A-Button2)
       (gtk-signal-connect grab-key-button "clicked"
 			  (lambda ()
-			    (gtk-entry-set-text key (car (get-key-event)))))
+			    (gtk-entry-set-text key (car (get-next-event)))))
       
       ;; the bindings list, top
       (gtk-signal-connect 
@@ -463,12 +522,13 @@ COLS is a list of strings."
 	     (else
 	      (begin
 		(gtk-widget-hide button-type-option-menu))
-	      (gtk-widget-show key-type-option-menu))))))
+	      (gtk-widget-show key-type-option-menu)))
+	   (set! current-type type))))
       (gtk-widget-show-all vbox)
       (gtk-clist-select-row clist 0 0)
       vbox)))
 
-(define*-public (prompt-binding #&optional (title "Bindings"))
+(define*-public (prompt-binding #&optional (title "Scwm Bindings"))
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (vbox (gtk-vbox-new #f 5))
 	 (hbox-buttons (gtk-hbutton-box-new))

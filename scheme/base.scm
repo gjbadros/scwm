@@ -807,7 +807,20 @@ Returns #f if no window was selected."
   (let ((win (car (select-viewport-position cursor release?))))
     (if (window? win) win #f)))
 
+(define*-public (caught-error descriptor args)
+  "Display an error message for a caught error.
+DESCRIPTOR is a description to be printed, ARGS is the
+argument to the catch exception lambda.
+<example>
+(catch #t
+       (lambda () (+ 'f 2))
+       (lambda args (caught-error \"Caught error\\n:\" args)))
+</example>"
+  (display descriptor (current-error-port))
+  (apply display-error (append (list #f (current-error-port)) (cdr args))))
 
+;;; stack port subr message args rest
+;;; (display-error #f (current-output-port) 'foo "foo: %S" (list 1) #f)
 
 (define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
   "Return an interactively-selected window after prompting (optionally) with MSG.

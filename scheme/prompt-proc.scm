@@ -50,7 +50,15 @@
   (gtk-text-set-point textwidget 0)
   (gtk-text-forward-delete textwidget (gtk-text-get-length textwidget))
   (gtk-text-insert textwidget #f #f #f text (string-length text))
-  (gtk-text-set-point textwidget 0)) ;; GJB:FIXME:: Why is this not working?
+  (gtk-text-set-point textwidget 0))
+
+(define-public (gtk-scrolled-window-set-vadjustment-value sw float)
+  "Set the vadjustment for SW, a scrolled window, to FLOAT."
+  (gtk-adjustment-set-value (gtk-scrolled-window-get-vadjustment sw) float))
+
+(define-public (gtk-scrolled-window-set-hadjustment-value sw float)
+  "Set the hadjustment for SW, a scrolled window, to FLOAT."
+  (gtk-adjustment-set-value (gtk-scrolled-window-get-hadjustment sw) float))
 
 (define ui-box-spacing 4)
 (define ui-box-border 5)
