@@ -883,27 +883,10 @@
 			(exe (apply string-append "xv "
 				    (map (lambda (st) (string-append st "/* "))
 					 image-load-path))))
-	      (menuitem "SCWM interaction" #:action
-			(run-in-xterm "/usr/local/bin/scwmrepl"))
+	      (menuitem "Scwm interaction" #:action
+			(run-in-xterm "scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info)
 	      (menuitem "Other preferences" #:action (menu-prefs)))))
-;	      menu-separator
-;	      (menuitem "Opaque Move" #:action opaque-move-menu)
-;	      (menuitem "Desk Size" #:action desk-size-menu)
-;	      (menuitem "Scrolling" #:action scroll-menu)
-;	      menu-separator
-;	      (menuitem
-;	       "User Init File" #:action
-;	       (menu (list
-;		      (menuitem "Reload" #:action
-;				(lambda () (load user-init-file)))
-;		      (menuitem "View" #:action (show-file user-init-file))
-;		      (menuitem "Edit" #:action
-;				(exe (string-append
-;				      (or (getenv "EDITOR") "gvim")
-;				      " " user-init-file))))))
-;	      (menuitem "Save settings" #:action save-settings))))
-;	      ))
 
 (define menu-preferences menu-prefs-gjb)
 
@@ -1074,6 +1057,7 @@
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
 (bind-mouse 'all "H-1" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
+(bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 
 ;;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
