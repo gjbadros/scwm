@@ -260,7 +260,7 @@ set_window_decor_x(SCM decor, SCM win)
 
   tmp_win->fl = fl;
 
-  extra_height = (tmp_win->flags & TITLE) ?
+  extra_height = (tmp_win->fTitle) ?
     (old_height - tmp_win->fl->TitleHeight) : 0;
   x = tmp_win->frame_x;
   y = tmp_win->frame_y;

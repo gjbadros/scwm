@@ -76,7 +76,7 @@ typedef struct ScwmWindow {
   int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
   Window transientfor;
 
-#ifdef FIXGJB_PACKED_BOOL_INSTEAD_OF_FLAGS
+  /* The "common" flags */
   PackedBool(fStartIconic);
   PackedBool(fOnTop);
   PackedBool(fSticky);
@@ -86,9 +86,11 @@ typedef struct ScwmWindow {
   PackedBool(fLenience);
   PackedBool(fStickyIcon);
   PackedBool(fCirculateSkip);
+  PackedBool(fCirculateSkipIcon);
   PackedBool(fClickToFocus);
   PackedBool(fSloppyFocus);
   PackedBool(fShowOnMap);
+
   PackedBool(fBorder);
   PackedBool(fTitle);
   PackedBool(fMapped);
@@ -102,19 +104,28 @@ typedef struct ScwmWindow {
   PackedBool(fMaximized);
   PackedBool(fDoesWmTakeFocus);
   PackedBool(fDoesWmDeleteWindow);
-  PackedBool(fIconMoved);
+  PackedBool(fIconMoved);	/* has the icon been moved by the user? */
+
+  /* was the icon unmapped, even though
+     the window is still iconified (Transients) */
   PackedBool(fIconUnmapped);
+
+  /* Sent an XMapWindow, but didn't receive a MapNotify yet. */
   PackedBool(fMapPending);
   PackedBool(fHintOverride);
   PackedBool(fMWMButtons);
   PackedBool(fMWMBorders);
+  PackedBool(fMWMFunctions);
+  PackedBool(fMWMDecor);
+  PackedBool(fDecorateTransient);
   PackedBool(fWindowShaded);
-#endif
-  /* Might as well add new flags the right way straight off - MS 2-20-98 */
-
+  PackedBool(fStartsOnDesk);
+  PackedBool(fRandomPlace);
+  PackedBool(fSmartPlace);
+  PackedBool(fOLDecorHint);
+  PackedBool(fNoPPosition);
   PackedBool(fForceIcon);       
 
-  unsigned long flags;
   SCM mini_icon_image;          /* A Scheme image object to use for the 
 				   mini-icon. */
   SCM icon_req_image;		/* the icon picture requested */
@@ -137,83 +148,36 @@ typedef struct ScwmWindow {
   SCM BackColor;
   unsigned long buttons;
   int IconBox[4];
+
   /* Not used, but I'm not sure what it used to mean, so leaving it
      commented for now - MS 3-14-98 */
   /* int BoxFillMethod; */
   SCM schwin;
 } ScwmWindow;
 
+/* FIXGJB: fWindowListSkip, fCirculateSkipIcon, fCirculateSkip are unused */
 
+void ResetCommonFlags(ScwmWindow *psw);
+void ResetAllFlags(ScwmWindow *psw);
+void CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
+void CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
+unsigned long FlagsBitsFromSw(ScwmWindow *psw);
 
-/***************************************************************************
- * window flags definitions 
- ***************************************************************************/
-/* The first 13 items are mapped directly from the style structure's
- * flag value, so they MUST correspond to the first 13 entries in misc.h */
-#define STARTICONIC             (1<<0)
-#define ONTOP                   (1<<1)	/* does window stay on top */
-#define STICKY                  (1<<2)	/* Does window stick to glass? */
-#define WINDOWLISTSKIP          (1<<3)
-#define SUPPRESSICON            (1<<4)
-#define NOICON_TITLE            (1<<5)
-#define Lenience                (1<<6)
-#define StickyIcon              (1<<7)
-#define CirculateSkipIcon       (1<<8)
-#define CirculateSkip           (1<<9)
-#define ClickToFocus            (1<<10)
-#define SloppyFocus             (1<<11)
-#define SHOW_ON_MAP    (1<<12)	/* switch to desk when it gets mapped? */
-#define BORDER         (1<<13)	/* Is this decorated with border */
-#define TITLE          (1<<14)	/* Is this decorated with title */
-#define MAPPED         (1<<15)	/* is it mapped? */
-#define ICONIFIED      (1<<16)	/* is it an icon now? */
-#define TRANSIENT      (1<<17)	/* is it a transient window? */
-#define RAISED         (1<<18)	/* if its a sticky window, needs raising? */
-#define VISIBLE        (1<<19)	/* is the window fully visible */
-#define ICON_OURS      (1<<20)	/* is the icon window supplied by the app? */
-#define PIXMAP_OURS    (1<<21)	/* is the icon pixmap ours to free? */
-#define SHAPED_ICON    (1<<22)	/* is the icon shaped? */
-#define MAXIMIZED      (1<<23)	/* is the window maximized? */
-#define DoesWmTakeFocus		(1<<24)
-#define DoesWmDeleteWindow	(1<<25)
-/* has the icon been moved by the user? */
-#define ICON_MOVED              (1<<26)
-/* was the icon unmapped, even though the window is still iconified
- * (Transients) */
-#define ICON_UNMAPPED           (1<<27)
-/* Sent an XMapWindow, but didn't receive a MapNotify yet. */
-#define MAP_PENDING             (1<<28)
-#define HintOverride            (1<<29)
-#define MWMButtons              (1<<30)
-#define MWMBorders              (1<<31)
-
-
-#define ALL_COMMON_FLAGS (STARTICONIC|ONTOP|STICKY|WINDOWLISTSKIP| \
-			  SUPPRESSICON|NOICON_TITLE|Lenience|StickyIcon| \
-			  CirculateSkipIcon|CirculateSkip|ClickToFocus| \
-			  SloppyFocus|SHOW_ON_MAP)
-
-
-/* we're sticking this at the end of the buttons window member
-   since we don't want to use up any more flag bits */
-#define WSHADE	(1<<31)
-
-#define SHADED_P(sw) ((sw)->buttons & WSHADE)
-#define SET_UNSHADED(sw) do { (sw)->buttons &= ~WSHADE; } while (0)
-#define SET_SHADED(sw) do { (sw)->buttons |= WSHADE; } while (0)
-
+#define SHADED_P(sw) ((sw)->fWindowShaded)
+#define SET_UNSHADED(sw) do { (sw)->fWindowShaded = False; } while (0)
+#define SET_SHADED(sw) do { (sw)->fWindowShaded = True; } while (0)
 
 /* flags to suppress/enable title bar buttons */
-#define BUTTON1     1
-#define BUTTON2     2
-#define BUTTON3     4
-#define BUTTON4     8
-#define BUTTON5    16
-#define BUTTON6    32
-#define BUTTON7    64
-#define BUTTON8   128
-#define BUTTON9   256
-#define BUTTON10  512
+#define BUTTON1     (1<<0)
+#define BUTTON2     (1<<1)
+#define BUTTON3     (1<<2)
+#define BUTTON4     (1<<3)
+#define BUTTON5     (1<<4)
+#define BUTTON6     (1<<5)
+#define BUTTON7     (1<<6)
+#define BUTTON8     (1<<7)
+#define BUTTON9     (1<<8)
+#define BUTTON10    (1<<9)
 
 SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 

@@ -1,7 +1,12 @@
-/****************************************************************************
- * This module is based on Twm, but has been siginificantly modified 
+/* $Id$
+ * add_window.c
+ */
+
+/* This module is derived from code
+ * based on Twm, but has been siginificantly modified 
  * by Rob Nation
- ****************************************************************************/
+ */
+
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/
 /**                          Salt Lake City, Utah                           **/
@@ -212,17 +217,15 @@ AddWindow(Window w)
   XSetWindowAttributes attributes;	/* attributes for create windows */
   int i, width, height;
   int a, b;
-  char *value = NULL;
 
   char *decor = NULL;
 
-  unsigned long tflag, saved_flags;
+  /* FIXGJB this is a hack -- using a whole ScwmWindow just for the flags */
+  ScwmWindow sw_saved_flags;
+
   int Desk = 0, border_width = 0, resize_width = 0;
   extern Bool NeedToResizeToo;
   extern ScwmWindow *colormap_win;
-#if 0
-  char *forecolor = NULL, *backcolor = NULL;
-#endif
   int client_argc;
   char **client_argv = NULL, *str_type;
   Bool status;
@@ -234,11 +237,11 @@ AddWindow(Window w)
   /* allocate space for the scwm window */
 
   tmp_win = (ScwmWindow *) calloc(1, sizeof(ScwmWindow));
-  if (tmp_win == (ScwmWindow *) 0) {
+  if (!tmp_win) {
     return NULL;
   }
-  tmp_win->flags = 0;
   tmp_win->w = w;
+  ResetAllFlags(tmp_win);
 
   tmp_win->cmap_windows = (Window *) NULL;
 
@@ -269,10 +272,8 @@ AddWindow(Window w)
 
   tmp_win->wmhints = XGetWMHints(dpy, tmp_win->w);
 
-  if (XGetTransientForHint(dpy, tmp_win->w, &tmp_win->transientfor))
-    tmp_win->flags |= TRANSIENT;
-  else
-    tmp_win->flags &= ~TRANSIENT;
+  tmp_win->fTransient =
+    (XGetTransientForHint(dpy, tmp_win->w, &tmp_win->transientfor));
 
   tmp_win->old_bw = tmp_win->attr.border_width;
 
@@ -295,23 +296,20 @@ AddWindow(Window w)
    *  decorate anyway
    */
   /*  Assume that we'll decorate */
-  tmp_win->flags |= BORDER;
-  tmp_win->flags |= TITLE;
+  tmp_win->fBorder = True;
+  tmp_win->fTitle = True;
   tmp_win->icon_image = SCM_BOOL_F;
   tmp_win->icon_req_image = SCM_BOOL_F;
   tmp_win->mini_icon_image = SCM_BOOL_F;
 
-  /* This is from the old LookInList garbage --gjb 11/30/97 */
-  tflag = False;
-
-  /* XXX - bletcherous... we process the hint properties separately,
+  /* FIXMS - bletcherous... we process the hint properties separately,
      since hints need to be processed early, but some procs we may
      want to pass alter the size of the window &c. Will find a better
      way to deal with this - probably a reprocesshints function of
      some kind. */
 
-  saved_flags = tmp_win->flags;
-  tmp_win->flags = tflag;
+  CopyAllFlags(&sw_saved_flags,tmp_win);
+  ResetAllFlags(tmp_win);
 
   /* FIXMS: need to find better way to ensure colors are valid before
      window comes under GC control. */
@@ -324,11 +322,10 @@ AddWindow(Window w)
   tmp_win->schwin = schwin = make_window(tmp_win);
 
   run_new_window_hint_hook(tmp_win->schwin);
-  tflag = tmp_win->flags;
 
-  tmp_win->flags = saved_flags;
+  CopyAllFlags(tmp_win,&sw_saved_flags);
 
-  if (tflag & STARTSONDESK_FLAG) {
+  if (tmp_win->fStartsOnDesk) {
     Desk = tmp_win->StartDesk;
   }
   /* search for a UseDecor tag in the Style */
@@ -350,9 +347,10 @@ AddWindow(Window w)
   GetMwmHints(tmp_win);
   GetOlHints(tmp_win);
 
-  SelectDecor(tmp_win, tflag, border_width, resize_width);
+  SelectDecor(tmp_win, border_width, resize_width);
 
-  tmp_win->flags |= tflag & ALL_COMMON_FLAGS;
+  CopyCommonFlags(tmp_win, &sw_saved_flags);
+
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */
   /* find a suitable icon pixmap */
@@ -372,12 +370,12 @@ AddWindow(Window w)
     status = XrmGetResource(db, "scwm.desk", "Scwm.Desk", &str_type, &rm_value);
     if ((status == True) && (rm_value.size != 0)) {
       Desk = atoi(rm_value.addr);
-      tflag |= STARTSONDESK_FLAG;
+      tmp_win->fStartsOnDesk = True;
     }
     XrmDestroyDatabase(db);
     db = NULL;
   }
-  if (!PlaceWindow(tmp_win, tflag, Desk))
+  if (!PlaceWindow(tmp_win, Desk))
     return NULL;
 
   /*
@@ -401,33 +399,9 @@ AddWindow(Window w)
   if (tmp_win->icon_name == (char *) NULL)
     tmp_win->icon_name = tmp_win->name;
 
-  tmp_win->flags &= ~ICONIFIED;
-  tmp_win->flags &= ~ICON_UNMAPPED;
-  tmp_win->flags &= ~MAXIMIZED;
-
-
-  /* MS: I believe this code can safely die - nothing's going to set
-     either forecolor or backcolor. */
-
-#if 0
-  if (forecolor != NULL) {
-    XColor color;
-
-    if ((XParseColor(dpy, Scr.ScwmRoot.attr.colormap, forecolor, &color))
-	&& (XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color))) {
-      tmp_win->TextPixel = color.pixel;
-    }
-  }
-  if (backcolor != NULL) {
-    XColor color;
-    if ((XParseColor(dpy, Scr.ScwmRoot.attr.colormap, backcolor, &color))
-	&& (XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color))) {
-      tmp_win->BackPixel = color.pixel;
-    }
-    tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
-    tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
-  }
-#endif
+  tmp_win->fIconified = False;
+  tmp_win->fIconUnmapped = False;
+  tmp_win->fMaximized = False;
 
   /* add the window into the scwm list */
   tmp_win->next = Scr.ScwmRoot.next;
@@ -448,7 +422,7 @@ AddWindow(Window w)
   valuemask = CWBorderPixel | CWCursor | CWEventMask;
   if (Scr.d_depth < 2) {
     attributes.background_pixmap = Scr.light_gray_pixmap;
-    if (tmp_win->flags & STICKY)
+    if (tmp_win->fSticky)
       attributes.background_pixmap = Scr.sticky_gray_pixmap;
     valuemask |= CWBackPixmap;
   } else {
@@ -510,7 +484,7 @@ AddWindow(Window w)
     - 3 + tmp_win->bw;
   if (tmp_win->title_width < 1)
     tmp_win->title_width = 1;
-  if (tmp_win->flags & BORDER) {
+  if (tmp_win->fBorder) {
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
       attributes.background_pixmap = TexturePixmap;
@@ -534,7 +508,7 @@ AddWindow(Window w)
       valuemask = valuemask_save;
     }
   }
-  if (tmp_win->flags & TITLE) {
+  if (tmp_win->fTitle) {
     tmp_win->title_x = tmp_win->boundary_width + tmp_win->title_height + 1;
     tmp_win->title_y = tmp_win->boundary_width;
     attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
@@ -596,7 +570,7 @@ AddWindow(Window w)
     }
 
   }
-  if (tmp_win->flags & BORDER) {
+  if (tmp_win->fBorder) {
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
       attributes.background_pixmap = TexturePixmap;
@@ -643,7 +617,7 @@ AddWindow(Window w)
    * WithdrawnState in HandleUnmapNotify.  Map state gets set correctly
    * again in HandleMapNotify.
    */
-  tmp_win->flags &= ~MAPPED;
+  tmp_win->fMapped = False;
   width = tmp_win->frame_width;
   tmp_win->frame_width = 0;
   height = tmp_win->frame_height;
@@ -661,7 +635,7 @@ AddWindow(Window w)
   XSaveContext(dpy, tmp_win->w, ScwmContext, (caddr_t) tmp_win);
   XSaveContext(dpy, tmp_win->frame, ScwmContext, (caddr_t) tmp_win);
   XSaveContext(dpy, tmp_win->Parent, ScwmContext, (caddr_t) tmp_win);
-  if (tmp_win->flags & TITLE) {
+  if (tmp_win->fTitle) {
     XSaveContext(dpy, tmp_win->title_w, ScwmContext, (caddr_t) tmp_win);
     for (i = 0; i < Scr.nr_left_buttons; i++)
       XSaveContext(dpy, tmp_win->left_w[i], ScwmContext, (caddr_t) tmp_win);
@@ -670,7 +644,7 @@ AddWindow(Window w)
 	XSaveContext(dpy, tmp_win->right_w[i], ScwmContext,
 		     (caddr_t) tmp_win);
   }
-  if (tmp_win->flags & BORDER) {
+  if (tmp_win->fBorder) {
     for (i = 0; i < 4; i++) {
       XSaveContext(dpy, tmp_win->sides[i], ScwmContext, (caddr_t) tmp_win);
       XSaveContext(dpy, tmp_win->corners[i], ScwmContext, (caddr_t) tmp_win);
@@ -686,7 +660,7 @@ AddWindow(Window w)
 			&a, &b, &JunkChild);
   tmp_win->xdiff -= a;
   tmp_win->ydiff -= b;
-  if (tmp_win->flags & ClickToFocus) {
+  if (tmp_win->fClickToFocus) {
     /* need to grab all buttons for window that we are about to
        * unhighlight */
     for (i = 0; i < 3; i++)
@@ -807,7 +781,6 @@ UngrabButtonWithModifiers(int button, int modifier,
 void 
 FetchWmProtocols(ScwmWindow * tmp)
 {
-  unsigned long flags = 0L;
   Atom *protocols = NULL, *ap;
   int i, n;
   Atom atype;
@@ -821,9 +794,9 @@ FetchWmProtocols(ScwmWindow * tmp)
   if (XGetWMProtocols(dpy, tmp->w, &protocols, &n)) {
     for (i = 0, ap = protocols; i < n; i++, ap++) {
       if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
-	flags |= DoesWmTakeFocus;
+	tmp->fDoesWmTakeFocus = True;
       if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
-	flags |= DoesWmDeleteWindow;
+	tmp->fDoesWmDeleteWindow = True;
     }
     if (protocols)
       XFree((char *) protocols);
@@ -836,15 +809,14 @@ FetchWmProtocols(ScwmWindow * tmp)
 			    (unsigned char **) &protocols)) == Success) {
       for (i = 0, ap = protocols; i < nitems; i++, ap++) {
 	if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
-	  flags |= DoesWmTakeFocus;
+	  tmp->fDoesWmTakeFocus = True;
 	if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
-	  flags |= DoesWmDeleteWindow;
+	  tmp->fDoesWmDeleteWindow = True;
       }
       if (protocols)
 	XFree((char *) protocols);
     }
   }
-  tmp->flags |= flags;
   return;
 }
 

@@ -117,8 +117,7 @@ SCM marshal_fvwm2_config_info (SCM win)
   info[5] = sw->frame_width;
   info[6] = sw->frame_height;
   info[7] = sw->Desk;
-  info[8] = sw->flags; /* eventually this will have to be constructed from
-			 the flag bitfield... */
+  info[8] = FlagsBitsFromSw(sw);
   info[9] = sw->title_height;
   info[10] = sw->boundary_width;
   info[11] = (sw->hints.flags & PBaseSize)?sw->hints.base_width:0;

@@ -223,16 +223,17 @@ GetOlHints(ScwmWindow * t)
  *
  *****************************************************************************/
 void 
-SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
-	    int resize_width)
+SelectDecor(ScwmWindow * t, int border_width, int resize_width)
 {
   int decor, i;
   PropMwmHints *prop;
 
-  if (!(tflags & BW_FLAG))
-    border_width = Scr.NoBoundaryWidth;
+  /* FIXGJB: this was testing !BW_FLAG for setting border_width,
+     testing !NO_BW_FLAG for setting resize_width --03/25/98 gjb */
 
-  if (!(tflags & NOBW_FLAG))
+  if (!t->fBorder)
+    border_width = Scr.NoBoundaryWidth;
+  else
     resize_width = Scr.BoundaryWidth;
 
   for (i = 0; i < 5; i++) {
@@ -244,10 +245,10 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
   t->functions = MWM_FUNC_ALL;
   if (t->mwm_hints) {
     prop = (PropMwmHints *) t->mwm_hints;
-    if (tflags & MWM_DECOR_FLAG)
+    if (t->fMWMDecor)
       if (prop->flags & MWM_HINTS_DECORATIONS)
 	decor = prop->decorations;
-    if (tflags & MWM_FUNCTIONS_FLAG)
+    if (t->fMWMFunctions)
       if (prop->flags & MWM_HINTS_FUNCTIONS)
 	t->functions = prop->functions;
   }
@@ -261,7 +262,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
     t->functions = (MWM_FUNC_RESIZE | MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE |
 		    MWM_FUNC_MAXIMIZE | MWM_FUNC_CLOSE) & (~(t->functions));
   }
-  if ((tflags & MWM_FUNCTIONS_FLAG) && (t->flags & TRANSIENT)) {
+  if (t->fMWMFunctions && t->fTransient) {
     t->functions &= ~(MWM_FUNC_MAXIMIZE | MWM_FUNC_MINIMIZE);
   }
   if (decor & MWM_DECOR_ALL) {
@@ -273,7 +274,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
       & (~decor);
   }
   /* now remove any functions specified in the OL hints */
-  if (tflags & OL_DECOR_FLAG) {
+  if (t->fOLDecorHint) {
     if (!(t->ol_hints & OL_DECOR_CLOSE))
       t->functions &= ~MWM_FUNC_MINIMIZE;
     if (!(t->ol_hints & OL_DECOR_RESIZEH))
@@ -282,7 +283,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
       t->functions &= ~(MWM_DECOR_MENU | MWM_FUNC_MINIMIZE |
 			MWM_FUNC_MAXIMIZE | MWM_DECOR_TITLE);
     if (!(t->ol_hints & OL_DECOR_ICON_NAME))
-      t->flags |= NOICON_TITLE;
+      t->fNoIconTitle = True;
   }
   /* Now I have the un-altered decor and functions, but with the
    * ALL attribute cleared and interpreted. I need to modify the
@@ -303,29 +304,30 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
 
   /* Selected the mwm-decor field, now trim down, based on
    * .scwmrc entries */
-  if ((tflags & NOTITLE_FLAG) ||
-      ((!(tflags & DECORATE_TRANSIENT_FLAG)) && (t->flags & TRANSIENT)))
+  if (!t->fTitle ||
+      (!t->fDecorateTransient && t->fTransient)) {
     decor &= ~MWM_DECOR_TITLE;
+  }
 
-  if ((tflags & NOBORDER_FLAG) ||
-      ((!(tflags & DECORATE_TRANSIENT_FLAG)) && (t->flags & TRANSIENT)))
+  if (!t->fBorder ||
+      (!t->fDecorateTransient && t->fTransient)) {
     decor &= ~MWM_DECOR_RESIZEH;
+  }
 
-  if ((tflags & MWM_DECOR_FLAG) && (t->flags & TRANSIENT)) {
+  if (t->fMWMDecor && t->fTransient) {
     decor &= ~(MWM_DECOR_MAXIMIZE | MWM_DECOR_MINIMIZE);
   }
   if (ShapesSupported) {
-    if (t->wShaped)
-      decor &= ~(BORDER | MWM_DECOR_RESIZEH);
+    if (t->wShaped) {
+      decor &= ~(MWM_DECOR_BORDER | MWM_DECOR_RESIZEH);
+    }
   }
   /* Assume no decorations, and build up */
-  t->flags &= ~(BORDER | TITLE);
-  if (tflags & MWM_BORDER_FLAG)
-    t->flags |= MWMBorders;
-  if (tflags & MWM_BUTTON_FLAG)
-    t->flags |= MWMButtons;
-  if (tflags & MWM_OVERRIDE_FLAG)
-    t->flags |= HintOverride;
+  /* FIXGJB:
+     t->fBorder = False;
+     t->fTitle = False;
+     should these get reset?  old code was testing tflags...--03/25/98 gjb
+  */
   t->boundary_width = 0;
   t->corner_width = 0;
   t->title_height = 0;
@@ -333,18 +335,19 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
   if (decor & MWM_DECOR_BORDER) {
     /* A narrow border is displayed (5 pixels - 2 relief, 1 top,
      * (2 shadow) */
+    t->fBorder = True;
     t->boundary_width = border_width;
   }
   if (decor & MWM_DECOR_TITLE) {
     /*  A title barm with no buttons in it
      * window gets a 1 pixel wide black border. */
-    t->flags |= TITLE;
+    t->fTitle = True;
     t->title_height = GetDecor(t, TitleHeight);
   }
   if (decor & MWM_DECOR_RESIZEH) {
     /* A wide border, with corner tiles is desplayed
      * (10 pixels - 2 relief, 2 shadow) */
-    t->flags |= BORDER;
+    t->fBorder = True;
     t->boundary_width = resize_width;
     t->corner_width = GetDecor(t, TitleHeight) + t->boundary_width;
   }
@@ -396,7 +399,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
     if (t->right_w[i] == None)
       t->nr_right_buttons--;
 
-  if (tflags & MWM_BORDER_FLAG)
+  if (t->fMWMBorders)
     t->bw = 0;
   else if (t->boundary_width <= 0) {
     t->boundary_width = 0;
@@ -408,7 +411,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
   if (t->title_height > 0)
     t->title_height += t->bw;
   if (t->boundary_width == 0)
-    t->flags &= ~BORDER;
+    t->fBorder = False;
 }
 
 /****************************************************************************
@@ -422,10 +425,10 @@ Bool
 check_allowed_function(enum wm_client_functions function, ScwmWindow * t)
 {
 
-  if (t->flags & HintOverride)
+  if (t->fHintOverride)
     return True;
 
-  if ((t) && (!(t->flags & DoesWmDeleteWindow)) && (function == F_DELETE))
+  if (t && !t->fDoesWmDeleteWindow && function == F_DELETE)
     return False;
 
   if ((function == F_RESIZE) && (t) &&
@@ -433,8 +436,7 @@ check_allowed_function(enum wm_client_functions function, ScwmWindow * t)
     return False;
 
   if ((function == F_ICONIFY) && (t) &&
-      (!(t->flags & ICONIFIED)) &&
-      (!(t->functions & MWM_FUNC_MINIMIZE)))
+      (!t->fIconified && !(t->functions & MWM_FUNC_MINIMIZE)))
     return False;
 
   if ((function == F_MAXIMIZE) && (t) &&
@@ -449,7 +451,7 @@ check_allowed_function(enum wm_client_functions function, ScwmWindow * t)
       (!(t->functions & MWM_FUNC_CLOSE)))
     return False;
 
-  return 1;
+  return True;
 }
 
 /* Local Variables: */

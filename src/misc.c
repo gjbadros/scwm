@@ -31,6 +31,7 @@
 #include "events.h"
 #include "module-interface.h"
 #include "image.h"
+#include "focus.h"
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
@@ -191,7 +192,7 @@ RestoreWithdrawnLocation(ScwmWindow * tmp, Bool restart)
     }
     XReparentWindow(dpy, tmp->w, Scr.Root, xwc.x, xwc.y);
 
-    if ((tmp->flags & ICONIFIED) && (!(tmp->flags & SUPPRESSICON))) {
+    if (tmp->fIconified && !(tmp->fSuppressIcon)) {
       if (tmp->icon_w)
 	XUnmapWindow(dpy, tmp->icon_w);
       if (tmp->icon_pixmap_w)
@@ -341,11 +342,11 @@ KeepOnTop()
 
   /* flag that on-top windows should be re-raised */
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-    if ((t->flags & ONTOP) && !(t->flags & VISIBLE)) {
+    if (t->fOnTop && !t->fVisible) {
       RaiseWindow(t);
-      t->flags &= ~RAISED;
+      t->fRaised = False;
     } else
-      t->flags |= RAISED;
+      t->fRaised = True;
   }
 }
 

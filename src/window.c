@@ -37,6 +37,158 @@
 #include "module-interface.h"
 #include "virtual.h"
 #include "font.h"
+#include <assert.h>
+
+unsigned long 
+FlagsBitsFromSw(ScwmWindow *psw)
+{
+  unsigned long flags = 0;
+  int i = 0;
+
+#define SET_BIT_FOR(x) do { if (psw->x) flags |= (1 << i); i++; } while (0)
+  SET_BIT_FOR(fStartIconic);
+  SET_BIT_FOR(fOnTop);
+  SET_BIT_FOR(fSticky);
+  SET_BIT_FOR(fWindowListSkip);
+  SET_BIT_FOR(fSuppressIcon);
+  SET_BIT_FOR(fNoIconTitle);
+  SET_BIT_FOR(fLenience);
+  SET_BIT_FOR(fSticky);
+  SET_BIT_FOR(fCirculateSkipIcon);
+  SET_BIT_FOR(fCirculateSkip);
+  SET_BIT_FOR(fClickToFocus);
+  SET_BIT_FOR(fSloppyFocus);
+  SET_BIT_FOR(fShowOnMap);
+  SET_BIT_FOR(fBorder);
+  SET_BIT_FOR(fTitle);
+  SET_BIT_FOR(fMapped);
+  SET_BIT_FOR(fIconified);
+  SET_BIT_FOR(fTransient);
+  SET_BIT_FOR(fRaised);
+  SET_BIT_FOR(fVisible);
+  SET_BIT_FOR(fIconOurs);
+  SET_BIT_FOR(fPixmapOurs);
+  SET_BIT_FOR(fShapedIcon);
+  SET_BIT_FOR(fMaximized);
+  SET_BIT_FOR(fDoesWmTakeFocus);
+  SET_BIT_FOR(fDoesWmDeleteWindow);
+  SET_BIT_FOR(fIconMoved);
+  SET_BIT_FOR(fIconUnmapped);
+  SET_BIT_FOR(fMapPending);
+  SET_BIT_FOR(fHintOverride);
+  SET_BIT_FOR(fMWMButtons);
+  SET_BIT_FOR(fMWMBorders);
+#undef SET_BIT_FOR
+
+  assert(i == 32);
+  return flags;
+}
+
+
+void
+ResetCommonFlags(ScwmWindow *psw)
+{
+  psw->fStartIconic =
+    psw->fOnTop = 
+    psw->fSticky = 
+    psw->fWindowListSkip =
+    psw->fSuppressIcon =
+    psw->fNoIconTitle =
+    psw->fLenience =
+    psw->fStickyIcon =
+    psw->fCirculateSkip =
+    psw->fCirculateSkipIcon =
+    psw->fClickToFocus =
+    psw->fSloppyFocus =
+    psw->fShowOnMap = False;
+}
+
+void
+ResetAllFlags(ScwmWindow *psw)
+{
+  ResetCommonFlags(psw);
+
+  psw->fBorder = 
+    psw->fTitle =
+    psw->fMapped =
+    psw->fIconified =
+    psw->fTransient =
+    psw->fRaised =
+    psw->fVisible =
+    psw->fIconOurs =
+    psw->fPixmapOurs =
+    psw->fShapedIcon =
+    psw->fMaximized =
+    psw->fDoesWmTakeFocus =
+    psw->fDoesWmDeleteWindow =
+    psw->fIconMoved =
+    psw->fIconUnmapped =
+    psw->fMapPending =
+    psw->fHintOverride =
+    psw->fMWMButtons =
+    psw->fMWMBorders =
+    psw->fMWMFunctions =
+    psw->fMWMDecor =
+    psw->fDecorateTransient =
+    psw->fWindowShaded =
+    psw->fStartsOnDesk =
+    psw->fOLDecorHint =
+    psw->fNoPPosition =
+    psw->fForceIcon = 
+    False;
+}
+
+void
+CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
+{
+  psw->fStartIconic = pswSrc->fStartIconic;
+  psw->fOnTop = pswSrc->fOnTop;
+  psw->fSticky = pswSrc->fSticky;
+  psw->fWindowListSkip = pswSrc->fWindowListSkip;
+  psw->fSuppressIcon = pswSrc->fSuppressIcon;
+  psw->fNoIconTitle = pswSrc->fNoIconTitle;
+  psw->fLenience = pswSrc->fLenience;
+  psw->fStickyIcon = pswSrc->fStickyIcon;
+  psw->fCirculateSkip = pswSrc->fCirculateSkip;
+  psw->fCirculateSkipIcon = pswSrc->fCirculateSkipIcon;
+  psw->fClickToFocus = pswSrc->fClickToFocus;
+  psw->fSloppyFocus = pswSrc->fSloppyFocus;
+  psw->fShowOnMap = pswSrc->fShowOnMap;
+}
+
+void
+CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
+{
+  CopyCommonFlags(psw,pswSrc);
+
+  psw->fBorder = pswSrc->fBorder;
+  psw->fTitle = pswSrc->fTitle;
+  psw->fMapped = pswSrc->fMapped;
+  psw->fIconified = pswSrc->fIconified;
+  psw->fTransient = pswSrc->fTransient;
+  psw->fRaised = pswSrc->fRaised;
+  psw->fVisible = pswSrc->fVisible;
+  psw->fIconOurs = pswSrc->fIconOurs;
+  psw->fPixmapOurs = pswSrc->fPixmapOurs;
+  psw->fShapedIcon = pswSrc->fShapedIcon;
+  psw->fMaximized = pswSrc->fMaximized;
+  psw->fDoesWmTakeFocus = pswSrc->fDoesWmTakeFocus;
+  psw->fDoesWmDeleteWindow = pswSrc->fDoesWmDeleteWindow;
+  psw->fIconMoved = pswSrc->fIconMoved;
+  psw->fIconUnmapped = pswSrc->fIconUnmapped;
+  psw->fMapPending = pswSrc->fMapPending;
+  psw->fHintOverride = pswSrc->fHintOverride;
+  psw->fMWMButtons = pswSrc->fMWMButtons;
+  psw->fMWMBorders = pswSrc->fMWMBorders;
+  psw->fMWMFunctions = pswSrc->fMWMFunctions;
+  psw->fMWMDecor = pswSrc->fMWMDecor;
+  psw->fDecorateTransient = pswSrc->fDecorateTransient;
+  psw->fWindowShaded = pswSrc->fWindowShaded;
+  psw->fStartsOnDesk = pswSrc->fStartsOnDesk;
+  psw->fOLDecorHint = pswSrc->fOLDecorHint;
+  psw->fNoPPosition = pswSrc->fNoPPosition;
+  psw->fForceIcon = pswSrc->fForceIcon;
+}
 
 size_t 
 free_window(SCM obj)
@@ -141,7 +293,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
 SCM 
 window_p(SCM obj)
 {
-  return (WINDOWP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(WINDOWP(obj));
 }
 
 SCM 
@@ -209,14 +361,14 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 #endif
   int x, y;
 
-  if (t == (ScwmWindow *) 0)
+  if (!t)
     return;
 
   if (t->Desk != Scr.CurrentDesk) {
     changeDesks(0, t->Desk);
   }
 #ifndef NON_VIRTUAL
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
     cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
@@ -230,7 +382,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
   MoveViewport(dx, dy, True);
 #endif
 
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     x = t->icon_xl_loc + t->icon_w_width / 2;
     y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
@@ -244,7 +396,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
   if (((t->frame_x + t->frame_height) < 0) || (t->frame_y + t->frame_width < 0) ||
   (t->frame_x > Scr.MyDisplayWidth) || (t->frame_y > Scr.MyDisplayHeight)) {
     SetupFrame(t, 0, 0, t->frame_width, t->frame_height, False);
-    if (!(t->flags & ClickToFocus))
+    if (!t->fClickToFocus)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();
@@ -268,14 +420,14 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 #endif
   int x, y;
 
-  if (t == (ScwmWindow *) 0 || (t->flags & ICONIFIED && t->icon_w == None))
+  if (!t || (t->fIconified && t->icon_w == None))
     return;
 
   if (t->Desk != Scr.CurrentDesk) {
     changeDesks(0, t->Desk);
   }
 #ifndef NON_VIRTUAL
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
     cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
@@ -289,7 +441,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
   MoveViewport(dx, dy, True);
 #endif
 
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     x = t->icon_xl_loc + t->icon_w_width / 2 + 2;
     y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2 + 2;
   } else {
@@ -544,12 +696,12 @@ UnmapScwmWindow(ScwmWindow * t)
   XGetWindowAttributes(dpy, t->w, &winattrs);
   eventMask = winattrs.your_event_mask;
   XSelectInput(dpy, t->w, eventMask & ~StructureNotifyMask);
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     if (t->icon_pixmap_w != None)
       XUnmapWindow(dpy, t->icon_pixmap_w);
     if (t->icon_w != None)
       XUnmapWindow(dpy, t->icon_w);
-  } else if (t->flags & (MAPPED | MAP_PENDING)) {
+  } else if (t->fMapped || t->fMapPending) {
     XUnmapWindow(dpy, t->frame);
   }
   XSelectInput(dpy, t->w, eventMask);
@@ -561,14 +713,14 @@ UnmapScwmWindow(ScwmWindow * t)
 void 
 MapIt(ScwmWindow * t)
 {
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     if (t->icon_pixmap_w != None)
       XMapWindow(dpy, t->icon_pixmap_w);
     if (t->icon_w != None)
       XMapWindow(dpy, t->icon_w);
-  } else if (t->flags & MAPPED) {
+  } else if (t->fMapped) {
     XMapWindow(dpy, t->frame);
-    t->flags |= MAP_PENDING;
+    t->fMapPending = True;
     XMapWindow(dpy, t->Parent);
   }
 }
@@ -588,28 +740,28 @@ RaiseWindow(ScwmWindow * t)
   Broadcast(M_RAISE_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
 
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
-    if (t2->flags & ONTOP)
+    if (t2->fOnTop)
       count++;
-    if ((t2->flags & TRANSIENT) && (t2->transientfor == t->w) &&
+    if (t2->fTransient && (t2->transientfor == t->w) &&
 	(t2 != t)) {
       count++;
       Broadcast(M_RAISE_WINDOW, 3, t2->w, t2->frame, (unsigned long) t2,
 		0, 0, 0, 0);
-      if ((t2->flags & ICONIFIED) && (!(t2->flags & SUPPRESSICON))) {
+      if (t2->fIconified && !t2->fSuppressIcon) {
 	count += 2;
       }
     }
   }
-  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
+  if (t->fIconified && !t->fSuppressIcon) {
     count += 2;
   }
   wins = (Window *) safemalloc(count * sizeof(Window));
 
   i = 0;
 
-  /* ONTOP windows on top */
+  /* fOnTop windows on top */
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
-    if (t2->flags & ONTOP) {
+    if (t2->fOnTop) {
       Broadcast(M_RAISE_WINDOW, 3, t2->w, t2->frame, (unsigned long) t2,
 		0, 0, 0, 0);
       wins[i++] = t2->frame;
@@ -619,13 +771,13 @@ RaiseWindow(ScwmWindow * t)
   /* now raise transients */
 #ifndef DONT_RAISE_TRANSIENTS
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
-    if ((t2->flags & TRANSIENT) &&
+    if (t2->fTransient &&
 	(t2->transientfor == t->w) &&
 	(t2 != t) &&
-	(!(t2->flags & ONTOP))) {
+	(!t2->fOnTop)) {
       wins[i++] = t2->frame;
-      if ((t2->flags & ICONIFIED) && (!(t2->flags & SUPPRESSICON))) {
-	if (!(t2->flags & NOICON_TITLE))
+      if (t2->fIconified && !t2->fSuppressIcon) {
+	if (!t2->fNoIconTitle)
 	  wins[i++] = t2->icon_w;
 	if (!(t2->icon_pixmap_w))
 	  wins[i++] = t2->icon_pixmap_w;
@@ -633,16 +785,16 @@ RaiseWindow(ScwmWindow * t)
     }
   }
 #endif
-  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
-    if (!(t->flags & NOICON_TITLE))
+  if (t->fIconified && !t->fSuppressIcon) {
+    if (!t->fNoIconTitle)
       wins[i++] = t->icon_w;
     if (t->icon_pixmap_w)
       wins[i++] = t->icon_pixmap_w;
   }
-  if (!(t->flags & ONTOP))
+  if (!t->fOnTop) {
     wins[i++] = t->frame;
-  if (!(t->flags & ONTOP))
     Scr.LastWindowRaised = t;
+  }
 
   if (i > 0)
     XRaiseWindow(dpy, wins[0]);
@@ -660,11 +812,11 @@ LowerWindow(ScwmWindow * t)
 
   Broadcast(M_LOWER_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
 
-  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
+  if (t->fIconified && !t->fSuppressIcon) {
     XLowerWindow(dpy, t->icon_w);
     XLowerWindow(dpy, t->icon_pixmap_w);
   }
-  Scr.LastWindowRaised = (ScwmWindow *) 0;
+  Scr.LastWindowRaised = NULL;
 }
 
 /*
@@ -703,7 +855,7 @@ DestroyScwmWindow(ScwmWindow * sw)
   if (ButtonWindow == sw)
     ButtonWindow = NULL;
 
-  if ((sw == Scr.Focus) && (sw->flags & ClickToFocus)) {
+  if ((sw == Scr.Focus) && sw->fClickToFocus) {
     if (sw->next) {
       HandleHardFocus(sw->next);
     } else {
@@ -734,7 +886,7 @@ DestroyScwmWindow(ScwmWindow * sw)
 
   XDeleteContext(dpy, sw->w, ScwmContext);
 
-  if ((sw->icon_w) && (sw->flags & PIXMAP_OURS) &&
+  if (sw->icon_w && sw->fPixmapOurs &&
       sw->icon_image != SCM_BOOL_F) {
     XFreePixmap(dpy, IMAGE(sw->icon_image)->image);
   }
@@ -743,12 +895,12 @@ DestroyScwmWindow(ScwmWindow * sw)
     XDestroyWindow(dpy, sw->icon_w);
     XDeleteContext(dpy, sw->icon_w, ScwmContext);
   }
-  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None))
+  if (sw->fIconOurs && (sw->icon_pixmap_w != None))
     XDestroyWindow(dpy, sw->icon_pixmap_w);
   if (sw->icon_pixmap_w != None)
     XDeleteContext(dpy, sw->icon_pixmap_w, ScwmContext);
 
-  if (sw->flags & TITLE) {
+  if (sw->fTitle) {
     XDeleteContext(dpy, sw->title_w, ScwmContext);
     for (i = 0; i < Scr.nr_left_buttons; i++)
       XDeleteContext(dpy, sw->left_w[i], ScwmContext);
@@ -756,7 +908,7 @@ DestroyScwmWindow(ScwmWindow * sw)
       if (sw->right_w[i] != None)
 	XDeleteContext(dpy, sw->right_w[i], ScwmContext);
   }
-  if (sw->flags & BORDER) {
+  if (sw->fBorder) {
     for (i = 0; i < 4; i++)
       XDeleteContext(dpy, sw->sides[i], ScwmContext);
     for (i = 0; i < 4; i++)
@@ -804,7 +956,7 @@ delete_window(SCM win)
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  if (tmp_win->flags & DoesWmDeleteWindow) {
+  if (tmp_win->fDoesWmDeleteWindow) {
     send_clientmessage(dpy, tmp_win->w, _XA_WM_DELETE_WINDOW, CurrentTime);
     SCM_REALLOW_INTS;
     return SCM_BOOL_T;
@@ -842,8 +994,7 @@ SCM
 window_deletable_p(SCM win)
 {
   VALIDATEKILL(win, "window-deletable?");
-  return (SCWMWINDOW(win)->flags & DoesWmDeleteWindow) ?
-    SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fDoesWmDeleteWindow);
 }
 
 void FocusOn(ScwmWindow * t, int DeIconifyOnly);
@@ -923,8 +1074,8 @@ raised_p(SCM win)
 
   VALIDATE(win, "raised?");
   tmp_win = SCWMWINDOW(win);
-  return ((tmp_win == Scr.LastWindowRaised) ||
-	  (tmp_win->flags & VISIBLE) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(tmp_win == Scr.LastWindowRaised ||
+			   tmp_win->fVisible);
 }
 
 
@@ -962,8 +1113,7 @@ SCM
 iconified_p(SCM win)
 {
   VALIDATE(win, "iconified?");
-  return ((SCWMWINDOW(win)->flags & ICONIFIED) ?
-	  SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fIconified);
 }
 
 
@@ -975,7 +1125,7 @@ stick(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "stick");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags |= STICKY;
+  tmp_win->fSticky = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SetTitleBar(tmp_win, (Scr.Hilite == tmp_win), True);
   SCM_REALLOW_INTS;
@@ -990,7 +1140,7 @@ unstick(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "unstick");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags &= ~STICKY;
+  tmp_win->fSticky = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SetTitleBar(tmp_win, (Scr.Hilite == tmp_win), True);
   SCM_REALLOW_INTS;
@@ -1001,7 +1151,7 @@ SCM
 sticky_p(SCM win)
 {
   VALIDATE(win, "sticky?");
-  return (SCWMWINDOW(win)->flags & STICKY) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fSticky);
 }
 
 
@@ -1025,7 +1175,7 @@ window_shade(SCM win, SCM animated_p)
   VALIDATE(win, "window-shade");
   sw = SCWMWINDOW(win);
 
-  if (!(sw->flags & TITLE) || (sw->flags & MAXIMIZED)) {
+  if (!sw->fTitle || sw->fMaximized) {
     return SCM_BOOL_F;
   }
 #ifdef GJB_BE_ANAL_ABOUT_BOOLS
@@ -1114,7 +1264,7 @@ SCM
 window_shaded_p(SCM win)
 {
   VALIDATE(win, "window-shaded?");
-  return (SHADED_P(SCWMWINDOW(win))? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(SHADED_P(SCWMWINDOW(win)));
 }
 
 
@@ -1125,7 +1275,7 @@ move_finalize(Window w, ScwmWindow * sw, int x, int y)
     SetupFrame(sw, x, y,
 	       sw->frame_width, sw->frame_height, False);
   } else {			/* icon window */
-    sw->flags |= ICON_MOVED;
+    sw->fIconMoved = True;
     sw->icon_x_loc = x;
     sw->icon_xl_loc = y - (sw->icon_w_width - sw->icon_p_width) / 2;
     sw->icon_y_loc = y;
@@ -1238,7 +1388,7 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
   }
   tmp_win = SCWMWINDOW(win);
   w = tmp_win->frame;
-  if (tmp_win->flags & ICONIFIED) {
+  if (tmp_win->fIconified) {
     if (tmp_win->icon_pixmap_w != None) {
       XUnmapWindow(dpy, tmp_win->icon_w);
       w = tmp_win->icon_pixmap_w;
@@ -1289,7 +1439,7 @@ interactive_move(SCM win)
   VALIDATE_PRESS_ONLY(win, "interactive-move");
   tmp_win = SCWMWINDOW(win);
   w = tmp_win->frame;
-  if (tmp_win->flags & ICONIFIED) {
+  if (tmp_win->fIconified) {
     if (tmp_win->icon_pixmap_w != None) {
       XUnmapWindow(dpy, tmp_win->icon_w);
       w = tmp_win->icon_pixmap_w;
@@ -1326,10 +1476,10 @@ resize_to(SCM w, SCM h, SCM win)
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  tmp_win->flags &= ~MAXIMIZED;
+  tmp_win->fMaximized = False;
 
   /* can't resize icons */
-  if (tmp_win->flags & ICONIFIED) {
+  if (tmp_win->fIconified) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -1375,7 +1525,6 @@ interactive_resize(SCM win)
   Bool finished = False, done = False, abort = False;
   int x, y, delta_x, delta_y;
   Window ResizeWindow;
-  extern int Stashed_X, Stashed_Y;
   Bool flags;
 
   VALIDATE_PRESS_ONLY(win, "interactive-resize");
@@ -1387,9 +1536,9 @@ interactive_resize(SCM win)
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  tmp_win->flags &= ~MAXIMIZED;
+  tmp_win->fMaximized = False;
 
-  if (tmp_win->flags & ICONIFIED) {
+  if (tmp_win->fIconified) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -1558,7 +1707,7 @@ refresh_window(SCM win)
   VALIDATE(win, "refresh-window");
   tmp_win = SCWMWINDOW(win);
 
-  refresh_common((tmp_win->flags & ICONIFIED) ?
+  refresh_common(tmp_win->fIconified ?
 		 (tmp_win->icon_w) : (tmp_win->frame));
 
   SCM_REALLOW_INTS;
@@ -1586,8 +1735,8 @@ move_window_to_desk(SCM which, SCM win)
   /* Mapping window on its new Desk,
      unmapping it from the old Desk */
   /* Only change mapping for non-sticky windows */
-  if (!((t->flags & ICONIFIED) && (t->flags & StickyIcon)) &&
-      (!(t->flags & STICKY)) && (!(t->flags & ICON_UNMAPPED))) {
+  if (!(t->fIconified && t->fStickyIcon) &&
+      !t->fSticky && !t->fIconUnmapped) {
     if (t->Desk == Scr.CurrentDesk) {
       t->Desk = val1;
       if (val1 != Scr.CurrentDesk) {
@@ -1596,7 +1745,7 @@ move_window_to_desk(SCM which, SCM win)
     } else if (val1 == Scr.CurrentDesk) {
       t->Desk = val1;
       /* If its an icon, auto-place it */
-      if (t->flags & ICONIFIED)
+      if (t->fIconified)
 	AutoPlace(t);
       MapIt(t);
     } else {
@@ -1708,7 +1857,7 @@ keep_on_top(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "keep-on-top");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags |= ONTOP;
+  tmp_win->fOnTop = True;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   raise_window(win);
@@ -1724,7 +1873,7 @@ un_keep_on_top(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "un-keep-on-top");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags &= ~ONTOP;
+  tmp_win->fOnTop = False;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
@@ -1735,7 +1884,7 @@ SCM
 kept_on_top_p(SCM win)
 {
   VALIDATE(win, "kept-on-top?");
-  return (SCWMWINDOW(win)->flags & ONTOP) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fOnTop);
 }
 
 
@@ -1755,8 +1904,8 @@ show_titlebar(SCM win)
   fl = tmp_win->fl ? tmp_win->fl : &Scr.DefaultDecor;
 
 
-  if (!(tmp_win->flags & TITLE)) {
-    tmp_win->flags |= TITLE;
+  if (!tmp_win->fTitle) {
+    tmp_win->fTitle = True;
     BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
     SetupFrame(tmp_win, tmp_win->frame_x, tmp_win->frame_y,
 	       tmp_win->frame_width,
@@ -1780,8 +1929,8 @@ hide_titlebar(SCM win)
   tmp_win = SCWMWINDOW(win);
   fl = tmp_win->fl ? tmp_win->fl : &Scr.DefaultDecor;
 
-  if (tmp_win->flags & TITLE) {
-    tmp_win->flags &= ~TITLE;
+  if (tmp_win->fTitle) {
+    tmp_win->fTitle = False;
     tmp_win->title_height = 0;
     BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
     SetupFrame(tmp_win, tmp_win->frame_x, tmp_win->frame_y,
@@ -1797,7 +1946,7 @@ SCM
 titlebar_shown_p(SCM win)
 {
   VALIDATE(win, "titlebar-shown?");
-  return (SCWMWINDOW(win)->flags & TITLE) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fTitle);
 }
 
 
@@ -1813,7 +1962,7 @@ normal_border(SCM win)
 
   VALIDATE(win, "normal-border");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags |= BORDER;
+  tmp_win->fBorder = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   for (i = 0; i < 4; i++) {
     XMapWindow(dpy, tmp_win->corners[i]);
@@ -1836,7 +1985,7 @@ plain_border(SCM win)
 
   VALIDATE(win, "plain-border");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags &= ~BORDER;
+  tmp_win->fBorder = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
 
   for (i = 0; i < 4; i++) {
@@ -1854,7 +2003,7 @@ SCM
 border_normal_p(SCM win)
 {
   VALIDATE(win, "border-normal?");
-  return (SCWMWINDOW(win)->flags & BORDER) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fBorder);
 }
 
 SCM 
@@ -1895,7 +2044,7 @@ stick_icon(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "stick-icon");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags |= StickyIcon;
+  tmp_win->fStickyIcon = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -1909,7 +2058,7 @@ unstick_icon(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win, "unstick-icon");
   tmp_win = SCWMWINDOW(win);
-  tmp_win->flags &= ~StickyIcon;
+  tmp_win->fStickyIcon = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -1919,7 +2068,7 @@ SCM
 icon_sticky_p(SCM win)
 {
   VALIDATE(win, "icon-sticky?");
-  return (SCWMWINDOW(win)->flags & StickyIcon) ? SCM_BOOL_T : SCM_BOOL_F;
+  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fStickyIcon);
 }
 
 SCM 
@@ -1982,15 +2131,17 @@ set_window_focus_x(SCM sym, SCM win)
   tmp_win = SCWMWINDOW(win);
 
   if (gh_eq_p(sym, sym_mouse)) {
-    tmp_win->flags &= ~ClickToFocus & ~SloppyFocus;
+    tmp_win->fClickToFocus = False;
+    tmp_win->fSloppyFocus = False;
   } else if (gh_eq_p(sym, sym_click)) {
-    tmp_win->flags &= ~SloppyFocus;
-    tmp_win->flags |= ClickToFocus;
+    tmp_win->fClickToFocus = True;
+    tmp_win->fSloppyFocus = False;
   } else if (gh_eq_p(sym, sym_sloppy)) {
-    tmp_win->flags &= ~ClickToFocus;
-    tmp_win->flags |= SloppyFocus;
+    tmp_win->fClickToFocus = False;
+    tmp_win->fSloppyFocus = True;
   } else if (gh_eq_p(sym, sym_none)) {
-    tmp_win->flags |= ClickToFocus | SloppyFocus;
+    tmp_win->fClickToFocus = True;
+    tmp_win->fSloppyFocus = True;
   } else {
     scwm_error("set-window-focus!", 13);
   }
@@ -2042,9 +2193,9 @@ set_random_placement_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-random-placement!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= RANDOM_PLACE_FLAG;
+    SCWMWINDOW(win)->fRandomPlace = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~RANDOM_PLACE_FLAG;
+    SCWMWINDOW(win)->fRandomPlace = False;
   } else {
     scm_wrong_type_arg("set-random-placement!", 1, val);
   }
@@ -2056,9 +2207,9 @@ set_smart_placement_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-smart-placement!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= SMART_PLACE_FLAG;
+    SCWMWINDOW(win)->fSmartPlace = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~SMART_PLACE_FLAG;
+    SCWMWINDOW(win)->fSmartPlace = False;
   } else {
     scm_wrong_type_arg("set-smart-placment!", 1, val);
   }
@@ -2093,9 +2244,9 @@ set_mwm_buttons_x(SCM val, SCM win)
   t = SCWMWINDOW(win);
 
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWM_BUTTON_FLAG;
+    SCWMWINDOW(win)->fMWMButtons = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWM_BUTTON_FLAG;
+    SCWMWINDOW(win)->fMWMButtons = False;
   } else {
     scm_wrong_type_arg("set-mwm-buttons!", 1, val);
   }
@@ -2113,9 +2264,9 @@ set_mwm_border_x(SCM val, SCM win)
   t = SCWMWINDOW(win);
 
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWMBorders;
+    SCWMWINDOW(win)->fMWMBorders = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWMBorders;
+    SCWMWINDOW(win)->fMWMBorders = False;
   } else {
     scm_wrong_type_arg("set-mwm-border!", 1, val);
   }
@@ -2132,7 +2283,7 @@ force_icon_redraw (ScwmWindow *tmp_win)
   XDestroyWindow(dpy, tmp_win->icon_w);
   tmp_win->icon_w = None;
 
-  if (tmp_win->flags & ICONIFIED) {
+  if (tmp_win->fIconified) {
     Iconify(tmp_win, 0, 0);
   }  
 }
@@ -2140,7 +2291,6 @@ force_icon_redraw (ScwmWindow *tmp_win)
 SCM 
 set_icon_title_x(SCM title, SCM win)
 {
-  int dummy;
   ScwmWindow *tmp_win;
 
   /* Should changing the icon title string be allowed? */
@@ -2149,9 +2299,9 @@ set_icon_title_x(SCM title, SCM win)
   tmp_win = SCWMWINDOW(win);
 
   if (title == SCM_BOOL_F) {
-    tmp_win->flags |= NOICON_TITLE;
+    tmp_win->fNoIconTitle = True;
   } else if (title == SCM_BOOL_T) {
-    tmp_win->flags &= ~NOICON_TITLE;
+    tmp_win->fNoIconTitle = False;
   } else {
     scm_wrong_type_arg("set-icon-title!", 1, title);
   }
@@ -2191,9 +2341,9 @@ set_show_icon_x (SCM flag, SCM win)
   tmp_win = SCWMWINDOW(win);
 
   if (flag== SCM_BOOL_F) {
-    tmp_win->flags |= SUPPRESSICON_FLAG;
+    tmp_win->fSuppressIcon = True;
   } else if (flag == SCM_BOOL_T) {
-    tmp_win->flags &= ~SUPPRESSICON_FLAG;
+    tmp_win->fSuppressIcon = False;
   } else {
     scm_wrong_type_arg("set-show-icon!", 1, flag);
   }
@@ -2250,8 +2400,7 @@ set_mini_icon_x(SCM image, SCM win)
 	      IMAGE(sw->mini_icon_image)->depth, 0);
   }
 
-  SetBorderX(sw, Scr.Hilite == sw, True, sw->flags & MAPPED, 
-		  None, True);
+  SetBorderX(sw, Scr.Hilite == sw, True, sw->fMapped, None, True);
 
   return SCM_BOOL_T;
 
@@ -2262,9 +2411,9 @@ set_hint_override_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-hint-override!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWM_OVERRIDE_FLAG;
+    SCWMWINDOW(win)->fHintOverride = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWM_OVERRIDE_FLAG;
+    SCWMWINDOW(win)->fHintOverride = False;
   } else {
     scm_wrong_type_arg("set-hint-override!", 1, val);
   }
@@ -2276,9 +2425,9 @@ set_decorate_transient_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-decorate-transient!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= DECORATE_TRANSIENT_FLAG;
+    SCWMWINDOW(win)->fDecorateTransient = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~DECORATE_TRANSIENT_FLAG;
+    SCWMWINDOW(win)->fDecorateTransient = False;
   } else {
     scm_wrong_type_arg("set-decorate-transient!", 1, val);
   }
@@ -2290,9 +2439,9 @@ set_mwm_decor_hint_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-mwm-decor-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWM_DECOR_FLAG;
+    SCWMWINDOW(win)->fMWMDecor = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWM_DECOR_FLAG;
+    SCWMWINDOW(win)->fMWMDecor = False;
   } else {
     scm_wrong_type_arg("set-mwm-decor-hint!", 1, val);
   }
@@ -2304,9 +2453,9 @@ set_mwm_func_hint_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-mwm-func-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWM_FUNCTIONS_FLAG;
+    SCWMWINDOW(win)->fMWMFunctions = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWM_FUNCTIONS_FLAG;
+    SCWMWINDOW(win)->fMWMFunctions = False;
   } else {
     scm_wrong_type_arg("set-mwm-func-hint!", 1, val);
   }
@@ -2318,9 +2467,9 @@ set_PPosition_hint_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-PPosition-hint!");
   if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags |= NO_PPOSITION_FLAG;
+    SCWMWINDOW(win)->fNoPPosition = True;
   } else if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags &= ~NO_PPOSITION_FLAG;
+    SCWMWINDOW(win)->fNoPPosition = False;
   } else {
     scm_wrong_type_arg("set-PPosition-hint!", 1, val);
   }
@@ -2332,9 +2481,9 @@ set_OL_decor_hint_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-OL-decor-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= OL_DECOR_FLAG;
+    SCWMWINDOW(win)->fOLDecorHint = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~OL_DECOR_FLAG;
+    SCWMWINDOW(win)->fOLDecorHint = False;
   } else {
     scm_wrong_type_arg("set-OL-decor-hint!", 1, val);
   }
@@ -2349,9 +2498,9 @@ set_start_on_desk_x(SCM desk, SCM win)
   VALIDATEN(win, 2, "set-start-on-desk!");
   tmp_win = SCWMWINDOW(win);
   if (desk == SCM_BOOL_F) {
-    tmp_win->flags &= ~STARTSONDESK_FLAG;
+    tmp_win->fStartsOnDesk = False;
   } else if (gh_number_p(desk)) {
-    tmp_win->flags |= STARTSONDESK_FLAG;
+    tmp_win->fStartsOnDesk = True;
     tmp_win->StartDesk = gh_scm2int(desk);
   } else {
     scm_wrong_type_arg("set-start-on-desk!", 1, desk);
@@ -2364,9 +2513,9 @@ set_skip_mapping_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-skip-mapping!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= SHOW_MAPPING;
+    SCWMWINDOW(win)->fShowOnMap = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~SHOW_MAPPING;
+    SCWMWINDOW(win)->fShowOnMap = False;
   } else {
     scm_wrong_type_arg("set-skip-mapping!", 1, val);
   }
@@ -2378,9 +2527,9 @@ set_lenience_x(SCM val, SCM win)
 {
   VALIDATEN(win, 2, "set-lenience!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= LENIENCE_FLAG;
+    SCWMWINDOW(win)->fLenience = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~LENIENCE_FLAG;
+    SCWMWINDOW(win)->fLenience = False;
   } else {
     scm_wrong_type_arg("set-lenience!", 1, val);
   }

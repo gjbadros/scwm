@@ -1,5 +1,9 @@
+/* $Id$
+ * icons.c 
+ */
+
 /****************************************************************************
- * This module is mostly all new
+ * This module is derived from mostly all new code written
  * by Rob Nation 
  * A little of it is borrowed from ctwm.
  * Copyright 1993 Robert Nation. No restrictions are placed on this code,
@@ -33,6 +37,7 @@
 #include "binding.h"
 #include "font.h"
 #include "color.h"
+#include "focus.h"
 
 #include <X11/extensions/shape.h>
 
@@ -140,14 +145,14 @@ GetIconWindow(ScwmWindow * sw)
 
   if (ShapesSupported) {
     if (sw->wmhints->flags & IconMaskHint) {
-      sw->flags |= SHAPED_ICON;
+      sw->fShapedIcon = True;
       mask = sw->wmhints->icon_mask;
     }
   }
   /* Make sure that the window is a child of the root window ! */
   /* Olwais screws this up, maybe others do too! */
   XReparentWindow(dpy, sw->icon_pixmap_w, Scr.Root, 0, 0);
-  sw->flags &= ~ICON_OURS;
+  sw->fIconOurs = False;
 
   /* and finally add this picture to the ScwmWindow */
   sw->icon_image = make_image_from_pixmap("FromApp",picture,mask,width,height,depth);
@@ -180,7 +185,7 @@ GetIconBitmap(ScwmWindow *sw)
   picture = sw->wmhints->icon_pixmap;
   if (ShapesSupported) {
     if (sw->wmhints->flags & IconMaskHint) {
-      sw->flags |= SHAPED_ICON;
+      sw->fShapedIcon = True;
       mask = sw->wmhints->icon_mask;
     }
   }
@@ -211,12 +216,12 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   unsigned long valuemask;	/* mask for create windows */
   XSetWindowAttributes attributes;	/* attributes for create windows */
 
-  sw->flags |= ICON_OURS;
-  sw->flags &= ~PIXMAP_OURS;
-  sw->flags &= ~SHAPED_ICON;
+  sw->fIconOurs = True;
+  sw->fPixmapOurs = False;
+  sw->fShapedIcon = False;
   sw->icon_pixmap_w = None;
 
-  if (sw->flags & SUPPRESSICON)
+  if (sw->fSuppressIcon)
      return;
 
 
@@ -237,7 +242,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 
   if (ShapesSupported && sw->icon_image != SCM_BOOL_F && 
       IMAGE(sw->icon_image)->mask!=None) {
-    sw->flags |= SHAPED_ICON;
+    sw->fShapedIcon = True;
   }
 
   /* FIXGJB: we need a way of setting an icon here if we've not got
@@ -255,7 +260,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
      titles or icon images or both. */
 
   /* figure out the icon window size */
-  if (!(sw->flags & NOICON_TITLE) ||  sw->icon_p_height == 0) {
+  if (!sw->fNoIconTitle || sw->icon_p_height == 0) {
     sw->icon_t_width = XTextWidth(XFONT(Scr.icon_font),
 				       sw->icon_name,
 				       strlen(sw->icon_name));
@@ -267,9 +272,9 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 
   if (sw->icon_image != SCM_BOOL_F) {
     sw->icon_p_height = IMAGE(sw->icon_image)->height + 
-      (sw->flags & ICON_OURS ? 4 : 0);
+      (sw->fIconOurs ? 4 : 0);
     sw->icon_p_width = IMAGE(sw->icon_image)->width + 
-      (sw->flags & ICON_OURS ? 4 : 0);  
+      (sw->fIconOurs ? 4 : 0);  
   } else {
     sw->icon_p_height = 0;
     sw->icon_p_width = sw->icon_t_width + 6;
@@ -307,7 +312,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 			   VisibilityChangeMask |
 			   ExposureMask | KeyPressMask | EnterWindowMask |
 			   FocusChangeMask);
-  if (!(sw->flags & NOICON_TITLE) || (sw->icon_p_height == 0))
+  if (!sw->fNoIconTitle || (sw->icon_p_height == 0))
     sw->icon_w =
       XCreateWindow(dpy, Scr.Root, final_x, final_y + sw->icon_p_height,
 		    sw->icon_w_width, sw->icon_w_height, 0,
@@ -315,7 +320,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 		    CopyFromParent, CopyFromParent, valuemask, &attributes);
   
   /* sw->icon_p_width should always be > 0 here - MS 2-19-98 */
-  if ((sw->flags & ICON_OURS) /* && sw->icon_p_width > 0 */ 
+  if ((sw->fIconOurs) /* && sw->icon_p_width > 0 */ 
       && sw->icon_p_height > 0) {
     sw->icon_pixmap_w =
       XCreateWindow(dpy, Scr.Root, final_x, final_y, sw->icon_p_width,
@@ -333,7 +338,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   }
 
 
-  if (ShapesSupported && (sw->flags & SHAPED_ICON) &&
+  if (ShapesSupported && sw->fShapedIcon &&
     sw->icon_image != SCM_BOOL_F) {
     XShapeCombineMask(dpy, sw->icon_pixmap_w, ShapeBounding, 2, 2,
 		      IMAGE(sw->icon_image)->mask, ShapeSet);
@@ -367,7 +372,7 @@ DrawIconWindow(ScwmWindow * sw)
   Pixel TextColor, BackColor;
   int x;
 
-  if (sw->flags & SUPPRESSICON)
+  if (sw->fSuppressIcon)
     return;
 
   if (sw->icon_w != None)
@@ -419,7 +424,7 @@ DrawIconWindow(ScwmWindow * sw)
     BackColor = XCOLOR(sw->BackColor);
 
   }
-  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None)) {
+  if (sw->fIconOurs && (sw->icon_pixmap_w != None)) {
     XSetWindowBackground(dpy, sw->icon_pixmap_w,
 			 BackColor);
   }
@@ -443,9 +448,9 @@ DrawIconWindow(ScwmWindow * sw)
   }
 
 
-  if (sw->flags &ICON_OURS) {
+  if (sw->fIconOurs) {
     if ((sw->icon_image != SCM_BOOL_F) &&
-	(!(sw->flags & SHAPED_ICON))) {
+	!sw->fShapedIcon) {
       RelieveWindow(sw, sw->icon_pixmap_w, 0, 0,
 		    sw->icon_p_width, sw->icon_p_height,
 		    Relief, Shadow, FULL_HILITE);
@@ -489,20 +494,22 @@ DrawIconWindow(ScwmWindow * sw)
  *
  ************************************************************************/
 void 
-RedoIconName(ScwmWindow * Tmp_win)
+RedoIconName(ScwmWindow *psw)
 {
 
-  if (Tmp_win->flags & SUPPRESSICON)
+  if (psw->fSuppressIcon)
     return;
 
-  if (Tmp_win->icon_w == (int) NULL)
+  if (psw->icon_w == 0)
     return;
 
-  Tmp_win->icon_t_width = XTextWidth(XFONT(Scr.icon_font), Tmp_win->icon_name,
-				     strlen(Tmp_win->icon_name));
+  psw->icon_t_width = XTextWidth(XFONT(Scr.icon_font), psw->icon_name,
+				 strlen(psw->icon_name));
   /* clear the icon window, and trigger a re-draw via an expose event */
-  if (Tmp_win->flags & ICONIFIED)
-    XClearArea(dpy, Tmp_win->icon_w, 0, 0, 0, 0, True);
+  if (psw->fIconified) {
+    XClearArea(dpy, psw->icon_w, 0, 0, 0, 0, True);
+  }
+
   return;
 }
 
@@ -527,8 +534,8 @@ AutoPlace(ScwmWindow * t)
 
 
   /* New! Put icon in same page as the center of the window */
-  /* Not a good idea for StickyIcons */
-  if ((t->flags & StickyIcon) || (t->flags & STICKY)) {
+  /* Not a good idea for fStickyIcon */
+  if (t->fStickyIcon || t->fSticky) {
     base_x = 0;
     base_y = 0;
     /*Also, if its a stickyWindow, put it on the current page! */
@@ -547,7 +554,7 @@ AutoPlace(ScwmWindow * t)
     base_y = ((t->frame_y + Scr.Vy + (t->frame_height >> 1)) / Scr.MyDisplayHeight) *
       Scr.MyDisplayHeight - Scr.Vy;
   }
-  if (t->flags & ICON_MOVED) {
+  if (t->fIconMoved) {
     /* just make sure the icon is on this screen */
     t->icon_x_loc = t->icon_x_loc % Scr.MyDisplayWidth + base_x;
     t->icon_y_loc = t->icon_y_loc % Scr.MyDisplayHeight + base_y;
@@ -599,7 +606,7 @@ AutoPlace(ScwmWindow * t)
 	test_window = Scr.ScwmRoot.next;
 	while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
 	  if (test_window->Desk == t->Desk) {
-	    if ((test_window->flags & ICONIFIED) &&
+	    if (test_window->fIconified &&
 		(test_window->icon_w || test_window->icon_pixmap_w) &&
 		(test_window != t)) {
 	      tw = test_window->icon_p_width;
@@ -659,20 +666,20 @@ DeIconify(ScwmWindow * tmp_win)
   /* now de-iconify transients */
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     if ((t == tmp_win) ||
-	((t->flags & TRANSIENT) && (t->transientfor == tmp_win->w))) {
-      t->flags |= MAPPED;
+	(t->fTransient && (t->transientfor == tmp_win->w))) {
+      t->fMapped = True;
       if (Scr.Hilite == t)
 	SetBorder(t, False, True, True, None);
 
       XMapWindow(dpy, t->w);
       if (t->Desk == Scr.CurrentDesk) {
 	XMapWindow(dpy, t->frame);
-	t->flags |= MAP_PENDING;
+	t->fMapPending = True;
       }
       XMapWindow(dpy, t->Parent);
       SetMapStateProp(t, NormalState);
-      t->flags &= ~ICONIFIED;
-      t->flags &= ~ICON_UNMAPPED;
+      t->fIconified = False;
+      t->fIconUnmapped = False;
       /* Need to make sure the border is colored correctly,
        * in case it was stuck or unstuck while iconified. */
       tmp = Scr.Hilite;
@@ -688,7 +695,7 @@ DeIconify(ScwmWindow * tmp_win)
     }
   }
 
-  if (tmp_win->flags & ClickToFocus)
+  if (tmp_win->fClickToFocus)
     FocusOn(tmp_win, 1);
 
   KeepOnTop();
@@ -714,19 +721,20 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
   XGetWindowAttributes(dpy, tmp_win->w, &winattrs);
   eventMask = winattrs.your_event_mask;
 
-  if ((tmp_win) && (tmp_win == Scr.Hilite) &&
-      (tmp_win->flags & ClickToFocus) && (tmp_win->next)) {
+  if ((tmp_win == Scr.Hilite) &&
+      tmp_win->fClickToFocus && tmp_win->next) {
     SetFocus(tmp_win->next->w, tmp_win->next, 1);
   }
+
   /* iconify transients first */
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     if ((t == tmp_win) ||
-	((t->flags & TRANSIENT) && (t->transientfor == tmp_win->w))) {
+	(t->fTransient && (t->transientfor == tmp_win->w))) {
       /*
        * Prevent the receipt of an UnmapNotify, since that would
        * cause a transition to the Withdrawn state.
        */
-      t->flags &= ~MAPPED;
+      t->fMapped = False;
       XSelectInput(dpy, t->w, eventMask & ~StructureNotifyMask);
       XUnmapWindow(dpy, t->w);
       XSelectInput(dpy, t->w, eventMask);
@@ -740,7 +748,8 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
       SetMapStateProp(t, IconicState);
       SetBorder(t, False, False, False, None);
       if (t != tmp_win) {
-	t->flags |= ICONIFIED | ICON_UNMAPPED;
+	t->fIconified = True;
+	t->fIconUnmapped = True;
 
 	Broadcast(M_ICONIFY, 7, t->w, t->frame,
 		  (unsigned long) t,
@@ -752,7 +761,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
     }
   }
   if (tmp_win->icon_w == None)
-    if (tmp_win->flags & ICON_MOVED)
+    if (tmp_win->fIconMoved)
       CreateIconWindow(tmp_win, tmp_win->icon_x_loc, tmp_win->icon_y_loc);
     else
       CreateIconWindow(tmp_win, def_x, def_y);
@@ -765,8 +774,8 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
     tmp_win->icon_w_width = tmp_win->icon_t_width + 6;
   }
   AutoPlace(tmp_win);
-  tmp_win->flags |= ICONIFIED;
-  tmp_win->flags &= ~ICON_UNMAPPED;
+  tmp_win->fIconified = True;
+  tmp_win->fIconUnmapped = False;
   Broadcast(M_ICONIFY, 7, tmp_win->w, tmp_win->frame,
 	    (unsigned long) tmp_win,
 	    tmp_win->icon_x_loc, tmp_win->icon_y_loc,
@@ -783,11 +792,11 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
       XMapWindow(dpy, tmp_win->icon_pixmap_w);
     KeepOnTop();
   }
-  if ((tmp_win->flags & ClickToFocus) || (tmp_win->flags & SloppyFocus)) {
+  if (tmp_win->fClickToFocus || tmp_win->fSloppyFocus) {
     if (tmp_win == Scr.Focus) {
       if (Scr.PreviousFocus == Scr.Focus)
 	Scr.PreviousFocus = NULL;
-      if ((tmp_win->flags & ClickToFocus) && (tmp_win->next))
+      if (tmp_win->fClickToFocus && (tmp_win->next))
 	SetFocus(tmp_win->next->w, tmp_win->next, 1);
       else {
 	SetFocus(Scr.NoFocusWin, NULL, 1);
@@ -805,7 +814,7 @@ void redraw_icon_titles()
   tmp = Scr.ScwmRoot.next;
   while (tmp != NULL) {
     RedoIconName(tmp);
-    if (tmp->flags & ICONIFIED) {
+    if (tmp->fIconified) {
       DrawIconWindow(tmp);
     }
     tmp = tmp->next;

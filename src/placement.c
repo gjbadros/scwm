@@ -28,12 +28,12 @@ int test_fit(ScwmWindow * t, int test_x, int test_y, int aoimin);
 void CleverPlacement(ScwmWindow * t, int *x, int *y);
 
 /* The following factors represent the amount of area that these types of
- * windows are counted as.  For example, by default the area of ONTOP windows
+ * windows are counted as.  For example, by default the area of fOnTop windows
  * is counted 5 times as much as normal windows.  So CleverPlacement will
- * cover 5 times as much area of another window before it will cover an ONTOP
- * window.  To treat ONTOP windows the same as other windows, set this to 1.
- * To really, really avoid putting windows under ONTOP windows, set this to a
- * high value, say 1000.  A value of 5 will try to avoid ONTOP windows if
+ * cover 5 times as much area of another window before it will cover an fOnTop
+ * window.  To treat fOnTop windows the same as other windows, set this to 1.
+ * To really, really avoid putting windows under fOnTop windows, set this to a
+ * high value, say 1000.  A value of 5 will try to avoid fOnTop windows if
  * practical, but if it saves a reasonable amount of area elsewhere, it will
  * place one there.  The same rules apply for the other "AVOID" factors.
  * (for CleverPlacement)
@@ -69,10 +69,10 @@ SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y)
       while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
 	if (test_window->Desk == Scr.CurrentDesk) {
 #ifndef NO_STUBBORN_PLACEMENT
-	  if ((test_window->flags & ICONIFIED) &&
-	      (!(test_window->flags & ICON_UNMAPPED)) &&
-	      (test_window->icon_w) &&
-	      (test_window != t)) {
+	  if (test_window->fIconified &&
+	      !test_window->fIconUnmapped &&
+	      test_window->icon_w &&
+	      test_window != t) {
 	    tw = test_window->icon_p_width;
 	    th = test_window->icon_p_height + test_window->icon_w_height;
 	    tx = test_window->icon_x_loc;
@@ -85,7 +85,7 @@ SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y)
 	    }
 	  }
 #endif /* !NO_STUBBORN_PLACEMENT */
-	  if (!(test_window->flags & ICONIFIED) && (test_window != t)) {
+	  if (!test_window->fIconified && (test_window != t)) {
 	    tw = test_window->frame_width + 2 * test_window->bw;
 	    th = test_window->frame_height + 2 * test_window->bw;
 	    tx = test_window->frame_x;
@@ -163,7 +163,7 @@ get_next_x(ScwmWindow * t, int x, int y)
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
       continue;
-    if (testw->flags & ICONIFIED) {
+    if (testw->fIconified) {
       if ((y < testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc) &&
 	  (testw->icon_y_loc < (t->frame_height + 2 * t->bw + y))) {
 	xtest = testw->icon_p_width + testw->icon_x_loc;
@@ -201,7 +201,7 @@ get_next_y(ScwmWindow * t, int y)
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
       continue;
-    if (testw->flags & ICONIFIED) {
+    if (testw->fIconified) {
       ytest = testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc;
       if (ytest > y)
 	ynew = min(ynew, ytest);
@@ -241,9 +241,9 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw == t) || (testw->Desk != Scr.CurrentDesk))
       continue;
-    if ((testw->flags & ICONIFIED) &&
+    if ((testw->fIconified) &&
 	(testw->icon_w)) {
-      if (testw->flags & ICON_UNMAPPED)
+      if (testw->fIconUnmapped)
 	continue;
       x21 = testw->icon_x_loc;
       y21 = testw->icon_y_loc;
@@ -263,11 +263,11 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
       yt = max(y11, y21);
       yb = min(y12, y22);
       anew = (xr - xl) * (yb - yt);
-      if (testw->flags & ICONIFIED)
+      if (testw->fIconified)
 	avoidance_factor = AVOIDICON;
-      else if (testw->flags & ONTOP)
+      else if (testw->fOnTop)
 	avoidance_factor = AVOIDONTOP;
-      else if (testw->flags & STICKY)
+      else if (testw->fSticky)
 	avoidance_factor = AVOIDSTICKY;
       else
 	avoidance_factor = 1;
@@ -288,7 +288,7 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
  *
  **************************************************************************/
 Bool 
-PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
+PlaceWindow(ScwmWindow *tmp_win, int Desk)
 {
   ScwmWindow *t;
   int xl = -1, yt, DragWidth, DragHeight;
@@ -306,9 +306,9 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
    * 5. Window groups stay together (completely untested)
    */
   tmp_win->Desk = Scr.CurrentDesk;
-  if (tflag & STICKY_FLAG)
+  if (tmp_win->fSticky)
     tmp_win->Desk = Scr.CurrentDesk;
-  else if (tflag & STARTSONDESK_FLAG) {
+  else if (tmp_win->fStartsOnDesk) {
     tmp_win->Desk = Desk;
   } else {
     Atom atype;
@@ -328,7 +328,7 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
 	  tmp_win->Desk = t->Desk;
       }
     }
-    if ((tmp_win->flags & TRANSIENT) && (tmp_win->transientfor != None) &&
+    if (tmp_win->fTransient && (tmp_win->transientfor != None) &&
 	(tmp_win->transientfor != Scr.Root)) {
       /* Try to find the parent's desktop */
       for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
@@ -347,7 +347,7 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
   }
   /* I think it would be good to switch to the selected desk
    * whenever a new window pops up, except during initialization */
-  if ((!PPosOverride) && (!(tmp_win->flags & SHOW_ON_MAP)))
+  if ((!PPosOverride) && (!(tmp_win->fShowOnMap)))
     changeDesks(0, tmp_win->Desk);
 
 
@@ -363,20 +363,21 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
    *   If RandomPlacement was specified,
    *       then place the window in a psuedo-random location
    */
-  if (!(tmp_win->flags & TRANSIENT) &&
+  if (!tmp_win->fTransient &&
       !(tmp_win->hints.flags & USPosition) &&
-      ((tflag & NO_PPOSITION_FLAG) ||
+      ((tmp_win->fNoPPosition) ||
        !(tmp_win->hints.flags & PPosition)) &&
       !(PPosOverride) &&
       !((tmp_win->wmhints) &&
 	(tmp_win->wmhints->flags & StateHint) &&
 	(tmp_win->wmhints->initial_state == IconicState))) {
     /* Get user's window placement, unless RandomPlacement is specified */
-    if (tflag & RANDOM_PLACE_FLAG) {
-      if (tflag & SMART_PLACE_FLAG)
+    if (tmp_win->fRandomPlace) {
+      if (tmp_win->fSmartPlace) {
 	SmartPlacement(tmp_win, tmp_win->frame_width + 2 * tmp_win->bw,
 		       tmp_win->frame_height + 2 * tmp_win->bw,
 		       &xl, &yt);
+      }
       if (xl < 0) {
 	/* plase window in a random location */
 	if ((Scr.randomx += GetDecor(tmp_win, TitleHeight)) > Scr.MyDisplayWidth / 2)
@@ -412,7 +413,7 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
     } else {
       xl = -1;
       yt = -1;
-      if (tflag & SMART_PLACE_FLAG)
+      if (tmp_win->fSmartPlace)
 	SmartPlacement(tmp_win, tmp_win->frame_width + 2 * tmp_win->bw,
 		       tmp_win->frame_height + 2 * tmp_win->bw,
 		       &xl, &yt);
@@ -500,9 +501,9 @@ GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
   register int g = ((tmp->hints.flags & PWinGravity)
 		    ? tmp->hints.win_gravity : NorthWestGravity);
 
-  if (g < ForgetGravity || g > StaticGravity)
+  if (g < ForgetGravity || g > StaticGravity) {
     *xp = *yp = 0;
-  else {
+  } else {
     *xp = (int) gravity_offsets[g].x;
     *yp = (int) gravity_offsets[g].y;
   }

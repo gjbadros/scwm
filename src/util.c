@@ -27,9 +27,7 @@ redraw_titlebars(ScwmDecor * fl, int extra_height)
   tmp = Scr.ScwmRoot.next;
   hi = Scr.Hilite;
   while (tmp != NULL) {
-    if (!(tmp->flags & TITLE)
-	|| (tmp->fl != fl)
-      ) {
+    if (!tmp->fTitle || tmp->fl != fl) {
       tmp = tmp->next;
       continue;
     }

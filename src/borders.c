@@ -100,13 +100,15 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     XClearWindow(dpy, win);
     break;
 
+
+    /* FIXGJB: is this using an object property?  Cool! :-) */
   case VectorButton:
-    if ((t->flags & MWMButtons)
+    if ((t->fMWMButtons)
 	&& (stateflags & MWMButton)
-	&& ((t->flags & MAXIMIZED) || (SCM_NFALSEP
-				       (scm_object_property
-					(t->schwin,
-					 gh_symbol2scm("maximized"))))))
+	&& (t->fMaximized || (SCM_NFALSEP
+			      (scm_object_property
+			       (t->schwin,
+				gh_symbol2scm("maximized"))))))
       DrawLinePattern(win,
 		      ShadowGC, ReliefGC,
 		      &bf->vector,
@@ -130,7 +132,7 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     if (bf->style & FlatButton)
       border = 0;
     else
-      border = t->flags & MWMBorders ? 1 : 2;
+      border = t->fMWMBorders ? 1 : 2;
     width = w - border * 2;
     height = h - border * 2;
 
@@ -264,7 +266,7 @@ RelieveWindowHH(ScwmWindow * t, Window win,
 
     if (((t->boundary_width > 2) || (edge == 0)) &&
 	((t->boundary_width > 3) || (edge < 1)) &&
-	(!(t->flags & MWMBorders) ||
+	(!t->fMWMBorders ||
      (((edge == 0) || (t->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
       seg[i].x1 = x + ((edge == 2) || b ? 0 : 1);
       seg[i].y1 = y + 1;
@@ -280,8 +282,9 @@ RelieveWindowHH(ScwmWindow * t, Window win,
 
     if (((t->boundary_width > 2) || (edge == 0)) &&
 	((t->boundary_width > 3) || (edge < 1)) &&
-	(!(t->flags & MWMBorders) ||
-    (((edge == 0) || (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
+	(!t->fMWMBorders ||
+	 (((edge == 0) || 
+	   (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
       seg[i].x1 = x + 1;
       seg[i].y1 = y + ((edge == 3) || a ? 0 : 1);
       seg[i].x2 = x + 1;
@@ -299,7 +302,7 @@ RelieveWindowHH(ScwmWindow * t, Window win,
     seg[i++].y2 = y + h - 1;
 
     if (((t->boundary_width > 2) || (edge == 0)) &&
-	(!(t->flags & MWMBorders) ||
+	(!t->fMWMBorders ||
 	 (((edge == 0) || (t->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
       seg[i].x1 = x + (b || (edge == 4) ? 0 : 1);
       seg[i].y1 = y + h - 2;
@@ -314,7 +317,7 @@ RelieveWindowHH(ScwmWindow * t, Window win,
     seg[i++].y2 = y + h - 1;
 
     if (((t->boundary_width > 2) || (edge == 0)) &&
-	(!(t->flags & MWMBorders) ||
+	(!t->fMWMBorders ||
     (((edge == 0) || (t->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
       seg[i].x1 = x + w - 2;
       seg[i].y1 = y + (a || (edge == 4) ? 0 : 1);
@@ -333,7 +336,7 @@ RelieveParts(ScwmWindow * t, int i, GC hor, GC vert)
 
   i &= FULL_HILITE;
 
-  if ((t->flags & MWMBorders) || (t->boundary_width < 3)) {
+  if (t->fMWMBorders || (t->boundary_width < 3)) {
     switch (i) {
     case 0:
       seg[0].x1 = t->boundary_width - 1;
@@ -578,10 +581,9 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     }
 
     /* set the keyboard focus */
-    if ((Mapped) && (t->flags & MAPPED) && (Scr.Hilite != t))
+    if (Mapped && t->fMapped && (Scr.Hilite != t))
       w = t->w;
-    else if ((t->flags & ICONIFIED) &&
-	     (Scr.Hilite != t) && (!(t->flags & SUPPRESSICON)))
+    else if (t->fIconified && (Scr.Hilite != t) && !t->fSuppressIcon)
       w = t->icon_w;
     Scr.Hilite = t;
 
@@ -609,7 +611,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
     TextColor = XCOLOR(t->TextColor);
     BackPixmap = Scr.light_gray_pixmap;
-    if (t->flags & STICKY)
+    if (t->fSticky)
       BackPixmap = Scr.sticky_gray_pixmap;
     BackColor = XCOLOR(t->BackColor);
     Globalgcv.foreground = XCOLOR(t->ReliefColor);
@@ -623,13 +625,15 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     BorderColor = XCOLOR(t->ShadowColor);
   }
 
-  if (t->flags & ICONIFIED) {
+  if (t->fIconified) {
     DrawIconWindow(t);
     return;
   }
+
   valuemask =
     notex_valuemask =
     CWBorderPixel;
+
   attributes.border_pixel =
     notex_attributes.border_pixel =
     BorderColor;
@@ -657,11 +661,12 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     notex_valuemask |= CWBackPixel;
   }
 
-  if (t->flags & (TITLE | BORDER)) {
+  if (t->fBorder || t->fTitle) {
     XSetWindowBorder(dpy, t->Parent, BorderColor);
     XSetWindowBorder(dpy, t->frame, BorderColor);
   }
-  if (t->flags & TITLE) {
+
+  if (t->fTitle) {
     ChangeWindowColor(t->title_w, valuemask);
     for (i = 0; i < Scr.nr_left_buttons; ++i) {
       if (t->left_w[i] != None) {
@@ -766,7 +771,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     SetTitleBar(t, onoroff, False);
 
   }
-  if (t->flags & BORDER) {
+  if (t->fBorder) {
     /* draw relief lines */
     y = t->frame_height - 2 * t->corner_width;
     x = t->frame_width - 2 * t->corner_width + t->bw;
@@ -786,7 +791,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
 	sgc = ShadowGC;
 	rgc = ReliefGC;
-	if (!(t->flags & MWMButtons) && (PressedW == t->sides[i])) {
+	if (!t->fMWMButtons && (PressedW == t->sides[i])) {
 	  sgc = ReliefGC;
 	  rgc = ShadowGC;
 	}
@@ -831,7 +836,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
 	rgc = ReliefGC;
 	sgc = ShadowGC;
-	if (!(t->flags & MWMButtons) && (PressedW == t->corners[i])) {
+	if (!t->fMWMButtons && (PressedW == t->corners[i])) {
 	  sgc = ReliefGC;
 	  rgc = ShadowGC;
 	}
@@ -888,7 +893,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
       rgc = ReliefGC;
       sgc = ShadowGC;
-      if (!(t->flags & MWMButtons) && (PressedW == t->frame)) {
+      if (!t->fMWMButtons && (PressedW == t->frame)) {
 	sgc = ReliefGC;
 	rgc = ShadowGC;
       }
@@ -944,7 +949,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 
   if (!t)
     return;
-  if (!(t->flags & TITLE))
+  if (!t->fTitle)
     return;
 
   if (onoroff) {
@@ -1053,7 +1058,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
     }
   }
   /* now, draw lines in title bar if it's a sticky window */
-  if (t->flags & STICKY) {
+  if (t->fSticky) {
     for (i = 0; i < t->title_height / 2 - 3; i += 4) {
       XDrawLine(dpy, t->title_w, ShadowGC, 4, t->title_height / 2 - i - 1,
 		hor_off - 6, t->title_height / 2 - i - 1);
@@ -1120,8 +1125,8 @@ RelieveWindow(ScwmWindow * t, Window win,
 
   if (((t->boundary_width > 2) || (edge == 0)) &&
       ((t->boundary_width > 3) || (edge < 1)) &&
-      (!(t->flags & MWMBorders) ||
-     (((edge == 0) || (t->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
+      (!t->fMWMBorders ||
+       (((edge == 0) || (t->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + w - 2;
@@ -1129,8 +1134,8 @@ RelieveWindow(ScwmWindow * t, Window win,
   }
   if (((t->boundary_width > 2) || (edge == 0)) &&
       ((t->boundary_width > 3) || (edge < 1)) &&
-      (!(t->flags & MWMBorders) ||
-    (((edge == 0) || (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
+      (!t->fMWMBorders ||
+       (((edge == 0) || (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + 1;
@@ -1145,8 +1150,9 @@ RelieveWindow(ScwmWindow * t, Window win,
   seg[i++].y2 = y + h - 1;
 
   if (((t->boundary_width > 2) || (edge == 0)) &&
-      (!(t->flags & MWMBorders) ||
-  (((edge == 0) || (t->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
+      (!t->fMWMBorders ||
+       (((edge == 0) ||
+	 (t->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + h - 2;
     seg[i].x2 = x + w - 2;
@@ -1158,8 +1164,9 @@ RelieveWindow(ScwmWindow * t, Window win,
   seg[i++].y2 = y + h - 1;
 
   if (((t->boundary_width > 2) || (edge == 0)) &&
-      (!(t->flags & MWMBorders) ||
-   (((edge == 0) || (t->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
+      (!t->fMWMBorders ||
+       (((edge == 0) || 
+	 (t->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
     seg[i].x1 = x + w - 2;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + w - 2;
@@ -1206,7 +1213,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 
   /* FIXMS: I think this can be safely removed, check RSN. */
   /* if windows is not being maximized, save size in case of maximization */
-  if (!(tmp_win->flags & MAXIMIZED) && !shaded) {
+  if (!tmp_win->fMaximized && !shaded) {
     tmp_win->orig_x = x;
     tmp_win->orig_y = y;
     tmp_win->orig_wd = w;
@@ -1235,7 +1242,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
     left = tmp_win->nr_left_buttons;
     right = tmp_win->nr_right_buttons;
 
-    if (tmp_win->flags & TITLE)
+    if (tmp_win->fTitle)
       tmp_win->title_height = GetDecor(tmp_win, TitleHeight) + tmp_win->bw;
 
     tmp_win->title_width = w -
@@ -1246,7 +1253,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
     if (tmp_win->title_width < 1)
       tmp_win->title_width = 1;
 
-    if (tmp_win->flags & TITLE) {
+    if (tmp_win->fTitle) {
       tmp_win->title_x = tmp_win->boundary_width +
 	(left) * tmp_win->title_height;
       if (tmp_win->title_x >= w - tmp_win->boundary_width)
@@ -1287,7 +1294,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 	}
       }
     }
-    if (tmp_win->flags & BORDER) {
+    if (tmp_win->fBorder) {
       tmp_win->corner_width = GetDecor(tmp_win, TitleHeight) + tmp_win->bw +
 	tmp_win->boundary_width;
 

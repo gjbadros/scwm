@@ -45,26 +45,10 @@ enum cursor {
 /* values for name_list flags */
 /* The first 13 items are mapped directly into the ScwmWindow structures
  * flag value, so they MUST correspond to the first 13 entries in scwm.h */
-#define START_ICONIC_FLAG    (1<<0)
-#define STAYSONTOP_FLAG      (1<<1)
-#define STICKY_FLAG          (1<<2)
-#define LISTSKIP_FLAG        (1<<3)
-#define SUPPRESSICON_FLAG    (1<<4)
-#define NOICON_TITLE_FLAG    (1<<5)
-#define LENIENCE_FLAG        (1<<6)
-#define STICKY_ICON_FLAG     (1<<7)
-#define CIRCULATE_SKIP_ICON_FLAG  (1<<8)
-#define CIRCULATESKIP_FLAG   (1<<9)
-#define CLICK_FOCUS_FLAG     (1<<10)
-#define SLOPPY_FOCUS_FLAG    (1<<11)
-#define SHOW_MAPPING         (1<<12)
-
 #define NOTITLE_FLAG         (1<<13)
 #define NOBORDER_FLAG        (1<<14)
 #define ICON_FLAG            (1<<15)
 #define STARTSONDESK_FLAG    (1<<16)
-#define BW_FLAG              (1<<17)
-#define NOBW_FLAG            (1<<18)
 #define FORE_COLOR_FLAG      (1<<19)
 #define BACK_COLOR_FLAG      (1<<20)
 #define RANDOM_PLACE_FLAG    (1<<21)
@@ -171,15 +155,13 @@ void ClosePipes(void);
 void SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y);
 void usage(void);
 
-void GetMwmHints(ScwmWindow * t);
-void SelectDecor(ScwmWindow *, unsigned long, int, int);
 void SetStickyProp(ScwmWindow *, int, int, int);
 void SetClientProp(ScwmWindow *);
 void show_panner(void);
 void WaitForButtonsUp(void);
 void FocusOn(ScwmWindow * t, int DeIconifyOnly);
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
-Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
+Bool PlaceWindow(ScwmWindow * tmp_win, int Desk);
 
 void MapIt(ScwmWindow * t);
 void do_save(void);

@@ -76,7 +76,6 @@ typedef enum {
 
 /* button style flags (per-state) */
 enum {
-
   /* specific style flags */
   /* justification bits (3.17 -> 4 bits) */
   HOffCenter = (1 << 4),

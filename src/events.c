@@ -73,6 +73,7 @@
 #include "colormaps.h"
 #include "module-interface.h"
 #include "events.h"
+#include "focus.h"
 #include "color.h"
 
 #ifndef WithdrawnState
@@ -312,7 +313,7 @@ HandleFocusIn()
 		XCOLOR(Scr.DefaultDecor.HiColors.bg),
 		0, 0);
       if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
-	if ((Scr.Hilite) && (!(Scr.Hilite->flags & ICONIFIED))) {
+	if (Scr.Hilite && !Scr.Hilite->fIconified) {
 	  InstallWindowColormaps(Scr.Hilite);
 	} else {
 	  InstallWindowColormaps(NULL);
@@ -327,7 +328,7 @@ HandleFocusIn()
 	      XCOLOR(GetDecor(swCurrent, HiColors.bg)),
 	      0, 0);
     if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
-      if ((Scr.Hilite) && (!(Scr.Hilite->flags & ICONIFIED))) {
+      if (Scr.Hilite && !Scr.Hilite->fIconified) {
 	InstallWindowColormaps(Scr.Hilite);
       } else {
 	InstallWindowColormaps(NULL);
@@ -572,8 +573,9 @@ HandlePropertyNotify()
 		  (unsigned long) swCurrent, swCurrent->name);
 
     /* fix the name in the title bar */
-    if (!(swCurrent->flags & ICONIFIED))
+    if (!swCurrent->fIconified) {
       SetTitleBar(swCurrent, (Scr.Hilite == swCurrent), True);
+    }
 
     /*
      * if the icon name is NoName, set the name of the icon to be
@@ -609,24 +611,25 @@ HandlePropertyNotify()
 
     if ((swCurrent->wmhints->flags & IconPixmapHint) ||
 	(swCurrent->wmhints->flags & IconWindowHint)) {
-      if (!(swCurrent->flags & SUPPRESSICON)) {
+      if (!swCurrent->fSuppressIcon) {
 	if (swCurrent->icon_w)
 	  XDestroyWindow(dpy, swCurrent->icon_w);
 	XDeleteContext(dpy, swCurrent->icon_w, ScwmContext);
-	if (swCurrent->flags & ICON_OURS) {
+	if (swCurrent->fIconOurs) {
 	  if (swCurrent->icon_pixmap_w != None) {
 	    XDestroyWindow(dpy, swCurrent->icon_pixmap_w);
 	    XDeleteContext(dpy, swCurrent->icon_pixmap_w, ScwmContext);
 	  }
-	} else
+	} else {
 	  XUnmapWindow(dpy, swCurrent->icon_pixmap_w);
+	}
       }
       swCurrent->icon_w = None;
       swCurrent->icon_pixmap_w = None;
       swCurrent->icon_image = SCM_BOOL_F;
-      if (swCurrent->flags & ICONIFIED) {
-	swCurrent->flags &= ~ICONIFIED;
-	swCurrent->flags &= ~ICON_UNMAPPED;
+      if (swCurrent->fIconified) {
+	swCurrent->fIconified = False;
+	swCurrent->fIconUnmapped = False;
 	CreateIconWindow(swCurrent, swCurrent->icon_x_loc, swCurrent->icon_y_loc);
 	Broadcast(M_ICONIFY, 7, swCurrent->w, swCurrent->frame,
 		  (unsigned long) swCurrent,
@@ -636,7 +639,7 @@ HandlePropertyNotify()
 		  swCurrent->icon_w_height);
 	BroadcastConfig(M_CONFIGURE_WINDOW, swCurrent);
 
-	if (!(swCurrent->flags & SUPPRESSICON)) {
+	if (!swCurrent->fSuppressIcon) {
 	  LowerWindow(swCurrent);
 	  AutoPlace(swCurrent);
 	  if (swCurrent->Desk == Scr.CurrentDesk) {
@@ -646,7 +649,7 @@ HandlePropertyNotify()
 	      XMapWindow(dpy, swCurrent->icon_pixmap_w);
 	  }
 	}
-	swCurrent->flags |= ICONIFIED;
+	swCurrent->fIconified = True;
 	DrawIconWindow(swCurrent);
       }
     }
@@ -678,7 +681,7 @@ HandlePropertyNotify()
       FetchWmColormapWindows(swCurrent);	/* frees old data */
       ReInstallActiveColormap();
     } else if (Event.xproperty.atom == _XA_WM_STATE) {
-      if ((swCurrent != NULL) && (swCurrent->flags & ClickToFocus)
+      if ((swCurrent != NULL) && swCurrent->fClickToFocus
 	  && (swCurrent == Scr.Focus)) {
 	Scr.Focus = NULL;
 	SetFocus(swCurrent->w, swCurrent, 0);
@@ -703,8 +706,8 @@ HandleClientMessage()
   DBUG("HandleClientMessage", "Routine Entered");
 
   if ((Event.xclient.message_type == _XA_WM_CHANGE_STATE) &&
-      (swCurrent) && (Event.xclient.data.l[0] == IconicState) &&
-      !(swCurrent->flags & ICONIFIED)) {
+      (Event.xclient.data.l[0] == IconicState) &&
+      swCurrent && !swCurrent->fIconified) {
     XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
 		  &(button.xmotion.x_root),
 		  &(button.xmotion.y_root),
@@ -800,14 +803,14 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     swCurrent = AddWindow(Event.xany.window);
     if (swCurrent == NULL)
       return;
-    if (swCurrent->flags & ICONIFIED) {
-      swCurrent->flags |= STARTICONIC;
+    if (swCurrent->fIconified) {
+      swCurrent->fStartIconic = True;
     }
   }
   if (KeepRaised != None)
     XRaiseWindow(dpy, KeepRaised);
   /* If it's not merely iconified, and we have hints, use them. */
-  if (!(swCurrent->flags & ICONIFIED) || (swCurrent->flags & STARTICONIC)) {
+  if (!swCurrent->fIconified || swCurrent->fStartIconic) {
     int state;
 
     if (swCurrent->wmhints && (swCurrent->wmhints->flags & StateHint))
@@ -815,7 +818,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     else
       state = NormalState;
 
-    if (swCurrent->flags & STARTICONIC)
+    if (swCurrent->fStartIconic)
       state = IconicState;
 
     if (isIconicState != DontCareState)
@@ -830,11 +833,11 @@ HandleMapRequestKeepRaised(Window KeepRaised)
       if (swCurrent->Desk == Scr.CurrentDesk) {
 	XMapWindow(dpy, swCurrent->w);
 	XMapWindow(dpy, swCurrent->frame);
-	swCurrent->flags |= MAP_PENDING;
+	swCurrent->fMapPending = True;
 	SetMapStateProp(swCurrent, NormalState);
-	if ((swCurrent->flags & ClickToFocus) &&
-	/* !(swCurrent->flags & SloppyFocus) && */
-	    ((!Scr.Focus) || (Scr.Focus->flags & ClickToFocus))) {
+	if (swCurrent->fClickToFocus &&
+	/* FIXGJB: !(swCurrent->fSloppyFocus) && */
+	    (!Scr.Focus || Scr.Focus->fClickToFocus)) {
 	  SetFocus(swCurrent->w, swCurrent, 1);
 	}
       } else {
@@ -851,7 +854,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
       }
       break;
     }
-    swCurrent->flags &= ~STARTICONIC;
+    swCurrent->fStartIconic = False;
     if (!PPosOverride)
       XSync(dpy, 0);
     XUngrabServer_withSemaphore(dpy);
@@ -905,7 +908,7 @@ HandleMapNotify()
   if (swCurrent->Desk == Scr.CurrentDesk) {
     XMapWindow(dpy, swCurrent->frame);
   }
-  if (swCurrent->flags & ICONIFIED)
+  if (swCurrent->fIconified)
     Broadcast(M_DEICONIFY, 3, swCurrent->w, swCurrent->frame,
 	      (unsigned long) swCurrent, 0, 0, 0, 0);
   else {
@@ -913,20 +916,21 @@ HandleMapNotify()
 	      (unsigned long) swCurrent, 0, 0, 0, 0);
   }
 
-  if ((swCurrent->flags & ClickToFocus) && (Scr.Focus) &&
-      ((!Scr.Focus) || (Scr.Focus->flags & ClickToFocus))) {
+  if ((swCurrent->fClickToFocus) && Scr.Focus &&
+      ((!Scr.Focus) || Scr.Focus->fClickToFocus)) {
     SetFocus(swCurrent->w, swCurrent, 1);
   }
-  if ((!(swCurrent->flags & (BORDER | TITLE))) && (swCurrent->boundary_width < 2)) {
+  if (!(swCurrent->fBorder || swCurrent->fTitle)
+      && (swCurrent->boundary_width < 2)) {
     SetBorder(swCurrent, False, True, True, swCurrent->frame);
   }
   XSync(dpy, 0);
   XUngrabServer_withSemaphore(dpy);
   XFlush(dpy);
-  swCurrent->flags |= MAPPED;
-  swCurrent->flags &= ~MAP_PENDING;
-  swCurrent->flags &= ~ICONIFIED;
-  swCurrent->flags &= ~ICON_UNMAPPED;
+  swCurrent->fMapped = True;
+  swCurrent->fMapPending = False;
+  swCurrent->fIconified = False;;
+  swCurrent->fIconUnmapped = False;
   KeepOnTop();
 }
 
@@ -981,7 +985,7 @@ HandleUnmapNotify()
   if (Scr.PreviousFocus == swCurrent)
     Scr.PreviousFocus = NULL;
 
-  if ((swCurrent == Scr.Focus) && (swCurrent->flags & ClickToFocus)) {
+  if ((swCurrent == Scr.Focus) && swCurrent->fClickToFocus) {
     if (swCurrent->next) {
       HandleHardFocus(swCurrent->next);
     } else
@@ -996,7 +1000,7 @@ HandleUnmapNotify()
   if (swCurrent == colormap_win)
     colormap_win = NULL;
 
-  if ((!(swCurrent->flags & MAPPED) && !(swCurrent->flags & ICONIFIED))) {
+  if (!swCurrent->fMapped && !swCurrent->fIconified) {
     return;
   }
   XGrabServer_withSemaphore(dpy);
@@ -1025,7 +1029,7 @@ HandleUnmapNotify()
     if (reparented) {
       if (swCurrent->old_bw)
 	XSetWindowBorderWidth(dpy, Event.xunmap.window, swCurrent->old_bw);
-      if ((!(swCurrent->flags & SUPPRESSICON)) &&
+      if ((!(swCurrent->fSuppressIcon)) &&
 	  (swCurrent->wmhints && (swCurrent->wmhints->flags & IconWindowHint)))
 	XUnmapWindow(dpy, swCurrent->wmhints->icon_window);
     } else {
@@ -1067,8 +1071,8 @@ HandleButtonPress()
   DBUG("HandleButtonPress", "Routine Entered");
 
   /* click to focus stuff goes here */
-  if ((swCurrent) && (swCurrent->flags & ClickToFocus)
-      && !(swCurrent->flags & SloppyFocus)
+  if (swCurrent && swCurrent->fClickToFocus
+      && !swCurrent->fSloppyFocus
       && (swCurrent != Scr.Ungrabbed) &&
       ((Event.xbutton.state &
 	(ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0)) {
@@ -1091,7 +1095,7 @@ HandleButtonPress()
 
       /* Why is this here? Seems to cause breakage with
        * non-focusing windows! */
-      if (!(swCurrent->flags & ICONIFIED)) {
+      if (!swCurrent->fIconified) {
 	XSync(dpy, 0);
 	/* pass click event to just clicked to focus window? */
 	if (Scr.ClickToFocusPassesClick)
@@ -1102,7 +1106,7 @@ HandleButtonPress()
 	return;
       }
     }
-  } else if ((swCurrent) && !(swCurrent->flags & ClickToFocus) &&
+  } else if (swCurrent && !swCurrent->fClickToFocus &&
 	     (Event.xbutton.window == swCurrent->frame) &&
 	     Scr.MouseFocusClickRaises) {
     if (swCurrent != Scr.LastWindowRaised &&
@@ -1205,8 +1209,8 @@ HandleEnterNotify()
 #endif /* NON_VIRTUAL */
 
   if (Event.xany.window == Scr.Root) {
-    if ((Scr.Focus) && (!(Scr.Focus->flags & ClickToFocus)) &&
-	(!(Scr.Focus->flags & SloppyFocus))) {
+    if (Scr.Focus && !Scr.Focus->fClickToFocus &&
+	!Scr.Focus->fSloppyFocus) {
       SetFocus(Scr.NoFocusWin, NULL, 1);
     }
     if (Scr.ColormapFocus == COLORMAP_FOLLOWS_MOUSE) {
@@ -1218,14 +1222,14 @@ HandleEnterNotify()
   if (!swCurrent)
     return;
 
-  if (!(swCurrent->flags & ClickToFocus)) {
+  if (!swCurrent->fClickToFocus) {
     if (Scr.Focus != swCurrent) {
       SetFocus(swCurrent->w, swCurrent, 0);
     } else
       SetFocus(swCurrent->w, swCurrent, 0);
   }
   if (Scr.ColormapFocus == COLORMAP_FOLLOWS_MOUSE) {
-    if ((!(swCurrent->flags & ICONIFIED)) && (Event.xany.window == swCurrent->w))
+    if (!swCurrent->fIconified && (Event.xany.window == swCurrent->w))
       InstallWindowColormaps(swCurrent);
     else
       InstallWindowColormaps(NULL);
@@ -1298,17 +1302,18 @@ HandleConfigureRequest()
       (CWX | CWY | CWWidth | CWHeight | CWBorderWidth);
     xwc.x = cre->x;
     xwc.y = cre->y;
-    if ((swCurrent) && ((swCurrent->icon_w == cre->window))) {
+    if (swCurrent && (swCurrent->icon_w == cre->window)) {
       swCurrent->icon_xl_loc = cre->x;
       swCurrent->icon_x_loc = cre->x +
 	((swCurrent->icon_w_width - swCurrent->icon_p_width) / 2);
       swCurrent->icon_y_loc = cre->y - swCurrent->icon_p_height ;
-      if (!(swCurrent->flags & ICON_UNMAPPED))
+      if (!swCurrent->fIconUnmapped) {
 	Broadcast(M_ICON_LOCATION, 7, swCurrent->w, swCurrent->frame,
 		  (unsigned long) swCurrent,
 		  swCurrent->icon_x_loc, swCurrent->icon_y_loc,
 		  swCurrent->icon_w_width,
 		  swCurrent->icon_w_height + swCurrent->icon_p_height);
+      }
     }
     xwc.width = cre->width;
     xwc.height = cre->height;
@@ -1440,21 +1445,18 @@ HandleVisibilityNotify()
   DBUG("HandleVisibilityNotify", "Routine Entered");
 
   if (swCurrent) {
-    if (vevent->state == VisibilityUnobscured)
-      swCurrent->flags |= VISIBLE;
-    else
-      swCurrent->flags &= ~VISIBLE;
+    swCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
-    /* For the most part, we'll raised partially obscured ONTOP windows
-     * here. The exception is ONTOP windows that are obscured by
-     * other ONTOP windows, which are raised in KeepOnTop(). This
+    /* For the most part, we'll raised partially obscured fOnTop windows
+     * here. The exception is fOnTop windows that are obscured by
+     * other fOnTop windows, which are raised in KeepOnTop(). This
      * complicated set-up saves us from continually re-raising
      * every on top window */
     if (((vevent->state == VisibilityPartiallyObscured) ||
 	 (vevent->state == VisibilityFullyObscured)) &&
-	(swCurrent->flags & ONTOP) && (swCurrent->flags & RAISED)) {
+	swCurrent->fOnTop && swCurrent->fRaised) {
       RaiseWindow(swCurrent);
-      swCurrent->flags &= ~RAISED;
+      swCurrent->fRaised = False;
     }
   }
 }

@@ -3,7 +3,7 @@
  */
 
 /*
- * This module is all original code 
+ * This module is derived from all original code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
@@ -283,7 +283,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	if (!opaque_move)
 	  MoveOutline(Scr.Root, xl, yt, Width, Height);
 	else {
-	  if (tmp_win->flags & ICONIFIED) {
+	  if (tmp_win->fIconified) {
 	    tmp_win->icon_x_loc = xl;
 	    tmp_win->icon_xl_loc = xl -
 	      (tmp_win->icon_w_width - tmp_win->icon_p_width) / 2;
@@ -450,7 +450,6 @@ void
 InteractiveMove(Window * win, ScwmWindow * tmp_win, 
 		int *FinalX, int *FinalY, XEvent * eventp)
 {
-  extern int Stashed_X, Stashed_Y;
   int origDragX, origDragY, DragX, DragY, DragWidth, DragHeight;
   int XOffset, YOffset;
   Window w;
@@ -483,7 +482,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win,
   else
     XGrabServer_withSemaphore(dpy);
 
-  if ((!opaque_move) && (tmp_win->flags & ICONIFIED))
+  if (!opaque_move && tmp_win->fIconified)
     XUnmapWindow(dpy, w);
 
   DragWidth += JunkBW;

@@ -16,6 +16,7 @@
 #include "Grab.h"
 #include "resize.h"
 #include "borders.h"
+#include "focus.h"
 #include "module-interface.h"
 
 /***************************************************************************
@@ -352,9 +353,8 @@ MoveViewport(int newx, int newy, Bool grab)
     for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
       /* If the window is iconified, and sticky Icons is set,
        * then the window should essentially be sticky */
-      if (!((t->flags & ICONIFIED) && (t->flags & StickyIcon)) &&
-	  (!(t->flags & STICKY))) {
-	if (!(t->flags & StickyIcon)) {
+      if (!(t->fIconified && t->fStickyIcon) && !t->fSticky) {
+	if (!t->fStickyIcon) {
 	  t->icon_x_loc += deltax;
 	  t->icon_xl_loc += deltax;
 	  t->icon_y_loc += deltay;
@@ -364,12 +364,13 @@ MoveViewport(int newx, int newy, Bool grab)
 	  if (t->icon_w != None)
 	    XMoveWindow(dpy, t->icon_w, t->icon_x_loc,
 			t->icon_y_loc + t->icon_p_height);
-	  if (!(t->flags & ICON_UNMAPPED))
+	  if (!t->fIconUnmapped) {
 	    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
 		      (unsigned long) t,
 		      t->icon_x_loc, t->icon_y_loc,
 		      t->icon_w_width,
 		      t->icon_w_height + t->icon_p_width);
+	  }
 	}
 	SetupFrame(t, t->frame_x + deltax, t->frame_y + deltay,
 		   t->frame_width, t->frame_height, False);
@@ -379,10 +380,11 @@ MoveViewport(int newx, int newy, Bool grab)
       /* If its an icon, and its sticking, autoplace it so
        * that it doesn't wind up on top a a stationary
        * icon */
-      if (((t->flags & STICKY) || (t->flags & StickyIcon)) &&
-	  (t->flags & ICONIFIED) && (!(t->flags & ICON_MOVED)) &&
-	  (!(t->flags & ICON_UNMAPPED)))
+      if ((t->fSticky || t->fStickyIcon) &&
+	  t->fIconified && !t->fIconMoved && 
+	  !t->fIconUnmapped) {
 	AutoPlace(t);
+      }
     }
 
   }
@@ -419,8 +421,8 @@ changeDesks(int val1, int val2)
   XGrabServer_withSemaphore(dpy);
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     /* Only change mapping for non-sticky windows */
-    if (!((t->flags & ICONIFIED) && (t->flags & StickyIcon)) &&
-	(!(t->flags & STICKY)) && (!(t->flags & ICON_UNMAPPED))) {
+    if (!(t->fIconified && t->fStickyIcon) &&
+	!t->fSticky && !t->fIconUnmapped) {
       if (t->Desk == oldDesk) {
 	if (Scr.Focus == t)
 	  t->FocusDesk = oldDesk;
@@ -447,20 +449,22 @@ changeDesks(int val1, int val2)
     /* If its an icon, and its sticking, autoplace it so
      * that it doesn't wind up on top a a stationary
      * icon */
-    if (((t->flags & STICKY) || (t->flags & StickyIcon)) &&
-	(t->flags & ICONIFIED) && (!(t->flags & ICON_MOVED)) &&
-  	(!(t->flags & ICON_UNMAPPED)))
+    if ((t->fSticky || t->fStickyIcon) &&
+	t->fIconified && !t->fIconMoved && 
+  	!t->fIconUnmapped) {
       AutoPlace(t);
+    }
   }
 
-  if ((FocusWin) && (FocusWin->flags & ClickToFocus))
+  if (FocusWin && FocusWin->fClickToFocus)
 #ifndef NO_REMEMBER_FOCUS
     SetFocus(FocusWin->w, FocusWin, 0);
   /* OK, someone beat me up, but I don't like this. If you are a predominantly
    * focus-follows-mouse person, but put in one sticky click-to-focus window
    * (typically because you don't really want to give focus to this window),
    * then the following lines are screwed up. */
-/*  else if (StickyWin && (StickyWin->flags && STICKY))
+  /* FIXGJB: what's going on here? --03/25/98 gjb */
+/*  else if (StickyWin && StickyWin->fSticky)
    SetFocus(StickyWin->w, StickyWin,1); */
   else
 #endif
