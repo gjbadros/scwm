@@ -76,6 +76,18 @@ Another first-element pseudo-modifier is 'with, which is the same as
 'exactly, except for an implicit *numlock *capslock.  'iwith is the same
 as 'with except for adding an implicit *shift, as well.
 
+Listing of 'with, 'iwith, or 'exactly anywhere besides the first
+position is an error.  Listing the same modifier twice (or once when it
+is also implicit due to a pseudo-modifier) is also an error.
+
+If a modifier is listed and there is no key bound to that modifier, the
+binding will be kept but it will be inactive until that modifier is made 
+available via, e.g., xmodmap.
+
+Mixing mod[1-8] with any of the symbolic names in the same specification
+is also an error.
+
+
 These get converted internally to on and off bitmasks such that the
 event matches iff:
   ((MOD | OnMask == MOD) && (MOD & ~OffMask == MOD)).
@@ -90,7 +102,7 @@ subsection.)
 (mouse-event? OBJECT)
 e.g.,
 (make-mouse-event 1 'release)
-(make-mouse-event 3 'double-click (with-modifier 'control 'meta 'shift))
+(make-mouse-event 3 'double-click '(with control meta shift))
 
 BUTTON-SPECIFIER is the physical number of the button (a level of
 indirection could easily be provided by variables named e.g., select
@@ -109,9 +121,7 @@ intervening time, and a 'single-click is a 'click that is not followed
 by a second click; note that a 'click will always precede a
 'double-click, and the second click of a 'double-click will not generate
 another 'click.  A 'single-click is generated after the double-click
-timeout after a 'click).  E.g., the below are valid MOUSE_SPECIFIERs
-
-MODIFIER-SPECIFIER is as described above.
+timeout after a 'click). MODIFIER-SPECIFIER is as described above.
 
 
 (make-x-event X-EVENT-SPECIFIER #&optional MODIFIER-SPECIFIER)
@@ -142,12 +152,13 @@ will not be in the modifier bitmask for that keypress, but we might like
 to bind something (e.g., a help menu) to those three keys being held
 down.
 
-Note that make-x-event can be viewed as the most primitive case, and the
-other two procedures can be seen as adding a C-level filter and event
-grabbing capabilities on top of the actual X-event.  E.g.,
-(make-mouse-event 1 'release) is applicable if there is a x-event
-"ButtonRelease" and the button number is 1.  X-event bindings will never 
-do any grabs implicitly-- key-events need to be used for that.
+Note that make-x-event can be conceptually though of as the most
+primitive case, and the other two procedures can be seen as adding a
+C-level filter and event grabbing capabilities on top of the actual
+X-event.  E.g., (make-mouse-event 1 'release) is applicable if there is
+a x-event "ButtonRelease" and the button number is 1.  X-event bindings
+will never do any grabs implicitly-- key-events need to be used for
+that (this is why the other functions are necessary as primitives).
 
 
 2 - Event Map Objects:
@@ -174,11 +185,6 @@ top-level window, then on the global event map.  Each of these event maps
 would be built with the PARENT argument omitted or #f.  A special
 primitive or symbol can be bound to an event to permit preventing the
 event from propagating, and instead letting it pass to the application.
-MERGE? is #t to indicate that the resulting event-map should (for the
-purposes of event dispatch) treat the PARENT's bindings as equipotent to 
-this new child event (i.e. all of the bindings will be checked when
-doing dispatch).  MERGE? is #f to indicate that only if no binding
-matched in the child should the parent's bindings be checked.
 
 event-map-global
 ;; the built-in global event-map object -- it is an implicit
@@ -186,13 +192,13 @@ event-map-global
 
 (event-map-parents EVENT-MAP)
 ;; Return list of parent event map objects
-(add-event-map-parent! EVENT-MAP PARENT MERGE?)
+(add-event-map-parent! EVENT-MAP PARENT)
 ;; Permit multiple parents, though only one can be specified at a time
 (remove-event-map-parent! EVENT-MAP PARENT)
 ;; return #t if successful, #f if parent not found
 
-(add-event-binding EVENT-MAP EVENT PROC-OR-SYMBOL)
-(remove-event-binding EVENT-MAP EVENT)
+(add-event-binding! EVENT-MAP EVENT PROC-OR-SYMBOL)
+(remove-event-binding! EVENT-MAP EVENT)
 ;; Similar to your {add,remove}-event-hook.
 ;; These add and remove bindings for EVENT objects in the given
 ;; EVENT-MAP object.
@@ -218,7 +224,7 @@ event-map-global
 ;; EVENT-MAP is an event-map object, EVENT is an event-object
 ;; All applicable events' procedures should be invoked in the order that 
 ;; they were added to the EVENT-MAP.  Parent EVENT-MAPs are handled
-;; as discussed above.
+;; as discussed above.  Returns the value answered by the invoked procedure.
 
 ;; We could consider looking at CLOS method combination for more
 ;; sophisticated dispatching combination techniques, but that's for later.
@@ -267,11 +273,13 @@ event-map-global
 ;; (maybe something like Emacs's (interactive) declaration).
 
 ;; Only when no bindings are applicable in the child or its chain of
-;; parents should the event dispatching mechanism
-;; proceed to chain the event dispatch up to the enclosing event-map
-;; context.  That is, from decoration->frame->global (button decorations 
-;; perhaps should forward to the titlebar before the frame, but side-bar 
-;; decorations probably should not).
+;; parents should the event dispatching mechanism proceed to chain the
+;; event dispatch up to the enclosing event-map context.  That is, from
+;; decoration->frame->global (button decorations perhaps should forward
+;; to the titlebar before the frame, but side-bar decorations probably
+;; should not).  When the decoration rewrite happens, a decoration
+;; module should be able to specify the event processing fallback path.
+
 
 ;; This `dispatch-event' primitive is what will get internally invoked
 ;; when Scwm gets an event.  Note that Scwm will have to manage
