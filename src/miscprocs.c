@@ -5,6 +5,7 @@
  ****************************************************************************/
 
 #include <guile/gh.h>
+#include <signal.h>
 #include "../configure.h"
 #include "scwm.h"
 #include "screen.h"
@@ -61,13 +62,14 @@ SCM sym_center;
 
 SCM set_title_justify(SCM just)
 {
-  ScwmDecor *fl
+  ScwmDecor *fl;
+
   SCM_REDEFER_INTS;
 
 #ifdef USEDECOR
-  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  *fl = &Scr.DefaultDecor;
+  fl = &Scr.DefaultDecor;
 #endif
 
   if (!gh_symbol_p(just)) {
@@ -97,25 +99,29 @@ SCM set_title_height(SCM height) {
 
   SCM_REDEFER_INTS;
 #ifdef USEDECOR
-  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  *fl = &Scr.DefaultDecor;
+  fl = &Scr.DefaultDecor;
 #endif
+
   if (!gh_number_p(height)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-title-height!",1,height);
   }
-  th=gh_scm2int(th);
+  th=gh_scm2int(height);
   if (th <= 4 | th > 256) {
     SCM_ALLOW_INTS;
     scwm_error("set-title-height!",7);
   }
   extra_height = fl->TitleHeight;
   fl->TitleHeight = th;
+
   
   extra_height -= fl->TitleHeight;
-    fl->WindowFont.y = fl->WindowFont.font->ascent 
-    + (height - (fl->WindowFont.font->ascent 
+
+
+  fl->WindowFont.y = fl->WindowFont.font->ascent 
+    + (th - (fl->WindowFont.font->ascent 
 		 + fl->WindowFont.font->descent + 3)) / 2;
   if (fl->WindowFont.y < fl->WindowFont.font->ascent)
     fl->WindowFont.y = fl->WindowFont.font->ascent;
@@ -304,7 +310,7 @@ SCM scwm_quit() {
     kill(master_pid, SIGTERM);
   Done(0,NULL);
   SCM_REALLOW_INTS;
-  return SCM_USPECIFIED; /* you never know... */
+  return SCM_UNSPECIFIED; /* you never know... */
 }
 
 SCM pointer_position() {
@@ -373,9 +379,10 @@ SCM wait_for_window(SCM name)
   int dummy;
 
   if(!gh_string_p(name)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("wait-for-window",1,name);
   }
-  n=gh_scm2newstr(name,dummy);
+  n=gh_scm2newstr(name,&dummy);
   while(!done)
   {
     if(My_XNextEvent(dpy, &Event))

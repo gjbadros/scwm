@@ -25,6 +25,8 @@ extern SCM window_context;
 size_t free_window (SCM obj);
 int print_window (SCM obj, SCM port, scm_print_state *pstate);
 
+void init_window();
+
 SCM make_window(ScwmWindow *win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
@@ -66,7 +68,33 @@ SCM window_desk(SCM win);
 SCM window_title(SCM win);
 SCM list_all_windows();
 
+SCM keep_on_top(SCM win);
+SCM un_keep_on_top(SCM win);
+SCM kept_on_top_p(SCM win);
+
+SCM show_titlebar(SCM win);
+SCM hide_titlebar(SCM win);
+SCM titlebar_shown_p(SCM win);
+
+SCM normal_border(SCM win);
+SCM plain_border(SCM win);
+SCM normal_border_p(SCM win);
+
+SCM set_border_width_x(SCM width, SCM win);
+SCM stick_icon(SCM win);
+SCM unstick_icon(SCM win);
+SCM icon_sticky_p(SCM win);
+
+SCM set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win);
+SCM set_window_focus_x(SCM sym, SCM win);
+SCM set_window_colors_x(SCM fg, SCM bg, SCM win);
+SCM set_icon_title_x(SCM title, SCM win);
+
+
 #endif /* WINDOW_H */
+
+
+
 
 
 

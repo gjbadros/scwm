@@ -355,6 +355,7 @@ void AutoPlace(ScwmWindow *t)
   int real_x=10, real_y=10;
   int new_x, new_y;
 
+
   /* New! Put icon in same page as the center of the window */
   /* Not a good idea for StickyIcons */
   if((t->flags & StickyIcon)||(t->flags & STICKY))
@@ -880,3 +881,8 @@ void SetMapStateProp(ScwmWindow *tmp_win, int state)
 		   PropModeReplace, (unsigned char *) data, 2);
   return;
 }
+
+
+
+
+

@@ -11,7 +11,7 @@
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
 /***********************************************************************
- * scwm - "Extensible Virtual Window Manager"
+ * scwm - "Scheme Configurable Window Manager"
  * based largely on fvwm2 with Guile Scheme added as the configuration 
  * language.
  ***********************************************************************/
@@ -75,6 +75,12 @@ char *default_config_command = "Read .scwmrc";
 #define MAX_CFG_CMDS 10
 static char *config_commands[MAX_CFG_CMDS];
 static int num_config_commands=0;
+char *s_cmd_config;
+int interactive=0;
+
+static char *s_load_pre="(load \"";
+static char *s_load_post="\")";
+
 
 char *output_file = NULL;
 
@@ -166,13 +172,17 @@ void scwm_main(int argc, char **argv)
   init_miscprocs();
   init_menu();
   init_binding();
+  init_window();
   init_scwm_types();
   init_scwm_procs();
   puts("This is an alpha test version of scwm, the Scheme Configurable Window Manager.");
 
+  s_cmd_config=malloc(1*sizeof(char));
+  s_cmd_config[0]='\0';
+
   g_argv = argv;
   g_argc = argc;
-
+  
   DBUG("main","Entered, about to parse args");
 
   for (i = 1; i < argc; i++) 
@@ -193,40 +203,31 @@ void scwm_main(int argc, char **argv)
     }
     else if (mystrncasecmp(argv[i],"-f",2)==0)
     {
-      if (++i >= argc)
+      if (++i >= argc) {
         usage();
-      if (num_config_commands < MAX_CFG_CMDS)
-      {
-        config_commands[num_config_commands] =
-          (char *)malloc(6+strlen(argv[i]));
-        strcpy(config_commands[num_config_commands],"Read ");
-        strcat(config_commands[num_config_commands],argv[i]);
-        num_config_commands++;
       }
-      else
-      {
-        scwm_msg(ERR,"main","only %d -f and -cmd parms allowed!",MAX_CFG_CMDS);
-      }
+      realloc(s_cmd_config,sizeof(char)*
+	      (strlen(s_cmd_config)+
+	       strlen(s_load_pre)+
+	       strlen(argv[i])+
+	       strlen(s_load_post)));
+      s_cmd_config=strcat(s_cmd_config,s_load_pre);
+      s_cmd_config=strcat(s_cmd_config,argv[i]);
+      s_cmd_config=strcat(s_cmd_config,s_load_post);
     }
-    else if (mystrncasecmp(argv[i],"-cmd",4)==0)
+    else if (mystrncasecmp(argv[i],"-e",4)==0)
     {
-      if (++i >= argc)
+      if (++i >= argc) {
         usage();
-      if (num_config_commands < MAX_CFG_CMDS)
-      {
-        config_commands[num_config_commands] = strdup(argv[i]);
-        num_config_commands++;
       }
-      else
-      {
-        scwm_msg(ERR,"main","only %d -f and -cmd parms allowed!",MAX_CFG_CMDS);
-      }
+
+      realloc(s_cmd_config,sizeof(char)*
+	      (strlen(s_cmd_config)+strlen(argv[i])));
+      s_cmd_config=strcat(s_cmd_config,argv[i]);
     }
-    else if (mystrncasecmp(argv[i],"-outfile",8)==0)
+    else if (mystrncasecmp(argv[i],"-i",2)==0)
     {
-      if (++i >= argc)
-        usage();
-      output_file = argv[i];
+      interactive=1;
     }
     else if (mystrncasecmp(argv[i],"-h",2)==0)
     {
@@ -237,10 +238,11 @@ void scwm_main(int argc, char **argv)
     {
       Blackout = True;
     }
-    else if (mystrncasecmp(argv[i], "-version", 8) == 0)
+    else if (mystrncasecmp(argv[i], "-v", 8) == 0)
     {
-      scwm_msg(INFO,"main", "Scwm Version %s compiled on %s at %s\n",
-              VERSION,__DATE__,__TIME__);
+      printf("Scwm Version %s compiled on %s at %s\n",
+	     VERSION,__DATE__,__TIME__);
+      exit(0);
     }
     else
     {
@@ -422,13 +424,21 @@ void scwm_main(int argc, char **argv)
 #define SCWMRC ".scwmrc"
 #endif  
 
-  gh_eval_str("(let ((home-scwmrc" 
-              "       (string-append (getenv \"HOME\") \"/\" \""SCWMRC"\"))"
-	      "      (system-scwmrc \""SCWMDIR"/system"SCWMRC"\"))"
-	      " (if (access? home-scwmrc R_OK)"
-	      "     (load home-scwmrc)"
-	      "     (if (access? system-scwmrc R_OK)"
-	      "         (load system-scwmrc))))");
+  if (strlen(s_cmd_config)==0) {
+    gh_eval_str("(let ((home-scwmrc" 
+		"       (string-append (getenv \"HOME\") \"/\" \""SCWMRC"\"))"
+		"      (system-scwmrc \""SCWMDIR"/system"SCWMRC"\"))"
+		" (if (access? home-scwmrc R_OK)"
+		"     (load home-scwmrc)"
+		"     (if (access? system-scwmrc R_OK)"
+		"         (load system-scwmrc))))");
+  } else {
+    gh_eval_str(s_cmd_config);
+  }
+
+  free(s_cmd_config);
+
+  puts("done with config commands.");
   CaptureAllWindows();
   MakeMenus();
 
@@ -1485,7 +1495,7 @@ void usage(void)
   scwm_msg(INFO,"usage","  %s [-d dpy] [-debug] [-f config_cmd] [-s] [-blackout] [-version] [-h]\n",g_argv[0]);
 #else
   fprintf(stderr,"\nScwm Version %s Usage:\n\n",VERSION);
-  fprintf(stderr,"  %s [-d dpy] [-debug] [-f config_cmd] [-s] [-blackout] [-version] [-h]\n\n",g_argv[0]);
+  fprintf(stderr,"  %s [-d dpy] [-debug] [-e expression] [-f rc_file] [-s] [-i] [-blackout] [-version] [-h]\n\n",g_argv[0]);
 #endif
 }
 

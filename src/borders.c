@@ -842,10 +842,11 @@ void SetTitleBar (ScwmWindow *t,Bool onoroff, Bool NewTitle)
 			    ReliefGC, ShadowGC, BOTTOM_HILITE);
       }
       
-      if(t->name != (char *)NULL)
+      if(t->name != (char *)NULL) {
         XDrawString (dpy, t->title_w,Scr.ScratchGC3,hor_off,
                      GetDecor(t,WindowFont.y)+1, 
                      t->name, strlen(t->name));
+      }
   }
   /* now, draw lines in title bar if it's a sticky window */
   if(t->flags & STICKY)

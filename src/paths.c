@@ -22,7 +22,9 @@ SCM set_pixmap_path_x(SCM newpath)
   char *tmp;
   int dummy;
 
+  SCM_REDEFER_INTS;
   if (!gh_string_p(newpath)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-pixmap-path!",1,newpath);
   }
 
@@ -35,6 +37,8 @@ SCM set_pixmap_path_x(SCM newpath)
 
   PixmapPath = envDupExpand(tmp, 0);
   free(tmp);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
 }
 #endif
 
@@ -46,7 +50,10 @@ SCM set_icon_path_x(SCM newpath)
   char *tmp;
   int dummy;
 
+  SCM_REDEFER_INTS;
+
   if (!gh_string_p(newpath)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-icon-path!",1,newpath);
   }
 
@@ -58,6 +65,8 @@ SCM set_icon_path_x(SCM newpath)
   tmp = gh_scm2newstr(newpath,&dummy);
   IconPath = envDupExpand(tmp, 0);
   free(tmp);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
 }
 
 #if 0 /* no module support */

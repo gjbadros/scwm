@@ -148,9 +148,9 @@ SCM set_window_font(SCM font)
   SCM_REDEFER_INTS;
 
 #ifdef USEDECOR
-  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  *fl = &Scr.DefaultDecor;
+  fl = &Scr.DefaultDecor;
 #endif
 
 
@@ -168,6 +168,7 @@ SCM set_window_font(SCM font)
   fl->WindowFont.height=
     fl->WindowFont.font->ascent+fl->WindowFont.font->descent;
   fl->WindowFont.y = fl->WindowFont.font->ascent;
+
   extra_height = fl->TitleHeight;
   fl->TitleHeight=fl->WindowFont.font->ascent+fl->WindowFont.font->descent+3;
   extra_height -= fl->TitleHeight;

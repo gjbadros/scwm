@@ -116,7 +116,7 @@ SCM set_edge_resistance_x(SCM sr, SCM mr)
   Scr.MoveResistance = gh_scm2int(mr);
 
   SCM_REALLOW_INTS;
-  return SCM_USPECIFIED;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -175,6 +175,10 @@ SCM current_desk()
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
 }
+
+
+
+
 
 
 

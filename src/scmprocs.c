@@ -56,7 +56,8 @@ void init_scwm_procs(void)
   gh_new_procedure3_0("bind-key",bind_key);
   gh_new_procedure3_0("bind-mouse",bind_mouse);
   gh_new_procedure0_0("mouse-event-type",mouse_event_type);
-  gh_new_procedure0_1("set-title-justify!",set_title_justify);
+  gh_new_procedure1_0("set-title-justify!",set_title_justify);
+  gh_new_procedure1_0("set-title-height!",set_title_height);
   gh_new_procedure0_1("get-window",get_window);
   gh_new_procedure0_1("select-window",select_window);
   /* maybe set-window-context! and unset-window-context! will be needed.. */
@@ -119,9 +120,25 @@ void init_scwm_procs(void)
   gh_new_procedure0_1("window-desk",window_desk);
   gh_new_procedure0_1("window-title",window_title);
   gh_new_procedure0_0("list-all-windows",list_all_windows);
+  gh_new_procedure0_1("keep-on-top",keep_on_top);
+  gh_new_procedure0_1("un-keep-on-top",un_keep_on_top);
+  gh_new_procedure0_1("kept-on-top?",kept_on_top_p);
+  gh_new_procedure0_1("show-titlebar",show_titlebar);
+  gh_new_procedure0_1("hide-titlebar",hide_titlebar);
+  gh_new_procedure0_1("titlebar-shown?",titlebar_shown_p);
+  gh_new_procedure0_1("normal-border",normal_border);
+  gh_new_procedure0_1("plain-border",plain_border);
+  gh_new_procedure0_1("normal-border?",normal_border_p);
+  gh_new_procedure1_1("set-border-width!",set_border_width_x);
+  gh_new_procedure0_1("stick-icon",stick_icon);
+  gh_new_procedure0_1("unstick-icon",unstick_icon);
+  gh_new_procedure0_1("icon-sticky?",icon_sticky_p);
+  gh_new_procedure("set-icon-box!",set_icon_box_x,4,1,0);
+  gh_new_procedure1_1("set-window-focus!",set_window_focus_x);
+  gh_new_procedure("set-window-colors!",set_window_colors_x,0,3,0);
+  gh_new_procedure1_1("set-icon-title!",set_icon_title_x);
+  gh_new_procedure2_0("bind-event",bind_event);
 }
-
-
 
 
 

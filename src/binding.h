@@ -10,4 +10,8 @@ void clear_mouse_event_type();
 
 SCM mouse_event_type();
 
+SCM bind_event(SCM ev_sym,SCM proc);
+void run_new_window_hook(SCM w);
+
+
 #endif /* BINDING_H */

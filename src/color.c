@@ -87,11 +87,13 @@ SCM set_hilight_colors (SCM fg, SCM bg) {
   XGCValues gcv;
   unsigned long gcm;
   ScwmDecor *fl;
+  ScwmWindow *hilight;
+
   SCM_REDEFER_INTS;
 #ifdef USEDECOR
-  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  *fl = &Scr.DefaultDecor;
+  fl = &Scr.DefaultDecor;
 #endif  
 
   if(gh_string_p(fg)) {
@@ -150,8 +152,9 @@ SCM set_hilight_colors (SCM fg, SCM bg) {
   
   if((Scr.flags & WindowsCaptured)&&(Scr.Hilite != NULL))
     {
+      hilight = Scr.Hilite;
       SetBorder(Scr.Hilite,False,True,True,None);
-      SetBorder(Scr.Hilite,True,True,True,None);
+      SetBorder(hilight,True,True,True,None);
     }
   SCM_REALLOW_INTS;
   return(SCM_UNSPECIFIED);
