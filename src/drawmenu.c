@@ -613,8 +613,6 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 
     label_font_height = scfont->height;
     
-    pmd->x = 0;		/* just init: gets set elsewhere */
-    pmd->y = 0;		/* just init: gets set elsewhere */
     pmdi->ccol = 1;
 
     for (imiim = 0; imiim < cmiim; imiim++) {

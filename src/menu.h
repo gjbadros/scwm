@@ -35,7 +35,6 @@ extern XContext MenuContext;
 typedef struct DynamicMenu_tag DynamicMenu;
 typedef struct MenuDrawingInfo_tag MenuDrawingInfo;
 typedef struct MenuDrawingVtable_tag MenuDrawingVtable;
-typedef void (*PfnConstructDynamicMenu)(DynamicMenu *);
 
 /* If you add an SCM object to the below, you need to be sure
    to modify mark_menu */
