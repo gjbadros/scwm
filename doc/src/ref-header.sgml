@@ -1,9 +1,10 @@
 <!-- $Id$ -->
+<!-- "-//OASIS//DTD DocBook V3.1//EN">
 <!DOCTYPE Book PUBLIC "-//Davenport//DTD DocBook V3.0//EN">
 <book>
   <bookinfo>
     <title>Scwm Reference Manual</title>
-    <subtitle>The Authoritative Guide to the Emacs of Window Managers</subtitle>
+    <subtitle>The Emacs of Window Managers</subtitle>
     <authorgroup>
       <author>
   	<firstname>Greg</firstname>
