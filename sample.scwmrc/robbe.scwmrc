@@ -650,15 +650,17 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:icon "colormap_3d.xpm.gz"
 	      #:use-style FixedSize #:use-style NoFocus)
 (window-style (class-match?? "Gimp")
-	      #:start-on-desk 3)
+	      #:start-on-desk 2)
 (window-style (resource-match?? "gimp_startup")
 	      #:start-on-desk #f)
 (window-style (title-match?? "GimpConsole")
-	      #:start-on-desk 3 #:skip-mapping #t)
+	      #:start-on-desk 2 #:skip-mapping #t)
 (window-style (title-match?? "GTimer")
 	      #:start-lowered #t #:use-style NoFocus)
 (window-style (class-match?? "GTimeTracker")
-	      #:start-lowered #t) ; #:other-proc circulate-skip
+	      #:start-lowered #t)
+(window-style (class-match?? "Nethack")
+	      #:start-on-desk 3)
 (window-style (title-match?? "UAE")
 	      #:icon "amiga.xpm.gz"
 	      #:placement-proc (lambda (win)
