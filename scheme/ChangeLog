@@ -1,3 +1,22 @@
+Sat Dec  4 19:53:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Fix typo -- it's delete-ui-constraint!
+	(forgot ! before).
+
+	* ui-constraints-toggle-menu.scm: Drop the composition menu items
+	now that they are in the toolbar.
+
+	* ui-constraints-classes.scm: Added
+	`two-window-or-more-nonant-prompter' that uses
+	get-window-nonant-interactively and use it for ui-cnctr-align and
+	ui-cnctr-strict-relpos.  Fix `valign-nonant->string' to report
+	"left" "center" or "right" instead of top/middle/bottom.
+
+	* ui-constraints-buttons.scm: Make animation happen only when
+	inside the toolbar.
+
+	* highlight-current-window.scm: Needed to use window-selection module.
+
 Sat Dec  4 15:35:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `add-hook-once!' and `append-hook-once!'
