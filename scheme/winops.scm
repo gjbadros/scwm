@@ -97,6 +97,14 @@
 				(cadddr max-prop) w)
 		     (set-object-property! w 'maximized #f))))))
 
+(define*-public (opaque-interactive-move #&optional (win (get-window)))
+  "Move WINDOW interactively and opaquely."
+  (if win (interactive-move win #t)))
+  
+(define*-public (opaque-interactive-resize #&optional (win (get-window)))
+  "Resize WINDOW interactively and opaquely."
+  (if win (interactive-resize win #t)))
+
 (define*-public (toggle-maximize nw nh #&optional (w (get-window)))
   (if w (if (maximized? w)
 	    (unmaximize w)
