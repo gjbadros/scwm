@@ -18,11 +18,18 @@
 ;;(define thank-scwm-authors-with-usage-note #t)
 
 
-;;-------------------------------;;
-;; import the scwm modules       ;;
+;; Turn off buffering so that we can see messages as
+;; they are displayed (an issue in >= guile-1.3.2)
+(setvbuf (current-output-port) _IONBF)
 
 (define debug #t)
-(define suppress-xclients #f)
+
+(define (debug-display arg)
+  (if debug
+      (display arg)
+      ()))
+
+(debug-display "Starting...\n")
 
 ;; This will make things go a bit faster at the expense
 ;; of your having to be sure that NumLock and ScrollLock
@@ -30,12 +37,17 @@
 ;; you want to apply when they are on).
 ;;(set-ignore-dubious-modifiers! #f)
 
-(define (debug-display arg)
-  (if debug
-      (display arg)
-      ()))
+(define suppress-xclients #f)
 
+;; If you want to use the gnome panel, stick
+;; "panel &" in your $HOME/.xclients file (and be sure it is u+x)
+
+;; import scwm modules we need for the startup animation
 (use-scwm-modules base message-window)
+
+;; SCWMDIR is mostly used for testing and running Scwm w/o installing
+;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if
+;; you want the installation locations
 (define scwmdir (or (getenv "SCWMDIR") "/usr/share/scwm"))
 
 ;;; set path to use for image searches
@@ -99,7 +111,7 @@
 
 (debug-display "Starting reading scwm modules\n")
 
-
+;; import the rest of the scwm modules
 (use-scwm-modules base defoption optargs primopts 
 		  winops winlist wininfo listops
 		  style stylist face time-convert menus-extras
@@ -1082,7 +1094,7 @@ union of all other window managers!
 (define menu-hosts-other
   (menu (cons
 	 (menu-title "Hosts (Other)") 
-	 (make-hosts-menu-gjb solaris-hosts))))
+	 (make-hosts-menu-gjb other-hosts))))
 
 (define menu-preferences-scroll
   (menu (list
@@ -1141,6 +1153,13 @@ union of all other window managers!
 	     (menuitem "&Eject" #:image-left "mini-wm-eject.xpm"
 		       #:action (lambda () (tell-workman "eject")))))))
 
+#!
+(define menu-test
+  (menu
+   (list
+    (menuitem "Foo" #:action 'bar))))
+!#
+
 (define menu-root-start
   ;;  (menu "RootStart" "Start %mini-exp.xpm%"
   (menu
@@ -1192,7 +1211,7 @@ union of all other window managers!
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
 
-(debug-display "before enable-constraint-solver")
+(debug-display "before enable-constraint-solver\n")
 
 (define (enable-constraint-solver)
   (if (scwm-is-constraint-enabled?)
@@ -1745,12 +1764,19 @@ union of all other window managers!
 (if (and (not (restarted?)) (not suppress-xclients))
     (run-dot-xclients-at-startup))
 
-(define scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
+(define scwm-messages-window #f)
 
-(if scwm-messages-window
-    (begin
-      (animated-resize-window 640 84 scwm-messages-window 0 (y- (w%y 100)))
-      (set-window-gravity! 'southwest scwm-messages-window)))
+(define (reposition-scwm-messages-window)
+  (set! scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
+  (if scwm-messages-window
+      (with-window 
+       scwm-messages-window
+       (animated-resize-frame 640 96 #f 0 
+			      (y- (- 96 (window-frame-border-width) 1)))
+       (set-window-gravity! 'southwest))
+      (display "Could not find SCWM Messages window---consider using `startscwm' to start Scwm\n")))
+
+(add-hook! startup-hook reposition-scwm-messages-window)
 
 (debug-display " *** `scwmrc' processed.\n")
 
@@ -1791,4 +1817,3 @@ union of all other window managers!
       
       (remove-hook! load-processing-hook next-logo-image-n)
       (set-background-image! scwm-logo 'tiled)))
-
