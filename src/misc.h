@@ -17,24 +17,28 @@
 #endif
 
 
-typedef struct name_list_struct {
-  struct name_list_struct *next;	/* pointer to the next name */
-  char *name;			/* the name of the window */
-  char *value;			/* icon name */
-  char *mini_value;		/* mini icon name */
-  char *Decor;
-  int Desk;			/* Desktop number */
-  unsigned long on_flags;
-  unsigned long off_flags;
-  int border_width;
-  int resize_width;
-  char *ForeColor;
-  char *BackColor;
-  int IconBox[4];
-  int BoxFillMethod;
-  unsigned long on_buttons;
-  unsigned long off_buttons;
-} name_list;
+/* Cursor types */
+enum cursor {
+ CURSOR_POSITION,		/* upper Left corner cursor */
+ CURSOR_TITLE,			/* title-bar cursor */
+ CURSOR_DEFAULT,		/* cursor for apps to inherit */
+ CURSOR_SYS,			/* sys-menu and iconify boxes cursor */
+ CURSOR_MOVE,			/* resize cursor */
+ CURSOR_WAIT,			/* wait a while cursor */
+ CURSOR_MENU,			/* menu cursor */
+ CURSOR_SELECT,			/* dot cursor for f.move, etc. from menus */
+ CURSOR_DESTROY,		/* skull and cross bones, f.destroy */
+ /* Order dependency on these cursors! */
+ CURSOR_TOP,			/*  */
+ CURSOR_RIGHT,			/*  */
+ CURSOR_BOTTOM,			/*  */
+ CURSOR_LEFT,			/*  */
+ CURSOR_TOP_LEFT,		/*  */
+ CURSOR_TOP_RIGHT,		/*  */
+ CURSOR_BOTTOM_LEFT,		/*  */
+ CURSOR_BOTTOM_RIGHT,		/*  */
+ CURSOR_MAX_CURSORS		/*  */
+};
 
 /* FIXGJB: these should use bit fields! */
 /* values for name_list flags */
@@ -115,7 +119,7 @@ int flush_expose(Window w);
 void CoerceEnterNotifyOnCurrentWindow();
 void RestoreWithdrawnLocation(ScwmWindow *, Bool);
 Bool StashEventTime(XEvent * ev);
-Bool GrabEm(int);
+Bool GrabEm(enum cursor);
 void UngrabEm(void);
 void KeepOnTop(void);
 void UnmapIt(ScwmWindow * t);
@@ -173,8 +177,6 @@ void usage(void);
 
 void GetMwmHints(ScwmWindow * t);
 void SelectDecor(ScwmWindow *, unsigned long, int, int);
-int DeferExecution(XEvent *, Window *, ScwmWindow **, unsigned long *, int, int);
-
 void SetStickyProp(ScwmWindow *, int, int, int);
 void SetClientProp(ScwmWindow *);
 void show_panner(void);

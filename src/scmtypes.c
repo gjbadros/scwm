@@ -88,11 +88,11 @@ static scm_smobfuns menuitem_smobfuns =
   0
 };
 
-static scm_smobfuns scwmmenu_smobfuns =
+static scm_smobfuns menu_smobfuns =
 {
-  &mark_scwmmenu,
-  &free_scwmmenu,
-  &print_scwmmenu,
+  &mark_menu,
+  &free_menu,
+  &print_menu,
   0
 };
 
@@ -106,7 +106,7 @@ init_scwm_types(void)
   scm_tc16_scwm_decor = scm_newsmob(&decor_smobfuns);
   scm_tc16_scwm_face = scm_newsmob(&face_smobfuns);
   scm_tc16_scwm_menuitem = scm_newsmob(&menuitem_smobfuns);
-  scm_tc16_scwm_scwmmenu = scm_newsmob(&scwmmenu_smobfuns);
+  scm_tc16_scwm_menu = scm_newsmob(&menu_smobfuns);
 }
 
 /* Local Variables: */

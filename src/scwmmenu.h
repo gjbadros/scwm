@@ -21,8 +21,8 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-EXTERN long scm_tc16_scwm_scwmmenu;
-EXTERN XContext ScwmMenuContext; /* context for new scwm menus --11/22/97 gjb*/
+EXTERN long scm_tc16_scwm_menu;
+EXTERN XContext MenuContext; /* context for new scwm menus --11/22/97 gjb*/
 
 typedef struct MenuDrawingInfo_tag
 {
@@ -44,8 +44,8 @@ typedef struct MenuDrawingInfo_tag
 
 
 /* If you add an SCM object to the below, you need to be sure
-   to modify mark_scwmmenu */
-typedef struct Scwm_Menu_tag
+   to modify mark_menu */
+typedef struct Menu_tag
 {
   SCM scmMenuItems;		/* list of menu items */
   SCM scmImgSide;		/* side image */
@@ -55,11 +55,11 @@ typedef struct Scwm_Menu_tag
   SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
-} Scwm_Menu;
+} Menu;
 
 typedef struct DynamicMenu_tag
 {
-  Scwm_Menu *pmenu;		/* this menu */
+  Menu *pmenu;		/* this menu */
   MenuItemInMenu **rgpmiim;	/* the menu item dynamic information */
   int cmiim;			/* size of above array */
   int imiimSelected;		/* the index of the selected item */
@@ -70,24 +70,25 @@ typedef struct DynamicMenu_tag
 } DynamicMenu;
 
 
-#define SCWM_MENU_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_scwmmenu)
-#define SCWM_SCWMMENU(X)  ((Scwm_Menu *)SCM_CDR(X))
-#define SAFE_SCWMMENU(X)  (SCWM_MENU_P((X))? SCWM_SCWMMENU((X)): NULL)
+#define MENU_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menu)
+#define MENU(X)  ((Menu *)SCM_CDR(X))
+#define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
 
-SCM mark_scwmmenu(SCM obj);
+SCM mark_menu(SCM obj);
 
-size_t free_scwmmenu(SCM obj);
+size_t free_menu(SCM obj);
 
-int print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate);
+int print_menu(SCM obj, SCM port, scm_print_state * pstate);
 
-SCM scwmmenu_p(SCM obj);
+SCM menu_p(SCM obj);
 
-SCM make_scwmmenu(SCM list_of_menuitems,
-		  SCM picture_side, SCM side_bg_color,
-		  SCM bg_color, SCM text_color,
-		  SCM picture_bg, SCM font);
+SCM make_menu(SCM list_of_menuitems,
+	      SCM picture_side, SCM side_bg_color,
+	      SCM bg_color, SCM text_color,
+	      SCM picture_bg, SCM font);
 
 void init_scwm_menu();
+void menu_init_gcs();
 
 SCM popup_menu(SCM menu);
 

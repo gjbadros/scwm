@@ -417,7 +417,7 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
 		       tmp_win->frame_height + 2 * tmp_win->bw,
 		       &xl, &yt);
       if (xl < 0) {
-	if (GrabEm(POSITION)) {
+	if (GrabEm(CURSOR_POSITION)) {
 	  /* Grabbed the pointer - continue */
 	  XGrabServer_withSemaphore(dpy);
 	  if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,

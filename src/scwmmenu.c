@@ -38,43 +38,47 @@
 #define scmWHITE load_color(gh_str02scm("white"))
 
 SCM 
-mark_scwmmenu(SCM obj)
+mark_menu(SCM obj)
 {
-  Scwm_Menu *mi = SCWM_SCWMMENU(obj);
+  Menu *pmenu;
+  if (SCM_GC8MARKP (obj)) {
+    return SCM_BOOL_F;
+  }
 
+  pmenu = MENU(obj);
   SCM_SETGC8MARK(obj);
-  GC_MARK_SCM_IF_SET(mi->scmMenuItems);
-  GC_MARK_SCM_IF_SET(mi->scmSideBGColor);
-  GC_MARK_SCM_IF_SET(mi->scmBGColor);
-  GC_MARK_SCM_IF_SET(mi->scmTextColor);
-  GC_MARK_SCM_IF_SET(mi->scmFont);
-  GC_MARK_SCM_IF_SET(mi->scmImgSide);
-  GC_MARK_SCM_IF_SET(mi->scmImgBackground);
+  GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
+  GC_MARK_SCM_IF_SET(pmenu->scmImgSide);
+  GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
+  GC_MARK_SCM_IF_SET(pmenu->scmFont);
 
   return SCM_BOOL_F;
 }
 
 size_t 
-free_scwmmenu(SCM obj)
+free_menu(SCM obj)
 {
-  Scwm_Menu *menu = SCWM_SCWMMENU(obj);
-  if (menu->pchUsedShortcutKeys) {
-    free(menu->pchUsedShortcutKeys);
+  Menu *pmenu = MENU(obj);
+  if (pmenu->pchUsedShortcutKeys) {
+    free(pmenu->pchUsedShortcutKeys);
   }
-  free(menu);
+  free(pmenu);
   return(0);
 }
 
 int 
-print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate)
+print_menu(SCM obj, SCM port, scm_print_state * pstate)
 {
-  scm_puts("#<scwmmenu ", port);
-  if (SCWM_MENU_P(obj)) {
-    Scwm_Menu *menu = SCWM_SCWMMENU(obj);
-    scm_write(gh_car(menu->scmMenuItems), port);
-    if (menu->pchUsedShortcutKeys) {
+  scm_puts("#<menu ", port);
+  if (MENU_P(obj)) {
+    Menu *pmenu = MENU(obj);
+    scm_write(gh_car(pmenu->scmMenuItems), port);
+    if (pmenu->pchUsedShortcutKeys) {
       scm_puts(", hotkeys: ",port);
-      scm_puts(menu->pchUsedShortcutKeys,port);
+      scm_puts(pmenu->pchUsedShortcutKeys,port);
     }
   } else {
     scm_puts("(invalid)", port);
@@ -85,9 +89,9 @@ print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate)
 }
 
 SCM 
-scwmmenu_p(SCM obj)
+menu_p(SCM obj)
 {
-  return (SCWM_MENU_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (MENU_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 
@@ -107,13 +111,16 @@ NewPchKeysUsed(DynamicMenu *pmd)
   int ich = 0;
   SCM item;
   SCM rest = list_of_menuitems;
-  Scwm_MenuItem *pmi;
+  MenuItem *pmi;
 
   memset(pch,0,cItems+1);
   while (True) {
     item = gh_car(rest);
-    pmi = SCWM_MENUITEM(item);
-    if (pmi->pchHotkeyPreferences) {
+    pmi = SAFE_MENUITEM(item);
+    if (!pmi) {
+      scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",imiim);
+    }
+    if (pmi && pmi->pchHotkeyPreferences) {
       char *pchDesiredChars = pmi->pchHotkeyPreferences;
       char ch;
       while ((ch = *pchDesiredChars++) != '\0') {
@@ -126,8 +133,8 @@ NewPchKeysUsed(DynamicMenu *pmd)
 	}
       }
     }
-    rest = gh_cdr(rest);
     imiim++;
+    rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
       break;
   }
@@ -139,7 +146,7 @@ SCM_PROC(s_menu_properties, "menu-properties", 1, 0, 0, menu_properties);
 SCM
 menu_properties(SCM scmMenu)
 {
-  Scwm_Menu *pmenu = SAFE_SCWMMENU(scmMenu);
+  Menu *pmenu = SAFE_MENU(scmMenu);
   if (!pmenu) {
     scm_wrong_type_arg(s_menu_properties,1,scmMenu);
   }
@@ -155,19 +162,19 @@ menu_properties(SCM scmMenu)
 
 
 SCM 
-make_scwmmenu(SCM list_of_menuitems,
+make_menu(SCM list_of_menuitems,
 	      SCM picture_side, SCM side_bg_color,
 	      SCM bg_color, SCM text_color,
 	      SCM picture_bg, SCM font)
 {
-  Scwm_Menu *menu = safemalloc(sizeof(Scwm_Menu));
+  Menu *pmenu = safemalloc(sizeof(Menu));
   SCM answer;
   int iarg = 1;
 
   if (!gh_list_p(list_of_menuitems)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,list_of_menuitems);
   }
-  menu->scmMenuItems = list_of_menuitems;
+  pmenu->scmMenuItems = list_of_menuitems;
 
   iarg++;
   if (UNSET_SCM(picture_side)) {
@@ -175,7 +182,7 @@ make_scwmmenu(SCM list_of_menuitems,
   } else if (!IMAGE_P(picture_side)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,picture_side);
   } 
-  menu->scmImgSide = picture_side;
+  pmenu->scmImgSide = picture_side;
 
   iarg++;
   if (UNSET_SCM(side_bg_color)) {
@@ -183,7 +190,7 @@ make_scwmmenu(SCM list_of_menuitems,
   } else if (!COLORP(side_bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,side_bg_color);
   }
-  menu->scmSideBGColor = side_bg_color;
+  pmenu->scmSideBGColor = side_bg_color;
 
   iarg++;
   if (UNSET_SCM(bg_color)) {
@@ -191,7 +198,7 @@ make_scwmmenu(SCM list_of_menuitems,
   } else if (!COLORP(bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,bg_color);
   }
-  menu->scmBGColor = bg_color;
+  pmenu->scmBGColor = bg_color;
 
   iarg++;
   if (UNSET_SCM(text_color)) {
@@ -199,7 +206,7 @@ make_scwmmenu(SCM list_of_menuitems,
   } else if (!COLORP(text_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,text_color);
   }
-  menu->scmTextColor = text_color;
+  pmenu->scmTextColor = text_color;
 
   iarg++;
   if (UNSET_SCM(picture_bg)) {
@@ -207,24 +214,24 @@ make_scwmmenu(SCM list_of_menuitems,
   } else if (!IMAGE_P(picture_bg)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,picture_bg);
   } 
-  menu->scmImgBackground = picture_bg;
+  pmenu->scmImgBackground = picture_bg;
 
   iarg++;
   /* FIXGJB: order dependency on menu_font being set before making
      the menu -- is there a better default -- maybe we should just
      always have some font object for "fixed" */
   if (UNSET_SCM(font) && menu_font != SCM_UNDEFINED) {
-    menu->scmFont = menu_font;
+    pmenu->scmFont = menu_font;
   } else if (!FONTP(font)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,font);
   }
-  menu->scmFont = font;
+  pmenu->scmFont = font;
 
-  menu->pchUsedShortcutKeys = NULL;
+  pmenu->pchUsedShortcutKeys = NULL;
 
   SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_scwmmenu);
-  SCM_SETCDR(answer, (SCM) menu);
+  SCM_SETCAR(answer, scm_tc16_scwm_menu);
+  SCM_SETCDR(answer, (SCM) pmenu);
   return answer;
 }
 
@@ -258,6 +265,14 @@ GetPreferredPopupPosition(DynamicMenu *pmd,
     *pxReturn = x - pmd->pmdi->cpixWidth/2;
     *pyReturn = y - pmd->rgpmiim[0]->cpixItemHeight/2;
   }
+  if (*pyReturn + pmd->pmdi->cpixHeight > Scr.MyDisplayHeight) {
+    *pyReturn = Scr.MyDisplayHeight-pmd->pmdi->cpixHeight;
+  }
+  if (*pxReturn + pmd->pmdi->cpixWidth > Scr.MyDisplayWidth) {
+    *pxReturn = Scr.MyDisplayWidth-pmd->pmdi->cpixWidth;
+  }
+  if (*pxReturn < 0) *pxReturn = 0;
+  if (*pyReturn < 0) *pyReturn = 0;
   return;
 }
 
@@ -311,7 +326,7 @@ DynamicMenu *
 PmdFromWindow(Display *dpy, Window w)
 {
   DynamicMenu *pmd = NULL;
-  if ((XFindContext(dpy, Event.xany.window,ScwmMenuContext,
+  if ((XFindContext(dpy, Event.xany.window,MenuContext,
 		    (caddr_t *)&pmd) == XCNOENT)) {
     pmd = NULL;
   }
@@ -400,7 +415,7 @@ static
 void
 RepaintMenuItem(MenuItemInMenu *pmiim)
 {
-/*  Scwm_MenuItem *pmi = pmiim->pmi; */
+/*  MenuItem *pmi = pmiim->pmi; */
   DynamicMenu *pmd = pmiim->pmd;
   Window w = pmd->pmdi->w;
   PaintMenuItem(w,pmd,pmiim);
@@ -575,7 +590,7 @@ static
 void
 InitializeDynamicMenu(DynamicMenu *pmd)
 {
-  Scwm_Menu *pmenu = pmd->pmenu;
+  Menu *pmenu = pmd->pmenu;
   int cmiim = gh_length(pmenu->scmMenuItems);
   int imiim = 0;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim =
@@ -589,8 +604,12 @@ InitializeDynamicMenu(DynamicMenu *pmd)
      only the drawing-independent code here */
   while (True) {
     SCM item = gh_car(rest);
-    Scwm_MenuItem *pmi = SCWM_MENUITEM(item);
+    MenuItem *pmi = SAFE_MENUITEM(item);
     MenuItemInMenu *pmiim = safemalloc(sizeof(MenuItemInMenu));
+    if (!pmi) {
+      scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",imiim);
+      goto NEXT_MENU_ITEM;
+    }
     rgpmiim[imiim] = pmiim;
 
     /* save some back pointers so we can find a dynamic menu
@@ -613,10 +632,11 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     pmiim->fShowPopupArrow = (!UNSET_SCM(pmiim->pmi->scmHover));
 
     pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
+    imiim++;
+  NEXT_MENU_ITEM:
     rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
       break;
-    imiim++;
   }
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 
@@ -624,7 +644,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
 
 static 
 void
-PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
+PopupGrabMenu(Menu *psm, DynamicMenu *pmdPoppedFrom)
 {
   DynamicMenu *pmd = safemalloc(sizeof(DynamicMenu));
   pmd->pmenu = psm;
@@ -645,7 +665,7 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
   }
 
   /* Connect the window to the dynamic menu, pmd */
-  XSaveContext(dpy,pmd->pmdi->w,ScwmMenuContext,(caddr_t)pmd);
+  XSaveContext(dpy,pmd->pmdi->w,MenuContext,(caddr_t)pmd);
 
   { /* scope */
     int cpixX_startpointer;
@@ -656,7 +676,7 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
     SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
 
     PopupMenu(pmd);
-    GrabEm(MENU);
+    GrabEm(CURSOR_MENU);
     scmAction = MenuInteraction(pmd);
     UngrabEm();
     PopdownMenu(pmd);
@@ -669,15 +689,33 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
 SCM 
 popup_menu(SCM menu)
 {
-  if (!SCWM_MENU_P(menu)) {
+  if (!MENU_P(menu)) {
     scm_wrong_type_arg("popup-menu", 1, menu);
   }
-  PopupGrabMenu(SCWM_SCWMMENU(menu),NULL);
+  PopupGrabMenu(MENU(menu),NULL);
   return SCM_UNSPECIFIED;
 }
 
 void 
-init_scwm_menu()
+menu_init_gcs()
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth | GCFillStyle;
+  gcv.fill_style = FillSolid;
+  gcv.plane_mask = AllPlanes;
+  gcv.function = GXcopy;
+  gcv.graphics_exposures = False;
+  gcv.line_width = 0;
+  Scr.MenuReliefGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  Scr.MenuShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  Scr.MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  Scr.MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+}
+
+void
+init_menu()
 {
 # include "scwmmenu.x"
 }

@@ -386,7 +386,7 @@ StashEventTime(XEvent * ev)
  *
  ****************************************************************************/
 Bool 
-GrabEm(int cursor)
+GrabEm(enum cursor cursor)
 {
   int i = 0, val = 0;
   unsigned int mask;
@@ -625,7 +625,7 @@ HandleHardFocus(ScwmWindow * t)
   /* Do something to guarantee a new time stamp! */
   XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
 		&JunkX, &JunkY, &x, &y, &JunkMask);
-  GrabEm(WAIT);
+  GrabEm(CURSOR_WAIT);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 	       Scr.MyDisplayHeight,
 	       x + 2, y + 2);

@@ -15,16 +15,18 @@
 #include <guile/gh.h>
 #include "xmisc.h"
 
+/* FIXGJB: comment these! */
 #define MENU_EDGE_VERT_SPACING 2
-#define MENU_EDGE_HORIZ_SPACING 4
+#define MENU_EDGE_HORIZ_SPACING 2
 #define MENU_TEXT_SPACING 4
 #define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 4
 #define MENU_ITEM_EXTRA_VERT_SPACE 2
 #define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 2
 #define MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE 4
-#define MENU_SIDE_IMAGE_SPACING 3
+#define MENU_SIDE_IMAGE_SPACING 5
 #define MENU_ITEM_RR_SPACE 2
 #define MENU_POPUP_ARROW_WIDTH 8
+#define MENU_HEIGHT_SEPARATOR 4
 
 
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
@@ -39,7 +41,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
   if (pmd->pmdi != NULL)
     return;
   { /* scope */
-    Scwm_Menu *pmenu = pmd->pmenu;
+    Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
     scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground); 
     XFontStruct *pxfont;
@@ -77,7 +79,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 
     for (imiim = 0; imiim < cmiim; imiim++) {
       MenuItemInMenu *pmiim = rgpmiim[imiim];
-      Scwm_MenuItem *pmi = pmiim->pmi;
+      MenuItem *pmi = pmiim->pmi;
       scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
       scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
       int text_width = XTextWidth(pxfont, pmi->szLabel, pmi->cchLabel);
@@ -85,38 +87,41 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
       pmiim->cpixOffsetY = total_height;
 
-      /* szLabel we know is not null, but szExtra can be */
-      if (pmi->szExtra) {
-	extra_text_width = XTextWidth(pxfont, pmi->szExtra, pmi->cchExtra);
-      }
+      if (pmi->fIsSeparator) {
+	item_height = MENU_HEIGHT_SEPARATOR;
+      } else {
+	/* szLabel we know is not null, but szExtra can be */
+	if (pmi->szExtra) {
+	  extra_text_width = XTextWidth(pxfont, pmi->szExtra, pmi->cchExtra);
+	}
       
-      /* These are easy when using only one column */
-      pmiim->fOnTopEdge = (imiim == 0);
-      pmiim->fOnBottomEdge = (imiim == (cmiim - 1));
+	/* These are easy when using only one column */
+	pmiim->fOnTopEdge = (imiim == 0);
+	pmiim->fOnBottomEdge = (imiim == (cmiim - 1));
 
-      if (pmi->cchLabel != 0 || pmi->cchExtra != 0) {
-	item_height += label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
-      }
+	if (pmi->cchLabel != 0 || pmi->cchExtra != 0) {
+	  item_height += label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+	}
 
-      INCREASE_MAYBE(max_text_width,text_width);
-      INCREASE_MAYBE(max_extra_text_width,extra_text_width);
+	INCREASE_MAYBE(max_text_width,text_width);
+	INCREASE_MAYBE(max_extra_text_width,extra_text_width);
       
-      if (psimgAbove) {
-	int height = psimgAbove->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
-	item_height += height;
-	INCREASE_MAYBE(max_above_image_width,psimgAbove->width);
-      }
-      if (psimgLeft) {
-	int height = psimgLeft->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
-	INCREASE_MAYBE(item_height,height);
-	INCREASE_MAYBE(max_left_image_width,
-		       psimgLeft->width + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE);
-      }
+	if (psimgAbove) {
+	  int height = psimgAbove->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
+	  item_height += height;
+	  INCREASE_MAYBE(max_above_image_width,psimgAbove->width);
+	}
+	if (psimgLeft) {
+	  int height = psimgLeft->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
+	  INCREASE_MAYBE(item_height,height);
+	  INCREASE_MAYBE(max_left_image_width,
+			 psimgLeft->width + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE);
+	}
 
-      if (pmiim->fShowPopupArrow) {
-	INCREASE_MAYBE(max_right_image_width, MENU_POPUP_ARROW_WIDTH);
+	if (pmiim->fShowPopupArrow) {
+	  INCREASE_MAYBE(max_right_image_width, MENU_POPUP_ARROW_WIDTH);
+	}
       }
-
       pmiim->cpixItemHeight = item_height;
       total_height += item_height;
     }
@@ -143,15 +148,15 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 			 max_right_image_width,
 			 max_above_image_width);
 
-    pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width + 
-	 MENU_EDGE_HORIZ_SPACING*2;
+    pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
+      MENU_ITEM_RR_SPACE*2 + MENU_EDGE_HORIZ_SPACING*2;
 
     /* Now create the window */
     { /* scope */
       unsigned long valuemask = (CWBackPixel | CWCursor | CWSaveUnder);
       XSetWindowAttributes attributes;
       attributes.background_pixel = pmdi->BGColor;
-      attributes.cursor = Scr.ScwmCursors[MENU];
+      attributes.cursor = Scr.ScwmCursors[CURSOR_MENU];
       attributes.save_under = True;
 
       pmdi->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmdi->cpixWidth,
@@ -172,9 +177,9 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
   Globalgcv.foreground = bg;
   XChangeGC(dpy, Scr.ScratchGC1, GCForeground, &Globalgcv);
   XFillRectangle(dpy, w, Scr.ScratchGC1, 
-		 MENU_SIDE_IMAGE_SPACING, MENU_SIDE_IMAGE_SPACING,
-		 psimg->width, cpixHeight - 2*MENU_SIDE_IMAGE_SPACING);
-  DrawImage(w,psimg,MENU_SIDE_IMAGE_SPACING,MENU_SIDE_IMAGE_SPACING,NULL);
+		 MENU_ITEM_RR_SPACE, MENU_ITEM_RR_SPACE,
+		 psimg->width, cpixHeight - 2*MENU_ITEM_RR_SPACE);
+  DrawImage(w,psimg,MENU_ITEM_RR_SPACE,MENU_ITEM_RR_SPACE,NULL);
 }
 
 /*
@@ -206,15 +211,15 @@ RelieveHalfRectangle(Window win,int x,int y,int w,int h,
 }
 
 /*
- *  Draws two horizontal lines to form a separator
+ *  Draws a two-pixel wide horizontal line to form a separator
  */
 static
 void 
-DrawSeparator(Window w, GC TopGC, GC BottomGC, int x1, int y1, int x2, int y2,
+DrawSeparator(Window w, GC TopGC, GC BottomGC, int x1, int x2, int y,
 	      int extra_off)
 {
-  XDrawLine(dpy, w, TopGC, x1, y1, x2, y2);
-  XDrawLine(dpy, w, BottomGC, x1 - extra_off, y1 + 1, x2 + extra_off, y2 + 1);
+  XDrawLine(dpy, w, TopGC, x1, y, x2, y);
+  XDrawLine(dpy, w, BottomGC, x1 - extra_off, y + 1, x2 + extra_off, y + 1);
 }
 
 /*
@@ -249,22 +254,15 @@ void  DrawUnderline(Window w, GC gc, int x, int y, char *txt, int posn)
   int off2 = XTextWidth(Scr.StdFont.font, txt, posn + 1) - 1;
   XDrawLine(dpy, w, gc, x + off1, y + 2, x + off2, y + 2);
 }
-#ifdef FIXNOWGJB
-void RelieveRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
-void RelieveHalfRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
-void DrawTrianglePattern(Window, GC, GC, GC, int, int, int, int);
-void DrawSeparator(Window, GC, GC, int, int, int, int, int);
-void DrawUnderline(Window w, GC gc, int x, int y, char *sz, int ich);
-#endif
 
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
-  Scwm_Menu *pmenu = pmd->pmenu;
+  Menu *pmenu = pmd->pmenu;
   XFontStruct *pxfont = FONTP(pmenu->scmFont)? XFONT(pmenu->scmFont)
     : Scr.StdFont.font;
   MenuDrawingInfo *pmdi = pmd->pmdi;
-  Scwm_MenuItem *pmi = pmiim->pmi;
+  MenuItem *pmi = pmiim->pmi;
   int label_font_height = pxfont->ascent + pxfont->descent;
   int y_offset = pmiim->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
@@ -291,14 +289,15 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
   /* Top of the menu */
   if (pmiim->fOnTopEdge) {
-    DrawSeparator(w, ReliefGC,ReliefGC, 0,0, 
-		  width-1,0, -1);
+    DrawSeparator(w, ReliefGC,ReliefGC, 
+		  0, width-1,0, -1);
   } 
 
   /* Bottom of the menu */
   if (pmiim->fOnBottomEdge) {
-    DrawSeparator(w,ShadowGC,ShadowGC, 0,y_offset + item_height-1,
-                  width-1, y_offset + item_height-1, 1);
+    DrawSeparator(w,ShadowGC,ShadowGC, 
+		  0, width-1, y_offset + item_height,
+		  1);
   }
 
   /* Only highlight if the item has an action */
@@ -313,64 +312,69 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 		       width, item_height, 
 		       ReliefGC, ShadowGC);
 
-  if (psimgAbove) {
-    int x = (width - x_offset - psimgAbove->width) / 2 + x_offset;
-    if (!psimgLeft && pmi->cchLabel == 0 && pmi->cchExtra == 0) {
-      /* center psimgAbove vertically in the item_height */
-      y_offset += (item_height - psimgAbove->height)/2;
-    }
-    scwm_msg(DBG,__FUNCTION__,"Drawing psimgAbove");
-    DrawImage(w, psimgAbove, x, y_offset, gcImage);
-    y_offset += psimgAbove->height;
-  }
-
-  /* center text vertically if the pixmap is taller */
-  if (psimgLeft) {
-    int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
-    DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, gcImage);
-  }
-       
-  if (mis == MIS_Grayed) {
-    currentGC = Scr.MenuStippleGC;
+  if (pmi->fIsSeparator) {
+    DrawSeparator(w,ShadowGC,ReliefGC,
+		  x_offset-MENU_ITEM_RR_SPACE, width-2*MENU_ITEM_RR_SPACE,
+		  y_offset-1+MENU_HEIGHT_SEPARATOR/2,0);
   } else {
-    currentGC = Scr.MenuGC;
-  }
+    if (psimgAbove) {
+      int x = (width - x_offset - psimgAbove->width) / 2 + x_offset;
+      if (!psimgLeft && pmi->cchLabel == 0 && pmi->cchExtra == 0) {
+	/* center psimgAbove vertically in the item_height */
+	y_offset += (item_height - psimgAbove->height)/2;
+      }
+      scwm_msg(DBG,__FUNCTION__,"Drawing psimgAbove");
+      DrawImage(w, psimgAbove, x, y_offset, gcImage);
+      y_offset += psimgAbove->height;
+    }
 
-  x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
-
-  if (pmi->szLabel) {
-    XDrawString(dpy, w, currentGC,
-		x_offset,y_offset + label_font_height, 
-		pmi->szLabel, pmi->cchLabel);
-  }
-
-  /* highlight the shortcut key */
-  if (pmiim->ichShortcutOffset >= 0) {
-    DrawUnderline(w, currentGC, x_offset, y_offset +label_font_height,
-		  pmi->szLabel, pmiim->ichShortcutOffset);
-  }
-  
-  x_offset += pmdi->cpixTextWidth;
-
-  if (pmi->szExtra) {
-    XDrawString(dpy, w, currentGC,
-		x_offset, y_offset + label_font_height,
-		pmi->szExtra, pmi->cchExtra);
-  }
-
-  x_offset += pmdi->cpixExtraTextWidth;
-
-  if (pmiim->fShowPopupArrow) {
-    int d = (item_height-7)/2; /* FIXGJB: magic numbers! */
-    if (mis == MIS_Enabled) {
-      DrawTrianglePattern(w, ShadowGC, ReliefGC, ShadowGC, /* ReliefGC, */
-			  width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
+    /* center text vertically if the pixmap is taller */
+    if (psimgLeft) {
+      int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
+      DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, gcImage);
+    }
+       
+    if (mis == MIS_Grayed) {
+      currentGC = Scr.MenuStippleGC;
     } else {
-      DrawTrianglePattern(w, ReliefGC, ShadowGC, ReliefGC, /* ShadowGC, */
-			  width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
+      currentGC = Scr.MenuGC;
+    }
+
+    x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
+
+    if (pmi->szLabel) {
+      XDrawString(dpy, w, currentGC,
+		  x_offset,y_offset + label_font_height, 
+		  pmi->szLabel, pmi->cchLabel);
+    }
+
+    /* highlight the shortcut key */
+    if (pmiim->ichShortcutOffset >= 0) {
+      DrawUnderline(w, currentGC, x_offset, y_offset +label_font_height,
+		    pmi->szLabel, pmiim->ichShortcutOffset);
+    }
+  
+    x_offset += pmdi->cpixTextWidth;
+
+    if (pmi->szExtra) {
+      XDrawString(dpy, w, currentGC,
+		  x_offset, y_offset + label_font_height,
+		  pmi->szExtra, pmi->cchExtra);
+    }
+
+    x_offset += pmdi->cpixExtraTextWidth;
+
+    if (pmiim->fShowPopupArrow) {
+      int d = (item_height-7)/2; /* FIXGJB: magic numbers! */
+      if (mis == MIS_Enabled) {
+	DrawTrianglePattern(w, ShadowGC, ReliefGC, ShadowGC, /* ReliefGC, */
+			    width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
+      } else {
+	DrawTrianglePattern(w, ReliefGC, ShadowGC, ReliefGC, /* ShadowGC, */
+			    width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
+      }
     }
   }
-
   return;
 }
 

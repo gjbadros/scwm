@@ -112,6 +112,8 @@ int
 print_image(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<image ", port);
+  scm_write(IMAGE(obj)->name, port);
+  scm_puts(" from ", port);
   scm_write(IMAGE(obj)->full_name, port);
   scm_putc('>', port);
   return 1;
@@ -120,14 +122,11 @@ print_image(SCM obj, SCM port, scm_print_state * pstate)
 SCM
 mark_image(SCM obj)
 {
-#ifdef MSFIX_I_DONT_UNDERSTAND_THIS /* --gjb 11/28/97 */
+  scwm_image *psimg;
   if (SCM_GC8MARKP (obj)) {
     return SCM_BOOL_F;
   }
-  /* MSFIX: why not marking name?  we need to mark full_name, too */
-  return IMAGE(obj)->name;  
-#endif
-  scwm_image *psimg = IMAGE(obj);
+  psimg = IMAGE(obj);
   SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(psimg->name);
   GC_MARK_SCM_IF_SET(psimg->full_name);

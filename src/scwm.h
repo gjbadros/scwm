@@ -72,7 +72,7 @@
    specify.
    Intentionally not named SCM_UNSET, since that would imply
    it's part of guile */
-#define UNSET_SCM(x) ((x) == SCM_UNDEFINED || (x) == SCM_BOOL_F)
+#define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
 
 #define GC_MARK_SCM_IF_SET(scm) do { if (!UNSET_SCM((scm))) \
      { scm_gc_mark((scm)); } } while (0);

@@ -29,14 +29,18 @@
 SCM 
 mark_menuitem(SCM obj)
 {
-  Scwm_MenuItem *mi = SCWM_MENUITEM(obj);
+  MenuItem *pmi;
+  if (SCM_GC8MARKP (obj)) {
+    return SCM_BOOL_F;
+  }
+  pmi = MENUITEM(obj);
 
   SCM_SETGC8MARK(obj);
-  GC_MARK_SCM_IF_SET(mi->scmImgAbove);
-  GC_MARK_SCM_IF_SET(mi->scmImgLeft);
-  GC_MARK_SCM_IF_SET(mi->scmAction);
-  GC_MARK_SCM_IF_SET(mi->scmHover);
-  GC_MARK_SCM_IF_SET(mi->scmUnhover);
+  GC_MARK_SCM_IF_SET(pmi->scmImgAbove);
+  GC_MARK_SCM_IF_SET(pmi->scmImgLeft);
+  GC_MARK_SCM_IF_SET(pmi->scmAction);
+  GC_MARK_SCM_IF_SET(pmi->scmHover);
+  GC_MARK_SCM_IF_SET(pmi->scmUnhover);
 
   return SCM_BOOL_F;
 }
@@ -44,7 +48,7 @@ mark_menuitem(SCM obj)
 size_t 
 free_menuitem(SCM obj)
 {
-  Scwm_MenuItem *mi = SCWM_MENUITEM(obj);
+  MenuItem *mi = MENUITEM(obj);
   if (mi->szLabel) {
     free(mi->szLabel);
   }
@@ -62,8 +66,8 @@ int
 print_menuitem(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<menuitem ", port);
-  if (SCWM_MENUITEM_P(obj)) {
-    Scwm_MenuItem *mi = SCWM_MENUITEM(obj);
+  if (MENUITEM_P(obj)) {
+    MenuItem *mi = MENUITEM(obj);
     scm_write(gh_str02scm(mi->szLabel),port);
   } else {
     scm_puts("(invalid)", port);
@@ -76,7 +80,7 @@ print_menuitem(SCM obj, SCM port, scm_print_state * pstate)
 SCM 
 menuitem_p(SCM obj)
 {
-  return (SCWM_MENUITEM_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (MENUITEM_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 
@@ -84,7 +88,7 @@ SCM_PROC (s_menuitem_properties, "menuitem-properties", 1, 0, 0, menuitem_proper
 SCM
 menuitem_properties(SCM menu_item)
 {
-  Scwm_MenuItem *pmi = SAFE_SCWM_MENUITEM(menu_item);
+  MenuItem *pmi = SAFE_MENUITEM(menu_item);
   if (!pmi) {
     scm_wrong_type_arg(s_menuitem_properties,1,menu_item);
   }
@@ -104,7 +108,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
 	      SCM picture_left, SCM hover_action, SCM unhover_action,
 	      SCM hotkey_prefs)
 {
-  Scwm_MenuItem *pmi = safemalloc(sizeof(Scwm_MenuItem));
+  MenuItem *pmi = safemalloc(sizeof(MenuItem));
   SCM answer;
   int iarg = 1;
 
@@ -166,11 +170,19 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
   iarg++;
   if (UNSET_SCM(hotkey_prefs)) {
     pmi->pchHotkeyPreferences = NULL;
+    pmi->cchHotkeyPreferences = 0;
   } else if (!gh_string_p(hotkey_prefs)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,hotkey_prefs);
   } else {
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
+  }
+
+  if (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
+      picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F) {
+    pmi->fIsSeparator = True;
+  } else {
+    pmi->fIsSeparator = False;
   }
 
   SCM_NEWCELL(answer);

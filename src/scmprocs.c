@@ -105,8 +105,8 @@ init_scwm_procs(void)
   gh_new_procedure("set-click-time!", set_click_time_x, 1, 0, 0);
   gh_new_procedure("set-colormap-focus!", set_colormap_focus_x, 1, 0, 0);
   gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x, 1, 0, 0);
-  gh_new_procedure("make-menu-item", make_menuitem, 2, 6, 0);
-  gh_new_procedure("make-scwm-menu", make_scwmmenu, 1, 6, 0);
+  gh_new_procedure("make-menuitem", make_menuitem, 2, 6, 0);
+  gh_new_procedure("make-menu", make_menu, 1, 6, 0);
   gh_new_procedure("popup-menu", popup_menu, 1, 0, 0);
   gh_new_procedure("color?", color_p, 1, 0, 0);
   gh_new_procedure("font?", font_p, 1, 0, 0);
@@ -117,7 +117,6 @@ init_scwm_procs(void)
   gh_new_procedure("recapture", recapture, 0, 0, 0);
   gh_new_procedure("restart", restart, 1, 0, 0);
   gh_new_procedure("wait-for-window", wait_for_window, 1, 0, 0);
-  gh_new_procedure("set-image-path!", set_image_path_x, 1, 0, 0);
   gh_new_procedure("move-window-to-desk", move_window_to_desk, 1, 1, 0);
   gh_new_procedure("set-current-desk!", set_current_desk_x, 1, 0, 0);
   gh_new_procedure("set-viewport-position!", set_viewport_position_x, 2, 0, 0);

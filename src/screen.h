@@ -44,31 +44,6 @@
 #define MAX_WINDOW_HEIGHT 32767
 
 
-/* Cursor types */
-#define POSITION 0		/* upper Left corner cursor */
-#define TITLE_CURSOR 1		/* title-bar cursor */
-#define DEFAULT 2		/* cursor for apps to inherit */
-#define SYS 3			/* sys-menu and iconify boxes cursor */
-#define MOVE 4			/* resize cursor */
-#if defined(__alpha)
-#ifdef WAIT
-#undef WAIT
-#endif /*WAIT */
-#endif /*alpha */
-#define WAIT 5			/* wait a while cursor */
-#define MENU 6			/* menu cursor */
-#define SELECT 7		/* dot cursor for f.move, etc. from menus */
-#define DESTROY 8		/* skull and cross bones, f.destroy */
-#define TOP 9
-#define RIGHT 10
-#define BOTTOM 11
-#define LEFT 12
-#define TOP_LEFT 13
-#define TOP_RIGHT 14
-#define BOTTOM_LEFT 15
-#define BOTTOM_RIGHT 16
-#define MAX_CURSORS 18
-
 /* colormap focus styes */
 #define COLORMAP_FOLLOWS_MOUSE 1	/* default */
 #define COLORMAP_FOLLOWS_FOCUS 2
@@ -211,9 +186,8 @@ typedef struct ScreenInfo {
 				   colormap windows */
   ScwmWindow *pushed_window;	/* saved window to install when pushes drops
 				   to zero */
-  Cursor ScwmCursors[MAX_CURSORS];
+  Cursor ScwmCursors[CURSOR_MAX_CURSORS];
 
-  name_list *TheList;		/* list of window names with attributes */
   char *DefaultIcon;		/* Icon to use when no other icons are found */
 
   ColorPair MenuColors;

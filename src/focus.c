@@ -68,10 +68,10 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
 	  if (Scr.buttons2grab & (1 << i)) {
 	    XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
 			ButtonPressMask, GrabModeSync, GrabModeAsync,
-			None, Scr.ScwmCursors[SYS]);
+			None, Scr.ScwmCursors[CURSOR_SYS]);
 	    XGrabButton(dpy, (i + 1), LockMask, Scr.Ungrabbed->frame, True,
 			ButtonPressMask, GrabModeSync, GrabModeAsync,
-			None, Scr.ScwmCursors[SYS]);
+			None, Scr.ScwmCursors[CURSOR_SYS]);
 	  }
 	Scr.Focus = NULL;
 	Scr.Ungrabbed = NULL;
@@ -94,7 +94,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
       if (Scr.buttons2grab & (1 << i))
 	XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    Scr.ScwmCursors[SYS]);
+		    Scr.ScwmCursors[CURSOR_SYS]);
     Scr.Ungrabbed = NULL;
   }
   /* if we do click to focus, remove the grab on mouse events that

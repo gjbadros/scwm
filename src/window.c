@@ -47,9 +47,12 @@ mark_window(SCM obj)
   if (!SCM_GC8MARKP(obj)) {
     SCM_SETGC8MARK(obj);
     
+    /* FIXGJB: revisit this */
     if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
-      scm_gc_mark(SCWMWINDOW(obj)->fl->scmdecor);
-      scm_gc_mark(SCWMWINDOW(obj)->mini_icon_image);
+      ScwmWindow *psw = SCWMWINDOW(obj);
+      scm_gc_mark(psw->fl->scmdecor);
+      scm_gc_mark(psw->mini_icon_image);
+      scm_gc_mark(psw->icon_image);
     }
   }
   return SCM_BOOL_F;
@@ -357,9 +360,10 @@ extern int orig_x, orig_y, have_orig_position;
  *                    terminate on.
  *
  ***********************************************************************/
+static
 int 
 DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
-	       unsigned long *context, int cursor, int FinishEvent)
+	       unsigned long *context, enum cursor cursor, int FinishEvent)
 {
   Bool fDone = False;
   Bool fFinished = False;
@@ -495,7 +499,7 @@ select_window(SCM kill_p, SCM release_p)
 
 
   if (DeferExecution(&ev, &w, &tmp_win, &context,
-		     (kill_p != SCM_BOOL_F ? DESTROY : SELECT),
+		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
 		     (release_p != SCM_BOOL_F ? ButtonRelease :
 		      ButtonPress))) {
     SCM_REALLOW_INTS;
@@ -1105,7 +1109,7 @@ interactive_resize(SCM win)
 
 
   InstallRootColormap();
-  if (!GrabEm(MOVE)) {
+  if (!GrabEm(CURSOR_MOVE)) {
     XBell(dpy, Scr.screen);
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;

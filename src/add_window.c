@@ -105,50 +105,50 @@ GrabButtons(ScwmWindow * tmp_win)
 		    tmp_win->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	if (MouseEntry->Modifier != AnyModifier) {
 	  XGrabButton(dpy, MouseEntry->Button_Key,
 		      (MouseEntry->Modifier | LockMask),
 		      tmp_win->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
 	}
       } else {
 	XGrabButton(dpy, 1, MouseEntry->Modifier,
 		    tmp_win->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	XGrabButton(dpy, 2, MouseEntry->Modifier,
 		    tmp_win->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	XGrabButton(dpy, 3, MouseEntry->Modifier,
 		    tmp_win->w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	if (MouseEntry->Modifier != AnyModifier) {
 	  XGrabButton(dpy, 1,
 		      (MouseEntry->Modifier | LockMask),
 		      tmp_win->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
 	  XGrabButton(dpy, 2,
 		      (MouseEntry->Modifier | LockMask),
 		      tmp_win->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
 	  XGrabButton(dpy, 3,
 		      (MouseEntry->Modifier | LockMask),
 		      tmp_win->w,
 		      True, ButtonPressMask | ButtonReleaseMask,
 		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
 	}
       }
     }
@@ -156,162 +156,6 @@ GrabButtons(ScwmWindow * tmp_win)
   }
   return;
 }
-
-/***********************************************************************
- *
- *  Procedure:
- *	LookInList - look through a list for a window name, or class
- *
- *  Returned Value:
- *	the ptr field of the list structure or NULL if the name 
- *	or class was not found in the list
- *
- *  Inputs:
- *	list	- a pointer to the head of a list
- *	name	- a pointer to the name to look for
- *	class	- a pointer to the class to look for
- *
- ***********************************************************************/
-static unsigned long 
-LookInList(name_list * list, char *name, XClassHint * class,
-	   char **value,
-	   char **decor,
-	   int *Desk, int *border_width,
-	   int *resize_width, char **forecolor, char **backcolor,
-	   unsigned long *buttons, int *IconBox,
-	   int *BoxFillMethod)
-{
-#ifdef MS_DELETION_COMMENT
-  name_list *nptr;
-#endif
-  unsigned long retval = 0;
-
-  *value = NULL;
-  *decor = NULL;
-  *forecolor = NULL;
-  *backcolor = NULL;
-  *Desk = 0;
-  *buttons = 0;
-  *BoxFillMethod = 0;
-  *border_width = 0;
-  *resize_width = 0;
-  IconBox[0] = -1;
-  IconBox[1] = -1;
-  IconBox[2] = Scr.MyDisplayWidth;
-  IconBox[3] = Scr.MyDisplayHeight;
-
-  /* MS: The code commented below never does anything, because the style
-     list is always empty under the current possible execution paths.
-     This can be seen by uncommenting the code and watching for the
-     printf and puts statements in it. */
-#ifdef MS_DELETION_COMMENT
-  puts("Looking in list.");
-  /* look for the name first */
-  for (nptr = list; nptr != NULL; nptr = nptr->next) {
-    puts("Examining a list item.");
-    if (class) {
-      /* first look for the res_class  (lowest priority) */
-      if (matchWildcards(nptr->name, class->res_class) == TRUE) {
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	if (nptr->value != NULL)
-	  *value = nptr->value;
-	if (nptr->mini_value != NULL)
-	  *mini_value = nptr->mini_value;
-	if (nptr->Decor != NULL)
-	  *decor = nptr->Decor;
-	if (nptr->off_flags & STARTSONDESK_FLAG)
-	  *Desk = nptr->Desk;
-	if (nptr->off_flags & BW_FLAG)
-	  *border_width = nptr->border_width;
-	if (nptr->off_flags & FORE_COLOR_FLAG)
-	  *forecolor = nptr->ForeColor;
-	if (nptr->off_flags & BACK_COLOR_FLAG)
-	  *backcolor = nptr->BackColor;
-	if (nptr->off_flags & NOBW_FLAG)
-	  *resize_width = nptr->resize_width;
-	retval |= nptr->off_flags;
-	retval &= ~(nptr->on_flags);
-	*buttons |= nptr->off_buttons;
-	*buttons &= ~(nptr->on_buttons);
-	if (nptr->BoxFillMethod != 0)
-	  *BoxFillMethod = nptr->BoxFillMethod;
-	if (nptr->IconBox[0] >= 0) {
-	  IconBox[0] = nptr->IconBox[0];
-	  IconBox[1] = nptr->IconBox[1];
-	  IconBox[2] = nptr->IconBox[2];
-	  IconBox[3] = nptr->IconBox[3];
-	}
-      }
-      /* look for the res_name next */
-      if (matchWildcards(nptr->name, class->res_name) == TRUE) {
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	if (nptr->value != NULL)
-	  *value = nptr->value;
-	if (nptr->mini_value != NULL)
-	  *mini_value = nptr->mini_value;
-	if (nptr->Decor != NULL)
-	  *decor = nptr->Decor;
-	if (nptr->off_flags & STARTSONDESK_FLAG)
-	  *Desk = nptr->Desk;
-	if (nptr->off_flags & FORE_COLOR_FLAG)
-	  *forecolor = nptr->ForeColor;
-	if (nptr->off_flags & BACK_COLOR_FLAG)
-	  *backcolor = nptr->BackColor;
-	if (nptr->off_flags & BW_FLAG)
-	  *border_width = nptr->border_width;
-	if (nptr->off_flags & NOBW_FLAG)
-	  *resize_width = nptr->resize_width;
-	retval |= nptr->off_flags;
-	retval &= ~(nptr->on_flags);
-	*buttons |= nptr->off_buttons;
-	*buttons &= ~(nptr->on_buttons);
-	if (nptr->BoxFillMethod != 0)
-	  *BoxFillMethod = nptr->BoxFillMethod;
-	if (nptr->IconBox[0] >= 0) {
-	  IconBox[0] = nptr->IconBox[0];
-	  IconBox[1] = nptr->IconBox[1];
-	  IconBox[2] = nptr->IconBox[2];
-	  IconBox[3] = nptr->IconBox[3];
-	}
-      }
-    }
-    /* finally, look for name matches */
-    if (matchWildcards(nptr->name, name) == TRUE) {
-      if (nptr->value != NULL)
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	*value = nptr->value;
-      if (nptr->mini_value != NULL)
-	*mini_value = nptr->mini_value;
-      if (nptr->Decor != NULL)
-	*decor = nptr->Decor;
-      if (nptr->off_flags & STARTSONDESK_FLAG)
-	*Desk = nptr->Desk;
-      if (nptr->off_flags & FORE_COLOR_FLAG)
-	*forecolor = nptr->ForeColor;
-      if (nptr->off_flags & BACK_COLOR_FLAG)
-	*backcolor = nptr->BackColor;
-      if (nptr->off_flags & BW_FLAG)
-	*border_width = nptr->border_width;
-      if (nptr->off_flags & NOBW_FLAG)
-	*resize_width = nptr->resize_width;
-      retval |= nptr->off_flags;
-      retval &= ~(nptr->on_flags);
-      *buttons |= nptr->off_buttons;
-      *buttons &= ~(nptr->on_buttons);
-      if (nptr->BoxFillMethod != 0)
-	*BoxFillMethod = nptr->BoxFillMethod;
-      if (nptr->IconBox[0] >= 0) {
-	IconBox[0] = nptr->IconBox[0];
-	IconBox[1] = nptr->IconBox[1];
-	IconBox[2] = nptr->IconBox[2];
-	IconBox[3] = nptr->IconBox[3];
-      }
-    }
-  }
-#endif /* MS_DELETION_COMMENT */
-  return retval;
-}
-
 
 /***********************************************************************
  *
@@ -453,13 +297,8 @@ AddWindow(Window w)
   tmp_win->icon_image = SCM_BOOL_F;
   tmp_win->mini_icon_image = SCM_BOOL_F;
 
-  tflag = LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &value,
-		     &decor,
-		     &Desk,
-		     &border_width, &resize_width,
-		     &forecolor, &backcolor, &tmp_win->buttons,
-		     tmp_win->IconBox, &(tmp_win->BoxFillMethod));
-
+  /* This is from the old LookInList garbage --gjb 11/30/97 */
+  tflag = False;
 
   /* XXX - bletcherous... we process the hint properties separately,
      since hints need to be processed early, but some procs we may
@@ -614,7 +453,7 @@ AddWindow(Window w)
 
   attributes.border_pixel = tmp_win->ShadowPixel;
 
-  attributes.cursor = Scr.ScwmCursors[DEFAULT];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |
 			   ButtonReleaseMask | EnterWindowMask |
 			   LeaveWindowMask | ExposureMask);
@@ -648,7 +487,7 @@ AddWindow(Window w)
   attributes.save_under = FALSE;
 
   /* Thats not all, we'll double-reparent the window ! */
-  attributes.cursor = Scr.ScwmCursors[DEFAULT];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   tmp_win->Parent =
     XCreateWindow(dpy, tmp_win->frame,
 		  tmp_win->boundary_width,
@@ -676,7 +515,7 @@ AddWindow(Window w)
     /* Just dump the windows any old place and left SetupFrame take
      * care of the mess */
     for (i = 0; i < 4; i++) {
-      attributes.cursor = Scr.ScwmCursors[TOP_LEFT + i];
+      attributes.cursor = Scr.ScwmCursors[CURSOR_TOP_LEFT + i];
       tmp_win->corners[i] =
 	XCreateWindow(dpy, tmp_win->frame, 0, 0,
 		      tmp_win->corner_width, tmp_win->corner_width,
@@ -693,13 +532,13 @@ AddWindow(Window w)
   if (tmp_win->flags & TITLE) {
     tmp_win->title_x = tmp_win->boundary_width + tmp_win->title_height + 1;
     tmp_win->title_y = tmp_win->boundary_width;
-    attributes.cursor = Scr.ScwmCursors[TITLE_CURSOR];
+    attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
     tmp_win->title_w =
       XCreateWindow(dpy, tmp_win->frame, tmp_win->title_x, tmp_win->title_y,
 		    tmp_win->title_width, tmp_win->title_height, 0,
 		    CopyFromParent, InputOutput, CopyFromParent,
 		    valuemask, &attributes);
-    attributes.cursor = Scr.ScwmCursors[SYS];
+    attributes.cursor = Scr.ScwmCursors[CURSOR_SYS];
     for (i = 4; i >= 0; i--) {
       if ((i < Scr.nr_left_buttons) && (tmp_win->left_w[i] > 0)) {
 	if (TexturePixmap
@@ -760,7 +599,7 @@ AddWindow(Window w)
       valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
     }
     for (i = 0; i < 4; i++) {
-      attributes.cursor = Scr.ScwmCursors[TOP + i];
+      attributes.cursor = Scr.ScwmCursors[CURSOR_TOP + i];
       tmp_win->sides[i] =
 	XCreateWindow(dpy, tmp_win->frame, 0, 0, tmp_win->boundary_width,
 		      tmp_win->boundary_width, 0, CopyFromParent,
@@ -851,10 +690,10 @@ AddWindow(Window w)
       if (Scr.buttons2grab & (1 << i)) {
 	XGrabButton(dpy, (i + 1), 0, tmp_win->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    Scr.ScwmCursors[SYS]);
+		    Scr.ScwmCursors[CURSOR_SYS]);
 	XGrabButton(dpy, (i + 1), LockMask, tmp_win->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
-		    Scr.ScwmCursors[SYS]);
+		    Scr.ScwmCursors[CURSOR_SYS]);
       }
 #ifndef CLICKTORAISE
   }
@@ -924,12 +763,12 @@ GrabButtonWithModifiers(int button, int modifier,
     XGrabButton(dpy, button, modifier, sw->w,
 		True, ButtonPressMask | ButtonReleaseMask,
 		GrabModeAsync, GrabModeAsync, None,
-		Scr.ScwmCursors[DEFAULT]);
+		Scr.ScwmCursors[CURSOR_DEFAULT]);
     if (modifier != AnyModifier) {
       XGrabButton(dpy, button, (modifier | LockMask), sw->w,
 		  True, ButtonPressMask | ButtonReleaseMask,
 		  GrabModeAsync, GrabModeAsync, None,
-		  Scr.ScwmCursors[DEFAULT]);
+		  Scr.ScwmCursors[CURSOR_DEFAULT]);
     }
   } else {
     GrabButtonWithModifiers(1,modifier,sw);

@@ -208,7 +208,7 @@ scwm_main(int argc, char **argv)
   init_image();
   init_miscprocs();
   init_menuitem();
-  init_scwm_menu();
+  init_menu();
   init_binding();
   init_window();
   init_face();
@@ -891,23 +891,23 @@ void
 CreateCursors(void)
 {
   /* define cursors */
-  Scr.ScwmCursors[POSITION] = XCreateFontCursor(dpy, XC_top_left_corner);
-  Scr.ScwmCursors[DEFAULT] = XCreateFontCursor(dpy, XC_top_left_arrow);
-  Scr.ScwmCursors[SYS] = XCreateFontCursor(dpy, XC_hand2);
-  Scr.ScwmCursors[TITLE_CURSOR] = XCreateFontCursor(dpy, XC_top_left_arrow);
-  Scr.ScwmCursors[MOVE] = XCreateFontCursor(dpy, XC_fleur);
-  Scr.ScwmCursors[MENU] = XCreateFontCursor(dpy, XC_sb_left_arrow);
-  Scr.ScwmCursors[WAIT] = XCreateFontCursor(dpy, XC_watch);
-  Scr.ScwmCursors[SELECT] = XCreateFontCursor(dpy, XC_dot);
-  Scr.ScwmCursors[DESTROY] = XCreateFontCursor(dpy, XC_pirate);
-  Scr.ScwmCursors[LEFT] = XCreateFontCursor(dpy, XC_left_side);
-  Scr.ScwmCursors[RIGHT] = XCreateFontCursor(dpy, XC_right_side);
-  Scr.ScwmCursors[TOP] = XCreateFontCursor(dpy, XC_top_side);
-  Scr.ScwmCursors[BOTTOM] = XCreateFontCursor(dpy, XC_bottom_side);
-  Scr.ScwmCursors[TOP_LEFT] = XCreateFontCursor(dpy, XC_top_left_corner);
-  Scr.ScwmCursors[TOP_RIGHT] = XCreateFontCursor(dpy, XC_top_right_corner);
-  Scr.ScwmCursors[BOTTOM_LEFT] = XCreateFontCursor(dpy, XC_bottom_left_corner);
-  Scr.ScwmCursors[BOTTOM_RIGHT] = XCreateFontCursor(dpy, XC_bottom_right_corner);
+  Scr.ScwmCursors[CURSOR_POSITION] = XCreateFontCursor(dpy, XC_top_left_corner);
+  Scr.ScwmCursors[CURSOR_DEFAULT] = XCreateFontCursor(dpy, XC_top_left_arrow);
+  Scr.ScwmCursors[CURSOR_SYS] = XCreateFontCursor(dpy, XC_hand2);
+  Scr.ScwmCursors[CURSOR_TITLE] = XCreateFontCursor(dpy, XC_top_left_arrow);
+  Scr.ScwmCursors[CURSOR_MOVE] = XCreateFontCursor(dpy, XC_fleur);
+  Scr.ScwmCursors[CURSOR_MENU] = XCreateFontCursor(dpy, XC_sb_left_arrow);
+  Scr.ScwmCursors[CURSOR_WAIT] = XCreateFontCursor(dpy, XC_watch);
+  Scr.ScwmCursors[CURSOR_SELECT] = XCreateFontCursor(dpy, XC_dot);
+  Scr.ScwmCursors[CURSOR_DESTROY] = XCreateFontCursor(dpy, XC_pirate);
+  Scr.ScwmCursors[CURSOR_LEFT] = XCreateFontCursor(dpy, XC_left_side);
+  Scr.ScwmCursors[CURSOR_RIGHT] = XCreateFontCursor(dpy, XC_right_side);
+  Scr.ScwmCursors[CURSOR_TOP] = XCreateFontCursor(dpy, XC_top_side);
+  Scr.ScwmCursors[CURSOR_BOTTOM] = XCreateFontCursor(dpy, XC_bottom_side);
+  Scr.ScwmCursors[CURSOR_TOP_LEFT] = XCreateFontCursor(dpy, XC_top_left_corner);
+  Scr.ScwmCursors[CURSOR_TOP_RIGHT] = XCreateFontCursor(dpy, XC_top_right_corner);
+  Scr.ScwmCursors[CURSOR_BOTTOM_LEFT] = XCreateFontCursor(dpy, XC_bottom_left_corner);
+  Scr.ScwmCursors[CURSOR_BOTTOM_RIGHT] = XCreateFontCursor(dpy, XC_bottom_right_corner);
 }
 
 /***********************************************************************
@@ -1193,10 +1193,7 @@ InitVariables(void)
 
   /* initialize some lists */
   Scr.AllBindings = NULL;
-  Scr.TheList = NULL;
-
   Scr.DefaultIcon = NULL;
-
 
   /* create graphics contexts */
   CreateGCs();

@@ -462,7 +462,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win,
   /* XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
      &DragX, &DragY,    &JunkX, &JunkY, &JunkMask);
    */
-  if (!GrabEm(MOVE)) {
+  if (!GrabEm(CURSOR_MOVE)) {
     XBell(dpy, Scr.screen);
     return;
   }

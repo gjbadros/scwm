@@ -278,7 +278,7 @@ initPanFrames()
 			   VisibilityChangeMask);
   valuemask = (CWEventMask | CWCursor);
 
-  attributes.cursor = Scr.ScwmCursors[TOP];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_TOP];
   Scr.PanFrameTop.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, 0,
@@ -287,7 +287,7 @@ initPanFrames()
 		  CopyFromParent, InputOnly,
 		  CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[LEFT];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_LEFT];
   Scr.PanFrameLeft.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, PAN_FRAME_THICKNESS,
@@ -296,7 +296,7 @@ initPanFrames()
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[RIGHT];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_RIGHT];
   Scr.PanFrameRight.win =
     XCreateWindow(dpy, Scr.Root,
 	      Scr.MyDisplayWidth - PAN_FRAME_THICKNESS, PAN_FRAME_THICKNESS,
@@ -305,7 +305,7 @@ initPanFrames()
 		  0,		/* no border */
 		  CopyFromParent, InputOnly, CopyFromParent,
 		  valuemask, &attributes);
-  attributes.cursor = Scr.ScwmCursors[BOTTOM];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_BOTTOM];
   Scr.PanFrameBottom.win =
     XCreateWindow(dpy, Scr.Root,
 		  0, Scr.MyDisplayHeight - PAN_FRAME_THICKNESS,

@@ -32,7 +32,7 @@ typedef enum menu_item_state {
 /* If you add an SCM object to the below, you need to be sure
    to modify mark_menuitem
  */
-typedef struct Scwm_MenuItem_tag
+typedef struct MenuItem_tag
 {
   char *szLabel;		/* main label of the item */
   int cchLabel;
@@ -44,14 +44,18 @@ typedef struct Scwm_MenuItem_tag
   SCM scmHover;			/* hover hook */
   SCM scmUnhover;		/* un-hover hook */
   char *pchHotkeyPreferences;	/* ordered list of hotkeys */
-  int cchHotkeyPreferences;
-} Scwm_MenuItem;
+  int cchHotkeyPreferences;	/* number of hotkeys selected */
+  Bool fIsSeparator;		/* Is this a separator? */
+				/* This gets set true in make_menuitem,
+				   iff everything is empty strings
+				   or unset (SCM_BOOL_F or SCM_UNDEFINED) */
+} MenuItem;
 
 struct DynamicMenu_tag;
 
 typedef struct MenuItemInMenu_tag
 {
-  Scwm_MenuItem *pmi;		/* pointer to the menu item this is for */
+  MenuItem *pmi;		/* pointer to the menu item this is for */
   struct DynamicMenu_tag *pmd;	/* the dynamic menu it is in */
   int imiim;			/* the item number in the dynamic menu */
   int cpixOffsetY;		/* top y offset of the item */
@@ -65,9 +69,9 @@ typedef struct MenuItemInMenu_tag
 } MenuItemInMenu;
 
 
-#define SCWM_MENUITEM_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menuitem)
-#define SCWM_MENUITEM(X)  ((Scwm_MenuItem *)SCM_CDR(X))
-#define SAFE_SCWM_MENUITEM(X)  (SCWM_MENUITEM_P((X))? SCWM_MENUITEM((X)) : NULL)
+#define MENUITEM_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menuitem)
+#define MENUITEM(X)  ((MenuItem *)SCM_CDR(X))
+#define SAFE_MENUITEM(X)  (MENUITEM_P((X))? MENUITEM((X)) : NULL)
 
 SCM mark_menuitem(SCM obj);
 size_t free_menuitem(SCM obj);

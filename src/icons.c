@@ -56,20 +56,20 @@ GrabIconButtons(ScwmWindow * tmp_win, Window w)
 	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
       else {
 	XGrabButton(dpy, 1, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	XGrabButton(dpy, 2, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
 	XGrabButton(dpy, 3, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,
 		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
       }
     }
     MouseEntry = MouseEntry->NextBinding;
@@ -290,7 +290,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   attributes.background_pixel = Scr.MenuColors.back;
   valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
   attributes.border_pixel = Scr.MenuColors.fore;
-  attributes.cursor = Scr.ScwmCursors[DEFAULT];
+  attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			   VisibilityChangeMask |
 			   ExposureMask | KeyPressMask | EnterWindowMask |
@@ -328,13 +328,13 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 
   if (sw->icon_w != None) {
     XSaveContext(dpy, sw->icon_w, ScwmContext, (caddr_t) sw);
-    XDefineCursor(dpy, sw->icon_w, Scr.ScwmCursors[DEFAULT]);
+    XDefineCursor(dpy, sw->icon_w, Scr.ScwmCursors[CURSOR_DEFAULT]);
     GrabIconButtons(sw, sw->icon_w);
     GrabIconKeys(sw, sw->icon_w);
   }
   if (sw->icon_pixmap_w != None) {
     XSaveContext(dpy, sw->icon_pixmap_w, ScwmContext, (caddr_t) sw);
-    XDefineCursor(dpy, sw->icon_pixmap_w, Scr.ScwmCursors[DEFAULT]);
+    XDefineCursor(dpy, sw->icon_pixmap_w, Scr.ScwmCursors[CURSOR_DEFAULT]);
     GrabIconButtons(sw, sw->icon_pixmap_w);
     GrabIconKeys(sw, sw->icon_pixmap_w);
   }
