@@ -55,7 +55,8 @@
 
 
 (define HOME (getenv "HOME"))
-(define USER (getenv "USER"))
+(define USER (getenv "LOGNAME"))
+(define mail-spool-dir (getenv "MAIL"))
 
 
 ;; (set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
@@ -87,8 +88,6 @@
 
 (define use-complete-host-menu #t)
 (define xterm-other-host-use-local-xterm #t)
-
-(define mail-spool-dir (string-append "/var/spool/mail/" USER))
 
 ;; Want a Win95-like "X" button at top right of window decoration
 ;; to immediately close the window?
@@ -289,10 +288,13 @@
 (set! image-load-path (append user-image-load-list image-load-path))
 ;;(set! image-load-path '())
 
+(debug-display "After setting image-load-path\n")
+
 (define (suggest-image-path-for name)
   (let ((found-if-0 (system (string-append "locate " name))))
     (if (= 0 found-if-0)
 	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
+
 
 (define (image-not-found-hook name) 
   (display (string-append "Could not find image: " name "\n"))
@@ -925,6 +927,7 @@
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
 	      #:action 'menu-quit-verify))
    #:image-side "linux-menu.xpm"
+   #:image-align 'bottom
    #:color-bg-image-side "blue"))
 
 (debug-display "before-popup-menu-root-start\n")
