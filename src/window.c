@@ -1725,9 +1725,16 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
-  } else if ((gh_string_p(picture) && 
-	      (picture=make_picture(picture))!=SCM_UNDEFINED) ||
-	      (SCM_NIMP(picture) && PICTURE_P(picture))) {
+  } else if ((gh_string_p(picture)  ) {
+    int len;
+
+    tmp_win->flags &= ~SUPPRESSICON_FLAG;
+    tmp_win->flags |= ICON_FLAG;
+    sw->picIcon = CachePicture(gh_scm2newstr(picture, &len));
+    tmp_win->szIconFile = tmp_win->picIcon->name;
+    XDestroyWindow(dpy, tmp_win->icon_w);
+    tmp_win->icon_w = None;
+  } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
     if (!((tmp_win->wmhints)
@@ -1761,9 +1768,10 @@ set_mini_icon_x(SCM picture, SCM win)
   sw = SCWMWINDOW(win);
   if (picture == SCM_BOOL_F) {
     sw->picMiniIcon = NULL;
-  } else if ((gh_string_p(picture) && 
-	      (picture=make_picture(picture))!=SCM_UNDEFINED) ||
-	      (SCM_NIMP(picture) && PICTURE_P(picture))) {
+  } else if ((gh_string_p(picture)  ) {
+    int len;
+    sw->picMiniIcon = CachePicture(gh_scm2newstr(picture, &len));
+  } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
     sw->picMiniIcon = PICTURE(picture)->pic;
   } else {
     scm_wrong_type_arg("set-mini-icon!", 1, picture);
