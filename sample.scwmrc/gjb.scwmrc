@@ -293,6 +293,7 @@
 (set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
 (set! image-load-path (cons "/usr/lib/TheNextLevel/pixmaps" image-load-path))
+(set! image-load-path (cons "/usr/share/icons/mini" image-load-path))
 (set! image-load-path (append user-image-load-list image-load-path))
 ;;(set! image-load-path '())
 
