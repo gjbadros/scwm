@@ -568,7 +568,6 @@ specified. */
 {
   ScwmWindow *psw;
   int width, height;            /* not used, now */
-  Bool fOpaque;
 
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);

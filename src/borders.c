@@ -731,8 +731,11 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       NewColor = True;
     }
     if ((GET_DECOR(psw, BorderStyle.inactive->style)
-	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = IMAGE(GET_DECOR(psw, BorderStyle.inactive->u.image))->image;
+	 & ButtonFaceTypeMask) == TiledPixmapButton) {
+      SCM img = GET_DECOR(psw, BorderStyle.inactive->u.image);
+      if (IMAGE_P(img))
+        TexturePixmap = IMAGE(img)->image;
+    }
 
     TextColor = XCOLOR(psw->TextColor);
     BackPixmap = Scr.light_gray_pixmap;

@@ -86,6 +86,7 @@
 #include "xmisc.h"
 #include "xrm.h"
 #include "dbug_resize.h"
+#include "virtual.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
