@@ -36,6 +36,7 @@
 ;;;   - Will crash if the resultant mail file is non-existant.
 
 (define-module (app scwm simplebiff)
+  :use-module (app scwm time-convert)
   :use-module (app scwm optargs))
 
 (define-public mailfile "")

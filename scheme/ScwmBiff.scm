@@ -43,8 +43,7 @@
 	 (active-image #f)
 	 (state-active #f)
 	 (toplevel (if (not parent)
-		       (gtk-window-new 'toplevel)
-		       (#f)))
+		       (gtk-window-new 'toplevel)))
 	 (imagepath (find-file-in-path passive-icon-name image-load-path))
 	 )
     (if (not parent)
@@ -68,7 +67,9 @@
 	(begin
 	  (gtk-container-add toplevel button)
 	  (gtk-widget-show-all toplevel))
-	(parent 'add-child button "Mail Notifier"))
+	(begin
+	  (parent 'add-child button "Mail Notifier")
+	  (gtk-widget-show-all button)))
     (lambda (action)
       (case action
 	((quit)
@@ -81,6 +82,7 @@
 	     (begin
 	       (gtk-container-remove button passive-image)
 	       (gtk-container-add button active-image)
+	       (gtk-widget-show-all button)
 	       (set! state-active #t))))
 	((go-passive)
 	 (if state-active
