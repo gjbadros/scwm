@@ -1,3 +1,8 @@
+Thu Aug 13 11:19:40 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Fix percent visible to use window-frame-size, not
+	  window-size
+
 Wed Aug 12 17:21:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm, flux.scm: move "animated-move-to" into here (from

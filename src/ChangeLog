@@ -1,3 +1,9 @@
+Thu Aug 13 11:17:12 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* placement.c: Fix bug reported by <forcer@mindless.com> re:
+	  interactive placement not moving the window to the current
+	  pointer position initially.
+
 Thu Aug 13 10:03:08 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, move.c: Use (possibly) shaded height in
