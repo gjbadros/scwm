@@ -7,6 +7,10 @@
 #ifndef SESSION_MANAGER_H__
 #define SESSION_MANAGER_H__
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <X11/SM/SMlib.h>
 
 extern int IceSMfd;
@@ -18,4 +22,4 @@ extern char *sessionProg;
 
 void initSM();
 
-#endif /* _SESSION-MANAGER_H_ */
+#endif /* SESSION_MANAGER_H__ */
