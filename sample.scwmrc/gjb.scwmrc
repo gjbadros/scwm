@@ -265,6 +265,7 @@
 ;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
 (set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
 
+(scwm-option-set! *window-font* "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*")
 (title-style #:font (optget *window-font*) #:justify 'left #:relief 'raised)
 
 (set-rubber-band-mask! 255)  
