@@ -1,3 +1,16 @@
+1999-04-29  Jeff W Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Added code to support auto-
+	removal of buttons from the window when a ui-constraint object 
+	is removed.  Also fixed a bug where you could not initialize the
+	gtk-toggle-window after constraints were created.
+
+	* ui-constraints.scm: Added a field to the ui-constraint object
+	for holding the button used in the gtk-toggle-window.  Also fixed
+	a bug in delete-ui-constraint! in which the constraint was not 
+	removed from the solver when the ui-constraint object was 
+	removed.
+
 Wed Apr 28 19:49:31 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* tests/demo.scm: Minor changes from just before demoing Scwm to RMS.
