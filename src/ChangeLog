@@ -1,3 +1,8 @@
+Wed Aug 25 14:05:02 1999    <gjb@cs.washington.edu>
+
+	* scwm-snarf.h: Fix SCWM_GLOBAL_HOOK macro (had only fixed
+	SCWM_HOOK macro before) to use HAVE_SCM_MAKE_HOOK
+
 Wed Aug 25 12:24:17 1999    <gjb@cs.washington.edu>
 
 	* scwm.c: Drop the setting of *suppress-old-style-hook-warning*.
