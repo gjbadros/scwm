@@ -59,8 +59,17 @@
 
 (defvar X-dpy-for-scwm nil)
 (defvar X-property-scwm-exec nil)
-(defvar X-display-number 0)
+(defvar X-display-number 1)
+(defvar X-hostname (getenv "HOSTNAME"))
 (defvar X-root-window nil)
+
+;; use the $DISPLAY environment variable to figure out which
+;; display to open
+(let ((display-name (getenv "DISPLAY")))
+  (if (string-match "\\(.*\\):\\(.*\\)" display-name)
+      (progn
+	(setq X-display-number (match-string 2 display-name))
+	(setq X-hostname (match-string 1 display-name)))))
 
 (defun string-to-list (string)
   (if (> (length string) 0)
@@ -84,7 +93,7 @@
 (condition-case nil
     (progn
       (require 'xlib)
-      (setq X-dpy-for-scwm (XOpenDisplay (getenv "HOSTNAME") X-display-number))
+      (setq X-dpy-for-scwm (XOpenDisplay X-hostname X-display-number))
       (setq X-property-scwm-exec (XInternAtom X-dpy-for-scwm "SCWM_EXECUTE" t))
       (setq X-root-window (X-window-alloc (X-RootWindow X-dpy-for-scwm 0) X-dpy-for-scwm))
       (defun scwm-send (start end) 
@@ -159,9 +168,10 @@ SCWM to be executed (by means of the SCWM_EXECUTE property).
 
 (load "scheme")
 (define-key scheme-mode-map [(control meta ?x)] 'scwm-eval-last-sexp)
+(define-key scwm-interaction-mode-map [(control meta ?x)] 'scwm-eval-last-sexp)
 ;; Use C-M-z to permit moving the mouse before sending the string
 ;; (useful for testing current-window-with-{pointer,focus})
-(define-key scheme-mode-map [(control meta ?z)] 
+(define-key scwm-interaction-mode-map [(control meta ?z)] 
   (function (lambda ()
 	      (interactive)
 	      (sleep-for 1)
