@@ -28,9 +28,9 @@
 ;; set some basic styles info
 
 (define font12
-  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+  (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (define font14 
-  (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+  (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
 (menu-style #:fg "black"
 	    #:bg "grey"

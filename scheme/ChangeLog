@@ -1,3 +1,11 @@
+Wed Feb 25 21:39:58 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* minimal.scm: Changed load-font reference to make-font
+
+	* base.scm: Changed references to load-font to use make-font
+ 	instead; defined load-font as make-font for compatability;
+ 	font-property function for getting single properties of a font.
+
 Fri Feb 20 04:42:04 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* base.scm: Added image-property convenience wrapper to get at

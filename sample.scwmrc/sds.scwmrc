@@ -21,11 +21,11 @@
 (define (both-toggle-maximize) (toggle-maximize (%x 100) (%y 100)))
 (define (vertical-toggle-maximize-partial) (toggle-maximize 0 (%y 95)))
 
-(define font12 (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
-(define font14 (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
-(define window-font (load-font "*helvetica*bold-r*12*"))
-(define menu-font (load-font "*helvetica*medium-r*10*"))
-(define icon-font (load-font "fixed"))
+(define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+(define window-font (make-font "*helvetica*bold-r*12*"))
+(define menu-font (make-font "*helvetica*medium-r*10*"))
+(define icon-font (make-font "fixed"))
 
 ;(define (menu-item name pixmap action)
 ;  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))

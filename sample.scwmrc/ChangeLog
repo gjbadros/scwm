@@ -1,3 +1,7 @@
+Wed Feb 25 21:43:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Changed load-font to make-font throughout.
+
 Sun Nov 30 12:03:51 1997  unknown  <gjb@cs.washington.edu>
 
 	* system.scwmrc, gjb.scwmrc, menu-test.scm: Use new menuing code,
