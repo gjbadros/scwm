@@ -1,3 +1,15 @@
+Fri Jul 16 17:38:53 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use shaped logo. Fix bug in
+	switch-to-second-desk.  s/serveuse/scwm/g.  Bind H-M-3 to
+	popup-window-ops.
+
+Thu Jul 15 09:28:37 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Don't use #!, !# commenting as it confuses the
+	unbalanced-paren ELisp code I use. Use `message-window-options' to 
+	make resize/move mwins follow the window.
+
 Tue Jul 13 23:07:13 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added startup spinning lambda logo.  Drop
