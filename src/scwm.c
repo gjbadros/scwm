@@ -1492,8 +1492,35 @@ CatchFatal(Display *ARG_IGNORE(dpy))
   exit(1);
 }
 
+
 /*
- * ScwmErrorHandler - displays info on internal errors
+ * ScwmReportX11Error
+ * These are real X11 errors that we aren't expecting.
+ *
+ * Turn on synchronous mode (using --debug at startup) and set a
+ * breakpoint here to debug what's causing the error message.  */
+static XErrorHandler
+ScwmReportX11Error(Display *dpy, XErrorEvent *event) 
+{
+#ifdef HAVE_LIBXMU
+  XmuPrintDefaultErrorMessage(dpy,event,stderr);
+#else
+  { /* scope */
+    extern int last_event_type;
+    scwm_msg(ERR, "ScwmErrorHandler", "*** X11 error ***\nRequest %d, Error %d, EventType: %d",
+             event->request_code,
+             event->error_code,
+             last_event_type);
+  }
+#endif
+  return 0;
+}
+
+
+/*
+ * ScwmErrorHandler - handle internal X11 errors
+ * This just filters out a bunch, and passes the
+ * meanies off to ScwmReportX11Error
  */
 XErrorHandler 
 ScwmErrorHandler(Display * dpy, XErrorEvent * event)
@@ -1509,19 +1536,7 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
       (event->request_code == X_InstallColormap))
     return 0;
 
-
-#ifdef HAVE_LIBXMU
-  XmuPrintDefaultErrorMessage(dpy,event,stderr);
-#else
-  { /* scope */
-    extern int last_event_type;
-    scwm_msg(ERR, "ScwmErrorHandler", "*** X11 error ***\nRequest %d, Error %d, EventType: %d",
-             event->request_code,
-             event->error_code,
-             last_event_type);
-  }
-#endif
-  return 0;
+  return ScwmReportX11Error(dpy,event);
 }
 
 void 
