@@ -1,3 +1,9 @@
+Fri Jan 15 10:45:56 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added #t arg for WARP-TO-FIRST parameter to
+ 	popup-menu calls since that makes more sense for key-bound menu
+	popups.
+
 Sat Jan  9 11:31:52 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Turn off edge scrollso it works better with x2x;
