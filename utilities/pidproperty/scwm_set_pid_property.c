@@ -18,7 +18,7 @@ From Scwm, this is as easy as:
 !!!
  */
 
-/* #define DEBUG */
+#undef DEBUG
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -44,16 +44,24 @@ pid_t mypid;
 
 void
 _init() {
+#ifdef DEBUG
+  fprintf(stderr,"_init scwm_set_pid_property\n");
+#endif
   unsetenv("LD_PRELOAD");
-  dlhX11=dlopen("libX11.so",RTLD_GLOBAL);
+  dlhX11=dlopen("libX11.so",RTLD_GLOBAL | RTLD_NOW);
   pfXCreateWindow=dlsym(dlhX11,"XCreateWindow");
   pfXCreateSimpleWindow=dlsym(dlhX11,"XCreateSimpleWindow");
   mypid = getpid();
+#ifdef DEBUG
+  fprintf(stderr,"pid = %ld, XCreateWindow = %p, XCreateSimpleWindow = %p\n",
+          mypid, pfXCreateWindow, pfXCreateSimpleWindow);
+#endif
 }
 
 #ifndef __GNUC__
 #define __inline__ 
 #endif
+
 
 __inline__
 void SetXProperties(Display *display, Window w)
@@ -130,4 +138,4 @@ Window XCreateSimpleWindow(Display *display,
 
 
 /* Local variables: */
-/* compile-command: "gcc -shared -fpic -c scwm_set_pid_property.c; ld -shared scwm_set_pid_property.o -o scwm_set_pid_property.so  -ldl -L/usr/X11R6/lib -lX11" */
+/* compile-command: "gcc -shared -fpic -c scwm_set_pid_property.c; ld -shared scwm_set_pid_property.o -o scwm_set_pid_property.so -rdynamic  -ldl -L/usr/X11R6/lib -lX11" */
