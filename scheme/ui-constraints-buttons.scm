@@ -58,6 +58,11 @@
 (define animate-pixmaps-delay 1000)  ;; in ms
 (define animating? #f)
 
+;; GJB:FIXME:: something is screwey w.r.t the timer hooks
+;; during animation... I'm not sure what's going wrong exactly,
+;; but for now I need to leave this off to get reliable behaviour
+;; of the toolbar
+(define-public ui-constraints-buttons-animate-pixmaps #f)
 
 (define (animate-pixmaps button pixmap1 pixmap2)
   (define (show1) 
@@ -94,7 +99,7 @@
     (gtk-container-add button (if (and pixmap? pixmap)
 				  pixmap label))
     (if pixmap (gtk-widget-show pixmap) (gtk-widget-show label))
-    (if (and pixmap pixmap2) (animate-pixmaps button pixmap2 pixmap))
+    (if (and pixmap pixmap2 ui-constraints-buttons-animate-pixmaps) (animate-pixmaps button pixmap2 pixmap))
     (set-object-property! class 'gtk-button button)
     (gtk-signal-connect button "clicked"
 			(lambda ()

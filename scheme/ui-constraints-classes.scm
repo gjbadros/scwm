@@ -411,7 +411,7 @@ to make it resize around its center."
 (define-public uicc-halign
   (make-ui-constraint-class 
    "Horizontal alignment"
-   "Horizontal alignment.
+   "Horizontal alignment.  \n\
 Keep windows together using a horizontal connecting bar. \
 Also can be used to glue top and bottom edges of windows together."
    '(2 '+) cnctr-halign 
@@ -492,7 +492,7 @@ Also can be used to glue top and bottom edges of windows together."
 (define-public uicc-valign
   (make-ui-constraint-class 
    "Vertical alignment"
-   "Vertical alignment.
+   "Vertical alignment.    \n\
 Keep windows together using a vertical connecting bar. \
 Also can be used to glue left and right edges of windows together." 
    '(2 '+) cnctr-valign 
@@ -560,7 +560,7 @@ Also can be used to glue left and right edges of windows together."
 (define-public uicc-hsize
   (make-ui-constraint-class
    "Relative width"
-   "Relative width.
+   "Relative width.        \n\
 Resize the widths of windows together."
    '(2 '+) cnctr-hsize
    ui-cnctr-hsize draw-cn-hsize
@@ -622,7 +622,7 @@ Resize the widths of windows together."
 (define-public uicc-vsize
   (make-ui-constraint-class
    "Relative height"
-   "Relative height
+   "Relative height        \n\
 Resize the heights of windows together." 
    '(2 '+) cnctr-vsize
    ui-cnctr-vsize draw-cn-vsize
@@ -675,7 +675,7 @@ Resize the heights of windows together."
 (define-public uicc-minhsize
   (make-ui-constraint-class
    "Minimum width"
-   "Minimum width.
+   "Minimum width.         \n\
 Do not let window get narrower than it is."
    1 cnctr-minhsize
    ui-cnctr-minhsize draw-cn-minhsize
@@ -723,7 +723,7 @@ Do not let window get narrower than it is."
 (define-public uicc-minvsize
   (make-ui-constraint-class
    "Minimum height"
-   "Minimum height.
+   "Minimum height.        \n\
 Do not let window get shorter than it is." 
    1 cnctr-minvsize
    ui-cnctr-minvsize draw-cn-minvsize
@@ -776,7 +776,7 @@ Do not let window get shorter than it is."
 (define-public uicc-maxhsize
   (make-ui-constraint-class
    "Maximum width"
-   "Maximum width.
+   "Maximum width.         \n\
 Do not let window get wider than it is." 
    1 cnctr-maxhsize
    ui-cnctr-maxhsize draw-cn-maxhsize
@@ -824,7 +824,7 @@ Do not let window get wider than it is."
 (define-public uicc-maxvsize
   (make-ui-constraint-class
    "Maximum height"
-   "Maximum height.
+   "Maximum height.        \n\
 Do not let window get taller than it is." 
    1 cnctr-maxvsize
    ui-cnctr-maxvsize draw-cn-maxvsize
@@ -908,7 +908,8 @@ Do not let window get taller than it is."
   (make-ui-constraint-class
    "Strict relative position"
    "Strict relative position.
-Move windows around together." 
+Move windows around together.  Where you click in the windows
+determines what part of each window is connected to the other." 
    '(2 '+) cnctr-strict-relpos
    ui-cnctr-strict-relpos draw-cn-strict-relpos
    cl-is-constraint-satisfied?
@@ -978,7 +979,7 @@ Move windows around together."
 (define-public uicc-ka
   (make-ui-constraint-class 
    "Vertical separation"
-   "Vertical separation.
+   "Vertical separation.   \n\
 Keep one window wholly above another."
    2 cnctr-keep-above
    ui-cnctr-keep-above draw-cn-keep-above 
@@ -1034,7 +1035,7 @@ Keep one window wholly above another."
 (define-public uicc-klo
   (make-ui-constraint-class 
    "Horizontal separation"
-   "Horizontal separation.
+   "Horizontal separation. \n\
 Keep one window wholly to the left of another."
    2 cnctr-keep-to-left-of
    ui-cnctr-keep-to-left-of draw-cn-keep-to-left-of
