@@ -4,58 +4,65 @@ A menu-look that gives pie menus in a circular window.
 [From modules/pie-menus/draw-pie-menu.c:1357]
 
 
+configure-request-handled
+- 
+Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
+See also `X-ConfigureRequest-hook'. 
+[From src/events.c:2279]
+
+
 cursor-icon
 - 
 The cursor to use for icon windows, defaults to top_left_arrow. 
-[From scwm/cursor.c:316]
+[From src/cursor.c:318]
 
 
 cursor-kill
 - 
 The cursor to use for selecting a window to kill, defaults to pirate. 
-[From scwm/cursor.c:319]
+[From src/cursor.c:321]
 
 
 cursor-menu
 - 
 The cursor to use when in a menu, defaults to sb_left_arrow. 
-[From scwm/cursor.c:325]
+[From src/cursor.c:327]
 
 
 cursor-move
 - 
 The cursor to use for move actions, defaults to fleur. 
-[From scwm/cursor.c:313]
+[From src/cursor.c:315]
 
 
 cursor-select
 - 
 The cursor to use for selecting a window, defaults to dot. 
-[From scwm/cursor.c:322]
+[From src/cursor.c:324]
 
 
 cursor-set-focus
 - 
 The cursor to use for set focus actions, defaults to hand2. 
-[From scwm/cursor.c:310]
+[From src/cursor.c:312]
 
 
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:816]
+[From src/image.c:818]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:593]
+[From src/scwm.c:594]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:596]
+[From src/scwm.c:597]
 
 
 pie-menu-look
@@ -67,14 +74,14 @@ A menu-look that gives pie menus in a rectangular window
 scroll-region
 - 
 The number of pixels at the edge of the screen within which virtual scrolling will occur. 
-[From scwm/virtual.c:641]
+[From src/virtual.c:641]
 
 
 scwm-menu-look
 - 
 The default menu look for Scwm.
 Used as an argument to `set-menu-look'. 
-[From scwm/drawmenu.c:810]
+[From src/drawmenu.c:810]
 
 
 shaped-pie-menu-look

@@ -8,7 +8,7 @@ proper color object. Using the same color specifier string more than
 once is not inefficient, as caching ensures that color objects are
 shared.
 
-[From scwm/color.c:42]
+[From src/color.c:42]
 
 
 Creating themes
@@ -44,7 +44,7 @@ is confusing. Scwm will probably move to some way of making these
 options directly settable per-window at some point, especially if we
 can figure out a way to not increase the memory overhead much.
 
-[From scwm/decor.c:57]
+[From src/decor.c:57]
 
 
 Desks
@@ -61,7 +61,7 @@ will ever need. You can change the current desk with
 `current-desk'; and set the desk a window is on with
 `set-window-desk!'.
 
-[From scwm/deskpage.c:54]
+[From src/deskpage.c:54]
 
 
 Event Contexts
@@ -85,7 +85,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:727]
+[From src/binding.c:727]
 
 
 Face Flags
@@ -137,7 +137,7 @@ title and border faces, are indicated below.
 </tgroup>
 </table>
 
-[From scwm/face.c:493]
+[From src/face.c:493]
 
 
 Face Specification Flags
@@ -197,7 +197,7 @@ when tiled, which makes it fully destructive.
 </tgroup>
 </table>
 
-[From scwm/face.c:554]
+[From src/face.c:554]
 
 
 Faces
@@ -214,7 +214,7 @@ offered in the face primitives will rarely be needed; the
 (app scwm face) module provide a more convenient interface to this
 functionality.
 
-[From scwm/face.c:39]
+[From src/face.c:39]
 
 
 Focus Styles
@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3368]
+[From src/window.c:3339]
 
 
 Fonts
@@ -253,7 +253,7 @@ proper font object. Using the same font specifier string more than
 once is not inefficient, as caching ensures that font objects are
 shared.
 
-[From scwm/font.c:47]
+[From src/font.c:47]
 
 
 Hooks
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From scwm/callbacks.c:221]
+[From src/callbacks.c:294]
 
 
 Image Loaders
@@ -278,7 +278,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From scwm/image.c:264]
+[From src/image.c:263]
 
 
 Images
@@ -291,7 +291,7 @@ object by loading the image. Using the same image filename more than
 once is not inefficient, as caching ensures that image objects are
 shared.
 
-[From scwm/image.c:111]
+[From src/image.c:113]
 
 
 Input Hooks
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:825]
+[From src/callbacks.c:879]
 
 
 Key Specifier
@@ -324,7 +324,7 @@ When a key specifier is being used to indicate a binding, the
 additional special modifier *- may be used; it indicates that the key
 should be bound with every possible modifier combination, including
 possibly no modifiers. *- may not be combined with any other modifier.  
-[From scwm/binding.c:123]
+[From src/binding.c:123]
 
 
 Menu Looks
@@ -338,7 +338,7 @@ C modules.  For example, the xpm-menus module creates a variable
 using that code.  `copy-menu-look' can be used to copy a menu
 look and change some of its properties.
 
-[From scwm/menulook.c:79]
+[From src/menulook.c:77]
 
 
 Run-time command-line options
@@ -395,7 +395,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:655]
+[From src/scwm.c:656]
 
 
 SCWMEXEC Protocol
@@ -413,7 +413,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:567]
+[From src/events.c:583]
 
 
 Shadow and Highlight Factors
@@ -443,7 +443,7 @@ color brighter than the decoration color); the effect is to reverse
 "raised" and "sunken" elements throughout the user interface.)
 
 
-[From scwm/color.c:51]
+[From src/color.c:51]
 
 
 Sticky
@@ -454,7 +454,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2070]
+[From src/window.c:2050]
 
 
 Themes
@@ -477,7 +477,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:681]
+[From src/callbacks.c:735]
 
 
 Viewports
@@ -492,7 +492,7 @@ coordinate is relative to the current viewport (i.e., it is the
 coordinate you actually see on the screen).  A virtual coordinate
 is relative to the origin of the current desk.
 
-[From scwm/deskpage.c:91]
+[From src/deskpage.c:91]
 
 
 Window Context
@@ -509,7 +509,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:955]
+[From src/window.c:957]
 
 
 Window Style
@@ -574,11 +574,11 @@ other-proc (window-style) from scheme/style.scm:279
 other-hint-proc (window-hint) from scheme/style.scm:281
 use-theme (window-style) from scheme/themes.scm:48
 winlist-skip (boolean-style) from scheme/winlist.scm:114
-circulate-skip (boolean-style) from scheme/winlist.scm:312
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:313
-start-maximized (window-style) from scheme/winops.scm:157
+circulate-skip (boolean-style) from scheme/winlist.scm:314
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:315
+start-maximized (window-style) from scheme/winops.scm:158
 
-[From scwm/face.c:542]
+[From src/face.c:542]
 
 
 Windows
@@ -589,7 +589,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:427]
+[From src/window.c:427]
 
 
 X atoms
@@ -602,7 +602,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From scwm/xproperty.c:365]
+[From src/xproperty.c:365]
 
 
 X Properties
@@ -624,6 +624,6 @@ he likes, including making up his own for personal use.
   This is possible through the low-level X property interface. Scwm has
 one procedure to get, and set them, respectively.
  
-[From scwm/xproperty.c:60]
+[From src/xproperty.c:60]
 
 
