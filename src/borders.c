@@ -175,7 +175,7 @@ static GC TransMaskGC;
 static void 
 DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
-	   Boolean inverted, int stateflags)
+	   Bool inverted, int stateflags)
 #define FUNC_NAME "DrawButton"
 {
   register int type = bf->style & ButtonFaceTypeMask;

@@ -109,7 +109,7 @@ unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
 extern int menuFromFrameOrWindowOrTitlebar;
 
-extern Boolean debugging;
+extern Bool debugging;
 
 int Context = C_NO_CONTEXT;	/* current button press context */
 int Button = 0;

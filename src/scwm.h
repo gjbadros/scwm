@@ -275,7 +275,7 @@ extern struct ScwmWindow *FocusOnNextTimeStamp;
 
 extern XContext ScwmContext;
 
-extern Boolean ShapesSupported;
+extern Bool ShapesSupported;
 
 
 extern Window JunkChild, JunkRoot;

@@ -148,7 +148,7 @@ int JunkX = 0, JunkY = 0;
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
-Boolean debugging = False, PPosOverride = False, Blackout = False;
+Bool debugging = False, PPosOverride = False, Blackout = False;
 
 char **g_argv;
 int g_argc;
@@ -168,7 +168,7 @@ static char l_g_bits[] =
 #define s_g_height 4
 
 int ShapeEventBase, ShapeErrorBase;
-Boolean ShapesSupported = False;
+Bool ShapesSupported = False;
 
 
 long isIconicState = 0;

@@ -243,7 +243,7 @@ If the X property could be found, a list "(value type format)" is returned.
 "value" is a string, if "format" is 8, or a vector of integers otherwise. */
 #define FUNC_NAME s_X_property_get
 {
-  Boolean del;
+  Bool del;
   char *str;
   unsigned char *val;
   INT16 *v16;
