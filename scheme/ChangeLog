@@ -1,3 +1,17 @@
+Thu Nov 11 14:57:48 1999    <gjb@cs.washington.edu>
+
+	* winops.scm: Added missing use of animation module.
+
+	* winops-menu.scm: Use image-left for menu-window-shove, and mark
+	it as a #:submenu instead of an action.
+
+	* snap-constraints.scm: Turn on constraint solver if necessary
+ 	when `snap-initialize' is executed.
+
+	* send-string.scm: Use `send-key', not `send-key-press'.
+
+	* fvwm-module.scm: Added `fvwm2-pager-window'
+
 Wed Oct 27 09:02:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* prompt-binding.scm: Remove incorrect mention of `getter' from
