@@ -88,7 +88,7 @@ do { \
   SET_BIT_FOR(fSuppressIcon);
   SET_BIT_FOR(fNoIconTitle);
   SET_BIT_FOR(fLenience);
-  SET_BIT_FOR(fSticky);
+  SET_BIT_FOR(fStickyIcon);
   SET_BIT_FOR_OBJ_PROP("circulate-skip-icon");
   SET_BIT_FOR_OBJ_PROP("circulate-skip");
   SET_BIT_FOR(fClickToFocus);
@@ -104,7 +104,7 @@ do { \
   SET_BIT_FOR(fIconOurs);
   SET_BIT_FOR(fPixmapOurs);
   SET_BIT_FOR(fShapedIcon);
-  SET_BIT_FOR_OBJ_PROP("maximize");
+  SET_BIT_FOR_OBJ_PROP("maximized");
   SET_BIT_FOR(fDoesWmTakeFocus);
   SET_BIT_FOR(fDoesWmDeleteWindow);
   SET_BIT_FOR(fIconMoved);
@@ -118,6 +118,50 @@ do { \
 
   assert(i == 32);
   return flags;
+}
+
+void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
+{
+#define UPDATE_FLAG(f) do { psw->f = flags & 1; flags>>=1; } while(0)
+#define UPDATE_OBJ_PROP(p) \
+	do { scm_set_object_property_x(psw->schwin, gh_symbol2scm(p), \
+				       gh_bool2scm(flags & 1)); \
+	     flags>>=1; } while(0)
+
+  UPDATE_FLAG(fStartIconic);			/* 00000001 */
+  UPDATE_FLAG(fOnTop);
+  UPDATE_FLAG(fSticky);
+  UPDATE_OBJ_PROP("winlist-skip");
+  UPDATE_FLAG(fSuppressIcon);			/* 00000010 */
+  UPDATE_FLAG(fNoIconTitle);
+  UPDATE_FLAG(fLenience);
+  UPDATE_FLAG(fStickyIcon);
+  UPDATE_OBJ_PROP("circulate-skip-icon");	/* 00000100 */
+  UPDATE_OBJ_PROP("circulate-skip");
+  UPDATE_FLAG(fClickToFocus);
+  UPDATE_FLAG(fSloppyFocus);
+  UPDATE_FLAG(fShowOnMap);			/* 00001000 */
+  UPDATE_FLAG(fBorder);
+  UPDATE_FLAG(fTitle);
+  UPDATE_FLAG(fMapped);
+  UPDATE_FLAG(fIconified);			/* 00010000 */
+  UPDATE_FLAG(fTransient);
+  UPDATE_FLAG(fRaised);
+  UPDATE_FLAG(fVisible);
+  UPDATE_FLAG(fIconOurs);			/* 00100000 */
+  UPDATE_FLAG(fPixmapOurs);
+  UPDATE_FLAG(fShapedIcon);
+  UPDATE_OBJ_PROP("maximized");
+  UPDATE_FLAG(fDoesWmTakeFocus);		/* 01000000 */
+  UPDATE_FLAG(fDoesWmDeleteWindow);
+  UPDATE_FLAG(fIconMoved);
+  UPDATE_FLAG(fIconUnmapped);
+  UPDATE_FLAG(fMapPending);			/* 10000000 */
+  UPDATE_FLAG(fHintOverride);
+  UPDATE_FLAG(fMWMButtons);
+  UPDATE_FLAG(fMWMBorders);
+#undef UPDATE_FLAG
+#undef UPDATE_OBJ_PROP
 }
 
 

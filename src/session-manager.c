@@ -39,6 +39,9 @@
 #include <string.h>
 #include <netinet/in.h>
 
+/* a serial number uniquely identifying the state file's version */
+#define STATE_FILE_SERIAL sizeof(SMWindowData)
+
 /* encapsulates state information of a window that is saved across sessions */
 typedef struct SMWindowData_ {
   struct SMWindowData_ *next;
@@ -46,6 +49,8 @@ typedef struct SMWindowData_ {
   char *name;
   XClassHint class;
   INT32 x, y, w, h;
+  INT32 desk;
+  CARD32 flags;
 } SMWindowData;
 
 SMWindowData *SMData;		/* the head of a list of SMWindowData el's */
@@ -141,6 +146,8 @@ static void writeWindow(FILE *fd, ScwmWindow *psw)
     writeI32(fd, FRAME_WIDTH(psw) - psw->xboundary_width*2);
     writeI32(fd, FRAME_HEIGHT(psw)
 	     - psw->title_height - psw->boundary_width*2);
+    writeI32(fd, psw->Desk);
+    writeI32(fd, FlagsBitsFromSw(psw));
     XFree(clientId);
   }
 }
@@ -160,6 +167,8 @@ static SMWindowData *readWindow(FILE *fd)
   d->y = readI32(fd);
   d->w = readI32(fd);
   d->h = readI32(fd);
+  d->desk = readI32(fd);
+  d->flags = readI32(fd);
   if (feof(fd)) {
     FREE(d);
     d = NULL;
@@ -189,6 +198,11 @@ void restoreWindowState(ScwmWindow *psw)
     psw->attr.y = d->y;
     psw->attr.width = d->w;
     psw->attr.height = d->h;
+    psw->Desk = d->desk;
+    PswUpdateFlags(psw, d->flags);
+    if (psw->fIconified)
+      psw->fStartIconic = True;
+    psw->fStartsOnDesk = True;
     *p = d->next;		/* remove from list */
     FREE(d);
   }
@@ -209,54 +223,52 @@ static char *statefile()
 /* save the state of all windows */
 static void saveYourself2(SmcConn conn, SmPointer client_data)
 {
-#define FUNC_NAME "saveYourself2"
   ScwmWindow *psw;
   char *savename = statefile();
   FILE *save;
   int successful = True;
 
-  scwm_msg(DBG, FUNC_NAME, "Dumping to `%s'", savename);
+  scwm_msg(DBG, __FUNCTION__, "Dumping to `%s'", savename);
   if ((save = fopen(savename, "w")) != NULL) {
+    writeI32(save, STATE_FILE_SERIAL);
     for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
       writeWindow(save, psw);
     }
     if (fclose(save) < 0) { 
-      scwm_msg(WARN, FUNC_NAME, "Could not finish writing `%s' (%s)",
+      scwm_msg(WARN, __FUNCTION__, "Could not finish writing `%s' (%s)",
 	       savename, strerror(errno));
       successful = False;
     }
   } else {
-    scwm_msg(WARN, FUNC_NAME, "Could not write `%s' (%s)",
+    scwm_msg(WARN, __FUNCTION__, "Could not write `%s' (%s)",
 	     savename, strerror(errno));
     successful = False;
   }
   SmcSaveYourselfDone(conn, successful);
   FREE(savename);
-#undef FUNC_NAME
 }
 
 /* load a number of window states to be used for restarted clients */
 static void loadMyself()
 {
-#define FUNC_NAME "loadMyself"
   SMWindowData *d;
   char *loadname = statefile();
   FILE *load;
 
   SMData = NULL;
-  scwm_msg(DBG, FUNC_NAME, "Restoring from `%s'", loadname);
+  scwm_msg(DBG, __FUNCTION__, "Restoring from `%s'", loadname);
   if ((load = fopen(loadname, "r")) != NULL) {
-    while ((d = readWindow(load)) != NULL) {
-      d->next = SMData;
-      SMData = d;
-    }
+    if (readI32(load) == STATE_FILE_SERIAL)
+      while ((d = readWindow(load)) != NULL) {
+	d->next = SMData;
+	SMData = d;
+      }
     fclose(load);
   } else {
-    scwm_msg(WARN, FUNC_NAME, "Could not read `%s' (%s)",
+    scwm_msg(WARN, __FUNCTION__, "Could not read `%s' (%s)",
 	     loadname, strerror(errno));
   }
   FREE(loadname);
-#undef FUNC_NAME
 }
 
 static
@@ -344,7 +356,7 @@ static void iceWatchFD(IceConn conn, IcePointer client_data,
 {
   if (opening) {
     if (IceSMfd != -1) { /* shouldn't happen */
-      scwm_msg(WARN,"iceWatchFD",
+      scwm_msg(WARN, __FUNCTION__,
 	       "TOO MANY ICE CONNECTIONS -- not supported\n");
     } else {
       IceSMfd = IceConnectionNumber(conn);
@@ -368,7 +380,7 @@ void initSM()
     loadMyself();
 
   if (IceAddConnectionWatch(&iceWatchFD, NULL) == 0) {
-    scwm_msg(WARN,"initSM","IceAddConnectionWatch failed.");
+    scwm_msg(WARN, __FUNCTION__ ,"IceAddConnectionWatch failed.");
     return ;
   }
 
@@ -392,8 +404,8 @@ void initSM()
                                   SmcId, &SmcNewId,
                                   sizeof(error_str), error_str)) == NULL)
     {
-      scwm_msg(WARN,"initSM","session manager initialization failed: %s\n",
-	       error_str);
+      scwm_msg(WARN, __FUNCTION__,
+	       "session manager initialization failed: %s\n", error_str);
       return ;
     } 
   SmcId = SmcNewId;

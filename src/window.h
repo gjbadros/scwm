@@ -249,6 +249,7 @@ void CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 void CopySetAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 void CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 unsigned long FlagsBitsFromSw(ScwmWindow *psw);
+void PswUpdateFlags(ScwmWindow *psw, unsigned long flags);
 
 
 #define SHOW_TITLE_P(psw) ((psw)->fTitle && (!(psw)->fTransient || (psw)->fDecorateTransient))
