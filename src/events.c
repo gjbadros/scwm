@@ -447,8 +447,8 @@ HandleFocusIn()
     if (w != Scr.NoFocusWin) {
       Scr.UnknownWinFocused = w;
     } else {
-      SetBorder(Scr.Hilite, False, True, True, None);
       call1_hooks(window_focus_change_hook,SCM_BOOL_F);
+      SetBorder(Scr.Hilite, False, True, True, None);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
 		XCOLOR(Scr.DefaultDecor.HiColors.fg),
 		XCOLOR(Scr.DefaultDecor.HiColors.bg),
@@ -462,8 +462,8 @@ HandleFocusIn()
       }
     }
   } else if (pswCurrent != Scr.Hilite) {
-    SetBorder(pswCurrent, True, True, True, None);
     call1_hooks(window_focus_change_hook,pswCurrent->schwin);
+    SetBorder(pswCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
 	      pswCurrent->frame, (unsigned long) pswCurrent,
 	      XCOLOR(GET_DECOR(pswCurrent, HiColors.fg)),

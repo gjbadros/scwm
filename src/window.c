@@ -3136,6 +3136,7 @@ specified. */
 
   if (!psw->fTitle) {
     psw->fTitle = True;
+    SetBorderX(psw, (psw == Scr.Hilite), True, True, None, True);
     set_window_internal_title_height(psw, fl->TitleHeight, fInPlace);
   }
   return SCM_UNSPECIFIED;
