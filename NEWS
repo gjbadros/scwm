@@ -88,6 +88,13 @@ numerous scwmdoc script fixes and improvements.
 * Better xclients script support
 ** `run-dot-xclients-at-startup'
 
+* Menuitems can have fg/bg colors and fonts set separately
+** `set-menuitem-colors!', `set-menuitem-font!' setters
+** `menuitem-colors', `menuitem-font' getters
+** `menuitem?'
+
+* `menu-title' is now a procedure that returns an item using a different font
+
 * Added menuitem option #:submenu (like #:action) that forces an item to 
 be interpreted as a menu item; e.g., lambdas can be used here, they
 will be evaluated and then the result is expected to be a menu --
@@ -97,11 +104,6 @@ permits very dynamic menus.
 
 * Added #:by-resource window-list menu option for more intelligent
 splitting of really long window-list menus
-
-* Menuitems can have fg/bg colors and fonts set separately
-** `set-menuitem-colors!', `set-menuitem-font!' setters
-** `menuitem-colors', `menuitem-font' getters
-** `menuitem?'
 
 * Added support for handling Scwm events w/o returning to the main loop
 ** `handle-pending-events'
