@@ -302,8 +302,10 @@ Used in `enable-gnome-hints'."
   (if (nonzero? (logand mask WIN_STATE_SHADED))
       (if (nonzero? (logand new-state WIN_STATE_SHADED))
 	  (if (not (window-shaded? win))
-              (if *gnome-shade-animated*
-                  (animated-window-shade win) (window-shade win)))
+	      (if (equal? (window-class win) "Panel")
+		  (write-line "FIXME: *not* window-shading the panel")
+		  (if *gnome-shade-animated*
+		      (animated-window-shade win) (window-shade win))))
 	  (if (window-shaded? win)
               (if *gnome-shade-animated*
                   (animated-window-unshade win) (window-unshade win)))))
