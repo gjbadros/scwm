@@ -141,7 +141,7 @@ FUNCS should be a list of strings."
 ;     ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
 ; the factor that is used by menus to generate\\n\
 ; the relief \"highlight\" color for the regular and highlight background."
-;      set-menu-shadow-factor! menu-shadow-factor)
+;      set-default-menu-shadow-factor! menu-shadow-factor)
 ;     ("Highlight Factor" "Highlight Factor -\\n\
 ; the factor that is used by windows with the current decor to generate\\n\
 ; the relief \"shadow\" color for the regular and highlight background."
@@ -149,7 +149,7 @@ FUNCS should be a list of strings."
 ;     ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
 ; the factor that is used by menus to generate\\n\
 ; the relief \"shadow\" color for the regular and h ilight background."
-;      set-menu-highlight-factor! menu-highlight-factor)
+;      set-default-menu-highlight-factor! menu-highlight-factor)
 ;     ("XTerm Command" "The command used for starting XTerm,\\n\
 ; \(like `xterm' or `rxvt')." xterm-command #f)
 ;     ;; (list "Icon Font" "The font for icons" set-icon-font! icon-font)

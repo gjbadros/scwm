@@ -160,23 +160,23 @@ Returns #f otherwise.  See `cached-program-exists?' for a more efficient
 version of this."
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
-(define-public (set-menu-foreground! fg)
+(define-public (set-default-menu-foreground! fg)
   "Set the default color for menu text to FG."
   (set! menu-text-color (if (color? fg) fg (make-color fg))))
-(define-public (set-menu-background! bg)
+(define-public (set-default-menu-background! bg)
   "Set the default background for menus to BG."
   (set! menu-bg-color (if (color? bg) bg (make-color bg)))
   (if (not menu-side-bg-color-set) (set! menu-side-bg-color menu-bg-color)))
-(define-public (set-menu-stipple! stipple)
+(define-public (set-default-menu-stipple! stipple)
   "Set the default color for stippled (inactive) menu text to STIPPLE."
   (set! menu-stipple-color (if (color? stipple) stipple (make-color stipple))))
-(define-public (set-menu-font! font)
+(define-public (set-default-menu-font! font)
   "Set the default font for menu text to FONT."
   (set! menu-font (if (font? font) font (make-font font))))
-(define-public (set-menu-side-image! image)
+(define-public (set-default-menu-side-image! image)
   "Set the default menu side image to IMAGE."
   (set! menu-side-image (if (image? image) image (make-image image))))
-(define-public (set-menu-side-background! bg)
+(define-public (set-default-menu-side-background! bg)
   "Set the default background for the menu side image to BG.
 If BG is #f, use the default menu background" 
   (cond (bg (set! menu-side-bg-color 
@@ -184,12 +184,12 @@ If BG is #f, use the default menu background"
 	    (set! menu-side-bg-color-set #t))
 	(else (set! menu-side-bg-color menu-bg-color)
 	      (set! menu-side-bg-color-set #f))))
-(define-public (set-menu-bg-image! image)
+(define-public (set-default-menu-bg-image! image)
   "Set the default menu background image to IMAGE."
   (set! menu-bg-image (if (image? image) image (make-image image))))
-(define-public (set-menu-look! look)
+(define-public (set-default-menu-look! look)
   "Set the default menu look to LOOK."
-  (if (menulook? look) (set! menu-look look) (error "bad look")))
+  (if (menu-look? look) (set! menu-look look) (error "bad look")))
 
 ;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
 ;;  (set-window-colors! fg #f w))
@@ -282,9 +282,6 @@ negative, and Y pixels vertically, down if positive, up if negative."
   (let ((pos (viewport-position)))
     (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
-;; FIXJTL: if everybody uses this interface, remove the set-menu-*
-;; functions, set the variables directly here, and free those names
-;; for use for setting a single menu's attributes
 ;; FIXJTL: image-align - to work like others, C code has to dereference
 ;; symbols that aren't one of 'top, 'bottom or 'center
 (define*-public (menu-style #&key
@@ -296,14 +293,14 @@ negative, and Y pixels vertically, down if positive, up if negative."
 		     (side-image #f) (side-bg 'unset))
   "Set various properites for the menus.
 See `make-menu' for options on creation of individual menus."
-  (if (or fg foreground) (set-menu-foreground! (or fg foreground)))
-  (if (or bg background) (set-menu-background! (or bg background)))
-  (if stipple (set-menu-stipple! stipple))
-  (if font (set-menu-font! font))
-  (if look (set-menu-look! look))
-  (if side-image (set-menu-side-image! side-image))
-  (if (not (eq? side-bg 'unset)) (set-menu-side-background! side-bg))
-  (if bg-image (set-menu-bg-image! bg-image)))
+  (if (or fg foreground) (set-default-menu-foreground! (or fg foreground)))
+  (if (or bg background) (set-default-menu-background! (or bg background)))
+  (if stipple (set-default-menu-stipple! stipple))
+  (if font (set-default-menu-font! font))
+  (if look (set-default-menu-look! look))
+  (if side-image (set-default-menu-side-image! side-image))
+  (if (not (eq? side-bg 'unset)) (set-default-menu-side-background! side-bg))
+  (if bg-image (set-default-menu-bg-image! bg-image)))
 
 ;; A subset of the real title-style which is here so people don't have
 ;; to load all of face.scm to get at it; will probably go away in the
@@ -424,7 +421,7 @@ specific to the menu look used for this menu."
 			 extra)))
     (and (bound? popup-delay) popup-delay (set-menu-popup-delay! menu popup-delay))
     (and (bound? hover-delay) hover-delay (set-menu-hover-delay! menu hover-delay))
-    (set-menu-menu-look! menu look)
+    (set-menu-look! menu look)
     menu))
 
 (define-public (popup-menu-from-decoration menu win button-number)
