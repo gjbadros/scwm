@@ -1,3 +1,11 @@
+1999-01-27  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* session-manager.c (SavePhase): New variable.
+	(saveYourself): Enter phase 1.
+	(saveYourself2): Go from phase 1 to phase 2 on entry, reset phase
+	on exit.
+	(shutdownCancelled): Cancel save if phase 2 was not reached.
+
 Tue Jan 26 15:34:17 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* menulook.c, menu.c, ICCCM.c: Changed some doc comments.
