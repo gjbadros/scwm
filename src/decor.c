@@ -29,6 +29,40 @@
 #include "dmalloc.h"
 #endif
 
+/*
+ *  DestroyScwmDecor -- frees all memory assocated with an ScwmDecor
+ *	structure, but does not free the ScwmDecor itself
+ */
+static void 
+DestroyScwmDecor(ScwmDecor * fl)
+{
+  if (fl->tag) {
+    FREE(fl->tag);
+    fl->tag = NULL;
+  }
+  if (fl->HiReliefGC != NULL) {
+    XFreeGC(dpy, fl->HiReliefGC);
+    fl->HiReliefGC = NULL;
+  }
+  if (fl->HiShadowGC != NULL) {
+    XFreeGC(dpy, fl->HiShadowGC);
+    fl->HiShadowGC = NULL;
+  }
+}
+
+/*
+ *  InitScwmDecor -- initializes an ScwmDecor structure to defaults
+ */
+static void 
+InitScwmDecor(ScwmDecor * fl)
+{
+  fl->HiReliefGC = NULL;
+  fl->HiShadowGC = NULL;
+
+  /*  fl->tag = NULL; */
+  fl->next = NULL;
+}
+
 /**CONCEPT: Decors
 
   Decors are a hack. In the original Fvwm code, there were many

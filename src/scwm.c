@@ -120,7 +120,6 @@ static void newsegvhandler(int sig);
 void CreateCursors(void);
 void ChildDied(int nonsense);
 void SetMWM_INFO(Window window);
-void SetRCDefaults(void);
 void StartupStuff(void);
 void usage(void);
 
@@ -166,13 +165,193 @@ void scwm_main(int, char **);
 
 typedef void (*main_prog_t) (int argc, char **argv);
 
-/***********************************************************************
- *
+
+
+
+
+/* FIXGJB: leading underscores are reserved for the compiler;
+   these should be changed */
+Atom XA_MIT_PRIORITY_COLORS;
+Atom XA_WM_CHANGE_STATE;
+Atom XA_WM_STATE;
+Atom XA_WM_COLORMAP_WINDOWS;
+extern Atom XA_WM_PROTOCOLS;
+Atom XA_WM_TAKE_FOCUS;
+Atom XA_WM_DELETE_WINDOW;
+Atom XA_WM_DESKTOP;
+Atom XA_MwmAtom;
+Atom XA_MOTIF_WM;
+
+Atom XA_OL_WIN_ATTR;
+Atom XA_OL_WT_BASE;
+Atom XA_OL_WT_CMD;
+Atom XA_OL_WT_HELP;
+Atom XA_OL_WT_NOTICE;
+Atom XA_OL_WT_OTHER;
+Atom XA_OL_DECOR_ADD;
+Atom XA_OL_DECOR_DEL;
+Atom XA_OL_DECOR_CLOSE;
+Atom XA_OL_DECOR_RESIZE;
+Atom XA_OL_DECOR_HEADER;
+Atom XA_OL_DECOR_ICON_NAME;
+Atom XA_SCWM_EXECUTE;
+Atom XA_SCWM_RESULT;
+Atom XA_SCWMEXEC_LISTENER;
+Atom XA_SCWMEXEC_REQWIN;
+Atom XA_SCWMEXEC_REQUEST;
+Atom XA_SCWMEXEC_REPLY;
+Atom XA_SCWMEXEC_NOTIFY;
+Atom XA_SCWMEXEC_OUTPUT;
+Atom XA_SCWMEXEC_ERROR;
+
+
+static void 
+InternUsefulAtoms(void)
+{
+  /* 
+   * Create priority colors if necessary.
+   */
+  XA_MIT_PRIORITY_COLORS = XInternAtom(dpy, "_MIT_PRIORITY_COLORS", False);
+  XA_WM_CHANGE_STATE = XInternAtom(dpy, "WM_CHANGE_STATE", False);
+  XA_WM_STATE = XInternAtom(dpy, "WM_STATE", False);
+  XA_WM_COLORMAP_WINDOWS = XInternAtom(dpy, "WM_COLORMAP_WINDOWS", False);
+  XA_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
+  XA_WM_TAKE_FOCUS = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
+  XA_WM_DELETE_WINDOW = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
+  XA_WM_DESKTOP = XInternAtom(dpy, "WM_DESKTOP", False);
+  XA_MwmAtom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
+  XA_MOTIF_WM = XInternAtom(dpy, "_MOTIF_WM_INFO", False);
+
+  XA_OL_WIN_ATTR = XInternAtom(dpy, "_OL_WIN_ATTR", False);
+  XA_OL_WT_BASE = XInternAtom(dpy, "_OL_WT_BASE", False);
+  XA_OL_WT_CMD = XInternAtom(dpy, "_OL_WT_CMD", False);
+  XA_OL_WT_HELP = XInternAtom(dpy, "_OL_WT_HELP", False);
+  XA_OL_WT_NOTICE = XInternAtom(dpy, "_OL_WT_NOTICE", False);
+  XA_OL_WT_OTHER = XInternAtom(dpy, "_OL_WT_OTHER", False);
+  XA_OL_DECOR_ADD = XInternAtom(dpy, "_OL_DECOR_ADD", False);
+  XA_OL_DECOR_DEL = XInternAtom(dpy, "_OL_DECOR_DEL", False);
+  XA_OL_DECOR_CLOSE = XInternAtom(dpy, "_OL_DECOR_CLOSE", False);
+  XA_OL_DECOR_RESIZE = XInternAtom(dpy, "_OL_DECOR_RESIZE", False);
+  XA_OL_DECOR_HEADER = XInternAtom(dpy, "_OL_DECOR_HEADER", False);
+  XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
+  XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
+  XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
+  XA_SCWMEXEC_LISTENER=XInternAtom(dpy,"SCWMEXEC_LISTENER", False);
+  XA_SCWMEXEC_REQWIN=XInternAtom(dpy,"SCWMEXEC_REQWIN", False);
+  XA_SCWMEXEC_REQUEST=XInternAtom(dpy,"SCWMEXEC_REQUEST", False);
+  XA_SCWMEXEC_REPLY=XInternAtom(dpy,"SCWMEXEC_REPLY", False);
+  XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
+  XA_SCWMEXEC_OUTPUT=XInternAtom(dpy,"SCWMEXEC_OUTPUT", False);
+  XA_SCWMEXEC_ERROR=XInternAtom(dpy,"SCWMEXEC_ERROR", False);
+
+  return;
+}
+
+/*
+ * InitVariables - initialize scwm variables
+ */
+static void 
+InitVariables(void)
+{
+  ScwmContext = XUniqueContext();
+  MenuContext = XUniqueContext();
+
+  /* initialize some lists */
+  Scr.AllBindings = NULL;
+  Scr.DefaultIcon = NULL;
+
+  /* create graphics contexts */
+  CreateGCs();
+
+  Scr.d_depth = DefaultDepth(dpy, Scr.screen);
+  Scr.ScwmRoot.w = Scr.Root;
+  Scr.ScwmRoot.next = 0;
+  XGetWindowAttributes(dpy, Scr.Root, &(Scr.ScwmRoot.attr));
+  Scr.root_pushes = 0;
+  Scr.pushed_window = &Scr.ScwmRoot;
+  Scr.ScwmRoot.number_cmap_windows = 0;
+
+
+  Scr.MyDisplayWidth = DisplayWidth(dpy, Scr.screen);
+  Scr.MyDisplayHeight = DisplayHeight(dpy, Scr.screen);
+
+  Scr.NoBoundaryWidth = 1;
+  Scr.BoundaryWidth = BOUNDARY_WIDTH;
+  Scr.CornerWidth = CORNER_WIDTH;
+  Scr.Hilite = NULL;
+  Scr.Focus = NULL;
+  Scr.Ungrabbed = NULL;
+
+  Scr.menu_font = SCM_UNDEFINED;
+  Scr.icon_font = SCM_UNDEFINED;
+  Scr.MenuColors.bg = SCM_UNDEFINED;
+  Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
+
+
+#ifndef NON_VIRTUAL
+  Scr.VxMax = 2 * Scr.MyDisplayWidth;
+  Scr.VyMax = 2 * Scr.MyDisplayHeight;
+#else
+  Scr.VxMax = 0;
+  Scr.VyMax = 0;
+#endif
+  Scr.Vx = Scr.Vy = 0;
+
+  Scr.SizeWindow = None;
+
+  /* Sets the current desktop number to zero */
+  /* Multiple desks are available even in non-virtual
+   * compilations */
+  {
+    Atom atype;
+    int aformat;
+    unsigned long nitems, bytes_remain;
+    unsigned char *prop;
+
+    Scr.CurrentDesk = 0;
+    if ((XGetWindowProperty(dpy, Scr.Root, XA_WM_DESKTOP, 0L, 1L, True,
+			    XA_WM_DESKTOP, &atype, &aformat, &nitems,
+			    &bytes_remain, &prop)) == Success) {
+      if (prop != NULL) {
+	Restarting = True;
+	Scr.CurrentDesk = *(unsigned long *) prop;
+      }
+    }
+  }
+
+  Scr.EdgeScrollX = Scr.EdgeScrollY = 100;
+  Scr.ScrollResistance = Scr.MoveResistance = 0;
+  Scr.OpaqueSize = 5;
+  Scr.ClickTime = 150;
+  Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
+
+  /* set major operating modes */
+  Scr.NumBoxes = 0;
+
+  Scr.randomx = Scr.randomy = 0;
+  Scr.buttons2grab = 7;
+
+  decor2scm(&Scr.DefaultDecor);
+  /* MSFIX: why does decor2scm not do the DECORREF? */
+  DECORREF(Scr.DefaultDecor.scmdecor);
+
+  Scr.DefaultDecor.tag = "default";
+
+  Scr.SmartPlacementIsClever = False;
+  Scr.ClickToFocusPassesClick = True;
+  Scr.ClickToFocusRaises = True;
+  Scr.MouseFocusClickRaises = False;
+
+  init_image_colormap();
+  return;
+}
+
+
+
+/*
  *  Procedures:
  *	scwm_gh_enter, scwm_gh_launch_pad - Replacement for gh_enter that 
  *      guarantees loading of boot-9.scm
- *
- ***********************************************************************
  */
 
 static void 
@@ -192,12 +371,9 @@ scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog)
   /* never returns */
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	main - Enters scwm_main using the gh_enter convention.
- *
- ***********************************************************************
  */
 
 int
@@ -206,7 +382,6 @@ main(int argc, char **argv)
   scwm_gh_enter(argc, argv, scwm_main);
   return 0;
 }
-
 
 
 #ifdef USE_CASSOWARY
@@ -222,8 +397,6 @@ scwm_main(int argc, char **argv)
 {
   unsigned long valuemask;	/* mask for create windows */
   XSetWindowAttributes attributes;	/* attributes for create windows */
-  void InternUsefulAtoms(void);
-  void InitVariables(void);
   int i;
   extern int x_fd;
   int len;
@@ -504,7 +677,7 @@ scwm_main(int argc, char **argv)
   init_pointer_mapping();
   
   /* Make sure property priority colors is empty */
-  XChangeProperty(dpy, Scr.Root, _XA_MIT_PRIORITY_COLORS,
+  XChangeProperty(dpy, Scr.Root, XA_MIT_PRIORITY_COLORS,
 		  XA_CARDINAL, 32, PropModeReplace, NULL, 0);
   
   /* Announce support for scwmexec protocol. */
@@ -542,7 +715,12 @@ scwm_main(int argc, char **argv)
   
   DBUG("main", "Setting up rc file defaults...");
 
-  SetRCDefaults();
+  /* the compiled-in .scwmrc comes from minimal.scm,
+     built into init_scheme_string.c by the make file */
+  { /* scope */
+  extern char *init_scheme_string;
+  scwm_safe_eval_str(init_scheme_string);
+  } /* end scope */
 
   DBUG("main", "Running config_commands...");
   
@@ -671,14 +849,53 @@ scwm_main(int argc, char **argv)
 
 
 
-/***********************************************************************
+/*
+ * MappedNotOverride - checks to see if we should really
+ *		put a scwm frame on the window
  *
+ *  Returned Value:
+ *	True	- go ahead and frame the window
+ *	False	- don't frame the window
+ *
+ *  Inputs:
+ *	w	- the window to check
+ */
+
+static int 
+MappedNotOverride(Window w)
+{
+  XWindowAttributes wa;
+  Atom atype;
+  int aformat;
+  unsigned long nitems, bytes_remain;
+  unsigned char *prop;
+
+  isIconicState = DontCareState;
+
+  if ((w == Scr.NoFocusWin) || (!XGetWindowAttributes(dpy, w, &wa)))
+    return False;
+
+  if (XGetWindowProperty(dpy, w, XA_WM_STATE, 0L, 3L, False, XA_WM_STATE,
+	      &atype, &aformat, &nitems, &bytes_remain, &prop) == Success) {
+    if (prop != NULL) {
+      isIconicState = *(long *) prop;
+      XFree(prop);
+    }
+  }
+  if (wa.override_redirect == True) {
+    XSelectInput(dpy, w, FocusChangeMask);
+  }
+  return (((isIconicState == IconicState) || (wa.map_state != IsUnmapped)) &&
+	  (wa.override_redirect != True));
+}
+
+
+/*
  *  Procedure:
  *      CaptureAllWindows
  *
  *   Decorates all windows at start-up and during recaptures
- *
- ***********************************************************************/
+ */
  
 void 
 CaptureAllWindows(void)
@@ -741,8 +958,8 @@ CaptureAllWindows(void)
       psw = PswFromWindow(dpy,children[i]);
       if (psw) { 
 	isIconicState = DontCareState;
-	if (XGetWindowProperty(dpy, psw->w, _XA_WM_STATE, 0L, 3L, False,
-			       _XA_WM_STATE, &atype, &aformat, 
+	if (XGetWindowProperty(dpy, psw->w, XA_WM_STATE, 0L, 3L, False,
+			       XA_WM_STATE, &atype, &aformat, 
 			       &nitems, &bytes_remain, &prop) == Success) {
 	  if (prop != NULL) {
 	    isIconicState = *(long *) prop;
@@ -751,7 +968,7 @@ CaptureAllWindows(void)
 	}
 	pswNext = psw->next;
 	data[0] = (unsigned long) psw->Desk;
-	XChangeProperty(dpy, psw->w, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
+	XChangeProperty(dpy, psw->w, XA_WM_DESKTOP, XA_WM_DESKTOP, 32,
 			PropModeReplace, (unsigned char *) data, 1);
 
 	XSelectInput(dpy, psw->w, 0);
@@ -781,142 +998,6 @@ CaptureAllWindows(void)
   KeepOnTop();
   XUngrabServer_withSemaphore(dpy);
 
-}
-
-/*
-   ** SetRCDefaults
-   **
-   ** Sets some initial style values & such
- */
-void 
-SetRCDefaults()
-{
-  /* the compiled-in .scwmrc comes from minimal.scm,
-     built into init_scheme_string.c by the make file */
-  extern char *init_scheme_string;
-  scwm_safe_eval_str(init_scheme_string);
-}
-
-/***********************************************************************
- *
- *  Procedure:
- *	MappedNotOverride - checks to see if we should really
- *		put a scwm frame on the window
- *
- *  Returned Value:
- *	True	- go ahead and frame the window
- *	False	- don't frame the window
- *
- *  Inputs:
- *	w	- the window to check
- *
- ***********************************************************************/
-
-int 
-MappedNotOverride(Window w)
-{
-  XWindowAttributes wa;
-  Atom atype;
-  int aformat;
-  unsigned long nitems, bytes_remain;
-  unsigned char *prop;
-
-  isIconicState = DontCareState;
-
-  if ((w == Scr.NoFocusWin) || (!XGetWindowAttributes(dpy, w, &wa)))
-    return False;
-
-  if (XGetWindowProperty(dpy, w, _XA_WM_STATE, 0L, 3L, False, _XA_WM_STATE,
-	      &atype, &aformat, &nitems, &bytes_remain, &prop) == Success) {
-    if (prop != NULL) {
-      isIconicState = *(long *) prop;
-      XFree(prop);
-    }
-  }
-  if (wa.override_redirect == True) {
-    XSelectInput(dpy, w, FocusChangeMask);
-  }
-  return (((isIconicState == IconicState) || (wa.map_state != IsUnmapped)) &&
-	  (wa.override_redirect != True));
-}
-
-
-/* FIXGJB: leading underscores are reserved for the compiler;
-   these should be changed */
-Atom _XA_MIT_PRIORITY_COLORS;
-Atom _XA_WM_CHANGE_STATE;
-Atom _XA_WM_STATE;
-Atom _XA_WM_COLORMAP_WINDOWS;
-extern Atom _XA_WM_PROTOCOLS;
-Atom _XA_WM_TAKE_FOCUS;
-Atom _XA_WM_DELETE_WINDOW;
-Atom _XA_WM_DESKTOP;
-Atom _XA_MwmAtom;
-Atom _XA_MOTIF_WM;
-
-Atom _XA_OL_WIN_ATTR;
-Atom _XA_OL_WT_BASE;
-Atom _XA_OL_WT_CMD;
-Atom _XA_OL_WT_HELP;
-Atom _XA_OL_WT_NOTICE;
-Atom _XA_OL_WT_OTHER;
-Atom _XA_OL_DECOR_ADD;
-Atom _XA_OL_DECOR_DEL;
-Atom _XA_OL_DECOR_CLOSE;
-Atom _XA_OL_DECOR_RESIZE;
-Atom _XA_OL_DECOR_HEADER;
-Atom _XA_OL_DECOR_ICON_NAME;
-Atom XA_SCWM_EXECUTE;
-Atom XA_SCWM_RESULT;
-Atom XA_SCWMEXEC_LISTENER;
-Atom XA_SCWMEXEC_REQWIN;
-Atom XA_SCWMEXEC_REQUEST;
-Atom XA_SCWMEXEC_REPLY;
-Atom XA_SCWMEXEC_NOTIFY;
-Atom XA_SCWMEXEC_OUTPUT;
-Atom XA_SCWMEXEC_ERROR;
-
-
-void 
-InternUsefulAtoms(void)
-{
-  /* 
-   * Create priority colors if necessary.
-   */
-  _XA_MIT_PRIORITY_COLORS = XInternAtom(dpy, "_MIT_PRIORITY_COLORS", False);
-  _XA_WM_CHANGE_STATE = XInternAtom(dpy, "WM_CHANGE_STATE", False);
-  _XA_WM_STATE = XInternAtom(dpy, "WM_STATE", False);
-  _XA_WM_COLORMAP_WINDOWS = XInternAtom(dpy, "WM_COLORMAP_WINDOWS", False);
-  _XA_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
-  _XA_WM_TAKE_FOCUS = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
-  _XA_WM_DELETE_WINDOW = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-  _XA_WM_DESKTOP = XInternAtom(dpy, "WM_DESKTOP", False);
-  _XA_MwmAtom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
-  _XA_MOTIF_WM = XInternAtom(dpy, "_MOTIF_WM_INFO", False);
-
-  _XA_OL_WIN_ATTR = XInternAtom(dpy, "_OL_WIN_ATTR", False);
-  _XA_OL_WT_BASE = XInternAtom(dpy, "_OL_WT_BASE", False);
-  _XA_OL_WT_CMD = XInternAtom(dpy, "_OL_WT_CMD", False);
-  _XA_OL_WT_HELP = XInternAtom(dpy, "_OL_WT_HELP", False);
-  _XA_OL_WT_NOTICE = XInternAtom(dpy, "_OL_WT_NOTICE", False);
-  _XA_OL_WT_OTHER = XInternAtom(dpy, "_OL_WT_OTHER", False);
-  _XA_OL_DECOR_ADD = XInternAtom(dpy, "_OL_DECOR_ADD", False);
-  _XA_OL_DECOR_DEL = XInternAtom(dpy, "_OL_DECOR_DEL", False);
-  _XA_OL_DECOR_CLOSE = XInternAtom(dpy, "_OL_DECOR_CLOSE", False);
-  _XA_OL_DECOR_RESIZE = XInternAtom(dpy, "_OL_DECOR_RESIZE", False);
-  _XA_OL_DECOR_HEADER = XInternAtom(dpy, "_OL_DECOR_HEADER", False);
-  _XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
-  XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
-  XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
-  XA_SCWMEXEC_LISTENER=XInternAtom(dpy,"SCWMEXEC_LISTENER", False);
-  XA_SCWMEXEC_REQWIN=XInternAtom(dpy,"SCWMEXEC_REQWIN", False);
-  XA_SCWMEXEC_REQUEST=XInternAtom(dpy,"SCWMEXEC_REQUEST", False);
-  XA_SCWMEXEC_REPLY=XInternAtom(dpy,"SCWMEXEC_REPLY", False);
-  XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
-  XA_SCWMEXEC_OUTPUT=XInternAtom(dpy,"SCWMEXEC_OUTPUT", False);
-  XA_SCWMEXEC_ERROR=XInternAtom(dpy,"SCWMEXEC_ERROR", False);
-
-  return;
 }
 
 /***********************************************************************
@@ -980,380 +1061,10 @@ CreateCursors(void)
   Scr.ScwmCursors[CURSOR_BOTTOM_RIGHT] = XCreateFontCursor(dpy, XC_bottom_right_corner);
 }
 
-/***********************************************************************
- *
- *  LoadDefaultLeftButton -- loads default left button # into 
- *		assumes associated button memory is already free
- * 
- ************************************************************************/
-void 
-LoadDefaultLeftButton(ButtonFace * bf, int i)
-{
-  bf->style = VectorButton;
-  switch (i % 5) {
-  case 0:
-  case 4:
-    bf->vector.x[0] = 22;
-    bf->vector.y[0] = 39;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 78;
-    bf->vector.y[1] = 39;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 78;
-    bf->vector.y[2] = 61;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 22;
-    bf->vector.y[3] = 61;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 22;
-    bf->vector.y[4] = 39;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  case 1:
-    bf->vector.x[0] = 32;
-    bf->vector.y[0] = 45;
-    bf->vector.line_style[0] = 0;
-    bf->vector.x[1] = 68;
-    bf->vector.y[1] = 45;
-    bf->vector.line_style[1] = 0;
-    bf->vector.x[2] = 68;
-    bf->vector.y[2] = 55;
-    bf->vector.line_style[2] = 1;
-    bf->vector.x[3] = 32;
-    bf->vector.y[3] = 55;
-    bf->vector.line_style[3] = 1;
-    bf->vector.x[4] = 32;
-    bf->vector.y[4] = 45;
-    bf->vector.line_style[4] = 0;
-    bf->vector.num = 5;
-    break;
-  case 2:
-    bf->vector.x[0] = 49;
-    bf->vector.y[0] = 49;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 51;
-    bf->vector.y[1] = 49;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 51;
-    bf->vector.y[2] = 51;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 49;
-    bf->vector.y[3] = 51;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 49;
-    bf->vector.y[4] = 49;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  case 3:
-    bf->vector.x[0] = 32;
-    bf->vector.y[0] = 45;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 68;
-    bf->vector.y[1] = 45;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 68;
-    bf->vector.y[2] = 55;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 32;
-    bf->vector.y[3] = 55;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 32;
-    bf->vector.y[4] = 45;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  }
-}
 
-/***********************************************************************
- *
- *  LoadDefaultRightButton -- loads default left button # into
- *		assumes associated button memory is already free
- * 
- ************************************************************************/
-void 
-LoadDefaultRightButton(ButtonFace * bf, int i)
-{
-  bf->style = VectorButton;
-  switch (i % 5) {
-  case 0:
-  case 3:
-    bf->vector.x[0] = 25;
-    bf->vector.y[0] = 25;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 75;
-    bf->vector.y[1] = 25;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 75;
-    bf->vector.y[2] = 75;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 25;
-    bf->vector.y[3] = 75;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 25;
-    bf->vector.y[4] = 25;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  case 1:
-    bf->vector.x[0] = 39;
-    bf->vector.y[0] = 39;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 61;
-    bf->vector.y[1] = 39;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 61;
-    bf->vector.y[2] = 61;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 39;
-    bf->vector.y[3] = 61;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 39;
-    bf->vector.y[4] = 39;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  case 2:
-    bf->vector.x[0] = 49;
-    bf->vector.y[0] = 49;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 51;
-    bf->vector.y[1] = 49;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 51;
-    bf->vector.y[2] = 51;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 49;
-    bf->vector.y[3] = 51;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 49;
-    bf->vector.y[4] = 49;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  case 4:
-    bf->vector.x[0] = 36;
-    bf->vector.y[0] = 36;
-    bf->vector.line_style[0] = 1;
-    bf->vector.x[1] = 64;
-    bf->vector.y[1] = 36;
-    bf->vector.line_style[1] = 1;
-    bf->vector.x[2] = 64;
-    bf->vector.y[2] = 64;
-    bf->vector.line_style[2] = 0;
-    bf->vector.x[3] = 36;
-    bf->vector.y[3] = 64;
-    bf->vector.line_style[3] = 0;
-    bf->vector.x[4] = 36;
-    bf->vector.y[4] = 36;
-    bf->vector.line_style[4] = 1;
-    bf->vector.num = 5;
-    break;
-  }
-}
-
-/***********************************************************************
- *
- *  LoadDefaultButton -- loads default button # into button structure
- *		assumes associated button memory is already free
- * 
- ************************************************************************/
-void 
-LoadDefaultButton(ButtonFace * bf, int i)
-{
-  int n = i / 2;
-
-  if ((n * 2) == i) {
-    if (--n < 0)
-      n = 4;
-    LoadDefaultRightButton(bf, n);
-  } else
-    LoadDefaultLeftButton(bf, n);
-}
-
-extern void FreeButtonFace(Display * dpy, ButtonFace * bf);
-
-/***********************************************************************
- *
- *  ResetAllButtons -- resets all buttons to defaults
- *                 destroys existing buttons
- * 
- ************************************************************************/
-void 
-ResetAllButtons(ScwmDecor * fl)
-{
-  int i = 0;
-
-  for (; i < 5; ++i) {
-    int j;
-
-    FreeButtonFace(dpy, fl->left_buttons[i].state[0]);
-    FreeButtonFace(dpy, fl->right_buttons[i].state[0]);
-
-    LoadDefaultLeftButton(fl->left_buttons[i].state[0], i);
-    LoadDefaultRightButton(fl->right_buttons[i].state[0], i);
-
-    for (j = 1; j < MaxButtonState; ++j) {
-      /* FreeButtonFace(dpy, fl->left_buttons[i].state[j]); */
-      /* FreeButtonFace(dpy, fl->right_buttons[i].state[j]); */
-
-      fl->left_buttons[i].state[j] = fl->left_buttons[i].state[0];
-      fl->right_buttons[i].state[j] = fl->right_buttons[i].state[0];
-    }
-  }
-  fl->right_buttons[0].flags |= MWMButton;
-}
-
-/***********************************************************************
- *
- *  DestroyScwmDecor -- frees all memory assocated with an ScwmDecor
- *	structure, but does not free the ScwmDecor itself
- * 
- ************************************************************************/
-void 
-DestroyScwmDecor(ScwmDecor * fl)
-{
-
-  if (fl->tag) {
-    FREE(fl->tag);
-    fl->tag = NULL;
-  }
-  if (fl->HiReliefGC != NULL) {
-    XFreeGC(dpy, fl->HiReliefGC);
-    fl->HiReliefGC = NULL;
-  }
-  if (fl->HiShadowGC != NULL) {
-    XFreeGC(dpy, fl->HiShadowGC);
-    fl->HiShadowGC = NULL;
-  }
-}
-
-/***********************************************************************
- *
- *  InitScwmDecor -- initializes an ScwmDecor structure to defaults
- * 
- ************************************************************************/
-void 
-InitScwmDecor(ScwmDecor * fl)
-{
-
-  fl->HiReliefGC = NULL;
-  fl->HiShadowGC = NULL;
-
-  /*  fl->tag = NULL; */
-  fl->next = NULL;
-}
-
-/***********************************************************************
- *
- *  Procedure:
- *	InitVariables - initialize scwm variables
- *
- ************************************************************************/
-void 
-InitVariables(void)
-{
-  ScwmContext = XUniqueContext();
-  MenuContext = XUniqueContext();
-
-  /* initialize some lists */
-  Scr.AllBindings = NULL;
-  Scr.DefaultIcon = NULL;
-
-  /* create graphics contexts */
-  CreateGCs();
-
-  Scr.d_depth = DefaultDepth(dpy, Scr.screen);
-  Scr.ScwmRoot.w = Scr.Root;
-  Scr.ScwmRoot.next = 0;
-  XGetWindowAttributes(dpy, Scr.Root, &(Scr.ScwmRoot.attr));
-  Scr.root_pushes = 0;
-  Scr.pushed_window = &Scr.ScwmRoot;
-  Scr.ScwmRoot.number_cmap_windows = 0;
-
-
-  Scr.MyDisplayWidth = DisplayWidth(dpy, Scr.screen);
-  Scr.MyDisplayHeight = DisplayHeight(dpy, Scr.screen);
-
-  Scr.NoBoundaryWidth = 1;
-  Scr.BoundaryWidth = BOUNDARY_WIDTH;
-  Scr.CornerWidth = CORNER_WIDTH;
-  Scr.Hilite = NULL;
-  Scr.Focus = NULL;
-  Scr.Ungrabbed = NULL;
-
-  Scr.menu_font = SCM_UNDEFINED;
-  Scr.icon_font = SCM_UNDEFINED;
-  Scr.MenuColors.bg = SCM_UNDEFINED;
-  Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
-
-
-#ifndef NON_VIRTUAL
-  Scr.VxMax = 2 * Scr.MyDisplayWidth;
-  Scr.VyMax = 2 * Scr.MyDisplayHeight;
-#else
-  Scr.VxMax = 0;
-  Scr.VyMax = 0;
-#endif
-  Scr.Vx = Scr.Vy = 0;
-
-  Scr.SizeWindow = None;
-
-  /* Sets the current desktop number to zero */
-  /* Multiple desks are available even in non-virtual
-   * compilations */
-  {
-    Atom atype;
-    int aformat;
-    unsigned long nitems, bytes_remain;
-    unsigned char *prop;
-
-    Scr.CurrentDesk = 0;
-    if ((XGetWindowProperty(dpy, Scr.Root, _XA_WM_DESKTOP, 0L, 1L, True,
-			    _XA_WM_DESKTOP, &atype, &aformat, &nitems,
-			    &bytes_remain, &prop)) == Success) {
-      if (prop != NULL) {
-	Restarting = True;
-	Scr.CurrentDesk = *(unsigned long *) prop;
-      }
-    }
-  }
-
-  Scr.EdgeScrollX = Scr.EdgeScrollY = 100;
-  Scr.ScrollResistance = Scr.MoveResistance = 0;
-  Scr.OpaqueSize = 5;
-  Scr.ClickTime = 150;
-  Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
-
-  /* set major operating modes */
-  Scr.NumBoxes = 0;
-
-  Scr.randomx = Scr.randomy = 0;
-  Scr.buttons2grab = 7;
-
-  decor2scm(&Scr.DefaultDecor);
-  /* MSFIX: why does decor2scm not do the DECORREF? */
-  DECORREF(Scr.DefaultDecor.scmdecor);
-
-  Scr.DefaultDecor.tag = "default";
-
-  Scr.SmartPlacementIsClever = False;
-  Scr.ClickToFocusPassesClick = True;
-  Scr.ClickToFocusRaises = True;
-  Scr.MouseFocusClickRaises = False;
-
-  init_image_colormap();
-  return;
-}
-
-/***********************************************************************
- *
- *  Procedure:
- *	Reborder - Removes scwm border windows
- *
- ************************************************************************/
+/*
+ * Reborder - Removes scwm border windows
+ */
 void 
 Reborder(void)
 {
@@ -1475,7 +1186,7 @@ SetMWM_INFO(Window window)
   motif_wm_info.flags = 2;
   motif_wm_info.win = window;
 
-  XChangeProperty(dpy, Scr.Root, _XA_MOTIF_WM, _XA_MOTIF_WM, 32,
+  XChangeProperty(dpy, Scr.Root, XA_MOTIF_WM, XA_MOTIF_WM, 32,
 		  PropModeReplace, (char *) &motif_wm_info, 2);
 #endif
 }

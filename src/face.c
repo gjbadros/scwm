@@ -48,6 +48,225 @@ offered in the face primitives will rarely be needed; the
 functionality.
 */
 
+
+/*
+ *  LoadDefaultLeftButton -- loads default left button # into 
+ *		assumes associated button memory is already free
+ */
+void 
+LoadDefaultLeftButton(ButtonFace * bf, int i)
+{
+  bf->style = VectorButton;
+  switch (i % 5) {
+  case 0:
+  case 4:
+    bf->vector.x[0] = 22;
+    bf->vector.y[0] = 39;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 78;
+    bf->vector.y[1] = 39;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 78;
+    bf->vector.y[2] = 61;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 22;
+    bf->vector.y[3] = 61;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 22;
+    bf->vector.y[4] = 39;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  case 1:
+    bf->vector.x[0] = 32;
+    bf->vector.y[0] = 45;
+    bf->vector.line_style[0] = 0;
+    bf->vector.x[1] = 68;
+    bf->vector.y[1] = 45;
+    bf->vector.line_style[1] = 0;
+    bf->vector.x[2] = 68;
+    bf->vector.y[2] = 55;
+    bf->vector.line_style[2] = 1;
+    bf->vector.x[3] = 32;
+    bf->vector.y[3] = 55;
+    bf->vector.line_style[3] = 1;
+    bf->vector.x[4] = 32;
+    bf->vector.y[4] = 45;
+    bf->vector.line_style[4] = 0;
+    bf->vector.num = 5;
+    break;
+  case 2:
+    bf->vector.x[0] = 49;
+    bf->vector.y[0] = 49;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 51;
+    bf->vector.y[1] = 49;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 51;
+    bf->vector.y[2] = 51;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 49;
+    bf->vector.y[3] = 51;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 49;
+    bf->vector.y[4] = 49;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  case 3:
+    bf->vector.x[0] = 32;
+    bf->vector.y[0] = 45;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 68;
+    bf->vector.y[1] = 45;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 68;
+    bf->vector.y[2] = 55;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 32;
+    bf->vector.y[3] = 55;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 32;
+    bf->vector.y[4] = 45;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  }
+}
+
+/*
+ *  LoadDefaultRightButton -- loads default left button # into
+ *		assumes associated button memory is already free
+ */
+void 
+LoadDefaultRightButton(ButtonFace * bf, int i)
+{
+  bf->style = VectorButton;
+  switch (i % 5) {
+  case 0:
+  case 3:
+    bf->vector.x[0] = 25;
+    bf->vector.y[0] = 25;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 75;
+    bf->vector.y[1] = 25;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 75;
+    bf->vector.y[2] = 75;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 25;
+    bf->vector.y[3] = 75;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 25;
+    bf->vector.y[4] = 25;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  case 1:
+    bf->vector.x[0] = 39;
+    bf->vector.y[0] = 39;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 61;
+    bf->vector.y[1] = 39;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 61;
+    bf->vector.y[2] = 61;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 39;
+    bf->vector.y[3] = 61;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 39;
+    bf->vector.y[4] = 39;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  case 2:
+    bf->vector.x[0] = 49;
+    bf->vector.y[0] = 49;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 51;
+    bf->vector.y[1] = 49;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 51;
+    bf->vector.y[2] = 51;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 49;
+    bf->vector.y[3] = 51;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 49;
+    bf->vector.y[4] = 49;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  case 4:
+    bf->vector.x[0] = 36;
+    bf->vector.y[0] = 36;
+    bf->vector.line_style[0] = 1;
+    bf->vector.x[1] = 64;
+    bf->vector.y[1] = 36;
+    bf->vector.line_style[1] = 1;
+    bf->vector.x[2] = 64;
+    bf->vector.y[2] = 64;
+    bf->vector.line_style[2] = 0;
+    bf->vector.x[3] = 36;
+    bf->vector.y[3] = 64;
+    bf->vector.line_style[3] = 0;
+    bf->vector.x[4] = 36;
+    bf->vector.y[4] = 36;
+    bf->vector.line_style[4] = 1;
+    bf->vector.num = 5;
+    break;
+  }
+}
+
+/*
+ *  LoadDefaultButton -- loads default button # into button structure
+ *		assumes associated button memory is already free
+ */
+void 
+LoadDefaultButton(ButtonFace * bf, int i)
+{
+  int n = i / 2;
+
+  if ((n * 2) == i) {
+    if (--n < 0)
+      n = 4;
+    LoadDefaultRightButton(bf, n);
+  } else
+    LoadDefaultLeftButton(bf, n);
+}
+
+void FreeButtonFace(Display * dpy, ButtonFace * bf);
+
+/*
+ *  ResetAllButtons -- resets all buttons to defaults
+ *                 destroys existing buttons
+ */
+void 
+ResetAllButtons(ScwmDecor * fl)
+{
+  int i = 0;
+
+  for (; i < 5; ++i) {
+    int j;
+
+    FreeButtonFace(dpy, fl->left_buttons[i].state[0]);
+    FreeButtonFace(dpy, fl->right_buttons[i].state[0]);
+
+    LoadDefaultLeftButton(fl->left_buttons[i].state[0], i);
+    LoadDefaultRightButton(fl->right_buttons[i].state[0], i);
+
+    for (j = 1; j < MaxButtonState; ++j) {
+      /* FreeButtonFace(dpy, fl->left_buttons[i].state[j]); */
+      /* FreeButtonFace(dpy, fl->right_buttons[i].state[j]); */
+
+      fl->left_buttons[i].state[j] = fl->left_buttons[i].state[0];
+      fl->right_buttons[i].state[j] = fl->right_buttons[i].state[0];
+    }
+  }
+  fl->right_buttons[0].flags |= MWMButton;
+}
+
 long scm_tc16_scwm_face;
 
 int 
@@ -59,9 +278,6 @@ print_face(SCM obj, SCM port, scm_print_state * pstate)
 
   return 1;
 }
-
-void FreeButtonFace(Display * dpy, ButtonFace * bf);
-
 
 size_t
 free_face(SCM obj)

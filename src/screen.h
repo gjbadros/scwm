@@ -284,13 +284,6 @@ extern ScreenInfo Scr;
  */
 #define GetDecor(window,part) ((window)->fl->part)
 
-/* some protos for the decoration structures */
-void LoadDefaultLeftButton(ButtonFace * bf, int i);
-void LoadDefaultRightButton(ButtonFace * bf, int i);
-void LoadDefaultButton(ButtonFace * bf, int i);
-void ResetAllButtons(ScwmDecor * fl);
-void InitScwmDecor(ScwmDecor * fl);
-void DestroyScwmDecor(ScwmDecor * fl);
 
 /* for the flags value - these used to be seperate Bool's */
 #define WindowsCaptured            (1)
