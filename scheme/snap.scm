@@ -56,7 +56,7 @@
     (< b1 a2)))
 
 (define (distance-lines a1 a2 b1 b2)
-  (if (<= b1 a1)
+  (if (< b1 a1)
     (distance-lines b1 b2 a1 a2)
     (min
       (abs (- a2 b1))
@@ -139,7 +139,8 @@
 ;;;; Interactive move end hook
 (define (imeh win)
 ;;;; these should be in the imnph function to make snapping interactive
-  (let (
+  (let* (
+    (myinfo (wininfo win))
     (hozchoice
       (closest current-windows-info
               (map (lambda(x)(dist-horizontal myinfo x)) current-windows-info)))
@@ -167,7 +168,7 @@
 
 (define-public (snap-reset)
   (remove-hook! interactive-move-start-hook imsh)
-  (remove-hook! interactive-move-new-position-hook imnph)
+;  (remove-hook! interactive-move-new-position-hook imnph)
   (remove-hook! interactive-move-finish-hook imeh)
   )
 
@@ -183,7 +184,7 @@
   (set! last-y -1)
 
   (add-hook! interactive-move-start-hook imsh)
-  (add-hook! interactive-move-new-position-hook imnph)
+;  (add-hook! interactive-move-new-position-hook imnph)
   (add-hook! interactive-move-finish-hook imeh)
 )
 
