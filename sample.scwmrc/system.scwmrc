@@ -9,14 +9,8 @@
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
-(use-modules (app scwm base)
-	     (app scwm winops)
-	     (app scwm winlist)
-	     (app scwm wininfo)
-	     (app scwm doc)
-             (app scwm style)
-	     (app scwm message-window)
-	     (app scwm face))
+(use-scwm-modules base winops winlist wininfo 
+		  doc style message-window face)
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;

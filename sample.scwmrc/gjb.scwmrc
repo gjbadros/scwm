@@ -41,9 +41,7 @@
 ;;(load "/home/gjb/scwm/scheme/constraints.scm")
 ;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
 ;;(set-current-module the-root-module)
-;;(use-modules (app scwm constraints))
-;;(use-modules (app scwm ui-constraints-buttons))
-;;(start-ui-constraints-buttons)
+;;(use-scwm-modules constraints)
 
 (set! *use-scwm-system-proc* #t)
 
@@ -66,7 +64,6 @@
   (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
 	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
 
-;; (use-modules (app scwm themes))
 (set! *theme-path*
       (append (list (string-append (getenv "SCWMDIR") "/themes")) *theme-path*))
 
@@ -988,7 +985,7 @@ union of all other window managers!
 (define (enable-constraint-solver)
   (if (scwm-is-constraint-enabled?)
       (begin
-	(use-modules (app scwm constraints))
+	(use-scwm-modules constraints)
 	(start-constraints))
       (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
 
@@ -1328,7 +1325,7 @@ union of all other window managers!
 
 (if want-autoraise
     (begin
-      (use-modules (app scwm auto-raise))
+      (use-scwm-modules auto-raise)
       (window-style "*" #:auto-raise #t)))
 
 (if want-fvwm2-pager-module

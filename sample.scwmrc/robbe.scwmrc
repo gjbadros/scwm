@@ -35,22 +35,9 @@
 
 ;;; Code:
 
-(use-modules (app scwm base)
-	     (app scwm winops)
-	     (app scwm winlist)
-	     (app scwm wininfo)
-             (app scwm style)
-	     (app scwm face)
-	     (app scwm flux)
-	     (app scwm optargs)
-	     (app scwm std-menus)
-	     (app scwm animation)
-	     (app scwm message-window)
-	     (app scwm pie-menus)
-	     (app scwm gnome-hints)
-	     (app scwm group)
-	     (ice-9 string-fun)
-	     (ice-9 regex))
+(use-scwm-modules base winops winlist wininfo style face flux optargs
+		  std-menus animatio message-window pie-menus gnome-hints group 
+		  (ice-9 string-fun) (ice-9 regex))
 
 ;; Gnome & SM
 (enable-gnome-hints)

@@ -83,20 +83,9 @@
 ;;;;---------------------------;;;;
 ;;;; import scwm modules       ;;;;
 
-(use-modules (app scwm base)
-	     (app scwm winops)
-	     (app scwm wininfo)
-             (app scwm stacking)
-             (app scwm optargs)
-             (app scwm placement)
-             (app scwm shutdown-opts)
-             (app scwm style)
-             (app scwm defoption)
-             (app scwm winlist)
-             (app scwm animation)
-             (app scwm animated-iconify)
-	     (app scwm themes)
-             (app scwm gnome-hints))
+(use-scwm-modules base winops wininfo stacking optargs placement shutdown-opts style
+		  defoption winlist animation animated-iconify themes gnome-hints)
+
 
 ;;;;-------------------------------;;;;
 ;;;; utility procedures            ;;;;

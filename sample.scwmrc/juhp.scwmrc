@@ -13,17 +13,8 @@
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
-(use-modules (app scwm base)
-	     (app scwm decor)
-	     (app scwm doc)
-	     (app scwm face)
-	     (app scwm flux)
-	     (app scwm fvwm-module)
-	     (app scwm optargs)
-             (app scwm style)
-	     (app scwm wininfo)
-	     (app scwm winlist)
-	     (app scwm winops))
+(use-scwm-modules base decor doc face flux fvwm-module optargs style
+		  wininfo winlist winops)
 
 ;; menu compatibility
 (define (display-menu . rest)
