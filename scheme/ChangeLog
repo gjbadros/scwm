@@ -1,7 +1,9 @@
-Tue Mar 10 22:39:58 1998  Greg Badros  <gjb@cs.washington.edu>
+Wed Mar 11 21:05:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* fvwm-module.scm: Use close-port instead of close for guile 1.2
- 	compatablility.
+	* fvwm-compat.scm, bincomm.scm, fvwm-module.scm: Use close-port
+ 	instead of close for guile 1.2 compatablility.
+
+Tue Mar 10 22:39:58 1998  Greg Badros  <gjb@cs.washington.edu>
 	
 	* fvwm-compat.scm: Added a bunch of commented out functions for
  	FvwmM4 pre-defines; these need to be fleshed out, but I wanted to

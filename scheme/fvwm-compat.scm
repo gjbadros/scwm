@@ -59,13 +59,13 @@
        fvwm-exec-shell fvwm-exec-shell "-c" 
        (string-append "exec " command)))
      (else
-      (close write-pipe)
+      (close-port write-pipe)
       (while #t
 	     (let ((form (read read-pipe)))
 	       (if (eof-object? form)
 		   (break #f)
 		   (eval form))))
-      (close read-pipe)
+      (close-port read-pipe)
       *unspecified*))))
 
 (define-public (fvwm-nop . args)

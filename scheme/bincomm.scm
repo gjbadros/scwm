@@ -33,7 +33,7 @@
 	 (write-pipe (cdr p))
 	 (u (make-uniform-array #x0f0000ff 1)))
     (uniform-array-write u write-pipe)
-    (close write-pipe)
+    (close-port write-pipe)
     (let ((s
 	   (let loop ((c (read-char read-pipe))
 		      (s ""))
@@ -41,7 +41,7 @@
 		 s
 		 (loop (read-char read-pipe)
 		       (string-append s (string c)))))))
-      (close read-pipe)
+      (close-port read-pipe)
       (cons (* 8 (string-length s)) 
 	    (char=? (string-ref s 0) (integer->char 255))))))
 
