@@ -11,6 +11,8 @@
 
 Bool PlaceWindow(ScwmWindow *psw, int Desk);
 
+void init_placement();
+
 #endif
 
 /* Local Variables: */

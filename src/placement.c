@@ -1,3 +1,4 @@
+
 /* $Id$
  * placement.c
  * (C) 1998 Maciej Stachowiak and Greg J. Badros
@@ -18,6 +19,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <guile/gh.h>
 
 #define PLACEMENT_IMPLEMENTATION
 #include "placement.h"
@@ -30,11 +32,17 @@
 #include "icons.h"
 #include "virtual.h"
 #include "callbacks.h"
+#include "window.h"
 
 int get_next_x(ScwmWindow * t, int x, int y);
 int get_next_y(ScwmWindow * t, int y);
 int test_fit(ScwmWindow * t, int test_x, int test_y, int aoimin);
 void CleverPlacement(ScwmWindow * t, int *x, int *y);
+
+extern Bool PPosOverride;
+
+SCM_SYMBOL(sym_placement_proc,"placement-proc");
+SCM_SYMBOL(sym_transient_placement_proc,"transient-placement-proc");
 
 
 /************************************************************************
@@ -75,6 +83,7 @@ GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
     *xp = (int) gravity_offsets[g].x;
     *yp = (int) gravity_offsets[g].y;
   }
+  
   return;
 }
 
@@ -333,6 +342,280 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
   return aoi;
 }
 
+void 
+default_select_desk(ScwmWindow *psw, int Desk)
+{
+  Atom atype;
+  int aformat;
+  unsigned long nitems, bytes_remain;
+  unsigned char *prop;
+  ScwmWindow *tpsw;
+
+  /* Select a desk to put the window on (in list of priority):
+   * 1. Sticky Windows stay on the current desk.
+   * 2. Windows specified with StartsOnDesk go where specified
+   * 3. Put it on the desk it was on before the restart.
+   * 4. Transients go on the same desk as their parents.
+   * 5. Window groups stay together (completely untested) */
+
+  psw->Desk = Scr.CurrentDesk;
+
+  if (psw->fSticky) {
+    /* leave it alone. */
+  } else if (psw->fStartsOnDesk) {
+    psw->Desk = Desk;
+  } else if ((XGetWindowProperty(dpy, psw->w, _XA_WM_DESKTOP, 0L, 1L, True,
+				 _XA_WM_DESKTOP, &atype, &aformat, &nitems,
+				 &bytes_remain, &prop) == Success)
+	     && (NULL != prop)) {
+    psw->Desk = *(unsigned long *) prop;
+    XFree(prop);
+  } else if (psw->fTransient && (psw->transientfor != None) &&
+	     (psw->transientfor != Scr.Root) && 
+	     (NULL != (tpsw = PswFromWindow(dpy, psw->transientfor)))) {
+    /* Try to find the parent's desktop */
+    psw->Desk = tpsw->Desk;
+  } else if ((psw->wmhints) && (psw->wmhints->flags & WindowGroupHint) &&
+	     (psw->wmhints->window_group != None) &&
+	     (psw->wmhints->window_group != Scr.Root) &&
+	     (NULL != (tpsw=PswFromWindow(dpy, psw->wmhints->window_group)))) {
+    /* Try to find the group leader or another window
+     * in the group */
+    psw->Desk = tpsw->Desk;
+  }
+
+  /* I think it would be good to switch to the selected desk
+   * whenever a new window pops up, except during initialization */  
+  /* FIXGJB: this should be a callback, not a forced switch to the new
+     desk --03/26/98 gjb */
+  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+    changeDesks(0, psw->Desk);
+}
+
+
+void
+keep_on_screen(ScwmWindow *psw)
+{
+  /* patches 11/93 to try to keep the window on the
+   * screen */
+  psw->frame_x = psw->attr.x + psw->old_bw - psw->bw;
+  psw->frame_y = psw->attr.y + psw->old_bw - psw->bw;
+  
+  if (psw->frame_x + psw->frame_width +
+      2 * psw->boundary_width > Scr.MyDisplayWidth) {
+    psw->attr.x = Scr.MyDisplayWidth - psw->attr.width
+      - psw->old_bw + psw->bw - 2 * psw->boundary_width;
+    Scr.randomx = 0;
+  }
+  if (psw->frame_y + 2 * psw->boundary_width + psw->title_height
+      + psw->frame_height > Scr.MyDisplayHeight) {
+    psw->attr.y = Scr.MyDisplayHeight - psw->attr.height
+      - psw->old_bw + psw->bw - psw->title_height -
+      2 * psw->boundary_width;;
+    Scr.randomy = 0;
+  }
+}
+
+SCWM_PROC (smart_place_window, "smart-place-window", 1, 0, 0, 
+           (SCM win))
+     /** Places WIN just as if being placed by fvwm2's SmartPlacement,
+	 as if SmartPlacementIsReallySmart were not in effect. That
+	 is, it tries to place the window so that it does not overlap
+	 any other. If it fails to do so, it returns #f; otherwise it
+	 returns #t. */
+{
+  ScwmWindow *psw;
+  int x, y;
+  int tmp_flag;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(s_smart_place_window, 1, win);
+  }
+
+  psw=SCWMWINDOW(win);
+
+  /* FIXMS: hackish workaround for now to not mess with the smart
+     placement function itself, but make it not call CleverPlacement
+     when called from here.. */
+
+
+  tmp_flag=Scr.SmartPlacementIsClever;
+  Scr.SmartPlacementIsClever=FALSE;
+  SmartPlacement(psw, psw->frame_width + 2 * psw->bw,
+		 psw->frame_height + 2 * psw->bw, &x, &y);
+  Scr.SmartPlacementIsClever=tmp_flag;
+
+  if (x < 0) {
+    return SCM_BOOL_F;
+  } else {
+    psw->attr.x = x = x - psw->old_bw + psw->bw;
+    psw->attr.y = y = y - psw->old_bw + psw->bw;
+
+    keep_on_screen(psw);
+
+    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
+	     SCM_BOOL_F, SCM_BOOL_F);
+    return SCM_BOOL_T;
+  }
+}
+
+SCWM_PROC (clever_place_window, "clever-place-window", 1, 0, 0, 
+           (SCM win))
+     /** Places WIN just as if being placed by fvwm2's SmartPlacement,
+	 as if SmartPlacementIsReallySmart were in effect. That is, it
+	 tries to place the window so as to minimize its area of
+	 overlap with other windows. Several parameters give different
+	 weight to various kinds of windows, but they are not tunable
+	 at runtime currently. If it fails to place the window, it
+	 returns #f; otherwise it returns #t. */
+{
+  ScwmWindow *psw;
+  int x, y;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(s_clever_place_window, 1, win);
+  }
+
+  psw=SCWMWINDOW(win);
+
+  CleverPlacement(psw, &x, &y);
+
+  if (x < 0) {
+    return SCM_BOOL_F;
+  } else {
+    psw->attr.x = x = x - psw->old_bw + psw->bw;
+    psw->attr.y = y = y - psw->old_bw + psw->bw;
+    keep_on_screen(psw);
+
+    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
+	     SCM_BOOL_F, SCM_BOOL_F);
+    return SCM_BOOL_T;
+  }
+}
+
+
+SCWM_PROC (random_place_window, "random-place-window", 1, 0, 0, 
+           (SCM win))
+     /** Places WIN just as if being placed by fvwm2's
+	 RandomPlacement.  This placement is not truly random; it is
+	 based on two state variables which are incremented for the x
+	 and y coordinates, and which wrap around once a window would
+	 be forced off the screen. The placement is fairly arbitrary,
+	 but always succeeds, and so avoids user interaction. #t is
+	 always returned. */
+{
+  ScwmWindow *psw;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(s_random_place_window, 1, win);
+  }
+
+  psw=SCWMWINDOW(win);
+  
+  /* plase window in a random location */
+  if ((Scr.randomx += GetDecor(psw, TitleHeight)) > Scr.MyDisplayWidth / 2) {
+    Scr.randomx = GetDecor(psw, TitleHeight);
+  }
+  if ((Scr.randomy += 2 * GetDecor(psw, TitleHeight)) >
+      Scr.MyDisplayHeight / 2) {
+    Scr.randomy = 2 * GetDecor(psw, TitleHeight);
+  }
+
+  psw->attr.x = Scr.randomx - psw->old_bw;
+  psw->attr.y = Scr.randomy - psw->old_bw;
+
+  move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
+	   SCM_BOOL_F, SCM_BOOL_F);
+  return SCM_BOOL_T; 
+}
+
+
+SCWM_PROC (default_placement_proc, "default-placement-proc", 1, 0, 0, 
+           (SCM win))
+     /** This is the default placement procedure for non-transient
+	 windows. It tries `smart-place-window',
+	 `clever-place-window', `random-place-window', or
+	 `interactive-move' (to achieve interactive placement) on WIN
+	 depending on several settable style flags. However, if one of
+	 the following factors holds, the window will instead be
+	 placed exactly as requested by the program: the position was
+	 specified by the user, the position was specified by the
+	 program, and #:no-PPosition-hint is not set, or the window
+	 starts iconic. */
+{ 
+  ScwmWindow *psw;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(s_default_placement_proc, 1, win);
+  }
+
+  psw=SCWMWINDOW(win);
+
+  if (PPosOverride ||
+      (psw->hints.flags & USPosition) ||
+      (!psw->fNoPPosition && (psw->hints.flags & PPosition)) ||
+      ((psw->wmhints) &&
+       (psw->wmhints->flags & StateHint) &&
+       (psw->wmhints->initial_state == IconicState))) {
+    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
+	     SCM_BOOL_F, SCM_BOOL_F);    
+  }  else {
+    SCM result=SCM_BOOL_F;
+
+    if (psw->fSmartPlace) {
+      if (Scr.SmartPlacementIsClever) {
+	result=clever_place_window(win);
+      } else {
+	result=smart_place_window(win);
+      }
+    }
+    
+    if (SCM_BOOL_F==result) {
+      if (psw->fRandomPlace) {
+	random_place_window(win);
+      } else {
+	interactive_move(win);
+      }
+    }
+  }
+  return SCM_BOOL_T;
+}
+
+SCWM_PROC (default_transient_placement_proc, "default-transient-placement-proc", 1, 0, 0, 
+           (SCM win))
+     /** This is the default placement procedure for transient
+	 windows. It simply leaves the window WIN in place, exactly as
+	 requested. */
+{
+  ScwmWindow *psw;
+
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(s_default_transient_placement_proc, 1, win);
+  }
+
+  psw=SCWMWINDOW(win);
+
+#if 0
+  psw->xdiff = psw->attr.x;
+  psw->ydiff = psw->attr.y;
+  /* put it where asked, mod title bar */
+  /* if the gravity is towards the top, move it by the title height */
+  psw->attr.y -= gravy * (psw->bw - psw->old_bw);
+  psw->attr.x -= gravx * (psw->bw - psw->old_bw);
+  if (gravy > 0)
+    psw->attr.y -= 2 * psw->boundary_width + psw->title_height;
+  if (gravx > 0)
+    psw->attr.x -= 2 * psw->boundary_width;
+#endif
+
+  move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
+	   SCM_BOOL_F, SCM_BOOL_F);  
+
+  return SCM_BOOL_T;
+}
+
+
+
 
 /**************************************************************************
  *
@@ -346,66 +629,36 @@ PlaceWindow(ScwmWindow *psw, int Desk)
   ScwmWindow *t;
   int xl = -1, yt, DragWidth, DragHeight;
   int gravx, gravy;		/* gravity signs for positioning */
-  extern Bool PPosOverride;
+  SCM place_proc;
+  SCM win;
 
   GetGravityOffsets(psw, &gravx, &gravy);
 
+  /* FIXMS: The desk selection stuff should be folded into the
+     placement-procs, but let's leave it as it is for now. */
 
-  /* Select a desk to put the window on (in list of priority):
-   * 1. Sticky Windows stay on the current desk.
-   * 2. Windows specified with StartsOnDesk go where specified
-   * 3. Put it on the desk it was on before the restart.
-   * 4. Transients go on the same desk as their parents.
-   * 5. Window groups stay together (completely untested)
-   */
-  psw->Desk = Scr.CurrentDesk;
-  if (psw->fSticky)
-    psw->Desk = Scr.CurrentDesk;
-  else if (psw->fStartsOnDesk) {
-    psw->Desk = Desk;
+  default_select_desk(psw,Desk);
+
+  win=psw->schwin;
+
+  if (psw->fTransient) {
+    place_proc=scm_object_property(win,sym_transient_placement_proc);
+    if (SCM_BOOL_F==place_proc || 
+	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
+      default_transient_placement_proc(win);
+    }
   } else {
-    Atom atype;
-    int aformat;
-    unsigned long nitems, bytes_remain;
-    unsigned char *prop;
-
-    if ((psw->wmhints) && (psw->wmhints->flags & WindowGroupHint) &&
-	(psw->wmhints->window_group != None) &&
-	(psw->wmhints->window_group != Scr.Root)) {
-      /* Try to find the group leader or another window
-       * in the group */
-      for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-	if ((t->w == psw->wmhints->window_group) ||
-	    ((t->wmhints) && (t->wmhints->flags & WindowGroupHint) &&
-	     (t->wmhints->window_group == psw->wmhints->window_group)))
-	  psw->Desk = t->Desk;
-      }
-    }
-    if (psw->fTransient && (psw->transientfor != None) &&
-	(psw->transientfor != Scr.Root)) {
-      /* Try to find the parent's desktop */
-      for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-	if (t->w == psw->transientfor)
-	  psw->Desk = t->Desk;
-      }
-    }
-    if ((XGetWindowProperty(dpy, psw->w, _XA_WM_DESKTOP, 0L, 1L, True,
-			    _XA_WM_DESKTOP, &atype, &aformat, &nitems,
-			    &bytes_remain, &prop)) == Success) {
-      if (prop != NULL) {
-	psw->Desk = *(unsigned long *) prop;
-	XFree(prop);
-      }
+    place_proc=scm_object_property(win,sym_placement_proc);
+    if (SCM_BOOL_F==place_proc || 
+	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
+      default_placement_proc(win);
     }
   }
-  /* I think it would be good to switch to the selected desk
-   * whenever a new window pops up, except during initialization */  
-  /* FIXGJB: this should be a callback, not a forced switch to the new
-     desk --03/26/98 gjb */
-  if ((!PPosOverride) && (!(psw->fShowOnMap)))
-    changeDesks(0, psw->Desk);
+  
+  psw->xdiff= psw->frame_x;
+  psw->ydiff= psw->frame_y;
 
-
+#if 0
   /* Desk has been selected, now pick a location for the window */
   /*
    *  If
@@ -418,6 +671,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
    *   If RandomPlacement was specified,
    *       then place the window in a psuedo-random location
    */
+
   if (!psw->fTransient &&
       !(psw->hints.flags & USPosition) &&
       ((psw->fNoPPosition) ||
@@ -520,7 +774,20 @@ PlaceWindow(ScwmWindow *psw, int Desk)
     if (gravx > 0)
       psw->attr.x -= 2 * psw->boundary_width;
   }
+
+  psw->frame_x = psw->attr.x + psw->old_bw - psw->bw;
+  psw->frame_y = psw->attr.y + psw->old_bw - psw->bw;
+#endif
+
   return True;
+}
+
+
+void init_placement()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "placement.x"
+#endif
 }
 
 

@@ -388,8 +388,11 @@ AddWindow(Window w)
     XrmDestroyDatabase(db);
     db = NULL;
   }
+
+#if 0 /* Just testing how late placement can happen... */
   if (!PlaceWindow(psw, Desk))
     return NULL;
+#endif
 
   /*
    * Make sure the client window still exists.  We don't want to leave an
@@ -441,8 +444,8 @@ AddWindow(Window w)
   Scr.ScwmRoot.next = psw;
 
   /* create windows */
-  psw->frame_x = psw->attr.x + psw->old_bw - psw->bw;
-  psw->frame_y = psw->attr.y + psw->old_bw - psw->bw;
+  psw->frame_x = 0; /* psw->attr.x + psw->old_bw - psw->bw; */
+  psw->frame_y = 0; /* psw->attr.y + psw->old_bw - psw->bw; */
 
   psw->frame_width = psw->attr.width + 2 * psw->boundary_width;
   psw->frame_height = psw->attr.height + psw->title_height +
@@ -692,10 +695,17 @@ AddWindow(Window w)
   height = psw->frame_height;
   psw->frame_height = 0;
 
+
   /* Since we forced the width and height to be different from what is in 
      psw->frame_width,frame_height, SetupFrame will pretend it has been
      resized and deal accordingly. --03/27/98 gjb */
   SetupFrame(psw, psw->frame_x, psw->frame_y, width, height, True);
+
+
+  /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
+     _Can_ it fail, in it's new location? */
+  if (!PlaceWindow(psw, Desk))
+    return NULL;
 
 
   /* wait until the window is iconified and the icon window is mapped

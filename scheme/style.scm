@@ -187,5 +187,13 @@
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
 
+(add-window-hint-option #:placement-proc 
+			(lambda (val w) 
+			  (set-object-property! w 'placement-proc val)))
+(add-window-hint-option #:transient-placement-proc 
+			(lambda (val w) 
+			  (set-object-property! w 'transient-placement-proc 
+						val)))
+
 
 

@@ -65,7 +65,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
 binding.x callbacks.x color.x decor.x deskpage.x events.x face.x font.x image.x menuitem.x \
-miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
+miscprocs.x module-interface.x placement.x scwmmenu.x shutdown.x xproperty.x window.x
 
 ##OMIT_DEPENDENCIES = $(BUILT_SOURCES)
 

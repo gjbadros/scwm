@@ -21,7 +21,7 @@
 #include "xmisc.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
-extern Bool Restarting;
+extern Bool Restarting, PPosOverride;
 
 SCM sym_focus;
 
@@ -141,6 +141,17 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
           ())
 {
   return SCM_BOOL_FromBool(Restarting);
+}
+
+SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
+          ())
+     /** Returns true when the windows are being caputured, either
+	 during initial startup, or during a recapture operation. In
+	 either case, placement procedures should probably avoid
+	 interaction and perhaps avoid moving the window being placed
+	 at all. */
+{
+  return SCM_BOOL_FromBool(PPosOverride);
 }
 
 

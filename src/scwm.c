@@ -231,7 +231,7 @@ scwm_main(int argc, char **argv)
   char *Lang,*territory,*tmp;
 #endif
 
-  gh_eval_str ("(define-module (guile))"); 
+  gh_eval_str ("(define-module (guile))");  
 
 #ifdef I18N
   if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
@@ -276,6 +276,7 @@ scwm_main(int argc, char **argv)
   init_events();
   init_deskpage();
   init_decor();
+  init_placement();
 
   szCmdConfig = (char *) safemalloc(1 * sizeof(char));
   

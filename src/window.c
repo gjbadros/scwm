@@ -1250,6 +1250,28 @@ SCWM_PROC(transient_p, "transient?", 0, 1, 0,
   return SCM_BOOL_FromBool(psw->fTransient);
 }
 
+SCWM_PROC(window_transient_for, "window-transient-for", 0, 1, 0,
+          (SCM win))
+     /** If WIN is transient, and the window it is transient for is
+	 not the root window and is being managed by scwm, return the
+	 window object of the window that WIN is transient for,
+	 otherwise return #f. */
+{
+  ScwmWindow *psw, *tpsw;
+
+  VALIDATE(win, s_window_transient_for);
+  psw = SCWMWINDOW(win);
+
+  if (psw->fTransient && (psw->transientfor != None) &&
+      (psw->transientfor != Scr.Root) &&
+      ((tpsw=PswFromWindow (dpy, psw->transientfor)) !=NULL)) {
+    return tpsw->schwin;
+  } else {
+    return SCM_BOOL_F;
+  }
+}
+
+
 
 
 SCWM_PROC(iconify, "iconify", 0, 1, 0,

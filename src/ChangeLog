@@ -1,3 +1,65 @@
+1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
+
+	* placement.c (PlaceWindow): Use user-defined placement
+	functions. In prticular, if the window is transient, use the
+	'transient-placement-proc object property, if not, use the
+	'placement-proc property. If the approrpiate property is not set,
+	use default_transient_placement_proc or default_placement_proc
+	which do what scwm used to do, i.e. what fvwm2 would do. Gravity
+	is not properly respected at all now, regardless of the border
+	width, but I know how to fix this. Will do so soon. There is a
+	separate property for transient window placement, because it is
+	almost always desirable to place transient windows according to a
+	different algorithm than regular top-level windows. In particular,
+	ICCCM reccomends that transient windows always be placed exactly
+	where requested by the program, without user interaction. Users
+	will rarely want to override this behavior.
+	
+	(default_select_desk): Separated out desk selection into this new
+	procedure to make PlaceWindow easier to understand. However, desk
+	selection and switching should not happen here, but should
+	ultimately be done in the placement functions (as should possible
+	viewport selection). This needs to be fixed.
+
+	(smart_place_window, clever_place_window, random_place_window,
+	default_placement_proc, default_transient_placement_proc): New
+	Scheme primitives for use as window placement functions:
+	`smart-place-window', `clever-place-window',
+	`random-place-window', `default-placement-proc' and
+	`default-transient-placement-proc'. Each of these takes a single
+	window argument. `smart-place-window' has the effect of fvwm's
+	SmartPlacement with SmartPlacementIsReallySmart off;
+	clever-place-window has that effect as if
+	SmartPlacementIsReallySmart were on. random-place-window
+
+	Other Scheme-level procedures which may be useful in user-defined
+	placement procedures include `ineractive-move', `move-to' and
+	`interactive-resize'. Each of these should work properly.
+
+	(init_placement): Initialize the placement module.
+	
+	* placement.h: Prototype init_placement().
+
+	* Makefile.am: build placement.x
+
+	* scwm.c (scwm_main): Initialize the placement module.
+
+	* window.c (window_transient_for): New Scheme primitive
+	`window-transient-for'. This takes a single window argument WIN
+	which defaults to the window context in the usual way. If WIN is
+	transient, and the window it is transient for is not the root
+	window and is being managed by scwm, return the window object of
+	the window that WIN is transient for, otherwise return #f.
+	
+	* miscprocs.c (capturing_p): Added a Scheme primitive `capturing?'
+	that determines whether or not we are currently intially capturing
+	or recapturing the windows (via the poorly name PPositionOverride
+	global variable). When this is true, it is desirable to avoid user
+	interaction or other black magic when placing windows.
+
+	* add_window.c (AddWindow): Call PlaceWindow much later, after the
+	frame and all attendant windows have already been set up.
+
 Tue Jul 14 16:24:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm.c (scwm_main): Make sure scwm initialization happens in the

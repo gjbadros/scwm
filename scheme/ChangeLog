@@ -1,3 +1,11 @@
+1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
+
+	* style.scm: Added #:placement-proc and #:transient-placement-proc
+	style options, to allow setting user-defined placement
+	procedures. See C code directory ChangeLog for rationale on
+	splitting these, and what procedures may be used from within a
+	placement proc.
+
 Mon Jul  6 01:51:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* auto-raise.scm: Replaced window-from-window-id with id->window.
