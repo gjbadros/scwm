@@ -1,3 +1,26 @@
+Tue Sep 21 22:02:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Make window-center-position return the frame size,
+	not the client size (mostly so that the return value is the right
+	length for what placement.scm was using it for.
+
+	* window-locations.scm: Use round/ for half, added
+	`window-viewport-position-of' procedure.
+
+	* viavoice.scm: Added `vv-terminate'.
+
+	* defoption.scm, preferences.scm: Added type `sound' (treated as a
+ 	string for now)
+
+	* placement.scm: Rename `interactive-place' ->
+	`place-interactively', added `near-window-placement'
+
+	* netscape.scm: added a bunch of options, added
+	`enable-dynamic-netscape-actions' and move code here form
+	system.scwmrc. 
+
+	* Makefile.am, wavplay.scm: Added.
+
 Tue Sep 21 15:02:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice.scm: Use installed location of grammar.  Fix order of
