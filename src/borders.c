@@ -35,6 +35,8 @@
 #include <X11/extensions/shape.h>
 #include "module-interface.h"
 #include "font.h"
+#include "scwm-constraints.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -1425,10 +1427,11 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
   DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
 
 #ifdef USE_CASSOWARY
-  psw->frame_x.set_value(x);
-  psw->frame_y.set_value(y);
-  psw->frame_width.set_value(w);
-  psw->frame_height.set_value(h);
+  solver
+    .setEditedValue(psw->frame_x,x)
+    .setEditedValue(psw->frame_y,y)
+    .setEditedValue(psw->frame_width,w)
+    .setEditedValue(psw->frame_height,h);
 #else
   FRAME_X(psw) = x;
   FRAME_Y(psw) = y;
