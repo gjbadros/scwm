@@ -421,7 +421,9 @@ void HandleKeyPress()
 	      unset_window_context();
 	    }
 	  } else {
+#if MS_DELETION_COMMENT
 	    ExecuteFunction(key->Action,Tmp_win, &Event,Context,-1);
+#endif /* MS_DELETION_COMMENT */
 	  }
 	  return;
 	}
@@ -1129,7 +1131,9 @@ void HandleButtonPress()
 	      unset_window_context();
 	    }
 	  } else {
+#if MS_DELETION_COMMENT
 	    ExecuteFunction(MouseEntry->Action,Tmp_win, &Event,Context,-1);
+#endif /* MS_DELETION_COMMENT */
 	  }
 	  break;
 	}
