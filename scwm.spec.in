@@ -68,7 +68,7 @@ from other processes
 make 
 
 %install
-make prefix=$RPM_BUILD_ROOT/usr exec_prefix=$RPM_BUILD_ROOT/usr/X11R6 install
+make prefix=$RPM_BUILD_ROOT/%{prefix} exec_prefix=$RPM_BUILD_ROOT/%{prefix}/X11R6 install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
