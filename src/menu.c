@@ -1211,19 +1211,52 @@ PopdownAllPriorMenus(DynamicMenu *pmd)
   }
 }
 
+/* x,y are the outermost position of the decoration's nearest edge
+   corner is 0 for NW, 1 for NE, 2 for SE, 3 for SW  (clockwise) */
+static
+void
+SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
+{
+  switch (corner) {
+  case 0: /* NW */
+    pmd->pmdi->x = x;
+    pmd->pmdi->y = y;
+    break;
+  case 1: /* NE */
+    pmd->pmdi->x = x - pmd->pmdi->cpixWidth;
+    pmd->pmdi->y = y;
+    break;
+  case 2: /* SE */
+    pmd->pmdi->x = x - pmd->pmdi->cpixWidth;
+    pmd->pmdi->y = y - pmd->pmdi->cpixHeight;
+    break;
+  case 3: /* SW */
+    pmd->pmdi->x = x;
+    pmd->pmdi->y = y - pmd->pmdi->cpixHeight;
+    break;
+  }
+  return;
+}
+
+/* x,y are the outermost position of the decoration's nearest edge
+   corner is 0 for NW, 1 for NE, 2 for SE, 3 for SW  (clockwise) */
 static 
 SCM
-PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
+PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst,
+              int x, int y, int corner)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
   int cpixX_startpointer;
   int cpixY_startpointer;
   SCM scmAction = SCM_UNDEFINED;
 
-  WXGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
-  
-  SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
-  
+  if (x < 0 || y < 0 || corner < 0) {
+    WXGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+    SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
+  } else {
+    SetPopupMenuPositionFromDecoration(pmd, x, y, corner);
+  }
+
   PopupMenu(pmd);
   GrabEm(CURSOR_MENU);
   scmAction = MenuInteraction(pmd, fWarpToFirst);
@@ -1236,27 +1269,41 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
     return call_thunk_with_message_handler(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
-    return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst));
+    return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst), 
+                      SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F);
   }
   return SCM_BOOL_F;
 }
 
-SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
-          (SCM menu, SCM warp_to_first_p))
-/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t. */
+SCWM_PROC(popup_menu,"popup-menu", 1,4,0,
+          (SCM menu, SCM warp_to_first_p, SCM x_pos, SCM y_pos, SCM left_side_p))
+/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t. 
+X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
+#t if the menu should be left justified against X-POS, or #f if it should be
+right justified against X-POS. */
 #define FUNC_NAME s_popup_menu
 {
   Bool fWarpToFirst = False;
+  Bool fLeftSide = True;
+  int x = -1, y = -1;
+  int iarg = 1;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, menu);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, menu);
   }
-  if (warp_to_first_p == SCM_BOOL_T)
-    fWarpToFirst = True;
-  /* FIXGJB: how can we tell if keybd was used to invoke this command? */
-  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst);
-  /*  return SCM_UNSPECIFIED; */
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,iarg++,FUNC_NAME);
+  if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
+    scm_wrong_type_arg(FUNC_NAME, iarg++, x_pos);
+  if (!UNSET_SCM(y_pos) && !gh_number_p(y_pos)) 
+    scm_wrong_type_arg(FUNC_NAME, iarg++, y_pos);
+  if (gh_number_p(x_pos)) x = gh_scm2int(x_pos);
+  if (gh_number_p(y_pos)) y = gh_scm2int(y_pos);
+
+  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,iarg++,FUNC_NAME);
+
+  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,
+                       x,y, fLeftSide?0:1);
 }
 #undef FUNC_NAME
 

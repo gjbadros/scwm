@@ -107,7 +107,7 @@ struct DynamicMenu_tag
 
 void menu_init_gcs();
 
-SCM popup_menu(SCM menu, SCM warp_to_first);
+SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p);
 
 
 #endif

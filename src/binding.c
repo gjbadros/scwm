@@ -826,8 +826,10 @@ clear_mouse_event_type()
    still count as a single click, see IsClick(), too */
 SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
           ())
-     /** Return a mouse-event-type corresponding to the most recent mouse event.
-Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks */
+     /** Return a symbol corresponding to the type of the most recent mouse event.
+Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
+You can `case' on this symbol in a procedure bound to a mouse event
+to determine, e.g., whether the user single clicked or double clicked. */
 #define FUNC_NAME s_mouse_event_type
 {
   return mouse_ev_type;
