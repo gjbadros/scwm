@@ -101,6 +101,9 @@
 #define WithdrawnState 0
 #endif
 
+#define SQUASHED_TITLEBAR_P(psw) \
+  ((psw)->fSquashedTitlebar)
+
 extern SCM sym_root_window;
 
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
@@ -740,7 +743,11 @@ HandlePropertyNotify()
 
     /* fix the name in the title bar */
     if (!pswCurrent->fIconified) {
-      SetTitleBar(pswCurrent, (Scr.Hilite == pswCurrent), True);
+      if (SQUASHED_TITLEBAR_P(pswCurrent)) {
+        ResizePswToCurrentSize(pswCurrent);
+      } else {
+        SetTitleBar(pswCurrent, (Scr.Hilite == pswCurrent), True);
+      }
     }
 
     /*

@@ -117,24 +117,28 @@ void
 SetShapedTitlebar(ScwmWindow *psw, int w)
 {
   if (ShapesSupported) {
+    Boolean fSet = False;
     XRectangle rect;
     rect.x = 0;
     rect.y = 0;
     rect.width = FRAME_WIDTH(psw);
-    rect.height = FRAME_HEIGHT(psw) - psw->title_height - psw->boundary_width;
+    rect.height = FRAME_HEIGHT(psw) - psw->title_height;
 
-    XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
-                            0, psw->title_height + psw->boundary_width,
-                            &rect, 1, ShapeSet, Unsorted);
+    if (!SHADED_P(psw)) {
+      XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
+                              0, psw->title_height,
+                              &rect, 1, ShapeSet, Unsorted);
+      fSet = True;
+    }
     if (SHOW_TITLE_P(psw)) {
       /* windows w/ titles */
       rect.x = 0;
       rect.y = 0;
-      rect.width = w + psw->bw;
-      rect.height = psw->title_height + psw->boundary_width * 2;
+      rect.width = w;
+      rect.height = psw->title_height;
 
       XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
-			      0, 0, &rect, 1, ShapeUnion, Unsorted);
+			      0, 0, &rect, 1, fSet? ShapeUnion: ShapeSet, Unsorted);
     }
   }
 }
@@ -728,6 +732,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   XSetWindowAttributes attributes;
   unsigned long valuemask;
   static unsigned int corners[4];
+  Bool fSquashedTitlebar = SQUASHED_TITLEBAR_P(psw);
   Window w;
 
   if (!psw)
@@ -953,10 +958,13 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 
     for (i = 0; i < 4; i++) {
       int vertical = i % 2;
+      int northeast = i / 2;
 
       int flags = fHighlightOn
         ? GET_DECOR(psw, BorderStyle.active->style)
         : GET_DECOR(psw, BorderStyle.inactive->style);
+      int top_side_relief_offset_when_squashed = 
+        psw->tbar_right - psw->corner_width - psw->xboundary_width;
 
       ChangeWindowColor(psw->sides[i], valuemask);
       if ((flush_expose(psw->sides[i])) || (expose_win == psw->sides[i]) ||
@@ -978,18 +986,24 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 
 	if (flags & HiddenHandles) {
 	  if (flags & NoInset) {
-	    RelieveWindowHH(psw, psw->sides[i], 0, 0,
-			    ((vertical) ? psw->boundary_width : x),
-			    ((vertical) ? y : psw->boundary_width),
+            /* no inset, hidden handles */
+	    RelieveWindowHH(psw, psw->sides[i], 
+                            (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed:0,
+                            0,
+			    (vertical? psw->boundary_width : x),
+			    (vertical? y : psw->boundary_width),
 			    rgc, sgc, vertical
 			    ? (i == 3 ? LEFT_HILITE : RIGHT_HILITE)
 			    : (i ? BOTTOM_HILITE : TOP_HILITE),
 			    (0x0001 << i)
 	      );
 	  } else {
-	    RelieveWindowHH(psw, psw->sides[i], 0, 0,
-			    ((vertical) ? psw->boundary_width : x),
-			    ((vertical) ? y : psw->boundary_width),
+            /* with inset, hidden handles */
+	    RelieveWindowHH(psw, psw->sides[i], 
+                            (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed:0,
+                            0,
+			    (vertical? psw->boundary_width : x),
+			    (vertical? y : psw->boundary_width),
 			    rgc, sgc, vertical
 			    ? (LEFT_HILITE | RIGHT_HILITE)
 			    : (TOP_HILITE | BOTTOM_HILITE),
@@ -997,9 +1011,12 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	      );
 	  }
 	} else {
-	  RelieveWindow(psw, psw->sides[i], 0, 0,
-			((i % 2) ? psw->boundary_width : x),
-			((i % 2) ? y : psw->boundary_width),
+          /* not hidden handles (visible handles) */
+	  RelieveWindow(psw, psw->sides[i], 
+                        (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed :0,
+                        0,
+			(vertical? psw->boundary_width : x),
+			(vertical? y : psw->boundary_width),
 			rgc, sgc, (0x0001 << i));
 	}
       }
@@ -1016,22 +1033,22 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	}
 	if (flags & HiddenHandles) {
 	  RelieveWindowHH(psw, psw->corners[i], 0, 0, psw->corner_width,
-		      ((i / 2) ? psw->corner_width + psw->bw : psw->corner_width),
+		      (northeast? psw->corner_width + psw->bw : psw->corner_width),
 			  rgc, sgc, corners[i], corners[i]);
 
 	  if (!(flags & NoInset)) {
 	    if (psw->boundary_width > 1)
 	      RelieveParts(psw, i | HH_HILITE,
-			   ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
+			   (northeast? rgc : sgc), (vertical ? rgc : sgc));
 	    else if (psw->boundary_width > 0)
 	      RelieveParts(psw, i | HH_HILITE,sgc,sgc);
           }
 	} else {
 	  RelieveWindow(psw, psw->corners[i], 0, 0, psw->corner_width,
-		      ((i / 2) ? psw->corner_width + psw->bw : psw->corner_width),
+		      (northeast? psw->corner_width + psw->bw : psw->corner_width),
 			rgc, sgc, corners[i]);
 	  if (psw->boundary_width > 1)
-	    RelieveParts(psw, i, ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
+	    RelieveParts(psw, i, (northeast? rgc : sgc), (vertical ? rgc : sgc));
 	  else if (psw->boundary_width > 0)
 	    RelieveParts(psw, i, sgc,sgc);
 	}
@@ -1165,7 +1182,7 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */
   /* we need to check for UseBorderStyle for the titlebar */
-  {
+  { /* scope */
     ButtonFace *bf = fHighlightOn
       ? GET_DECOR(psw, BorderStyle.active)
       : GET_DECOR(psw, BorderStyle.inactive);
@@ -1215,13 +1232,16 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
 		   bf, ReliefGC, ShadowGC, False, 0);
     }
 
-    if (!(tb_style & FlatButton)) {
-      if (tb_style & SunkButton)
-	RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
-		      ShadowGC, ReliefGC, BOTTOM_HILITE);
-      else
-	RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
-		      ReliefGC, ShadowGC, BOTTOM_HILITE);
+    if (!SQUASHED_TITLEBAR_P(psw)) {
+      /* only relieve the title window if it's not a squashed titlebar */
+      if (!(tb_style & FlatButton)) {
+        if (tb_style & SunkButton)
+          RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
+                        ShadowGC, ReliefGC, BOTTOM_HILITE);
+        else
+          RelieveWindow(psw, psw->title_w, 0, 0, psw->title_width, psw->title_height,
+                        ReliefGC, ShadowGC, BOTTOM_HILITE);
+      }
     }
     if (psw->name != (char *) NULL) {
 #ifdef I18N
@@ -1450,6 +1470,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   if (fResized) {
     /* make the decoration buttons square */
     int button_width = psw->title_height;
+    int button_height = psw->title_height;
 
     int left = CLeftButtons(psw);
     int right = CRightButtons(psw);
@@ -1465,12 +1486,14 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     tbar_right = w;
     if (psw->fTitle && fSquashedTitlebar) {
       int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
-      tw += 2*psw->xboundary_width + psw->bw + 18;
+      tw += psw->xboundary_width + psw->bw + 18;
       if (psw->title_width > tw) {
+        /* title is wider than it needs to be */
 	tbar_right = w - (psw->title_width - tw);
 	psw->title_width = tw;
       }
     }
+    psw->tbar_right = tbar_right;
 
     if (SHOW_TITLE_P(psw)) {
       unsigned long buttons = psw->buttons;
@@ -1478,7 +1501,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       psw->title_x = psw->xboundary_width + (left * button_width);
       if (psw->title_x >= w - psw->xboundary_width)
 	psw->title_x = -10;
-      psw->title_y = psw->boundary_width;
+      psw->title_y = fSquashedTitlebar? 0 : psw->boundary_width;
 
       XMoveResizeWindow(dpy, psw->title_w,
 			psw->title_x, psw->title_y,
@@ -1486,9 +1509,9 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       XMapWindow(dpy,psw->title_w);
 
       xwcm = CWX | CWY | CWHeight | CWWidth;
-      xwc.height = psw->title_height;
+      xwc.height = button_height;
       xwc.width = button_width;
-      xwc.y = psw->boundary_width;
+      xwc.y = fSquashedTitlebar? 0 : psw->boundary_width;
       xwc.x = psw->xboundary_width;
       for (i = 0; i < CLeftButtons(psw); i++) {
 	if (psw->left_w[i] != None) {
@@ -1565,9 +1588,9 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
         for (i = 0; i < 4; i++) {
           if (i == 0) { /* top side */
             xwc.x = psw->corner_width;
-            xwc.y = 0;
+            xwc.y = (fSquashedTitlebar? psw->title_height : 0);
             xwc.height = psw->boundary_width;
-            xwc.width = tbar_right - 2 * psw->corner_width + psw->bw;
+            xwc.width = (fSquashedTitlebar? w: tbar_right)- 2 * psw->corner_width + psw->bw;
           } else if (i == 1) { /* right side */
             xwc.x = w - psw->boundary_width + psw->bw;
             xwc.y = psw->corner_width;
@@ -1587,10 +1610,14 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
           if (fNoSideDecorations && (i == 1 || i == 3)) {
             XUnmapWindow(dpy,psw->sides[i]);
           } else {
-            if (!shaded || (i != 2)) { /* skip bottom side when shaded */
+            if (!shaded || (i != 2 && !fSquashedTitlebar)) { 
+              /* show the sides -- we do not show them if 
+                 the window is shaded; except the bottom
+                 one, which we should show but may not GJB:FIXME:: */
               XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
               /* make sure sides are mapped */
               XMapWindow(dpy,psw->sides[i]);
+              XLowerWindow(dpy,psw->sides[i]); /* lower these so corners are on top */
             } else {
               XUnmapWindow(dpy,psw->sides[i]);
             }
@@ -1606,19 +1633,26 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
          0 = NW, 1 = NE, 2 = SW, 3 = SE */
       for (i = 0; i < 4; i++) {
 
-	if (i == 1 || i == 3) /* Right corners: NE, SE */
-	  xwc.x = (i==1?tbar_right:w) - psw->corner_width + psw->bw;
+	if (i == 1) /* right corner: NE */
+	  xwc.x = (fSquashedTitlebar? w : tbar_right) - psw->corner_width + psw->bw;
+        else if (i == 3) /* right corner: SE */
+	  xwc.x = w - psw->corner_width + psw->bw;
 	else /* Left corners: NW, SW */
 	  xwc.x = 0;
 
 	if (i == 2 || i == 3) /* Bottom corners: SW, SE */
 	  xwc.y = h - xwc.height;
-	else /* Top corners:  */
+	else if (i == 1) /* Top corner: NE */
+          xwc.y = (fSquashedTitlebar? psw->title_height : 0);
+        else /* Top corner: NW */
 	  xwc.y = 0;
 
-	if (!shaded || (i < 2)) { /* do top corners even when shaded */
+	if (!shaded || i==0 || (i == 1 && !fSquashedTitlebar)) { 
+          /* do top left always, top right when shaded and not fSquashedTitlebar */
 	  XConfigureWindow(dpy, psw->corners[i], xwcm, &xwc);
           XMapWindow(dpy,psw->corners[i]);
+        } else {
+          XUnmapWindow(dpy,psw->corners[i]);
         }
       }
     } else {
@@ -1654,7 +1688,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
         SetShape(psw, w);
       } else {
         if (fSquashedTitlebar) {
-          SetShapedTitlebar(psw, tbar_right);
+          SetShapedTitlebar(psw, tbar_right - psw->xboundary_width);
         } else {
           UnsetShapedTitlebar(psw);
         }

@@ -122,12 +122,12 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
    * Second, fit to base + N * inc
    */
   if (xinc != 0) 
-    dwidth = ((dwidth - baseWidth) / xinc * xinc) + baseWidth;
+    dwidth = ((dwidth + xinc/2 - baseWidth) / xinc * xinc) + baseWidth;
   else
     scwm_msg(WARN,FUNC_NAME,"xinc == 0");
 
   if (yinc != 0)
-    dheight = ((dheight - baseHeight) / yinc * yinc) + baseHeight;
+    dheight = ((dheight + yinc/2 - baseHeight) / yinc * yinc) + baseHeight;
   else
     scwm_msg(WARN,FUNC_NAME,"yinc == 0");
 
@@ -383,6 +383,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   int origy;
   int origWidth;
   int origHeight;
+  int yoffset = 0;
 
   int ymotion = 0, xmotion = 0;
   Bool finished = False, done = False;
@@ -437,6 +438,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       xmotion = 1;
     }
     if (PressedW == psw->corners[1]) {	/* upper-right */
+      if (psw->fSquashedTitlebar)
+        yoffset = psw->title_height;
       xmotion = -1;
       ymotion = 1;
     }
@@ -524,7 +527,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
     case MotionNotify:
       x = ResizeEvent.xmotion.x_root;
-      y = ResizeEvent.xmotion.y_root;
+      y = ResizeEvent.xmotion.y_root - yoffset;
       /* resize before paging request to prevent resize from lagging mouse - mab */
       ComputeNewGeometryOnResize(psw,origx,origy,origWidth,origHeight,
                                  x, y, &xmotion, &ymotion, 

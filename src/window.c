@@ -1333,8 +1333,10 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
      the pointer initially will get the select_window_leave_hook called
      for it right away when it appears that the root window has been
      entered */
-  if (XCheckMaskEvent(dpy, EnterWindowMask, &event_junk))
+  if (XCheckMaskEvent(dpy, EnterWindowMask, &event_junk)) {
     DBUG((DBG,"DeferExecution","Removed EnterNotify event"));
+    /* empty */
+  }
 
   if (pswInitialWin) {
     lastwin_entered = pswInitialWin->schwin;
@@ -2182,7 +2184,7 @@ way if not specified. See also `window-unshade'.*/
   SET_SHADED(psw);
 
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
-	     psw->title_height + psw->boundary_width,
+	     psw->title_height + (psw->fSquashedTitlebar? 2:1) * psw->boundary_width,
 	     NOT_MOVED, WAS_RESIZED);
 
   CoerceEnterNotifyOnCurrentWindow();

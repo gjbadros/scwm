@@ -22,6 +22,7 @@ void RelieveWindow(ScwmWindow * t, Window win,
 		   GC ReliefGC, GC ShadowGC, int highlight);
 
 void SetShape(ScwmWindow *psw, int w);
+void SetShapedTitlebar(ScwmWindow *psw, int w);
 
 void SetTitleBar(ScwmWindow *psw, Bool onoroff, Bool NewTitle);
 

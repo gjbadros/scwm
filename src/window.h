@@ -169,7 +169,8 @@ struct ScwmWindow {
   int title_x;
   int title_y;
   int title_height;		/* height of the title bar */
-  int title_width;		/* width of the title bar */
+  int title_width;		/* width of the title window */
+  int tbar_right;               /* width of the full title bar */
   int icon_x_loc;		/* icon window x coordinate */
   int icon_xl_loc;		/* icon label window x coordinate */
   int icon_y_loc;		/* icon window y coordiante */
