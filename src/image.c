@@ -219,7 +219,7 @@ load_xbm (SCM full_path)
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    scwm_msg(WARN,__FUNCTION__,"Could not load bitmap `%s'",c_path);
+    scwm_msg(WARN,s_load_xbm,"Could not load bitmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
   free(c_path);
@@ -266,7 +266,7 @@ load_xpm (SCM full_path)
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    scwm_msg(WARN,__FUNCTION__,"Could not load pixmap `%s'",c_path);
+    scwm_msg(WARN,s_load_xpm,"Could not load pixmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
   free(c_path);
