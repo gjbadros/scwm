@@ -134,7 +134,6 @@ SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
 Uses format 8 (byte) and type "XA_STRING", and VALUE as the data. */
 #define FUNC_NAME s_set_window_text_property
 {
-  Status status;
   if (!WINDOWP(win)) {
     scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
@@ -197,7 +196,7 @@ if the boolean value CONSUME is #t */
 		       del, AnyPropertyType, &type, &format, &nitems,
 		       &bytes_left, &data);
     if (bytes_left)
-      len += bytes_left>>2+1;	/* adjust size and try again */
+      len += (bytes_left>>2)+1;	/* adjust size and try again */
     else
       break;
   }
