@@ -2230,7 +2230,7 @@ SCWM_PROC (window_size_hints, "window-size-hints", 1, 0, 0,
      /** Return a list of the window size hints associated with WIN.
 The list returned contains 4 cons pairs containing:
 '((min-width . max-width) (min-height . max-height) 
-  (width-inc . height-inc) (base-width . baseheight)) */
+(width-inc . height-inc) (base-width . baseheight)) */
 #define FUNC_NAME s_window_size_hints
 {
   int iarg = 1;
