@@ -1,7 +1,7 @@
 /* XPM */
 static char * keep_tops_even_xpm[] = {
 "32 32 7 1",
-" 	c #FFFFFFFFFFFF",
+" 	c None",
 ".	c #FFFF00000000",
 "X	c #6363B8B8FFFF",
 "o	c #000000000000",
