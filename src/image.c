@@ -626,11 +626,9 @@ void init_image()
 
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
-  /* FIXDOC: how to document distinguished variables? */
   
 /**VAR: image-load-path
-  image-load-path is a variable that should contain a list of strings
-indicating the directories in which to try to look for image files.  
+  Contains a list of strings indicating the directories in which to look for image files. 
 */
 
   loc_image_load_path = SCM_CDRLOC
