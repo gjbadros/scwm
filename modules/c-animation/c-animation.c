@@ -445,7 +445,9 @@ way if not specified. */
     }
 
     /* use viewport coordinates */
-    AnimatedMoveWindow(w,startX,startY,
+    AnimatedMoveWindow(w,
+                       startX - WIN_VP_OFFSET_X(psw),
+                       startY - WIN_VP_OFFSET_Y(psw),
 		       destX - WIN_VP_OFFSET_X(psw),
 		       destY - WIN_VP_OFFSET_Y(psw),
 		       fMovePointer,cmsDelay,NULL);
