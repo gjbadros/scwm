@@ -1,3 +1,8 @@
+1999-02-13  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* Makefile.am, woven, woven/*: Added "woven" theme, which is what
+	I personally use.
+
 Mon Nov 16 14:36:05 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Build successfully with builddir != srcdir
