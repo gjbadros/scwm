@@ -1,3 +1,26 @@
+Wed Apr  7 08:03:15 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-proc.scm: ws change.
+
+	* gnome-hints.scm: use-module (app scwm animation) to fix bug Sam
+	Steingold reported.
+
+	* animation.scm: Added a comment
+
+Wed Apr  7 07:54:53 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm (show-window-list-menu): Permit hover-delay and
+	popup-delay arguments and pass them along.  Fix bug in passing of
+	warp-to-first (it was going to the menu proc, not to the
+	popup-menu proc due to a misplaced paren).
+
+	* flux.scm: Give a hover-delay of 0 to
+	select-window-from-window-list so that the window gets highlighted 
+	right away.
+
+	* base.scm (menu): Be sure popup-delay and hover-delay are both
+	bound and not #f before using them.
+
 Tue Apr  6 12:39:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.scm: Replace hilight with highlight. 

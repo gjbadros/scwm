@@ -1,3 +1,25 @@
+Wed Apr  7 07:48:44 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h, xmisc.c: Added WxGetWindowParent().
+
+	* window.h, window.c: Added PswFromAnyWindow() to return the
+ 	ScwmWindow * from any of the child windows of the frame or the
+ 	frame (not just the frame itself as PswFromWindow() does).  Added
+	select_window_enter_hook, select_window_leave_hook and invoke them 
+	when top-level windows are entered and left during
+	`select-window-interactively-no-message'
+
+	* menu.c (MenuInteraction): Update c10ms_delays after the first
+	time through the loop so that a 0 delay for hover/popup works.
+
+	* events.c: Fixed window_enter_hook, window_leave_hook-- these
+	hooks were incredibly broken as they got the enter/leave notify
+	events on the frame decorations, too, and called the hooks too
+	often.  Now I watch only for enter events and call the leave hook
+	when a new window or the root window is entered.  This gives much
+	more useful behaviour (I can't imagine anything relying on the old 
+	calling pattern, but this would break any code that did).
+
 Tue Apr  6 12:51:52 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.[ch]: Use highlight instead of hilite or hilight.
