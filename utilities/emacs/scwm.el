@@ -1,6 +1,7 @@
-;;; File: <scwm.el - 1998-03-17 Tue 15:51:04 EST sds@mute.eaglets.com>
+;;; File: <scwm.el - 1998-03-23 Mon 16:23:02 EST sds@mute.eaglets.com>
 ;;;
 ;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
+;;; $Id$
 ;;;
 ;;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
 ;;;    03/11/98 gjb
@@ -49,11 +50,16 @@
 ;; also available: type C-h C-a for apropos and C-h C-s for documantation.
 ;; Type M-TAB to complete symbol at point.
 
+;; Note that this uses `with-output-to-string', which is broken in
+;; XEmacs and absent from Emacs 19.  File lisp/subr.el from the Emacs
+;; distribution contains the corrent version.  You can get the file from
+;; http://sourcery.naggum.no.
+
 ;;; user variables
 ;;; ---- ---------
 
-(defvar scwm-repl "/usr/local/bin/scwmrepl" "The path to scwmrepl.")
-(defvar scwm-exec "/usr/local/bin/scwmexec" "The path to scwmexec.")
+(defvar scwm-repl "scwmrepl" "The path to scwmrepl.")
+(defvar scwm-exec "scwmexec" "The path to scwmexec.")
 
 ;;; pacify the compiler (XEmacs only)
 (eval-and-compile (autoload 'id-select-symbol "id-select"))
@@ -96,7 +102,9 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-eval-to-minibuffer ()
   "Evaluate the last SEXP and show the result in the minibuffer."
   (interactive)
-  (message (with-output-to-string (scwm-eval-last standard-output))))
+  (let ((last (buffer-substring-no-properties
+	       (point) (save-excursion (backward-sexp) (point)))))
+    (message (with-output-to-string (scwm-eval last standard-output)))))
 
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-to-minibuffer)
