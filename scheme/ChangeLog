@@ -1,3 +1,10 @@
+Sat Jan 22 17:19:00 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux-gtk.scm: Added * to either end of
+	`show-window-list-matching-interactively' so it does a regexp
+	substring search by default.  Make `bookmark-grep' just do nothing 
+	when no string is entered in the prompt.
+
 Thu Jan 20 12:27:17 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm: `execute-on-selection', `exe-on-selection' now

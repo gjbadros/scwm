@@ -7,6 +7,9 @@ Changes for scwm-0.99.7 (not yet released)
 ** More robust
 ** Plugged two small but frequent memory leaks
 
+* Changed commands
+** show-window-list-matching-interactively
+Use * on both ends of entered string so the default is a substring search
 
 
 Changes for scwm-0.99.6 (released 12-January-2000)
