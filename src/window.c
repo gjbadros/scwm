@@ -1052,20 +1052,20 @@ See also `with-window' and `set-window-context!' */
 #undef FUNC_NAME
 
 
-SCWM_PROC(current_window_with_focus, "current-window-with-focus", 0, 0, 0,
+SCWM_PROC(window_with_focus, "window-with-focus", 0, 0, 0,
           ())
      /** Return the window that currently has the input focus. */
-#define FUNC_NAME s_current_window_with_focus
+#define FUNC_NAME s_window_with_focus
 {
   return Scr.Hilite? Scr.Hilite->schwin : SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
+SCWM_PROC(window_with_pointer, "window-with-pointer", 0, 0, 0,
           ())
      /** Return the window that currently contains the mouse pointer. */
-#define FUNC_NAME s_current_window_with_pointer
+#define FUNC_NAME s_window_with_pointer
 {
   ScwmWindow *psw = PswFromPointerLocation(dpy);
   return psw? psw->schwin: SCM_BOOL_F;
