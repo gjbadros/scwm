@@ -124,8 +124,6 @@
 ;;
 
 
-;; Use (set! debug-fvwm-module #t) in your .scwmrc 
-;; after importing this module if you want to see the debug code
 (define-scwm-option *debug-fvwm-module* #f
   "Set this if you want debugging output from fvwm2 modules."
   #:type 'boolean
