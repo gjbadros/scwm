@@ -1,3 +1,9 @@
+1998-11-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* session-management: New file.
+
+	* README: Added a pointer to SGMLtools.
+
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am (scwm.sgml scwm-procedures.txt): echo 'make[99]:
