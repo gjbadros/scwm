@@ -203,13 +203,24 @@ Use the optional second argument as the separator."
 (define-public (sleep-ms ms)
   (select '() '() '() 0 (* 1000 ms)))
 
-;; Does not work for arbitrary strings since, e.g,. ' ' needs
-;; to be sent as "space"  FIXGJB: Do we have a char->keysym fn?
+(define-public (printable-char->keysym-string char)
+  (let ((charval (char->integer char)))
+    (cond ((char=? char #\space) "space")
+	  ((char=? char #\newline) "Return")
+	  ((char=? char #\cr) "Return")
+	  ((= charval 27) "Escape")
+	  ((< charval 32) (string-append "C-" (make-string 1 (integer->char 
+							      (+ 64 charval)))))
+	  (#t (make-string 1 char)))))
+
+;; (printable-char->keysym-string "")
+
 (define-public (X-synthetic-send-string str)
   (let ((w (get-window))
 	(i 0))
-    (while (< i (length str))
-	   (send-key-press (substring str i (+ 1 i)) w)
+    (while (< i (string-length str))
+	   (send-key-press 
+	    (printable-char->keysym-string (string-ref str i)) w)
 	   (set! i (+ 1 i)))))
 
 ;; from Harvey Stein
@@ -258,3 +269,6 @@ Return the selected window object, or #f if none was selected"
 ;; e.g.
 ;; (let ((w (select-window-from-window-list #:only iconified?)))
 ;;  (deiconify w) (move-to 0 0 w))
+
+(define-public (color->string color)
+  (color-properties color 'name))

@@ -73,6 +73,7 @@
 
 ;; quote all regexp meta-characters, then turn \* and \? into .* and
 ;; .? respectively.
+;; MSFIX: isn't a ? in a wildcard the same as ".", not ".?"? --08/02/98 gjb
 (define (wildcard->regexp wildcard)
   (regexp-substitute/global 
    #f "\\\\\\*|\\\\\\?" 
@@ -84,6 +85,11 @@
        ((#\?) ".?"))) 
    'post))
 
+
+(define*-public (window-machine-name #&optional (win (get-window)))
+  "Return the name of the client machine on which WIN is running."
+  (if win (xproperty->string (window-xproperty win "WM_CLIENT_MACHINE"))
+      #f))
 
 (define*-public (wildcard-matcher wildcard #&key (full-regexp #f)
 				  (regexp-options `(,regexp/icase))) 

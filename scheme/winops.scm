@@ -125,3 +125,13 @@
 				" | xpr | lpr"))))
 
 
+
+(define*-public (lower-window-below #&optional (w (get-window)) (w2 #f))
+  (if w2 
+      (restack-windows (list w2 w))
+      (lower-window w)))
+
+(define*-public (raise-window-above #&optional (w (get-window)) (w2 #f))
+  (if w2 
+      (restack-windows (list w w2))
+      (raise-window w)))
