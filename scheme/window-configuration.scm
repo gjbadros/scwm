@@ -42,8 +42,10 @@
 
 (define-public (window-configuration? wcfg)
   "Return #t if WCFG is a window configuration."
-  (and (pair? wcfg) 
-       (window? (car wcfg))))
+  (and (pair? wcfg)
+       (window? (car wcfg))
+       (pair? (cdr wcfg))
+       (number? (cadr wcfg))))
 
 ;; (define c (window-configuration))
 

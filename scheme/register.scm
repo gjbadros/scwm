@@ -5,6 +5,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm window-configuration)
   :use-module (app scwm message-window)
+  :use-module (app scwm window-selection)
   :use-module (app scwm modifier-key-bindings)
   :use-module (app scwm base))
 
@@ -42,6 +43,7 @@
 ;;; (set-register 'A 5)
 
 ;;; (get-register 'a)
+;;; (window? (get-register 'a))
 ;;; (window-configuration? (get-register 'a))
 ;;; (get-register 'b)
 ;;; (get-register 'j)
@@ -52,6 +54,7 @@
 ;; (window-configuration-to-register)
 ;; (global-window-configuration-to-register)
 ;; (jump-to-register)
+;; (selected-windows-to-register)
 
 (define*-public (focus-to-register #&optional (register (get-register-name)))
   "Save the currently-focused window to REGISTER."
@@ -68,12 +71,22 @@
   (if (and win register)
       (set-register register (window-configuration win))))
 
+(define*-public (selected-windows-to-register #&optional (register (get-register-name)))
+  "Save the current set of selected windows to REGISTER."
+  (interactive)
+  (if register
+      (let ((val (selected-windows-list)))
+	(set-register register val))))
+
 (define*-public (global-window-configuration-to-register
 		 #&optional (register (get-register-name)))
   "Save the global configuration of windows to REGISTER."
   (interactive)
   (if register
       (set-register register (global-window-configuration))))
+
+(define-public (list-of-windows? list-of-windows)
+  (and-map window? list-of-windows))
 
 (define*-public (jump-to-register #&optional (register (get-register-name)))
   "Restore the state saved in REGISTER."
@@ -83,6 +96,7 @@
      ((window? val) (focus-window val))
      ((window-configuration? val) (copy-window-configuration val (car val))
 				  (focus-window (car val)))
+     ((list-of-windows? val) (set-selected-windows-list! val))
      (val (restore-global-window-configuration val)))))
 
 #!
