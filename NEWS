@@ -105,6 +105,8 @@ returning #f which ultimately would cause an error somewhere
 ** `animated-resize-window', `animated-resize-frame'
 ** `force_segv_for_testing', `set-reset-on-segv!', `set-handles-segv!'
 ** `scwm-last-timestamp'
+** `set-menu-colors!', `set-menu-font!', `set-menu-side-picture!',
+** `set-menu-background-picture!', `set-menu-extra-options!'
 
 * Removed primitives
 ** dangerous and unnecessary `wait-for-window' procedure
@@ -113,6 +115,9 @@ returning #f which ultimately would cause an error somewhere
 * Misc. changed primitives
 ** `bind-keycode' allow release procs like new `bind-keycode'
 ** `hilite' and `hilight' in primitives is now spelled correctly as `highlight'
+** menulook? is now spelled menu-look? for consistency
+** set-menu-menu-look! is now set-menu-look!
+** set-menu-menu-title! is now set-menu-title!
 
 * Misc. new procedures
 ** `fold-menu-list-by-group', `rename-window-interactively'
