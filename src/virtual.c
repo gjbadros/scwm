@@ -10,6 +10,7 @@
 
 #include "scwm.h"
 #include "misc.h"
+#include "window.h"
 #include "icons.h"
 #include "screen.h"
 #include "Grab.h"
@@ -427,7 +428,7 @@ changeDesks(int val1, int val2)
 	  t->FocusDesk = oldDesk;
 	else
 	  t->FocusDesk = -1;
-	UnmapIt(t);
+	UnmapScwmWindow(t);
       } else if (t->Desk == Scr.CurrentDesk) {
 	MapIt(t);
 	if (t->FocusDesk == Scr.CurrentDesk) {

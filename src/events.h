@@ -12,6 +12,8 @@ SCM send_key_press(SCM key, SCM win,
 		   SCM button_press_p, SCM button_release_p,
 		   SCM propagate_p);
 
+void HandleHardFocus(ScwmWindow * t);
+
 #endif
 
 /* Local Variables: */

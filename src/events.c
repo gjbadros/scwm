@@ -72,7 +72,7 @@
 #include "window.h"
 #include "colormaps.h"
 #include "module-interface.h"
-
+#include "events.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
@@ -314,6 +314,28 @@ GetContext(ScwmWindow * t, XEvent * e, Window * w)
     }
   }
   return Context;
+}
+
+
+void 
+HandleHardFocus(ScwmWindow * t)
+{
+  int x, y;
+
+  FocusOnNextTimeStamp = t;
+  Scr.Focus = NULL;
+  /* Do something to guarantee a new time stamp! */
+  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+		&JunkX, &JunkY, &x, &y, &JunkMask);
+  GrabEm(CURSOR_WAIT);
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
+	       Scr.MyDisplayHeight,
+	       x + 2, y + 2);
+  XSync(dpy, 0);
+  XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
+	       Scr.MyDisplayHeight,
+	       x, y);
+  UngrabEm();
 }
 
 /***********************************************************************
@@ -761,7 +783,7 @@ HandleDestroyNotify()
 {
   DBUG("HandleDestroyNotify", "Routine Entered");
 
-  Destroy(swCurrent);
+  DestroyScwmWindow(swCurrent);
 }
 
 
@@ -1000,7 +1022,7 @@ HandleUnmapNotify()
   XGrabServer_withSemaphore(dpy);
 
   if (XCheckTypedWindowEvent(dpy, Event.xunmap.window, DestroyNotify, &dummy)) {
-    Destroy(swCurrent);
+    DestroyScwmWindow(swCurrent);
     XUngrabServer_withSemaphore(dpy);
     return;
   }
@@ -1031,7 +1053,7 @@ HandleUnmapNotify()
     }
     XRemoveFromSaveSet(dpy, Event.xunmap.window);
     XSelectInput(dpy, Event.xunmap.window, NoEventMask);
-    Destroy(swCurrent);		/* do not need to mash event before */
+    DestroyScwmWindow(swCurrent); /* do not need to mash event before */
     /*
      * Flush any pending events for the window.
      */

@@ -323,8 +323,7 @@ unbind_mouse(SCM contexts, SCM button)
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > 3) {
-	/* FIXGJB: number of buttons is not really fixed at 3 */
+      if (bnum < 0 || bnum > MAX_BUTTONS) {
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
@@ -459,8 +458,6 @@ bind_key(SCM contexts, SCM key, SCM proc)
     SCM_ALLOW_INTS;
     scwm_msg(WARN,__FUNCTION__,"No matching keycode for symbol `%s'",keyname);
     free(keyname);
-    /* FIXGJB: is there a guile-specific way to warn? This shouldn't be fatal */
-/*    scwm_error_imm("bind-key", "No matching keycode!"); */
     return SCM_BOOL_F; /* Use False for error */
   }
   return SCM_UNSPECIFIED;
@@ -485,8 +482,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > 3) {
-	/* FIXGJB: number of buttons is not really fixed at 3 */
+      if (bnum < 0 || bnum > MAX_BUTTONS) {
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;

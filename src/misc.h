@@ -116,7 +116,6 @@ typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
 
 void free_window_names(ScwmWindow * tmp, Bool nukename, Bool nukeicon);
-void Destroy(ScwmWindow *);
 int flush_expose(Window w);
 void CoerceEnterNotifyOnCurrentWindow();
 void RestoreWithdrawnLocation(ScwmWindow *, Bool);
@@ -124,10 +123,6 @@ Bool StashEventTime(XEvent * ev);
 Bool GrabEm(enum cursor);
 void UngrabEm(void);
 void KeepOnTop(void);
-void UnmapIt(ScwmWindow * t);
-void RaiseWindow(ScwmWindow * t);
-void LowerWindow(ScwmWindow * t);
-void HandleHardFocus(ScwmWindow * t);
 
 /* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
 

@@ -679,9 +679,7 @@ AddWindow(Window w)
 			&a, &b, &JunkChild);
   tmp_win->xdiff -= a;
   tmp_win->ydiff -= b;
-#ifndef CLICKTORAISE
   if (tmp_win->flags & ClickToFocus) {
-#endif
     /* need to grab all buttons for window that we are about to
        * unhighlight */
     for (i = 0; i < 3; i++)
@@ -693,9 +691,7 @@ AddWindow(Window w)
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
 		    Scr.ScwmCursors[CURSOR_SYS]);
       }
-#ifndef CLICKTORAISE
   }
-#endif
 
   BroadcastConfig(M_ADD_WINDOW, tmp_win);
 

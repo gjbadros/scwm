@@ -73,21 +73,6 @@ scwm_error(char *subr, int err)
 	    gh_list(gh_int2scm(err), SCM_UNDEFINED));
 }
 
-/* FIXGJB: this does not work... does guile require using
-   the goofy error string array? */
-void 
-scwm_error_imm(char *subr, const char *szErrMsg)
-{
-  scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
-	    gh_list(gh_str02scm((char *)szErrMsg), SCM_UNDEFINED),
-
-	    /* MS: this doesn't work because gh_list will return the
-	       empty list for the following call; it needs to be a
-	       list of a number, errors get a numerical index in
-	       addition to error type and parameters. */
-
-	    gh_list(SCM_UNDEFINED, SCM_UNDEFINED));
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

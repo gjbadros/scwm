@@ -171,6 +171,8 @@ void UnBlackoutScreen(void);
 extern int master_pid;
 
 extern Display *dpy;
+struct ScwmWindow;
+extern struct ScwmWindow *FocusOnNextTimeStamp;
 
 extern XContext ScwmContext;
 

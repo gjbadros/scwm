@@ -515,6 +515,272 @@ select_window(SCM kill_p, SCM release_p)
 }
 
 
+
+
+
+
+/*
+ * Unmaps a window on transition to a new desktop
+ */
+void 
+UnmapScwmWindow(ScwmWindow * t)
+{
+  XWindowAttributes winattrs;
+  unsigned long eventMask;
+
+  /*
+   * Prevent the receipt of an UnmapNotify, since that would
+   * cause a transition to the Withdrawn state.
+   */
+  XGetWindowAttributes(dpy, t->w, &winattrs);
+  eventMask = winattrs.your_event_mask;
+  XSelectInput(dpy, t->w, eventMask & ~StructureNotifyMask);
+  if (t->flags & ICONIFIED) {
+    if (t->icon_pixmap_w != None)
+      XUnmapWindow(dpy, t->icon_pixmap_w);
+    if (t->icon_w != None)
+      XUnmapWindow(dpy, t->icon_w);
+  } else if (t->flags & (MAPPED | MAP_PENDING)) {
+    XUnmapWindow(dpy, t->frame);
+  }
+  XSelectInput(dpy, t->w, eventMask);
+}
+
+/*
+ * Maps a window on transition to a new desktop
+ */
+void 
+MapIt(ScwmWindow * t)
+{
+  if (t->flags & ICONIFIED) {
+    if (t->icon_pixmap_w != None)
+      XMapWindow(dpy, t->icon_pixmap_w);
+    if (t->icon_w != None)
+      XMapWindow(dpy, t->icon_w);
+  } else if (t->flags & MAPPED) {
+    XMapWindow(dpy, t->frame);
+    t->flags |= MAP_PENDING;
+    XMapWindow(dpy, t->Parent);
+  }
+}
+
+/*
+ * Raise a window in the stacking order
+ */ 
+void 
+RaiseWindow(ScwmWindow * t)
+{
+  ScwmWindow *t2;
+  int count, i;
+  Window *wins;
+
+  /* raise the target, at least */
+  count = 1;
+  Broadcast(M_RAISE_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
+
+  for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
+    if (t2->flags & ONTOP)
+      count++;
+    if ((t2->flags & TRANSIENT) && (t2->transientfor == t->w) &&
+	(t2 != t)) {
+      count++;
+      Broadcast(M_RAISE_WINDOW, 3, t2->w, t2->frame, (unsigned long) t2,
+		0, 0, 0, 0);
+      if ((t2->flags & ICONIFIED) && (!(t2->flags & SUPPRESSICON))) {
+	count += 2;
+      }
+    }
+  }
+  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
+    count += 2;
+  }
+  wins = (Window *) safemalloc(count * sizeof(Window));
+
+  i = 0;
+
+  /* ONTOP windows on top */
+  for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
+    if (t2->flags & ONTOP) {
+      Broadcast(M_RAISE_WINDOW, 3, t2->w, t2->frame, (unsigned long) t2,
+		0, 0, 0, 0);
+      wins[i++] = t2->frame;
+    }
+  }
+
+  /* now raise transients */
+#ifndef DONT_RAISE_TRANSIENTS
+  for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
+    if ((t2->flags & TRANSIENT) &&
+	(t2->transientfor == t->w) &&
+	(t2 != t) &&
+	(!(t2->flags & ONTOP))) {
+      wins[i++] = t2->frame;
+      if ((t2->flags & ICONIFIED) && (!(t2->flags & SUPPRESSICON))) {
+	if (!(t2->flags & NOICON_TITLE))
+	  wins[i++] = t2->icon_w;
+	if (!(t2->icon_pixmap_w))
+	  wins[i++] = t2->icon_pixmap_w;
+      }
+    }
+  }
+#endif
+  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
+    if (!(t->flags & NOICON_TITLE))
+      wins[i++] = t->icon_w;
+    if (t->icon_pixmap_w)
+      wins[i++] = t->icon_pixmap_w;
+  }
+  if (!(t->flags & ONTOP))
+    wins[i++] = t->frame;
+  if (!(t->flags & ONTOP))
+    Scr.LastWindowRaised = t;
+
+  if (i > 0)
+    XRaiseWindow(dpy, wins[0]);
+
+  XRestackWindows(dpy, wins, i);
+  free(wins);
+  raisePanFrames();
+}
+
+
+void 
+LowerWindow(ScwmWindow * t)
+{
+  XLowerWindow(dpy, t->frame);
+
+  Broadcast(M_LOWER_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
+
+  if ((t->flags & ICONIFIED) && (!(t->flags & SUPPRESSICON))) {
+    XLowerWindow(dpy, t->icon_w);
+    XLowerWindow(dpy, t->icon_pixmap_w);
+  }
+  Scr.LastWindowRaised = (ScwmWindow *) 0;
+}
+
+/*
+ * Handles destruction of a window 
+ */
+void 
+DestroyScwmWindow(ScwmWindow * sw)
+{
+  int i;
+  extern ScwmWindow *ButtonWindow;
+  extern ScwmWindow *colormap_win;
+  extern Bool PPosOverride;
+
+  /*
+   * Warning, this is also called by HandleUnmapNotify; if it ever needs to
+   * look at the event, HandleUnmapNotify will have to mash the UnmapNotify
+   * into a DestroyNotify.
+   */
+  if (!sw)
+    return;
+
+  XUnmapWindow(dpy, sw->frame);
+
+  if (!PPosOverride)
+    XSync(dpy, 0);
+
+  if (sw == Scr.Hilite)
+    Scr.Hilite = NULL;
+
+  Broadcast(M_DESTROY_WINDOW, 3, sw->w, sw->frame,
+	    (unsigned long) sw, 0, 0, 0, 0);
+
+  if (Scr.PreviousFocus == sw)
+    Scr.PreviousFocus = NULL;
+
+  if (ButtonWindow == sw)
+    ButtonWindow = NULL;
+
+  if ((sw == Scr.Focus) && (sw->flags & ClickToFocus)) {
+    if (sw->next) {
+      HandleHardFocus(sw->next);
+    } else {
+      SetFocus(Scr.NoFocusWin, NULL, 1);
+    }
+  } else if (Scr.Focus == sw) {
+    SetFocus(Scr.NoFocusWin, NULL, 1);
+  }
+
+  if (sw == FocusOnNextTimeStamp)
+    FocusOnNextTimeStamp = NULL;
+
+  if (sw == Scr.Ungrabbed)
+    Scr.Ungrabbed = NULL;
+
+  if (sw == Scr.pushed_window)
+    Scr.pushed_window = NULL;
+
+  if (sw == colormap_win)
+    colormap_win = NULL;
+
+  XDestroyWindow(dpy, sw->frame);
+  XDeleteContext(dpy, sw->frame, ScwmContext);
+
+  XDestroyWindow(dpy, sw->Parent);
+
+  XDeleteContext(dpy, sw->Parent, ScwmContext);
+
+  XDeleteContext(dpy, sw->w, ScwmContext);
+
+  if ((sw->icon_w) && (sw->flags & PIXMAP_OURS) &&
+      sw->icon_image != SCM_BOOL_F) {
+    XFreePixmap(dpy, IMAGE(sw->icon_image)->image);
+  }
+
+  if (sw->icon_w) {
+    XDestroyWindow(dpy, sw->icon_w);
+    XDeleteContext(dpy, sw->icon_w, ScwmContext);
+  }
+  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None))
+    XDestroyWindow(dpy, sw->icon_pixmap_w);
+  if (sw->icon_pixmap_w != None)
+    XDeleteContext(dpy, sw->icon_pixmap_w, ScwmContext);
+
+  if (sw->flags & TITLE) {
+    XDeleteContext(dpy, sw->title_w, ScwmContext);
+    for (i = 0; i < Scr.nr_left_buttons; i++)
+      XDeleteContext(dpy, sw->left_w[i], ScwmContext);
+    for (i = 0; i < Scr.nr_right_buttons; i++)
+      if (sw->right_w[i] != None)
+	XDeleteContext(dpy, sw->right_w[i], ScwmContext);
+  }
+  if (sw->flags & BORDER) {
+    for (i = 0; i < 4; i++)
+      XDeleteContext(dpy, sw->sides[i], ScwmContext);
+    for (i = 0; i < 4; i++)
+      XDeleteContext(dpy, sw->corners[i], ScwmContext);
+  }
+  sw->prev->next = sw->next;
+  if (sw->next != NULL)
+    sw->next->prev = sw->prev;
+  free_window_names(sw, True, True);
+  if (sw->wmhints)
+    XFree((char *) sw->wmhints);
+  /* removing NoClass change for now... */
+  if (sw->class.res_name && sw->class.res_name != NoResource)
+    XFree((char *) sw->class.res_name);
+  if (sw->class.res_class && sw->class.res_class != NoClass)
+    XFree((char *) sw->class.res_class);
+  if (sw->mwm_hints)
+    XFree((char *) sw->mwm_hints);
+
+  if (sw->cmap_windows != (Window *) NULL)
+    XFree((void *) sw->cmap_windows);
+
+  /* XSCM */
+  invalidate_window(sw->schwin);
+
+  free((char *) sw);
+
+  if (!PPosOverride)
+    XSync(dpy, 0);
+  return;
+}
+
+
 SCM 
 delete_window(SCM win)
 {
@@ -541,25 +807,27 @@ delete_window(SCM win)
 SCM 
 destroy_window(SCM win)
 {
-  ScwmWindow *tmp_win;
+  ScwmWindow *sw;
 
   SCM_REDEFER_INTS;
   VALIDATEKILL(win, "destroy-window");
-  tmp_win = SCWMWINDOW(win);
-  if (check_allowed_function(F_DESTROY, tmp_win) == 0) {
+  sw = SCWMWINDOW(win);
+  if (check_allowed_function(F_DESTROY, sw) == 0) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
+  if (XGetGeometry(dpy, sw->w, &JunkRoot, &JunkX, &JunkY,
 		   &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0) {
-    Destroy(tmp_win);
+    DestroyScwmWindow(sw);
   } else {
-    XKillClient(dpy, tmp_win->w);
+    XKillClient(dpy, sw->w);
   }
   XSync(dpy, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
+
+
 
 SCM 
 window_deletable_p(SCM win)
@@ -1302,7 +1570,7 @@ move_window_to_desk(SCM which, SCM win)
     if (t->Desk == Scr.CurrentDesk) {
       t->Desk = val1;
       if (val1 != Scr.CurrentDesk) {
-	UnmapIt(t);
+	UnmapScwmWindow(t);
       }
     } else if (val1 == Scr.CurrentDesk) {
       t->Desk = val1;

@@ -708,7 +708,7 @@ CaptureAllWindows(void)
 	XUnmapWindow(dpy, tmp->frame);
 	XUnmapWindow(dpy, w);
 	RestoreWithdrawnLocation(tmp, True);
-	Destroy(tmp);
+	DestroyScwmWindow(tmp);
 	Event.xmaprequest.window = w;
 	HandleMapRequestKeepRaised(BlackoutWin);
 	tmp = next;

@@ -247,6 +247,11 @@ ScwmWindow *SwFromWindow(Display *dpy, Window w);
 ScwmWindow *SwFromPointerLocation(Display *dpy);
 ScwmWindow *SwSelectInteractively(Display *dpy);
 
+void DestroyScwmWindow(ScwmWindow *);
+void UnmapScwmWindow(ScwmWindow * t);
+void RaiseWindow(ScwmWindow * t);
+void LowerWindow(ScwmWindow * t);
+
 SCM make_window(ScwmWindow * win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);

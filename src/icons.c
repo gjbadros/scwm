@@ -739,7 +739,6 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
     tmp_win->icon_t_width =
       XTextWidth(Scr.IconFont.font, tmp_win->icon_name,
 		 strlen(tmp_win->icon_name));
-/* FIXGJB:     tmp_win->icon_p_width = tmp_win->icon_t_width + 6; */
     tmp_win->icon_w_width = tmp_win->icon_t_width + 6;
   }
   AutoPlace(tmp_win);
