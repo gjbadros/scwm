@@ -533,6 +533,7 @@ scwm_main(int argc, char **argv)
   init_events();
   init_deskpage();
   init_placement();
+  init_Grab();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif

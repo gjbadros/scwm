@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 #include <X11/Xlib.h>
-
+#include "scwm.h"
 
 static int xgrabcount = 0;
 
@@ -49,6 +49,40 @@ XUngrabServer_withSemaphore(Display * disp)
     XUngrabServer(disp);
   }
 }
+
+SCWM_PROC(X_grab_server, "X-grab-server", 0, 0, 0,
+	  ())
+/** Grab the X server.
+This is very risky; you should almost definately use
+with-grabbed-server instead.  This must be paired with
+X-ungrab-server. */
+#define FUNC_NAME s_X_grab_server
+{
+  XGrabServer_withSemaphore(dpy);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
+	  ())
+/** Ungrab the X server.
+Using these functions directly is risky; you should almost definately use
+with-grabbed-server instead. */
+#define FUNC_NAME s_X_ungrab_server
+{
+  XUngrabServer_withSemaphore(dpy);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+
+void init_Grab()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "Grab.x"
+#endif
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -1,3 +1,15 @@
+1998-09-22  Todd Larason  <jtl@teeny.molehill.org>
+
+	* xproperty.c: Removed X-atomic-property-set-if-unset!
+
+	* scwm.c (scwm_main): call init_Grab() along with other init
+	functions
+
+	* Makefile.am: Added Grab.c to guile-snarfs
+
+	* Grab.c: Added X-grab-server and X-ungrab-server to implement
+	with-grabbed-server.
+
 Mon Sep 21 10:08:29 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c (Keyboard_shortcuts): Permit XK_KP_* to be used when
