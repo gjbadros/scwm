@@ -36,7 +36,35 @@ isn't now).
 * StayOnBottom style
 ** constraints will do this really cleanly
 
-* Add useful primitives from GWM, other wms
+* Other useful primitives/procedures --08/02/98 gjb (inspired by GWM, other wms)
+** (elapsed-time) ; get running time of scwm
+** (meminfo) ; Return string describing memory usage information
+** (current-screen), (screen-count)
+** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
+** (invert-color COLOR) ; return a new color by inverting COLOR
+** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
+** (last-key) ; return last key pressed
+** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
+** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
+** (raise-window-above RAISEWINDOW ABOVEWINDOW) ; (these two in terms of restack-windows) done --08/02/98 gjb
+** window closing hook? (upon removal of the window?)
+** (rotate-cut-buffers)
+** (resource-get NAME CLASS), (resource-put NAME VALUE)
+** window-group feature (at scheme level)
+** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp
+** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty)
+** (save-yourself WINDOW) ; send ICCCM WM_SAVE_YOURSELF to window to update WM_COMMAND X property -- maybe in terms of a send-client-message primitive?
+** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
+** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
+** visibility change hooks (fully-obscured, partially-obscured, unobscured)
+** (window-shaped? WINDOW)
+** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive
+** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame)
+** (window-machine-name WINDOW) ; name of host on which client is running
+** (window-user-set-position? WIN), (window-user-set-size? WIN) ; tell if user specified position/size on command line
+** (window-program-set-position? WIN), (window-program-set-size? WIN) ; tell if client programmatically specified position/size on command line
+** (windows-at-position X Y), (windows-at-virtual-position X Y)  ; return in stacking order
+
 
 
 * Size/position window needs to be more dynamic, customizable
