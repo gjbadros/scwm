@@ -287,6 +287,25 @@ v
   (make-cl-stay-constraint v1 cls-strong 2.0)
   (cl-solver-debug-print solver))
 
+
+(define (keep-in-view w1)
+  "Keep window W1 in the current viewport always."
+  (map (lambda (func op val)
+	 (let ((cn (make-cl-constraint (func w1) op val cls-strong 1)))
+	   (cl-add-constraint solver cn)
+	   cn))
+       (list window-clv-xl window-clv-yt window-clv-xr window-clv-yb)
+       (list >= >= <= <=)
+       (append (viewport-position) (map + (viewport-position)
+					(display-size))))
+  (map (lambda (func)
+	 (cl-add-stay solver (func w1) cls-strong 1))
+       (list window-clv-width window-clv-height)))
+
+
+;;(cl-add-stay solver (window-clv-width (select-window-interactively)) cls-strong 1)
+(keep-in-view (select-window-interactively))
+
 (cl-inequality? cn0)
 (cl-equation? cn0)
 (cl-constraint? cn0)
