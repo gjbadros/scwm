@@ -1,3 +1,10 @@
+1998-07-10  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution): Clean up of DeferExecution, inspired
+	by Harvey Stein's latest complaint about the bugs related to it.
+	Still could use more work, but better than before for me, it
+	seems.
+
 Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c (XNextEvent_orTimeout: Remove the #ifdef _hpux, it's
