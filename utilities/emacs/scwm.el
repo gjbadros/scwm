@@ -153,10 +153,11 @@ See also `with-temp-buffer'."
 (require 'scheme)
 
 ;;; XEmacs doesn't have thingatpt. Too bad.
-(eval-when-compile
+(eval-and-compile
  (unless (fboundp 'thing-at-point)
    ;; pacify the compiler (XEmacs only)
-   (eval-and-compile (autoload 'id-select-symbol "id-select"))
+   (eval-when-compile
+     (autoload 'id-select-symbol "id-select"))
    (defun thing-at-point (what)
      "Return the thing at point (crippled: symbols only!)."
      (unless (eq what 'symbol)
