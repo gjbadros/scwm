@@ -1,5 +1,9 @@
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
+	* colors.c (nocolor): Throw an error when we fail to allocate a
+	color in a gradient. Not the best solution, but it beats
+	segfaulting.
+
 	* callbacks.c (force_new_input_hooks): Check if an input hook's
 	port is still open before attempting to check if it has characters
 	ready; this was causing severe problems for fvwm modules.

@@ -32,7 +32,14 @@
 static void 
 nocolor(char *note, char *name)
 {
+  char err[512];
   scwm_msg(ERR, "nocolor", "can't %s color %s", note, name);
+  /* Do it by hand until we come up w/ a better error API. */
+
+  sprintf(err, "can't %s color %s", note, name);
+  scm_error(gh_symbol2scm("scwm-error"), "[color allocation]", "%s",
+	    gh_list(gh_str02scm(err), SCM_UNDEFINED),
+	    gh_list(gh_int2scm(err), SCM_UNDEFINED));
 }
 
 /****************************************************************************
