@@ -1,3 +1,8 @@
+Mon Apr  5 09:58:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Only mess with font-lock stuff (if featurep
+	'font-lock).  Thanks Robert Bihlmeyer for bug report!
+
 Fri Apr  2 10:46:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Added `scwm-use-session' to do the use-modules of

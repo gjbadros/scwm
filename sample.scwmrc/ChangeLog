@@ -1,3 +1,7 @@
+Mon Apr  5 15:17:39 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Comment out a bad binding.
+
 Fri Apr  2 15:36:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use flux-gtk, for rename-window-interactively.

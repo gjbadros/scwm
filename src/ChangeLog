@@ -1,3 +1,12 @@
+Mon Apr  5 15:29:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Added protos for newhandler_doreset, newhandler
+	scwmgtkhelper.c and miscprocs.c both use them.
+
+	* scwm.c: Move fHandleSegv into a global so it can be used by
+	scwmgtkhelper.c.  Also drop the SIGNAL_FOR_RESET abstraction-- it
+	was done sloppily anyway.
+
 Fri Apr  2 13:52:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added arg to option --segv-cleanup-and-stop, and rename to

@@ -5,6 +5,7 @@
 	     (app scwm preferences)
 	     (app scwm themes)
 	     (app scwm menus-extras)
+	     (app scwm prompt-proc)
 	     (gtk gtk)
 	     (gtk gdk))
 
@@ -37,13 +38,47 @@ scwm-options
 ;; (scwm-option-range '*gnome-desktop-number*)
 ;; (gui-set '*gnome-desktop-number*)
 
-(begin
-  (use-modules (app scwm preferences)
-	       (app scwm primopts)
-	       (app scwm auto-raise)
-	       )
-  (scwm-options-dialog))
+(use-modules 
+	     (app scwm auto-raise)
+	     (app scwm preferences)
+	     (app scwm primopts)
+	     (app scwm prompt-proc)
+	     (gtk gtk)
+	     )
+(scwm-options-dialog)
 
 (use-modules (app scwm defoption))
 (scwm-option-get *default-auto-raise-focus-proc*)
 
+(define w (gtk-proc-selection-new "foo"))
+
+(define c (gtk-proc-selection-clist-widget w))
+(gtk-proc-selection-get-procedure w)
+(gtk-proc-selection-get-procname w)
+
+(begin
+  (define row (make-vector 1))
+  (vector-set! row 0 0)
+  (define col (make-vector 1))
+  (vector-set! col 0 1)
+  (define text (make-vector 1))
+  (vector-set! text 0 ""))
+
+(gtk-clist-get-text c 1 0 text)
+(gtk-clist-get-selection-info c 1 0 row col)
+
+(set-reset-on-segv! 0)
+
+(gtk-widget-destroy (car w))
+(apropos-internal-with-modules ".")
+
+(define-scwm-option *a-proc* resize-window
+  "A proc." 
+  #:type 'proc
+  #:group 'test
+  )
+
+(gui-set '*a-proc*)
+
+(procedure-source *a-proc*)
+(procedure-name *a-proc*)

@@ -1,3 +1,9 @@
+Mon Apr  5 15:15:35 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c: Copy the
+	newhandler/newhandler_doreset stuff out of scwm.c since it changed 
+	there. Comment about the coupling.
+
 Wed Mar 31 11:02:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: Drop a bunch of gh_allow_ints() and
