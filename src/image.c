@@ -796,7 +796,7 @@ void init_image()
   val_load_xpm = gh_lookup("load-xpm");
 
   if (val_load_xbm == SCM_UNDEFINED) {
-    scwm_msg(ERR,"init_image","load-xbm, load-xpm not defined -- probable build error\n\
+    scwm_msg(ERR,"init_image","load-xbm not defined -- probable build error\n\
 consider 'rm *.x' and rebuild");
     abort();
   }
@@ -805,9 +805,11 @@ consider 'rm *.x' and rebuild");
   register_image_loader (gh_str02scm(".icon"), val_load_xbm);
   register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
   register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
-  register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
-  register_image_loader (gh_str02scm(".xpm.gz"), val_load_xpm);
-  register_image_loader (str_default, val_load_xbm);
+  if (!UNSET_SCM(val_load_xpm)) {
+    register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
+    register_image_loader (gh_str02scm(".xpm.gz"), val_load_xpm);
+    register_image_loader (str_default, val_load_xbm);
+  }
 #endif /* USE_IMLIB */
   
   /* Make the image-load-path Scheme variable easily accessible from C,

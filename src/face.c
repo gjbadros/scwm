@@ -885,6 +885,8 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive))
      /** Set the button faces for the various window states.
+See `set-left-button-face!' and `set-right-button-face!' for a
+more natural interface for this.
 In the current decor, use ACTIVE-UP as the face for the
 button specified by the integer BUTTON when active and not pressed
 in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE
