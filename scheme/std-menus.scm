@@ -78,12 +78,20 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
   "Create a telnet menu.
 To use this, add the following to the menu of your choice:
   (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
-An optional USER argument specifies the user to telnet as."
+An optional USER argument specifies the user to telnet as.
+The element of the list of hosts can be a host (in which case telnet is
+used or a cons of (host . command)."
   (menu (fold-menu-list
          (map (lambda (hh)
-                (menuitem hh #:action
-                          (run-in-xterm
-                           (string-append "telnet -E -l " user " " hh)
-                           (string-append "-T telnet:" hh) "-n telnet")))
+                (if (pair? hh)
+                    (menuitem (car hh) #:action
+                              (run-in-xterm
+                               (string-append (cdr hh) " " (car hh))
+                               "-n" "telnet_custom"
+                               (string-append "-T telnet_custom:_" (car hh))))
+                    (menuitem hh #:action
+                              (run-in-xterm
+                               (string-append "telnet -E -l " user " " hh)
+                               (string-append "-T telnet:_" hh) "-n telnet"))))
               host-list))))
 
