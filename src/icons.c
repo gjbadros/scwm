@@ -645,6 +645,7 @@ DeIconify(ScwmWindow *psw)
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     if ((t == psw) ||
 	(t->fTransient && (t->transientfor == psw->w))) {
+      SCM was_iconified_p = SCM_BOOL_FromBool(t->fIconified);
       t->fMapped = True;
       if (Scr.Hilite == t)
 	SetBorder(t, False, True, True, None);
@@ -670,7 +671,7 @@ DeIconify(ScwmWindow *psw)
       if (t->icon_pixmap_w)
 	XUnmapWindow(dpy, t->icon_pixmap_w);
       Broadcast(M_DEICONIFY, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
-      call1_hooks(deiconify_hook, t->schwin);
+      call2_hooks(deiconify_hook, t->schwin, was_iconified_p);
     }
   }
 
@@ -727,12 +728,13 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
       SetMapStateProp(t, IconicState);
       SetBorder(t, False, False, False, None);
       if (t != psw) {
+        SCM was_iconified_p = SCM_BOOL_FromBool(psw->fIconified);
 	t->fIconified = True;
 	t->fIconUnmapped = True;
 
         BroadcastIconInfo(M_ICONIFY,t);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
-	call1_hooks(iconify_hook, t->schwin);
+        call2_hooks(iconify_hook, psw->schwin, was_iconified_p);
       }
     }
   }
@@ -750,12 +752,15 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
                         strlen(psw->icon_name));
     psw->icon_w_width = psw->icon_t_width + 6;
   }
-  AutoPlace(psw);
-  psw->fIconified = True;
-  psw->fIconUnmapped = False;
-  BroadcastIconInfo(M_ICONIFY, psw);
-  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  call1_hooks(iconify_hook, psw->schwin);
+  { /* scope */
+    SCM was_iconified_p = SCM_BOOL_FromBool(psw->fIconified);
+    AutoPlace(psw);
+    psw->fIconified = True;
+    psw->fIconUnmapped = False;
+    BroadcastIconInfo(M_ICONIFY, psw);
+    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    call2_hooks(iconify_hook, psw->schwin, was_iconified_p);
+  }
 
   LowerWindow(psw);
 
@@ -822,11 +827,16 @@ init_icons()
 {
   SCWM_HOOK(iconify_hook, "iconify-hook");
   /** This hook is invoked when a window is iconified.
-It is called with one argument, WINDOW */
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously.
+*/
 
   SCWM_HOOK(deiconify_hook, "deiconify-hook");
   /** This hook is invoked when a window is deiconified.
-It is called with one argument, WINDOW */
+It is called with one argument, WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously. */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "icons.x"
