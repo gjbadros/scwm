@@ -1,3 +1,7 @@
+Tue Jul  6 08:32:01 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl.c: Added inclusion of config.h
+
 Tue Jun 29 16:01:33 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Use @GUILE_INCLUDES@ for INCLUDES, as well as

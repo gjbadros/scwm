@@ -1,3 +1,8 @@
+Tue Jul  6 08:28:15 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Fixed bug -- XEXT_LIB was getting reset to "" when 
+	testing for the XTST_LIB.  Thanks for bug report Harald Meland.
+
 Mon Jul  5 19:27:03 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Point scwm_image_load_path at ${scwm_pixmapdir}

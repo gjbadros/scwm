@@ -1,3 +1,17 @@
+Tue Jul  6 08:49:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* run-renamed/Makefile.am: Link w/ ../../scwm/syscompat.o for
+	setenv fn.
+
+	* run-renamed/run-renamed.c: include config.h, and remove the
+	conditional on existence of setenv() -- instead, have Makefile.am
+	link with syscompat.o which provides a definition of setenv for
+	all of scwm sources.
+
+Tue Jul  6 08:32:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/scwm_set_pid_property.c: Added inclusion of config.h.
+
 Sat Jun 26 14:15:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* run-renamed/run-renamed.c: Added NO_SETENV ccd test-- need to
