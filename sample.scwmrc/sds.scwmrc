@@ -1,4 +1,4 @@
-;;; File: <.scwmrc - 1998-07-09 Thu 13:35:07 EDT sds@mute.eaglets.com> -*- scwm -*-
+;;; File: <.scwmrc - 1998-07-30 Thu 09:32:35 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Purpose: to attract users.
@@ -28,9 +28,8 @@
 
 (use-modules
  (app scwm base) (app scwm face) (app scwm decor) (app scwm style)
- (app scwm winops) (app scwm winlist) (app scwm wininfo)
+ (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
- (app scwm doc)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module))
 
 ;; user settable!
@@ -69,11 +68,10 @@
 
 ;;(set-click-time! 150)		; msec [150]
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
-;; removed primitive --07/27/98 gjb
-;;(set-opaque-move-size! 100)	; all windows are moved opaquely
 (set-rubber-band-mask! 255)
-(set-edge-resistance! 100 100)	; scroll-res move-res
+(set-edge-resistance! 100 100)	; time distance
 (set-edge-scroll! 0 0)		; no scroll
+(set-edge-wrap! #f #f)          ; wrap when scrolling in X/Y directions
 
 ;;; ----------------
 ;;; paths and images
@@ -144,7 +142,7 @@
 ;;; window styles/decorations
 ;;; -------------------------
 
-(define std-d (make-decor))
+(define std-d (make-decor "std"))
 (with-decor std-d
 	    (title-style #:font font12 #:justify 'left #:relief 'raised)
 	    (border-style #:hidden-handles #f #:no-inset #t)
@@ -213,8 +211,8 @@
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "Music.xpm" #:mini-icon cd-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
-(window-style "netscape" #:icon "nscape.xpm" #:mini-icon nscape-i #:other-proc
-              (in-viewport 1 1))
+(window-style "netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
+              #:placement-proc (in-viewport 1 1))
 (window-style "gnuplot" #:icon "math4.xpm" #:mini-icon plot-i)
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
@@ -224,8 +222,7 @@
 (window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
 	      #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
-(window-style "emacs_minibuffer" #:focus 'sloppy
-              #:use-style desk-widget-on-top)
+(window-style "emacs_mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
 
 ;TextEditor.xpm ; emacs.xbm
 ;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
@@ -247,24 +244,18 @@
 (define start-xterm (run-in-xterm "-e bash"))
 
 ;; To later shut down the module, use kill-fvwm-module:
-;; (kill-fvwm-module fvwm-pager)
+;; (kill-fvwm2-module fvwm-pager)
 
-(define fvwm-pager
-  (run-fvwm-module
-   "/usr/X11/lib/X11/fvwm2/FvwmPager"
-   ;; your .fvwm2rc (does not need to exist for most modules)
-   "/dev/null"
-   ;; list of configuration lines
-   '("*FvwmPagerBack grey76"
-     "*FvwmPagerFore black"
-     "*FvwmPagerHilight grey90"
-     "*FvwmPagerDeskTopScale 100"
-     "*FvwmPagerGeometry 100x50+250-0"
-     "*FvwmPagerLabel 0 Desk"
-     ;; "*FvwmPagerLabel 1 Bottom"
-     "*FvwmPagerSmallFont 5x7")
-   ;; the range of desks to display
-   '("0" "0")))
+; (register-fvwm2-module-config "FvwmPager"
+;                               "*FvwmPagerBack grey76"
+;                               "*FvwmPagerFore black"
+;                               "*FvwmPagerHilight navyblue"
+;                               "*FvwmPagerFont none"
+;                               "*FvwmPagerDeskTopScale 40"
+;                               "*FvwmPagerLabel 0 Top"
+;                               ;; "*FvwmPagerLabel 1 Bottom"
+;                               "*FvwmPagerSmallFont 5x8")
+; (define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "0")))
 
 (define quit-verify
   (menu (list (menuitem "Really quit scwm?" #:image-left quest-i)
@@ -336,6 +327,8 @@
 	      (menuitem "GhostView" #:image-left "mini-gv.xpm"
 			#:action "ghostview")
 	      (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
+	      (menuitem "Emacs Pretest" #:image-left edit-i #:action
+                        "/usr/src/emacs/src/emacs")
 	      (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
 	      (menuitem "Xfig" #:image-left fig-i #:action "xfig")
 	      (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
@@ -828,4 +821,3 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-menu-item)))
 
 (display " *** `scwmrc' processed.\n")
-
