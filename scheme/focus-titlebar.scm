@@ -26,7 +26,7 @@
   (and w (window-valid? w) (show-titlebar-in-place w)))
 
 ;; GJB:FIXME:: Make this stuff interact better
-;; with window-style s
+;; with window-styles
 (define-public (turn-on-only-focus-window-has-titlebar)
   "Start displaying a titlebar only on the focussed window.
 This forces titlebars off all other windows (ignoring window-style

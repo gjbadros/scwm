@@ -1,3 +1,7 @@
+Tue Apr  9 02:18:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* focus-titlebar.scm: Fixed typo.
+
 Tue Apr  9 02:00:40 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* menus-extras.scm: 
