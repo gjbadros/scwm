@@ -283,6 +283,12 @@ WIN is a Scwm window object, TITLE is a string.  This procedure alters the
 window title by changing the WM_NAME X-Property."
   (set-window-text-property win "WM_NAME" title))
 
+(define-public (get-wm-command win)
+  "Get the "WM_COMMAND" X-Property of WIN and return that string.
+WIN is a Scwm window object. The "WM_COMMAND" X-Property is the application's
+notion of what the command line was used to run the application."
+  (get-window-text-property win "WM_COMMAND"))
+
 (define-public (sec->usec sec)
   "Convert SEC seconds into an equivalent number of microseconds.
 Especially useful for add-hook! and other timing related procedures
@@ -324,3 +330,52 @@ This positions the popup menu appropriately."
 (define*-public (flash-window win #&optional (color (make-color "red")))
   (set-window-background! color win)
   (add-timer-hook! (sec->usec .5) (lambda () (set-window-background! "grey76" win))))
+
+
+(define-public (make-string-usable-for-resource-key string)
+  "Return a converted string from STRING that can be used as an X resource key.
+The returned string will have all non-alphanumeric characters replaced with
+underscores, so that the resulting string can be used as a key for
+`X-resource-get' and `X-resource-put'."
+  (regexp-substitute/global 
+   #f "[^a-zA-Z_0-9]" string
+   'pre (lambda (match) "_")
+   'post))
+
+;;; (make-string-usable-for-resource-key "foo bar baz")
+;;; (make-string-usable-for-resource-key "foo*bar.baz")
+
+
+;; From S.Senda -- Aug 3, 1998
+;;;;;;;; rlogin menu making from .rhosts file ;;;;;;;;;
+
+(define (make-rhosts-menu)
+  (false-if-exception
+   (let* ((rhostfn (string-append HOME "/.rhosts"))
+	  (termprog "xterm")
+	  (p (open-input-file rhostfn))
+	  (ret '())
+	  (ap (lambda (a)
+		(set! ret (append ret (list a)))))
+	  (mm (lambda (h u)
+		(menuitem h #:action
+			  (lambda () (execute
+				      (string-append termprog " -e rlogin "
+						     h " -l " u))))))
+      )
+    (ap (menuitem ".rhosts" #f))
+    (ap menu-title)
+    (do ((l (read-line p 'trim) (read-line p 'trim)))
+	((eof-object? l) ret)
+      (cond ((string-match "([^ \t]+)[ \t]+([^ \t]+)" l)
+	     => (lambda (m)
+		  (ap (mm (match:substring m 1)   ; machine name
+			  (match:substring m 2))) ; user name
+		  ))))
+    (ap menu-title)
+    (ap (menuitem "reread .rhosts file" #:action
+	    (lambda () (set! rhosts-menu (make-rhosts-menu)))))
+    (menu ret)
+)))
+
+(define rhosts-menu (make-rhosts-menu))

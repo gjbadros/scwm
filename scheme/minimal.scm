@@ -37,13 +37,14 @@
 
 ;;; Some functions for decoration bindings
 (define (resize-or-raise)
-  (raise-window)
   (case (mouse-event-type)
+    ((click) (raise-window))
     ((motion) (interactive-resize))
     ((double-click) (lower-window))))
+
 (define (move-or-raise)
-  (raise-window)
   (case (mouse-event-type)
+    ((click) (raise-window))
     ((motion) (interactive-move))
     ((double-click) (lower-window))))
 
