@@ -116,7 +116,8 @@ compute_contexts(SCM contexts)
   }
 }
 
-
+/* FIXGJB: abstract out stuff-- lots of duplication
+   between this and unbind_mouse */
 SCM 
 unbind_key(SCM contexts, SCM key)
 {
@@ -130,7 +131,7 @@ unbind_key(SCM contexts, SCM key)
   SCM_REDEFER_INTS;
   if (!gh_string_p(key)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key", 2, key);
+    scm_wrong_type_arg(__FUNCTION__, 2, key);
   }
   context = compute_contexts(contexts);
 
@@ -188,6 +189,67 @@ unbind_key(SCM contexts, SCM key)
 }
 
 
+SCM 
+unbind_mouse(SCM contexts, SCM button)
+{
+  char *keyname, *okey;
+  int len;
+  int modmask = 0;
+  int context = 0;
+  int bnum = 0;
+  int l = 0;
+
+  SCM_REDEFER_INTS;
+  if (!gh_string_p(button)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, 2, button);
+  }
+  context = compute_contexts(contexts);
+
+  switch (context) {
+  case 0:
+    SCM_ALLOW_INTS;
+    scwm_error(__FUNCTION__, 8);
+    break;
+  case -1:
+    SCM_ALLOW_INTS;
+    scwm_error(__FUNCTION__, 9);
+    break;
+  case -2:
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, 1, contexts);
+    break;
+  default:
+  }
+
+  /* FIXGJB: abstract this out */
+  okey = (keyname = gh_scm2newstr(button, &len));
+  do {
+    l = 0;
+    if (!strncmp("C-", keyname, 2)) {
+      modmask |= ControlMask;
+      keyname += 2;
+      l = 1;
+    } else if (!strncmp("M-", keyname, 2)) {
+      modmask |= Mod1Mask;
+      keyname += 2;
+      l = 1;
+    } else if (!strncmp("S-", keyname, 2)) {
+      modmask |= ShiftMask;
+      keyname += 2;
+      l = 1;
+    }
+  } while (l);
+  bnum = strtol(keyname, NULL, 10);
+
+  remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
+
+  free(okey);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
+}
+
+
 /* This grabs all the defined keys on all the windows */
 void
 grab_all_keys_all_windows()
@@ -215,6 +277,19 @@ grab_key_all_windows(int key, int modifier)
       XGrabKey(dpy, key, modifier | LockMask, swCurrent->frame, True,
 	       GrabModeAsync, GrabModeAsync);
     }
+    swCurrent = swCurrent->next;
+  }
+}
+
+/* Just grab a mouse button + modifier on all windows
+   This needs to be done after a new mouse binding */
+void
+grab_button_all_windows(int button, int modifier)
+{
+  ScwmWindow *swCurrent;
+  swCurrent = Scr.ScwmRoot.next;
+  while (swCurrent != NULL) {
+    GrabButtonWithModifiers(button,modifier,swCurrent);
     swCurrent = swCurrent->next;
   }
 }
@@ -345,6 +420,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   int k = 0;
   int modmask = 0;
   int context = 0;
+  Bool fGotModifer = False;
 
   SCM_REDEFER_INTS;
 
@@ -381,20 +457,21 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   if (!bset) {
     okey = (keyname = gh_scm2newstr(button, &len));
     do {
+      fGotModifer = False;
       if (!strncmp("C-", keyname, 2)) {
 	modmask |= ControlMask;
 	keyname += 2;
-	continue;
+	fGotModifer = True;
       } else if (!strncmp("M-", keyname, 2)) {
 	modmask |= Mod1Mask;
 	keyname += 2;
-	continue;
+	fGotModifer = True;
       } else if (!strncmp("S-", keyname, 2)) {
 	modmask |= ShiftMask;
 	keyname += 2;
-	continue;
+	fGotModifer = True;
       }
-    } while (0);
+    } while (fGotModifer);
     bnum = strtol(keyname, NULL, 10);
   }
   if ((context != C_ALL) && (context & C_LALL)) {
@@ -435,6 +512,14 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->NextBinding = temp;
+  if (Scr.flags & WindowsCaptured) {
+    /* only grab the button press if we have already captured,
+       otherwise it's a waste of time since we will grab
+       them all later when we do the initial capture;
+       this is good, since initialization probably defines
+       lots of mouse  bindings */
+    grab_button_all_windows(bnum,modmask);
+  }
 
   scm_protect_object(proc);
 
@@ -611,3 +696,10 @@ init_binding(void)
      scm_protect_object(sym_edge);
    */
 }
+
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* eval: (set-c-style "k&r") */
+/* c-basic-offset: 2 */
+/* End: */
