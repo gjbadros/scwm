@@ -11,9 +11,10 @@
 #include <config.h>
 #endif
 
+#include <X11/X.h>
 #include <X11/SM/SMlib.h>
-/* for NULL */
 #include <stdio.h>
+#include "scwm.h"
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -30,7 +31,10 @@ EXTERN_SET(IceConn IceSMconn, NULL);
 EXTERN_SET(SmcConn SMconn, NULL);
 EXTERN_SET(char *SmcId, NULL);
 
+EXTERN Atom XA_SM_CLIENT_ID;
+
 void initSM();
 void doneSM(int);
+void restoreWindowState(ScwmWindow *);
 
 #endif /* SESSION_MANAGER_H__ */
