@@ -69,7 +69,7 @@ Event Contexts
 
 
  
-[From scwm/binding.c:530]
+[From scwm/binding.c:533]
 
 
 Face Flags
@@ -290,7 +290,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:570]
+[From scwm/callbacks.c:571]
 
 
 Key Specifier
@@ -358,7 +358,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:587]
+[From scwm/scwm.c:593]
 
 
 SCWMEXEC Protocol
@@ -376,7 +376,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:461]
+[From scwm/events.c:476]
 
 
 Shadow and Highlight Factors
