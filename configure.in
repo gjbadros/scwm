@@ -35,7 +35,7 @@ AC_DEFUN(SCWM_ARG_PATH,
 AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
 [
   AC_ARG_WITH($1,[$2],[
-    if test ! -z "${withval}" && test ! "yes" = "${withval}" && test ! -d "${withval}"; then
+    if test ! -z "${withval}" && test ! "yes" = "${withval}" && test ! "no" = ${withval} && test ! -d "${withval}"; then
       AC_MSG_ERROR(invalid pathname argument to --with-$1: ${withval})
     else
       $3
@@ -281,6 +281,9 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 [  --with-cassowary=DIR   Use Cassowary constraint solver from DIR
                          can omit DIR to use $prefix ],
 [
+    if test "no" = "${withval}"; then
+	AC_MSG_RESULT("****** Cassowary constraint solver is *not* being used")
+    else
 	AC_DEFINE(USE_CASSOWARY)
 	AC_DEFINE(CL_NO_TRACE)
 	AC_MSG_CHECKING(where to expect to find cassowary headers and library)
@@ -300,6 +303,7 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	## Was ${GTL_LIB} below
 	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ -lGTL"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
+    fi
 ])
 
 AC_SUBST(CASSOWARY_INCLUDES)
