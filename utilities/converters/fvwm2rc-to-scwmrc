@@ -34,6 +34,9 @@ my $last_context_type = undef;
 
 my $two_pass = !$opt_1 || TRUE;
 my $fQuiet = $opt_q || FALSE;
+my $fWarnImpliedFunc = FALSE;
+my $fWarnImpliedModule = TRUE;
+my $fWarnTreatModule = FALSE;
 
 my @module_prefixes = qw( FvwmAudio FvwmAuto FvwmBacker FvwmBanner
 FvwmButtons FvwmCascade FvwmCommand FvwmCommand.sh FvwmCommandS
@@ -49,7 +52,7 @@ my ($ct_function,$ct_menu,$ct_decor) = (0..2);
 # regex fragment to match an identifier
 my $id_char_seq = '[\w\d._-]+';
 my $menu_id_char_seq = '[\w\d._%@^-]+';
-my $num_or_arg_seq = '(?:\$[\dw]|\d+)';
+my $num_or_arg_seq = '[+-]?(?:\$[\dw]|\d+|w)'; #literal w used to mean curpos
 my $word_or_arg_seq = '(?:\$[\dw]|' . $id_char_seq . ')';
 my %funcs = ();  # names -> text
 my %decors = ();  # names -> text
@@ -279,37 +282,16 @@ my %rules =
 	       convert_where($where) . " " .
 		 convert_mouse_butnum($butnum,$modifiers) .
 		   " (lambda () " .
-		     convert_action($action) . "))";
+		     convert_fvwm_command($action) . "))";
 	   },
    ],
    "module" =>
    [    '\s+\"?(' . $id_char_seq . ')\"?(?:\s+(\S+))?',
-	sub { my ($m,$extra) = (@_);
-	      my $s = "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m);
-	      if (defined($extra) && $extra ne "") {
-		$s .= " (list " . dquoted($extra) . ")";
-		if ($extra =~ m/^$id_char_seq$/o &&
-		    $extra !~ m/^\d+$/) {
-		  print STDERR "Treating $extra as a module\n" if !$fQuiet;
-		  push @module_prefixes, $extra;
-		}
-	      }
-	      $s .= "))";
-	      return $s;
-	    },
+	sub { HandleRunModule(@_); },
    ],
    "function" =>
    [    '\s+\"?(' . $id_char_seq . ')\"?(?:\s*(.*))',
-	sub { my ($funcname,$rest) = (@_);
-	      my $s = "(fvwm2-func-$funcname";
-	      if (defined($rest)) {
-		$s .= " " . join(" ",
-				 map { dquoted_if_string($_) } 
-				 split(/\s+/,$rest));
-	      }
-	      $s .= ")";
-	      return $s;
-	    },
+	sub { HandleFunctionCall(@_); },
    ],
    "popup" =>
    [    '\s+\"?(' . $id_char_seq . ')\"?',
@@ -324,10 +306,15 @@ my %rules =
 	    },
    ],
    "move" =>
-   [    '(?:\s+(' . $num_or_arg_seq . 'p?)\s+' . $num_or_arg_seq . 'p?' .
-        '(?:\s+(\$w))?)?\s*$', #'SYNTAXFIX
+   [    \&get_optional_two_num_args_and_win,
 	sub { my ($x,$y) = (@_);
-	      return "(move-window" . HandleMoveResizeArgs($x,$y) . ")";
+	      return "(move-to" . HandleMoveResizeArgs($x,$y) . ")";
+	    },
+   ],
+   "animatedmove" =>
+   [    \&get_optional_two_num_args_and_win,
+	sub { my ($x,$y) = (@_);
+	      return "(animated-move-to" . HandleMoveResizeArgs($x,$y) . ")";
 	    },
    ],
    "resize" =>
@@ -414,7 +401,7 @@ my %rules =
 		convert_where($where) . " " .
 		  convert_keysym($keysym,$modifiers) .
 		    " (lambda () " .
-		      convert_action($action) . "))";
+		      convert_fvwm_command($action) . "))";
 	    },
    ],
    "exec" =>
@@ -442,7 +429,7 @@ my %rules =
 		#GJB:FIXME:: leave for later 
 		# see "Current" command in fvwm2 man page
 		return "(prev-matching " . dquoted($conditions) . " " .
-		       convert_action($rest) . ")";
+		       convert_fvwm_command($rest) . ")";
 	      }
 	    },
    ],
@@ -455,12 +442,47 @@ my %rules =
 		#GJB:FIXME:: leave for later 
 		# see "Current" command in fvwm2 man page
 		return "(next-matching " . dquoted($conditions) . " " .
-		       convert_action($rest) . ")";
+		       convert_fvwm_command($rest) . ")";
 	      }
 	    },
    ],
 
   );
+
+
+
+sub get_optional_two_num_args_and_win {
+  # GJB:FIXME:: $w could be a literal id, or something else I suppose
+  if (m/\s+(${num_or_arg_seq}p?)\s+(${num_or_arg_seq}p?)(?:\s+(\$w))?/o) {
+    if (!defined($1)) {
+      return "";
+    } else {
+      my ($a1,$a2) = (coerce_num($1),coerce_num($2));
+      return $a1, $a2, $3;
+    }
+  } else {
+    return "";
+  }
+}
+
+
+sub coerce_num {
+  my ($s) = (@_);
+  if ($s =~ /^-(\$\d)$/) {
+    $s = "(- $1)";
+  }
+  if ($s eq "w") {
+    return "#f";
+  }
+  return $s;
+}
+
+sub get_two_nums_or_args {
+  if (m/\s+($num_or_arg_seq)\s+($num_or_arg_seq)/o) {
+    my ($a1,$a2) = (coerce_num($1),coerce_num($2));
+    return $a1, $a2;
+  }
+}
 
 chop(my $date = `date`);
 # By design, this PRESCRIPT should be pretty minimal.
@@ -661,18 +683,27 @@ print <<"END_CONVERSION";
 ;;; End of converted fvwm2rc
 END_CONVERSION
 
+print STDERR "Consider running re-indenting the output file with Emacs using Scwm-mode and indent-region";
+exit 0;
+
+# use @module_prefixes to see if $first
+# matches any of the names we know about
+sub ModuleName {
+  my ($first) = (@_);
+  for my $pref (@module_prefixes) {
+    if (index($first,$pref) ==0) {
+      return $pref;
+    }
+  }
+  return undef;
+}
+
 sub HandleModule {
   my ($first,$rest,$wasunknown) = (@_);
   my $answer = "";
   
-  my $module;
+  my $module = ModuleName($first);
 
-  for my $pref (@module_prefixes) {
-    if (index($first,$pref) ==0) {
-      $module = $pref;
-      last;
-    }
-  }
   if (!defined($module)) {
     if (!defined($wasunknown)) {
       # initial pass--
@@ -850,6 +881,9 @@ sub convert_mouse_butnum {
 
 sub convert_keysym {
   my ($keysym,$mods) = (@_);
+  if ($mods =~ m/^n$/i) {
+    $mods = "";
+  }
   if ($mods =~ m/^\$/ || $keysym =~ m/^\$/) {
     $keysym = dquoted($keysym) if ($keysym !~ m/^\$/);
     $mods = dquoted($mods) if ($mods !~ m/^\$/);
@@ -865,12 +899,15 @@ sub convert_keysym {
 
 sub convert_fvwm_command {
   $_ = $_[0];
-  my ($first_char, $first_word);
+  my ($first_char, $first_word, $rest, $func_or_module);
+  my $scheme_expr;  # our answer string
   if (m/^\s*(.)/) {
     $first_char = lc($1);
   }
-  if (m/^\s*(\S*)/) {
+  if (m/^\s*(\S*)(?:\s+(.*))?/) {
     $first_word = lc($1);
+    $func_or_module = $1; # do not change case for this
+    $rest = $2;
   }
   my $aref = undef;
   my $prefix_string = $first_char;
@@ -881,9 +918,16 @@ sub convert_fvwm_command {
     $aref = $rules{$first_word};
     $prefix_string = $first_word;
   }
-  
+
   if (!defined($aref)) {
-    return ";;;&&& UNCONVERTED: $_";
+    my $module = ModuleName($func_or_module);
+    if (defined($module)) {
+      return HandleRunModule($module,$rest);
+    }
+  }
+  if (!defined($aref)) {
+    $scheme_expr = ";;;&&& UNCONVERTED: $_";
+    goto INFER_FUNC_OR_MODULE;
   }
   my ($re_or_parse_sub,$coderef) = (@$aref);
   
@@ -906,48 +950,30 @@ sub convert_fvwm_command {
       warn "Scanning function failed for $_";
     }
   }
-  my $scheme_expr = &$coderef(@args);
+  $scheme_expr = &$coderef(@args);
+
+ INFER_FUNC_OR_MODULE:
+  if ($scheme_expr =~ m/&&&/) {
+#DBG    print STDERR "Checking \"$first_word\" or $_\n";
+#    warn "Could not handle action: '$action'\nGot $s" if !$fQuiet;
+    if (exists $funcs{$func_or_module}) {
+      # This is actually perfectly fine, by the rules of fvwm2
+      # but it still seems nice to give a warning
+      print STDERR "Using implied 'Function' for $func_or_module\n" if !$fQuiet && $fWarnImpliedFunc;
+      return HandleFunctionCall($func_or_module,$rest);
+    } elsif (exists $moduleconfigs{$func_or_module}) {
+      # This is also perfectly fine, by the rules of fvwm2
+      # but it still seems nice to give a warning
+      print STDERR "Using implied 'Module' for $func_or_module\n" if !$fQuiet && $fWarnImpliedModule;
+      return HandleModule($func_or_module,$rest);
+    }
+    chomp $scheme_expr;
+    return "(eval-fvwm-command " . dquoted($_) . ")";
+  }
+
   return $scheme_expr;
 }
 
-sub convert_action {
-  # GJB:FIXME:: not sure if this is even necessary -- it
-  # probably should just be the same as convert_fvwm_command,
-  # but the kinds of things used in Menus/Functions are generally
-  # very different from those used as "toplevel" configuration
-  # directives.  Also, some things will not be handled correctly
-  # if they are in Menu/Function action -- e.g., a dynamic AddToMenu
-  # as an action for a key binding or a menuitem will instead be
-  # interpreted statically, at the top level.  Maybe it's useful
-  # to keep this for the warnings it can provide, or to do things
-  # differently when it's a dynamic action as opposed to a static
-  # declaration (could pass a flag to convert_fvwm_command, too).
-  #
-  # We should *NOT* extend eval-fvwm2-command only for the purposes
-  # of use here -- we are better off figuring out the right s-exp
-  # to substitute.  It'll make the converted .scwmrc's better!
-  # N.B., it's fine to extend fvwm-compat.scm with procs that more
-  # closely match fvwm2 semantics -- these are probably useful
-  # to others used to fvwm2, anyway.
-  my ($action) = (@_);
-  
-  my $s = convert_fvwm_command($action);
-  if ($s =~ m/&&&/) {
-#    warn "Could not handle action: '$action'\nGot $s" if !$fQuiet;
-    if (exists $funcs{$action}) {
-      # This is actually perfectly fine, by the rules of fvwm2
-      # but it still seems nice to give a warning
-      print STDERR "Using implied 'Function' for $action\n" if !$fQuiet;
-      return "(fvwm2-func-$action)";
-    }
-    return "(eval-fvwm-command " . dquoted($action) . ")";
-  } else {
-    if ($s eq "") {
-      warn "Probably mis-interpreting dynamic command statically:\n   $action" if !$fQuiet;
-    }
-    return $s;
-  }
-}
 
 sub perl_aref_to_symbol_list {
   my ($aref) = (@_);
@@ -975,9 +1001,11 @@ sub convert_function {
     $answer .= " " . join(" ",map { "\$$_" } (0..$lastarg));
   }
   $answer .= ")\n";
+
+  $answer .= " (with-window (get-window)\n";
   
   if ($fTakesWindow) {
-    $answer .= " (let ((win-id (window-id (get-window))))\n";
+    $answer .= "   (let ((win-id (window-id (get-window))))\n";
   }
   
   # GJB:FIXME:: does not handle arguments properly yet
@@ -1003,7 +1031,7 @@ sub convert_function {
   for my $l (@lines) {
     if ($l =~ m/^\s*"I"\s+(.*)/) {
       my $rest = $1;
-      $answer .= "  " . convert_action($rest) . "\n";
+      $answer .= "  " . convert_fvwm_command($rest) . "\n";
     }
   }
   # now handle the "M", "C", and "D" triggers
@@ -1023,7 +1051,7 @@ sub convert_function {
   for my $t (keys %triggers) {
     $responses .= "    (" . convert_trigger($t);  
     for my $a (@ {$triggers{$t}}) {
-      $responses .= "\n      " . convert_action($a);
+      $responses .= "\n      " . convert_fvwm_command($a);
     }
     $responses .= ")\n";
   }
@@ -1036,7 +1064,7 @@ sub convert_function {
   if ($fTakesWindow) {
     $answer .= ")";		# close the "let"
   }
-  $answer .= ")";
+  $answer .= "))";    # close the "with-window" and the def
 
   return $answer;
 }
@@ -1149,7 +1177,7 @@ sub convert_menu_item {
     if (defined($image)) {
       $answer .= " #:image-left " . dquoted($image);
     }
-    my $action_sexp = prepare_for_menuitem(convert_action($action));
+    my $action_sexp = prepare_for_menuitem(convert_fvwm_command($action));
     if ($action_sexp ne "") {
       $answer .= " #:action $action_sexp";
     }
@@ -1184,13 +1212,13 @@ sub HandleMoveResizeArgs {
   my ($x,$y) = (@_);
   my $answer = "";
   if (defined($x) && defined($y)) {
-    if ($x =~ m/p/) {
-      $answer .= " $x";
+    if ($x =~ m/(.*)p/) {
+      $answer .= " $1";
     } else {
       $answer .= " (%x $x)";
     }
-    if ($y =~ m/p/) {
-      $answer .= " $y";
+    if ($y =~ m/(.*)p/) {
+      $answer .= " $1";
     } else {
       $answer .= " (%y $y)";
     }
@@ -1198,17 +1226,29 @@ sub HandleMoveResizeArgs {
   return "$answer";
 }
 
-sub coerce_num {
-  my ($s) = (@_);
-  if ($s =~ /^-(\$\d)$/) {
-    $s = "(- $1)";
+sub HandleFunctionCall {
+  my ($funcname,$rest) = (@_);
+  my $s = "(fvwm2-func-$funcname";
+  if (defined($rest)) {
+    $s .= " " . join(" ",
+		     map { dquoted_if_string($_) } 
+		     split(/\s+/,$rest));
   }
+  $s .= ")";
   return $s;
 }
 
-sub get_two_nums_or_args {
-  if (m/\s+([+-]?$num_or_arg_seq)\s+([+-]?$num_or_arg_seq)/o) {
-    my ($a1,$a2) = (coerce_num($1),coerce_num($2));
-    return $a1, $a2;
-  }
+sub HandleRunModule {
+  my ($m,$extra) = (@_);
+  my $s = "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m);
+  if (defined($extra) && $extra ne "") {
+    $s .= " (list " . dquoted($extra) . ")";
+    if ($extra =~ m/^$id_char_seq$/o &&
+	$extra !~ m/^\d+$/) {
+      print STDERR "Treating $extra as a module\n" if !$fQuiet && $fWarnTreatModule;
+      push @module_prefixes, $extra;
+    }
+	      }
+  $s .= "))";
+  return $s;
 }
