@@ -87,3 +87,8 @@ For details on libSM and libICE, see:
 ftp://ftp.x.org/pub/R6.4/xc/doc/hardcopy/{SM,ICE}/*.PS.gz
 
 
+BUILDING RPMS:
+
+If you would like to help us by building binary RPMs for your platform,
+see the instructions in doc/dev/scwm-packaging-rpm.txt.
+

@@ -719,6 +719,7 @@ AC_OUTPUT(Makefile \
           utilities/run-renamed/Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
+          utilities/misc/Makefile \
           doc/Makefile \
 	  themes/Makefile \
 	  utilities/dev/scwmdoc \
