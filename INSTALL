@@ -25,6 +25,25 @@ modules written in Scheme that provide additional window manager
 commands. 
 
 
+What You Need =============================================================
+
+To build this program, you need a working guile configuration.  In
+particular, be sure to configure guile with the "--with-threads" option,
+and also ensure that you use its built-in regular expression support,
+not the "rx" library.  If you have librx.{a,so} in your LD_LIBRARY_PATH,
+guile's configure will find and use it.  To prevent that, either change
+your LD_LIBRARY_PATH, rename librx.{a,so}, or edit config.cache after
+running guile's configure but before doing the make.  You need to edit
+the line that looks like:
+
+ac_cv_lib_rx_main=${ac_cv_lib_rx_main='no'}
+                                       ^^ be sure this is no
+
+Scwm is tested with both guile-1.2, and recent developer releases of guile.
+
+You also need the `sed' stream editor in your PATH, and a working GNU make.
+
+
 Using SCWM Without Installing It =========================================
 
 If you want to run scwm without installing it, copy the
