@@ -84,6 +84,10 @@ char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
+static int DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
+                          enum cursor cursor, int FinishEvent,
+                          int *px, int *py);
+
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
 #define FUNC_NAME FlagsBitsFromSw
@@ -785,11 +789,6 @@ move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
 }
 
 
-
-static int DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
-                          enum cursor cursor, int FinishEvent);
-
-
 SCWM_PROC(window_p, "window?", 1, 0, 0,
           (SCM obj))
      /** Returns #t if OBJ is a window object, otherwise returns #f. */
@@ -799,20 +798,27 @@ SCWM_PROC(window_p, "window?", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(select_window, "select-window", 0, 2, 0,
+SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
           (SCM kill_p, SCM release_p))
-     /** Select a window interactively.
-Use a special cursor and let the user click to select the window. The
-optional arguments KILL? and RELEASE? indicate whether to use the
+     /** Select a viewport position and return the window there.
+Use a special cursor and let the user click to select a viewport position
+Returns a list of three items: (SELECTED-WINDOW VIEWPORT-X VIEWPORT-Y).
+SELECTED-WINDOW is either the window object corresponding to the selected
+window or #f if no window was selected.
+VIEWPORT-X and VIEWPORT-Y give the position in the viewport that the
+cursor was located when the selection was finalized.
+The optional arguments KILL? and RELEASE? indicate whether to use the
 "skull and cross-bones" kill cursor (recommended for destructive
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
 place-holder until we have proper cursor support in scwm. */
-#define FUNC_NAME s_select_window
+#define FUNC_NAME s_select_viewport_position
 {
   XEvent ev;
   Window w;
   ScwmWindow *psw;
+  SCM win = SCM_BOOL_F;
+  int x = 0, y = 0;
 
   SCM_REDEFER_INTS;
   w = Scr.Root;
@@ -837,18 +843,16 @@ place-holder until we have proper cursor support in scwm. */
   if (DeferExecution(&ev, &w, &psw,
 		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
 		     (release_p != SCM_BOOL_F ? ButtonRelease :
-		      ButtonPress))) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
+		      ButtonPress),
+                     &x, &y)) {
+    win = SCM_BOOL_F;
   }
-  /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
-  if (psw && psw->schwin != SCM_UNDEFINED) {
-    SCM_REALLOW_INTS;
-    return (psw->schwin);
-  } else {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
+  else if (psw && psw->schwin != SCM_UNDEFINED) {
+    win = psw->schwin;
   }
+
+  SCM_REALLOW_INTS;
+  return gh_list(win,gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -900,7 +904,10 @@ mouse drags. */
   }
   if (UNSET_SCM(window_context)) {
     if (select_p == SCM_BOOL_T) {
-      return select_window(kill_p,release_p);
+      SCM win = gh_car(select_viewport_position(kill_p,release_p));
+      if (SCM_BOOL_F == win)
+        call0_hooks(invalid_interaction_hook);
+      return win;
     } else {
       return SCM_BOOL_F;
     }
@@ -1210,7 +1217,7 @@ PswSelectInteractively(Display *dpy)
 {
   /* FIXGJB: this should be the primitive that select_window calls,
      and this should replace DeferExecution. --07/25/98 gjb */
-  SCM result = select_window(SCM_BOOL_F, SCM_BOOL_T);
+  SCM result = gh_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
   if (result == SCM_BOOL_F)
     return NULL;
   return PSWFROMSCMWIN(result);
@@ -1232,11 +1239,14 @@ extern Bool have_orig_position;
  *	cursor	- the cursor to display while waiting
  *      finishEvent - ButtonRelease or ButtonPress; tells what kind of event to
  *                    terminate on.
+ * Also, the viewport position of the cursor at finalization time is returned:
+ *      px,py    - pointers to ints to store viewport position of the cursor in
  *
  */
 static int 
-DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
-	       enum cursor cursor, int FinishEvent)
+DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
+	       enum cursor cursor, int FinishEvent,
+               int *px, int *py)
 {
   Bool fDone = False;
   Bool fFinished = False;
@@ -1279,19 +1289,19 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
   }
 
   *w = eventp->xany.window;
+  *px = eventp->xbutton.x;
+  *py = eventp->xbutton.y;
   if (((*w == Scr.Root) || (*w == Scr.NoFocusWin))
       && (eventp->xbutton.subwindow != (Window) 0)) {
     *w = eventp->xbutton.subwindow;
     eventp->xany.window = *w;
   }
   if (*w == Scr.Root) {
-    call0_hooks(invalid_interaction_hook);
     UngrabEm();
     return True;
   }
   *ppsw = PswFromWindow(dpy,*w);
   if (*ppsw == NULL) {
-    call0_hooks(invalid_interaction_hook);
     UngrabEm();
     return True;
   }
@@ -1307,7 +1317,6 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
       (original_w != None) && (original_w != Scr.NoFocusWin))
     if (!((*w == (*ppsw)->frame) &&
 	  (original_w == (*ppsw)->w))) {
-      call0_hooks(invalid_interaction_hook);
       UngrabEm();
       return True;
     }

@@ -313,6 +313,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 /*
  * For menus, move, and resize operations, we can effect keyboard 
  * shortcuts by warping the pointer.
+ * This also gets used by DeferExecution for selecting windows
+ * interactively (it probably should not be used for that. GJB:FIXME::)
  */
 void 
 Keyboard_shortcuts(XEvent *Event, int ReturnEvent, 
