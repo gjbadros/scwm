@@ -5,7 +5,8 @@ the individual code files. Also, some files are additionally or solely
 copyright Maciej Stachowiak. See the individual source files for
 further info. The influence of twm code in the overall package is
 still recognized, so fvwm's copyright is still considered to be the
-same as twm's. Therefore, scwm's copyright is also the same as twm's.
+same as twm's. Therefore, scwm's copyright is also the same as twm's
+on those files that are derived directly from fvwm.
 
 \fIfvwm\fP is copyright 1988 by Evans and Sutherland Computer
 Corporation, Salt Lake City, Utah, and 1989 by the Massachusetts
