@@ -1,5 +1,6 @@
 GNU Make 3.77 may not work properly with the automake+configure generated Makefiles.
 Use GNU Make 3.76.1 instead.  (Harald Meland --07/06/99 gjb)
+
 
 If you get lots of warnings like the below:
 scwm-screen-ci.hpp:41: warning: volatile qualifier ignored on asm
@@ -53,11 +54,29 @@ of guile.
 
 
 
-Lots of warnings like:
+Lots of warnings like (see guile-1.3-includes.patch):
 
 constraint-primitives.x:2: warning: ANSI C++ prohibits conversion from `(SCM)' to `(...)'
 
-and
+Fix this using a patch to the snarf.h header file included with guile:
+
+--- snarf.h	1999/07/06 19:20:42	1.1
++++ snarf.h	1999/07/06 19:21:39
+@@ -55,9 +55,9 @@
+ 	static char RANAME[]=STR
+ #else
+ #define SCM_PROC(RANAME, STR, REQ, OPT, VAR, CFN)  \
+-%%%	scm_make_gsubr (RANAME, REQ, OPT, VAR, CFN)
++%%%	scm_make_gsubr (RANAME, REQ, OPT, VAR, (SCM (*)(...))CFN)
+ #define SCM_PROC1(RANAME, STR, TYPE, CFN)  \
+-%%%	scm_make_subr(RANAME, TYPE, CFN)
++%%%	scm_make_subr(RANAME, TYPE, (SCM (*)(...))CFN)
+ #endif
+ 
+ #ifndef SCM_MAGIC_SNARFER
+
+
+Lots of warnings like (see guile-1.3-includes.patch):
 
 color.c:221: warning: passing arg 1 of `gh_str02scm' discards `const' from pointer target type
 
@@ -65,17 +84,16 @@ and
 
 image.c:414: warning: passing arg 1 of `scm_wrong_type_arg' discards `const' from pointer target type
 
-Just ignore them-- they are harmless (the latter can be fixed by adding
-const declarations to the prototypes in libguile/error.h).
+Just ignore them-- they are harmless-- they can be fixed by adding
+const declarations to the prototypes in libguile/error.h, guile/gh.h.
 
 
+Undefined __bzero symbol?
+
 >sync14% scwm -V
 >scwm: error in loading shared libraries
 >: undefined symbol: __bzero
 >sync14% 
->
->
->any pointers on how to fix this?
 
 I have seen this on a stock standard Redhat 5.2, using the scwm RPM from
 redhat-contrib.
