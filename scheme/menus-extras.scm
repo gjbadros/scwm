@@ -20,6 +20,7 @@
 
 
 (define-module (app scwm menus-extras)
+  :use-module (app scwm base)
   :use-module (app scwm optargs))
 
 
