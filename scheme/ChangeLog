@@ -1,3 +1,24 @@
+Mon Oct  4 22:50:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm (one-window-prompter): Return just the
+ 	window, not a list of a single window.  This was causing problems
+	for the min/max height/width buttons when pre-selecting.
+
+	* style.scm: Go back to border-width being a hint.  I can't get
+	everything to work with it as a hint right now.
+
+	* netscape.scm (netscape-google-search-cut-buffer): Noop if no
+	cut-buffer string.
+
+Mon Oct  4 17:20:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm (config-request-animate): Convert to virtual
+	coordinates before calling the animation functions that take
+	virtual, not viewport coordinates.
+
+	* base.scm: Let vpx->vx, vpy->vy, vx->vpx, vy->vpy pass a #f
+	through w/o error.
+
 Mon Oct  4 14:12:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Make border-width a hint so that it takes effect

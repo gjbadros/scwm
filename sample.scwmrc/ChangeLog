@@ -1,3 +1,9 @@
+Mon Oct  4 17:15:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Turn off icons, turn off animated configure
+	requests (they were a bit weird, and caused problems with looping
+	configure notify/configure requests).
+
 Mon Oct  4 14:26:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Drop the setvbuf to turn off buffering-- do it in 
