@@ -1,3 +1,12 @@
+1999-04-25  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Added a new toggle menu for
+	the constraint user interface which uses GTK.  This is the initial
+	step towards making an easier and more functional toggle menu.
+
+	* ui-constraints-classes.scm: Commented out a line that caused
+	the constraint system to be reset everytime this module was used.
+
 Sun Apr 25 18:50:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-toggle-menu.scm: Added missing use-module of (app

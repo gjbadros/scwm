@@ -16,7 +16,7 @@
 
 ;; (load "/home/gjb/scwm/scheme/ui-constraints-classes.scm")
 ;; (set-current-module the-root-module)
-(reset-ui-constraint-classes!)
+;; (reset-constraints)
 
 ;;; GJB:FIXME:: we'd like to be able to use color, mode
 ;;; but cannot w/o using an overlay plance;  Also,
