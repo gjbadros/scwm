@@ -1,5 +1,5 @@
 
-Maciej Stachowiak:
+Maciej Stachowiak, mstachow@mit.edu:
 originally modified fvwm to use guile as the configuration language,
 yielding scwm. Many changes throughout, and wrote the following files
 in the subdirectory scwm:
@@ -19,7 +19,7 @@ in the subdirectory utilities/scwmrepl:
     scwmrepl.c
 
 
-Greg J. Badros:
+Greg J. Badros, gjb@cs.washington.edu:
 
 added numerous improvements, including integrating his constraint
 solving toolkit, synthetic event support, improved menu support,

@@ -7,9 +7,9 @@ Description:    The Scheme Configurable Window Manager is a highly dynamic
 		features of other window managers and more using Guile 
 		scheme as its configuration and extension language.
 Keywords:       window manager, scwm, X11, scheme, guile, twm, fvwm, fvwm2, gwm
-Author:         maciej@ai.mit.edu (Maciej Stachowiak)
+Author:         mstachow@mit.edu (Maciej Stachowiak)
 		gjb@cs.washington.edu (Greg J. Badros)
-Maintained-by:  maciej@ai.mit.edu (Maciej Stachowiak)
+Maintained-by:  mstachow@mit.edu (Maciej Stachowiak)
 Primary-site:   huis-clos.mit.edu /pub/scwm/
 		74X KB scwm-0.8.tar.gz
 		992 KB scwm-icons.tar.gz
