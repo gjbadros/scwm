@@ -271,7 +271,8 @@ EXTERN char *UserName, *UserHome;
 extern Display *dpy;
 
 #ifdef USE_IMLIB
-extern ImlibData *imlib_data;
+struct _ImlibData;
+extern struct _ImlibData *imlib_data;
 #endif
 
 extern struct ScwmWindow *FocusOnNextTimeStamp;
