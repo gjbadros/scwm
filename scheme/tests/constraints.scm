@@ -1,10 +1,5 @@
 ;; $Id$
 ;; (reset-scwm-exec-protocol)
-(set-opaque-move-size! 100)
-
-(define w (select-window-interactively "Pick w"))
-(window-position w)
-
 (begin
   (define solver (make-cl-solver))
   (scwm-set-master-solver solver)
@@ -61,8 +56,27 @@
 	  (w2-height (window-clv-height w2)))
       (cl-add-constraint 
        solver 
-       (make-cl-constraint (cl-plus w1-height w2-height) = 800))))
+       (make-cl-constraint (cl-plus w1-height w2-height) = 880))))
+
+  (define (keep-adjacent-horizontal w1 w2)
+    (let ((w1-right-x (cl-plus (window-clv-x w1) (window-clv-width w1)))
+	  (w2-x (window-clv-x w2)))
+      (cl-add-constraint
+       solver
+       (make-cl-constraint w1-right-x = w2-x))))
+
+  (define (keep-adjacent-vertical w1 w2)
+    (let ((w1-bottom-y (cl-plus (window-clv-y w1) (window-clv-height w1)))
+	  (w2-y (window-clv-y w2)))
+      (cl-add-constraint
+       solver
+       (make-cl-constraint w1-bottom-y = w2-y))))
   )
+
+(define w (select-window-interactively "Pick w"))
+(window-position w)
+
+(screen-clv-vx)
 
 
 ;;(for-each (lambda (w) (write w) (write (window-position w))) (list-all-windows))
@@ -72,17 +86,21 @@
 ;; (window-position wA)
 ;; (window-position wB)
 
+(define wB (select-window-interactively))
+
 (keep-to-left-of wA wB)
 (keep-full-width wA wB)
+(keep-adjacent-horizontal wA wB)
+(keep-adjacent-vertical wA wB)
+(keep-full-height wA wB)
 (define wC (select-window-interactively "Pick window C"))
 (keep-to-left-of (current-window-with-focus) wA)
-(keep-bottoms-even wA wC)
+(keep-bottoms-even wA wB)
 (keep-to-left-of wB wC)
 
-(keep-tops-even wA wC)
+(keep-tops-even wA wB)
 
 (keep-full-height (get-window) (get-window))
-(keep-full-height wA wB)
 
 (cl-solver-debug-print solver)
 
