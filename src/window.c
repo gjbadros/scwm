@@ -3107,7 +3107,6 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
   }
 }
 
-
 SCWM_PROC(show_titlebar, "show-titlebar", 0, 2, 0,
           (SCM win, SCM in_place_p))
      /** Cause WIN to be decorated with a titlebar.
@@ -3128,7 +3127,7 @@ specified. */
 
   if (!psw->fTitle) {
     psw->fTitle = True;
-    SetBorderX(psw, (psw == Scr.Hilite), True, True, None, True);
+    redraw_border(psw);
     set_window_internal_title_height(psw, fl->TitleHeight, fInPlace);
   }
   return SCM_UNSPECIFIED;
@@ -3200,7 +3199,7 @@ defaults to the window context in the usual way if not specified. */
     XMapWindow(dpy, psw->sides[i]);
   }
 
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -3230,7 +3229,7 @@ defaults to the window context in the usual way if not specified. */
     XUnmapWindow(dpy, psw->sides[i]);
   }
 
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -3522,6 +3521,63 @@ will revert to its usual color.  See also `window-decoration-ids'. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC (set_window_highlighted_nonant_x, "set-window-highlighted-nonant!", 1, 1, 0,
+           (SCM nonant, SCM win))
+     /** Highlight NONANT for WIN.
+NONANT is a number between 0 and 8, inclusive, or #f to unhighlight. */
+#define FUNC_NAME s_set_window_highlighted_nonant_x
+{
+  ScwmWindow *psw;
+  int n;
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2,win,psw);
+  if (SCM_BOOL_F == nonant) {
+    n = -1;
+  } else {
+    VALIDATE_ARG_INT_RANGE_COPY(1,nonant,0,8,n);
+  }
+  if (psw->highlighted_nonant != n) {
+    psw->highlighted_nonant = n;
+    redraw_border(psw);
+  }
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_highlighted_nonant, "window-highlighted-nonant", 0, 1, 0,
+           (SCM win))
+     /** Returnt the highlighted nonant for WIN, or #f if none highlighted. */
+#define FUNC_NAME s_window_highlighted_nonant
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
+  return (psw->highlighted_nonant >= 0?
+          psw->highlighted_nonant:
+          SCM_BOOL_F);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (set_nonant_highlight_color_x, "set-nonant-highlight-color!", 1, 0, 0,
+           (SCM color))
+     /** Use COLOR for highlighting nonants. */
+#define FUNC_NAME s_set_nonant_highlight_color_x
+{
+  VALIDATE_ARG_COLOR(1,color);
+  Scr.nonant_highlight_color = color;
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (nonant_highlight_color, "nonant-highlight-color", 0, 0, 0,
+           ())
+     /** Return the color used for highlighting nonants. */
+#define FUNC_NAME s_nonant_highlight_color
+{
+  return Scr.nonant_highlight_color;
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
           (SCM fg, SCM win))
      /** Set the foreground color of WIN to FG.
@@ -3531,14 +3587,11 @@ usual way if not specified. See also `get-window-colors'.*/
 #define FUNC_NAME s_set_window_foreground_x
 {
   ScwmWindow *psw;
-
   VALIDATE_ARG_COLOR(1,fg);
-
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win,psw);
 
   psw->TextColor = fg;
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
@@ -3558,11 +3611,9 @@ way if not specified. See also `get-window-colors'. */
 {
   ScwmDecor * fl;
   ScwmWindow *psw;
-
   VALIDATE_ARG_COLOR(1,bg);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win,psw);
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
 
@@ -3570,7 +3621,7 @@ way if not specified. See also `get-window-colors'. */
   psw->ShadowColor = adjust_brightness(psw->BackColor, fl->shadow_factor);
   psw->ReliefColor = adjust_brightness(psw->BackColor, fl->highlight_factor);
 
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
@@ -3590,16 +3641,11 @@ color for WIN). See also `get-window-highlight-colors'. */
 #define FUNC_NAME s_set_window_highlight_foreground_x
 {
   ScwmWindow *psw;
-
-  if (fg != SCM_BOOL_F) {
-    VALIDATE_ARG_COLOR(1,fg);
-  }
-
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  if (fg != SCM_BOOL_F) VALIDATE_ARG_COLOR(1,fg);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
 
   psw->HiTextColor = fg;
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
@@ -3624,8 +3670,7 @@ for WIN).  See also `get-window-highlight-colors'. */
   if (bg != SCM_BOOL_F)
     VALIDATE_ARG_COLOR(1,bg);
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
 
@@ -3635,7 +3680,7 @@ for WIN).  See also `get-window-highlight-colors'. */
   psw->HiReliefColor = adjust_brightness(bg, fl->highlight_factor);
 #endif
 
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
@@ -3735,8 +3780,7 @@ specified. */
 #define FUNC_NAME s_set_mwm_border_x
 {
   ScwmWindow *psw;
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
   VALIDATE_ARG_BOOL_COPY(1,flag,psw->fMWMBorders);
   /* copied from SelectDecor */
   if (psw->fMWMBorders)
@@ -3751,7 +3795,7 @@ specified. */
   SetupFrame(psw,FRAME_X_VP(psw),FRAME_Y_VP(psw),
              FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
              WAS_MOVED, WAS_RESIZED);
-  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+  redraw_border(psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3779,8 +3823,7 @@ defaults to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
   /* Should changing the icon title string be allowed? */
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
   VALIDATE_ARG_BOOL_INVERT(1,flag,psw->fNoIconTitle);
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
@@ -3863,10 +3906,7 @@ in the usual way if not specified. */
 #define FUNC_NAME s_window_icon
 {
   ScwmWindow *psw;
-
-  VALIDATE_WIN_USE_CONTEXT(win);
-  psw = PSWFROMSCMWIN(win);
-
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
   return psw->icon_req_image;
 }
 #undef FUNC_NAME
@@ -3908,10 +3948,7 @@ Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified. */
 {
   ScwmWindow *psw;
-
-  VALIDATE_WIN_USE_CONTEXT(win);
-  psw = PSWFROMSCMWIN(win);
-
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
   return psw->mini_icon_image;
 }
 #undef FUNC_NAME
@@ -3924,10 +3961,7 @@ WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_shaped_p
 {
   ScwmWindow *psw;
-
-  VALIDATE_ARG_WIN(1, win);
-  psw = PSWFROMSCMWIN(win);
-
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1, win,psw);
   return SCM_BOOL_FromBool(psw->fShaped);
 }
 #undef FUNC_NAME
@@ -3940,10 +3974,7 @@ WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_icon_shaped_p
 {
   ScwmWindow *psw;
-
-  VALIDATE_WIN_USE_CONTEXT(win);
-  psw = PSWFROMSCMWIN(win);
-
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
   return SCM_BOOL_FromBool(psw->fShapedIcon);
 }
 #undef FUNC_NAME

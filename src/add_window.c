@@ -235,6 +235,8 @@ AddWindow(Window w)
   psw->icon_cursor=SCM_UNDEFINED;
 
   psw->cmap_windows = NULL;
+  psw->number_cmap_windows = 0;
+  psw->highlighted_nonant = -1;
 
   psw->ttCreated = 
     psw->ttLastFocussed = time(NULL);

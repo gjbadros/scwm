@@ -13,6 +13,7 @@
 #include "screen.h"
 
 void redraw_titlebars(ScwmDecor * fl, int extra_height);
+void redraw_border(ScwmWindow *psw) ;
 void redraw_borders(ScwmDecor *fl) ;
 void refresh_common(Window win_or_root);
 void ms_sleep(unsigned long ms);

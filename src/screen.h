@@ -288,6 +288,7 @@ typedef struct ScreenInfo {
   int ScrollResistance;		/* resistance to scrolling in desktop */
   int MoveResistance;		/* res to moving windows over viewport edge */
 
+  SCM nonant_highlight_color;
 } ScreenInfo;
 
 extern ScreenInfo Scr;

@@ -967,7 +967,15 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       int top_side_relief_offset_when_squashed = 
         psw->tbar_right - psw->corner_width - psw->xboundary_width;
 
-      ChangeWindowColor(psw->sides[i], valuemask);
+      if ((psw->highlighted_nonant == 1 && i == 0) ||
+          (psw->highlighted_nonant == 3 && i == 3) ||
+          (psw->highlighted_nonant == 5 && i == 1) ||
+          (psw->highlighted_nonant == 7 && i == 2)) {
+        XSetWindowBackground(dpy,psw->sides[i],XCOLOR(Scr.nonant_highlight_color));
+        XClearWindow(dpy,psw->sides[i]);
+      } else {
+        ChangeWindowColor(psw->sides[i], valuemask);
+      }
       if ((flush_expose(psw->sides[i])) || (expose_win == psw->sides[i]) ||
 	  (expose_win == None)) {
 	GC sgc, rgc;
@@ -1021,7 +1029,15 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 			rgc, sgc, (0x0001 << i));
 	}
       }
-      ChangeWindowColor(psw->corners[i], valuemask);
+      if ((psw->highlighted_nonant == 0 && i == 0) ||
+          (psw->highlighted_nonant == 2 && i == 1) ||
+          (psw->highlighted_nonant == 6 && i == 2) ||
+          (psw->highlighted_nonant == 8 && i == 3)) {
+        XSetWindowBackground(dpy,psw->corners[i],XCOLOR(Scr.nonant_highlight_color));
+        XClearWindow(dpy,psw->corners[i]);
+      } else {
+        ChangeWindowColor(psw->corners[i], valuemask);
+      }
       if ((flush_expose(psw->corners[i])) || (expose_win == psw->corners[i]) ||
 	  (expose_win == None)) {
 	GC rgc, sgc;

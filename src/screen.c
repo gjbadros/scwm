@@ -60,6 +60,7 @@ mark_screen(SCM obj)
   GC_MARK_SCM_IF_SET(psi->msg_window_bg);
   GC_MARK_SCM_IF_SET(psi->msg_window_highlight);
   GC_MARK_SCM_IF_SET(psi->msg_window_shadow);
+  GC_MARK_SCM_IF_SET(psi->nonant_highlight_color);
 
   return SCM_BOOL_F;
 }

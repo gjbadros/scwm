@@ -409,6 +409,7 @@ InitVariables(void)
   Scr.Ungrabbed = NULL;
 
   Scr.icon_font = SCM_UNDEFINED;
+  Scr.nonant_highlight_color = WHITE_COLOR;
   Scr.msg_window_font = make_font(str_fixed);
   Scr.msg_window_fg = BLACK_COLOR;
   Scr.msg_window_bg = WHITE_COLOR;

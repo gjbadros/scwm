@@ -312,6 +312,7 @@ struct ScwmWindow {
   SCM other_properties;
 
   SCM schwin;
+  int highlighted_nonant;       /* is 0-8, or -1 if not highlighted */
 };
 
 /* FIXJTL: This is ugly, but needed to make window_fwd work at all; is

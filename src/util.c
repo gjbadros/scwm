@@ -42,18 +42,21 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
   SetTitleBar(Scr.Hilite, True, True);
 }
 
+void
+redraw_border(ScwmWindow *psw)
+{
+  SetBorderX(psw, psw== Scr.Hilite, True, True, None, True);
+}
 
 void
 redraw_borders(ScwmDecor *fl) 
 {
   ScwmWindow *psw = Scr.ScwmRoot.next;
-  ScwmWindow *pswHilite = Scr.Hilite;
-
   for ( ; psw; psw = psw->next) {
     if (psw->fl != fl) {
       continue;
     }
-    SetBorderX(psw, psw==pswHilite, True, True, None, True);
+    redraw_border(psw);
   }
 }
 
