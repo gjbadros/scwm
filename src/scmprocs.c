@@ -42,7 +42,6 @@
 #include "miscprocs.h"
 #include "menuitem.h"
 #include "scwmmenu.h"
-#include "paths.h"
 #include "deskpage.h"
 #include "decor.h"
 #include "face.h"
