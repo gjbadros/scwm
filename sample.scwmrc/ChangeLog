@@ -1,3 +1,9 @@
+Tue Dec 22 04:30:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* system.scwmrc, gjb.scwmrc, robbe.scwmrc, sds.scwmrc: Replace use
+ 	of (app scwm standard-move-resize-message-window) with
+ 	(app scwm message-window).
+
 1998-12-11  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc (build-menu): Would try exec'ing a list.

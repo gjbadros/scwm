@@ -41,7 +41,7 @@
 	     (app scwm fvwm-module)
 	     (app scwm cached-program-exists)
 	     (app scwm animation)
-	     (app scwm standard-move-resize-message-window)
+	     (app scwm message-window)
 	     )
 
 (set! debug-fvwm-module #f)

@@ -45,7 +45,7 @@
 	     (app scwm optargs)
 	     (app scwm std-menus)
 	     (app scwm animation)
-	     (app scwm standard-move-resize-message-window)
+	     (app scwm message-window)
 	     (ice-9 string-fun)
 	     (ice-9 regex))
 

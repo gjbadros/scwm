@@ -15,7 +15,7 @@
 	     (app scwm wininfo)
 	     (app scwm doc)
              (app scwm style)
-	     (app scwm standard-move-resize-message-window)
+	     (app scwm message-window)
 	     (app scwm face))
 
 ;;-------------------------------;;
