@@ -1,6 +1,6 @@
 Event Rewrite Proposal for Scwm
 Greg J. Badros, 
-  Revised 19-Sep-1999
+  Revised 21-Sep-1999, 19-Sep-1999
   2-Sep-1998, 3-Sep-1998, 5-Sep-1998, 6-Aug-1998
 
 Introduction:
@@ -223,48 +223,60 @@ event-map-global
 ;; We could consider looking at CLOS method combination for more
 ;; sophisticated dispatching combination techniques, but that's for later.
 
-THE BELOW IS QUESTIONABLE!
+;; Each procedure is invoked with *no* arguments.  Obviously there is
+;; information that the bound procedures will need to receive, but having
+;; those objects be arguments would necessitate changing the argument
+;; list to all procedures that are intended to be bound to an action.
 
-I want to come up with an alternative formulation that doesn't require
-the action procedure to take all of the below arguments.  Perhaps I need 
-to look at Emacs' `interactive' specifier to see how they manage this
-issue.
+;; Instead, the event-specific information will be available to the
+;; dispatched procedure via the thread-local variable `last-event'.  That
+;; variable should be accessed via the following accessors.
+;; E.g., the event-target can be accessed via the expression `(event-target last-event)'
+;; The `last-event' variable will be #f if the procedure is not invoked
+;; from an event handler.  
 
-;; Each procedure is invoked with four arguments:
-;; #1 - the scheme object that the event acted on/in (e.g., for a button
-;; decoration, it will be that top-level frame; for a menu it will be
-;; the menu object, etc.), or #f if there is no applicable scheme object 
-;; (e.g., the root window)
-;; #2 - the event object that caused this dispatch (i.e. EVENT)
-;; #3 - the window id of the X window that got the event.  We can add 
-;; primitives to query what decoration/menu/whatever a window ID is
-;; #4 - the time of that event, as reported by the X server
-;; #5 - a list of event-specific information or #f; e.g.,
+;; The names of the accessors of `last-event' are:
+
+;; event-target - the scheme object that the event acted on/in (e.g.,
+;; for a button decoration, it will be that window object; for a menu
+;; it will be the menu object, etc.), for the root window it will be
+;; 'root-window, or #f if there is no applicable object.
+;; Note that `window-context' is largely replaced by
+;; `(event-target last-event)'
+
+;; event-window-id - the window id of the X window that got the event.  
+;; the `window-decoration-ids' primitive can be helpful in mapping this
+;; back to what the decoration was.
+
+
+;; event-timestamp - the time of the event, as reported by the X server
+;; in X time format (which wraps reasonably frequently)
+
+;; event-time - the time of the event, as a time_t value (seconds since 1/1/70)
+
+;; event-info - a list of event-specific information or #f; e.g.,
 ;;    a property-notify event may use
 ;;         '("WM_TITLE" 'NewValue)
 ;;         property name changed and either 'NewValue or 'Delete
 ;;    for this argument
-;; #6 - the event map object (i.e. EVENT-MAP)
-;;
-;; We may need to do something to help simplify binding simple
-;; procedures to an event (maybe something like Emacs's (interactive)
-;; declaration), but I think we need all of the above (and maybe more)
-;; to get a lot of useful functionality.
+
+;; event-map - the event map object (i.e. EVENT-MAP)
+
+;; We will do something to help simplify binding these options
+;; to local variables in procedures intended to be action procedure
+;; (maybe something like Emacs's (interactive) declaration).
+
 ;; Only when no bindings are applicable in the child or its chain of
 ;; parents should the event dispatching mechanism
 ;; proceed to chain the event dispatch up to the enclosing event-map
 ;; context.  That is, from decoration->frame->global (button decorations 
 ;; perhaps should forward to the titlebar before the frame, but side-bar 
 ;; decorations probably should not).
-;; This primitive is what will get internally invoked when Scwm gets
-;; an event.  Note that Scwm will have to manage selecting the
-;; appropriate events and grabbing the appropriate keys based on
-;; the event-map objects attached to various windows.
-;; Note that my proposed automatic chaining is a restriction (for 
-;; programming understanding and reasoning purposes) on a more general
-;; notion of a procedure to be called when no event binding matches --
-;; the chaining could be made more explicit and put under programmer
-;; control using this primitive.
+
+;; This `dispatch-event' primitive is what will get internally invoked
+;; when Scwm gets an event.  Note that Scwm will have to manage
+;; selecting the appropriate events and grabbing the appropriate keys
+;; based on the event-map objects attached to various windows.  
 
 (Thanks to Robert Bihlmeyer who made useful comments regarding this
 subsection.)
@@ -274,16 +286,17 @@ subsection.)
 4 - Binding of Event Maps:
 --------------------------
 
-Event maps can be attached to any X Window by its X Id.  We can add
-primitives that give the window id from a SCWM top-level window and a
-decoration specifier.
+Event maps can be attached to any X Window by its X Id or 
+the Scheme window object.
 
-(attach-event-map X-WINDOW-ID EVENT-MAP)
+(attach-event-map X-WINDOW-ID-OR-WIN EVENT-MAP)
 e.g.,
 (attach-event-map (button-n-of 1 win) button-1-map-for-win)
 (attach-event-map (title-bar-of win) title-bar-map-for-win)
 ;; Only one event map is attached per window id -- attaching
 ;; a new map removes any old one
+;; (will need to add button-n-of, title-bar-of, but can do some
+;; using `window-decoration-ids'
 
 The window style mechanism should be used to attach a set
 of event maps at startup for a given window style, e.g.:
@@ -298,20 +311,17 @@ efficient, since it'll happen for each new window and on lots of
 decorations -- it's only a single XSaveContext call for each attachment, 
 which should be fine].
 
-(event-map-for X-WINDOW-ID)
+(event-map-for X-WINDOW-ID-OR-WIN)
 ;; Return the currently attach event-map object, if any, or #f
 
 
-(remove-event-map X-WINDOW-ID)
+(remove-event-map X-WINDOW-ID-OR-WIN)
 ;; detach any event map from X-WINDOW-ID
 
 
 OTHER ISSUES:
 
-Enabling/disabling event maps on a per-attachment basis?
-
 Top-level global event map that's used first before any others?
-
 
 
 I'll try to come up with an example of using this system but please feel 
