@@ -6,7 +6,7 @@
 (begin
   (define swi select-window-interactively)
   (define solver (make-cl-solver))
-  (scwm-set-master-solver solver)
+  (scwm-set-master-solver! solver)
   ;(map (lambda (w) (add-stays-on-window w)) (list-all-windows))
   (define v (make-cl-variable "v"))
   (cl-add-stay solver v cls-strong 3)
