@@ -1,3 +1,20 @@
+Fri Jul 17 13:33:17 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* all-files: Eliminate #includes of misc.h (gone), and system.h
+	(#included by scwm.h now);  add #includes of other headers as now needed
+
+	* borders.h: Move HILITE macros here, and turn them into an enum
+	
+	* xmisc.c, xmisc.h: XGetPointerWindowOffsets renamed ->
+	FXGetPointerWindowOffsets, XGetWindowTopLeft renamed ->
+	FXGetWindowTopLeft
+	
+	* misc.c, misc.h: Removed; functions dispersed as appropriate,
+	often into xmisc.c
+
+	* Makefile.am: updated to reflect removal of misc.c, misc.h and
+	rename of constraint-primitives.cc -> .c
+
 Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* module-interface.c, xmisc.c, constraints.h: include <config.h>
