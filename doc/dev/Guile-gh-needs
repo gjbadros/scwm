@@ -88,6 +88,8 @@ scm_fluid_set_x
 scm_hash_ref
 scm_hash_set_x
 scm_hash_remove_x
+scm_hashq_remove_x
+scm_hashq_set_x
 
 scm_make_vector
 
