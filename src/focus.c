@@ -1,8 +1,11 @@
-
-
+/* $Id$
+ * focus.c
+ * Copyright 1997, 1998
+ * Maciej Stachowiak and Greg J. Badros
+ */
 
 /****************************************************************************
- * This module is all original code 
+ * This module is derived from all original code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
@@ -143,6 +146,15 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   XSync(dpy, 0);
 
 }
+
+
+void
+Unfocus()
+{
+  SetFocus(Scr.NoFocusWin,NULL,False);
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */
