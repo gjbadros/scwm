@@ -1,5 +1,9 @@
 Sat Oct 18 02:29:34 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* configure.in: Added -g to the list of default build
+ 	flags. Suggested by Mikael Djurfeldt <mdj@nada.kth.se> to comply
+ 	with GNU coding standards.
+
 	* configure.in: Added more accurate checks to make sure that
  	libguile is 1.2 or higher; also check if the libguile is recent
  	enough to support the interactive repl. Also create a makefile in
