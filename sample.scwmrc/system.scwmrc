@@ -34,6 +34,9 @@
       (display arg)
       ()))
 
+(define (hyper str)
+  (string-append "H-" str))
+
 (define (display-string-newline-to-error-port str)
   (display str (current-error-port))
   (newline (current-error-port)))
@@ -874,27 +877,27 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-mouse 'root "M-3" #f popup-desk)
 (bind-mouse 'all "A-2" #f show-window-list-by-focus-with-geometry)
 
-(bind-key 'all "H-r" rename-window-interactively)
+(bind-key 'all (hyper "r") rename-window-interactively)
 
-;; (lookup-key 'all "H-r")
+;; (lookup-key 'all (hyper "r"))
 ;; (add-timer-hook! 150 (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
 ;; (procedure-name rename-window-interactively)
 
-(bind-key 'all "H-slash" undo)
-(bind-key 'all "H-M-slash" redo)
-(bind-key 'all "H-s" insert-undo-global)
+(bind-key 'all (hyper "slash") undo)
+(bind-key 'all (hyper "M-slash") redo)
+(bind-key 'all (hyper "s") insert-undo-global)
 
-(bind-key 'all "H-w" describe-key)
-(bind-key 'all "H-comma" describe-mouse)
+(bind-key 'all (hyper "w") describe-key)
+(bind-key 'all (hyper "comma") describe-mouse)
 (bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
 (bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
 
-(bind-key 'all "H-A-M-C-d" delete-window)
+(bind-key 'all (hyper "A-M-C-d") delete-window)
 ;; (delete-window)
 ;; (call-interactively delete-window)
-;; (lookup-key 'all "H-A-M-C-d")
+;; (lookup-key 'all (hyper "A-M-C-d"))
 
 
 ;;; operations on parts of the window
@@ -934,23 +937,23 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-mouse 'all "C-S-M-3" #f interactive-resize)
 ;; These always do rubberband moves (except when built for constraint-solver--
 ;; with cn solver builds all move/resize operations must be opaque)
-(bind-mouse 'window "H-2" #f interactive-move-rubberband)
-(bind-mouse 'window "H-3" #f interactive-resize-rubberband)
+(bind-mouse 'window (hyper "2") #f interactive-move-rubberband)
+(bind-mouse 'window (hyper "3") #f interactive-resize-rubberband)
 
-(bind-mouse 'window "H-1" #f select-window-toggle)
-(bind-key 'all "H-S-s" select-window-toggle)
-(bind-mouse 'all "H-S-1" #f select-window-toggle)
-(bind-mouse 'all "H-A-1" #f select-window-toggle)
-(bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
+(bind-mouse 'window (hyper "1") #f select-window-toggle)
+(bind-key 'all (hyper "S-s") select-window-toggle)
+(bind-mouse 'all (hyper "S-1") #f select-window-toggle)
+(bind-mouse 'all (hyper "A-1") #f select-window-toggle)
+(bind-mouse 'all (hyper "S-2") #f interactive-move-selected-group-or-window)
 (bind-mouse 'title "C-1" #f select-window-toggle)
 (bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
 
-(bind-mouse 'title "H-1" #f move-after-deleting-inferred-constraints)
-(bind-mouse 'title "H-3" #f move-after-deleting-constraints)
-(bind-mouse 'frame-sides "H-1" #f move-after-deleting-inferred-constraints)
-(bind-mouse 'frame-sides "H-3" #f move-after-deleting-constraints)
+(bind-mouse 'title (hyper "1") #f move-after-deleting-inferred-constraints)
+(bind-mouse 'title (hyper "3") #f move-after-deleting-constraints)
+(bind-mouse 'frame-sides (hyper "1") #f move-after-deleting-inferred-constraints)
+(bind-mouse 'frame-sides (hyper "3") #f move-after-deleting-constraints)
 
-(bind-mouse 'all "H-M-3" #f popup-window-ops)
+(bind-mouse 'all (hyper "M-3") #f popup-window-ops)
 ;;(bind-mouse 'left-button-1 3 popup-style-menu)
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
@@ -962,7 +965,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
 (bind-key 'all "A-Tab" window-task-switcher-menu)
-;;(bind-key 'all "H-Tab" window-task-switcher-menu)
+;;(bind-key 'all (hyper "Tab") window-task-switcher-menu)
 (bind-key 'all "A-S-Tab" window-task-switcher-menu-backwards)
 
 ;; rotate the current window with the keyboard
@@ -1032,7 +1035,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "C-S-M-z" popup-root-start)
 (if gnome-sm
     (bind-key 'all "C-S-M-w" gnome-desktop-menu))
-(bind-key 'all "H-z" popup-root-start)
+(bind-key 'all (hyper "z") popup-root-start)
 
 (set-click-delay! 150)
 
@@ -1073,9 +1076,9 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
       (bind-key 'all "C-M-KP_Next" animated-move-to-se)
       ))
 
-(bind-key 'all "H-p" shove-window-prefix)
+(bind-key 'all (hyper "p") shove-window-prefix)
 
-(bind-key 'all "H-e" focus-last-mapped-window)
+(bind-key 'all (hyper "e") focus-last-mapped-window)
 
 ;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
 ;; GJB:FIXME:: keys should be first class
@@ -1096,18 +1099,18 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; in a netscape window
 (bind-mouse 'window "C-A-S-1" #f send-key-press-up)
 (bind-mouse 'window "C-A-S-3" #f send-key-press-down)
-(bind-mouse 'window "C-A-H-1" #f send-key-press-prior)
-(bind-mouse 'window "C-A-H-3" #f send-key-press-next)
+(bind-mouse 'window (hyper "C-A-1") #f send-key-press-prior)
+(bind-mouse 'window (hyper "C-A-3") #f send-key-press-next)
 
 
 ;; Permit vertical movement of windows via wheel mouse.
 ;; kinda silly, but kinda cute, too!
-(bind-mouse 'window "H-4" (lambda () (move-window-relative 0 -5)))
-(bind-mouse 'window "H-C-4" (lambda () (move-window-relative 0 -1)))
-(bind-mouse 'window "H-M-4" (lambda () (move-window-relative 0 -25)))
-(bind-mouse 'window "H-5" (lambda () (move-window-relative 0 5)))
-(bind-mouse 'window "H-C-5" (lambda () (move-window-relative 0 1)))
-(bind-mouse 'window "H-M-5" (lambda () (move-window-relative 0 25)))
+(bind-mouse 'window (hyper "4") (lambda () (move-window-relative 0 -5)))
+(bind-mouse 'window (hyper "C-4") (lambda () (move-window-relative 0 -1)))
+(bind-mouse 'window (hyper "M-4") (lambda () (move-window-relative 0 -25)))
+(bind-mouse 'window (hyper "5") (lambda () (move-window-relative 0 5)))
+(bind-mouse 'window (hyper "C-5") (lambda () (move-window-relative 0 1)))
+(bind-mouse 'window (hyper "M-5") (lambda () (move-window-relative 0 25)))
 
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button 2 (get-window) #t #f)))
@@ -1116,15 +1119,15 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (bind-key 'all "C-M-S-s" toggle-stick)
 
-(bind-key 'all "H-g" jump-to-register)
-(bind-key 'all "H-f" focus-to-register)
-(bind-key 'all "H-c" window-configuration-to-register)
-(bind-key 'all "H-x" global-window-configuration-to-register)
+(bind-key 'all (hyper "g") jump-to-register)
+(bind-key 'all (hyper "f") focus-to-register)
+(bind-key 'all (hyper "c") window-configuration-to-register)
+(bind-key 'all (hyper "x") global-window-configuration-to-register)
 
-(bind-key 'all "H-d" focus-window-with-pointer)
+(bind-key 'all (hyper "d") focus-window-with-pointer)
 
 ;; Hyper-w
-;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;;(bind-key 'all (hyper "w") (lambda () (write (get-window)) (newline)))
 ;; Alt-w
 ;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
@@ -1225,8 +1228,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "C-S-M-period" dir-focus-east)
 (bind-key 'all "C-S-A-p" xmms-send-pause-click)
 
-(bind-key 'all "H-q" quote-key-event)
-(bind-key 'all "H-m" quote-mouse-event)
+(bind-key 'all (hyper "q") quote-key-event)
+(bind-key 'all (hyper "m") quote-mouse-event)
 
 (if (and (not (restarted?)) (not suppress-xclients)
 	 (not gnome-sm))
@@ -1255,7 +1258,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (use-scwm-modules gtk (gtk gtk))
 (add-hook! error-hook gtk-show-error)
 ;; This is a bug binding for demonstrating above
-;; (bind-key 'all "H-o" (lambda () (function-with-stupid-name)))
+;; (bind-key 'all (hyper "o") (lambda () (function-with-stupid-name)))
 
 (set! window-list-proc focus-change-warp-pointer)
 
