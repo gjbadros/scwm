@@ -58,13 +58,11 @@ typedef struct {
    that make_color should indeed throw an error if it fails to parse or
    allocate the color. */
 
-#define VALIDATE_COLOR(X, proc, pos) do { if (gh_string_p(X)) {X=make_color(X);}; if (!COLOR_P(X)) {scm_wrong_type_arg(proc,pos,X);}; } while (0)
-
-/* FIXMS: is this needed? */
-#define VALIDATE_COLOR_OR_NONE(X, proc, pos) do { if (gh_string_p(X)) {X=make_color(X)}; if (!COLOR_P(X) || X == SCM_BOOL_F) {scm_wrong_type_arg(proc,pos,X);}; } while(0)
-
-#define VALIDATE_COLOR_OR_UNDEFINED(X, proc, pos) do { if (X==SCM_UNDEFINED||X==SCM_BOOL_F) {X=SCM_BOOL_F;} else { if (gh_string_p(X)) {X=make_color(X);}; if (!COLOR_P(X) || X == SCM_BOOL_F) {scm_wrong_type_arg(proc,pos,X);};}; } while(0)
-
+#define VALIDATE_ARG_COLOR(pos,X)                            \
+  do {                                                       \
+    if (gh_string_p(X)) {X=make_color(X);};                  \
+    if (!COLOR_P(X)) {scm_wrong_type_arg(FUNC_NAME,pos,X);}; \
+  } while (0)
 
 
 #define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):0)

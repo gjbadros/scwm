@@ -198,6 +198,11 @@ enum wm_client_functions {
 #define FInvertFromSCMBool(x) ((x) != SCM_BOOL_T)
 */
 
+/* Use implied FUNC_NAME (cascaded macro) */
+#define SCWM_WRONG_TYPE_ARG(pos,formal) \
+   do { scm_wrong_type_arg(FUNC_NAME, pos, formal); } while (0)
+
+
 #define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
   do { \
   if (flag == SCM_BOOL_T) var = True; \

@@ -122,7 +122,7 @@ Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses. */
 #define FUNC_NAME s_color_properties
 {
-  VALIDATE_COLOR (color, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,color);
 
   return gh_list(gh_cons(sym_name, COLORNAME(color)),
 		 gh_cons(sym_pixel, gh_int2scm(XCOLOR(color))),
@@ -433,7 +433,7 @@ which is suitable for use as a hilight. */
 {
   double f;
 
-  VALIDATE_COLOR (color, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,color);
 
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 2, factor);
@@ -452,7 +452,7 @@ COLOR; (make-reversed-color "gray50") is almost indistinguishable
 from "gray50". */
 #define FUNC_NAME s_make_reversed_color
 {
-  VALIDATE_COLOR (color, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,color);
 
   return invert_color(color);
 }
@@ -641,7 +641,7 @@ have their own foreground color. */
 { 
   ScwmDecor *fl;
 
-  VALIDATE_COLOR(fg, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,fg);
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -688,7 +688,7 @@ have their own background color. */
   unsigned long gcm;
   ScwmDecor *fl;
 
-  VALIDATE_COLOR(bg, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,bg);
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -752,7 +752,7 @@ SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
      /** Use FG as the default foreground color for icons, titlebars, etc. */
 #define FUNC_NAME s_set_not_menu_foreground_x
 { 
-  VALIDATE_COLOR(fg, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,fg);
 
   if (Scr.d_depth > 2) {
     Scr.NotMenuColors.fg = fg;
@@ -780,7 +780,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
      /** Use BG as the default background color for icons, window frames, etc. */
 #define FUNC_NAME s_set_not_menu_background_x
 { 
-  VALIDATE_COLOR(bg, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,bg);
 
   if (Scr.d_depth > 2) {
     Scr.NotMenuColors.bg = bg;

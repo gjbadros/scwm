@@ -1990,7 +1990,7 @@ should not have to worry about this unless you know what it means. */
 
   SCM_REDEFER_INTS;
 
-  VALIDATEN(win, 2, FUNC_NAME);
+  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
@@ -2056,7 +2056,7 @@ this unless you know what it means. */
   Window w;
   Window pointer_win;
 
-  VALIDATEN(win, 3, FUNC_NAME);
+  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 

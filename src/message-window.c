@@ -377,12 +377,12 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
   }
 
   if ( fg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (fg_color, FUNC_NAME, 2);
+    VALIDATE_ARG_COLOR(2,fg_color);
     msg->fg_color = fg_color;
   }
 
   if ( bg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (bg_color, FUNC_NAME, 3);
+    VALIDATE_ARG_COLOR(3,bg_color);
     msg->bg_color = bg_color;
     msg->shadow_color = adjust_brightness(msg->bg_color, 
 					  message_shadow_factor);

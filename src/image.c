@@ -544,7 +544,7 @@ appropriate file. */
 
   /* OK, it wasn't in the hash table - we need to expand the filename.
    */
-  full_path = path_expand_image_fname(name, FUNC_NAME);
+  full_path = path_expand_image_fname(name,FUNC_NAME);
 
   if (full_path==SCM_BOOL_F) {
     return (SCM_BOOL_F);

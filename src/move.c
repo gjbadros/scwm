@@ -536,7 +536,7 @@ specified. */
 {
   int x, y;                     /* not used now */
 
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  VALIDATE_PRESS_ONLY(win);
   InteractiveMove(PSWFROMSCMWIN(win), False, &x, &y);
 
   return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
@@ -555,7 +555,7 @@ defaults to the window context in the usual way if not specified.
 {
   int x, y;                     /* not used now */
 
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  VALIDATE_PRESS_ONLY(win);
   InteractiveMove(PSWFROMSCMWIN(win), True, &x, &y);
 
   return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);

@@ -623,7 +623,7 @@ specified.  */
   ScwmWindow *psw;
   int width, height;            /* not used, now */
 
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  VALIDATE_PRESS_ONLY(win);
   psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_RESIZE, psw) == 0
@@ -657,7 +657,7 @@ place. */
   ScwmWindow *psw;
   int width, height;            /* not used, now */
 
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  VALIDATE_PRESS_ONLY(win);
   psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_RESIZE, psw) == 0

@@ -692,7 +692,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
   } else if (spec==sym_solid) {
     /* FIXMS give a better error message */
-    VALIDATE_COLOR(arg, FUNC_NAME, arg);
+    VALIDATE_ARG_COLOR(3,arg);
 
     /* fully destructive, so free the face and 
        mutate it */
