@@ -566,7 +566,6 @@ scwm_main(int argc, char **argv)
 #endif
 
   gh_eval_str ("(define-module (guile))");  
-  /* MS:FIXME:: remove once we deal w/ new-style hooks properly. */
 
 #ifdef I18N
   /* setlocale in guile */
@@ -1022,8 +1021,13 @@ Repository Timestamp: %s\n",
   
   DBUG((DBG,"main", "Setting up rc file defaults..."));
 
-  if (fDisableBacktrace) {
-    gh_eval_str("(debug-disable 'debug)");
+  /* the default for this seems to have changed between guile-1.3
+     and guile-1.3.2;  only the first clause is needed when 
+     we drop support for guile-1.3.2 */
+  if (!fDisableBacktrace) {
+    gh_eval_str("(debug-enable 'debug) (read-enable 'positions)");
+  } else {
+    gh_eval_str("(debug-disable 'debug) (read-disable 'positions)");
   }
 
   /* the compiled-in .scwmrc comes from minimal.scm,
