@@ -1,5 +1,21 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* gnome-hints.scm: Fully support _WIN_STATE, _WIN_LAYER and
+	_WIN_WORKSPACE including notification of internal state. Remove
+	debugging statements. Gnome hint support should now be complete,
+	with the following caveats: (1) separate vertical and horizontal
+	maximization are not really properly supported; nothing really
+	uses this AFAIK so it doesn't matter much; (2) layers are hacked
+	by pretending layer <= 4 is one layer, and layer =>5 is another;
+	and (3) dock-layer windows are not avoided when
+	maximizing. Rewrites of the maximize code and a layer
+	implementation should fix this.
+
+	* winops.scm: Use window-properties instead of object-properties
+	for maximized state, so useful notification can happen.
+
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
 	* virtual.scm (move-to-viewport): Typo fixed. Patch from Sam
 	Falkner <samf@Central.Sun.COM>.
 

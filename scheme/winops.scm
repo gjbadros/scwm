@@ -109,19 +109,19 @@ If NW or NH is 0, that dimension is not changed."
 		    (#t 0))))
 	  (move-window-viewport-position nx ny win)
 	  (if (not (maximized? win))
-	      (set-object-property!
+	      (set-window-property!
 	       win 'maximized (list x y cli-width cli-height
 				    nx ny ncw nch)))))))
 
 
 (define*-public (maximized? #&optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
-  (->bool (object-property win 'maximized)))
+  (->bool (window-property win 'maximized)))
 
 ;; uses client units
 (define*-public (unmaximize #&optional (win (get-window)))
   "Unmaximize WIN so it returns to its size/position before maximization."
-  (if win (let ((max-prop (object-property win 'maximized)))
+  (if win (let ((max-prop (window-property win 'maximized)))
 	       (cond
 		(max-prop
 		 (let* ((maxed-dims (cddddr max-prop))
@@ -151,7 +151,7 @@ If NW or NH is 0, that dimension is not changed."
 			      (cdar size-hints))
 			   (cdadr size-hints))
 			win)
-		       (set-object-property! win 'maximized #f)))))))
+		       (set-window-property! win 'maximized #f)))))))
 
 
 (define*-public (toggle-maximize nw nh #&optional (win (get-window)))

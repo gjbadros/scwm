@@ -16,7 +16,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm winops)
-  :use-module (app scwm cached-program-exists)
+  :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
 
