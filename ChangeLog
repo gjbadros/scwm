@@ -1,3 +1,15 @@
+Fri Aug 27 01:06:11 1999    <gjb@cs.washington.edu>
+
+	* RH6-notes: Added -- notes for installing scwm on top of RH6
+
+	* configure.in (scwm_pixmapdir): Change scwm_pixmapdir so it'll be 
+	e.g. /usr/pixmaps/scwm instead of /usr/scwm/pixmaps (scwm-icons
+	gets installed in /usr/pixmaps/scwm).  Use @prefix@ instead of
+	/usr in other scwm_image_load_path positions.
+
+	* scwm.spec.in: Give --with-cassowary option to make it use the
+	constraint solver.
+
 Fri Aug 27 00:19:19 1999    <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Do not use exec_prefix including X11R6-- just let
