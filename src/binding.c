@@ -1,6 +1,6 @@
 /* $Id$
  * binding.c
- * Copyright (C) 1997-1999 By Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 By Greg J. Badros and Maciej Stachowiak
  */
 
 #ifdef HAVE_CONFIG_H
@@ -134,7 +134,7 @@ possibly no modifiers. *- may not be combined with any other modifier.  */
 
 
 static const char *
-PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool allow_any_p)
+PchModifiersToModmask(const char *pch, int *pmodifier, const char *func_name, Bool allow_any_p)
 {
   int modmask = 0;
   Bool fError = False;
@@ -225,7 +225,7 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
 */
 /*SCWM_VALIDATE: key */
 Bool 
-FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name, 
+FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func_name, 
 		      Bool allow_any_p, Bool fShowError)
 #define FUNC_NAME func_name
 {
@@ -340,7 +340,7 @@ BnumFromSz(const char *sz)
 }
 
 Bool
-FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name, 
+FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, const char *func_name, 
 		       Bool allow_any_p)
 {
   Bool fOk = True;
@@ -752,7 +752,7 @@ lookup_context(SCM context)
 }
 
 int 
-compute_contexts(SCM contexts, char *func_name)
+compute_contexts(SCM contexts, const char *func_name)
 {
   int tmp, retval;
 

@@ -68,9 +68,9 @@ void clear_mouse_event_type();
 SCM mouse_event_type();
 
 /* Used by events.c's send_key_press */
-Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name,
+Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func_name,
 			   Bool allow_any_p, Bool fShowError);
-Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name,
+Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, const char *func_name,
 			    Bool allow_any_p);
 const char *SzKeysymForKeyCode(KeyCode code, int index);
 char *SzNewModifierStringForModMask(int modmask);
