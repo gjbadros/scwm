@@ -1,3 +1,26 @@
+Mon Mar 22 18:58:16 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Move reset-hook! to be in the root module.
+
+Mon Mar 22 16:39:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winops.scm, prefs-menu.scm: Make `default-move-opaquely?' and
+ 	`default-resize-opaquely?' always return
+ 	opaque-move-percent/opaque-resize-percent if they are boolean.
+  	Make opaque-move-menu uses #t for All, #f for Never.  Added
+ 	`opaque-resize-menu'.
+
+	* flux.scm: Improve `first-word' to stop at tabs, too.  Added
+	`netscape-goto-url' and rework `netscape-goto-cut-buffer-url' to
+	use it.
+
+	* doc.scm: Put doc-files definition before the define-module so
+	it goes in the root module.
+	
+	* winops.scm, style.scm, prefs-menu.scm, minimal.scm,
+ 	fvwm-compat.scm. flux.scm, doc-files.scm, base.scm: Clean up some FIXGJB
+ 	comments, switch to new format.
+
 Mon Mar 22 13:44:35 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Only add reset-hook! if it's not defined (guile >1.3

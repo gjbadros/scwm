@@ -1,3 +1,17 @@
+Mon Mar 22 16:20:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* sds.scwmrc: Clean up some FIXGJB comments inherited from my old
+	.scwmrc before Sam forked.
+
+	* gjb.scwmrc: Clean up FIXGJB comments to new format.  Added
+	netscape-download-closed-action to popup a message whenever a
+	netscape download closes (we should have #:close-window-proc as a
+	style option, methinks).  animation-ms-delay -> animation-delay.
+	Added actual `scwm-help' and `scwm-about-message' procs, instead
+	of just placeholders.  Use setenv, not putenv, and use
+	DISPLAY_WIDTH and DISPLAY_HEIGHT instead of "width" and "height"
+	for the env var names.
+
 Fri Mar 12 19:57:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Clean up prefs-menu, added H-r binding to

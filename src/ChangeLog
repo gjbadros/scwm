@@ -1,3 +1,49 @@
+Mon Mar 22 18:57:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* callbacks.h, callback.c: Added some extra prototypes, prepare
+	for support for new hooks, but #if 0 it out.
+
+	* scwm.c: Added back the setting of
+	*suppress-old-style-hook-warning* since new hooks aren't close to
+	right yet, and probably not worth supporting -- I fixed a bug in
+	reset-hook! instead that was the root of my problems.
+
+Mon Mar 22 18:39:45 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.[ch]: Clean up FIXGJB comments to use the new format
+	
+	* window.h, window.c, add_window.c, add_window.h: Remove
+ 	fWindowListSkip, fCirculateSkip, fCirculateSkipIcon as these are
+ 	no longer used.  Move DestroyScwmWindow, window_close_hook into
+ 	add_window.c.
+
+	* util.c: Drop call_thunk_with_message_handler.
+
+	* scwm.c: Do not use a static buffer size of 1024 for reporting
+	M_FVWM_ERROR module messages-- dynamically allocate and FREE the
+	buffer using the length as determined by the printing to stderr.
+
+	* scwm-constraints.hpp: Increase the weight of stays for each
+	window added.
+
+	* scwm-constraints.h, scwm-constraints.cc: Added
+	CassowaryCloseWindow.
+
+	* resize.c, move.c: Have rubber-band-resize, opaque-resize return
+ 	the new size of the window instead of unspecified. Have
+	rubber-band-move, opaque-move return the new viewport position of
+	the window instead of unspecified.
+
+	* move.c: Drop old version of SnapCoordsToEdges.
+
+	* miscprocs.h: Removed (no longer refer to recapture primitive
+	from C code).
+
+	* miscprocs.c: Remove wait-for-window primitive -- it's dangerous
+	and worthless.
+
+	* guile-compat.h: Drop #define of scm_make_vector
+
 Mon Mar 22 14:06:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winprop.c, window.c, virtual.c, shutdown.c, resize.c, move.c,
