@@ -65,7 +65,6 @@ depend:
 	${MAKEDEPEND} ${CFLAGS} ${SRCS}
 
 install: all
-	${INSTALL_DATA} ${STATIC_LIB} ${lib_dir}
 
 clean:
 	${RM} ${OBJS} ${STATIC_LIB} *~ core *.bak

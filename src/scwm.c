@@ -431,8 +431,6 @@ void scwm_main(int argc, char **argv)
 		" (if (access? home-scwmrc R_OK)"
 		"     (load home-scwmrc)"
 		"     (if (access? system-scwmrc R_OK)"
-		"         (display system-scwmrc)"
-		"         (newline)"
 		"         (load system-scwmrc))))");
   } else {
     gh_eval_str(s_cmd_config);
