@@ -44,6 +44,7 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
   if (!psolver) {
     return;
   }
+  /* only gets inserted if not NULL */
   setpswDirty.insert(psw);
 }
 
@@ -56,6 +57,7 @@ ScwmResolve(ClSimplexSolver *psolver)
     bool fMoved, fResized;
     ScwmWindow *psw = *it;
     assert(psw);
+    psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
 #ifndef NDEBUG
     if (fMoved && fResized) {
       scwm_msg(DBG,__FUNCTION__,"Move and resize of %s",psw->name);
@@ -65,7 +67,6 @@ ScwmResolve(ClSimplexSolver *psolver)
       scwm_msg(DBG,__FUNCTION__,"Resize of %s",psw->name);
     }
 #endif
-    psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
     if (fMoved) MovePswToCurrentPosition(psw);
     if (fResized) ResizePswToCurrentSize(psw);
   }
