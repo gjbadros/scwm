@@ -1,3 +1,8 @@
+Tue Jan 11 09:30:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am, gtk-message.scm: Added.  Original version contributed by
+	Francesco Tapparo -- thanks Francesco!
+
 Mon Jan 10 17:09:47 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm: Make `raise-fvwm2-pager', `lower-fvwm2-pager'

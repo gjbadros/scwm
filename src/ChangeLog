@@ -1,3 +1,10 @@
+Tue Jan 11 09:49:20 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Ignore bindings that start with "ignore-" so that
+	re-defining, e.g., hyper to string-append "ignore-" instead of
+	"H-" will result in those bindings being quietly skipped.  Bad
+	hack, but should be useful to some.
+
 Mon Jan 10 17:11:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xproperty.h (VALIDATE_ARG_ATOM_OR_STRING_COPY): Use
