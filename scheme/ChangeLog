@@ -1,3 +1,7 @@
+Tue Oct 19 15:44:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* fvwm-eval.scm: Comments update from Alexander Vorobiev.
+
 Tue Oct 19 11:31:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Added winlist-menu.scm

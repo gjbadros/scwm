@@ -1,3 +1,13 @@
+Tue Oct 19 15:47:08 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added --enable-dump option to turn on unexec
+ 	capabilities. Use --enable-dump configure option and
+ 	make symlink src/libunexec.a to the guile-hobbit
+ 	unexec/libunexec.a file.
+
+	* acconfig.h: Added ENABLE_DUMP #undef for the new --enable-dump
+	option.
+
 Tue Oct 19 09:16:19 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* pixmaps/scwm-freebsd.xpm: Added.  Contributed by Douglas

@@ -1,3 +1,14 @@
+Tue Oct 19 15:45:08 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c:  Added code from tguile-core.c (of
+	hobbit-guile-1.3.4/unexec) to support --dump option which dumps a
+	usable binary, but the state isn't yet correct.  Use --enable-dump 
+	configure option to access it, and make symlink src/libunexec.a to 
+	the guile-hobbit unexec/libunexec.a file.
+
+	* Makefile.am: link against @UNEXEC_LIB@ that a configure-time
+	option controls.
+
 Tue Oct 19 09:02:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.c (s_message_window_set_image_x): Fix bug in

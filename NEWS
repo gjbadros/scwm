@@ -11,6 +11,10 @@ via menus or bindings.  Right now just used by prompt-binding, but
 will be required of menuitem actions and binding actions in the next
 version.
 
+* New configure option, --enable-dump
+Rudimentary, not-state-preserving-yet support for guile-hobbit's
+unexec capabilities (goal: reduce startup time substantially).
+
 * New preferences options
 ** *highlight-foreground*, *highlight-background*
 
