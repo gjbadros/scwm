@@ -1,3 +1,21 @@
+Mon Oct  5 09:02:26 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, image.c, font.c, color.c: Use gh_make_vector instead
+ 	of scm_make_vector
+
+	* menu.c: Eliminate warning about unused variable that is used in
+ 	debug-only code. Fix assignment to pmenu->scmFont that immediately
+ 	got undone -- now makes the default font object for menus be
+ 	Scr.menu_font instead of SCM_UNDEFINED or SCM_BOOL_F
+	
+	* move.c: Minor indentation change
+
+	* draw-xpm-menu.c: Fix the header to say "By Todd Larason" -- had
+	the old header from my menuing code (via copy and use).
+
+	* guile-compat.h: Added comment about scm_make_vector
+	HAVE_SCM_MAKE_VECTOR_3_ARGS not being needed any longer
+
 Fri Oct  2 15:31:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (MenuInteraction): Use pmd->pmdv... not pmiim->pmd (pmiim 
