@@ -12,7 +12,7 @@ available from:
 
 http://www.cs.washington.edu/research/constraints/cassowary/
 
-The latest version is v0.5. It's C++ code, and it builds
+The latest version is v0.51. It's C++ code, and it builds
 using egcs-1.01 or newer, or gcc-2.8.1, and hopefully other C++
 compilers that support the STL reasonably well.  Cassowary does
 (as of v0.4) support autoconf and automake, so you should just 

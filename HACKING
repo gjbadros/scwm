@@ -4,8 +4,8 @@ After downloading via anonymous CVS, you'll need to:
 
 ./autogen.sh      # See REQUIRED TOOLS below 
                   # for what you need for this to work
-./configure --enable-maintainer-mode ... other flags ...
-env CFLAGS='-Wall -W' make -k
+./configure --enable-maintainer-mode --enable-warnings ... other flags ...
+make -k
 
 Most of the time only the last line is needed; as soon as you have
 configured once with --enable-maintainer-mode, make should rebuild
@@ -40,11 +40,11 @@ locations. Earlier versions may work but we don't guarantee this.
 autoconf 2.13: 
 ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.13.tar.gz
 
-automake 1.4:
-ftp://ftp.gnu.org/pub/gnu/automake/automake-1.4.tar.gz
+automake 1.4a:
+ftp://ftp.gnu.org/pub/gnu/automake/automake-1.4a.tar.gz
 
-libtool 1.3
-ftp://ftp.gnu.org/pub/gnu/libtool/libtool-1.3.tar.gz
+libtool 1.3.3:
+ftp://ftp.gnu.org/pub/gnu/libtool/libtool-1.3.3.tar.gz
 
 Some of these packages may be available as .rpm or .deb packages, or
 other system-specific packages, but I haven't checked.
@@ -91,4 +91,3 @@ BUILDING RPMS:
 
 If you would like to help us by building binary RPMs for your platform,
 see the instructions in doc/dev/scwm-packaging-rpm.txt.
-

@@ -12,14 +12,20 @@ Online manual: http://www.cs.washington.edu/homes/gjb/scwm-doc/
 
 (See additional specialty documentation in the sub-directory "doc/")
 
-Scwm is a dynamic and extensible window manager and X11 scripting
-facility based on Guile Scheme.  It descends loosely from fvwm2 and
-supports virtually all fvwm2 functionality (module support is still
-only beta-quality), and is far more powerful thanks to the embedded
-Scheme interpreter, and all of its features and libraries.
+Scwm is the Scheme Constraints Window Manager, a highly dynamic and
+extensible window manager for the X Window System.  Scwm embeds Guile
+Scheme as the configuration and extension language, and includes a
+sophisticated constraint solver for permitting the user to interactively
+specify constraints among top-level window sizes and positions.  Nearly
+all decorations can be changed at run-time on a per-window basis.
+Dynamic loading of C modules is supported.  Scwm is self-documenting and
+provides A powerful protocol for interacting with the window manager
+from other processes
 
-Other additional features scwm provides are:
+Features scwm provides include:
 
+ o GNOME compatibility
+ o GUI configurability
  o sophisticated window decoration system
  o integrated interaction and documentation system 
    (Emacs or readline based)
@@ -27,25 +33,27 @@ Other additional features scwm provides are:
  o extensible window manager hooks, placement procedures,
    and more to provide the ultimate in behaviour configurability
  o flexible menu system, permitting dynamically loadable 
-   menu drawing primitives (alpha)
- o animated window movements, and shading
+   menu drawing primitives
+ o animated window movements, resizes, and shading
  o synthetic key press events (no more mouse needed to click on
    URLs in netscape!)
- o beta-quality optional constraint-based window layout
+ o XTest module, for "real" events under program control
+ o proplist module, for integration with WindowMaker proplists.
+ o constraint-based window layout
    (see README-constraints for more details and
     see http://www.cs.washington.edu/research/constraints/cassowary/
     for information about the solver)
 
 This release, although labeled beta, is reasonably stable and
 exceedingly useful.  Many individuals, including the developers, have
-been using Scwm as their primary window manager for several months.  We
+been using Scwm as their primary window manager for over a year.  We
 make every effort to eliminate segmentation faults and other bugs, but
 make no guarantees -- use at your own risk, as always.
 
 Scwm builds on i386-pc-linux, i386-pc-freebsd, sparc-sun-solaris,
-mips-sgi-irix, and generally any platform where both fvwm2 and guile
-will build.  We recommend using guile-1.3 currently. See the file
-INSTALL for further instructions.
+alpha-linux-unkown, mips-sgi-irix, and generally any platform where both
+guile and cassowary will build.  We recommend using guile-1.3.4
+currently. See the file INSTALL for further instructions.
 
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the

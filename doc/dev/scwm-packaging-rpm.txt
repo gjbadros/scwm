@@ -4,6 +4,17 @@ By: Harvey Stein
     Todd Larason
     Greg J. Badros <gjb@cs.washington.edu>
 
+If you want to build binary RPMs from the source RPMs, it should be as
+simple as:
+1. Get the source rpms, say foo.src.rpm
+2. rpm --rebuild foo.src.rpm
+
+Please report errors in this process.  More importantly, please report
+successes and contribute your binary RPMs to our web site.
+
+If you want to build RPMs from the CVS archive of the source, keep
+reading.
+
 Building the RPMs is pretty trivial, but here's what I did:
 
 1. cvs update -dP
@@ -41,3 +52,4 @@ systems...
 
 Note 2. You should set the release version to include your initials
 (e.g., 1hjs) to distinguish btw RPMs I packaged and "official" ones.
+
