@@ -353,6 +353,11 @@ SCM set_window_background_x(SCM bg, SCM win);
 
 Bool FIsPartiallyInViewport(const ScwmWindow *psw);
 
+void window_pixel_size_to_client_units(const ScwmWindow *psw,
+                                       int width, int height, 
+                                       int *px_units,
+                                       int *py_units);
+
 #endif /* WINDOW_H__ */
 
 /* Local Variables: */

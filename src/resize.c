@@ -419,12 +419,19 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     }
   }
 
-  call3_hooks(interactive_resize_start_hook, psw->schwin,
-	      gh_int2scm(xmotion), gh_int2scm(ymotion));
+  { /* scope */
+    int x_units, y_units;
+    window_pixel_size_to_client_units(psw,xmotion, ymotion, &x_units, &y_units);
 
-  /* same hook is called identically on each iteration; see below */
-  call3_hooks(interactive_resize_new_size_hook, psw->schwin,
-	      gh_int2scm(xmotion), gh_int2scm(ymotion));
+    call3_hooks(interactive_resize_start_hook, psw->schwin,
+                gh_int2scm(x_units), gh_int2scm(y_units));
+
+    /* same hook is called identically on each iteration; see below */
+    call7_hooks(interactive_resize_new_size_hook, psw->schwin,
+                gh_int2scm(dragx), gh_int2scm(dragy),
+                gh_int2scm(xmotion), gh_int2scm(ymotion),
+                gh_int2scm(x_units), gh_int2scm(y_units));
+  }
   
   /* pop up a resize dimensions window */
 
@@ -490,9 +497,16 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           WIN_VP_OFFSET_X(psw) + dragx, 
                           WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
-      call3_hooks(interactive_resize_new_size_hook, psw->schwin,  /* two calls to this hook exist. */ 
-		  gh_int2scm(FRAME_WIDTH(psw)),                   /* see the other above */
-		  gh_int2scm(FRAME_HEIGHT(psw)));
+      { /* scope */
+        int x_units, y_units;
+        window_pixel_size_to_client_units(psw, dragWidth, dragHeight, &x_units, &y_units);
+        /* two calls to this hook exist.
+           see the other above */
+        call7_hooks(interactive_resize_new_size_hook, psw->schwin,
+                    gh_int2scm(dragx), gh_int2scm(dragy),
+                    gh_int2scm(dragWidth), gh_int2scm(dragHeight),
+                    gh_int2scm(x_units), gh_int2scm(y_units));
+      }
       
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
         /* need to move the viewport */
@@ -642,9 +656,12 @@ can happen on the right/bottom side, not at all, or the top/left side,
 respectively. */
 
   SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook");
-  /** This hook is invoked during an interactive resize.
-It is called with three arguments, WINDOW, NEW_X_SIZE, and NEW_Y_SIZE,
-whenever the window is changed to a new size */
+  /** This hook is invoked during an interactive resize.  It is called
+with seven arguments, WINDOW, X-POSITION, Y-POSITION,
+NEW-X-SIZE-PIXELS, NEW-Y-SIZE-PIXELS, NEW-X-SIZE-UNITS, and
+NEW-Y-SIZE-UNITS whenever the window is changed to a new size.  The
+-SIZE-UNITS arguments are in client units (e.g., characters for
+Emacsen and XTerms.  */
 
 SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook");
   /** This hook is invoked at the end of an interactive resize.

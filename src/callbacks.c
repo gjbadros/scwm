@@ -196,6 +196,40 @@ scwm_safe_call3 (SCM proc, SCM arg1, SCM arg2, SCM arg3)
   return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, SCM_UNDEFINED));
 }
 
+SCM
+scwm_safe_call4 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, SCM_UNDEFINED));
+}
+
+SCM
+scwm_safe_call5 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, SCM_UNDEFINED));
+}
+
+SCM
+scwm_safe_call6 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, SCM_UNDEFINED));
+}
+
+SCM
+scwm_safe_call7 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, arg7, SCM_UNDEFINED));
+}
+
+
+
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
    OK for a file to invoke a continuation created by a different
@@ -387,6 +421,87 @@ SCM call3_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3)
 
   for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
     scwm_safe_call3 (gh_car(p), arg1, arg2, arg3);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM call4_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = gh_cdr(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call4 (gh_car(p), arg1, arg2, arg3, arg4);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+
+SCM call5_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = gh_cdr(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call5 (gh_car(p), arg1, arg2, arg3, arg4, arg5);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM call6_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = gh_cdr(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call6 (gh_car(p), arg1, arg2, arg3, arg4, arg5, arg6);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM call7_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = gh_cdr(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call7 (gh_car(p), arg1, arg2, arg3, arg4, arg5, arg6, arg7);
   }
   
   return SCM_UNSPECIFIED;

@@ -2451,6 +2451,21 @@ specified. */
 }
 #undef FUNC_NAME
 
+
+void window_pixel_size_to_client_units(const ScwmWindow *psw,
+                                       int width, int height, 
+                                       int *px_units,
+                                       int *py_units)
+{
+  width -= psw->hints.base_width;
+  height -= psw->hints.base_height;
+  width /= psw->hints.width_inc;
+  height /= psw->hints.height_inc;
+  *px_units = width;
+  *py_units = height;
+}
+
+
 SCWM_PROC(window_size, "window-size", 0, 1, 0,
           (SCM win))
 /** Return the size of the application window of WIN.
@@ -2473,15 +2488,7 @@ and height in resize units (e.g., characters for an xterm).  */
   cpixX = FRAME_WIDTH(psw) - psw->xboundary_width*2;
   cpixY = FRAME_HEIGHT(psw) - psw->title_height - psw->boundary_width*2;
 
-  /* these are the size in resize units */
-  /* see also the code in DisplaySize */
-  width = cpixX;
-  height = cpixY;
-
-  width -= psw->hints.base_width;
-  height -= psw->hints.base_height;
-  width /= psw->hints.width_inc;
-  height /= psw->hints.height_inc;
+  window_pixel_size_to_client_units(psw,cpixX,cpixY,&width,&height);
 
   return gh_list(gh_int2scm(cpixX),gh_int2scm(cpixY),
                  gh_int2scm(width),gh_int2scm(height),
