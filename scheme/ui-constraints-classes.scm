@@ -526,7 +526,7 @@ Also can be used to glue left and right edges of windows together."
 		       (sz  (window-frame-size n))
 		       (px  (+ (car pos) (car sz)))
 		       (p2y (+ (cadr pos) (quotient (cadr sz) 2))))
-		  (xlib-set-line-attributes! width 0)
+		  (xlib-set-line-attributes! width)
 		  (xlib-draw-rectangle! (cons px (cadr pos)) 30 (cadr sz))
 		  (xlib-draw-line! (cons px p2y) (cons (+ px 10) p2y))
 		  (draw-arrow 10 10 (cons (+ px 20 (quotient width 2)) p2y) 'right)))

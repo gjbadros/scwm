@@ -74,7 +74,7 @@ REST contains keyword arguments including:
   `(define-scwm-group-proc ',sym ,name ,@rest))
 
 (define*-public (define-scwm-group-proc sym name #&key (docstring #f) (icon #f) (widget #f))
-  "Helper procedure for `define-scwm-group'; use that instead."
+  "Helper procedure for `define-scwm-group'-- use that instead."
   (or (symbol? sym) (error "SYM is not a symbol!"))
   (let* ((option-group (list sym name docstring icon widget))
 	 (old-og (assoc sym scwm-options-groups)))

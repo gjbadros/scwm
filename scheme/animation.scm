@@ -27,6 +27,7 @@
 
 
 
+(define-public animate-windows animate-windows)
 (define-public animated-move-window animated-move-window)
 (define-public animated-window-shade animated-window-shade)
 (define-public animated-window-unshade animated-window-unshade)

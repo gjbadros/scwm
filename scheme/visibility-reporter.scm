@@ -9,11 +9,13 @@
 (define (report-fully-obscured win) (display "fully-obscured") (write win) (newline))
 
 (define-public (install-visibility-reporter)
+  "Install procedures to print debugging messages on window visibility change events."
   (add-hook! window-unobscured-hook report-unobscured)
   (add-hook! window-fully-obscured-hook report-fully-obscured)
   (add-hook! window-partially-obscured-hook report-partially-obscured))
 
 (define-public (uninstall-visibility-reporter)
+  "Uninstall procedures that print debugging messages on window visibility change events."
   (remove-hook! window-unobscured-hook report-unobscured)
   (remove-hook! window-fully-obscured-hook report-fully-obscured)
   (remove-hook! window-partially-obscured-hook report-partially-obscured))

@@ -26,6 +26,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs)
   :use-module (app scwm animation)
+  :use-module (app scwm listops)
   :use-module (app scwm base))
 
 (define*-public (window-configuration #&optional (win (get-window)))
@@ -66,14 +67,48 @@
   (map window-configuration (list-stacking-order)))
 
 ;; (define gc (global-window-configuration))
+;; (define win (get-window))
+;; (define cfg (window-configuration (get-window)))
+;; (window-configuration->xform-to-it cfg)
+
+(define*-public (window-configuration->xform-to-it cfg)
+  "Create a transformation element for going from the current state to CFG.
+CFG should be a window configuration object.  See also `animate-windows'."
+  (let* ((win (car cfg))
+	 (pos (window-viewport-position win))
+	 (size (window-frame-size win))
+	 (startX (car pos))
+	 (startY (cadr pos))
+	 (startW (car size))
+	 (startH (cadr size))
+	 (endPos (caddr cfg))
+	 (endSize (cadddr cfg))
+	 (endX (vx->vpx (car endPos)))
+	 (endY (vy->vpy (cadr endPos)))
+	 (endW (car endSize))
+	 (endH (cadr endSize))
+	 )
+    (list win #t
+	  (cons startW startH)
+	  (cons endW endH)
+	  (cons startX startY)
+	  (cons endX endY)
+	  (cons #f #f))))
 
 (define-public (restore-global-window-configuration global-configuration)
   "Restore the states of all windows from GLOBAL-CONFIGURATION."
-  (map (lambda (w) (restore-window-configuration global-configuration w))
-       (list-stacking-order))
+  (animate-windows
+   (filter-map 
+    (lambda (w) 
+      (let ((cfg (assoc w global-configuration)))
+	(if cfg
+	    (window-configuration->xform-to-it cfg)
+	    #f)))
+    (list-stacking-order)))
   (restack-windows (map car global-configuration)))
 
 (define*-public (push-window-configuration #&optional (win (get-window)))
+  "Save the configuration of WIN on its stack of previous configurations."
   (set-window-property! 
    win 'window-configuration-stack
    (cons 
@@ -82,6 +117,7 @@
 
 				      
 (define*-public (pop-window-configuration #&optional (win (get-window)))
+  "Restore the last configuration of WIN that was saved on its stack of previous configurations."
   (let ((config (window-property win 'window-configuration-stack)))
     (if (and config (not (null? config)))
 	(begin
