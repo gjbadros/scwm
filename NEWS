@@ -4,6 +4,10 @@ See the end for copying conditions.
 
 Changes for scwm-0.99.2
 
+* Much improved RPM packaging, cassowary constraint solver included by default in RPMs
+
+* an evolved gjb.scwmrc is now system.scwmrc
+
 * Lots of documentation improvements, revamp of Scwm web page, many,
 many bug-fixes (compiles warning free with virtually all warnings turned
 on!), lots of code cleanup (especially primitive argument validation),
@@ -201,6 +205,7 @@ deprecated `SM-client-id'.
 ** `flash-window', `unflash-window', `stop-flashing-window'
 
 * New hooks
+** `window-focus-lost-hook'
 ** `load-processing-hook'
 ** `window-unobscured-hook', `window-partially-obscured-hook', `window-unobscured-hook'
 ** `window-enter-hook', `window-leave-hook'
