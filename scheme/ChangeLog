@@ -1,3 +1,15 @@
+Sun Jan  9 20:51:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Added more docs to `window-style', and let it take a
+	list of '(ClassName ResourceName).
+
+	* placement.scm: Added `auto-accept-dialog-placement'
+
+	* netscape.scm: Added `enable-autosave-netscape-dialog',
+	`disable-autosave-netscape-dialog'.  Use new format for
+	window-style commands.  Eliminate top-level executive of
+	window-style command.
+
 Sun Jan  9 19:03:20 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gtk.scm: Added `use-gtk-error-window-for-scwm' procedure, and

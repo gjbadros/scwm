@@ -44,6 +44,7 @@ Paricularly noticeable with the GIMP
    instead of always highlighting just a single corner or side window
 
 * Changed procedures
+** `window-style' now understands a list for its CONDITION argument to mean '(ClassName ResourceName)
 ** `maximize' no longer resets the gravity on the maximized window
    (also some animation maximization bugs were fixed)
 ** Rename menu-global-theme, menu-window-theme to
@@ -62,6 +63,7 @@ for supporting whole-edge highlighting for better constraint interface
 ** `done-startup?' to let us tell whether we're still initializing or not
 
 * New procedures
+** `auto-accept-dialog-placement' to permit automating pressing "Return" whenever a dialog returns
 ** `X-handle-selection-string', `netscape-goto-selection-url', `netscape-google-search-selection-url'
 ** `describe-event', to complement `describe-{mouse,key}' using new `get-next-event' primitive
 ** `set-highlight-colors!' convenience procedure.
