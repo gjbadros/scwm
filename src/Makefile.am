@@ -1,3 +1,5 @@
+## $Id$
+## process this file with automake to create Makefile.in
 
 bin_PROGRAMS = scwm
 
@@ -22,7 +24,6 @@ scwm_SOURCES =  string_token.c \
                 placement.c \
                 resize.c \
                 virtual.c \
-                scmprocs.c \
                 scmtypes.c \
                 font.c \
                 color.c \
@@ -47,13 +48,25 @@ scwm_SOURCES =  string_token.c \
 		getopt.c \
 		getopt1.c
 
+noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
+callbacks.h color.h colormaps.h colors.h complex.h decor.h \
+decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
+font.h getopt.h guile-compat.h icons.h image.h menuitem.h misc.h \
+miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
+placement.h resize.h scmtypes.h screen.h scwm.h \
+scwmmenu.h shutdown.h string_token.h syscompat.h system.h \
+util.h virtual.h window.h xmisc.h
+
+
 scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
-BUILT_SOURCES = init_scheme_string.c callbacks.x color.x font.x \
- image.x menuitem.x module-interface.x scwmmenu.x shutdown.x scwmpaths.h
+pkgdata_DATA = init_scheme_string.c scwmpaths.h \
+binding.x callbacks.x color.x deskpage.x events.x face.x font.x image.x menuitem.x \
+miscprocs.x module-interface.x scwmmenu.x shutdown.x window.x
 
+OMIT_DEPENDENCIES = $(pkgdata_DATA)
 
 ## This is how guile does it:
 ## (Sadly it does not work with Automake 1.2f)
@@ -61,8 +74,13 @@ BUILT_SOURCES = init_scheme_string.c callbacks.x color.x font.x \
 ## MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 SUFFIXES = .x
-.c.x:
+%.x: %.c
+#ifeq($(CC),g++)
+#	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -D__cplusplus $< > $@
+#else
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
+#endif
+
 
 ## FIXMS: This really sucks, but it's the best we can do until
 ## Automake gets a way to compute dependencies with -MG
@@ -76,9 +94,6 @@ SUFFIXES = .x
 ## scwmmenu.o: scwmmenu.x
 ## shutdown.o: shutdown.x
 
-
-
-DISTCLEANFILES = *.x
 
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo "char *init_scheme_string = \"\\" ; \
@@ -95,9 +110,4 @@ scwmpaths.h: ../config.status
 	@echo '#define SCWM_IMAGE_LOAD_PATH "@scwm_image_load_path@"' >> scwmpaths.tmp
 	@mv scwmpaths.tmp scwmpaths.h
 
-CLEANFILES = scwmpaths.h init_scheme_string.c
-
-
-
-
-
+CLEANFILES = scwmpaths.h init_scheme_string.c $(pkgdata_DATA)
