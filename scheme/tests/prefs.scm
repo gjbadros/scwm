@@ -7,13 +7,13 @@
 	     (app scwm menus-extras)
 	     (gtk gtk)
 	     (gtk gdk))
-gdk-lead-window
-gdk-leader-window
 
 (use-modules (app scwm gnome-hints))
 (popup-menu (scwm-options-menu) #t)
 
 (scwm-options-dialog)
+
+(scwm-option-range '*window-font*)
 
 scwm-options
 
@@ -39,6 +39,7 @@ scwm-options
 
 (begin
   (use-modules (app scwm preferences)
+	       (app scwm primopts)
 	       (app scwm auto-raise)
 	       )
   (scwm-options-dialog))
