@@ -36,13 +36,6 @@
   :use-module (app scwm prompt-proc)
   )
 
-(define-scwm-option *favorite-colors*
-  (list "inherit" "white" "grey20" "grey50" "grey75" "black" 
-	"blue" "red" "green" "purple" "yellow" "orange")
-  "The favorite colors to use in the drop-down box when picking a color."
-  #:group 'theme
-  #:type 'string-list
-  )
 
 ;; (use-modules (gtk gtk))
 ;; (use-modules (app scwm preferences))

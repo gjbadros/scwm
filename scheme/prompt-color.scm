@@ -21,11 +21,23 @@
 (define-module (app scwm prompt-color)
   :use-module (app scwm gtk)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
   :use-module (app scwm optargs))
 
 
+
+#!
+(define-scwm-option *favorite-colors*
+  (list "inherit" "white" "grey20" "grey50" "grey75" "black" 
+	"blue" "red" "green" "purple" "yellow" "orange")
+  "The favorite colors to use in the drop-down box when picking a color."
+  #:group 'theme
+  #:type 'string-list
+  )
+!#
+
 
 ;;(use-modules (app scwm prompt-color))
 ;;(define w (prompt-color "Window color?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval "navyblue"))
@@ -85,7 +97,10 @@ PROMPT is the prompt, INITVAL is the initial color as a color object or a string
 The returned value is a list: (hbox getter).
 See also `prompt-color'."
   (or favorites
-      (set! favorites (scwm-option-get *favorite-colors*)))
+      (set! favorites 
+	    (list "inherit" "white" "grey20" "grey50" "grey75" "black" 
+		  "blue" "red" "green" "purple" "yellow" "orange")))
+;;(scwm-option-get *favorite-colors*)
   (let* ((hbox (gtk-hbox-new #f 0))
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))
