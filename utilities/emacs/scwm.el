@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-06-19 Fri 11:03:56 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-07 Tue 12:56:47 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -72,14 +72,13 @@
 ;; them in the minibuffer.  This functionality does not require
 ;; preliminary M-x scwm-run.  Note that you can find your recent
 ;; minibuffer messages in the buffer *Messages*.  Help and Apropos are
-;; also available: type C-h C-a for apropos and C-h C-s for documantation.
+;; also available: type C-h C-a for apropos and C-h C-s for documentation.
 ;; Type M-TAB to complete symbol at point.
 
 ;; Note that this uses `with-output-to-string', which is broken in
 ;; XEmacs and absent from Emacs 19.  File lisp/subr.el from the Emacs
 ;; distribution contains the corrent version.  You can get the file from
 ;; http://sourcery.naggum.no.
-
 ;; let's try to do something about it:
 
 (eval-and-compile
@@ -240,7 +239,8 @@ Returns a string."
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
     (princ "SCWM apropos `") (princ pat) (princ "':\n\n")
-    (scwm-eval (concat "(apropos \"" pat "\")") standard-output)))
+    (scwm-eval (concat "(apropos \"" pat "\")") standard-output)
+    (set-buffer standard-output) (apropos-mode)))
 
 ;; fontifications
 
