@@ -69,7 +69,9 @@ to the main event loop"
 
 (define-public (image->gtk-pixmap img button)
   "Return a gtk-pixmap widget for IMG for use in BUTTON."
-  (gtk-pixmap-new (image-property img 'filename) button))
+  (if (string? img)
+      (gtk-pixmap-new-search-scwm-path img button)
+      (gtk-pixmap-new (image-property img 'filename) button)))
 
 ;; (define b (gtk-button-new))
 ;; (gtk-pixmap-new-search-scwm-path "mini-exp-windows-full.xpm" b)

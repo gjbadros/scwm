@@ -8,31 +8,60 @@
   :use-module (gtk gtk)
   :use-module (app scwm optargs))
 
+(define*-public (scwm-gtk-menu-title label #&key image-left)
+  (if (bound? image-left)
+      (scwm-gtk-menuitem label #:image-left image-left)
+      (scwm-gtk-menuitem label)))
+
+(define-public scwm-gtk-menu-separator (gtk-menu-item-new))
+
 (define*-public (scwm-gtk-menuitem label #&key image-above image-left
 				   (fg #f) (bg #f) (font #f)
 				   extra-label action submenu hover-action unhover-action
 				   hotkey-prefs)
-  (let ((mi (gtk-menu-item-new))
-	(lab (gtk-label-new label)))
-    (gtk-misc-set-alignment lab 0 .5)
-    (gtk-widget-show lab)
-    (let ((hbox (gtk-hbox-new #f 0))
-	  (align (gtk-alignment-new .5 .5 0 0)))
-      (gtk-widget-show hbox)
-      (gtk-widget-show align)
-      (gtk-container-add mi hbox)
-      (gtk-widget-set-usize align 22 16)
-      (if image-left
-	  (let ((pix (image->gtk-pixmap image-left hbox)))
-	    (gtk-container-add align pix)
-	    (gtk-widget-show pix)))
-      (gtk-box-pack-start hbox align #f #f 0)
-      (gtk-box-pack-start hbox lab #f #f 4)
-      (gtk-widget-show mi)
+  (let ((forced-submenu? #f))
+    (if (and (bound? action) (bound? submenu))
+	(error "Cannot give both an action and a submenu"))
+    (if (bound? submenu)
+	(begin
+	  (set! forced-submenu? #t)
+	  (set! action submenu)))
+    (let ((mi (gtk-menu-item-new))
+	  (lab (gtk-label-new label)))
+      (gtk-misc-set-alignment lab 0 .5)
+      (gtk-widget-show lab)
+      (let ((hbox (gtk-hbox-new #f 0))
+	    (align (gtk-alignment-new .5 .5 0 0)))
+	(gtk-widget-show hbox)
+	(gtk-widget-show align)
+	(gtk-container-add mi hbox)
+	(gtk-widget-set-usize align 22 16)
+	(if (and (bound? image-left) image-left)
+	    (let ((pix (image->gtk-pixmap image-left hbox)))
+	      (gtk-container-add align pix)
+	      (gtk-widget-show pix)))
+	(gtk-box-pack-start hbox align #f #f 0)
+	(gtk-box-pack-start hbox lab #f #f 4)
+	(gtk-widget-show mi)
+	(cond ((or forced-submenu? (gtk-menu? action) 
+		   (and (symbol? action) (gtk-menu? (eval action))))
+	       (gtk-menu-item-set-submenu mi (if (symbol? action) (eval action) action)))
+	      ((or (procedure? action) (and (symbol? action) (procedure? (eval action))))
+	       (gtk-signal-connect mi "activate" (lambda () (if (symbol? action) ((eval action)) (action)))))))
       mi)))
 
 ;;(scwm-gtk-menuitem "foo" #:image-left pic-lambda-mini)
 
+
+(define-public (menuitem->scwm-gtk-menuitem mi)
+  (apply (lambda
+	     (label action extra-label picture-above picture-left hover-action unhover-action hotkey-prefs forced-submenu?)
+	   (if (eq? mi menu-separator)
+	       (gtk-menu-item-new)
+	       (if forced-submenu?
+		   (scwm-gtk-menuitem label #:image-left picture-left #:submenu action)
+		   (scwm-gtk-menuitem label #:image-left picture-left #:action action))))
+	 (menuitem-properties mi)))
 
 (define*-public (scwm-gtk-menu list-of-menuitems #&key
 			       (image-side 'menu-side-image)
@@ -51,20 +80,11 @@
 			       (extra #f))
   (let ((menu (gtk-menu-new)))
     (map (lambda (item)
-	   (let ((props (menuitem-properties item)))
-	     (apply (lambda
-			(label action extra-label picture-above picture-left hover-action unhover-action hotkey-prefs forced-submenu?)
-		      (let ((mi (if (eq? item menu-separator)
-				    (gtk-menu-item-new)
-				    (scwm-gtk-menuitem label #:image-left picture-left))))
-			(cond ((or forced-submenu? (gtk-menu? action) 
-				   (and (symbol? action) (gtk-menu? (eval action))))
-			       (gtk-menu-item-set-submenu mi (if (symbol? action) (eval action) action)))
-			      ((or (procedure? action) (and (symbol? action) (procedure? (eval action))))
-			       (gtk-signal-connect mi "activate" (lambda () (if (symbol? action) ((eval action)) (action))))))
-			(gtk-menu-append menu mi)
-			(gtk-widget-show mi)))
-		    props)))
+	   (let ((mi (if (gtk-menu-item? item)
+			 item
+			 (menuitem->scwm-gtk-menuitem item))))
+	     (gtk-menu-append menu mi)
+	     (gtk-widget-show mi)))
 	 list-of-menuitems)
     (gtk-widget-show-all menu)
     menu))
@@ -88,7 +108,23 @@
     (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action (lambda () (display "yes") (newline)))
     (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
 
+(define-public scwm-gtk-menu-quit-verify
+  (scwm-gtk-menu
+   (list
+    (scwm-gtk-menu-title "Really quit Scwm?")
+    scwm-gtk-menu-separator
+    (scwm-gtk-menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
+		       #:action (lambda () (display "restart scwm") (newline)))
+    (scwm-gtk-menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
+		       #:action (lambda () (display "restart dev scwm") (newline)))
+    scwm-gtk-menu-separator
+    (scwm-gtk-menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action (lambda () (display "yes") (newline)))
+    (scwm-gtk-menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
+
+
 (scwm-gtk-popup-menu gtk-menu-quit-verify)
+(scwm-gtk-popup-menu scwm-gtk-menu-quit-verify)
+(bind-key 'all "H-t" (lambda () (scwm-gtk-popup-menu scwm-gtk-menu-quit-verify)))
 
 (define menu-utilities
   (scwm-gtk-menu (cons
@@ -96,7 +132,5 @@
 	 (make-menuitems-from-menu-information-list
 	  utilities-available-program-information)
 	 )))
-
-;;; (scwm-gtk-popup-menu menu-utilities)
 
 !#
