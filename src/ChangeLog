@@ -1,3 +1,11 @@
+Tue Aug 11 18:45:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, borders.c, borders.h, placement.c:
+	  Removed SendEvent argument from SetupFrame, and its calls.
+
+	* borders.c: Added some debug code, and unmap decoration windows
+	  that are not supposed to be mapped
+
 Mon Aug 10 17:45:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added SendClientConfigureNotify fn, and call it from
