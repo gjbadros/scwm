@@ -104,10 +104,8 @@
                   #:move-windows-to-current-viewport 'shutdown-only)
 ;; (use-theme "woven")
 
-;;(set! opaque-move-percent 100)
-;;(set! opaque-resize-percent 100)
-(set! resize-opaquely? (lambda (w) #t))
-(set! move-opaquely? (lambda (w) #t))
+(scwm-option-set! *opaque-move-percent* 100)
+(scwm-option-set! *opaque-resize-percent* 100)
 
 ;;; ----------------
 ;;; paths and images

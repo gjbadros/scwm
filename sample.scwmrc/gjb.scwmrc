@@ -29,16 +29,16 @@
       (display arg)
       ()))
 
-(use-scwm-modules base winops defoption winlist wininfo
-		  style face time-convert optargs menus-extras
+(use-scwm-modules base defoption optargs primopts 
+		  winops winlist wininfo
+		  style face time-convertmenus-extras
 		  std-menus doc virtual
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
 		  group preferences gnome-hints
-		  send-string
-		  primopts auto-raise
+		  send-string 
 		  property-respond
 		  )
 
@@ -101,9 +101,6 @@
 (set! *fvwm2-module-path* (append *fvwm2-module-path* '("/uns/lib/fvwm2")))
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
-
-(set! resize-opaquely? (lambda (win) #t))
-(set! move-opaquely? (lambda (win) #f))
 
 ;; below variables used if the default predicates are used, 
 ;; but the above make my system always do opaque moves and resizes
@@ -341,19 +338,23 @@
 (debug-display "Before setting image-load-path\n")
 
 ;;; set path to use for image searches
-(set! image-load-path (cons "/uns/lib/X11/mini-icons" image-load-path))
-(set! image-load-path (cons "/uns/lib/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
-(set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/uns/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/lib/icons" image-load-path))
-(set! image-load-path (cons "/usr/local/X11/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/local/lib/icons" image-load-path))
-(set! image-load-path (cons "/usr/local/icons" image-load-path))
-(set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
-(set! image-load-path (cons "/usr/lib/TheNextLevel/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/share/icons/mini" image-load-path))
+(map (lambda (s) (set! image-load-path (cons s image-load-path)))
+     (list
+      "/uns/lib/X11/mini-icons"
+      "/uns/lib/X11/pixmaps"
+      "/usr/X11/lib/X11/mini-icons"
+      "/usr/X11/include/X11/pixmaps"
+      "/uns/include/X11/pixmaps"
+      "/usr/lib/icons"
+      "/usr/local/X11/include/X11/pixmaps"
+      "/usr/local/lib/icons"
+      "/usr/local/icons"
+      "/uns/share/include/X11/pixmaps"
+      "/uns/share/include/X11/bitmaps"
+      "/usr/lib/TheNextLevel/pixmaps"
+      "/usr/share/icons/mini"
+      ))
+
 (set! image-load-path (append user-image-load-list image-load-path))
 ;;(set! image-load-path '())
 

@@ -48,10 +48,8 @@
 
 (set-icon-font! font12)
 
-(set! resize-opaquely? (lambda (win) #t))
-(set! move-opaquely? (lambda (win) #f))
-;;(scwm-option-set! *opaque-move-percent* 100)
-;;(scwm-option-set! *opaque-resize-percent* 100)
+(scwm-option-set! *opaque-move-percent* 100)
+(scwm-option-set! *opaque-resize-percent* 100)
 
 (define user-image-path 
   (list (string-append (user-home) "/pixmaps") 
