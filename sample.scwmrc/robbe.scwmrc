@@ -1,13 +1,39 @@
 ;;; robbe's scwmrc						-*- scwm -*-
 ;;; Written by Robert Bihlmeyer <robbe@orcus.priv.at>
 ;;; Snippets were copied from other scwmrcs.
+;;; Comments are appreciated.
 
-;;; Please look under "Expected Variables" for things you can override.
+;;; Rationale:
 
-;;; Key bindings can be found under the heading "Key Bindings". All must be
-;;; prefixed by the super modifier. This can be changed by overriding `super'.
+;; As you can see, this scwmrc was not built to show-off. Contrariwise, one
+;; goal is to conserve as much screen real-estate as possible. At the
+;; moment, this is carried to the extreme with no decorations at all. I will 
+;; probably put in title-bars again, as they are not entirely useless.
 
-;;; 
+;; An even more important point is full functionality. All things possible
+;; with scwm should be available (unless another feature was smuggled in
+;; when I was not looking). Since I am reluctant to move my hands from the
+;; keyboard, anything has a keyboard shortcut. I require sole control of one 
+;; modifier(-combination) for this. (This shouldn't be much of a problem, as 
+;; we now see the return of the space-cadet keyboard - in ugly guise.)
+
+;; At last, this file wants to demonstrate some things that are only
+;; possible with scwm (so I lied about show-off). But my focus is on more on 
+;; inner values than on looks. The main features here are the xlock-menu
+;; that automatically adapts to the available modes, and the softs-menu that 
+;; excludes applications that were not found in your path.
+
+;;; Roadmap:
+
+;; Please look under "Expected Variables" for things you can override.
+
+;; Key bindings can be found under the heading "Key Bindings". All must be
+;; prefixed by the super modifier. This can be changed by overriding `super'.
+
+;; Last exit for the lost: super-d brings back our beloved standard
+;; decorations.
+
+;;; Code:
 
 (use-modules (app scwm base)
 	     (app scwm winops)
