@@ -1,5 +1,8 @@
 1998-10-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
+	* add_window.c (AddWindow): Call `restoreWindowState'. I hope this 
+	is the right location to do it.
+
 	* session-manager.c: Legalese added.
 	(hton32): New macro, puts 32-bit-quantity into network byte order.
 	(ntoh32): New macro, inverse to `hton32'.
