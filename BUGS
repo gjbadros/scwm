@@ -1,6 +1,15 @@
 some VALIDATE_WIN_COPY calls should be VALIDATE_WINVALID_COPY, but 
 haven't exhaustively looked for these. --10/02/99 gjb
 -------
+shaded windows have their position/size placed improperly (from tlau)
+-------
+dialog popups that grab the keyboard focus should return focus better
+after they are unmap (e.g., with tlau's fugu's search dialog, and escape
+aborting out of it).
+ -> how get key focus
+ -> why keybindings not work after the Escape is pressed
+ -> focus-window-with-pointer should work...
+-------
 Menus need to stay on screen no matter what (small-window-ops doesn't when window 
 is near corner of screen)
 -------
