@@ -13,7 +13,7 @@ setting the relevant parameters when a new window is created.
 
 See also `before-new-window-hook' and `before-place-new-window-hook'.
 
-[From scwm/add_window.c:839]
+[From scwm/add_window.c:976]
 
 
 before-new-window-hook (1 args)
@@ -30,7 +30,7 @@ interface to setting the relevant parameters when a new window is
 created.
 
 See also `before-place-new-window-hook' and `after-new-window-hook'.  
-[From scwm/add_window.c:815]
+[From scwm/add_window.c:952]
 
 
 before-place-new-window-hook (1 args)
@@ -43,7 +43,7 @@ two hooks, despite being invoked at a slightly different time.
 
 See also `before-new-window-hook' and `after-new-window-hook'.
 
-[From scwm/add_window.c:829]
+[From scwm/add_window.c:966]
 
 
 broadcast-config-hook (1 args)
@@ -96,7 +96,7 @@ cannot-grab-hook (0 args)
 This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  
-[From scwm/window.c:4001]
+[From scwm/window.c:3842]
 
 
 change-desk-hook (2 args)
@@ -166,7 +166,7 @@ being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 
-[From scwm/callbacks.c:813]
+[From scwm/callbacks.c:812]
 
 
 iconify-hook (2 args)
@@ -182,14 +182,14 @@ a boolean telling whether the window was iconified previously.
 image-not-found-hook (1 args)
 - 
 Called with image name as a string when not found. 
-[From scwm/image.c:708]
+[From scwm/image.c:704]
 
 
 interactive-move-finish-hook (1 args)
 - 
 This hook is invoked at the end of an interactive move.
 It is called with one argument, WINDOW. 
-[From scwm/move.c:584]
+[From scwm/move.c:568]
 
 
 interactive-move-new-position-hook (3 args)
@@ -198,21 +198,21 @@ This hook is invoked during an interactive move.
 It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
 whenever the window is moved to a new location. The position refers
 to the position of the frame window (not the client window). 
-[From scwm/move.c:578]
+[From scwm/move.c:562]
 
 
 interactive-move-start-hook (1 args)
 - 
 This hook is invoked at the start of an interactive move.
 It is called with one argument, WINDOW. 
-[From scwm/move.c:574]
+[From scwm/move.c:558]
 
 
 interactive-resize-finish-hook (1 args)
 - 
 This hook is invoked at the end of an interactive resize.
 It is called with one argument, WINDOW. 
-[From scwm/resize.c:676]
+[From scwm/resize.c:682]
 
 
 interactive-resize-new-size-hook (7 args)
@@ -225,7 +225,7 @@ first five arguments refer to the size and position of the frame
 window (not the client window). The -UNITS arguments refer to the size
 of the client window and are in client units (e.g., characters for
 Emacsen and XTerms).  
-[From scwm/resize.c:666]
+[From scwm/resize.c:672]
 
 
 interactive-resize-start-hook (3 args)
@@ -235,7 +235,7 @@ It is called with three arguments: WINDOW, XMOTION, YMOTION.
 XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
 can happen on the right/bottom side, not at all, or the top/left side,
 respectively. 
-[From scwm/resize.c:659]
+[From scwm/resize.c:665]
 
 
 invalid-interaction-hook (0 args)
@@ -244,7 +244,7 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:3995]
+[From scwm/window.c:3836]
 
 
 shutdown-hook (1 args)
@@ -276,11 +276,12 @@ coordinates of the new viewport position in pixels.
 
 window-close-hook (1 args)
 - 
-This hook is invoked whenever a scwm-managed window is closed
-for any reason. The hook procedures are invoked with one argument,
+This hook is invoked whenever a scwm-managed window is closed.
+It is invoked on deletes, destroys, or for any reason that a window
+is closed. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. 
-[From scwm/window.c:3989]
+[From scwm/add_window.c:991]
 
 
 window-enter-hook (1 args)

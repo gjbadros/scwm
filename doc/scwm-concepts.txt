@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:646]
+[From scwm/binding.c:638]
 
 
 Face Flags
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3267]
+[From scwm/window.c:3114]
 
 
 Fonts
@@ -267,7 +267,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!'
 and `reset-hook!'. 
 
-[From scwm/callbacks.c:340]
+[From scwm/callbacks.c:338]
 
 
 Image Loaders
@@ -279,7 +279,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From scwm/image.c:215]
+[From scwm/image.c:211]
 
 
 Images
@@ -307,7 +307,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:690]
+[From scwm/callbacks.c:689]
 
 
 Key Specifier
@@ -323,7 +323,7 @@ key should be bound with every possible modifier combination,
 including possibly no modifiers. *- may not be combined with any other
 modifier.
 
-[From scwm/binding.c:148]
+[From scwm/binding.c:145]
 
 
 Menu Looks
@@ -379,7 +379,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:616]
+[From scwm/scwm.c:624]
 
 
 SCWMEXEC Protocol
@@ -439,24 +439,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2047]
-
-
-The Window Context
--
-
-
-  When actions are triggered by mouse or keyboard events, or menu
-actions from menus originally popped up by mouse or keyboard events, a
-context window is saved, which is used as the default for window
-operations that are not passed their optional window argument. This
-allows the user to easily bind actions to events without worrying
-about passing around the window argument. 
-
-  However, it is unclear whether behind-the-scenes magic like this is
-a good idea.  The merit of this approach is still under consideration;
-it may be changed entirely. 
-[From scwm/window.c:860]
+[From scwm/window.c:1902]
 
 
 Themes
@@ -479,7 +462,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:559]
+[From scwm/callbacks.c:558]
 
 
 Viewports
@@ -497,6 +480,23 @@ is relative to the origin of the current desk.
 [From scwm/deskpage.c:89]
 
 
+Window Context
+-
+
+
+  When actions are triggered by mouse or keyboard events, or menu
+actions from menus originally popped up by mouse or keyboard events, a
+context window is saved, which is used as the default for window
+operations that are not passed their optional window argument. This
+allows the user to easily bind actions to events without worrying
+about passing around the window argument. 
+
+  However, it is unclear whether behind-the-scenes magic like this is
+a good idea.  The merit of this approach is still under consideration;
+it may be changed entirely. 
+[From scwm/window.c:846]
+
+
 Windows
 -
 
@@ -505,7 +505,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:391]
+[From scwm/window.c:377]
 
 
 X atoms

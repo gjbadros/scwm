@@ -88,47 +88,47 @@ Should the shading be animated or not?
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:704]
+[From scwm/image.c:700]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:551]
+[From scwm/scwm.c:560]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:554]
+[From scwm/scwm.c:563]
 
 
 move-opaquely?
 - (app scwm winops)
 User-settable predicate to determine if windows should be moved opaquely.
 
-[From scheme/winops.scm:207]
+[From scheme/winops.scm:216]
 
 
 netscape-new-window
 - (app scwm flux)
 If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
 
-[From scheme/flux.scm:635]
+[From scheme/flux.scm:638]
 
 
 opaque-move-percent
 - (app scwm winops)
 Percent of display area below which windows are moved opaquely.
 
-[From scheme/winops.scm:176]
+[From scheme/winops.scm:178]
 
 
 opaque-resize-percent
 - (app scwm winops)
 Percent of display area below which windows are resized opaquely.
 
-[From scheme/winops.scm:181]
+[From scheme/winops.scm:183]
 
 
 pie-menu-look
@@ -144,21 +144,21 @@ It should take a first (non-option) argument of
 the hostname to connect to.  "ssh" "rsh" and "telnet"
 are each reasonable choices.
 
-[From scheme/base.scm:423]
+[From scheme/base.scm:427]
 
 
 resize-opaquely?
 - (app scwm winops)
 User-settable predicate to determine if windows should be resized opaquely.
 
-[From scheme/winops.scm:212]
+[From scheme/winops.scm:221]
 
 
 scwm-menu-look
 - 
 The default menu look for Scwm.
 Used as an argument to `set-menu-look'. 
-[From scwm/drawmenu.c:761]
+[From scwm/drawmenu.c:757]
 
 
 shaped-pie-menu-look
@@ -176,7 +176,7 @@ scwm) propagates to the child processes.  The end result of the
 possible bug is that xterms started by scwm are terminated if the
 scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
 
-[From scheme/base.scm:43]
+[From scheme/base.scm:47]
 
 
 xpm-shaped-menu-look
@@ -191,6 +191,6 @@ The command to run when a new xterm window is requested.
 The string given should refer to a binary or script in the
 path and should take a "-e" argument of what to run.
 
-[From scheme/base.scm:416]
+[From scheme/base.scm:420]
 
 
