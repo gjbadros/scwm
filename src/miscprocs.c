@@ -638,6 +638,21 @@ the constant string \"/tmp\".")
 }
 #undef FUNC_NAME
 
+
+extern Bool fDoneStartup;
+
+SCWM_PROC(done_startup_p, "done-startup?", 0, 0, 0,
+          (),
+"Return #t iff Scwm is fully initialized, else #f.
+Windows must all be captured and the `startup-hook' must have
+already run for this to return #t.")
+#define FUNC_NAME s_done_startup_p
+{
+  return gh_bool2scm(fDoneStartup);
+}
+#undef FUNC_NAME
+
+
 SCWM_IPROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
            (), NULL,
 "Cause a segmentation violation.

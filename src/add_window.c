@@ -389,7 +389,7 @@ AddWindow(Window w)
   frame_x = 0;
   frame_y = 0;
   frame_width = psw->attr.width + 2 * psw->xboundary_width;
-  frame_height = (psw->attr.height + (psw->fTitle ? psw->title_height : 1)
+  frame_height = (psw->attr.height + (psw->fTitle ? (psw->title_height-1) : 1)
 		  + 2 * psw->boundary_width);
 
   ConstrainSize(psw, 0, 0, &frame_width, &frame_height);

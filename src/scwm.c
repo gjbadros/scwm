@@ -205,6 +205,7 @@ Bool fDocumentPrimitiveFormals = False;
 Bool segvs_to_reset = 0;
 Bool fHandleSegv = True;
 Bool scwm_gc_often = False;
+Bool fDoneStartup = False;
 
 
 char **g_argv;
@@ -1198,6 +1199,8 @@ Repository Timestamp: %s\n",
   CoerceEnterNotifyOnCurrentWindow();
 
   run_startup_hook();
+
+  fDoneStartup = True;
 
   scwm_maybe_send_thankyou_packet();
 
