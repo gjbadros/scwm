@@ -154,7 +154,15 @@
 (define (tell-workman command)
   (execute (string-append "workman -s " command)))
 
-(exec-xlock)
+(define quit-verify
+  (make-menu "Really quit scwm?"
+	     'title
+	     (list "Yes" quit)
+	     (list "No" noop)
+	     'separator
+	     (list "Restart scwm" (lambda () (restart "scwm")))))
+
+
 
 (define use-complete-host-menu #t)
 
@@ -203,15 +211,6 @@
 
 (define (popup-ops)
   (popup menu-window-ops))
-
-(define quit-verify
-  (make-menu "Really quit scwm?"
-	     'title
-	     (list "Yes" quit)
-	     (list "No" noop)
-	     'separator
-	     (list "Restart scwm" (lambda () (restart "scwm")))))
-
 
 (define menu-desk 
   (make-menu "Desks"
@@ -392,4 +391,9 @@
 
 (set-click-time! 150)
 
+(set-hilight-colors! "white" "navyblue")
 (recapture)
+
+
+;(unbind-mouse 'all "C-S-M-1")
+;(unbind-mouse 'all "C-S-M-2")
