@@ -1,3 +1,32 @@
+Tue Sep  8 10:45:27 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.c: Be sure not to violate the width/height
+ 	increment of a window when resizing -- this was causing XEmacs to
+ 	request multiple new (corrected) sizes after the
+ 	cassowary-controlled resizing had occurred;  Fixes the assymetry
+	between directly resizing a window (where the ConstrainSize call
+	always was made) and the resizing of a window by Cassowary (where
+	the call is now made by this fix)
+
+	* window.c: In debug msg, give name of window that configure
+ 	events are sent to.
+
+	* virtual.c (MoveViewport_internal): Don't move windows not on the
+ 	current desk
+
+	* scwm.c: FIXGJB on a comment re: a fixed length string
+
+	* screen.h: Comment out the fMWMMenus flag
+
+	* miscprocs.c:  Drop set-menu-mwm-style!, menu-mwm-style.
+
+	* resize.c: Some formatting + comment change
+
+	* move.c: Use True, not 1 for a bool
+
+	* events.c, borders.c: Use DBG, not dbg in DEBUG_RESIZE macro
+	invocations.
+
 Mon Sep  7 12:25:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* face.c: Fix face specifications documentation markup so it's
