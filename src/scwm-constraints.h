@@ -14,11 +14,18 @@
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
 
+struct ScwmWindow;
+typedef struct ScwmWindow *PScwmWindow;
+typedef const struct ScwmWindow *ConstPScwmWindow;
+
 class ScwmClVariable : public ClVariable {
 private: typedef ClVariable super;
 public:
-  ScwmClVariable() : ClVariable() { }
-  virtual void set_value(Number n) { super::set_value(n); fprintf(stderr,"set_value to %g\n",n); }
+  ScwmClVariable() : ClVariable(), _psw(NULL) { }
+  virtual void change_value(Number n);
+  set_psw(ConstPScwmWindow psw) { _psw = (PScwmWindow) psw; }
+private:
+  PScwmWindow _psw;
 };
 
 
