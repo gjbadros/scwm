@@ -92,3 +92,13 @@ See `set-edge-move-threshold!'. "
   #:setter set-edge-move-threshold!
   #:getter edge-move-threshold
   )
+
+(define-scwm-group focus "Focus")
+
+(define-scwm-option *default-focus-style* 'mouse
+  "The default focus style for windows.
+See `set-window-focus!'."
+  #:type 'enum
+  #:group 'focus
+  #:favorites '(click mouse sloppy)  ;; none is an option for windows, but stupid as a default
+  #:setter (lambda (v) (window-style "*" #:focus v) (set! *default-focus-style* v)))

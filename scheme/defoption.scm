@@ -19,6 +19,7 @@
 
 (define-module (app scwm defoption)
   :use-module (ice-9 common-list)
+  :use-module (ice-9 regex)
   :use-module (app scwm optargs)
   )
 
@@ -39,8 +40,10 @@
 (defmacro-public define-scwm-option (sym default docstring . rest)
   "Define SYM to be a new scwm user option with DEFAULT as its default value.
 DOCSTRING documents the option.  REST contains keyword arguments including:
+#:name - a prettier name for display
 #:type - one of 'boolean,
                 'integer, 'percent, 'real
+                'enum
                 'position, 'position-delta
                 'time 'time-delta
                 'string, 'directory, 'path, 'command, 'hostname
@@ -56,7 +59,7 @@ DOCSTRING documents the option.  REST contains keyword arguments including:
 #:range - a cons cell (low . high), both inclusive with low <= high.
 #:layout-hint - any object as a hint to the type-layout engine (e.g., 'horizontal)
      (layout hint is not yet supported)
-#:favorites - a list of favorite possibilities for this variable.
+#:favorites - a list of favorite (or all, for enum type) possibilities for this variable.
 #:setter - the setter procedure, if any.
 #:getter - the getter procedure, if any."
   `(let ((answer (define-public ,sym ,default)))
@@ -141,8 +144,14 @@ scwm-options-groups
 (scwm-option-favorites '*auto-raise*)
 !#
 
+(define-public (prompt-from-symbol sym)
+  (let* ((name (symbol->string sym))
+	 (n (make-shared-substring name 1 (- (string-length name) 1))))
+    (regexp-substitute/global #f "-" n 'pre " " 'post)))
+
 (define*-public (define-scwm-option-proc var sym docstring default #&key
 		  (type #f)
+		  (name #f)
 		  (permit-disable #f)
 		  (range #f)
 		  (favorites #f)
@@ -156,7 +165,7 @@ See `define-scwm-option'."
   (if (not type) (error "Must specify a type!"))
   (set-object-property! sym 'module (list 'app 'scwm (module-name (current-module))))
   (set-object-property! sym 'doc docstring)
-  (set-object-property! sym 'name (symbol->string sym))
+  (set-object-property! sym 'name (or name (prompt-from-symbol sym)))
   (if setter (set-object-property! sym 'setter setter))
   (if getter (set-object-property! sym 'getter getter))
   (if range (set-object-property! sym 'range range))

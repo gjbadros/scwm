@@ -30,6 +30,7 @@
   :use-module (app scwm prompt-bool)
   :use-module (app scwm prompt-string)
   :use-module (app scwm prompt-range)
+  :use-module (app scwm prompt-enum)
   :use-module (app scwm prompt-font)
   :use-module (app scwm prompt-file)
   :use-module (app scwm prompt-color)
@@ -87,10 +88,14 @@
 	(message-window-hide! mw-docs)
 	(popup-docs-for var))))
 
+(define-public (choices-from-favorites fav)
+  (map (lambda (f) (cons f (symbol->string f))) fav))
+
 ;;(path-list->string-with-colons (scwm-option-get *theme-path*))
 ;; (use-modules (app scwm prompt-string))
 ;; (use-modules (gtk gtk))
 ;; (gui-set '*desk-width*)
+;; (gui-set '*default-focus-style*)
 (define-public (gui-set sym)
   (let* ((name (scwm-option-name sym))
 	 (value (scwm-option-symget sym))
@@ -122,11 +127,10 @@
        (prompt-integer-range prompt '(0 . 100) set-proc #:initval value #:title title))
       ('boolean
        (prompt-bool prompt set-proc #:initval value #:title title))
+      ('enum
+       (prompt-enum prompt (choices-from-favorites favorites) set-proc #:initval value #:title title))
       (else
        (error "Cannot yet handle type " (symbol->string type))))))
-
-(define-public (prompt-from-name name)
-  (make-shared-substring name 1 (- (string-length name) 1)))
 
 ;;(prompt-from-name "*foo*")
 
@@ -156,7 +160,7 @@ See also `prompt-string'."
 	 (range (scwm-option-range sym))
 	 (favorites (scwm-option-favorites sym))
 	 (var (eval sym))
-	 (prompt (prompt-from-name name)))
+	 (prompt name))
     (case type
       ('string
        (prompt-string-hbox prompt value))
@@ -178,6 +182,8 @@ See also `prompt-string'."
        (prompt-integer-range-hbox prompt '(0 . 100) value))
       ('boolean
        (prompt-bool-hbox prompt value))
+      ('enum
+       (prompt-enum-hbox prompt (choices-from-favorites favorites) value))
       (else
        (display "Cannot yet handle type ")
        (display (symbol->string type))
