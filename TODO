@@ -127,13 +127,9 @@ isn't now).
 ** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
 ** (last-key) ; return last key pressed
 ** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
-** window closing hook? (upon removal of the window?)
 ** window-group feature (at scheme level)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
-** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive 
-  - Maybe should have set-window-context! and window-context routines
-    that with-window is just a syntax around --09/02/98 gjb
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
 ** (window-user-set-position? WIN), (window-user-set-size? WIN) ; tell if user specified position/size on command line
 ** (window-program-set-position? WIN), (window-program-set-size? WIN) ; tell if client programmatically specified position/size on command line
@@ -143,6 +139,9 @@ isn't now).
 ** visibility change hooks (fully-obscured, partially-obscured, unobscured) -- subsumed by event rewrite --08/07/98 gjb
 
 ** DONE ONES
+*** window closing hook? (upon removal of the window?) -- done 09/17/98 gjb
+*** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive -- done 09/17/98 gjb
+    Maybe should have set-window-context! and window-context routines that with-window is just a syntax around --09/02/98 gjb
 *** (window-shaped? WINDOW), (window-icon-shaped? WIN) --done 09/02/98 gjb
 *** (rotate-cut-buffers) --done 09/02/98 gjb
 *** (invert-color COLOR) ; return a new color by inverting COLOR --done 09/02/98 gjb
