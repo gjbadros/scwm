@@ -7,7 +7,7 @@
 # to replace @@ with newlines.  Also removes
 # trailing whitespace
 # This script is run by startscwm
-if which cpp 2>/dev/null; then
+if which cpp >/dev/null 2>&1; then
     CPP=cpp
 elif test -x /lib/cpp; then
     CPP=/lib/cpp
