@@ -65,12 +65,16 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
   XSendEvent(disp, w, False, 0L, (XEvent *) & ev);
 }
 
-SCWM_PROC(send_client_message, "send-client-message", 2, 1, 0,
-          (SCM win, SCM atom, SCM x))
+SCWM_PROC(send_client_message, "send-client-message", 2, 0, 1,
+          (SCM win, SCM atom, SCM data))
      /** Send WIN the message "ATOM X".
 WIN can be 'root-window or an X window identification number.
 Useful for supporting other WMs module communication protocols. 
-ATOM and X are both 32-bit integers. */
+ATOM is the X11 atom representing the message type (e.g.,
+XA_WM_PROTOCOLS) and DATA is up to 4 32-bit integers of data.
+for the message. DATA will be the used to create the message data, 
+and the lastTimestamp will be appended as the last integer in
+the data message. */
 #define FUNC_NAME s_send_client_message
 {
   Window w;
@@ -78,12 +82,15 @@ ATOM and X are both 32-bit integers. */
   long msg;
   long mask = 0L;
   XClientMessageEvent ev;
+  int i = 0;
 
   memset(&ev, 0, sizeof(ev));
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
   VALIDATE_ARG_INT_COPY(2,atom,at);
-  VALIDATE_ARG_INT_COPY(3,x,msg);
+  if (gh_length(data) > 4) {
+    scm_misc_error(FUNC_NAME,"There can be no more than 4 data elements",SCM_EOL);
+  }
   
   /* Use SubstructureRedirectMask for root window messages */
   if (w == Scr.Root) mask = SubstructureRedirectMask;
@@ -92,8 +99,13 @@ ATOM and X are both 32-bit integers. */
   ev.window = w;
   ev.message_type = at;
   ev.format = 32;
-  ev.data.l[0] = msg;
-  ev.data.l[1] = lastTimestamp;
+  for (i = 0;  SCM_EOL != data && i<5; ++i) {
+    long v;
+    VALIDATE_ARG_INT_COPY(3+i,gh_car(data),v);
+    ev.data.l[i] = v;
+    data = gh_cdr(data);
+  }
+  ev.data.l[i] = lastTimestamp;
   XSendEvent(dpy, w, False, mask, (XEvent *) &ev);
   return SCM_UNSPECIFIED;
 }

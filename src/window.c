@@ -974,7 +974,7 @@ circle cursor. */
 
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
-      SCM win = gh_car(select_viewport_position(release_p,cursor));
+      SCM win = gh_car(select_viewport_position(cursor,release_p));
       if (SCM_BOOL_F == win)
         call0_hooks(invalid_interaction_hook);
       return win;
@@ -1304,7 +1304,7 @@ PswFromPointerLocation(Display *dpy)
 ScwmWindow *
 PswSelectInteractively(Display *ARG_UNUSED(dpy))
 {
-  SCM result = gh_car(select_viewport_position(SCM_BOOL_T, SCM_BOOL_F));
+  SCM result = gh_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
   if (result == SCM_BOOL_F)
     return NULL;
   return PSWFROMSCMWIN(result);
