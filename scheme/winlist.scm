@@ -89,6 +89,7 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (unflash-window-proc #f)
 				       (show-geometry #f)
 				       (warp-to-first #f)
+				       (ignore-winlist-skip #f)
 				       (show-mini-icon #t))
   "Popup a window list menu and permit a selection to be made.
 ONLY and EXCEPT are procedures that control which windows will
@@ -126,9 +127,11 @@ menuitem (see `popup-menu').
 					  #f)
 				      #f))
 		     (list-windows #:only only #:except 
-				   (cons 
-				    winlist-skip?
-				    (listify-if-atom except))
+				   (if ignore-winlist-skip
+				       except
+				       (cons 
+					winlist-skip?
+					(listify-if-atom except)))
 				   #:by-stacking by-stacking))))
 	      warp-to-first))
 

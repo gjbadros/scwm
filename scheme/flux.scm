@@ -349,10 +349,13 @@ The list is in the reverse order from the way by which they were selected."
 ;;(select-multiple-windows-interactively 10)
 ;;(restack-windows (select-multiple-windows-interactively 3))
 
-(define*-public (select-window-from-window-list #&key (only '()) (except '()))
+(define*-public (select-window-from-window-list #&key 
+						(only '()) (except '())
+						(ignore-winlist-skip #f))
   "Permit selecting a window from a window list.
 Return the selected window object, or #f if none was selected"
-  (show-window-list-menu #:only only #:except except #:proc (lambda (w) w)))
+  (show-window-list-menu #:only only #:except except 
+			 #:ignore-winlist-skip ignore-winlist-skip #:proc (lambda (w) w)))
 
 ;; e.g.
 ;; (let ((w (select-window-from-window-list #:only iconified?)))
@@ -476,8 +479,12 @@ underscores, so that the resulting string can be used as a key for
 
 (define-public (X-cut-buffer-string)
   "Return the text of the CUT_BUFFER0 property of the root window.
-This is the cut text selected by X clients."
-  (X-property-get 'root-window "CUT_BUFFER0"))
+This is the cut text selected by X clients.  Returns #f if the
+CUT_BUFFER0 property is not a string."
+  (let ((l (X-property-get 'root-window "CUT_BUFFER0")))
+    (if (string=? (cadr l) "STRING")
+	(car l)
+	#f)))
 
 
 (define*-public (display-message-briefly msg #&optional (sec-timeout 3))
@@ -513,3 +520,57 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17)."
 
 ;; useful for debugging/testing
 ;;(set-X-server-synchronize! #t)
+
+;; Get a visible netscape window, or any netscape window
+;; if none are visible
+(define-public (netscape-win)
+  "Return a netscape window, prefer a visible netscape window.
+May error if no netscape windows are present."
+  (let* ((ns-wins
+	 (list-windows #:only 
+		       (lambda (w) 
+			 (and (string=? (window-class w) "Netscape")
+			      (string=? (window-resource w) "Navigator")))))
+	 (win (car ns-wins)))
+    (for-each (lambda (w) (if (visible? w) (set! win w))) ns-wins)
+    win))
+
+
+;; from Todd Larason
+(define-public (run-in-netscape command completion)
+  (let* ((netwin (netscape-win))
+	 (mozilla-version
+	  (car (X-property-get netwin "_MOZILLA_VERSION"))))
+    (letrec ((get-mozilla-hook
+	      (lambda ()
+		(if (X-atomic-property-set-if-unset! 
+		     netwin "_MOZILLA_LOCK" "lock!")
+		    (put-mozilla-command)
+		    (add-timer-hook! 50 get-mozilla-hook))))
+	     (put-mozilla-command
+	      (lambda ()
+		(X-property-set! netwin "_MOZILLA_COMMAND" command)))
+	     (mozilla-property-notify
+	      (lambda (propname window)
+;;		(write-all #t "mpn: want " netwin ":_MOZILLA_RESPONSE " 
+;;			   "got " window ":" propname "\n")
+		(cond ((and (eq? window netwin)
+			    (string=? propname "_MOZILLA_RESPONSE"))
+		       (remove-hook! X-PropertyNotify-hook 
+				     mozilla-property-notify)
+		       (X-property-get netwin "_MOZILLA_LOCK" #t)
+		       (completion (car (X-property-get 
+					 netwin "_MOZILLA_RESPONSE" #t))))))))
+      (add-hook! X-PropertyNotify-hook mozilla-property-notify)
+      (get-mozilla-hook)
+      #t)))
+
+(define-public (netscape-goto-cut-buffer-url)
+  "Make netscape go to the URL in CUT_BUFFER0.
+This permits you to just select a URL and use this function
+to go to that page."
+  (run-in-netscape 
+   (string-append "openURL(" (X-cut-buffer-string) ")")
+   display-message-briefly))
+
+;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)

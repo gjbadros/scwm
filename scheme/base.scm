@@ -159,10 +159,14 @@ value for that coordinate).
 If ANIMATED? is #t, then animate the window there.
 If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved.
 See `move-window' if you wish to move a window to a virtual position."
-  (let ((pos (viewport-position)))
-    (if x (set! x (+ x (car pos))))
-    (if y (set! y (+ y (cadr pos))))
-    (move-window x y win animated? move-pointer-too?)))
+  (if (not (sticky? win))
+      (let ((pos (viewport-position)))
+	(if x (set! x (+ x (car pos))))
+	(if y (set! y (+ y (cadr pos)))))
+      (begin
+	(if x (set! x (modulo x display-width)))
+	(if y (set! y (modulo y display-height)))))
+  (move-window x y win animated? move-pointer-too?))
 
 ;; Give move-to a better name, too
 ;; FIXGJB: Can this have a doc string?
@@ -425,9 +429,10 @@ The rest of the arguments are passed as options to the xterm command."
 ;;; All `get-window' calls within BODY will return WIN.
   `(let ((old-window-context (window-context))
 	 (answer #f))
-     (set-window-context! ,win)
-     (begin ,@body)
-     (set-window-context! old-window-context)))
+     (dynamic-wind
+      (lambda () (set-window-context! ,win))
+      (lambda () ,@body)
+      (lambda () (set-window-context! old-window-context)))))
 
 (define-public bell beep)
 
