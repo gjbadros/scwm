@@ -9,13 +9,36 @@
   (add-stays-on-window w2)
   (add-stays-on-window (current-window-with-focus)))
 
-(define (scheme-keep-tops-even w1 w2)
+(define (keep-tops-even w1 w2)
   (let ((w1-y (window-clv-y w1))
 	(w2-y (window-clv-y w2)))
     (cl-add-constraint solver (make-cl-constraint w1-y = w2-y))))
+
+(define (keep-bottoms-even w1 w2)
+  (let ((w1-y (window-clv-y w1))
+	(w2-y (window-clv-y w2))
+	(w1-height (window-clv-height w1))
+	(w2-height (window-clv-height w2)))
+    (cl-add-constraint 
+     solver (make-cl-constraint
+	     (cl-plus w1-y w1-height) =
+	     (cl-plus w2-y w2-height)))))
+
+(define (keep-to-left-of w1 w2)
+  (let ((w1-x (window-clv-x w1))
+	(w1-width (window-clv-width w1))
+	(w2-x (window-clv-x w2)))
+    (cl-add-constraint 
+     solver (make-cl-constraint (cl-plus w1-width w1-x) <= w2-x))))
+
+
+(keep-bottoms-even (current-window-with-focus) w1)
+(keep-tops-even (current-window-with-focus) w2)
+(keep-to-left-of (current-window-with-focus) w1)
+
+(set-opaque-move-size! 100)
     
 
-(keep-tops-even (current-window-with-focus) w2)
 (keep-to-left-of (current-window-with-focus) w2)
 (keep-to-left-of (current-window-with-focus) w1)
 
