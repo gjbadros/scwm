@@ -1678,7 +1678,6 @@ NextScwmEvent(Display * dpy, XEvent * event)
 #ifdef HAVE_LIBSM_LIBICE
     if (IceSMfd != -1 && FD_ISSET(IceSMfd, &in_fdset)) {
       Bool rep;
-      scwm_msg(DBG,"NextScwmEvent","Processing ICE message.");
       if (IceProcessMessages(IceSMconn, NULL, &rep)
           == IceProcessMessagesIOError)
         {
