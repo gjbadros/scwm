@@ -24,7 +24,7 @@ Thanks to:
   Jeff Nichols - initial implementation of message window feature,
                  working with Greg on the user interface for constraints
 
-  Glenn Trigg - implementations of ScwmButtons and simplebiff modules.
+  Glenn Trigg - implementations of ScwmButtons, ScwmBiff, ScwmClock, and simplebiff modules.
 
   Sam Falkner - edge-ops.scm
 
