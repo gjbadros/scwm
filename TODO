@@ -1,8 +1,10 @@
 # $Id$ -*- outline -*-
 
-For scwm 0.8:
+For scwm 0.9:
 
 * Finish C-level API review, renaming things, adding getters, etc
+
+* Move scheme documentation into .scm files as doc strings
 
 * Make sure that scwm and guile-gtk interoperate reasonably well;
 provide some example uses of guile-gtk for scwm.
@@ -14,36 +16,31 @@ provide some example uses of guile-gtk for scwm.
 * Fix Perry Metzger's long-standing bug with all the timing-related
 things on NetBSD.
 
-* Add a `get-stacking-order' primitive -- renamed `list-all-windows-in-stacking-order'
-** returns the window list in the stacking order. done --08/03/98 gjb
-
-* WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
-
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
 ** Respect gravity on resize-to
 ** Let user get/set gravity.
 
-* Fix more bugs.
-
 * Fix up style handling a bit; make more convenient ways to match
 styles only on one of resource class/resource instance/ window title,
 and add convenient ways to match on certain other things.
 
-* Promote generally useful things from flux.scm to somewhere more
-official.
+* Promote generally useful things from flux.scm to somewhere supported
 
-* Update NEWS, THANKS, AUTHORS, TODO, BUGS and ANNOUNCE. 
+* bug fixes
 
-* Make lsm file -- [needs final update of file size] done --08/04/98 gjb
+* event rewrite
+
+* decorations rewrite
+
+* split into on-demand loaded modules of primitives
 
 * Try some beta testing (although there won't be much time for
 this). Personally make sure it builds and runs on Linux, NetBSD, Irix,
-Solaris and SunOS (these being the platforms I have easy access
+Solaris and SunOS (these being the platforms Maciej has easy access
 to). These should be a good broad test, though. On each of this try
 compiling and running with both guile 1.2 and the latest snap, and try
 with and without threads.
-
 
 
 Other Stuff
@@ -65,6 +62,8 @@ Other Stuff
 ** virtual desktop and sticky interaction with the constraint variables
 ** rubberband-resizing fixes -- generalization of the rubberband
 ** z-order stacking constraints to replace add-hoc stays-on-top, raisewindow, lowerwindow
+
+* WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
 
 * General cleanup
 ** more static function hidden behind modules
@@ -205,6 +204,16 @@ alloc/dealloc to see where the memory is going... guile support for this?
 * Undo feature?
 
 
+* Done for scwm 0.8:
+
+* Add a `get-stacking-order' primitive -- renamed `list-all-windows-in-stacking-order'
+** returns the window list in the stacking order. done --08/03/98 gjb
+
+* Make lsm file -- [needs final update of file size] done --08/04/98 gjb
+
+
+
+
 * Done:
 
 - Implement error reporting and output redirection for the scwmexec
@@ -253,4 +262,4 @@ modules should be punted.]
 ;;; Local Variables:
 ;;; eval: (require 'filladapt)
 ;;; eval: (hide-sublevels 1)
-;;; End:
+;;; 
