@@ -191,6 +191,19 @@ depth, its color depth.
 }
 #undef FUNC_NAME
 
+SCWM_PROC(image_size, "image-size", 1, 0, 0,
+           (SCM image))
+     /** Return the size of IMAGE as a list (width height). */
+#define FUNC_NAME s_image_size
+{
+  scwm_image *psimg = SAFE_IMAGE(image);
+  if (!psimg) {
+    SCWM_WRONG_TYPE_ARG(1, image);
+  } 
+  return gh_list(gh_int2scm(psimg->width),gh_int2scm(psimg->height),SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
 
 SCM
 make_empty_image(SCM name)
