@@ -337,6 +337,7 @@
 	      #:icon-box (list 0 1 69 (y- 141)))
 
 ;; (window-style "*" #:show-icon #t)
+;; (window-style "*" #:show-icon #f)
 ;; (window-style "*" #:sticky-icon #f)
 ;; (window-style "*" #:sticky-icon #t)
 ;; (window-style "*" #:random-placement #f #:smart-placement #f)
