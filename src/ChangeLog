@@ -1,3 +1,11 @@
+Sat Jul 18 11:15:59 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* decor.c, events.c, module-interface.c, placement.c, window.c,
+ 	window.h, xproperty.c: Replaced all uses of SCWMWINDOW macro with
+ 	PSWFROMSCMWIN since that is a less ambiguous name, and makes more
+ 	sense given the pervasive use of the psw tag througout.  Commented
+ 	out SCWMWINDOW macro definition so it can be used no longer.
+
 1998-07-18  Maciej Stachowiak  <maciej@roc-ny2-05.ix.netcom.com>
 
 	* add_window.c: Documented all hooks.
