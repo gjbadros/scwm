@@ -1,3 +1,19 @@
+Mon Oct 25 12:23:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-composition.scm: Give a better description to
+	composition-recorded macros.
+
+Mon Oct 25 12:04:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* nonants.scm, lambda-startup-logo.scm: Use new `make-image-or-warn'
+
+	* message-window.scm: Avoid error when image is not found.  Clean
+	up intro comments.
+
+	* lambda-startup-logo.scm: Make `logo-remove' public.
+
+	* base.scm: Added `make-image-or-warn' added \n to `image-not-found-message'
+
 Sun Oct 24 12:08:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm: Better formatting of debugging output.
