@@ -158,7 +158,11 @@ buttons. The hook procedures are invoked with no arguments. */
 SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1);
   /** This hook is invoked upon DestroyNotify X events.
 It indicates a window was destroyed.  The hook procedures are
-invoked with one argument, WINID, the X id of the window that was destroyed. */
+invoked with one argument, WINID, the X id of the window that was destroyed. 
+This hook is invoked for both the client window and the window frame
+IDs (i.e., twice per top-level window).  You probably want to use
+`window-close-hook' or `X-UnmapNotify-hook' instead.
+*/
 
 SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1);
   /** This hook is invoked upon UnmapNotify X events.  It indicates a
