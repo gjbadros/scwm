@@ -14,7 +14,8 @@ Menu Properties
 Menu Item Properties
 --------------------
  o Identifier
- o Hook (could be #f for a separator or a title)
+ o "Hover" hook (when the item is highlighted; use for cascade, popup-help, etc.)
+ o "Action" hook (when the item is activated)
  o Drawing interface
  Optionally:
  * String(s) to display (identifier used if not given)
@@ -22,6 +23,8 @@ Menu Item Properties
  * Shortcut key list (just gets incorporated into the keymap of parent)
  * States (hidden, grayed, selected)
 
+Notes: if both Hover and Action are #f, then the item is not highlighted
+and is not a stopping place for keypresses
 
 Need to be able to:
   o change key bindings dynamically and arbitrarily
