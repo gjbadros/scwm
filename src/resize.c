@@ -60,14 +60,14 @@ It is called with one argument, WINDOW.");
 extern SCM cannot_grab_hook;
 
 
-static __inline__
+static SCWM_INLINE
 int
 makemult(int a, int b)
 {
   return a - (a % b);
 }
 
-__inline__ void
+SCWM_INLINE void
 ComputeDeltaForResizeWithOrigSize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height, 
                                   int orig_width, int orig_height)
 {

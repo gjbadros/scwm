@@ -417,7 +417,7 @@ GrabButtonWithModifiersMaskXcPm(int button, int modifier,
   }
 }
 
-__inline__ void
+SCWM_INLINE void
 GrabButtonWithModifiers(int button, int modifier, 
 			ScwmWindow *psw)
 { 
@@ -443,7 +443,7 @@ UngrabButtonWithModifiersWin(int button, int modifier, Window w)
   }
 }
 
-__inline__ void
+SCWM_INLINE void
 UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw)
 { UngrabButtonWithModifiersWin(button,modifier,psw->frame); }
 
@@ -463,7 +463,7 @@ GrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
   return;
 }
 
-__inline__ void 
+SCWM_INLINE void 
 GrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw)
 { GrabKeyWithModifiersWin(key,modifier,psw->frame); }
 
@@ -480,7 +480,7 @@ UngrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
   return;
 }
 
-__inline__ void 
+SCWM_INLINE void 
 UngrabKeyWithModifiers(KeyCode key, unsigned int modifier, ScwmWindow *psw)
 { UngrabKeyWithModifiersWin(key,modifier,psw->frame); }
 

@@ -103,7 +103,7 @@ const double message_highlight_factor = 1.2;  /* defined like this from move.c *
 const double message_shadow_factor = 0.5;
 
 
-static __inline__ int
+static SCWM_INLINE int
 MessageWindowWidth(scwm_msgwindow *msg)
 {
   if (msg->width > 0)
@@ -113,7 +113,7 @@ MessageWindowWidth(scwm_msgwindow *msg)
 }
 
 
-static __inline__ int
+static SCWM_INLINE int
 MessageWindowHeight(scwm_msgwindow *msg)
 {
   if (msg->height > 0)

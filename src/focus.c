@@ -53,7 +53,7 @@ that just lost the keyboard focus. See also `window-focus-change-hook'.");
 /* Invoke the window_focus_lost_hook iff Scr.Focus is a SchemeWindow 
    and it is not already w; also require Scr.PreviousFocus to be null
    (since otherwise we are doing a GrabEm)*/
-static __inline__ void
+static SCWM_INLINE void
 call_lost_focus_hook(ScwmWindow *psw)
 {
   if (Scr.Focus && Scr.Focus != psw && NULL == Scr.PreviousFocus) {

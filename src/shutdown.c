@@ -44,7 +44,7 @@ empty.  To provide behviour conditioned on a property of an existing
 window, this hook should be used instead.");
 
 
-static __inline__ void
+static SCWM_INLINE void
 run_restart_command(char *command) {
   if (STREQ(command,"scwm")) {
       char *my_argv[20];

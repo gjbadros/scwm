@@ -390,7 +390,7 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 #if 0
 #define SCM_FROM_PSW(X) ((X)->_schwin)
 #else
-static __inline__ 
+static SCWM_INLINE 
 SCM SCM_FROM_PSW(const ScwmWindow *psw) {
   assert(psw);
   assert(!UNSET_SCM(psw->_schwin));

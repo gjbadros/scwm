@@ -314,7 +314,7 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 extern ScwmWindow *pswCurrent;
 extern Bool scwm_gc_often;
 
-__inline__ SCM scwm_run_hook(SCM hook, SCM args)
+SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
 {
   static Bool scwm_gc_really_often = False;
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
@@ -336,7 +336,7 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
   return answer;
 }
 
-__inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
+SCWM_INLINE SCM scwm_run_hook_message_only(SCM hook, SCM args)
 {
 #ifdef SCWM_DEBUG_RUN_HOOK
   scwm_message(DBG,"scwm_run_hook_message_only","Calling hook `%s'; args = %S",
@@ -346,42 +346,42 @@ __inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
 }
 
 
-__inline__ SCM call0_hooks(SCM hook)
+SCWM_INLINE SCM call0_hooks(SCM hook)
 {
   return scwm_run_hook(hook,SCM_EOL);
 }
 
-__inline__ SCM call1_hooks(SCM hook, SCM arg1)
+SCWM_INLINE SCM call1_hooks(SCM hook, SCM arg1)
 {
   return scwm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
 }
 
-__inline__ SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
+SCWM_INLINE SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
 }
 
-__inline__ SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
+SCWM_INLINE SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
 }
 
-__inline__ SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
+SCWM_INLINE SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
 }
 
-__inline__ SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
+SCWM_INLINE SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
 }
 
-__inline__ SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
+SCWM_INLINE SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
 }
 
-__inline__ SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
+SCWM_INLINE SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
 {
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
 }
@@ -640,7 +640,7 @@ scwm_body_eval_x (void *body_data)
 }
 
 
-__inline__ static SCM 
+SCWM_INLINE static SCM 
 scwm_catching_eval_x (SCM expr) {
   return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
 			  scwm_handle_error, "scwm");
@@ -648,7 +648,7 @@ scwm_catching_eval_x (SCM expr) {
 
 static int clnsProcessingHook = 5;
 
-__inline__ static SCM 
+SCWM_INLINE static SCM 
 scwm_catching_load_from_port (SCM port)
 {
   SCM expr;

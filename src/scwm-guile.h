@@ -6,10 +6,13 @@
 #ifndef SCWM_GUILE_H__
 #define SCWM_GUILE_H__
 
+#undef SCWM_INLINE
 #ifndef __GNUC__
-#ifndef __inline__
-#define __inline__ 
-#endif
+#define SCWM_INLINE
+#define SCWM_STATIC_INLINE static
+#else
+#define SCWM_INLINE __inline__
+#define SCWM_STATIC_INLINE static __inline__
 #endif
 
 #include <guile/gh.h>
@@ -39,12 +42,12 @@
 #define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
 
 
-__inline__ 
+SCWM_INLINE 
 static void scwm_defer_ints() {
   SCM_REDEFER_INTS;
 }
 
-__inline__ 
+SCWM_INLINE 
 static void scwm_allow_ints() {
   SCM_REALLOW_INTS;
 }
