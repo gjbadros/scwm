@@ -22,6 +22,9 @@
   (do ((zz lst (cdr zz))) ((null? zz))
     (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
 
+(define-public (to-string . rest)
+  (with-output-to-string (lambda () (apply write-all () rest))))
+
 (define-public (make-file-menu file . rest)
   (menu (append! (list (menuitem "View" #:action (show-file file))
 		       (menuitem "Edit" #:action
@@ -33,15 +36,17 @@
   (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
 
 ;;; FIXGJB: how set width of an xmessage?
-(define-public (message . str)		; return lambda
+(define-public (message . str)
   (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
-			   "\'| xmessage -file - -default okay -nearmouse")))
+			   "\'| xmessage -file - -default Okay -nearmouse")))
 
 (define-public (show-mesg . str) (lambda () (apply message str)))
-(define-public (show-file fl)		; return lambda
+(define-public (show-file fl)	; return lambda
   (exe (string-append
-	"xmessage -buttons ok:0 -default ok -nearmouse -file " fl)))
+	"xmessage -buttons ok:0 -default Okay -nearmouse -file " fl)))
+(define-public (show-com com) ; return lambda
+  (exe (string-append com "| xmessage -file - -default Okay -nearmouse")))
 
 (define-public (bool->str arg) (if arg "true" "false"))
 
@@ -79,10 +84,11 @@
      "\nViewport:\t" (size->str (viewport-position))
      "\nPointer:\t" (size->str (pointer-position))
      "\nCurrent Desk:\t" (number->string (current-desk))
-     "\nX:\t\t" (caddr vv) "; version: " (number->string (car vv)) "."
-     (number->string (cadr vv))
-     "\nX Display:\t" (list-ref dd 4) " (" (number->string (list-ref dd 2))
-     " bit colors)\nimage-load-path:"
+     "\nX vendor:\t" (caddr vv) "; version: " (number->string (car vv)) "."
+     (number->string (cadr vv)) "; release: " (number->string (cadddr vv))
+     "\nX Display:\n\tResolution:\t" (size->str dd) "\n\tColor:\t\t"
+     (list-ref dd 4) " (depth: " (number->string (caddr dd))
+     "; bits per RGB: " (number->string (cadddr dd)) ")\nimage-load-path:"
      (map (lambda (st) (string-append "\n\t" st)) image-load-path))))
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
