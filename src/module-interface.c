@@ -13,6 +13,7 @@
 #include <X11/X.h>
 #include <guile/gh.h>
 #include <stdarg.h>
+#include <assert.h>
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
@@ -46,6 +47,19 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 		       gh_ulong2scm(data7),
 		       SCM_UNDEFINED));
 }
+
+
+void
+BroadcastIconInfo(unsigned long event_type, const ScwmWindow *psw)
+{
+  assert(event_type == M_ICONIFY || event_type == M_ICON_LOCATION);
+  Broadcast(event_type, 7, psw->w, psw->frame,
+            (unsigned long) psw,
+	    ICON_X_VP(psw), ICON_Y_VP(psw),
+            psw->icon_p_width,
+            psw->icon_w_height + psw->icon_p_height);
+}
+
 
 
 void

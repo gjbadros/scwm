@@ -366,10 +366,11 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
       paged = 0;
       while (paged <= 1) {
         if (psw->fIconified) {
-          psw->icon_x_loc = xl;
+          psw->icon_x_loc = xl + ICON_VP_OFFSET_X(psw);
           psw->icon_xl_loc = xl -
-            (psw->icon_w_width - psw->icon_p_width) / 2;
-          psw->icon_y_loc = yt;
+            (psw->icon_w_width - psw->icon_p_width) / 2 +
+            ICON_VP_OFFSET_X(psw);
+          psw->icon_y_loc = yt + ICON_VP_OFFSET_Y(psw);
           if (opaque_move) {
             MovePswIconToCurrentPosition(psw);
           } else {

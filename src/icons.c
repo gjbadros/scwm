@@ -205,11 +205,9 @@ GetIconBitmap(ScwmWindow *psw)
  ************************************************************************/
 
 
-/****************************************************************************
- *
+/*
  * Creates an icon window as needed
- *
- ****************************************************************************/
+ */
 void 
 CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 {
@@ -550,6 +548,8 @@ AutoPlace(ScwmWindow *psw)
       Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
   }
   if (psw->fIconMoved) {
+#if 0 /* FIXGJB: do not want this -- icons should be able to iconify
+         to anywhere */
     /* just make sure the icon is on this screen */
     psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
     psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
@@ -557,6 +557,7 @@ AutoPlace(ScwmWindow *psw)
       psw->icon_x_loc += Scr.DisplayWidth;
     if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
       psw->icon_y_loc += Scr.DisplayHeight;
+#endif
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
     psw->icon_y_loc = psw->wmhints->icon_y;
@@ -630,20 +631,12 @@ AutoPlace(ScwmWindow *psw)
     psw->icon_xl_loc = psw->icon_x_loc;
 
     MovePswIconToCurrentPosition(psw);
-
-    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
-	      (unsigned long) psw,
-	      psw->icon_x_loc, psw->icon_y_loc,
-	      psw->icon_w_width, psw->icon_w_height + psw->icon_p_height);
   }
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	DeIconify a window
- *
- ***********************************************************************/
+/*
+ * DeIconify a window
+ */
 void 
 DeIconify(ScwmWindow *psw)
 {
@@ -653,6 +646,7 @@ DeIconify(ScwmWindow *psw)
   if (!psw)
     return;
 
+  MovePswToCurrentPosition(psw);
   RaiseWindow(psw);
   /* now de-iconify transients */
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
@@ -687,7 +681,7 @@ DeIconify(ScwmWindow *psw)
   }
 
   if (psw->fClickToFocus)
-    FocusOn(psw, 1);
+    FocusOn(psw);
 
   KeepOnTop();
 
@@ -742,12 +736,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
 	t->fIconified = True;
 	t->fIconUnmapped = True;
 
-	Broadcast(M_ICONIFY, 7, t->w, t->frame,
-		  (unsigned long) t,
-		  0, 0,  
-                  /* above were -10000, but broadcast only takes unsigned longs --06/24/98 gjb */
-		  t->icon_w_width,
-		  t->icon_w_height + t->icon_p_height);
+        BroadcastIconInfo(M_ICONIFY,t);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
       }
     }
@@ -768,11 +757,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
   AutoPlace(psw);
   psw->fIconified = True;
   psw->fIconUnmapped = False;
-  Broadcast(M_ICONIFY, 7, psw->w, psw->frame,
-	    (unsigned long) psw,
-	    psw->icon_x_loc, psw->icon_y_loc,
-	    psw->icon_w_width,
-	    psw->icon_w_height + psw->icon_p_height);
+  BroadcastIconInfo(M_ICONIFY, psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
   LowerWindow(psw);

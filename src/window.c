@@ -514,6 +514,7 @@ MovePswIconToCurrentPosition(const ScwmWindow *psw)
     XMoveWindow(dpy, psw->icon_w, x, y + psw->icon_p_height);
   if (psw->icon_pixmap_w != None)
     XMoveWindow(dpy, psw->icon_pixmap_w, x, y);
+  BroadcastIconInfo(M_ICON_LOCATION, psw);
 }
 
 
@@ -638,11 +639,6 @@ move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
     psw->icon_x_loc = x;
     psw->icon_xl_loc = y - (psw->icon_w_width - psw->icon_p_width) / 2;
     psw->icon_y_loc = y;
-    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
-	      (unsigned long) psw,
-	      psw->icon_x_loc, psw->icon_y_loc,
-	      psw->icon_w_width, 
-              psw->icon_w_height + psw->icon_p_height);
     MovePswIconToCurrentPosition(psw);
 #if 0 /* FIXGJB */
     if (psw->icon_pixmap_w != None) {
@@ -860,55 +856,69 @@ FIsPartiallyInViewport(const ScwmWindow *psw)
             (FRAME_Y_VP(psw) > Scr.DisplayHeight));
 }
      
-
-
-/**************************************************************************
- *
- * Moves focus to specified window 
- *
- *************************************************************************/
-void 
-FocusOn(ScwmWindow *psw, int DeIconifyOnly)
+/* pcx, pcy are output only */
+static void
+GetWindowVirtualCenter(const ScwmWindow *psw, int *pcx, int *pcy)
 {
-#ifndef NON_VIRTUAL
-  int dx, dy;
+  int cx, cy;
+  assert(psw);
+  if (psw->fIconified) {
+    cx = psw->icon_xl_loc + psw->icon_w_width / 2;
+    cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
+    if (psw->fStickyIcon) {
+      cx += Scr.Vx;
+      cy += Scr.Vy;
+    }
+  } else {
+    /* not iconified */
+    cx = FRAME_X_VP(psw) + FRAME_WIDTH(psw) / 2;
+    cy = FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) / 2;
+    if (psw->fSticky) {
+      cx += Scr.Vx;
+      cy += Scr.Vy;
+    }
+  }
+  *pcx = cx;
+  *pcy = cy;
+}
+
+/* return the snapped viewport position (an even multiple of screen size)
+   that contains vx,vy;
+   viewport_x, viewport_y are output only
+*/
+static void
+GetSnappedViewportPositionFor(int vx, int vy, int *viewport_x, int *viewport_y)
+{
+  /* go to an even multiple viewport */
+  *viewport_x = (vx / Scr.DisplayWidth) * Scr.DisplayWidth;
+  *viewport_y = (vy / Scr.DisplayHeight) * Scr.DisplayHeight;
+}
+
+
+/*
+ * Moves focus to specified window 
+ */
+void 
+FocusOn(ScwmWindow *psw)
+{
+  /* center coord of psw */
   int cx, cy;
 
-#endif
   if (!psw)
     return;
 
   if (psw->Desk != Scr.CurrentDesk) {
     changeDesks(0, psw->Desk);
   }
-#ifndef NON_VIRTUAL
-  if (psw->fIconified) {
-    cx = psw->icon_xl_loc + psw->icon_w_width / 2;
-    cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
-  } else {
-    cx = FRAME_X_VP(psw) + FRAME_WIDTH(psw) / 2;
-    cy = FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) / 2;
+
+  GetWindowVirtualCenter(psw,&cx,&cy);
+
+  if (!FIsPartiallyInViewport(psw)) {
+    int dx, dy;
+    GetSnappedViewportPositionFor(cx,cy,&dx,&dy);
+    MoveViewport(dx, dy, True);
   }
 
-  /* go to an even multiple viewport */
-  dx = ((cx + Scr.Vx) / Scr.DisplayWidth) * Scr.DisplayWidth;
-  dy = ((cy + Scr.Vy) / Scr.DisplayHeight) * Scr.DisplayHeight;
-
-  MoveViewport(dx, dy, True);
-#endif
-
-#if 0 /* FIXGJB: what is this supposed to do? */
-  { /* scope */
-    int x, y;
-    if (psw->fIconified) {
-      x = psw->icon_xl_loc + psw->icon_w_width / 2;
-      y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
-    } else {
-      x = FRAME_X(psw);
-      y = FRAME_Y(psw);
-    }
-  }
-#endif
   KeepOnTop();
 
   if (!FIsPartiallyInViewport(psw)) {
@@ -916,26 +926,22 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
     if (!psw->fClickToFocus)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
+#if 0 /* FIXGJB --09/13/98 gjb */
   UngrabEm();
+#endif
   SetFocus(psw->w, psw, False);
 }
 
 
 
 
-/**************************************************************************
- *
+/*
  * Moves pointer to specified window 
- *
- *************************************************************************/
+ */
 void 
 WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
 {
-#ifndef NON_VIRTUAL
-  int dx, dy;
   int cx, cy;
-
-#endif
   int x, y;
 
   if (!psw || (psw->fIconified && psw->icon_w == None))
@@ -944,24 +950,22 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
   if (psw->Desk != Scr.CurrentDesk) {
     changeDesks(0, psw->Desk);
   }
-#ifndef NON_VIRTUAL
-  if (psw->fIconified) {
-    cx = psw->icon_xl_loc + psw->icon_w_width / 2;
-    cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
-  } else {
-    cx = FRAME_X_VP(psw) + FRAME_WIDTH(psw) / 2;
-    cy = FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) / 2;
+
+  GetWindowVirtualCenter(psw,&cx,&cy);
+
+  if (!FIsPartiallyInViewport(psw)) {
+    int dx, dy;
+    GetSnappedViewportPositionFor(cx,cy,&dx,&dy);
+    MoveViewport(dx, dy, True);
   }
-
-  dx = (cx + Scr.Vx) / Scr.DisplayWidth * Scr.DisplayWidth;
-  dy = (cy + Scr.Vy) / Scr.DisplayHeight * Scr.DisplayHeight;
-
-  MoveViewport(dx, dy, True);
-#endif
 
   if (psw->fIconified) {
     x = psw->icon_xl_loc + psw->icon_w_width / 2 + 2;
     y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2 + 2;
+    if (!psw->fStickyIcon) {
+      x -= Scr.Vx;
+      y -= Scr.Vy;
+    }
   } else {
     if (x_unit != Scr.DisplayWidth)
       x = FRAME_X_VP(psw) + 2 + warp_x;
@@ -981,7 +985,9 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     move_finalize(psw->frame,psw,0,0);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
+#if 0 /* FIXGJB --09/13/98 gjb */
   UngrabEm();
+#endif
 }
 
 
@@ -1581,7 +1587,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
   SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-  FocusOn(psw, 0);
+  FocusOn(psw);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -1829,7 +1835,6 @@ specified. */
   psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_ICONIFY, psw) == 0) {
-
     return SCM_BOOL_F;
   }
   Iconify(psw, 0, 0);

@@ -524,6 +524,8 @@ PmiimSelectedFromPmd(DynamicMenu *pmd)
   return pmd->rgpmiim[ipmiimSelected];
 }
 
+static SCM InvokeUnhoverAction(DynamicMenu *pmd);
+
 static
 void
 UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)

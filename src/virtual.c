@@ -433,6 +433,7 @@ changeDesks(int val1, int val2)
 	UnmapScwmWindow(psw);
       } else if (psw->Desk == Scr.CurrentDesk) {
         MovePswToCurrentPosition(psw);
+        MovePswIconToCurrentPosition(psw);
 	MapIt(psw);
 	if (psw->FocusDesk == Scr.CurrentDesk) {
 	  FocusWin = psw;
@@ -455,8 +456,6 @@ changeDesks(int val1, int val2)
 	psw->fIconified && !psw->fIconMoved && 
   	!psw->fIconUnmapped) {
       AutoPlace(psw);
-    } else if (psw->fIconified) {
-      MovePswIconToCurrentPosition(psw);
     }
   }
 

@@ -706,12 +706,7 @@ HandlePropertyNotify()
 	pswCurrent->fIconified = False;
 	pswCurrent->fIconUnmapped = False;
 	CreateIconWindow(pswCurrent, pswCurrent->icon_x_loc, pswCurrent->icon_y_loc);
-	Broadcast(M_ICONIFY, 7, pswCurrent->w, pswCurrent->frame,
-		  (unsigned long) pswCurrent,
-		  pswCurrent->icon_x_loc,
-		  pswCurrent->icon_y_loc,
-		  pswCurrent->icon_w_width,
-		  pswCurrent->icon_w_height);
+	BroadcastIconInfo(M_ICONIFY, pswCurrent);
 	BroadcastConfig(M_CONFIGURE_WINDOW, pswCurrent);
 
 	if (!pswCurrent->fSuppressIcon) {
@@ -1396,11 +1391,7 @@ HandleConfigureRequest()
 	((pswCurrent->icon_w_width - pswCurrent->icon_p_width) / 2);
       pswCurrent->icon_y_loc = cre->y - pswCurrent->icon_p_height ;
       if (!pswCurrent->fIconUnmapped) {
-	Broadcast(M_ICON_LOCATION, 7, pswCurrent->w, pswCurrent->frame,
-		  (unsigned long) pswCurrent,
-		  pswCurrent->icon_x_loc, pswCurrent->icon_y_loc,
-		  pswCurrent->icon_w_width,
-		  pswCurrent->icon_w_height + pswCurrent->icon_p_height);
+	BroadcastIconInfo(M_ICON_LOCATION, pswCurrent);
       }
     }
     xwc.width = cre->width;
