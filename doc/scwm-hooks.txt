@@ -96,7 +96,7 @@ change-desk-hook (2 args)
 This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number. 
-[From scwm/virtual.c:42]
+[From scwm/virtual.c:44]
 
 
 client-message-hook (3 args)
@@ -130,7 +130,7 @@ This hook is invoked whenever the mouse pointer enters a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
-[From scwm/virtual.c:52]
+[From scwm/virtual.c:54]
 
 
 edge-leave-hook (1 args)
@@ -139,14 +139,14 @@ This hook is invoked whenever the mouse pointer leaves a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
-[From scwm/virtual.c:58]
+[From scwm/virtual.c:60]
 
 
 edge-scroll-hook (0 args)
 - 
 This hook is invoked whenever an edge scroll takes place.
 Procedures in the hook are called with no arguments. 
-[From scwm/virtual.c:64]
+[From scwm/virtual.c:66]
 
 
 error-hook (1 args)
@@ -286,7 +286,7 @@ viewport-position-change-hook (2 args)
 This hook is invoked whenever the viewport position is changed.
 It is called with two arguments, both integers, which are the x and y
 coordinates of the new viewport position in pixels. 
-[From scwm/virtual.c:47]
+[From scwm/virtual.c:49]
 
 
 window-close-hook (1 args)

@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:655]
+[From scwm/binding.c:658]
 
 
 Face Flags
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3346]
+[From scwm/window.c:3363]
 
 
 Fonts
@@ -307,7 +307,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:727]
+[From scwm/callbacks.c:738]
 
 
 Key Specifier
@@ -393,7 +393,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:617]
+[From scwm/scwm.c:638]
 
 
 SCWMEXEC Protocol
@@ -452,7 +452,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2112]
+[From scwm/window.c:2108]
 
 
 Themes
@@ -507,7 +507,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:952]
+[From scwm/window.c:948]
 
 
 Window Style
@@ -520,11 +520,11 @@ for window styles.  For some of the below options you will
 need to use the appropriate module to make the options available. 
 The options include at least:
 
-auto-raise (window-style) from scheme/auto-raise.scm:135
-auto-raise-delay (window-style) from scheme/auto-raise.scm:136
-auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:137
-auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:139
-auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:140
+auto-raise (window-style) from scheme/auto-raise.scm:136
+auto-raise-delay (window-style) from scheme/auto-raise.scm:137
+auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:138
+auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:140
+auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:141
 hover-focus-delay (window-style) from scheme/hover-focus.scm:74
 hover-focus (window-style) from scheme/hover-focus.scm:96
 border-width (window-style) from scheme/style.scm:199
@@ -587,7 +587,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:417]
+[From scwm/window.c:414]
 
 
 X atoms
@@ -600,7 +600,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From scwm/xproperty.c:401]
+[From scwm/xproperty.c:393]
 
 
 X Properties
