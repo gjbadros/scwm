@@ -1,0 +1,99 @@
+#!/uns/bin/perl -w
+# $Id$ -*- perl -*-
+# extract-docs
+# By Greg J. Badros -- 7-July-1998
+#
+# extract-docs pulls out the SCWM_PROC declarations and comments
+# from a SCWM .c source file and processes them to create
+# documentation
+#
+# Usage: extract-docs <filenames-to-extract-from>
+#
+# e.g.,
+#
+# extract-docs *.c
+#
+# Goal:
+# Ultimately, this should output tagged sgml suitable for sgml-doc
+# Right now, it just does the extraction into high-level elements w/o
+# adding the logical tags
+#
+# BUGS:
+# This should probably be written in guile-scheme instead of perl
+#
+
+my $header = "";
+
+while (<>) {
+  if (m/^SCWM_PROC/) {
+    $header = $_;
+    while (($_ = <>) !~ m%\*/%) {
+      $header .= $_;
+    }
+    $header .= $_;
+    ProcessHeader($header);
+    $header = "";
+  }
+}
+
+
+sub ProcessHeader( $ ) {
+  my ($header) = @_;
+  my ($cprimname, $primname, $req, $opt, $var, $argslist) =
+    $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^)]*)\)%;
+  my ($comment) =$header =~ m%/\*\*\s*(.*)\s*\*/%s;
+
+{ # cperl-mode gets confused at above regexp, so provide scope to help it out
+  my $clean_argslist = $argslist;
+  my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
+  $clean_argslist =~ s/[ \t]+//g;
+  my @args = split(/,/, $clean_argslist);
+
+  # now create a hash of the names for testing words in the comment
+  # whether they are referring to formal parameters
+  my %argnames = map {uc($_) => 1} @args;
+
+  if ($cremovals != scalar(@args) ) {
+    print STDERR "****$cprimname has a types inconsistency (all args should be type SCM)\n";
+  }
+
+  if (($req + $opt + $var) != scalar(@args)  ) {
+    print STDERR "****$cprimname has an argument inconsistency -- check #s of arguments\n";
+  }
+
+  if ($var != 0 && $var != 1) {
+    print STDERR "****number of variable arguments == $var -- why?\n";
+  }
+
+  my @required_args = @args[0..($req-1)];
+  my @optional_args = @args[$req..($req + $opt - 1)];
+  my @var_args = @args[($req+$opt)..($req+$opt+$var-1)];
+
+  my $arg_listing = "";
+  if ($#args >= 0) {
+    $arg_listing .= "@required_args";
+    if ($#optional_args >= 0) {
+      $arg_listing .= " #&optional @optional_args";
+    }
+    if ($#var_args >= 0) {
+      $arg_listing .= " . @var_args";
+    }
+  }
+
+  my $usage = sprintf "($primname%s$arg_listing)", ($arg_listing ne ""? " ":"");
+
+
+  print <<EOC
+scheme-primitive-name:	$primname
+C-primitive-name:	$cprimname
+arg kinds:		$req, $opt, $var
+args:			@args
+arg listing:		$arg_listing
+usage:			$usage
+comment:		$comment
+EOC
+  ;
+  print "\n";
+} # end helper scope
+  
+}
