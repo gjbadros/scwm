@@ -99,6 +99,16 @@ SCM_SYMBOL (sym_width,"width");
 SCM_SYMBOL (sym_height,"height");
 SCM_SYMBOL (sym_depth,"depth");
 
+/**CONCEPT: Images 
+  Images are first-class objects. However, anywhere that a font is
+taken as an argument, a string containing an filename will also be
+accepted, and will be automatically converted to the proper image
+object by loading the image. Using the same image filename more than
+once is not inefficient, as caching ensures that image objects are
+shared.
+*/
+
+
 size_t 
 free_image(SCM obj)
 {
@@ -136,14 +146,19 @@ mark_image(SCM obj)
 
 SCWM_PROC (image_p, "image?", 1, 0, 0,
            (SCM obj))
+     /** Returns #t if OBJ is an image object, otherwise #f. */
 {
   return SCM_BOOL_FromBool(IMAGE_P(obj));
 }
 
 
-
 SCWM_PROC (image_properties, "image-properties", 1, 0, 0,
            (SCM image))
+     /** Return an association list giving some properties of
+IMAGES. Currently defined properties are 'filename, the fully expanded
+pathname of the image, 'width, it's width, 'height, it's height, and
+depth, it's color depth. 
+*/
 {
   scwm_image *psimg = SAFE_IMAGE(image);
   if (!psimg) {
@@ -185,14 +200,17 @@ make_empty_image(SCM name)
   return result;
 }
 
-/* These get exported as Scheme procedures on their own, but are also
-   registered as image loaders for the specified types of images. It's
-   done this way to provide for extending the available image loaders
-   with ones written in either C or Scheme. Scheme-based loaders could
-   call external conversion programs for instance. */
+/**CONCEPT: Image Loaders 
+  Different loaders are available for various images types. `load-xbm'
+and `load-xpm' load X pixmaps and X bitmaps respecitvely. The user may
+register other image loaders using the extension or the special string
+"default" for the loader to be tried for an image that cannot be
+loaded any other way.
+*/
 
 SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
            (SCM full_path))
+     /** Load an X Bitmap file identified by the pathname FULL-PATH. */
 {
   SCM result;
   scwm_image *ci;
@@ -224,6 +242,7 @@ SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
 
 SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
            (SCM full_path))
+     /** Load an X Pixmap file identified by the pathname FULL-PATH. */
 {
   SCM result;
   scwm_image *ci;
@@ -269,12 +288,19 @@ SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
 
 SCWM_PROC (register_image_loader, "register-image-loader", 2, 0, 0,
            (SCM extension, SCM proc))
+     /** Register PROC as the loader to use for images ending in
+EXTENSION. EXTENSION must be a string beginning with a period, the
+empty string (for files with no extension), or the strting "default"
+(for files that no other image loader succeeds in loading). PROC will
+be called with the full pathname of the image and should return an
+image object, or #f if it succeeds. */
 {
   if (!gh_string_p(extension)) {
     scm_wrong_type_arg(s_register_image_loader, 1, extension);
   }
   
   /* Sadly, there is no way to test the arity of a procedure. */
+  /* MSFIX: Yes there is, but let's not use it yet. */
   if (!gh_procedure_p(proc)) {
     scm_wrong_type_arg(s_register_image_loader, 1, proc);
   }
@@ -286,6 +312,10 @@ SCWM_PROC (register_image_loader, "register-image-loader", 2, 0, 0,
 
 SCWM_PROC (unregister_image_loader, "unregister-image-loader", 1, 0, 0,
            (SCM extension))
+     /** Unregister the loader, if any, for images ending in
+EXTENSION. EXTENSION must be a string beginning with a period, the
+empty string (for files with no extension), or the strting "default"
+(for files that no other image loader succeeds in loading). */
 {
   if (!gh_string_p(extension)) {
     scm_wrong_type_arg(s_unregister_image_loader, 1, extension);
@@ -379,6 +409,9 @@ path_expand_image_fname(SCM name)
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
       scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
+
+      /* FIXMS: Make this into a proper hook! */
+
       InvokeHook1(*loc_image_not_found_hook,gh_str02scm(c_name));
       FREE(c_name);
       FREEC(c_fname);
@@ -425,6 +458,10 @@ get_image_loader(SCM name)
 
 SCWM_PROC (make_image, "make-image", 1, 0, 0,
            (SCM name))
+     /** Loads an image from the file NAME, invoking appropriate image
+loaders. If NAME starts with "/", "./" or "../", it is treated as a
+fully qulified pathname; otherwise, the image path is searched for an
+appropriate file. */
 {
   SCM result;
   SCM full_path;
@@ -487,6 +524,12 @@ SCWM_PROC (make_image, "make-image", 1, 0, 0,
 
 SCWM_PROC (clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
            (SCM name))
+     /** Images are cached by both name and full pathnme. It is
+remotely possible that the file that should be used for a particular
+name will change, for example if you alter the image file or change
+your image path. For this unlikely eventuality,
+`clear-image-cache-entry' is provided - it removes the image
+associated with NAME from the image cache.*/
 {
   scm_hash_remove_x(image_hash_table, name);
   return SCM_UNSPECIFIED;
@@ -572,6 +615,13 @@ void init_image()
 
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
+  /* FIXDOC: how to document distinguished variables? */
+  
+/**VAR: image-load-path
+  image-load-path is a variable that should contain a list of strings
+indicating the directories in which to try to look for image files.  
+*/
+
   loc_image_load_path = SCM_CDRLOC
     (scm_sysintern("image-load-path", 
 		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));

@@ -46,6 +46,15 @@
 
 #define FONT_HASH_SIZE 7
 
+/**CONCEPT: Fonts
+  Fonts are first-class objects. However, anywhere that a font is
+taken as an argument, a string containing an X font specification
+will also be accepted, and will be automatically converted to the
+proper font object. Using the same font specifier string more than
+once is not inefficient, as caching ensures that font objects are
+shared.
+*/
+
 static SCM font_hash_table = SCM_UNDEFINED;
 static SCM protected_fonts = SCM_UNDEFINED;
 
@@ -90,6 +99,9 @@ print_font(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC (make_font, "make-font", 1, 0, 0,
            (SCM fname))
+     /** Return the font object corresponding to the X color
+specifier FNAME. If FNAME is not a valid X font name, or cannot be
+allocated, an error results. */
 {
   SCM answer;
   scwm_font *font;
@@ -217,6 +229,7 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
 
 SCWM_PROC (font_p, "font?", 1, 0, 0,
            (SCM obj))
+     /** Returns #t if OBJ is a font object, otherwise #f. */
 {
   return SCM_BOOL_FromBool(FONT_P(obj));
 }
@@ -224,6 +237,9 @@ SCWM_PROC (font_p, "font?", 1, 0, 0,
 
 SCWM_PROC (font_properties, "font-properties", 1, 0, 0,
            (SCM font))
+     /** Return an association list giving some properties of
+FONT. Currently defined properties are 'name, the string name of the
+color, and 'height, it's total height in pixels. */
 {
   scwm_font *psfont = SAFE_FONT(font);
   if (!psfont) {
@@ -236,6 +252,7 @@ SCWM_PROC (font_properties, "font-properties", 1, 0, 0,
 
 SCWM_PROC (set_icon_font_x, "set-icon-font!", 1, 0, 0,
            (SCM font))
+     /** Set the font used for drawing icon titles to FONT. */
 {
   if (gh_string_p(font)) {
     font = make_font(font);
@@ -255,6 +272,8 @@ SCWM_PROC (set_icon_font_x, "set-icon-font!", 1, 0, 0,
 
 SCWM_PROC (set_window_font_x, "set-window-font!", 1, 0, 0,
            (SCM font))
+     /** In the current decor, set the font used for drawing window
+titles to FONT. */
 {
   int extra_height;
   ScwmDecor *fl;
@@ -316,6 +335,7 @@ menu_font_update()
 
 SCWM_PROC (set_menu_font_x, "set-menu-font!", 1, 0, 0,
            (SCM font))
+     /** Set the default font used for drawing menus to FONT. */
 {
 
   if (gh_string_p(font)) {
@@ -336,6 +356,12 @@ SCWM_PROC (set_menu_font_x, "set-menu-font!", 1, 0, 0,
 
 SCWM_PROC (clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
            (SCM name))
+     /** Fonts are cached by name. It is remotely possible that the
+meaning of a particular string as a fonts will change in your X
+server, if you try hard enough (perhaps if you add or remove font
+servers). For this unlikely eventuality, `clear-font-cache-entry' is
+provided - it removes the font associated with NAME from the font
+cache.*/
 {
   scm_hash_remove_x(font_hash_table, name);
   return SCM_UNSPECIFIED;

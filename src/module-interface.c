@@ -69,13 +69,13 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
 }
 
 
-/* This procedure constructs the contents of a BroadcastInfo fvwm
-   module packet and returns it as a Scheme string. This and other
-   fvwm-module-related stuff should go in a dynamically loadable
-   module once I figure that stuff out. */
+/* This and other fvwm-module-related stuff should go in a dynamically
+   loadable module once I figure that stuff out. */
 
 SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
           (SCM win))
+     /** This procedure constructs the contents of a BroadcastInfo fvwm
+module packet for WIN and returns it as a Scheme string. */
 {
   ScwmWindow *psw;
   unsigned long info[24];
@@ -118,8 +118,36 @@ void init_module_interface()
 #include "module-interface.x"
 #endif
   /* This will ensure that these are defined in the root module. */
+
+  /**HOOK: broadcast-hook 
+  This hook is invoked whenever Broadcast would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a numerical code
+representing the event type, a number that indicates how many of the
+following data arguments are meaningful, and 7 numeric data arguments.
+  */
   SCWM_DEFINE_HOOK(broadcast_hook, "broadcast-hook");
+
+  /** HOOK: boradcast-config-hook 
+  This hook is invoked whenever BroadcastConfig would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a window structure as the
+sole argument.
+  */
   SCWM_DEFINE_HOOK(broadcast_config_hook, "broadcast-config-hook");
+
+  /** HOOK: boradcast-name-hook 
+  This hook is invoked whenever BroadcastName would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways
+that can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed an event type, three
+numeric data arguments, and a string.  
+  */
   SCWM_DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
 }
 

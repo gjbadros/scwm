@@ -287,7 +287,7 @@ WarnBadHook(SCM hook)
 
 /* Hooks. */
 
-/* GJBFIX: We need a way to cross-reference concepts in docs. */
+/* FIXDOC: We need a way to cross-reference concepts in docs. */
 
 /**CONCEPT: Hooks
   Hooks are used throughout scwm to provide a convenient mechanism for
@@ -651,8 +651,7 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  /*FIXGJB: what's the right way to document hooks for the extractor?  */
-
+  /*FIXDOC: what's the right way to document hooks for the extractor?  */
   /**HOOK: error-hook
   Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file

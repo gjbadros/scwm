@@ -1,3 +1,27 @@
+1998-07-18  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* module-interface.c: Documented all primitives and hooks.
+
+	* miscprocs.c: Documented all primitives.
+
+	* image.c: Documented all primitives, concepts and variables. Did
+	not document image-not-found-hook; it should be changed to a
+	proper hook, and possibly eliminated as it is somewhat redundant
+	with error-hook. Or else there should be a warning-hook that it
+	should be redundant with.
+
+	* font.c: Documented all primitives and concepts.
+
+	* face.c: Documented all primitives, hooks and
+	concepts. 
+	
+	* events.c: Documented all primitives, hooks and
+	concepts. Continuing the FXDOC convention.
+
+	* callbacks.c: Use FIXDOC comments to indicate changes that I
+	think are needed for the docstring comment format, or things I
+	don't know about it yet.
+	
 Sat Jul 18 16:26:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scmtypes.h, scmtypes.c: Removed -- now individual init functions do the

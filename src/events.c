@@ -439,9 +439,18 @@ static SCM get_strport_string(SCM port)
   return answer;
 }
 
-/* FIXMS: Could use a bit more robustness - find some nice way to handle two
-   requests in rapid succession - maybe use append mode and keep track of
-   where we are in the property string? */
+
+/**CONCEPT: SCWMEXEC Protocol 
+  Scwm supports a protocol for other programs to send commands to the
+window manager. Programs send ordinary configuration language
+expressions and are returned a string representation of the return
+value, and the output and error output generated, if any.
+
+  For more information on how to make use of this protocol, see the
+documentation for the scwmexec and scwmrepl programs, the scwm.el
+emacs interaction mode, the libscwmexec library, and the details of
+the SCWMEXEC protocol.
+*/
 
 void
 HandleScwmExec()
@@ -1687,9 +1696,23 @@ WindowGettingButtonEvent(Window w, int x, int y)
 
 /* Inspired by GWM 1.8c --gjb */
 /* FIXGJB: use button, not button + modifier */
+/* GJBFIX: why can't we just use the same specification style (and
+   code) as for bind-mouse? */
+/* FIXDOC: The underscores in parameter names should turn into huphens
+   in the docs, I am not sure if they do. Also, terminal _p should
+   turn into ?. I am using these convention in the docs already, I
+   hope it;s not too hard to make the doc extractor obey them.*/
 SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
           (SCM button, SCM modifier, SCM win, 
            SCM button_press_p, SCM button_release_p, SCM propagate_p))
+     /** Send a synthetic press of mouse button BUTTON, with modifier
+MODIFIER. The event is sent to window WIN if specified; otherwise the
+window to be used defaults to the window context in the usual way. By
+default, both a press and a release are sent. However, the boolean
+parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
+which are sent individually. PROPAGATE? indicates wether the propagate
+flag is set on the event; the default is #f. You shouldn't have to
+worry about this unless you know what it means. */
 {
   int bnum;
   int mod_mask;
@@ -1766,7 +1789,15 @@ SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
 
 SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
           (SCM key, SCM win,
-           SCM button_press_p, SCM button_release_p, SCM propagate_p))
+           SCM key_press_p, SCM key_release_p, SCM propagate_p))
+     /** Send a synthetic press of KEY. The usual key specification
+format (with modifiers) is used. The event is sent to window WIN if
+specified; otherwise the window to be used defaults to the window
+context in the usual way. By default, both a press and a release are
+sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
+allow you to specify which are sent individually. PROPAGATE? indicates
+wether the propagate flag is set on the event; the default is #f. You
+shouldn't have to worry about this unless you know what it means. */
 {
   KeySym keysym;
   Bool fOkay;
@@ -1789,11 +1820,11 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(__FUNCTION__, iarg++, key);
   }
-  if (button_press_p != SCM_UNDEFINED) {
-    fPress = gh_scm2bool(button_press_p);
+  if (key_press_p != SCM_UNDEFINED) {
+    fPress = gh_scm2bool(key_press_p);
   }
-  if (button_release_p != SCM_UNDEFINED) {
-    fRelease = gh_scm2bool(button_release_p);
+  if (key_release_p != SCM_UNDEFINED) {
+    fRelease = gh_scm2bool(key_release_p);
   }
   if (propagate_p != SCM_UNDEFINED) {
     fPropagate = gh_scm2bool(propagate_p);
@@ -1827,7 +1858,20 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
 void 
 init_events()
 {
+  /**HOOK: X-PropertyNotify-hook 
+  This hook is invoked whenever a PropertyNotify event is received for
+a window scwm is managing. This indicates that an X window property
+has changed. Watching for window property changes can be used to
+construct your own custom window manager protocols. The hook
+procedures are invoked with two arguments, the name of the property
+that changed (as a string) and the window that it changed for.
+*/
   SCWM_DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
+/**HOOK: X-MappingNotify-hook 
+  This hook is invoked whenever a MappingNotify X even is received. A
+MappingNotify event indicates a change of keymapping - in particular,
+it may indicate a change of available modifiers or mouse buttons. The hook procedures are invoked with no arguments.
+*/
   SCWM_DEFINE_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"

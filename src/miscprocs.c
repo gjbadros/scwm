@@ -28,16 +28,19 @@ extern Bool Restarting, PPosOverride;
 
 SCM sym_focus;
 
+/* GJBFIX: Maybe the menus should do something w/ this? */
 SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
-          (SCM should))
+          (SCM glag))
+     /** Set the menu mwm style according to the boolean FLAG. This
+         option is currently ignored. */
 {
   SCM_REDEFER_INTS;
-  if (SCM_IMP(should)) {
-    if (should == SCM_BOOL_T || should == SCM_UNDEFINED) {
+  if (SCM_IMP(flag)) {
+    if (flag == SCM_BOOL_T || flag == SCM_UNDEFINED) {
       Scr.flags |= MWMMenus;
       SCM_REALLOW_INTS;
       return (SCM_BOOL_T);
-    } else if (should == SCM_BOOL_F) {
+    } else if (flag == SCM_BOOL_F) {
       Scr.flags &= ~MWMMenus;
       SCM_REALLOW_INTS;
       return (SCM_BOOL_F);
@@ -50,6 +53,10 @@ SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
 
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value))
+     /** Set the rubber band mask, the value XORed with the background
+when dragging non-opaque move or resize frames to VALUE. VALUE should
+be an integer. (NOTE: Maybe it should be a color? I don't grok this
+stuff. */
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -76,6 +83,8 @@ SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
 
 SCWM_PROC(set_title_justify,"set-title-justify!", 1, 0, 0,
           (SCM just))
+     /** Set the justification used for the title in the current decor
+to JUST. JUST should be one of 'right, 'left, or 'center. */
 {
   ScwmDecor *fl;
 
@@ -106,6 +115,8 @@ SCWM_PROC(set_title_justify,"set-title-justify!", 1, 0, 0,
 
 SCWM_PROC(set_title_height, "set-title-height!", 1, 0, 0,
           (SCM height))
+     /** Set the height of the titlebar in pixels to HEIGHT in the
+current decor. */
 {
   int th, extra_height;
   ScwmDecor *fl;
@@ -149,10 +160,9 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
           ())
      /** Returns true when the windows are being caputured, either
-	 during initial startup, or during a recapture operation. In
-	 either case, placement procedures should probably avoid
-	 interaction and perhaps avoid moving the window being placed
-	 at all. */
+during initial startup, or during a recapture operation. In either
+case, placement procedures should probably avoid interaction and
+perhaps avoid moving the window being placed at all. */
 {
   return SCM_BOOL_FromBool(PPosOverride);
 }
@@ -160,6 +170,8 @@ SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
 
 SCWM_PROC(refresh, "refresh", 0, 0, 0,
           ())
+     /** Make sure all decorations for all windows are up to date. In theory,
+this should not be needed. */
 {
   refresh_common(Scr.Root);
   return SCM_UNSPECIFIED;
@@ -168,6 +180,9 @@ SCWM_PROC(refresh, "refresh", 0, 0, 0,
 
 SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
           (SCM ctime))
+     /** Set the delay before a mouse-down as considered a drag, and
+before a single click is definitively identified as not a double
+click, to CTIME microseconds. */
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(ctime)) {
@@ -182,6 +197,11 @@ SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
 
 SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
           (SCM ftype))
+     /** Set the colormap focus policy to FTYPE. FTYPE can either be
+'mouse, indicating that the window under the mouse pointer should
+always have it's colormap installed, or 'focus to indicate that the
+window with the input focus should also get the colormap focus. This
+makes a difference onl when using focus policies other than 'mouse. */
 {
   SCM_REDEFER_INTS;
   if (!gh_symbol_p(ftype)) {
@@ -203,6 +223,10 @@ SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
 
 SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
           (SCM size))
+     /** Set the opaque move size limit to SIZE, which is given as a
+percentage of the screen area. If the area of a window is greater than
+this percentage, the window will be moved with a rubber band
+instead. (NOTE: this should be determined more flexibly) */
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(size)) {
@@ -217,6 +241,8 @@ SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
 
 SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
           ())
+     /** Return the current position of the mouse pointer in pixels.
+The return value is a two-element list of the x and y coordinates. */
 {
   int x, y;
 
@@ -229,6 +255,7 @@ SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
 
 SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
           (SCM sx, SCM sy))
+     /** Move the mouse pointer to SX, SY (given in pixels). */
 {
   int x, y;
 
@@ -253,6 +280,9 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 
 SCWM_PROC(recapture, "recapture", 0, 0, 0,
           ())
+     /** Recapture all the windows, in other words, destroy all the
+current frame windows and recreate them from scratch. This is
+hopefully not necessary during normal operation. */
 {
   SCM_REDEFER_INTS;
   BlackoutScreen();		/* if they want to hide the recapture */
@@ -265,6 +295,9 @@ SCWM_PROC(recapture, "recapture", 0, 0, 0,
 
 SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
           (SCM predicate))
+     /** Wait until a window appears which satisfies PREDICATE. Given
+the existence of before-new-window-hook, this is of questionable
+usefulness. */
 {
   Bool done = False;
   extern ScwmWindow *pswCurrent;
@@ -291,6 +324,7 @@ SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
 
 SCWM_PROC(beep, "beep", 0, 0, 0,
           ())
+     /** Ring the standard X bell. */
 {
   XBell(dpy, 0);
   return SCM_UNSPECIFIED;
@@ -298,12 +332,16 @@ SCWM_PROC(beep, "beep", 0, 0, 0,
 
 
 SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
-          (SCM val))
+          (SCM flag))
+     /** Determine wether or not clever-place-window will be used in
+place of smart-place-window when the default placement procedure is
+used, and the window's smart-placement flag is on, according to the
+boolean value FLAG. */
 {
-  if (!gh_boolean_p(val)) {
-    scm_wrong_type_arg("set-smart-placement-is-really-smart!",1,val);
+  if (!gh_boolean_p(flag)) {
+    scm_wrong_type_arg("set-smart-placement-is-really-smart!",1,flag);
   }
-  Scr.SmartPlacementIsClever= SCM_NFALSEP(val) ? True : False;
+  Scr.SmartPlacementIsClever= SCM_NFALSEP(flag) ? True : False;
   return SCM_UNSPECIFIED;
 }
 
@@ -311,21 +349,26 @@ SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-
    should be implemented by adding new event bindings eventually */
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
-          (SCM val))
+          (SCM flag))
+     /** Determine wether or not a click-to-focus window will actually
+receive the click event that causes it to gain focus, according to the
+boolean value FLAG. */
 {
-  if (!gh_boolean_p(val)) {
-    scm_wrong_type_arg("set-click-to-focus-passes-click!",1,val);
+  if (!gh_boolean_p(flag)) {
+    scm_wrong_type_arg("set-click-to-focus-passes-click!",1,flag);
   }
-  Scr.ClickToFocusPassesClick= SCM_NFALSEP(val) ? True : False;
+  Scr.ClickToFocusPassesClick= SCM_NFALSEP(flag) ? True : False;
   return SCM_UNSPECIFIED;
 }
 
+/* FIXMS: remove this one in particular once window-focus-hook exists. */
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM val))
+     /** Determine wether a click */
 {
-  if (!gh_boolean_p(val)) {
-    scm_wrong_type_arg("set-click-to-focus-raises!",1,val);
+  if (!gh_boolean_p(flag)) {
+    scm_wrong_type_arg("set-click-to-focus-raises!",1,flag);
   }
   Scr.ClickToFocusRaises=  SCM_NFALSEP(val) ? True : False;
   return SCM_UNSPECIFIED;
@@ -334,9 +377,14 @@ SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
 /* FIXMS - this seems to be a pretty useless idea, or at least there
    must be a better way of implementing it. */
 
+/* FIXMS - looking at it again, this idea seems utterly
+   bogus. Couldn't you just (bind-mouse 'all 1 raise-window) and get
+   the exact same effect?  Examine further... */
 
 SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
-          (SCM val))
+          (SCM flag))
+     /** Determine wether or not a mouse-focus window will always be
+raised by a click on the frame according to the boolean value FLAG.*/
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-mouse-focus-click-raises!",1,val);
@@ -348,13 +396,18 @@ SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0,
 
 SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
           ())
+     /** Return the version of scwm running. */
 {
   return gh_str02scm(VERSION);
 }
 
-
+/* FIXMS: this should probably be split into multiple procs. */
 SCWM_PROC(x_version_information, "X-version-information", 0, 0, 0,
           ())
+     /** Return some information about the version of the running X
+server.  In particular, return a list of the X protocol version, the X
+protocol revision, the X server vendor, and the vendor release
+number. */
 {
   return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
 		     SCM_MAKINUM(ProtocolRevision(dpy)),
@@ -364,8 +417,22 @@ SCWM_PROC(x_version_information, "X-version-information", 0, 0, 0,
 }
 
 
+/* FIXMS: this should probably be split into multiple procs. Also, the
+   visual type should probably be returned as a symbol, not a
+   string.*/
+
 SCWM_PROC(x_display_information, "X-display-information", 0, 0, 0,
           ())
+     /** Return some information about the screen. In particular,
+return a list of the horizontal resolution, the vertical resolution,
+the number of planes on the current screen (i.e. the bit depth), the
+bits per color supported by the hadware, the visual class (one of
+"StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
+or "TrueColor") and a boolean indicating wether the display is color.
+The resolutions mentioned above should in theory be pixels per
+centimeter, rounded to the nearest integer. These parameters can be
+used for various workarounds or conditional decisions in a scwmrc to
+be shared anmong multiple machines. */
 {
   int Mscreen = DefaultScreen(dpy);
   Screen *screen = ScreenOfDisplay(dpy, Mscreen);

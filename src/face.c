@@ -35,6 +35,19 @@
 #include "dmalloc.h"
 #endif
 
+/**CONCEPT: Faces 
+  Faces are a data type used to specify in detail the way in which
+window decorations like the titlebar, the border and titlebar buttons
+will be drawn. They are currently somewhat kludgey and
+ad-hoc. However, they offer a great deal of flexibility. All faces are
+set in the current decor, so multiple decors must be used to use
+different faces for different windows. The low-level functionality
+offered in the face primitives will rarely be needed; the
+`button-style', `title-style' and `border-style' procedures in the
+(app scwm face) module provide a more convenient interface to this
+functionality.
+*/
+
 long scm_tc16_scwm_face;
 
 int 
@@ -89,8 +102,11 @@ void set_face_flag_x(SCM face, SCM flag, SCM flagval);
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
 
+
 SCWM_PROC(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs) )
+	  /** Create a new face using FLAGS, a list of face flags and
+SPECS, a list of face specs. */
 {
   SCM answer;
   scwm_face *sf;
@@ -141,18 +157,48 @@ SCWM_PROC(make_face, "make-face",2,0,0,
   return answer;
 }
 
-/* 
- * possible flags and values: 
- * 'clear            : #t      ; not implemented for now, of questionable
+/* FIXDOC: I need to make a table. How do I do that? For now using
+   ad-hoc formatting. */
+/**CONCEPT: Face Flags
+   Face flags are two-element lists that specify certain properties
+that are set once and only once for a give face (as opposed to specs,
+which may be chained arbitrarily). Nearly all flags may be used for
+button faces. Exceptions, as well as the flags that may be used for
+title and border faces, are indicated below.
+
+
+  Key               | Possible values      | Explanation
+  ------------------|----------------------|----------------
+  'justify          | 'left 'right 'center | How should the contents of the
+                    |                      | face (pixmap, relief pattern, etc)
+                    |                      | be justified?
+  'vertical-justify | 'top 'bottom 'center | How should the contents of the
+                    |                      | face (pixmap, relief pattern, etc)
+                    |                      | be justified vertically?
+  'relief           | 'flat 'sunk 'raised  | Should the face appear flat, 
+                    |                      | raised or sunk? This is the only
+                    |                      | face flag that may be used for 
+                    |                      | titles. It may be used for buttons
+                    |                      | as well, of course.
+  'use-style-of     | 'title 'border #f    | Before handling this faces specs,
+                    |                      | possibly apply the faces of the
+                    |                      | title or the border first.
+  'hidden-handles   | #t #f                | This flag may only be used for
+                    |                      | border faces; it indicates that
+                    |                      | the corner `handles' of a window
+                    |                      | should not be visually separated.
+  'no-inset         | #t #f                | This flag may only be used for
+                    |                      | border faces; it indicates that
+                    |                      | the border should be relieved only
+                    |                      | on the outside, not on the inside.
+                    |                      | This gives a Win9x-like effect.
+*/
+
+/*   'clear            : #t      ; not implemented for now, of questionable
                                ; usefulness when button styles are not
 			       ; mutable.
- * 'justify          : 'left|'right|'center
- * 'vertical-justify : 'top|'bottom|'center
- * 'relief           : 'flat|'sunk|'raised
- * 'use-style-of     : 'title|'border|#f
- * 'hidden-handles   : #t|#f
- * 'no-inset         : #t|#f
- */
+*/
+
 
 SCM sym_clear, sym_justify, sym_vertical_justify, sym_relief,
   sym_use_style_of, sym_hidden_handles, sym_no_inset, sym_left,
@@ -258,28 +304,62 @@ flagval) { ButtonFace *bf;
 
 ButtonFace *append_new_face(ButtonFace *bf);
 
-/*
- * Face specifiers and possible values :
- *  
- * '(simple #t)                                  ;; non-destructive
+/**CONCEPT: 
+  Face Specs Face flags are two-element lists that specify certain
+properties that may be chained to indicate how a face is drawn. Face
+specs may be fully or partially destructive. A fully destructive spec
+indicates how the whole area of the element is to be drawn, making
+previous specs irrelevant. A partially destructive spec overlays part,
+but not all, of the drawing area.
+
+  All specs may be used for button faces. All but non-tiled pixmaps may
+be used for titlebars, and only tiled pixmaps may be used for borders.
+
+  Format                                    : Explanation
+  ------------------------------------------:----------------------------
+ '(relief-pattern ((<X> <Y> <BOOL>) ...))   : Draw a relief pattern using
+                                            : the list of triples, each of 
+                                            : which indicates a pair of X,Y
+                                            : cooridnates given as a 
+                                            : percentage of the button size,
+                                            : and a boolean value indicating
+                                            : wether to use the lighter or
+                                            : darker color. This spec is 
+                                            : partially destructive.
+ '(solid <COLOR>)                           : Use <COLOR> as the color for 
+                                            : this element; fully destructive.
+'(gradient (horizontal|vertical             : Draw a gradient in this element.
+   <NCOLORS> (<COLOR> <PERCENT>)* <FINAL>)) : The gradient may be horizontal
+                                            : or vertical. The number of colors
+                                            : is specified, followed by a 
+                                            : number of colors with percentages
+                                            : and a final color. The 
+                                            : percentages must add to 100.
+                                            : Fully destructive.
+ '(pixmap mini-icon|<IMAGE>|                : Specify a pixmap to use, either
+   (tiled <IMAGE>))                         : the window's mini-icon, an image
+                                            : object or image specifier string,
+                                            : or a list of tiled and an image,
+                                            : indicating the image should be
+                                            : tiled. Partially destructive, 
+                                            : except when tiled, which makes 
+                                            : it fully destructive.  
+*/
+
+/* * '(simple #t)                                  ;; non-destructive
  *                                               ;; perhaps non-pointful?
  * '(default <N>)                                ;; fully destructive
  *                                               ;; perhaps there should
  *                                               ;; be variables for
  *                                               ;; these instead or
- *                                               ;; something?
+ *  
  * In any case, skip simple and default for now.
- * '(relief-pattern ((<X> <Y> <BOOL>) ...))      ;; partially destructive
- * '(solid COLOR)                                ;; fully destructive
- * '(gradient (horizontal|vertical <NCOLORS> (<COLOR> <PERCENT>)* <FINAL>))
- *                                               ;; fully destructive
- * '(pixmap mini-icon|<PIXMAP>|(tiled <PIXMAP>)) ;; partially destructive,
- *                                               ;; except tiled (fully)
+ *                                               ;; something?
  */
 
 /*
- * FIXMS gradients and pictures should be exposed as scheme types, that
- * would eliminate a lot of the hackery here. Not sure if relief patterns
+ * FIXMS gradients should be exposed as scheme types, that would eliminate 
+ * a lot of the hackery here. Not sure if relief patterns
  * are fundamental enough to be a type...
  */
 
@@ -502,6 +582,13 @@ extern ScwmDecor *cur_decor;
 
 SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
           (SCM active_up, SCM active_down, SCM inactive))
+     /** In the current decor, use ACTIVE-UP as the face for the title
+bar when active and not pressed in. Use ACTIVE-DOWN when the title bar
+is active and pressed in, and INACTIVE when the window is
+inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
+specified. Note that ACTIVE-DOWN will magically reverse the sense of
+the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
+state, it will be sunk in the ACTIVE-DOWN state by default.  */
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -532,6 +619,14 @@ SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive) )
+     /** In the current decor, use ACTIVE-UP as the face for the
+button specified by the integer BUTTON when active and not pressed
+in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE
+when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to
+ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
+reverse the sense of the relief flag, so if the button is raised in
+the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
+default.  */
 {
   int n;
   int left_p;
@@ -582,6 +677,9 @@ SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
           (SCM button, SCM flag) )
+     /** Specify the Mwm flag for BUTTON, that is, specify wether or
+not it's relief pattern (if any) should reverse in depth sense when
+the window is maximized. This is specified by the boolean value FLAG.*/
 {
   int n;
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -609,6 +707,10 @@ SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
           (SCM active, SCM inactive) )
+     /** In the current decor, use ACTIVE as the face for the border
+when the window is active. Use INACTIVE when the window is
+inactive. INACTIVE defaults to the same as ACTIVE when not
+specified. */
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -672,9 +774,11 @@ void
 init_face()
 {
   int i;
+
   /* This needs to be done before the faces are created, below */
   REGISTER_SCWMSMOBFUNS(face);
 
+  /* FIXMS: Use SCM_SYMBOL for all these. */
   sym_clear = gh_symbol2scm("clear");
   scm_protect_object(sym_clear);
   sym_justify = gh_symbol2scm("justify");
