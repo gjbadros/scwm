@@ -1,3 +1,11 @@
+Fri Jan 29 09:34:58 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Regenerate the
+	scwm_common_scheme variable automatically since it was way out of
+	synch w/ the existing files list.  (Are the long lines a big
+	problem for anyone?  or for Automake?)
+
+
 1999-01-29  Sam Steingold  <sds@goems.com>
 
 	* Makefile.am: install animate-iconify-window.scm.
