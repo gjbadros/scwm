@@ -1,3 +1,11 @@
+Sat Nov  8 14:54:59 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc.[ch]: Lots of cleanup
+	
+	* builtins.c: removed from the build
+
+	* Started pixmap/picture re-implementation
+
 Thu Nov  6 10:59:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Change set-mini-icon! to load the mini-icon file when
