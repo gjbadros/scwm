@@ -365,10 +365,13 @@
 ;;(resize-to 200 200)
 
 ;;(window-style "*" #:squashed-titlebar #t)
+;;(window-style "*" #:squashed-titlebar #f)
 ;;(window-style "xterm" #:squashed-titlebar #t)
 
 ;;(window-style "*" #:bg "purple")
 ;; (border-style #:hidden-handles #f #:no-inset #f)
+
+;; (window-style "foo" #:squashed-titlebar #t)
 
 ;; (raise-window)
 ;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
@@ -414,8 +417,8 @@
 	 (x (+ (car ns-pos) 300))
 	 (y (- (cadr ns-pos) 30)))
     (move-to x y w #f #f)
-    (move-pointer-to (+ x 30) (+ y 55))
-    (write-all #t "moving next to netscape window " x ", " y "\n")))
+    (move-pointer-to (+ x 30) (+ y 55))))
+;;    (write-all #t "moving next to netscape window " x ", " y "\n")))
 
 ;;(window-title (select-window-interactively))
 ;;(move-next-to-netscape-win (select-window-interactively))
@@ -424,6 +427,11 @@
 ;; instead of just placement-proc, even though I've explicitly
 ;; named the window
 (window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
+;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
+
+
+;;; FIXGJB: add a download remove window hook that notifies user that a download
+;;; has completed
 
 ;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
 ;;(window-style "findDialog_popup" #:placement-proc (thunk move-next-to-netscape-win))
@@ -1027,6 +1035,7 @@
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
+;;(bind-mouse 'all 2 (lambda () (show-window-list-menu #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
 
