@@ -124,7 +124,7 @@ This is just for demonstration and testing purposes for now. */
 
 
 
-void
+static void
 init_overlay_plane()
 {
 
