@@ -24,6 +24,7 @@
   :use-module (app scwm style)
   :use-module (app scwm optargs)
   :use-module (app scwm file)
+  :use-module (app scwm listops)
   :use-module (app scwm theme-impl))
 
 
@@ -90,6 +91,17 @@ tar file with extension .tar, .tar.gz, or .tgz."
      (else
       (error (string-append "Unrecognized theme type for theme \"" fname 
 			    "\"."))))))
+
+
+(define-public theme-dictionary (make-hash-table 7))
+
+(define*-public (load-cached-theme fname #&optional force)
+  (or (and (not force) (hash-ref theme-dictionary fname))
+      (let ((theme (load-theme fname)))
+	(if theme
+	    (hash-set! theme-dictionary fname theme)
+	    #f)
+	theme)))
 
 (define (eval-from-file fname)
   (with-input-from-file fname 
@@ -162,3 +174,54 @@ tar file with extension .tar, .tar.gz, or .tgz."
 (add-hook! shutdown-hook 
 	   (lambda (restarting?)
 	     (system (string-append "rm -rf " theme-unpack-dir))))
+
+
+;; contributed by Glenn Trig
+(define (remove-suffix str suffix) 
+  (let ((sufl (string-length suffix)) 
+        (sl (string-length str))) 
+    (if (and (> sl sufl) 
+             (string=? (substring str (- sl sufl) sl) suffix)) 
+        (substring str 0 (- sl sufl)) str))) 
+ 
+;; contributed by Glenn Trig
+(define-public (theme-names) 
+  (let ((path-items '())) 
+    (for-each 
+     (lambda (path) 
+       (if (and (and (string? path) (file-exists? path)) 
+                (file-is-directory? path)) 
+           (begin 
+             (define dir (opendir path)) 
+             (let dirloop ((dirent (readdir dir))) 
+               (if (string? dirent) 
+                   (begin 
+                     (let ((fullpath (string-append path "/" 
+                                                    dirent))) 
+                       (if (and 
+                            (not (eqv? (string-ref dirent 0) #\.) 
+                                 ) 
+                            (or (and (file-is-directory? fullpath) 
+                                     (file-exists? (string-append fullpath 
+                                                               "/theme.scm"))) 
+                                (or (has-suffix? fullpath ".tar") 
+                                    (or (has-suffix? fullpath ".tar.gz") 
+                                        (has-suffix? fullpath ".tgz"))))) 
+                           (begin 
+                             (set! dirent (remove-suffix dirent ".tar")) 
+                             (set! dirent (remove-suffix dirent ".tar.gz")) 
+                             (set! dirent (remove-suffix dirent ".tgz")) 
+                             (if (not (there-exists? path-items 
+                                                (lambda (x) (string=? dirent x)))) 
+                                 (set! path-items 
+                                       (append path-items 
+                                               (list dirent))) 
+                                 #f)) 
+                           #f)) 
+                     (dirloop (readdir dir))) 
+                   #f)) 
+             (closedir dir)) 
+           #f)) 
+     theme-path) 
+    (sort path-items string<?)) 
+  ) 

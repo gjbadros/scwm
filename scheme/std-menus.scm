@@ -23,6 +23,8 @@
   :use-module (app scwm base)
   :use-module (app scwm menus-extras)
   :use-module (app scwm flux)
+  :use-module (app scwm style)
+  :use-module (app scwm themes)
   :use-module (app scwm optargs)
   :use-module (ice-9 regex))
 
@@ -129,3 +131,23 @@ The selection must contain a single full pathname."
 				 ()))
 			   context-map))
 	       ())))))
+
+
+;; contributed by Glenn Trig
+(define-public menu-window-theme
+  (menu  
+   (map 
+    (lambda (x) 
+      (menuitem x #:action 
+		(lambda () (style-one-window (get-window) #:use-theme (load-cached-theme x))))) 
+        (theme-names))))
+
+
+;; contributed by Glenn Trig
+(define-public menu-global-theme
+  (menu  
+   (map 
+    (lambda (x) 
+      (menuitem x #:action 
+		(lambda () (window-style "*" #:use-theme (load-cached-theme x))))) 
+    (theme-names))))

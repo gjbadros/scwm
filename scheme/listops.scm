@@ -97,7 +97,7 @@ appeared in L."
   (cond
    ((null? l) #f)
    ((pred (car l)) #t)
-   (else (there-exists? pred (cdr l)))))
+   (else (there-exists? (cdr l) pred))))
 
 (define-public (for-all? l pred)
   "Return true if PRED is true for all elements of L, otherwise false."
