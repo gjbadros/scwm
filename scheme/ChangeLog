@@ -1,3 +1,14 @@
+1999-09-20  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints.scm: Added options to the draw-constraints* 
+ 	functions to limit drawing to only constraints which are enabled.
+
+	* ui-constraints-classes.scm: Improved visual constraint representations.
+
+	* constraints.scm: Added option to start-constraints which allows
+ 	the user to specify whether they would like disabled constraints
+	displayed.
+
 Sun Sep 19 20:15:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* nonants.scm: Put *nonant-highlight-color* in winops, not own group.
