@@ -1,3 +1,8 @@
+Sun Dec  5 17:31:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* add_window.c, events.c, image.c: Fix some unescaped quotes in
+ 	SCWM_HOOK macro docstrings.
+
 Sun Dec  5 16:32:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (s_call_interactively): Fix dumb bug of trying to

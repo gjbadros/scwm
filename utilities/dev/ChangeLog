@@ -1,3 +1,8 @@
+Sun Dec  5 17:29:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Handle SCWM_HOOK's extra docstring argument now.
+	scwm-hooks.txt was broken in last (couple?) commit(s).
+
 Sun Dec  5 16:00:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Handle SCWM_IPROC's extra interactive-specification
