@@ -1,3 +1,12 @@
+Thu Jul  1 22:02:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Try to make --enable-c-flags option work by
+	setting CFLAGS before AC_PROG_CC macro call.  (Untested)
+
+Thu Jul  1 22:00:36 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* acconfig.h: Fix typo in comment; updated email addresses.
+
 Thu Jul  1 10:08:15 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Let SCWM_ARG_PATH take a withval that is not a
