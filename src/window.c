@@ -612,23 +612,20 @@ PswSelectInteractively(Display *dpy)
 
 extern int orig_x, orig_y, have_orig_position;
 
-/***********************************************************************
+/*
  *
  *  Procedure:
- *	DeferExecution - defer the execution of a function to the
- *	    next button press if the context is C_ROOT
+ *	DeferExecution - return the interactively-selected window in *ppsw
  *
  *  Inputs:
  *      eventp  - pointer to XEvent to patch up
  *      w       - pointer to Window to patch up
- *      ppsw    - pointer to pointer to ScwmWindow Structure to patch up
- *	context	- the context in which the mouse button was pressed
- *	func	- the function to defer
+ *      ppsw    - pointer to pointer to ScwmWindow that was selected
  *	cursor	- the cursor to display while waiting
  *      finishEvent - ButtonRelease or ButtonPress; tells what kind of event to
  *                    terminate on.
  *
- ***********************************************************************/
+ */
 static
 int 
 DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
@@ -648,14 +645,6 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
 
   while (!fFinished) {
     fDone = False;
-    /* block until there is an event */
-    /* FIXGJB: this code causes a bug:  when a "(get-window)" is sent by 
-       scwmsend, the ButtonMotionMask below causes scwm to re-eval the
-       string received via the PropertyNotify event for each mouse movement
-       observed;  this results in a helluva lot of get-window calls being
-       made, when only one was desired;  The best way to deal with this
-       is get rid of the DeferExecution garbade, but that has to come later
-    */
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
 	       ExposureMask | KeyPressMask | VisibilityChangeMask |
 	       ButtonMotionMask | PointerMotionMask, eventp);
@@ -667,14 +656,12 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
     if (eventp->type == FinishEvent) {
       fFinished = True;
     }
-    if (eventp->type == ButtonPress) {
-      XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-		 ExposureMask | KeyPressMask | VisibilityChangeMask |
-		 ButtonMotionMask | PointerMotionMask, eventp);
+    if (eventp->type == ButtonPress && !fDone) {
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
       fDone = True;
     }
     if (eventp->type == ButtonRelease || eventp->type == KeyPress) {
+      XAllowEvents(dpy, ReplayPointer, CurrentTime);
       fDone = True;
     }
     if (!fDone) {
@@ -684,7 +671,6 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
       DispatchEvent();
     }
   }
-
 
   *w = eventp->xany.window;
   if (((*w == Scr.Root) || (*w == Scr.NoFocusWin))
@@ -701,7 +687,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
   if (*ppsw == NULL) {
     call0_hooks(invalid_interaction_hook);
     UngrabEm();
-    return (True);
+    return True;
   }
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
