@@ -240,27 +240,19 @@ SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_scroll_delay_x, "set-edge-scroll-delay!", 1, 0, 0,
-          (SCM usec))
-     /** Set the edge scroll delay to USEC microseconds.
+          (SCM ms))
+     /** Set the edge scroll delay to MS milliseconds.
 When the mouse pointer hits the edge of the screen, it must stay there
 for at least the edge scroll delay amount before the desktop will be
 scrolled. If this parameter is #f, the viewport will not scroll at all
 at the screen edge. */
 #define FUNC_NAME s_set_edge_scroll_delay_x
 {
-  if (usec == SCM_BOOL_F)
-    Scr.ScrollResistance = -1;
-  else if (!gh_number_p(usec)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, usec);
-  } else {
-    Scr.ScrollResistance = gh_scm2int(usec);
-    if (Scr.ScrollResistance >= 10000) { 
-      Scr.ScrollResistance = -1;
-      scwm_msg(WARN, FUNC_NAME, "Possible deprecated use of "
-	       "`set-edge-scroll-delay!' detected. Give #f rather than usec "
-	       ">= 10000 to prohibit scrolling.");
-    }
+  COPY_INTEGER_WITH_DEFAULT_OR_ERROR(Scr.ScrollResistance,ms,1,FUNC_NAME,-1);
+  if (Scr.ScrollResistance >= 10000) { 
+    scwm_msg(WARN, FUNC_NAME, "Possible deprecated use of "
+             "`set-edge-scroll-delay!' detected. Give #f rather than ms "
+             ">= 10000 to prohibit scrolling.");
   }
   return SCM_UNSPECIFIED; 
 }
@@ -269,7 +261,7 @@ at the screen edge. */
 
 SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
           ())
-     /** Return the edge scroll delay as set by `set-edge-scroll-delay!'. */
+     /** Return the edge scroll delay (in ms) as set by `set-edge-scroll-delay!'. */
 #define FUNC_NAME s_edge_scroll_delay
 {
   return gh_int2scm(Scr.ScrollResistance);
