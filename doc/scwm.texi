@@ -4,15 +4,15 @@
 
 @dircategory Scheme Programming
 @direntry
-* scwm::                               The Scheme Configurable Window Manager
+* scwm::                               The Scheme Constraints Window Manager
 @end direntry
 
 @titlepage
 @title SCWM
-@subtitle The Scheme Configurable Window Manager
-@subtitle Version 0.1
-@subtitle June 1998
-@author by Maciej Stachowiak and Greg J. Badros
+@subtitle The Scheme Constraints Window Manager
+@subtitle Documentation Version 0.1
+@subtitle August 1999
+@author by Greg J. Badros and Maciej Stachowiak
 @end titlepage
 
 @ifinfo
@@ -22,8 +22,9 @@
 This is the start of the scwm manual. It's not very complete or accurate
 yet, but hopefully that will change.
 
-This documentation is pretty old. Look at the SGML documentation for now
-until we can figure out a way to generate texi from DocBook.
+This documentation is completely out of date. Look at the SGML
+documentation for now until we can figure out a way to generate texi
+from DocBook.
 
 @menu
 * Scheme Procedures:: SCWM Scheme procedure documentation
