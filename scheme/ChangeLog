@@ -1,3 +1,8 @@
+1999-04-14  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* wininfo.scm: Use module (app scwm winlist) to import
+	`list-windows'.
+
 Wed Apr 14 20:30:38 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Use flash-window module.
