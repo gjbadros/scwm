@@ -2,6 +2,10 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
+* lost-focus hook
+
+* documentation of scheme-level hooks (not just c-level)
+
 * Error messages in a text window
 
 * path-cache.scm -- test w/o zsh
