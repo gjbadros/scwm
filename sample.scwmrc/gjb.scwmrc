@@ -36,12 +36,12 @@
    (map (lambda (deg) (make-image
 		       (string-append "scwm-logo"
 				      deg ".xpm")))
-	'("" "-45" "-90" "-135" "-180" "-225" "-270" "-315"))))
+	'("-0" "-45" "-90" "-135" "-180" "-225" "-270" "-315"))))
 
 
 (define scwm-logo-msgwin 
   (make-message-window-with-image 
-   (make-image "scwm-logo.xpm")))
+   (vector-ref logo-image-sequence 0) #t))
 (set-X-server-synchronize! #t)
 (message-window-show! scwm-logo-msgwin)
 (set-X-server-synchronize! #f)
@@ -51,7 +51,11 @@
     (lambda ()
       (set! i (modulo (+ i 1) 8))
       (message-window-set-image! scwm-logo-msgwin 
-				 (vector-ref logo-image-sequence i)))))
+				 (vector-ref logo-image-sequence i) #f #f #t))))
+
+
+;; (message-window-set-image! scwm-logo-msgwin (vector-ref logo-image-sequence 1) #f #f #t)
+;; (message-window-show! scwm-logo-msgwin)
 
 (define (next-logo-image-timer)
   (next-logo-image)
@@ -313,6 +317,7 @@
 
 (message-window-options 'interactive-move #:follow-window #t)
 (message-window-options 'interactive-resize #:follow-window #t)
+
 
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
@@ -858,6 +863,8 @@
 	       #:action (thunk animated-toggle-window-shade))
     (menuitem "Shade/Reset" 
 	       #:action (thunk toggle-window-shade))
+    (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
+	      #:action interactive-set-window-gravity!)
     menu-separator
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
@@ -895,7 +902,7 @@
     (un-window-shade w #t)))
 
 (define (scwm-help)
-  (netscape-goto-url "http://serveuse.mit.edu/scwm" #f 'netscape-new-window))
+  (netscape-goto-url "http://scwm.mit.edu/scwm" #f 'netscape-new-window))
 
 (define (scwm-about-message)
   (message "Scwm TheNextLevel
@@ -1005,7 +1012,7 @@ union of all other window managers!
   '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
 
 (define favorite-hosts
-  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu serveuse.mit.edu))
+  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu scwm.mit.edu))
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
@@ -1283,7 +1290,7 @@ union of all other window managers!
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
-;; http://serveuse.mit.edu/scwm    ;; highlight w/ mouse and try it!
+;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)
@@ -1359,7 +1366,7 @@ union of all other window managers!
 
 
 (define (switch-to-first-desk) (set-current-desk! 0))
-(define (switch-to-second-desk) (set-current-desk! 0))
+(define (switch-to-second-desk) (set-current-desk! 1))
 
 (bind-key 'all "C-M-S-Home" switch-to-first-desk)
 (bind-key 'all "C-M-S-End" switch-to-second-desk)
@@ -1655,9 +1662,17 @@ union of all other window managers!
   (end-highlighting-current-window)
   (unselect-all-windows))
 
+(define (select-message-window)
+  (id->message-window (car (select-viewport-position))))
+
+(define (select-and-hide-message-window)
+  (message-window-hide! (select-message-window)))
+
 (bind-mouse 'all "H-S-1" #f select-window-add-selection)
 (bind-mouse 'all "H-A-1" #f select-window-add-selection)
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group)
+
+(bind-mouse 'all "H-M-3" #f popup-window-ops)
 
 ;; send 100 presses of button 1
 ;; for benchmarking amaya's reload
