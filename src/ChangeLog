@@ -1,3 +1,18 @@
+Wed Apr 21 18:00:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Only mark set scheme objects (could've extended the
+	area where interrupts were disallowed, too).  Use XCURSOR_* macros 
+	to access global cursor objects instead of XCursorByNumber.
+
+	* scwm.c: Call CreateScmGlobalCursors.
+
+	* add_window.c move.c, menu.c, icons.c, focus.c: Use XCURSOR_*
+ 	macros to access global cursor objects instead of XCursorByNumber.
+
+	* cursor.c, cursor.h: Define XCURSOR macros, pscm_cursor_ vars,
+	CreateScmGlobalCursors().  Fix bug in get_scm_cursor_by_number --
+	return SCM_BOOL_F, not SCM_UNDEFINED.
+
 Wed Apr 21 16:35:47 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c, window.h: Update order of args to ensure_valid,
