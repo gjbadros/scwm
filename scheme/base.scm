@@ -78,6 +78,7 @@ Returns #f otherwise."
 
 
 ;; FIXMS: gross hack alert!
+;; use advice macros when written or just clean up in general
 (let ((old-smfg! set-menu-foreground!))
   (set! set-menu-foreground!
 	(lambda (fg)
