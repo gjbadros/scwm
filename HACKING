@@ -88,6 +88,11 @@ Parse-RecDescent package from CPAN, version 1.51 or higher
 makeinfo 1.67 or higher (it's in Texinfo 3.9 for example).
 
 
+PROJECT IDEAS:
+
+All contributions are welcome. See doc/dev/projects for ideas!
+
+
 PREFERRED PATCH FORMAT:
 
 If you send in a patch, please do so using "diff -u" if you have a

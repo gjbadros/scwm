@@ -1,3 +1,13 @@
+Tue Sep 28 17:21:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Forgot to use-module face.
+
+Tue Sep 28 14:57:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Switch *preferences-use-notebook* to default 
+	to #f since the listbook format is nicer and the new guile-gtk has
+	the bug that this was tweaking fixed.
+
 Tue Sep 28 14:42:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* prompting-shell.scm, prompt-proc.scm, prompt-font.scm, 

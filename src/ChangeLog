@@ -1,3 +1,7 @@
+Tue Sep 28 16:34:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* color.c (color_mult): Fix > to >=.  Thanks E. Jay Berkenbilt!
+
 Tue Sep 28 14:40:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c: Fix uninitialized g_lastwin_entered.  Thanks Marius

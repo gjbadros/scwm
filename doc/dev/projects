@@ -39,9 +39,11 @@ something that you are interested in and skilled with.
 
 /////////////////////
 * Scheme hacking
-** scwmmenu->gtkmenu, for better support for pinnable menus
+** refine the scwmmenu->gtkmenu stuff, for better support for pinnable menus
 
 ** Improve stylist module and make more like the preferences work.
+
+** Native pager
 
 /////////////////////
 * Software-engineering 

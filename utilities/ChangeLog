@@ -1,3 +1,8 @@
+Tue Sep 28 14:58:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/guile-gtk.spec: Update for new version of guile-gtk with
+	the bugfix for the preferences support.
+
 Mon Sep 27 08:42:33 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm:  Fix scwm/scwm to src/scwm.  Try to let
