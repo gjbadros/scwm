@@ -337,6 +337,13 @@ negative, and Y pixels vertically, down if positive, up if negative."
   (let ((pos (viewport-position)))
     (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
+(define-public (use-placement-hint win)
+  "Do nothing when placing WIN, just let it be where hinted to be.
+This is useful for, e.g., external programs such as the GNOME desktop
+gmc which expect their windows to go where asked (like the desktop
+icons in gmc)."
+  #t)
+
 ;; FIXJTL: image-align - to work like others, C code has to dereference
 ;; symbols that aren't one of 'top, 'bottom or 'center
 (define*-public (menu-style #&key

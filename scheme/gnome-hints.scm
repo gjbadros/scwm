@@ -28,6 +28,8 @@
 
 
 
+;;;; See the file gnome-libs-*/libgnomeui/gnome-winhints.h
+
 ;;; user variables.
 ;;; set them in ~/.scwmrc, then call (enable-gnome-hints)
 

@@ -161,24 +161,15 @@
 
 ;; prefer doc files in scwmdir/doc
 (set! doc-files
-      (map (lambda (s) (string-append scwmdir "/doc/" s))
-	   (list "scwm-procedures.txt"
-		 "scwm-variables.txt"
-		 "scwm-hooks.txt"
-		 "cassowary_scm-procedures.txt")))
-
-;; but be sure we look for the installed ones too
-(set! doc-files
-      (append doc-files
-	      (map (lambda (s) (string-append (scwm-path-prefix) "/share/scwm/" s))
+      (append (map (lambda (s) (string-append scwmdir "/doc/" s))
 		   (list "scwm-procedures.txt"
 			 "scwm-variables.txt"
 			 "scwm-hooks.txt"
-			 "cassowary_scm-procedures.txt"))))
+			 "cassowary_scm-procedures.txt"))
+	      doc-files))
 
 (append! *theme-path*
-	 (list (string-append (scwm-path-prefix) "/share/scwm/themes")
-	       (string-append scwmdir "/themes")))
+	 (list (string-append scwmdir "/themes")))
 
 ;;; Lost window?  Get it back with:
 ;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
@@ -833,7 +824,7 @@
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
-(window-style "desktop_icon" #:use-style desk-icon)
+(window-style "desktop_icon" #:use-style desk-icon #:placement-proc use-placement-hint)
 
 (window-style "scwmmessages" #:no-titlebar #t)
 
