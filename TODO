@@ -32,6 +32,9 @@ isn't now).
 
 * StayOnBottom style
 
+* Add useful primitives from GWM, other wms
+
+* Size/position window needs to be more dynamic, customizable
 
 * administrative b.s.
 ** cvsweb
