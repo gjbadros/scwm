@@ -1,0 +1,22 @@
+/* XPM */
+static char*win[]={
+"16 16 3 1",
+"# c #ffff00",
+"a c #303030",
+". c #0000ff",
+"................",
+".#####aaaaaaaaa.",
+".#####aaaaaaaaa.",
+".#####aaaaaaaaa.",
+".#####aaaaaaaaa.",
+".#####aaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+".aaaaaaaaaaaaaa.",
+"................"};
