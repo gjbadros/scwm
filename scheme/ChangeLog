@@ -1,5 +1,7 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* animated-iconify.scm: Added missing close paren.
+
 	* animated-iconify.scm: Added `animated-toggle-iconify'
 
 	* animated-iconify.scm: Make `animated-iconify',

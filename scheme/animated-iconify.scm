@@ -76,16 +76,16 @@
 
 (define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
   (if (iconified? win)
-    (animate-iconify-or-deiconify (apply virtual->viewport 
-					(icon-viewport-position win)
-                                        (window-position-in-viewport 
-					 (current-viewport-offset-xx)
-					 (current-viewport-offset-yy)
-					 win))
-                                 (icon-size win)
-				 (window-frame-size win)
-				 20 #f (lambda () (deiconify-to-current-viewport win))
-				 '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
+    (animate-iconify-or-deiconify (icon-viewport-position win)
+                                  (apply virtual->viewport 
+                                         (window-position-in-viewport 
+                                          (current-viewport-offset-xx)
+                                          (current-viewport-offset-yy)
+                                          win))
+                                  (icon-size win)
+                                  (window-frame-size win)
+                                  20 #f (lambda () (deiconify-to-current-viewport win))
+                                  '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
 
 (define*-public (animated-toggle-iconify #&optional (win (get-window)))
   (if win
