@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-20 Mon 09:50:13 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-20 Mon 12:53:43 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -12,8 +12,6 @@
 ;; scwm|Sam Steingold|sds@usa.net|
 ;; Functions for editing and running SCWM code under Emacs|
 ;; $Date$|$Revision$||
-
-;;; $Id$
 
 ;;; History:
 
