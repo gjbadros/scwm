@@ -108,7 +108,7 @@ gint delete_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 SCWM_PROC(corba_evaluator_ior, "corba-evaluator-ior", 0, 0, 0,
           ())
-     /** Returns the IOR string for the scwm-scheme-evaluator servant. */
+     /** Returns the "IOR" string for the scwm-scheme-evaluator servant. */
 #define FUNC_NAME s_corba_evaluator_ior
 {
   return scmIOR;
