@@ -1,3 +1,9 @@
+Sat Sep 25 17:00:41 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Bind C-S-F2 to
+	show-window-list-by-focus-with-geometry, not show-window-list-menu 
+	(latter is not interactive).
+
 Fri Sep 24 15:21:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added binding of
