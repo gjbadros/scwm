@@ -388,7 +388,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
     if (pmiim->fShowPopupArrow) {
       int d = (item_height-7)/2; /* FIXGJB: magic numbers! */
-      if (mis == MIS_Enabled) {
+      if (mis != MIS_Enabled) {
 	DrawTrianglePattern(w, ShadowGC, ReliefGC, ShadowGC, /* ReliefGC, */
 			    width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
       } else {
