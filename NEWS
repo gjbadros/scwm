@@ -2,7 +2,9 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
-Changes for scwm-0.99.5 (not yet released)
+Changes for scwm-0.99.5 (released 24-October-1999)
+
+* Bug fixes
 
 * Added interactive procedure specifications
 
