@@ -1,10 +1,11 @@
 Makefile
 Makefile.in
 html
-scwm.info
 scwm.aux
 scwm.dvi
+scwm.info
 scwm.log
 scwm.pdf
 scwm.ps
+scwm.rtf
 scwm.tex

@@ -1,3 +1,28 @@
+Wed Sep  1 19:11:01 1999    <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Added a description field to
+	ui-constraint-class objects, update vector accessors. Description
+	field is to be used for tooltips, etc.
+
+	* ui-constraints-classes.scm: Clean up prompts (drop "Select
+	..."), use with-message-window-shown so that they don't stick
+	around in case of error.  Greatly improve docs and names of
+	buttons.
+
+	* ui-constraints-buttons.scm: Use description for the tooltip text.
+
+Wed Sep  1 18:06:18 1999    <gjb@cs.washington.edu>
+
+	* property-respond.scm: Split up monolithic
+	property-changed-respond function.  Added handling of 'alert
+	property that is a bit less invasive than the flashing property.
+
+	* prompt-string.scm: Have the entry widget grab the focus, and
+	position the widget a bit better vertically.
+
+	* flux-gtk.scm: Warp-to-first for
+	show-window-list-matching-interactively.
+
 Wed Sep  1 15:21:08 1999    <gjb@cs.washington.edu>
 
 	* window-selection.scm: Rename select-window-add-selection to
