@@ -121,6 +121,15 @@ SCWM_GLOBAL_SYMBOL(sym_grav_south, "south");
 SCWM_GLOBAL_SYMBOL(sym_grav_southeast, "southeast");
 SCWM_GLOBAL_SYMBOL(sym_grav_static, "static");
 
+/* Nonant thirds */
+SCWM_GLOBAL_SYMBOL(sym_non_top, "top");
+SCWM_GLOBAL_SYMBOL(sym_non_vmiddle, "vmiddle");
+SCWM_GLOBAL_SYMBOL(sym_non_bottom, "bottom");
+SCWM_GLOBAL_SYMBOL(sym_non_left, "left");
+SCWM_GLOBAL_SYMBOL(sym_non_hcenter, "hcenter");
+SCWM_GLOBAL_SYMBOL(sym_non_right, "right");
+
+
 /* Also used by borders.c */
 SCWM_GLOBAL_SYMBOL(sym_maximized, "maximized");
 SCWM_GLOBAL_SYMBOL(sym_no_side_decorations, "no-side-decorations");
@@ -3557,17 +3566,47 @@ will revert to its usual color.  See also `window-decoration-ids'.")
 }
 #undef FUNC_NAME
 
+static int
+IntFromNonantSymbol(SCM sym)
+{
+  if (sym == sym_non_top) return SCWM_NONANT_TOP;
+  else if (sym == sym_non_vmiddle) return SCWM_NONANT_VMIDDLE;
+  else if (sym == sym_non_bottom) return SCWM_NONANT_BOTTOM;
+  else if (sym == sym_non_left) return SCWM_NONANT_LEFT;
+  else if (sym == sym_non_hcenter) return SCWM_NONANT_HCENTER;
+  else if (sym == sym_non_right) return SCWM_NONANT_RIGHT;
+  else return SCWM_NONANT_NONE;
+}
+
+static SCM
+NonantSymbolFromInt(int i)
+{
+  switch (i) {
+  case SCWM_NONANT_TOP: return sym_non_top;
+  case SCWM_NONANT_VMIDDLE: return sym_non_vmiddle;
+  case SCWM_NONANT_BOTTOM: return sym_non_bottom;
+  case SCWM_NONANT_LEFT: return sym_non_left;
+  case SCWM_NONANT_HCENTER: return sym_non_hcenter;
+  case SCWM_NONANT_RIGHT: return sym_non_right;
+  default: return SCM_BOOL_F;
+  }
+}
+
 SCWM_PROC (set_window_highlighted_nonant_x, "set-window-highlighted-nonant!", 1, 1, 0,
            (SCM nonant, SCM win),
 "Highlight NONANT for WIN.
-NONANT is a number between 0 and 8, inclusive, or #f to unhighlight.")
+NONANT is a number between 0 and 8, inclusive, or #f to unhighlight.
+Also, NONANT can be 'left, 'hcenter, 'right, 'top, 'vmiddle, 'bottom
+to highlight each of those window regions.")
 #define FUNC_NAME s_set_window_highlighted_nonant_x
 {
   ScwmWindow *psw;
   int n;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2,win,psw);
   if (SCM_BOOL_F == nonant) {
-    n = -1;
+    n = SCWM_NONANT_NONE;
+  } else if (gh_symbol_p(nonant)) {
+    n = IntFromNonantSymbol(nonant);
   } else {
     VALIDATE_ARG_INT_RANGE_COPY(1,nonant,0,8,n);
   }
@@ -3586,9 +3625,11 @@ SCWM_PROC (window_highlighted_nonant, "window-highlighted-nonant", 0, 1, 0,
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
-  return (psw->highlighted_nonant >= 0?
-          psw->highlighted_nonant:
-          SCM_BOOL_F);
+  if (psw->highlighted_nonant == SCWM_NONANT_NONE)
+    return SCM_BOOL_F;
+  if (psw->highlighted_nonant >= 0)
+    return gh_int2scm(psw->highlighted_nonant);
+  return NonantSymbolFromInt(psw->highlighted_nonant);
 }
 #undef FUNC_NAME
 

@@ -259,7 +259,7 @@ AddWindow(Window w)
 
   psw->cmap_windows = NULL;
   psw->number_cmap_windows = 0;
-  psw->highlighted_nonant = -1;
+  psw->highlighted_nonant = SCWM_NONANT_NONE;
 
   psw->ttCreated = 
     psw->ttLastFocussed = time(NULL);

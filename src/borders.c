@@ -961,10 +961,12 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       int top_side_relief_offset_when_squashed = 
         psw->tbar_right - psw->corner_width - psw->xboundary_width;
 
-      if ((psw->highlighted_nonant == 1 && i == 0) ||
-          (psw->highlighted_nonant == 3 && i == 3) ||
-          (psw->highlighted_nonant == 5 && i == 1) ||
-          (psw->highlighted_nonant == 7 && i == 2)) {
+      int hn = psw->highlighted_nonant;
+
+      if ((((hn == 1) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_HCENTER)) && i == 0) ||
+          (((hn == 3) || (hn == SCWM_NONANT_LEFT) || (hn == SCWM_NONANT_VMIDDLE)) && i == 3) ||
+          (((hn == 5) || (hn == SCWM_NONANT_RIGHT) || (hn == SCWM_NONANT_VMIDDLE)) && i == 1) ||
+          (((hn == 7) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_HCENTER)) && i == 2)) {
         XSetWindowBackground(dpy,psw->sides[i],XCOLOR(Scr.nonant_highlight_color));
         XClearWindow(dpy,psw->sides[i]);
       } else {
@@ -1023,10 +1025,10 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 			rgc, sgc, (0x0001 << i));
 	}
       }
-      if ((psw->highlighted_nonant == 0 && i == 0) ||
-          (psw->highlighted_nonant == 2 && i == 1) ||
-          (psw->highlighted_nonant == 6 && i == 2) ||
-          (psw->highlighted_nonant == 8 && i == 3)) {
+      if ((((hn == 0) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_LEFT)) && i == 0) ||
+          (((hn == 2) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_RIGHT)) && i == 1) ||
+          (((hn == 6) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_LEFT)) && i == 2) ||
+          (((hn == 8) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_RIGHT)) && i == 3)) {
         XSetWindowBackground(dpy,psw->corners[i],XCOLOR(Scr.nonant_highlight_color));
         XClearWindow(dpy,psw->corners[i]);
       } else {

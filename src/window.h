@@ -313,11 +313,20 @@ struct ScwmWindow {
   SCM other_properties;
 
   SCM schwin;
-  int highlighted_nonant;       /* is 0-8, or -1 if not highlighted */
+  int highlighted_nonant;       /* is 0-8, or SCWM_NONANT_NONE if not highlighted */
   int visibility;               /* One of VisibilityFullyObscured, 
                                    VisibilityPartiallyObscured, VisibilityUnobscured;
                                    fVisible flag should be same as (visibility == VisibilityUnobscured) */
 };
+
+
+enum { SCWM_NONANT_NONE = -1 };
+enum { SCWM_NONANT_LEFT = -2 };
+enum { SCWM_NONANT_HCENTER = -3 };
+enum { SCWM_NONANT_RIGHT = -4 };
+enum { SCWM_NONANT_TOP = -5 };
+enum { SCWM_NONANT_VMIDDLE = -6 };
+enum { SCWM_NONANT_BOTTOM = -7 };
 
 /* FIXJTL: This is ugly, but needed to make window_fwd work at all; is
    it worth it? */
