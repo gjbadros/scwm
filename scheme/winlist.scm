@@ -70,7 +70,8 @@
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (proc window-list-proc)
-				       (show-geometry #f))
+				       (show-geometry #f)
+				       (warp-to-first #f))
   (popup-menu (menu
 	       (append 
 		(list 
@@ -86,7 +87,8 @@
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
-				    (listify-if-atom except))))))))
+				    (listify-if-atom except))))))
+	      warp-to-first))
 
 (define (rotate-around w wl)
   (append (cond
