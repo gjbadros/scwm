@@ -1,3 +1,16 @@
+Sun Nov  2 00:20:29 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Added face.c to the build process.
+	
+	* scmprocs.c, scmtypes.c, scwm.c, screen.h: Uodated appropriately
+ 	for face-related procedures, types, initialization, and data
+
+	* face.c, face.h: New files, a start on implementing fvwm's
+ 	{Button,Border,Title} Styles. For now, face objects (the back end
+ 	behind fvwm's assorted style commands) can only be created (using
+ 	make-face) and print and garbage-collect properly. They cannot yet
+ 	be associated with buttons, titles or borders.
+	
 Sat Nov  1 04:44:44 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Changed return values of send-button-press and
