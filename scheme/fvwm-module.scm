@@ -103,7 +103,7 @@
 ;; ;; Actually run the pager. Make it manage desktops 0-2. Save the
 ;; ;; module object in a variable so we can kill this specific pager
 ;; ;; later.
-;; (define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "2")))
+;; (define fvwm2-pager (run-fvwm2-module "/path/to/FvwmPager" '("0" "2")))
 ;;
 ;; ;; To later shut down the module, use kill-fvwm2-module:
 ;;   (kill-fvwm2-module fvwm2-pager)
@@ -502,7 +502,7 @@
 			   (display "scwm: Error communicating with module ")
 			   (write fmod)
 			   (display ";\n terminating connection.\n")
-			   (kill-fvwm-module fmod))))))
+			   (kill-fvwm2-module fmod))))))
 	    
 	    (set! input-hook-handle (add-input-hook! from-module-read 
 						     packet-handler))
