@@ -50,13 +50,18 @@ procs that return menus, not bound directly to menus.
 for supporting whole-edge highlighting for better constraint interface
 
 * New primitives
+** `get-next-event' for getting the next key *or* mouse event
 ** `call-interactively' (also invoked internally when dispatch key/mouse bindings)
 ** `window-visibility' for reporting on current visibility state of a window
 ** `animate-windows' for permitting animations of multiple windows simultaneously
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
 
 * New procedures
-** Added `set-highlight-colors!' convenience procedure.
+** `describe-event', to complement `describe-{mouse,key}' using new `get-next-event' primitive
+** `set-highlight-colors!' convenience procedure.
+** `unbind-mouse', `unbind-key' take optional ignored extra arguments
+   used to make their calls be allowed to look just like the bind-mouse, bind-key
+   call that established the binding.
 
 * Added -g option to force regular gc-ing at all invoking of Scheme hooks
 slows stuff down enough for easier debugging, and also finds problems in

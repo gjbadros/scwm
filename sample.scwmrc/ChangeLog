@@ -1,3 +1,12 @@
+Sat Jan  8 17:48:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop H-comma, and use Hyper-w for new
+ 	`describe-event', not describe-key.
+
+	* system.scwmrc: Added "Edit bindings" option to the
+	menu-preferences, and use #:submenu when connecting to
+	menu-preferences. 
+
 2000-01-08  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Removed printing from window-menu. It makes

@@ -1,3 +1,29 @@
+Sat Jan  8 17:50:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* describe.scm: Added `describe-event', and factor out
+	`display-binding' from all the `describe-*' procedures.  Also
+	export `is-mouse-event?'
+
+Sat Jan  8 17:15:09 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-proc.scm: Added helper procs
+	`gtk-scrolled-window-set-vadjustment-value',
+	`gtk-scrolled-window-set-hadjustment-value'
+
+	* prompt-binding.scm: Get binding and unbinding to actually work.
+	Use new `get-next-event' primitive to grab mouse and keyboard
+	bindings.  Do some error checking.  Rename toplevel window to
+	"Scwm Bindings" (was "Bindings")
+
+	* base.scm: Added `caught-error' procedure for generating nice
+	messages in error handlers.
+
+Sat Jan  8 13:23:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-binding.scm: Make the Insert, Copy, Change, and Delete
+	binding buttons dtrt to the binding clist, but still do not change 
+	the actual bindings.  Added `clist-set-row-text' helper function.
+
 Fri Jan  7 17:56:31 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* prompt-binding.scm: Use "Complex" instead of empty for the

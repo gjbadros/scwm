@@ -1,3 +1,19 @@
+Sat Jan  8 17:17:40 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* miscprocs.c: Added `get-next-event' primitive.  Updates docs of
+	others to reference it, too.  Maybe should deprecate the
+	`get-mouse-event', and `get-key-event' procedures.
+
+	* callbacks.c: Added docs for the this-command{,-args} variables.
+
+	* binding.c: Permit "A-Button2" for mouse bindings (in addition to 
+	"A-Mouse2", "A-2").  Make `get-mouse-event' return in the
+	"*Button#" format.  Added optional ignored arguments to
+	`unbind-mouse' and `unbind-key' to permit invocations of them to
+	look just like invocations of `bind-mouse' and `bind-key' (made a
+	little bit easier to do some stuff in prompt-binding module, and
+	seems harmless).
+
 Fri Jan  7 15:58:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleButtonPress): Use stash_orig_button_position,
