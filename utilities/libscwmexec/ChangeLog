@@ -1,3 +1,14 @@
+Tue Mar 16 08:39:26 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* libmain.c: Use char *, not unsigned char *.  Add the appropriate
+ 	cast when calling XGetWindowProperty and when returning the value,
+ 	but let client code not have to deal with unsigned char *'s. Fix
+ 	bug in scwmexec_exec whereby the result was not returned properly.
+  	This was obvious when building with "-Wall -W -pedantic" as all
+ 	builds should be done, methinks.
+
+	* scwmexec.h: Use char * for args, not unsigned char *.
+
 Tue Sep 15 13:40:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* libmain.c (scwmexec_exec_full): Fix race condition-- must select 

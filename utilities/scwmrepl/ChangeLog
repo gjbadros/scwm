@@ -1,3 +1,22 @@
+Tue Mar 16 08:36:25 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl.c: Do not use "unsigned char" -- hide that X anomaly in
+ 	libscwmexec instead.  Use apropos-internal, not apropos, so parse
+ 	the result value instead of the output.  Also, just parse using
+ 	strtok, since it's a much simpler format.  Clean up after free-d
+ 	variables consistently, just in case.  Do not assume a char is 1
+ 	byte.  I have tested this, and it works great for me now.
+
+Mon Mar 15 18:01:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl.c: Use `apropos-internal', not `apropos' to do
+	completion, and scwmexec_exec "(use-modules (ice-9 sessioon))" at
+	startup to be sure that support exists for apropos.  (Changes are
+	untested, but inspired directly from scwm.el -- I was noticing
+	differences in behaviour between scwmrepl and scwm.el that were
+	unfortunate that I expect this fixes but have only 1 X server
+	available at present).
+
 Sun Aug 30 17:13:10 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmrepl.c: Replace stdio with stdout-- was totally broken--
