@@ -34,6 +34,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
+#include <setjmp.h>
 
 #include "scwm.h"
 #include <stdarg.h>
@@ -132,6 +133,7 @@ XIOErrorHandler CatchFatal(Display *);
 XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
 
 void newhandler(int sig);
+void newhandler_doreset(int sig);
 void newsegvhandler(int sig);
 
 void CreateCursors(void);
@@ -153,6 +155,10 @@ Bool debugging = False, PPosOverride = False, Blackout = False;
 
 char **g_argv;
 int g_argc;
+
+/* the jump buffer environment for the handle events loop
+   to implement restarting the event loop */
+jmp_buf envHandleEventsLoop;
 
 /* assorted gray bitmaps for decorative borders */
 #define g_width 2
@@ -726,8 +732,10 @@ Repository Timestamp: %s\n",
   
   DBUG((DBG,"main", "Installing signal handlers"));
   
+#define SIGNAL_FOR_RESET SIGHUP
+
+  newhandler_doreset(SIGNAL_FOR_RESET);
   newhandler(SIGINT);
-  newhandler(SIGHUP);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   /* FIXGJB: I seem to lose the last stack frame in my backtrace if this is
@@ -989,6 +997,7 @@ Repository Timestamp: %s\n",
   scwm_maybe_send_thankyou_packet();
 
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
+  setjmp(envHandleEventsLoop);
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
   return;
@@ -1146,18 +1155,40 @@ CaptureAllWindows(void)
 
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	newhandler: Installs new signal handler
- *
- ************************************************************************/
+SIGNAL_T
+SigResetLoop(int nonsense)
+{
+  /* re-install signal handler */
+  newhandler_doreset(SIGNAL_FOR_RESET);
+  if (envHandleEventsLoop)
+    longjmp(envHandleEventsLoop,0 /* ret. val for setjmp */);
+  SIGNAL_RETURN;
+}
+
+
+/*
+ * newhandler: Installs new signal handler to call SigDone
+ */
 void 
 newhandler(int sig)
 {
   if (signal(sig, SIG_IGN) != SIG_IGN)
     signal(sig, SigDone);
 }
+
+/*
+ * newhandler_doreset: Installs new signal handler to reset to main loop
+ */
+void 
+newhandler_doreset(int sig)
+{
+  if (signal(sig, SIG_IGN) != SIG_IGN)
+    signal(sig, SigResetLoop);
+}
+
+/*
+ * newsegvhandler: Installs new signal handler for segment violations
+ */
 
 void 
 newsegvhandler(int sig)
