@@ -46,12 +46,16 @@ SCWM_PROC(xtest_fake_button_event,"xtest-fake-button-event",2,1,0,
 	  (SCM button, SCM is_press_p, SCM ms_delay))
      /** Fake an X event of button number BUTTON after a delay of MS-DELAY.
 The event is a mouse press if IS-PRESS? is #t, or a release otherwise. If
-MS-DELAY is ommitted or is #f or 0, no delay is used.*/
+MS-DELAY is ommitted or is not a number, no delay is used.*/
 #define FUNC_NAME s_xtest_fake_button_event
 {
   int but;
   Bool fPress;
   long delay;
+
+  /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
+     to not change the semantics here */
+  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,button,but);
   VALIDATE_ARG_BOOL_COPY(2,is_press_p,fPress);
@@ -66,12 +70,15 @@ SCWM_PROC(xtest_fake_key_event,"xtest-fake-key-event",2,1,0,
 	  (SCM keycode, SCM is_press_p, SCM ms_delay))
      /** Fake an X event of key KEYCODE after a delay of MS-DELAY.
 The event is a key press if IS-PRESS? is #t, or a release otherwise. If
-MS-DELAY is ommitted or is #f or 0, no delay is used.*/
+MS-DELAY is ommitted or is not a number, no delay is used.*/
 #define FUNC_NAME s_xtest_fake_key_event
 {
   int key;
   Bool fPress;
   long delay;
+  /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
+     to not change the semantics here */
+  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,keycode,key);
   VALIDATE_ARG_BOOL_COPY(2,is_press_p,fPress);
@@ -87,12 +94,16 @@ SCWM_PROC(xtest_fake_motion_event,"xtest-fake-motion-event",2,2,0,
 	  (SCM x, SCM y, SCM screen, SCM ms_delay))
      /** Fake an X motion event to X,Y after a delay of MS-DELAY on SCREEN.
 If SCREEN is ommitted, 0 is used.
-If MS-DELAY is ommitted or is #f or 0, no delay is used.*/
+If MS-DELAY is ommitted or is not a number, no delay is used.*/
 #define FUNC_NAME s_xtest_fake_motion_event
 {
   int xpos, ypos;
   int scr;
   long delay;
+
+  /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
+     to not change the semantics here */
+  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,x,xpos);
   VALIDATE_ARG_INT_COPY(2,y,ypos);
@@ -114,6 +125,10 @@ If MS-DELAY is ommitted or is #f or 0, no delay is used.*/
   int dxpos, dypos;
   int scr;
   long delay;
+
+  /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
+     to not change the semantics here */
+  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,dx,dxpos);
   VALIDATE_ARG_INT_COPY(2,dy,dypos);
