@@ -1189,6 +1189,7 @@ SigResetLoop(int nonsense)
 {
   /* re-install signal handler */
   newhandler_doreset(SIGNAL_FOR_RESET);
+  scwm_msg(INFO,"SigResetLoop","Got a reset signal, so longjmp-ing to event handler");
   if (envHandleEventsLoop)
     longjmp(envHandleEventsLoop,0 /* ret. val for setjmp */);
   SIGNAL_RETURN;
