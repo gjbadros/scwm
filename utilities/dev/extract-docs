@@ -98,6 +98,10 @@ my %vars = ();
 # i.e., the last define-module seen, reset at new files
 my $current_module = "";
 
+# The last public scheme variable definition
+# Useful for ";;;**VAR"  w/o explicit name in .scm files
+my $last_public_scheme_definition = "";
+
 use FileHandle;
 use IPC::Open2;
 
@@ -124,12 +128,13 @@ while (<>) {
       if (eof) {
 	close(ARGV);
 	$current_module = "";
+	redo MAINLOOP;
       }
       $header .= $_;
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
-  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^")]+)"\s*\)/) {
+  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"\s*\)/) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
     my $filename = $ARGV;
@@ -140,7 +145,7 @@ while (<>) {
     }
     if ($body !~ m%/\*\*\s*(.*)%) {
       $_ = $body;
-      print STDERR "$ARGV:$.:**** Hook $scheme_hookname is missing description comment\n";
+      print STDERR "$ARGV:$.:**** Hook $scheme_hookname is missing /** description comment\n";
       redo MAINLOOP;
     }
     $body = ReadRestOfComment($1);
@@ -149,6 +154,27 @@ while (<>) {
           " $filename:$line body:\n$body\n";
     }
     ProcessHookComment($filename, $line, $scheme_hookname, $body);
+  } elsif (m/SCWM_VAR(?:_READ_ONLY)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/) {
+    my $c_varname = $1;
+    my $scheme_varname = $2;
+    my $filename = $ARGV;
+    my $line = $.;
+    my $body = <>;
+    if ($c_varname ne "NULL" && 
+	!CNameMatchesSchemeName($c_varname,$scheme_varname)) {
+      print STDERR "$ARGV:$.:**** Scheme variable name `$scheme_varname' does not match `$c_varname'\n";
+    }
+    if ($body !~ m%/\*\*\s*(.*)%) {
+      $_ = $body;
+      print STDERR "$ARGV:$.:**** Variable $scheme_varname is missing /** description comment\n";
+      redo MAINLOOP;
+    }
+    $body = ReadRestOfComment($1);
+    if ($fDebug) {
+      print STDERR "GOT variable $c_varname,$scheme_varname at ",
+          " $filename:$line body:\n$body\n";
+    }
+    ProcessVarComment($filename, $line, $scheme_varname, $body);
   } elsif ($fScheme && m%^\(define-module\s+(\([^\)]*\))%) {
     $current_module = $1;
   } elsif ($fScheme && m%^\(define\*?-public\s+\(([^\s\)]+)%) {
@@ -162,14 +188,27 @@ while (<>) {
       if (eof) {
 	close(ARGV);
 	$current_module = "";
+	redo MAINLOOP;
       }
     }
     ProcessSchemeHeader($filename, $current_module, $proc_name, $line, $scheme_header);
     redo if (defined($_)); # start loop over w/o reading next line
-  } elsif (m%/\*\*\s*(\w[^:]*):\s*(.*?)\s*$%) {
+  } elsif ($fScheme && m%^\(define-public\s+([^\s\)]+)%) {
+    $last_public_scheme_definition = $1;
+  } elsif (m%(?:/|^;;;\s*)\*\*\s*(\w[^:\n]*)(?::\s*(.*?))?\s*$%) {
     # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
     my $type = $1;
     my $description = $2;
+    if (!defined($description) || $description eq "") {
+      if ($type eq "VAR" &&
+	  $last_public_scheme_definition ne "") {
+	$description = $last_public_scheme_definition;
+      } else {
+	print STDERR "$ARGV:$.:**** Missing \": section\" in /**$type marker\n";
+	next;
+      }
+    }
+    print STDERR "GOT $type, $description\n";
     if ($type eq "" || $description eq "") {
       print STDERR "$ARGV:$.:**** Improper /**-style comment: got type = \`$type\', description = \`$description\'.\n";
       next;
@@ -177,23 +216,25 @@ while (<>) {
     if (uc($type) eq "HOOK") {
       my $filename = $ARGV;
       my $line = $.;
-      my $body = ReadRestOfComment("");
+      my $body = ReadRestOfComment("",$fScheme);
       print STDERR "**** $filename:$line: warning -- old-style HOOK documentation\n";
       ProcessHookComment($filename, $line, $description,$body);
     } elsif (uc($type) eq "CONCEPT") {
       my $filename = $ARGV;
       my $line = $.;
-      my $body = ReadRestOfComment("");
+      my $body = ReadRestOfComment("",$fScheme);
       ProcessConceptComment($filename, $line, $description,$body);
     } elsif (uc($type) eq "VAR") {
       my $filename = $ARGV;
       my $line = $.;
-      my $body = ReadRestOfComment("");
+      my $body = ReadRestOfComment("",$fScheme);
       ProcessVarComment($filename, $line, $description, $body);
     } else {
       print STDERR "$ARGV:$.:**** Unrecognized type for /**-style comment = \`$type\'\n";
       next;
     }
+  } elsif (m%^\s*$%) {
+    $last_public_scheme_definition = "";
   }
 }
 
@@ -664,18 +705,33 @@ sub PurposeFromComment ( $$$$ ) {
   return $purpose;
 }
 
-
-sub ReadRestOfComment ( $ ) {
-  my ($comment) = @_;
-  while (defined($_ = <>) && $_ !~ m%\*/%) {
-    $comment .= $_;
-    if (eof) {
-      close(ARGV);
-      $current_module = "";
+# $comment is the part of the comment we've already read
+sub ReadRestOfComment ( $$ ) {
+  my ($comment, $fScheme) = @_;
+  if ($fScheme) {
+    while (defined($_ = <>) && m%^;;;%) {
+      $comment .= $_;
+      if (eof) {
+	close(ARGV);
+	# FIXGJB: this might be wrong-- resetting too early?
+	$current_module = "";
+      }
     }
+  } else {
+    # read rest of C comment
+    if ($comment !~ m%\*/%) {
+      while (defined($_ = <>) && $_ !~ m%\*/%) {
+	$comment .= $_;
+	if (eof) {
+	  close(ARGV);
+	  # FIXGJB: this might be wrong-- resetting too early?
+	  $current_module = "";
+	}
+      }
+      $comment .= $_;
+    }
+    $comment =~ s%\*/\s*$%%s;
   }
-  $comment .= $_;
-  $comment =~ s%\*/\s*$%%s;
   return $comment;
 }
 
@@ -836,6 +892,7 @@ sub CNameMatchesSchemeName( $$ ) {
   my $expected_primname = $cprimname;
   $expected_primname =~ s/_[pP]\b/?/g;
   $expected_primname =~ s/_[xX]\b/!/g;
+  $expected_primname =~ s/\bpct_/%/g;
   $expected_primname =~ s/_/-/g;
   # alternative possibility (ignoring chance of multiple to's in string)
   my $expected_primname2 = $expected_primname;
