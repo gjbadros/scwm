@@ -1,3 +1,20 @@
+Tue May  4 16:16:30 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleScwmExec): If first XGetWindowProperty fails,
+	then do not keep trying -- reset saved_bytes_after to 0 so it will 
+	exit.  Not sure if this takes care of the problem I am seeing or
+	not...
+
+Tue May  4 13:04:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* color.h: Added borrowed field to colors to mark those colors
+	that are borrowed from other applications and should not be freed
+	by Scwm with XFreeColors (was getting a BadAccess X error
+	message).
+
+	* color.c: Do not XFreeColors if sc->borrowed (avoid BadAccess X
+	error).  Set borrowed in ClosestColor.
+
 Mon May  3 21:04:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added `any-id->window' for getting the window from any 

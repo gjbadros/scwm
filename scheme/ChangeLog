@@ -1,3 +1,15 @@
+Tue May  4 16:19:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* auto-raise.scm: Added missing use-module of (app scwm style)
+
+	* prompt-string.scm: Use * 8, not 10, as the factor for text
+	widths.  Still not right -- should find the width of the text in
+	the font in use.
+
+Tue May  4 16:19:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* tests/demo.scm: Added bigger icons for run-ScwmButtons demo.
+
 Tue May  4 14:29:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* flux-gtk.scm: Fix prompt in
