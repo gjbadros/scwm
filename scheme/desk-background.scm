@@ -62,6 +62,8 @@ The default may be set by setting the background for DESK #t."
 			   image-style)
 			  (else
 			   (error "Invalid image-style specifier")))))
+  (if (eq? desk (current-desk))
+      (desk-background-hook desk desk))
   (cond ((not desk-bg-hooked)
 	 (add-hook! change-desk-hook desk-background-hook)
 	 (set! desk-bg-hooked #t))))

@@ -1,3 +1,9 @@
+Tue Apr  9 00:06:10 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* desk-background.scm: Made 'desk-background' apply the change
+	immediately if you happen to be on the desktop that is being
+	changed.
+
 Mon Apr  8 23:44:56 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* animation.scm: Removed some poor comments and tests.
