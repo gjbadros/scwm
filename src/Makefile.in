@@ -130,9 +130,10 @@ init_scheme_string.c: ../scheme/minimal.scm
 # guile-snarf builds the .x file which gets included by the .c
 # file.  It is needed to create the dependencies, and to compile
 # the .c file into the .o file
-image.d image.o: image.x
+%.d %.o: %.x
 
-image.x: image.c
+# Grab the SCM_PROC-s from the C source code
+%.x: %.c
 	guile-snarf $(CFLAGS) $< >tmp && mv tmp $@
 
 #
