@@ -25,8 +25,7 @@ LDFLAGS=@LDFLAGS@
 X_LIBRARY=-lX11 @LIBS@
 XEXT_LIBRARY=-lXext
 XPM_LIBRARY=-lXpm
-SCWM_LIBRARY=-l${scwm_name}
-LIBS=-L../../libs ${x_libraries} ${SCWM_LIBRARY} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
+LIBS=-L../../libs ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
 
 PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
                -DSCWMDIR=\"${scwm_dir}\" \
