@@ -54,24 +54,20 @@
     (if (string? imagepath)
 	(begin
 	  (set! passive-image (gtk-pixmap-new imagepath button))
-	  (gtk-widget-show passive-image)
 	  (gtk-container-add button passive-image))
 	(error "Couldn't load passive image."))
     (set! imagepath (find-file-in-path active-icon-name image-load-path))
     (if (string? imagepath)
-	(begin
-	  (set! active-image (gtk-pixmap-new imagepath button))
-	  (gtk-widget-show active-image))
+	(set! active-image (gtk-pixmap-new imagepath button))
 	(error "Couldn't load active image."))
     (if (string? action)	;; permit "xterm" to mean (execute "xterm")
 	(let ((program-name action))
 	  (set! action (lambda () (execute program-name)))))
     (gtk-signal-connect button "clicked" action)
-    (gtk-widget-show button)
     (if (not parent)
 	(begin
 	  (gtk-container-add toplevel button)
-	  (gtk-widget-show toplevel))
+	  (gtk-widget-show-all toplevel))
 	(parent 'add-child button "Mail Notifier"))
     (lambda (action)
       (case action

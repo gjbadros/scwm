@@ -54,7 +54,6 @@ See also `prompt-enum'."
 	 (choice initval)
 	 (label (gtk-label-new prompt)))
     (gtk-box-pack-start hbox label #t #t)
-    (gtk-widget-show label)
     (let ((radiobuttons 
 	   (map (lambda (pair)
 		  (let ((but
@@ -62,7 +61,6 @@ See also `prompt-enum'."
 		    ;; (set-object-property! but 'symbol (car pair))
 		    (set! last but)
 		    (gtk-box-pack-start hbox but #t #t)
-		    (gtk-widget-show but)
 		    (if (eq? initval (car pair))
 			(begin
 			  (gtk-toggle-button-set-state but #t)
@@ -71,5 +69,5 @@ See also `prompt-enum'."
 					(lambda () (set! choice (car pair))))
 		    ))
 		choices)))
-      (gtk-widget-show hbox)
+      (gtk-widget-show-all hbox)
       (list hbox (lambda () choice)))))

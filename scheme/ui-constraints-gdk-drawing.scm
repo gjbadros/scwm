@@ -109,8 +109,6 @@ made visible, otherwise initialization will not occur."
 ;; (define win (gtk-window-new 'toplevel))
 ;; (define area (gtk-drawing-area-new))
 ;; (gtk-container-add win area)
-;; (gtk-widget-show area)
-;; (gtk-widget-show win)
 ;; (define style (gtk-widget-style win))
 ;; (define wnd (gtk-widget-window win))
 ;; (define gc (gdk-gc-new wnd))

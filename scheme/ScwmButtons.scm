@@ -104,8 +104,6 @@
 		      (set! tooltipstr ""))
 		  (if (string? imagepath)
 		      (let* ((image (gtk-pixmap-new imagepath button)))
-			(gtk-widget-show image)
-			(gtk-widget-show button)
 			(gtk-container-add button image)
 			(gtk-signal-connect button "clicked"
 					    (cadr f))
@@ -114,8 +112,7 @@
 	      button-item-list)
     (gtk-container-add toplevel toolbar)
     (gtk-toolbar-set-tooltips toolbar #t)
-    (gtk-widget-show toolbar)
-    (gtk-widget-show toplevel)
+    (gtk-widget-show-all toplevel)
 
     (letrec ((imnph 
 	      (lambda (win x y)

@@ -60,6 +60,5 @@ See also `prompt-bool'."
 	 (checkbut (gtk-check-button-new-with-label prompt)))
     (gtk-toggle-button-set-state checkbut initval)
     (gtk-box-pack-start hbox checkbut #t #t)
-    (gtk-widget-show checkbut)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     (list hbox (lambda () (string=? "active" (gtk-widget-state checkbut))))))

@@ -147,9 +147,7 @@ See also `prompt-string'."
     (gtk-box-pack-start hbox label #f #f 10)
     (gtk-box-pack-start hbox entry #t #t)
     (gtk-widget-set-usize entry (min 450 (max 100 (* 8 (string-length entry-init)))) 30)
-    (gtk-widget-show entry)
-    (gtk-widget-show label)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     (list hbox (lambda () initval) entry)))
 
 
@@ -292,14 +290,12 @@ want the saved preferences to take effect."
 	 )
     (gtk-window-set-title toplevel "Scwm Options")
     (gtk-box-pack-start vbox nb #t #t)
-    (gtk-widget-show vbox)
     (gtk-box-pack-start vbox hbox #t #t)
-    (gtk-widget-show hbox)
     (gtk-container-add toplevel vbox)
     (gtk-tooltips-enable tooltip)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
+    (gtk-widget-show-all toplevel)
     (lambda ()
       (gtk-widget-hide toplevel)
       (gtk-widget-destroy toplevel))))
@@ -309,11 +305,6 @@ want the saved preferences to take effect."
 					(symbol->string (scwm-option-type b))))))
 
 ;;(sort-options-by-type scwm-options)
-
-(define (show-gtk-label-new str)
-  (let ((label (gtk-label-new str)))
-    (gtk-widget-show label)
-    label))
 
 (define-public (scwm-options-notebook done-action cancel-action)
   (let* ((nb (gtk-notebook-new))
@@ -327,9 +318,9 @@ want the saved preferences to take effect."
 						     cancel-action title 
 						     (sort-options-by-type (cdr page)))))
 		  (gtk-notebook-append-page nb vbox
-					    (show-gtk-label-new title))))
+					    (gtk-label-new title))))
 	      by-group)
-    (gtk-widget-show nb)
+    (gtk-widget-show-all nb)
     nb))
 
 (define ui-box-spacing 4)
@@ -362,9 +353,7 @@ want the saved preferences to take effect."
 			(lambda (row col event)
 			  (listbook-select-row contents row frame)))
     (gtk-clist-select-row clist 0 0)
-    (gtk-widget-show clist)
-    (gtk-widget-show frame)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     hbox))
 
 (define (listbook-select-row contents row frame)
@@ -417,16 +406,14 @@ want the saved preferences to take effect."
 	 (cancelbut (gtk-button-new-with-label "Dismiss"))
 	 (hbuttonbox (gtk-hbutton-box-new))
 	 )
-    (map (lambda (w) (gtk-box-pack-start vbox w #t #f) (gtk-widget-show w))
+    (map (lambda (w) (gtk-box-pack-start vbox w #t #f))
 	 widgets)
-    (map (lambda (w) (gtk-box-pack-start hbuttonbox w #t #t) (gtk-widget-show w))
+    (map (lambda (w) (gtk-box-pack-start hbuttonbox w #t #t))
 	 (list okbut applybut cancelbut))
-    (gtk-widget-show hbox)
     (gtk-box-pack-start hbox hbuttonbox #t #t)
-    (gtk-widget-show hbuttonbox)
     (gtk-box-pack-start vbox hbox #f 0)
     (gtk-button-box-set-layout hbuttonbox 'spread)
-    (gtk-widget-show vbox)
+    (gtk-widget-show-all vbox)
     (gtk-signal-connect applybut "pressed" 
 			(lambda () (apply-action)))
     (gtk-signal-connect okbut "pressed" (lambda () (apply-action) (done-action)))

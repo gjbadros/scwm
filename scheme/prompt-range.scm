@@ -91,9 +91,7 @@ See also `prompt-range'."
     (gtk-scale-set-draw-value scale #t)
     (gtk-box-pack-start hbox label #f #f 5)
     (gtk-box-pack-start hbox scale #t #t)
-    (gtk-widget-show label)
-    (gtk-widget-show scale)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     (list hbox (lambda () (gtk-adjustment-value adjustment)))))
 
 (define-public (prompt-integer-range-hbox prompt range initval)

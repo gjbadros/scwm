@@ -65,16 +65,10 @@ random window that matches PREDICATE."
 	 box
 	 (let ((table (gtk-table-new 2 15 #f))
 	       (row 1))
-	   (gtk-table-attach
-	    table
-	    (let ((label (gtk-label-new "active")))
-	      (gtk-widget-show label)
-	      label)
-	    1 2 0 1 () () 2 5)
+	   (gtk-table-attach table (gtk-label-new "active") 1 2 0 1 () () 2 5)
 	   (for-each
 	    (lambda (name prompter getter converter style)
 	      (let ((button (gtk-check-button-new)))
-		(gtk-widget-show button)
 		(gtk-table-attach
 		 table
 		 (let* ((wg (prompter name (getter template)))
@@ -135,7 +129,7 @@ random window that matches PREDICATE."
 	      #:no-titlebar #:squashed-titlebar #:plain-border
 	      #:no-side-decorations
 	      #:start-iconified #:start-lowered #:start-window-shaded))
-	   (gtk-widget-show table)
+	   (gtk-widget-show-all table)
 	   table)
 	 #t #t)
 	(gtk-box-pack-start
@@ -146,7 +140,6 @@ random window that matches PREDICATE."
 			bbox 
 			(let ((button (gtk-button-new-with-label label)))
 			  (gtk-signal-connect button "pressed" action)
-			  (gtk-widget-show button)
 			  (if (eq? action Cancel)
 			      (add-hook! apply-hook
 					 (lambda ()
@@ -157,12 +150,10 @@ random window that matches PREDICATE."
 			#t #f))
 		     '("Ok" "Apply" "Cancel")
 		     (list Ok Apply Cancel))
-	   (gtk-widget-show bbox)
 	   bbox)
 	 #f #f 5)
-	(gtk-container-add top box)
-	(gtk-widget-show box))
-      (gtk-widget-show top))))
+	(gtk-container-add top box))
+      (gtk-widget-show-all top))))
 
 (define*-public (make-window-style-menu #&optional (win (get-window)))
   "Offer a choice to style the window, like named windows, or a whole class.

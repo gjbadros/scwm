@@ -81,7 +81,6 @@ not support this procedure (you should upgrade!)."
       (id->window (gtk-window-get-window-id gtkwin))))
 
 ;; (define f (gtk-window-new 'toplevel))
-;; (gtk-widget-show f)
 ;; (gtk-window-get-window-id f)
 ;; (id->window (gtk-window-get-window-id f))
 ;; (gtk-window->scwm-window f)

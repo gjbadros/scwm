@@ -54,12 +54,9 @@ TITLE is a window title."
     (gtk-box-pack-start hbox-buttons cancelbut #t #t)
     (gtk-box-pack-start hbox hbox-buttons #t #t)
     (gtk-container-add toplevel hbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
+    (gtk-widget-show-all toplevel)
     (gtk-signal-connect okbut "pressed" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
@@ -97,10 +94,7 @@ See also `prompt-proc'."
     (gtk-box-pack-start hbox (or cb entry) #t #t)
     (gtk-box-pack-start hbox selbut #f #f 10)
     (gtk-widget-set-usize entry (min 450 (max 100 (* 10 (string-length entry-init)))) 30)
-    (gtk-widget-show (or cb entry))
-    (gtk-widget-show label)
-    (gtk-widget-show selbut)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     (gtk-signal-connect selbut "pressed"
 			(lambda ()
 			  (let* ((proc-selector (gtk-proc-selection-new "Procedure Selection Dialog"))
@@ -195,8 +189,7 @@ See also `prompt-proc'."
     (gtk-box-pack-start vbox hbuttonbox #f #f 0)
     (gtk-box-pack-start hbuttonbox okbut #f #f 0)
     (gtk-box-pack-start hbuttonbox cancelbut #f #f 0)
-    (map gtk-widget-show (list vbox hbuttonbox clist scrolled-win okbut cancelbut toplevel 
-			       doc-scrolled-win doc-textbox))
+    (gtk-widget-show-all toplevel)
     (list toplevel okbut cancelbut clist 
 	  ;; GJB:FIXME:: the number of columns (1) is a hack
 	  (lambda () (if (>= selected-row 0)

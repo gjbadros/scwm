@@ -71,10 +71,7 @@ See also `prompt-font'."
     (gtk-box-pack-start hbox entry #t #t)
     (gtk-box-pack-start hbox selbut #f #f 10)
     (gtk-widget-set-usize entry (min 450 (max 100 (* 10 (string-length entry-init)))) 30)
-    (gtk-widget-show entry)
-    (gtk-widget-show label)
-    (gtk-widget-show selbut)
-    (gtk-widget-show hbox)
+    (gtk-widget-show-all hbox)
     (gtk-signal-connect selbut "pressed"
 			(lambda ()
 			  (let ((dialog (gtk-font-selection-dialog-new "Font Selection Dialog")))
