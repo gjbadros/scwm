@@ -1,3 +1,63 @@
+Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* color.c, color.h: Color object rewrite. The followinf new
+ 	features are available: colors are properly garbage collected, and
+ 	are freed when no longer in use. Changing colors a lot will no
+ 	longer gradually eat your colormap. Procedures to set colors have
+ 	been split to set one color at a time. And color objects are
+ 	cached just like image and font objects, so specifying colors by
+ 	string should provide maximal color object sharing
+ 	automatically. The following new procedures are available:
+
+	make-color STRING - replaces load-color
+
+	color-properties COLOR - returns the properties of a color object:
+ 	currently only name and the X pixel value it uses.
+
+	clear-color-cache-entry STRING - clears an entry in the color
+ 	cache; shouldn't be necessary unless you do something really weird
+ 	to your X server, but provided for consistency.
+
+	make-relief-color COLOR FACTOR - factor is a floating point number
+ 	that is multiplied by the color's saturation and luminosity in HLS
+ 	sppace. This is used with specific factors to 
+	
+	set-hilight-foreground! COLOR, set-hilight-background! COLOR -
+ 	these replace set-hilight-colors! FG BG
+
+	set-menu-foreground! COLOR, set-menu-background! COLOR,
+ 	set-menu-stipple! COLOR - replace set-menu-colors!
+	
+	set-hilight-factor! FLOAT - sets the factor that is used by
+ 	windows with the current decor to generate the relief "hilight"
+ 	color for the regular and hilight background.
+
+	set-shadow-factor! FLOAT - sets the factor that is used by windows
+ 	with the current decor to generate the relief "shadow" color for
+ 	the regular and hilight background.
+
+	hilight-factor, shadow-factor - retrieve the settings of the above
+ 	two factors from the current decor.]
+
+	set-menu-hilihght-factor! FLOAT, set-menu-shadow-factor! FLOAT,
+ 	menu-hilight-factor, menu-shadow-factor - analogous to the above
+ 	but for menus, and are global, not decor-specific.
+	
+	All procedures that take a color (except color-properties) will also
+ 	accept a string that specifies a color.
+	
+	window.c: set-window-colors! split into set-window-foreground! and
+ 	set-window-background!, and converted to use new color system.
+	
+	add_window.c, borders.c, decor.c, events.c, face.c, icons.c,
+ 	module-interface.c, module-interface.h, scmprocs.c, scmptypes.c,
+ 	screen.h, scwm.c, scwmmenu.c, window.c, window.h: converted to new
+ 	color system.
+
+	colors.c: Removed GetHilite and GetShadow.
+
+	Makefile.in: generate color.x
+	
 Sat Mar 14 01:04:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.h: Remove or comment out some unused fields of the window
@@ -1430,7 +1490,7 @@ Thu Sep 18 01:27:08 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	set-edge-resistance!, set-desk-size!, get-display-size,
  	get-desk-size, get-viewport-position, get-current-desk.
 
-	* window.c: Added move-window-to-desk operation.
+* window.c: Added move-window-to-desk operation.
 
 	* Imakefile: Added paths.c to build process.
 

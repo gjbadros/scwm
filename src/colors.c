@@ -28,11 +28,6 @@
 #include "screen.h"
 #include "colors.h"
 
-char *white = "white";
-char *black = "black";
-
-extern char *Hiback;
-extern char *Hifore;
 
 static void 
 nocolor(char *note, char *name)
@@ -90,96 +85,6 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
 }
 
 
-/****************************************************************************
- * 
- * Loads a single color
- *
- ****************************************************************************/
-static Pixel 
-GetColor(char *name)
-{
-  XColor color;
-
-  color.pixel = 0;
-  if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, name, &color)) {
-    nocolor("parse", name);
-  } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
-    nocolor("alloc", name);
-  }
-  return color.pixel;
-}
-
-/****************************************************************************
- *
- * This routine computes the shadow color from the background color
- *
- ****************************************************************************/
-Pixel 
-GetShadow(Pixel background)
-{
-  XColor bg_color;
-  XWindowAttributes attributes;
-  unsigned int r, g, b;
-
-  XGetWindowAttributes(dpy, Scr.Root, &attributes);
-
-  bg_color.pixel = background;
-  XQueryColor(dpy, attributes.colormap, &bg_color);
-
-  r = bg_color.red; /* % 0xffff; */
-  g = bg_color.green; /* % 0xffff; */
-  b = bg_color.blue; /* % 0xffff; */
-
-  r = r >> 1;
-  g = g >> 1;
-  b = b >> 1;
-
-  bg_color.red = r;
-  bg_color.green = g;
-  bg_color.blue = b;
-
-  if (!XAllocColor(dpy, attributes.colormap, &bg_color)) {
-    puts("color allocation failed.");
-    nocolor("alloc shadow", "");
-    bg_color.pixel = background;
-  }
-  return bg_color.pixel;
-}
-
-/****************************************************************************
- *
- * This routine computes the hilight color from the background color
- *
- ****************************************************************************/
-Pixel 
-GetHilite(Pixel background)
-{
-  XColor bg_color, white_p;
-  XWindowAttributes attributes;
-
-  XGetWindowAttributes(dpy, Scr.Root, &attributes);
-
-  bg_color.pixel = background;
-  XQueryColor(dpy, attributes.colormap, &bg_color);
-
-  white_p.pixel = GetColor(white);
-  XQueryColor(dpy, attributes.colormap, &white_p);
-
-  bg_color.red = max((white_p.red / 5), bg_color.red);
-  bg_color.green = max((white_p.green / 5), bg_color.green);
-  bg_color.blue = max((white_p.blue / 5), bg_color.blue);
-
-  bg_color.red = min(white_p.red, (bg_color.red * 140) / 100);
-  bg_color.green = min(white_p.green, (bg_color.green * 140) / 100);
-  bg_color.blue = min(white_p.blue, (bg_color.blue * 140) / 100);
-
-  if (!XAllocColor(dpy, attributes.colormap, &bg_color)) {
-    nocolor("alloc hilight", "");
-    bg_color.pixel = background;
-  }
-  return bg_color.pixel;
-}
-
 /***********************************************************************
  *
  *  Procedure:
@@ -206,8 +111,6 @@ CreateGCs(void)
 
   Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
-
-
 
 /****************************************************************************
  * 

@@ -21,4 +21,6 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
 
 SCM marshal_fvwm2_config_info (SCM win);
 
+void init_module_interface();
+
 #endif /* _MODULE_INTERFACE_H_ */

@@ -35,9 +35,6 @@
 #include "misc.h"
 #include "string_token.h"
 
-#define scmBLACK load_color(gh_str02scm("black"))
-#define scmWHITE load_color(gh_str02scm("white"))
-
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
@@ -199,7 +196,7 @@ make_menu(SCM list_of_menuitems,
 
   iarg++;
   if (UNSET_SCM(side_bg_color)) {
-    side_bg_color = scmWHITE;
+    side_bg_color = WHITE_COLOR;
   } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
     scm_wrong_type_arg(s_make_menu,iarg,side_bg_color);
   }
@@ -207,7 +204,7 @@ make_menu(SCM list_of_menuitems,
 
   iarg++;
   if (UNSET_SCM(bg_color)) {
-    bg_color = scmWHITE; /* FIXGJB: Scr.MenuColors.back; */
+    bg_color = Scr.MenuColors.bg; 
   } else if (!COLOR_OR_SYMBOL_P(bg_color)) {
     scm_wrong_type_arg(s_make_menu,iarg,bg_color);
   }
@@ -215,7 +212,7 @@ make_menu(SCM list_of_menuitems,
 
   iarg++;
   if (UNSET_SCM(text_color)) {
-    text_color =  scmBLACK; /* FIXGJB: Scr.MenuColors.fore ; */
+    text_color =  Scr.MenuColors.fg;
   } else if (!COLOR_OR_SYMBOL_P(text_color)) {
     scm_wrong_type_arg(s_make_menu,iarg,text_color);
   }

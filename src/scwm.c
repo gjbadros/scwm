@@ -225,17 +225,18 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = False;
-
+  
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
      while debugging: FIXGJB: make these runtime options -- also,
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
-
+  
   init_scwm_types();
   init_image();
   init_font();
+  init_color();
   init_module_interface();
   init_miscprocs();
   init_menuitem();
@@ -248,106 +249,107 @@ scwm_main(int argc, char **argv)
 #ifdef USE_CASSOWARY
   cassowary();
 #endif
+
   szCmdConfig = safemalloc(1 * sizeof(char));
-
+  
   szCmdConfig[0] = '\0';
-
+  
   g_argv = argv;
   g_argc = argc;
 
   DBUG("main", "Entered, about to parse args");
-
+  
 #ifdef HAVE_GETOPT_LONG  
   getopt_opts = "Dsd:f:e:hibV";
   
   while(1) {
-      static struct option getopt_longopts[] =
-      {
-          {"debug", 0, NULL, 'D'},
-	  {"single-screen", 0, NULL, 's'},
-	  {"display", 1, NULL, 'd'},
-	  {"file", 1, NULL, 'f'},
-	  {"expression", 1, NULL, 'e'},
-	  {"help", 0, NULL, 'h'},
-          {"blackout", 0, NULL, 'b'},
-          {"version", 0, NULL, 'V'},
-          {NULL, 0, NULL, 0}
-      };
-
-      getopt_ret = getopt_long(argc, argv, getopt_opts,
-                               getopt_longopts, 0);
-      if(getopt_ret == EOF) break;
-      
-      switch(getopt_ret) {
-      case 'D':
-	debugging = True; break;
-      case 's':
-	single = True; break;
-      case 'd':
-	if(optarg == NULL) {
-	  option_error = True;
-	  break;
-	} else {
-	  display_name = optarg;
-	  break;
-	}
-      case 'f':
-	if(optarg == NULL) {
-	  option_error=True;
-	  break;
-	} else {
-	  szCmdConfig = realloc(szCmdConfig, sizeof(char) * 
-				 (strlen(szCmdConfig) +
-				  strlen(szLoad_pre) +
-				  strlen(optarg) +
-				  strlen(szLoad_post) + 1));
-	  
-	  szCmdConfig = strcat(szCmdConfig, szLoad_pre);
-	  szCmdConfig = strcat(szCmdConfig, optarg);
-	  szCmdConfig = strcat(szCmdConfig, szLoad_post);
-	  break;
-	}
-      case 'e':
-	if(optarg == NULL) {
-	  option_error=True;
-	  break;
-	} else {
-	  szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			       (strlen(szCmdConfig) +
-				strlen(optarg) + 1));
-	  
-	  szCmdConfig = strcat(szCmdConfig, optarg);
-	  break;
-	}
-      case 'h':
-	usage(); 
-	exit(0);
-      case 'b':
-	Blackout = True; 
-	break;
-      case 'V':
-	printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n",
-	       VERSION, __DATE__, __TIME__, rcsid);
-	exit(0);
-      case ':':
-	scwm_msg(ERR, "main", "Missing option argument: `-%c'\n",
-		 (char)optopt);
-	option_error = True; 
-	break;
-      case '?': /* getopt's dunno return */
-	option_error = True; 
-	break;
-      default:  /* if we made an error */
-	scwm_msg(ERR, "main", "Unknown option: `-%c'\n",  (char)optopt);
-	option_error = True; 
-	break;
+    static struct option getopt_longopts[] =
+    {
+      {"debug", 0, NULL, 'D'},
+      {"single-screen", 0, NULL, 's'},
+      {"display", 1, NULL, 'd'},
+      {"file", 1, NULL, 'f'},
+      {"expression", 1, NULL, 'e'},
+      {"help", 0, NULL, 'h'},
+      {"blackout", 0, NULL, 'b'},
+      {"version", 0, NULL, 'V'},
+      {NULL, 0, NULL, 0}
+    };
+    
+    getopt_ret = getopt_long(argc, argv, getopt_opts,
+			     getopt_longopts, 0);
+    if(getopt_ret == EOF) break;
+    
+    switch(getopt_ret) {
+    case 'D':
+      debugging = True; break;
+    case 's':
+      single = True; break;
+    case 'd':
+      if(optarg == NULL) {
+        option_error = True;
+      break;
+      } else {
+        display_name = optarg;
+        break;
       }
+    case 'f':
+      if(optarg == NULL) {
+        option_error=True;
+        break;
+      } else {
+        szCmdConfig = realloc(szCmdConfig, sizeof(char) * 
+			      (strlen(szCmdConfig) +
+			       strlen(szLoad_pre) +
+			       strlen(optarg) +
+			       strlen(szLoad_post) + 1));
+        
+        szCmdConfig = strcat(szCmdConfig, szLoad_pre);
+        szCmdConfig = strcat(szCmdConfig, optarg);
+	szCmdConfig = strcat(szCmdConfig, szLoad_post);
+        break;
+      }
+    case 'e':
+      if(optarg == NULL) {
+        option_error=True;
+      break;
+      } else {
+        szCmdConfig=realloc(szCmdConfig, sizeof(char) *
+			    (strlen(szCmdConfig) +
+			     strlen(optarg) + 1));
+        
+	szCmdConfig = strcat(szCmdConfig, optarg);
+        break;
+      }
+    case 'h':
+      usage(); 
+      exit(0);
+    case 'b':
+      Blackout = True; 
+      break;
+    case 'V':
+      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n",
+             VERSION, __DATE__, __TIME__, rcsid);
+      exit(0);
+    case ':':
+      scwm_msg(ERR, "main", "Missing option argument: `-%c'\n",
+               (char)optopt);
+      option_error = True; 
+      break;
+    case '?': /* getopt's dunno return */
+      option_error = True; 
+      break;
+    default:  /* if we made an error */
+      scwm_msg(ERR, "main", "Unknown option: `-%c'\n",  (char)optopt);
+      option_error = True; 
+      break;
+    }
   }
 #else /* ! HAVE_GETOPT_LONG */
   /* FIXMS: perhaps it would be cleaner to provide an implementation of
      getopt_long where not available, that should be a lot easier to 
      maintain. */
-    for (i = 1; i < argc; i++) {
+  for (i = 1; i < argc; i++) {
     if ((strncasecmp(argv[i], "-D", 2) == 0) ||
 	(strncasecmp(argv[i], "--debug", 7) == 0)) {
       debugging = True;
@@ -371,11 +373,11 @@ scwm_main(int argc, char **argv)
 	option_error=True;
       } else {
 	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			     (strlen(szCmdConfig) +
-			      strlen(szLoad_pre) +
-			      strlen(argv[i]) +
-			      strlen(szLoad_post) + 1));
-
+			    (strlen(szCmdConfig) +
+			     strlen(szLoad_pre) +
+			     strlen(argv[i]) +
+			     strlen(szLoad_post) + 1));
+	
 	szCmdConfig = strcat(szCmdConfig, szLoad_pre);
 	szCmdConfig = strcat(szCmdConfig, argv[i]);
 	szCmdConfig = strcat(szCmdConfig, szLoad_post);
@@ -388,7 +390,7 @@ scwm_main(int argc, char **argv)
 	option_error=True;
       } else {
 	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			     (strlen(szCmdConfig) + strlen(argv[i]) + 1));
+			    (strlen(szCmdConfig) + strlen(argv[i]) + 1));
 	szCmdConfig = strcat(szCmdConfig, argv[i]);
       }
     } else if ((strncasecmp(argv[i], "-h", 2) == 0) ||
@@ -409,44 +411,44 @@ scwm_main(int argc, char **argv)
     }
   }
 #endif
-
+  
   if(option_error) {
     usage();
     exit(-1);
   }
-
+  
   DBUG("main", "Done parsing args");
-
+  
   
   DBUG("main", "Installing signal handlers");
-
+  
   newhandler(SIGINT);
   newhandler(SIGHUP);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   signal(SIGUSR1, Restart);
-
+  
   ReapChildren();
-
+  
   if (!(dpy = XOpenDisplay(display_name))) {
     scwm_msg(ERR, "main", "can't open display %s", XDisplayName(display_name));
     exit(1);
   }
   Scr.screen = DefaultScreen(dpy);
   Scr.NumberOfScreens = ScreenCount(dpy);
-
+  
   master_pid = getpid();
-
+  
   if (!single) {
     int myscreen = 0;
     char *cp;
-
+    
     strcpy(message, XDisplayString(dpy));
-
+    
     for (i = 0; i < Scr.NumberOfScreens; i++) {
       if (i != Scr.screen && fork() == 0) {
 	myscreen = i;
-
+	
 	/*
 	 * Truncate the string 'whatever:n.n' to 'whatever:n',
 	 * and then append the screen number.
@@ -455,20 +457,20 @@ scwm_main(int argc, char **argv)
 	if (cp != NULL) {
 	  cp = strchr(cp, '.');
 	  if (cp != NULL)
-	    *cp = '\0';		/* truncate at display part */
+	    *cp = '\0';         /* truncate at display part */
 	}
 	sprintf(message + strlen(message), ".%d", myscreen);
 	dpy = XOpenDisplay(message);
 	Scr.screen = myscreen;
 	Scr.NumberOfScreens = ScreenCount(dpy);
-
+	
 	break;
       }
     }
   }
   x_fd = XConnectionNumber(dpy);
   fd_width = GetFdWidth();
-
+  
   if (fcntl(x_fd, F_SETFD, 1) == -1) {
     scwm_msg(ERR, "main", "close-on-exec failed");
     exit(1);
@@ -487,14 +489,14 @@ scwm_main(int argc, char **argv)
    * becomes part of the environment! */
   if (strncmp(display_string, "DISPLAY=:", 9) == 0) {
     char client[MAXHOSTNAME], *rdisplay_string;
-
+    
     gethostname(client, MAXHOSTNAME);
     rdisplay_string = safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client, &display_string[9]);
     putenv(rdisplay_string);
   } else if (strncmp(display_string, "DISPLAY=unix:", 13) == 0) {
     char client[MAXHOSTNAME], *rdisplay_string;
-
+    
     gethostname(client, MAXHOSTNAME);
     rdisplay_string = safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
@@ -502,32 +504,32 @@ scwm_main(int argc, char **argv)
     putenv(rdisplay_string);
   } else {
     char *rdisplay_string;
-
+    
     rdisplay_string = safemalloc(len + 14);
     sprintf(rdisplay_string, "HOSTDISPLAY=%s", XDisplayString(dpy));
     putenv(rdisplay_string);
   }
-
+  
   Scr.Root = RootWindow(dpy, Scr.screen);
   if (Scr.Root == None) {
     scwm_msg(ERR, "main", "Screen %d is not a valid screen", (char *) Scr.screen);
     exit(1);
   }
   ShapesSupported = XShapeQueryExtension(dpy, &ShapeEventBase, &ShapeErrorBase);
-
+  
   /* Need to do this after Scr.Root gets set */
   menu_init_gcs();
   InternUsefulAtoms();
-
+  
   /* Make sure property priority colors is empty */
   XChangeProperty(dpy, Scr.Root, _XA_MIT_PRIORITY_COLORS,
 		  XA_CARDINAL, 32, PropModeReplace, NULL, 0);
-
+  
   /* Announce support for scwmexec protocol. */
   XChangeProperty(dpy, Scr.Root, 
 		  XA_SCWMEXEC_LISTENER, XA_STRING,
 		  8, PropModeReplace, "scwm", 5);
-
+  
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
   XSelectInput(dpy, Scr.Root,
@@ -536,35 +538,39 @@ scwm_main(int argc, char **argv)
 	       SubstructureNotifyMask |
 	       ButtonPressMask | ButtonReleaseMask);
   XSync(dpy, 0);
-
+  
   XSetErrorHandler((XErrorHandler) ScwmErrorHandler);
-
-  BlackoutScreen();		/* if they want to hide the capture/startup */
-
+  
+  BlackoutScreen();           /* if they want to hide the capture/startup */
+  
   CreateCursors();
+
   InitVariables();
+
   InitEventHandlerJumpTable();
 
+  
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
-
+  
   /* Add the SCWM_LOAD_PATH preprocessor symbol and evironment
      variable to the guile load path. */
-
+  
   init_scwm_load_path();
-
+  
   DBUG("main", "Setting up rc file defaults...");
+
   SetRCDefaults();
 
   DBUG("main", "Running config_commands...");
-
+  
 #ifndef SCWMRC
 #define SCWMRC ".scwmrc"
 #endif
-
+  
   if (strlen(szCmdConfig) == 0) {
     gh_eval_str("(let ((home-scwmrc"
-	    "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
+		"       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
 		"      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
 		" (if (access? home-scwmrc R_OK)"
 		"     (primitive-load home-scwmrc)"
@@ -573,21 +579,23 @@ scwm_main(int argc, char **argv)
   } else {
     gh_eval_str(szCmdConfig);
   }
-
+  
   free(szCmdConfig);
-
+  
   CaptureAllWindows();
-
+  
   DBUG("main", "Done running config_commands");
 
   if (Scr.d_depth < 2) {
     Scr.gray_pixmap =
       XCreatePixmapFromBitmapData(dpy, Scr.Root, g_bits, g_width, g_height,
-				  Scr.MenuColors.fore, Scr.MenuColors.back,
+				  XCOLOR(Scr.MenuColors.fg), 
+				  XCOLOR(Scr.MenuColors.bg),
 				  Scr.d_depth);
     Scr.light_gray_pixmap =
       XCreatePixmapFromBitmapData(dpy, Scr.Root, l_g_bits, l_g_width, l_g_height,
-				  Scr.MenuColors.fore, Scr.MenuColors.back,
+				  XCOLOR(Scr.MenuColors.fg),
+				  XCOLOR(Scr.MenuColors.bg),
 				  Scr.d_depth);
   }
   /* create a window which will accept the keyboard focus when no other 
@@ -599,17 +607,17 @@ scwm_main(int argc, char **argv)
 				 CWEventMask | CWOverrideRedirect,
 				 &attributes);
   XMapWindow(dpy, Scr.NoFocusWin);
-
+  
   SetMWM_INFO(Scr.NoFocusWin);
-
+  
   XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
-
+  
   XSync(dpy, False);
   if (debugging)
     XSynchronize(dpy, True);
-
-  attributes.border_pixel = Scr.MenuColors.fore;
-  attributes.background_pixel = Scr.MenuColors.back;
+  
+  attributes.border_pixel = XCOLOR(Scr.MenuColors.fg);
+  attributes.background_pixel = XCOLOR(Scr.MenuColors.bg);
   attributes.bit_gravity = NorthWestGravity;
   valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
   /* FIXMS - this is bogus, needs to be redone on font change, etc */
@@ -644,14 +652,14 @@ scwm_main(int argc, char **argv)
 #ifndef NON_VIRTUAL
   initPanFrames();
 #endif
-
+  
   XGrabServer_withSemaphore(dpy);
-
+  
 #ifndef NON_VIRTUAL
   checkPanFrames();
 #endif
   XUngrabServer_withSemaphore(dpy);
-  UnBlackoutScreen();		/* if we need to remove blackout window */
+  UnBlackoutScreen();         /* if we need to remove blackout window */
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
   DBUG("main", "Entering HandleEvents loop...");
@@ -670,7 +678,7 @@ scwm_main(int argc, char **argv)
  *   Decorates all windows at start-up and during recaptures
  *
  ***********************************************************************/
-
+ 
 void 
 CaptureAllWindows(void)
 {
@@ -1267,6 +1275,9 @@ InitVariables(void)
 
   Scr.menu_font = SCM_UNDEFINED;
   Scr.icon_font = SCM_UNDEFINED;
+  Scr.MenuColors.bg = SCM_UNDEFINED;
+  Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
+
 
 #ifndef NON_VIRTUAL
   Scr.VxMax = 2 * Scr.MyDisplayWidth;

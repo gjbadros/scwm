@@ -57,18 +57,20 @@ free_face(SCM obj)
 SCM
 mark_face(SCM obj)
 {
-  if (!SCM_GC8MARKP(obj)) {
-    ButtonFace *bf;
-
-    SCM_SETGC8MARK(obj);
-    
-    for (bf=BUTTONFACE(obj); bf != NULL; bf = bf->next) {
-      if (((bf->style & ButtonFaceTypeMask) == PixmapButton) || 
-	  ((bf->style & ButtonFaceTypeMask) == TiledPixmapButton)) {
-	scm_gc_mark(bf->u.image);
-      }
+  ButtonFace *bf;
+  
+  SCM_SETGC8MARK(obj);
+  
+  for (bf=BUTTONFACE(obj); bf != NULL; bf = bf->next) {
+    if (((bf->style & ButtonFaceTypeMask) == PixmapButton) || 
+	((bf->style & ButtonFaceTypeMask) == TiledPixmapButton)) {
+      scm_gc_mark(bf->u.image);
+    }
+    if ((bf->style & ButtonFaceTypeMask) == SolidButton) {
+      scm_gc_mark(bf->u.back);
     }
   }
+  
   return SCM_BOOL_F;
 }
 
@@ -322,17 +324,13 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     }
 
   } else if (spec==sym_solid) {
-    if (gh_string_p(arg)) {
-      arg=load_color(arg);
-    } else if (!COLOR_P(arg)) {
-      /* FIXMS give a better error message */
-      scm_wrong_type_arg("add_spec_to_face_x",3,arg);
-    }
+    /* FIXMS give a better error message */
+    VALIDATE_COLOR(arg, "add_spec_to_face_x", arg);
 
     /* fully destructive, so free the face and 
        mutate it */
     FreeButtonFace(dpy,bf);
-    bf->u.back = COLOR(arg);
+    bf->u.back = arg;
     bf->style &= ~ButtonFaceTypeMask;
     bf->style |= SolidButton;
 

@@ -132,8 +132,8 @@ SCM marshal_fvwm2_config_info (SCM win)
   info[19] = sw->icon_w;
   info[20] = sw->icon_pixmap_w;
   info[21] = sw->hints.win_gravity;
-  info[22] = sw->TextPixel;
-  info[23] = sw->BackPixel;
+  info[22] = XCOLOR(sw->TextColor);
+  info[23] = XCOLOR(sw->BackColor);
 
   return (gh_str2scm((char *)info,24*sizeof(unsigned long)));
 }

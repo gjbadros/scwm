@@ -85,7 +85,7 @@ SCM set_icon_font_x(SCM font);
 SCM set_window_font_x(SCM font);
 SCM set_menu_font_x(SCM font);
 
-void init_font() ;
+void init_font();
 
 #endif /* FONT_H */
 

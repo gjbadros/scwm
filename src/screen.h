@@ -108,7 +108,7 @@ typedef struct ButtonFace {
   ButtonFaceStyle style;
   union {
     SCM image;
-    Pixel back;
+    SCM back;
     struct {
       int npixels;
       Pixel *pixels;
@@ -162,6 +162,9 @@ typedef struct ScwmDecor {
   struct BorderStyle {
     ButtonFace *active, *inactive;
   } BorderStyle;
+
+  double hilight_factor;
+  double shadow_factor;
   struct ScwmDecor *next;	/* additional user-defined styles */
   SCM scmdecor;
 } ScwmDecor;

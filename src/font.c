@@ -253,7 +253,7 @@ set_menu_font_x(SCM font)
   return (font);
 }
 
-SCM_PROC (s_clear_image_cache_entry, "clear-font-cache-entry", 1, 0, 0, clear_font_cache_entry);
+SCM_PROC (s_clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0, clear_font_cache_entry);
 
 SCM clear_font_cache_entry(SCM name)
 {

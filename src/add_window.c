@@ -204,6 +204,8 @@ AddWindow(Window w)
   ScwmWindow *tmp_win;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
 
+  SCM schwin; /* To make sure it's on the stack to be marked. */
+
   Pixmap TexturePixmap = None, TexturePixmapSave = None;
   unsigned long valuemask_save = 0;
 
@@ -218,7 +220,9 @@ AddWindow(Window w)
   int Desk = 0, border_width = 0, resize_width = 0;
   extern Bool NeedToResizeToo;
   extern ScwmWindow *colormap_win;
+#if 0
   char *forecolor = NULL, *backcolor = NULL;
+#endif
   int client_argc;
   char **client_argv = NULL, *str_type;
   Bool status;
@@ -228,6 +232,7 @@ AddWindow(Window w)
 
   NeedToResizeToo = False;
   /* allocate space for the scwm window */
+
   tmp_win = (ScwmWindow *) calloc(1, sizeof(ScwmWindow));
   if (tmp_win == (ScwmWindow *) 0) {
     return NULL;
@@ -307,7 +312,16 @@ AddWindow(Window w)
 
   saved_flags = tmp_win->flags;
   tmp_win->flags = tflag;
-  tmp_win->schwin = make_window(tmp_win);
+
+  /* FIXMS: need to find better way to ensure colors are valid before
+     window comes under GC control. */
+
+  tmp_win->TextColor = Scr.MenuColors.fg;
+  tmp_win->ReliefColor = Scr.MenuRelief.fg;
+  tmp_win->ShadowColor = Scr.MenuRelief.bg;
+  tmp_win->BackColor = Scr.MenuColors.bg;
+
+  tmp_win->schwin = schwin = make_window(tmp_win);
 
   run_new_window_hint_hook(tmp_win->schwin);
   tflag = tmp_win->flags;
@@ -392,11 +406,10 @@ AddWindow(Window w)
   tmp_win->flags &= ~MAXIMIZED;
 
 
-  tmp_win->TextPixel = Scr.MenuColors.fore;
-  tmp_win->ReliefPixel = Scr.MenuRelief.fore;
-  tmp_win->ShadowPixel = Scr.MenuRelief.back;
-  tmp_win->BackPixel = Scr.MenuColors.back;
+  /* MS: I believe this code can safely die - nothing's going to set
+     either forecolor or backcolor. */
 
+#ifdef 0
   if (forecolor != NULL) {
     XColor color;
 
@@ -414,6 +427,8 @@ AddWindow(Window w)
     tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
     tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
   }
+#endif
+
   /* add the window into the scwm list */
   tmp_win->next = Scr.ScwmRoot.next;
   if (Scr.ScwmRoot.next != NULL)
@@ -437,11 +452,11 @@ AddWindow(Window w)
       attributes.background_pixmap = Scr.sticky_gray_pixmap;
     valuemask |= CWBackPixmap;
   } else {
-    attributes.background_pixel = tmp_win->BackPixel;
+    attributes.background_pixel = SAFE_COLOR(tmp_win->BackColor);
     valuemask |= CWBackPixel;
   }
 
-  attributes.border_pixel = tmp_win->ShadowPixel;
+  attributes.border_pixel = SAFE_COLOR(tmp_win->ShadowColor);
 
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |

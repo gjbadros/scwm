@@ -35,7 +35,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "font.h"
-#include "color.h"
 #include "binding.h"
 #include "window.h"
 #include "events.h"
@@ -49,9 +48,6 @@
 void 
 init_scwm_procs(void)
 {
-  gh_new_procedure("load-color", load_color, 1, 0, 0);
-  gh_new_procedure("set-hilight-colors!", set_hilight_colors, 0, 2, 0);
-  gh_new_procedure("set-menu-colors!", set_menu_colors, 0, 3, 0);
   gh_new_procedure("set-menu-mwm-style!", set_menu_mwm_style, 0, 1, 0);
   gh_new_procedure("set-rubber-band-mask!", set_rubber_band_mask_x, 1, 0, 0);
   gh_new_procedure("set-animation!", set_animation_x, 1,0,0);
@@ -99,7 +95,6 @@ init_scwm_procs(void)
   gh_new_procedure("set-click-time!", set_click_time_x, 1, 0, 0);
   gh_new_procedure("set-colormap-focus!", set_colormap_focus_x, 1, 0, 0);
   gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x, 1, 0, 0);
-  gh_new_procedure("color?", color_p, 1, 0, 0);
   gh_new_procedure("font?", font_p, 1, 0, 0);
   gh_new_procedure("window?", window_p, 1, 0, 0);
   gh_new_procedure("scwm-quit", scwm_quit, 0, 0, RESTP_SCM);
@@ -141,7 +136,8 @@ init_scwm_procs(void)
   gh_new_procedure("icon-sticky?", icon_sticky_p, 0, 1, 0);
   gh_new_procedure("set-icon-box!", set_icon_box_x, 4, 1, 0);
   gh_new_procedure("set-window-focus!", set_window_focus_x, 1, 1, 0);
-  gh_new_procedure("set-window-colors!", set_window_colors_x, 0, 3, 0);
+  gh_new_procedure("set-window-foreground!", set_window_foreground_x, 1, 1, 0);
+  gh_new_procedure("set-window-background!", set_window_background_x, 1, 1, 0);
   gh_new_procedure("set-icon-title!", set_icon_title_x, 1, 1, 0);
   gh_new_procedure("bind-event", bind_event, 2, 0, 0);
   gh_new_procedure("set-random-placement!", set_random_placement_x, 1, 1, 0);

@@ -73,6 +73,7 @@
 #include "colormaps.h"
 #include "module-interface.h"
 #include "events.h"
+#include "color.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
@@ -307,8 +308,8 @@ HandleFocusIn()
     } else {
       SetBorder(Scr.Hilite, False, True, True, None);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
-		Scr.DefaultDecor.HiColors.fore,
-		Scr.DefaultDecor.HiColors.back,
+		XCOLOR(Scr.DefaultDecor.HiColors.fg),
+		XCOLOR(Scr.DefaultDecor.HiColors.bg),
 		0, 0);
       if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
 	if ((Scr.Hilite) && (!(Scr.Hilite->flags & ICONIFIED))) {
@@ -322,8 +323,8 @@ HandleFocusIn()
     SetBorder(swCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, swCurrent->w,
 	      swCurrent->frame, (unsigned long) swCurrent,
-	      GetDecor(swCurrent, HiColors.fore),
-	      GetDecor(swCurrent, HiColors.back),
+	      XCOLOR(GetDecor(swCurrent, HiColors.fg)),
+	      XCOLOR(GetDecor(swCurrent, HiColors.bg)),
 	      0, 0);
     if (Scr.ColormapFocus == COLORMAP_FOLLOWS_FOCUS) {
       if ((Scr.Hilite) && (!(Scr.Hilite->flags & ICONIFIED))) {

@@ -95,7 +95,7 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     break;
 
   case SolidButton:
-    XSetWindowBackground(dpy, win, bf->u.back);
+    XSetWindowBackground(dpy, win, XCOLOR(bf->u.back));
     flush_expose(win);
     XClearWindow(dpy, win);
     break;
@@ -585,12 +585,12 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
       w = t->icon_w;
     Scr.Hilite = t;
 
-    TextColor = GetDecor(t, HiColors.fore);
+    TextColor = XCOLOR(GetDecor(t, HiColors.fg));
     BackPixmap = Scr.gray_pixmap;
-    BackColor = GetDecor(t, HiColors.back);
+    BackColor = XCOLOR(GetDecor(t, HiColors.bg));
     ReliefGC = GetDecor(t, HiReliefGC);
     ShadowGC = GetDecor(t, HiShadowGC);
-    BorderColor = GetDecor(t, HiRelief.back);
+    BorderColor = XCOLOR(GetDecor(t, HiRelief.bg));
   } else {
     /* don't re-draw just for kicks */
     if ((!force) && (Scr.Hilite != t))
@@ -607,20 +607,20 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
       TexturePixmap = IMAGE(GetDecor(t, BorderStyle.inactive->u.image))->image;
 
-    TextColor = t->TextPixel;
+    TextColor = XCOLOR(t->TextColor);
     BackPixmap = Scr.light_gray_pixmap;
     if (t->flags & STICKY)
       BackPixmap = Scr.sticky_gray_pixmap;
-    BackColor = t->BackPixel;
-    Globalgcv.foreground = t->ReliefPixel;
+    BackColor = XCOLOR(t->BackColor);
+    Globalgcv.foreground = XCOLOR(t->ReliefColor);
     Globalgcm = GCForeground;
     XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
     ReliefGC = Scr.ScratchGC1;
 
-    Globalgcv.foreground = t->ShadowPixel;
+    Globalgcv.foreground = XCOLOR(t->ShadowColor);
     XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
     ShadowGC = Scr.ScratchGC2;
-    BorderColor = t->ShadowPixel;
+    BorderColor = XCOLOR(t->ShadowColor);
   }
 
   if (t->flags & ICONIFIED) {
@@ -948,19 +948,19 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
     return;
 
   if (onoroff) {
-    Forecolor = GetDecor(t, HiColors.fore);
-    BackColor = GetDecor(t, HiColors.back);
+    Forecolor = XCOLOR(GetDecor(t, HiColors.fg));
+    BackColor = XCOLOR(GetDecor(t, HiColors.bg));
     ReliefGC = GetDecor(t, HiReliefGC);
     ShadowGC = GetDecor(t, HiShadowGC);
   } else {
-    Forecolor = t->TextPixel;
-    BackColor = t->BackPixel;
-    Globalgcv.foreground = t->ReliefPixel;
+    Forecolor = XCOLOR(t->TextColor);
+    BackColor = XCOLOR(t->BackColor);
+    Globalgcv.foreground = XCOLOR(t->ReliefColor);
     Globalgcm = GCForeground;
     XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
     ReliefGC = Scr.ScratchGC1;
 
-    Globalgcv.foreground = t->ShadowPixel;
+    Globalgcv.foreground = XCOLOR(t->ShadowColor);
     XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
     ShadowGC = Scr.ScratchGC2;
   }
@@ -1204,6 +1204,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   int xwidth, ywidth, left, right;
   Bool shaded = SHADED_P(tmp_win);
 
+  /* FIXMS: I think this can be safely removed, check RSN. */
   /* if windows is not being maximized, save size in case of maximization */
   if (!(tmp_win->flags & MAXIMIZED) && !shaded) {
     tmp_win->orig_x = x;
@@ -1211,6 +1212,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
     tmp_win->orig_wd = w;
     tmp_win->orig_ht = h;
   }
+
   if (x >= Scr.MyDisplayWidth + Scr.VxMax - Scr.Vx - 16)
     x = Scr.MyDisplayWidth + Scr.VxMax - Scr.Vx - 16;
   if (y >= Scr.MyDisplayHeight + Scr.VyMax - Scr.Vy - 16)

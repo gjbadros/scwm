@@ -131,10 +131,10 @@ typedef struct ScwmWindow {
   enum wm_client_functions functions;
   Window *cmap_windows;		/* Colormap windows property */
   int number_cmap_windows;	/* Should generally be 0 */
-  Pixel ReliefPixel;
-  Pixel ShadowPixel;
-  Pixel TextPixel;
-  Pixel BackPixel;
+  SCM ReliefColor;
+  SCM ShadowColor;
+  SCM TextColor;
+  SCM BackColor;
   unsigned long buttons;
   int IconBox[4];
   /* Not used, but I'm not sure what it used to mean, so leaving it
@@ -331,7 +331,10 @@ SCM set_window_button_x(SCM butt, SCM val, SCM win);
 
 SCM set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win);
 SCM set_window_focus_x(SCM sym, SCM win);
-SCM set_window_colors_x(SCM fg, SCM bg, SCM win);
+
+SCM set_window_foreground_x(SCM fg, SCM win);
+SCM set_window_background_x(SCM bg, SCM win);
+
 SCM set_icon_title_x(SCM title, SCM win);
 
 SCM set_mwm_buttons_x(SCM val, SCM win);

@@ -31,6 +31,7 @@ size_t
 free_decor(SCM obj)
 {
   DestroyScwmDecor(SCWMDECOR(obj));
+  free(SCWMDECOR(obj)->tag);
   free(SCWMDECOR(obj));
   free(DECOR(obj));
   return 0;
@@ -107,12 +108,17 @@ mark_decor(SCM obj)
   /* Mark the window font. */
   scm_gc_mark(fl->window_font);
 
+  /* Mark the hilight colors and relief colors */
+  scm_gc_mark(fl->HiColors.fg);
+  scm_gc_mark(fl->HiColors.bg);
+  scm_gc_mark(fl->HiRelief.fg);
+  scm_gc_mark(fl->HiRelief.bg);
+
   return SCM_BOOL_F;
 }
 
 
 extern ScwmDecor *cur_decor;
-
 
 
 SCM 
@@ -133,12 +139,14 @@ decor2scm(ScwmDecor * fl)
   fl->scmdecor = answer;
 
   InitScwmDecor(fl);
-
-  
+ 
   tmpd = current_decor();
   set_current_decor_x(answer);
-  set_hilight_colors(gh_str02scm("black"),
-		     gh_str02scm("grey"));
+  fl->hilight_factor = 1.2;
+  fl->shadow_factor = 0.5;
+
+  set_hilight_foreground_x(BLACK_COLOR);
+  set_hilight_background_x(gh_str02scm("grey"));
   set_window_font_x(gh_str02scm("fixed"));
   set_current_decor_x(tmpd);
 

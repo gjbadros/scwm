@@ -47,18 +47,21 @@ free_window(SCM obj)
 SCM 
 mark_window(SCM obj)
 {
-  if (!SCM_GC8MARKP(obj)) {
-    SCM_SETGC8MARK(obj);
+  SCM_SETGC8MARK(obj);
     
-    /* FIXGJB: revisit this */
-    if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
-      ScwmWindow *psw = SCWMWINDOW(obj);
-      scm_gc_mark(psw->fl->scmdecor);
-      scm_gc_mark(psw->mini_icon_image);
-      scm_gc_mark(psw->icon_req_image);
-      scm_gc_mark(psw->icon_image);
-    }
+  /* FIXGJB: revisit this */
+  if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
+    ScwmWindow *psw = SCWMWINDOW(obj);
+    scm_gc_mark(psw->fl->scmdecor);
+    scm_gc_mark(psw->mini_icon_image);
+    scm_gc_mark(psw->icon_req_image);
+    scm_gc_mark(psw->icon_image);
+    scm_gc_mark(psw->ReliefColor);
+    scm_gc_mark(psw->ShadowColor);
+    scm_gc_mark(psw->TextColor);
+    scm_gc_mark(psw->BackColor);
   }
+
   return SCM_BOOL_F;
 }
 
@@ -1736,10 +1739,12 @@ show_titlebar(SCM win)
   ScwmDecor *fl;
 
   SCM_REDEFER_INTS;
-  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE(win, "show-titlebar");
   tmp_win = SCWMWINDOW(win);
+  fl = tmp_win->fl ? tmp_win->fl : &Scr.DefaultDecor;
+
+
   if (!(tmp_win->flags & TITLE)) {
     tmp_win->flags |= TITLE;
     BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
@@ -1760,10 +1765,11 @@ hide_titlebar(SCM win)
   ScwmDecor *fl;
 
   SCM_REDEFER_INTS;
-  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE(win, "hide-titlebar");
   tmp_win = SCWMWINDOW(win);
+  fl = tmp_win->fl ? tmp_win->fl : &Scr.DefaultDecor;
+
   if (tmp_win->flags & TITLE) {
     tmp_win->flags &= ~TITLE;
     tmp_win->title_height = 0;
@@ -1981,43 +1987,44 @@ set_window_focus_x(SCM sym, SCM win)
   return sym;
 }
 
-SCM 
-set_window_colors_x(SCM fg, SCM bg, SCM win)
+
+SCM
+set_window_foreground_x(SCM fg, SCM win)
 {
   ScwmWindow *tmp_win;
 
-  if (gh_string_p(fg)) {
-    fg = load_color(fg);
-  } else if (fg == SCM_UNDEFINED) {
-    fg = SCM_BOOL_F;
-  } else if (fg != SCM_BOOL_F && !COLOR_P(fg)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-window-colors!", 1, fg);
-  }
-  if (gh_string_p(bg)) {
-    bg = load_color(bg);
-  } else if (bg == SCM_UNDEFINED) {
-    bg = SCM_BOOL_F;
-  } else if (bg != SCM_BOOL_F && !COLOR_P(bg)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-window-colors!", 2, bg);
-  }
-  VALIDATEN(win, 3, "set-window-colors!");
+  VALIDATE_COLOR(fg, "set-window-foreground!", 1);
+
+  VALIDATEN(win, 2, "set-window-foreground!");
   tmp_win = SCWMWINDOW(win);
 
-  if (fg != SCM_BOOL_F) {
-    tmp_win->TextPixel = COLOR(fg);
-  }
-  if (bg != SCM_BOOL_F) {
-    tmp_win->BackPixel = COLOR(bg);
-    tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
-    tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
-  }
+  tmp_win->TextColor = fg;
+  SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
+
+  return SCM_BOOL_T;  
+}
+
+SCM
+set_window_background_x(SCM bg, SCM win)
+{
+  ScwmDecor * fl;
+  ScwmWindow *tmp_win;
+
+  VALIDATE_COLOR(bg, "set-window-background!", 1);
+
+  VALIDATEN(win, 2, "set-window-background!");
+  tmp_win = SCWMWINDOW(win);
+  fl = tmp_win->fl ? tmp_win->fl : &Scr.DefaultDecor;
+
+
+  tmp_win->BackColor = bg;
+  tmp_win->ShadowColor = adjust_brightness(tmp_win->BackColor, fl->shadow_factor);
+  tmp_win->ReliefColor = adjust_brightness(tmp_win->BackColor, fl->hilight_factor);
+
   SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
 
   return SCM_BOOL_T;
 }
-
 
 
 SCM 

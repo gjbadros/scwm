@@ -32,6 +32,7 @@
 #include "module-interface.h"
 #include "binding.h"
 #include "font.h"
+#include "color.h"
 
 #include <X11/extensions/shape.h>
 
@@ -298,9 +299,9 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   sw->icon_y_loc = final_y;
 
   /* clip to fit on screen */
-  attributes.background_pixel = Scr.MenuColors.back;
+  attributes.background_pixel = XCOLOR(Scr.MenuColors.bg);
   valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
-  attributes.border_pixel = Scr.MenuColors.fore;
+  attributes.border_pixel = XCOLOR(Scr.MenuColors.fg);
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			   VisibilityChangeMask |
@@ -375,16 +376,17 @@ DrawIconWindow(ScwmWindow * sw)
     flush_expose(sw->icon_pixmap_w);
 
   if (Scr.Hilite == sw) {
+    /* FIXMS: This can't poossibly be right. */
     if (Scr.d_depth < 2) {
       Relief =
 	Shadow = Scr.DefaultDecor.HiShadowGC;
-      TextColor = Scr.DefaultDecor.HiColors.fore;
-      BackColor = Scr.DefaultDecor.HiColors.back;
+      TextColor = XCOLOR(Scr.DefaultDecor.HiColors.fg);
+      BackColor = XCOLOR(Scr.DefaultDecor.HiColors.bg);
     } else {
       Relief = GetDecor(sw, HiReliefGC);
       Shadow = GetDecor(sw, HiShadowGC);
-      TextColor = GetDecor(sw, HiColors.fore);
-      BackColor = GetDecor(sw, HiColors.back);
+      TextColor = XCOLOR(GetDecor(sw, HiColors.fg));
+      BackColor = XCOLOR(GetDecor(sw, HiColors.bg));
     }
     /* resize the icon name window */
     if (sw->icon_w != None) {
@@ -399,12 +401,12 @@ DrawIconWindow(ScwmWindow * sw)
       Relief = Scr.MenuGC;
       Shadow = Scr.MenuGC;
     } else {
-      Globalgcv.foreground = sw->ReliefPixel;
+      Globalgcv.foreground = XCOLOR(sw->ReliefColor);
       Globalgcm = GCForeground;
       XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
       Relief = Scr.ScratchGC1;
 
-      Globalgcv.foreground = sw->ShadowPixel;
+      Globalgcv.foreground = XCOLOR(sw->ShadowColor);
       XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
       Shadow = Scr.ScratchGC2;
     }
@@ -413,8 +415,8 @@ DrawIconWindow(ScwmWindow * sw)
       sw->icon_w_width = sw->icon_p_width;
       sw->icon_xl_loc = sw->icon_x_loc;
     }
-    TextColor = sw->TextPixel;
-    BackColor = sw->BackPixel;
+    TextColor = XCOLOR(sw->TextColor);
+    BackColor = XCOLOR(sw->BackColor);
 
   }
   if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None)) {
