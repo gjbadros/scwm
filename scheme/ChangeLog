@@ -1,3 +1,19 @@
+1999-01-29  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* simple-constraints.scm: Folded "v" into the v-related function
+
+	* window-locations.scm: Use (app scwm base), made return viewport
+	positions instead of virtual positons
+
+	* ui-constraints-classes.scm: Added new menuname-as-class-name,
+	updated drawing procs, added some new constraint classes, some
+	abstractions for drawing
+
+	* ui-constraints-toggle-menu.scm: Use new menuname proc
+
+	* ui-constraints.scm: Lowercase var names, change draw proc
+	arguments, added menuname proc to ctr, use vector not lists
+
 Fri Jan 29 09:34:58 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Regenerate the
