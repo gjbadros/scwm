@@ -485,10 +485,10 @@ scwm_main(int argc, char **argv)
       territory = Lang;
   }
   SCWM_VAR_READ_ONLY(NULL,"locale-fullname",gh_str02scm(Lang));
-  /* Full name of the current locale, as a string. */
+  /** Full name of the current locale, as a string. */
 
   SCWM_VAR_READ_ONLY(NULL,"locale-language-territory",gh_str02scm(territory));
-  /* The language territory name, as a string */
+  /** The language territory name, as a string */
 #endif
 
   
@@ -1289,16 +1289,16 @@ UnBlackoutScreen()
 
 void init_scwm_load_path()
 {
-  SCM *pscm_load_path;
+  SCM *pscm_pct_load_path;
   SCM path;
 
-  SCWM_VAR_READ_ONLY(load_path,"%load-path", SCM_EOL);
+  SCWM_VAR_READ_ONLY(pct_load_path,"%load-path", SCM_EOL);
   /** The internal compiled-in loading path for scwm. */
 
-  path=*loc_load_path;
+  path=*pscm_load_path;
   path=gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
   path=scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
-  *loc_load_path = path;
+  *pscm_load_path = path;
 }
 
 

@@ -76,14 +76,19 @@ static scm_smobfuns T ## _smobfuns = { \
 /* do not define this macro if we are extracting comments since
    the macro name is used as a lexical cue to the extractor */
 
+/* SCWM_VAR still requires a variable declaration */
+
 #define SCWM_VAR(cvar, name, val) \
   do { pscm_ ## cvar = SCM_CDRLOC( \
       scm_sysintern(name, val) ); } while (0)
 
-/* cvar is ignored for now */
+/* FIXGJB: Note that cvar is ignored for now */
 #define SCWM_VAR_READ_ONLY(cvar, name,val) \
-  do { scm_sysintern(name,val); } while (0)
-#endif
+  do { scm_sysintern(name,val); \
+     } while (0)
+
+
+#endif /* !SCWM_EXTRACT_COMMENTS */
 
 
 /* Check if the scm variable is undefined or #f -- these cases
