@@ -22,6 +22,8 @@
 #include "screen.h"
 #include "module.h"
 
+#undef MS_DELETION_COMMENT /* Undefine explicitly just in case. */
+
 static char *exec_shell_name="/bin/sh";
 /* button state strings must match the enumerated states */
 static char  *button_states[MaxButtonState]={
@@ -168,6 +170,7 @@ void FocusOn(ScwmWindow *t,int DeIconifyOnly)
 #ifndef NON_VIRTUAL
   int dx,dy;
   int cx,cy;
+
 #endif
   int x,y;
 
@@ -300,7 +303,7 @@ void WarpOn(ScwmWindow *t,int warp_x, int x_unit, int warp_y, int y_unit)
 }
 
 
-   
+#if MS_DELETION_COMMENT   
 /***********************************************************************
  *
  *  Procedure:
@@ -319,6 +322,7 @@ void Maximize(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   if(tmp_win == NULL)
     return;
   
+  /* XXX - our scheme maximize does not do this check */
   if(check_allowed_function2(F_MAXIMIZE,tmp_win) == 0
 #ifdef WINDOWSHADE
      || (tmp_win->buttons & WSHADE)
@@ -373,7 +377,9 @@ void Maximize(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     SetBorder(tmp_win,Scr.Hilite == tmp_win,True,True,None);
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 #ifdef WINDOWSHADE
 /***********************************************************************
  *
@@ -422,6 +428,7 @@ void WindowShade(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     }
 }
 #endif /* WINDOWSHADE */
+#endif /* MS_DELETION_COMMENT */
 
 /* For Ultrix 4.2 */
 #include <sys/types.h>
@@ -455,18 +462,20 @@ MenuRoot *FindPopup(char *action)
 }
 
       
-  
+#if MS_DELETION_COMMENT
 void Bell(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
 	  char *action, int *Module)
 {
   XBell(dpy, Scr.screen);
 }
-
+#endif /* MS_DELETION_COMMENT */
 
 #ifdef USEDECOR
 ScwmDecor *last_decor = NULL, *cur_decor = NULL;
 #endif
 char *last_menu = NULL;
+
+#if MS_DELETION_COMMENT
 void add_item_to_menu(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context,
 		      char *action, int *Module)
@@ -494,8 +503,9 @@ void add_item_to_menu(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   MakeMenu(mr);
   return;
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 #ifdef USEDECOR
 void add_another_item(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context,
@@ -555,7 +565,9 @@ void add_another_item(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   return;
 }
 #endif /* USEDECOR */
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void destroy_menu(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                   unsigned long context,
                   char *action, int *Module)
@@ -572,7 +584,9 @@ void destroy_menu(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   return;
 
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void add_item_to_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context,
 		      char *action, int *Module)
@@ -595,7 +609,8 @@ void add_item_to_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   
   return;
 }
-  
+#endif /* MS_DELETION_COMMENT */
+
 
 void Nop_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
               char *action, int *Module)
@@ -604,7 +619,7 @@ void Nop_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
 }
 
 
-
+#if MS_DELETION_COMMENT
 void movecursor(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
 		char *action, int *Module)
 {
@@ -661,8 +676,9 @@ void movecursor(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long contex
 	       Scr.MyDisplayHeight, x + val1*val1_unit/100-warp_x,
 	       y+val2*val2_unit/100 - warp_y);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void iconify_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context,char *action, int *Module)
 
@@ -692,7 +708,9 @@ void iconify_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
       Iconify(tmp_win,eventp->xbutton.x_root-5,eventp->xbutton.y_root-5);
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void raise_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		    unsigned long context, char *action, int *Module)
 {
@@ -718,7 +736,9 @@ void raise_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     tmp_win->flags |= ONTOP;
   KeepOnTop();
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void lower_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		    unsigned long context,char *action, int *Module)
 {
@@ -729,7 +749,9 @@ void lower_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   
   tmp_win->flags &= ~ONTOP;
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void destroy_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context, char *action, int *Module)
 {
@@ -749,7 +771,9 @@ void destroy_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     XKillClient(dpy, tmp_win->w);
   XSync(dpy,0);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void delete_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		     unsigned long context,char *action, int *Module)
 {
@@ -771,7 +795,9 @@ void delete_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     XBell (dpy, Scr.screen);
   XSync(dpy,0);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void close_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		    unsigned long context,char *action, int *Module)
 {
@@ -796,13 +822,17 @@ void close_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     XKillClient(dpy, tmp_win->w);
   XSync(dpy,0);
 }      
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void restart_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context, char *action, int *Module)
 {
   Done(1, action);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT 
 void exec_setup(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                 unsigned long context,char *action, int *Module)
 {
@@ -822,7 +852,9 @@ void exec_setup(XEvent *eventp,Window w,ScwmWindow *tmp_win,
       exec_shell_name = strdup("/bin/sh"); /* if $SHELL not set, use default */
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 #if !defined(HAVE_STRERROR) || HAVE_STRERROR == 0
 char *strerror(int num)
 {
@@ -835,7 +867,9 @@ char *strerror(int num)
     return "Unknown error number";
 }
 #endif
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void exec_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		   unsigned long context,char *action, int *Module)
 {
@@ -873,7 +907,9 @@ void exec_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   free(cmd);
   return;
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void refresh_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context, char *action, int *Module)
 {
@@ -901,8 +937,9 @@ void refresh_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   XDestroyWindow (dpy, w);
   XFlush (dpy);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void refresh_win_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                           unsigned long context, char *action, int *Module)
 {
@@ -930,8 +967,9 @@ void refresh_win_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   XDestroyWindow (dpy, w);
   XFlush (dpy);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void stick_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		    unsigned long context, char *action, int *Module)
 {
@@ -949,7 +987,9 @@ void stick_function(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
   SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void wait_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 	       unsigned long context,char *action, int *Module)
 {
@@ -975,7 +1015,7 @@ void wait_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     }
   }
 }
-
+#endif /* MS_DELETION_COMMENT */
 
 void raise_it_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		   unsigned long context, char *action, int *Module)
@@ -997,7 +1037,6 @@ void raise_it_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
 
       
-
 void flip_focus_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		unsigned long context, char *action, int *Module)
 {
@@ -1029,7 +1068,7 @@ void flip_focus_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
 }
 
-
+#if MS_DELETION_COMMENT
 void focus_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		unsigned long context, char *action, int *Module)
 {
@@ -1038,8 +1077,9 @@ void focus_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
   FocusOn(tmp_win,0);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void warp_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                unsigned long context, char *action, int *Module)
 {
@@ -1056,7 +1096,7 @@ void warp_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
    else
      WarpOn (tmp_win, 0, 0, 0, 0);
 }
-
+#endif /* MS_DELETION_COMMENT */
 
 void popup_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		unsigned long context, char *action,int *Module)
@@ -1079,6 +1119,7 @@ void popup_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 void staysup_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                   unsigned long context, char *action,int *Module)
 {
+#if 0
   MenuRoot *menu;
   extern int menuFromFrameOrWindowOrTitlebar;
   char *default_action = NULL, *menu_name = NULL;
@@ -1114,6 +1155,7 @@ void staysup_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     ExecuteFunction(default_action,tmp_win,eventp,context,*Module);
   if(default_action != NULL)
     free(default_action);
+#endif
 }
 
 
@@ -1131,6 +1173,7 @@ void quit_screen_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   Done(0,NULL);
 }
 
+#if MS_DELETION_COMMENT
 void echo_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                unsigned long context, char *action,int *Module)
 {
@@ -1139,7 +1182,9 @@ void echo_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     scwm_msg(INFO,"Echo",action);
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void raiselower_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		     unsigned long context, char *action,int *Module)
 {
@@ -1174,7 +1219,9 @@ void raiselower_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     KeepOnTop();
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetEdgeScroll(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                    unsigned long context, char *action,int* Module)
 {
@@ -1215,7 +1262,9 @@ void SetEdgeScroll(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
   checkPanFrames();
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetEdgeResistance(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                        unsigned long context, char *action,int* Module)
 {
@@ -1231,7 +1280,9 @@ void SetEdgeResistance(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   Scr.ScrollResistance = val1;
   Scr.MoveResistance = val2;
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetColormapFocus(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                       unsigned long context, char *action,int* Module)
 {
@@ -1250,7 +1301,9 @@ void SetColormapFocus(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     return;
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetClick(XEvent *eventp,Window w,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -1266,7 +1319,9 @@ void SetClick(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
   Scr.ClickTime = val1;
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetXOR(XEvent *eventp,Window w,ScwmWindow *tmp_win,
             unsigned long context, char *action,int* Module)
 {
@@ -1289,7 +1344,9 @@ void SetXOR(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   gcv.subwindow_mode = IncludeInferiors;
   Scr.DrawGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void SetOpaque(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 	       unsigned long context, char *action,int* Module)
 {
@@ -1305,8 +1362,9 @@ void SetOpaque(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
   Scr.OpaqueSize = val1;
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void SetDeskSize(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                  unsigned long context, char *action,int* Module)
 {
@@ -1336,9 +1394,12 @@ void SetDeskSize(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
   checkPanFrames();
 }
+#endif /* MS_DELETION_COMMENT */
 
 #ifdef XPM
 extern char *PixmapPath;
+
+#if MS_DELETION_COMMENT
 void setPixmapPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                    unsigned long context, char *action,int* Module)
 {
@@ -1354,9 +1415,13 @@ void setPixmapPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   PixmapPath = envDupExpand(tmp, 0);
   free(tmp);
 }
-#endif
+#endif /* MS_DELETION_COMMENT */
+
+#endif /* XPM */
 
 extern char *IconPath;
+
+#if MS_DELETION_COMMENT
 void setIconPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                  unsigned long context, char *action,int* Module)
 {
@@ -1372,7 +1437,9 @@ void setIconPath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   IconPath = envDupExpand(tmp, 0);
   free(tmp);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT 
 #ifdef SCWM_MODULEDIR
 char *ModulePath = SCWM_MODULEDIR;
 #else
@@ -1393,8 +1460,9 @@ void setModulePath(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   ModulePath = envDupExpand(tmp, 0);
   free(tmp);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void SetHiColor(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		unsigned long context, char *action,int* Module)
 {
@@ -1463,8 +1531,9 @@ void SetHiColor(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     SetBorder(hilight,True,True,True,None);
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void SetMenuStyle(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                   unsigned long context, char *action,int* Module)
 {
@@ -1608,6 +1677,7 @@ void SetMenuStyle(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     free(style);
 
 }
+#endif /* MS_DELETION_COMMENT */
 
 Boolean ReadButtonFace(char *s, ButtonFace *bf, int button, int verbose);
 void FreeButtonFace(Display *dpy, ButtonFace *bf);
@@ -1832,6 +1902,7 @@ void SetTitleStyle(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   }
 } /* SetTitleStyle */
 
+#if MS_DELETION_COMMENT
 void LoadIconFont(XEvent *eventp,Window w,ScwmWindow *tmp_win,
                   unsigned long context, char *action,int* Module)
 {
@@ -1864,7 +1935,9 @@ void LoadIconFont(XEvent *eventp,Window w,ScwmWindow *tmp_win,
     tmp = tmp->next;
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void LoadWindowFont(XEvent *eventp,Window win,ScwmWindow *tmp_win,
                     unsigned long context, char *action,int* Module)
 {
@@ -1925,6 +1998,7 @@ void LoadWindowFont(XEvent *eventp,Window win,ScwmWindow *tmp_win,
 
   free(font);
 }
+#endif /* MS_DELETION_COMMENT */
 
 void FreeButtonFace(Display *dpy, ButtonFace *bf)
 {
@@ -2429,7 +2503,9 @@ void AddToDecor(ScwmDecor *fl, char *s)
     while (*s&&isspace(*s))++s;
     if (!*s) return;
     cur_decor = fl;
+#if 0
     ExecuteFunction(s,NULL,&Event,C_ROOT,-1);
+#endif
     cur_decor = NULL;
 }
 
@@ -2507,8 +2583,10 @@ void DestroyDecor(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 	ScwmWindow *fw = Scr.ScwmRoot.next;
 	while(fw != NULL)
 	{
+#if 0
 	    if (fw->fl == found)
 		ExecuteFunction("ChangeDecor Default",fw,eventp,C_WINDOW,*Module);
+#endif
 	    fw = fw->next;
 	}
 	prev->next = found->next;
@@ -2837,6 +2915,7 @@ void AddButtonStyle(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 }
 #endif /* MULTISTYLE */
 
+#if MS_DELETION_COMMENT
 /**************************************************************************
  *
  * Direction = 1 ==> "Next" operation
@@ -2999,7 +3078,9 @@ ScwmWindow *Circulate(char *action, int Direction, char **restofline)
   return found;
 
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void PrevFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -3009,11 +3090,15 @@ void PrevFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   found = Circulate(action, -1, &restofline);
   if(found != NULL)
   {
+#if 0
     ExecuteFunction(restofline,found,eventp,C_WINDOW,*Module);
+#endif
   }
 
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void NextFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -3023,12 +3108,15 @@ void NextFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   found = Circulate(action, 1, &restofline);
   if(found != NULL)
   {
+#if 0
     ExecuteFunction(restofline,found,eventp,C_WINDOW,*Module);
+#endif
   }
 
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void NoneFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -3038,10 +3126,14 @@ void NoneFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   found = Circulate(action, 1, &restofline);
   if(found == NULL)
   {
+#if 0
     ExecuteFunction(restofline,NULL,eventp,C_ROOT,*Module);
+#endif
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 void WindowIdFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
                   unsigned long context, char *action,int* Module)
 {
@@ -3062,13 +3154,16 @@ void WindowIdFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   }
   if(found)
   {
+#if 0
     ExecuteFunction(restofline,found,eventp,C_WINDOW,*Module);
+#endif
   }
   if (restofline)
     free(restofline);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void module_zapper(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
                    unsigned long context, char *action,int* Module)
 {
@@ -3078,7 +3173,9 @@ void module_zapper(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   KillModuleByName(condition);
   free(condition);
 }
+#endif /* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 /***********************************************************************
  *
  *  Procedure:
@@ -3092,6 +3189,7 @@ void Recapture(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   CaptureAllWindows();
   UnBlackoutScreen();
 }
+#endif /* MS_DELETION_COMMENT */
 
 void SetGlobalOptions(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
                       unsigned long context, char *action,int* Module)
@@ -3150,4 +3248,9 @@ void SetGlobalOptions(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   if (opts) /* should be empty at this point... */
     free(opts);
 }
+
+
+
+
+
 
