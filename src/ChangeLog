@@ -1,5 +1,9 @@
 Sat Feb 28 00:57:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c: Fixed bug in HandleScwmExec that was causing random
+ 	crashes - strings should be sent with format 8, not 32, in
+ 	XGetWindowProperty.
+
 	* events.c: Slight change to HandleScwmExec: don't delete
  	XA_SCWMEXEC_REQUEST properties; it just confuses clients.
 
