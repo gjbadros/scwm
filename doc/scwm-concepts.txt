@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:677]
+[From scwm/binding.c:729]
 
 
 Face Flags
@@ -325,7 +325,7 @@ When a key specifier is being used to indicate a binding, the
 additional special modifier *- may be used; it indicates that the key
 should be bound with every possible modifier combination, including
 possibly no modifiers. *- may not be combined with any other modifier.  
-[From scwm/binding.c:149]
+[From scwm/binding.c:151]
 
 
 Menu Looks
@@ -574,7 +574,7 @@ use-theme (window-style) from scheme/themes.scm:47
 winlist-skip (boolean-style) from scheme/winlist.scm:112
 circulate-skip (boolean-style) from scheme/winlist.scm:299
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:300
-start-maximized (window-style) from scheme/winops.scm:175
+start-maximized (window-style) from scheme/winops.scm:181
 
 [From scwm/face.c:542]
 

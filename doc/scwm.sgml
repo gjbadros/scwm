@@ -551,7 +551,7 @@ The options include at least:
 <row><entry/winlist-skip/ <entry/boolean-style/ <entry>scheme/winlist.scm:112</entry>  </row>
 <row><entry/circulate-skip/ <entry/boolean-style/ <entry>scheme/winlist.scm:299</entry>  </row>
 <row><entry/circulate-skip-icon/ <entry/boolean-style/ <entry>scheme/winlist.scm:300</entry>  </row>
-<row><entry/start-maximized/ <entry/window-style/ <entry>scheme/winops.scm:175</entry>  </row>
+<row><entry/start-maximized/ <entry/window-style/ <entry>scheme/winops.scm:181</entry>  </row>
 </tbody></tgroup></table>
 
     </para></sect1>
@@ -1290,10 +1290,6 @@ The shaped XPM menu look.
       <listitem><para><link linkend="kwm-emulation-initialize"><function>kwm-emulation-initialize</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="kwm-emulation-reset"><function>kwm-emulation-reset</function></link> -- No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
-    <sect1><title>scheme/key-move-xtest.scm</title> <itemizedlist>
-      <listitem><para><link linkend="key-mouse-moves"><function>key-mouse-moves</function></link> -- Bind four keys to move the mouse in compass directions by PCT-OF-SCREEN.</para></listitem>
-      <listitem><para><link linkend="key-viewport-moves"><function>key-viewport-moves</function></link> -- Bind four keys to move the viewport in compass directions by PCT-OF-SCREEN.</para></listitem>
-    </itemizedlist> </sect1>
     <sect1><title>scheme/key-mover-xtest.scm</title> <itemizedlist>
       <listitem><para><link linkend="key-mouse-moves"><function>key-mouse-moves</function></link> -- Bind four keys to move the mouse in compass directions by PCT-OF-SCREEN.</para></listitem>
       <listitem><para><link linkend="key-viewport-moves"><function>key-viewport-moves</function></link> -- Bind four keys to move the viewport in compass directions by PCT-OF-SCREEN.</para></listitem>
@@ -1330,8 +1326,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="fold-menu-list-by-group"><function>fold-menu-list-by-group</function></link> -- Split ML-CONS into chained menus based on their group.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/message-window.scm</title> <itemizedlist>
-      <listitem><para><link linkend="gravity-to-alignments"><function>gravity->alignments</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="position-message-window-x"><function>position-message-window!</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="gravity-to-alignments"><function>gravity->alignments</function></link> -- Return a list of two numeric alignments corresponding to a GRAVITY.</para></listitem>
+      <listitem><para><link linkend="position-message-window-x"><function>position-message-window!</function></link> -- Move the move/resize message window's GRAVITY point to (X,Y).</para></listitem>
       <listitem><para><link linkend="message-window-options"><function>message-window-options</function></link> -- Allow specification of message-window behavior for standard actions.</para></listitem>
       <listitem><para><link linkend="message-window-style"><function>message-window-style</function></link> -- Set visual style of MSGWIN.</para></listitem>
       <listitem><para><link linkend="make-message-window-with-image"><function>make-message-window-with-image</function></link> -- Return a new message window with IMG as a background, sized appropriately.</para></listitem>
@@ -1345,12 +1341,11 @@ The shaped XPM menu look.
       <listitem><para><link linkend="call-hook-procedures"><function>call-hook-procedures</function></link> -- Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.</para></listitem>
       <listitem><para><link linkend="scwm-module-loaded-p"><function>scwm-module-loaded?</function></link> -- Return <literal>#t</literal> iff MODULE has been loaded.</para></listitem>
       <listitem><para><link linkend="eval-after-load"><function>eval-after-load</function></link> -- Run PROC after MODULE is loaded.</para></listitem>
-      <listitem><para><link linkend="process-use-scwm-module"><function>process-use-scwm-module</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="process-use-scwm-modules"><function>process-use-scwm-modules</function></link> -- Returns a list of all the modules loaded in successfully.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/modifier-key-bindings.scm</title> <itemizedlist>
-      <listitem><para><link linkend="bind-two-modifier-key-events"><function>bind-two-modifier-key-events</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="bind-three-modifier-key-events"><function>bind-three-modifier-key-events</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="bind-two-modifier-key-events"><function>bind-two-modifier-key-events</function></link> -- Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</para></listitem>
+      <listitem><para><link linkend="bind-three-modifier-key-events"><function>bind-three-modifier-key-events</function></link> -- Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/module-types.scm</title> <itemizedlist>
       <listitem><para><link linkend="module-event-name-from-number"><function>module-event-name-from-number</function></link> -- Return the string module event name for event number NUM.</para></listitem>
@@ -1717,15 +1712,15 @@ The shaped XPM menu look.
       <listitem><para><link linkend="warp-to-window-viewport"><function>warp-to-window-viewport</function></link> -- Change to the desk and viewport of WIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/window-configuration.scm</title> <itemizedlist>
-      <listitem><para><link linkend="window-configuration"><function>window-configuration</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="copy-window-configuration"><function>copy-window-configuration</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="restore-window-configuration"><function>restore-window-configuration</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="global-window-configuration"><function>global-window-configuration</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="restore-global-window-configuration"><function>restore-global-window-configuration</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="window-configuration"><function>window-configuration</function></link> -- Return a list containing the state of WIN.</para></listitem>
+      <listitem><para><link linkend="copy-window-configuration"><function>copy-window-configuration</function></link> -- Apply a saved state CONFIGURATION to window WIN.</para></listitem>
+      <listitem><para><link linkend="restore-window-configuration"><function>restore-window-configuration</function></link> -- Restore the state of WIN from GLOBAL-CONFIGURATION.</para></listitem>
+      <listitem><para><link linkend="global-window-configuration"><function>global-window-configuration</function></link> -- Return an object abstracting all of the current windows' states.</para></listitem>
+      <listitem><para><link linkend="restore-global-window-configuration"><function>restore-global-window-configuration</function></link> -- Restore the states of all windows from GLOBAL-CONFIGURATION.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/window-locations.scm</title> <itemizedlist>
-      <listitem><para><link linkend="pair-virtual-to-viewport"><function>pair-virtual->viewport</function></link> -- A version of virtual->viewport that works on the pair points used by this</para></listitem>
-      <listitem><para><link linkend="window-center-middle"><function>window-center-middle</function></link> -- Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="pair-virtual-to-viewport"><function>pair-virtual->viewport</function></link> -- Convert a pair point from virtual to viewport coordinates.</para></listitem>
+      <listitem><para><link linkend="window-center-middle"><function>window-center-middle</function></link> -- Return pair (viewport-x .</para></listitem>
       <listitem><para><link linkend="window-center-top"><function>window-center-top</function></link> -- Return a pair (X .</para></listitem>
       <listitem><para><link linkend="window-center-bottom"><function>window-center-bottom</function></link> -- Return a pair (X .</para></listitem>
       <listitem><para><link linkend="window-left-middle"><function>window-left-middle</function></link> -- Return a pair (X .</para></listitem>
@@ -1734,7 +1729,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="window-left-bottom"><function>window-left-bottom</function></link> -- Return a pair (X .</para></listitem>
       <listitem><para><link linkend="window-right-top"><function>window-right-top</function></link> -- Return a pair (X .</para></listitem>
       <listitem><para><link linkend="window-right-bottom"><function>window-right-bottom</function></link> -- Return a pair (X .</para></listitem>
-      <listitem><para><link linkend="get-window-nonant"><function>get-window-nonant</function></link> -- SELECT-LIST is a list of (win x y);</para></listitem>
+      <listitem><para><link linkend="get-window-nonant"><function>get-window-nonant</function></link> -- SELECT-LIST is a list of (win x y), returns list (win nonant).</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/window-selection.scm</title> <itemizedlist>
       <listitem><para><link linkend="window-is-selected-p"><function>window-is-selected?</function></link> -- Return <literal>#t</literal> if W is in the selected window list, else <literal>#f</literal>.</para></listitem>
@@ -1747,8 +1742,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="on-desk-p"><function>on-desk?</function></link> -- Return <literal>#t</literal> if WIN is on desk N, else <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="on-desk-n-p"><function>on-desk-n?</function></link> -- Returns a function which takes WIN and returns <literal>#t</literal> if WIN is on desk N, else <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="on-current-desk-p"><function>on-current-desk?</function></link> -- Return <literal>#t</literal> if WIN is on the current desk.</para></listitem>
-      <listitem><para><link linkend="rectangle-overlap-p"><function>rectangle-overlap?</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="intersection-area"><function>intersection-area</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="rectangle-overlap-p"><function>rectangle-overlap?</function></link> -- Returns <literal>#t</literal> iff the two specified rectangles overlap.</para></listitem>
+      <listitem><para><link linkend="intersection-area"><function>intersection-area</function></link> -- Returns the size of the intersection of two rectangles.</para></listitem>
       <listitem><para><link linkend="in-viewport-any-desk-p"><function>in-viewport-any-desk?</function></link> -- Return <literal>#t</literal> if WIN is in the current viewport ignoring the desk, else <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="windows-overlap-p"><function>windows-overlap?</function></link> -- Return <literal>#t</literal> if WIN and WIN2 overlap at all, else <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="window-overlaps-window-p"><function>window-overlaps-window?</function></link> -- Return a function which takes WIN2 and returns <literal>#t</literal> if it overlaps WIN.</para></listitem>
@@ -1793,8 +1788,8 @@ The shaped XPM menu look.
     <sect1><title>scheme/winops.scm</title> <itemizedlist>
       <listitem><para><link linkend="make-toggling-winop"><function>make-toggling-winop</function></link> -- Returns a procedure which takes a window WIN and toggles a property of it.</para></listitem>
       <listitem><para><link linkend="close-window"><function>close-window</function></link> -- Close WIN either by deleting it or destroying it.</para></listitem>
-      <listitem><para><link linkend="hide-titlebar-in-place"><function>hide-titlebar-in-place</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="show-titlebar-in-place"><function>show-titlebar-in-place</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="hide-titlebar-in-place"><function>hide-titlebar-in-place</function></link> -- Turn off display of the titlebar for WIN without moving the client window.</para></listitem>
+      <listitem><para><link linkend="show-titlebar-in-place"><function>show-titlebar-in-place</function></link> -- Turn on display of the titlebar for WIN without moving the client window.</para></listitem>
       <listitem><para><link linkend="maximize"><function>maximize</function></link> -- Maximize WIN to new pixel width NW and new pixel height NH.</para></listitem>
       <listitem><para><link linkend="maximized-p"><function>maximized?</function></link> -- Return <literal>#t</literal> if WIN is maximized, <literal>#f</literal> otherwise.</para></listitem>
       <listitem><para><link linkend="unmaximize"><function>unmaximize</function></link> -- Unmaximize WIN so it returns to its size/position before maximization.</para></listitem>
@@ -1839,6 +1834,10 @@ The shaped XPM menu look.
       <listitem><para><link linkend="mod-mask-alt"><function>mod-mask-alt</function></link> -- Return the bit-mask for the Alt modifier key, or <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="mod-mask-hyper"><function>mod-mask-hyper</function></link> -- Return the bit-mask for the Hyper modifier key, or <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="mod-mask-super"><function>mod-mask-super</function></link> -- Return the bit-mask for the Super modifier key, or <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="mod-mask-numlock"><function>mod-mask-numlock</function></link> -- Return the bit-mask for the NumLock modifier key, or <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="mod-mask-scrolllock"><function>mod-mask-scrolllock</function></link> -- Return the bit-mask for the ScrollLock modifier key, or <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="set-mod-mask-numlock-x"><function>set-mod-mask-numlock!</function></link> -- Set the bit-mask for the NumLock modifier key.</para></listitem>
+      <listitem><para><link linkend="set-mod-mask-scrolllock-x"><function>set-mod-mask-scrolllock!</function></link> -- Set the bit-mask for the ScrollLock modifier key.</para></listitem>
       <listitem><para><link linkend="X-pointer-mapping"><function>X-pointer-mapping</function></link> -- Return the mapping of physical->logical pointer buttons as a list.</para></listitem>
       <listitem><para><link linkend="keymask-keycode-to-string"><function>keymask-keycode->string</function></link> -- Return a string representing the key press with mask KEYMASK, code KEYCODE.</para></listitem>
     </itemizedlist> </sect1>
@@ -3281,7 +3280,7 @@ invoked when the key is released.  The contexts include:
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 955 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1011 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3309,7 +3308,7 @@ nothing should be done on key release.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1027 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1083 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3338,14 +3337,14 @@ type.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1058 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1114 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="bind-three-modifier-key-events">
   <refnamediv>
     <refname>bind-three-modifier-key-events</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(bind-three-modifier-key-events 
@@ -3355,20 +3354,22 @@ type.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm modifier-key-bindings)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
-  at line 21 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  at line 24 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="bind-two-modifier-key-events">
   <refnamediv>
     <refname>bind-two-modifier-key-events</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(bind-two-modifier-key-events 
@@ -3378,7 +3379,9 @@ type.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -3927,7 +3930,7 @@ case-sensitive or not.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 288 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 294 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4167,7 +4170,7 @@ case-sensitive or not.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 315 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 321 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4577,21 +4580,21 @@ only the Xpm menu look uses the <parameter>extra</parameter> information.
 <refentry id="copy-window-configuration">
   <refnamediv>
     <refname>copy-window-configuration</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Apply a saved state CONFIGURATION to window WIN.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(copy-window-configuration configuration #&amp;optional (w (get-window)))</synopsis>
+    <synopsis>(copy-window-configuration configuration #&amp;optional (win (get-window)))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Apply a saved state CONFIGURATION to window WIN.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-configuration)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-configuration.scm"><filename>scheme/window-configuration.scm</filename></ulink>
-  at line 43 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
+  at line 44 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4850,7 +4853,7 @@ If *opaque-move-percent* is a boolean, not a number, just return it.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 214 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 220 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4903,7 +4906,7 @@ If *opaque-resize-percent* is a boolean, not a number, just return it.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 205 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 211 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6116,7 +6119,7 @@ will be returned.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 403 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 409 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6140,7 +6143,7 @@ and <link linkend="title-match--p"><function>title-match??</function></link>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 418 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 424 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6163,7 +6166,7 @@ will be returned.  See also <link linkend="find-window-by"><function>find-window
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 412 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 418 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7017,7 +7020,7 @@ fg or bg may be <literal>#f</literal>, which means that the color is inherited f
 <refentry id="get-window-nonant">
   <refnamediv>
     <refname>get-window-nonant</refname>
-    <refpurpose>SELECT-LIST is a list of (win x y);</refpurpose>
+    <refpurpose>SELECT-LIST is a list of (win x y), returns list (win nonant).</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(get-window-nonant select-list)</synopsis>
@@ -7025,7 +7028,7 @@ fg or bg may be <literal>#f</literal>, which means that the color is inherited f
   <refsect1>
   <title>Description</title>
   <para>
-  SELECT-LIST is a list of (win x y); returns list (win nonant).
+  SELECT-LIST is a list of (win x y), returns list (win nonant).
 The returned value window is the same as the car of SELECT-LIST, and the
 nonant is a number in [0,8] referring to which of the tic-tac-toe board
 squares x,y is in of WIN. x,y are viewport positions.
@@ -7035,7 +7038,7 @@ squares x,y is in of WIN. x,y are viewport positions.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 107 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 106 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7091,7 +7094,7 @@ this procedure..
 <refentry id="global-window-configuration">
   <refnamediv>
     <refname>global-window-configuration</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return an object abstracting all of the current windows' states.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(global-window-configuration)</synopsis>
@@ -7099,20 +7102,20 @@ this procedure..
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return an object abstracting all of the current windows' states.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-configuration)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-configuration.scm"><filename>scheme/window-configuration.scm</filename></ulink>
-  at line 56 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
+  at line 59 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="gravity-to-alignments">
   <refnamediv>
     <refname>gravity->alignments</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return a list of two numeric alignments corresponding to a GRAVITY.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(gravity->alignments gravity)</synopsis>
@@ -7120,7 +7123,9 @@ this procedure..
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return a list of two numeric alignments corresponding to a GRAVITY.
+GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
+or spelled-out versions of these.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -7612,7 +7617,7 @@ specified.
 <refentry id="hide-titlebar-in-place">
   <refnamediv>
     <refname>hide-titlebar-in-place</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Turn off display of the titlebar for WIN without moving the client window.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(hide-titlebar-in-place #&amp;optional (win get-window))</synopsis>
@@ -7620,7 +7625,9 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Turn off display of the titlebar for WIN without moving the client window.
+This may move the frame to keep the application client window area in
+the same position as before the call.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -7812,7 +7819,7 @@ case-sensitive or not.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 306 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 312 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8108,7 +8115,7 @@ attempts to load it as such.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 67 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 73 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8289,7 +8296,7 @@ opaquely if that returns <literal>#t</literal> and uses a rubber-band if it retu
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 236 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 242 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8465,7 +8472,7 @@ moves opaquely if that returns <literal>#t</literal> and uses a rubber-band if i
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 246 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 252 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8542,21 +8549,23 @@ that corner fixed.
 <refentry id="intersection-area">
   <refnamediv>
     <refname>intersection-area</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Returns the size of the intersection of two rectangles.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)</synopsis>
+    <synopsis>(intersection-area x1 y1 w1 h1 x2 y2 w2 h2)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Returns the size of the intersection of two rectangles.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 49 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 52 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9097,7 +9106,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns <literal>#f</literal> on 
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1323 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1423 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9120,7 +9129,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 893 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 949 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9616,7 +9625,7 @@ if there is no matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 812 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 868 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9642,7 +9651,7 @@ matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1133 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1189 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10550,7 +10559,7 @@ If NW or NH is 0, that dimension is not changed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 87 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 93 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10571,7 +10580,7 @@ If NW or NH is 0, that dimension is not changed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 128 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 134 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11690,7 +11699,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1278 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1334 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11713,7 +11722,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1262 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1318 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11736,7 +11745,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1286 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1342 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11759,7 +11768,53 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1270 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1326 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="mod-mask-numlock">
+  <refnamediv>
+    <refname>mod-mask-numlock</refname>
+    <refpurpose>Return the bit-mask for the NumLock modifier key, or <literal>#f</literal>.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(mod-mask-numlock)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the bit-mask for the NumLock modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as NumLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
+  at line 1360 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="mod-mask-scrolllock">
+  <refnamediv>
+    <refname>mod-mask-scrolllock</refname>
+    <refpurpose>Return the bit-mask for the ScrollLock modifier key, or <literal>#f</literal>.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(mod-mask-scrolllock)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the bit-mask for the ScrollLock modifier key, or <literal>#f</literal>.
+Returns <literal>#f</literal> if and only if there is no key bound to act as ScrollLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
+  at line 1369 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11782,7 +11837,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1254 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1310 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11805,7 +11860,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1295 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1351 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11873,7 +11928,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1241 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1297 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12897,7 +12952,7 @@ of this function, as a string.
 <refentry id="pair-virtual-to-viewport">
   <refnamediv>
     <refname>pair-virtual->viewport</refname>
-    <refpurpose>A version of virtual->viewport that works on the pair points used by this</refpurpose>
+    <refpurpose>Convert a pair point from virtual to viewport coordinates.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(pair-virtual->viewport pt)</synopsis>
@@ -12905,8 +12960,8 @@ of this function, as a string.
   <refsect1>
   <title>Description</title>
   <para>
-  A version of virtual->viewport that works on the pair points used by this
-module.
+  Convert a pair point from virtual to viewport coordinates.
+Return value is (viewport-x . viewport-y).
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -12958,7 +13013,7 @@ if it were on top (unobscured).
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 104 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 110 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13292,7 +13347,7 @@ See also <link linkend="constraint-toggle-menu"><function>constraint-toggle-menu
 <refentry id="position-message-window-x">
   <refnamediv>
     <refname>position-message-window!</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Move the move/resize message window's GRAVITY point to (X,Y).</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(position-message-window! msgwin x y gravity)</synopsis>
@@ -13300,7 +13355,9 @@ See also <link linkend="constraint-toggle-menu"><function>constraint-toggle-menu
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Move the move/resize message window's GRAVITY point to (X,Y).
+GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
+or spelled-out versions of these. See also `gravity->alignments'.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -13355,7 +13412,7 @@ See also <link linkend="next-window"><function>next-window</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 263 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 269 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13379,27 +13436,6 @@ use by <link linkend="send-key-press"><function>send-key-press</function></link>
   <para> Module: (app scwm send-string)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/send-string.scm"><filename>scheme/send-string.scm</filename></ulink>
   at line 12 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/send-string.scm">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="process-use-scwm-module">
-  <refnamediv>
-    <refname>process-use-scwm-module</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(process-use-scwm-module module)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  No documentation supplied.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: </para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/minimal.scm"><filename>scheme/minimal.scm</filename></ulink>
-  at line 135 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/minimal.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14832,7 +14868,7 @@ See also <link linkend="set-quote-key-events-x"><function>set-quote-key-events!<
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 800 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 856 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15069,15 +15105,17 @@ scratch. This is hopefully not necessary during normal operation.
 <refentry id="rectangle-overlap-p">
   <refnamediv>
     <refname>rectangle-overlap?</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Returns <literal>#t</literal> iff the two specified rectangles overlap.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)</synopsis>
+    <synopsis>(rectangle-overlap? x1 y1 w1 h1 x2 y2 w2 h2)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Returns <literal>#t</literal> iff the two specified rectangles overlap.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -15698,7 +15736,7 @@ if not specified.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 273 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 279 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15724,7 +15762,7 @@ matching is case-sensitive or not.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 297 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 303 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15801,7 +15839,7 @@ arguments as given previously.
 <refentry id="restore-global-window-configuration">
   <refnamediv>
     <refname>restore-global-window-configuration</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Restore the states of all windows from GLOBAL-CONFIGURATION.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(restore-global-window-configuration global-configuration)</synopsis>
@@ -15809,13 +15847,13 @@ arguments as given previously.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Restore the states of all windows from GLOBAL-CONFIGURATION.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-configuration.scm"><filename>scheme/window-configuration.scm</filename></ulink>
-  at line 61 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
+  at line 65 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15845,22 +15883,22 @@ after the (gtk gtk) module.
 <refentry id="restore-window-configuration">
   <refnamediv>
     <refname>restore-window-configuration</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Restore the state of WIN from GLOBAL-CONFIGURATION.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(restore-window-configuration global-configuration 
-					     #&amp;optional (w (get-window)))</synopsis>
+					     #&amp;optional (win (get-window)))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Restore the state of WIN from GLOBAL-CONFIGURATION.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-configuration)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-configuration.scm"><filename>scheme/window-configuration.scm</filename></ulink>
-  at line 51 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
+  at line 53 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-configuration.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18804,6 +18842,54 @@ to the window context in the usual way if not specified.
   </refsect1>
 </refentry>
 
+<refentry id="set-mod-mask-numlock-x">
+  <refnamediv>
+    <refname>set-mod-mask-numlock!</refname>
+    <refpurpose>Set the bit-mask for the NumLock modifier key.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(set-mod-mask-numlock! mask)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Set the bit-mask for the NumLock modifier key.
+<parameter>mask</parameter> must be a power of 2. The NumLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
+  at line 1377 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="set-mod-mask-scrolllock-x">
+  <refnamediv>
+    <refname>set-mod-mask-scrolllock!</refname>
+    <refpurpose>Set the bit-mask for the ScrollLock modifier key.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(set-mod-mask-scrolllock! mask)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Set the bit-mask for the ScrollLock modifier key.
+<parameter>mask</parameter> must be a power of 2. The ScrollLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
+  at line 1390 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="set-mouse-focus-click-raises-x">
   <refnamediv>
     <refname>set-mouse-focus-click-raises!</refname>
@@ -19030,7 +19116,7 @@ usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 789 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 845 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19930,7 +20016,7 @@ specified.
 <refentry id="show-titlebar-in-place">
   <refnamediv>
     <refname>show-titlebar-in-place</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Turn on display of the titlebar for WIN without moving the client window.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(show-titlebar-in-place #&amp;optional (win get-window))</synopsis>
@@ -19938,13 +20024,15 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Turn on display of the titlebar for WIN without moving the client window.
+This may move the frame to keep the application client window area in
+the same position as before the call.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 72 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 75 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21221,7 +21309,7 @@ expected.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 142 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 148 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21313,7 +21401,7 @@ case-sensitive or not.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 279 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 285 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21523,7 +21611,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 168 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 174 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -22141,7 +22229,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 861 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 917 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -22164,7 +22252,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 928 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 984 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -22359,7 +22447,7 @@ on for.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 133 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 139 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -22821,7 +22909,7 @@ obscured by other windows.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 96 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 102 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23029,7 +23117,7 @@ meta-characters "*" with ".*" and "?" with ".".
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 155 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 161 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23053,7 +23141,7 @@ See <link linkend="wildcard-matcher"><function>wildcard-matcher</function></link
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 205 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 211 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23080,7 +23168,7 @@ of the window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 178 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 184 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23150,14 +23238,14 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 39 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 38 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="window-center-middle">
   <refnamediv>
     <refname>window-center-middle</refname>
-    <refpurpose>Return a pair (X .</refpurpose>
+    <refpurpose>Return pair (viewport-x .</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-center-middle win)</synopsis>
@@ -23165,8 +23253,7 @@ relative to the current viewport.
   <refsect1>
   <title>Description</title>
   <para>
-  Return a pair (X . Y) that is the pixel position of the middle of the WIN
-relative to current viewport.
+  Return pair (viewport-x . viewport-y) that is the middle of WIN.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -23193,7 +23280,7 @@ relative to current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 120 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 126 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23215,7 +23302,7 @@ relative to current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 29 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 28 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23259,22 +23346,22 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 171 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 177 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="window-configuration">
   <refnamediv>
     <refname>window-configuration</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return a list containing the state of WIN.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(window-configuration #&amp;optional (w (get-window)))</synopsis>
+    <synopsis>(window-configuration #&amp;optional (win (get-window)))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return a list containing the state of WIN.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -23457,7 +23544,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 196 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 202 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23574,7 +23661,7 @@ returned is in parentheses.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 127 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 133 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23775,7 +23862,7 @@ See also <link linkend="select-window-add-selection"><function>select-window-add
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 146 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 152 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23797,7 +23884,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 76 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 75 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23819,7 +23906,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 50 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 49 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23841,7 +23928,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 71 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 70 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23962,7 +24049,7 @@ name, and <link linkend="window-pid"><function>window-pid</function></link> to g
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 91 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 97 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24117,7 +24204,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 96 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 95 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24139,7 +24226,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 60 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 59 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24161,7 +24248,7 @@ relative to the current viewport.
   <title>Implementation Notes</title>
   <para> Module: (app scwm window-locations)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
-  at line 86 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
+  at line 85 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/window-locations.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24600,7 +24687,7 @@ is non-empty.
   <title>Implementation Notes</title>
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 77 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  at line 83 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24922,7 +25009,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1304 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1404 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 

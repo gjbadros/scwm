@@ -371,7 +371,7 @@ invoked when the key is released.  The contexts include:
 'root-window
 'left-button-N  (N=1-5)
 'right-button-N (N=1-5)
-[From scwm/binding.c:955]
+[From scwm/binding.c:1011]
 
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
@@ -384,7 +384,7 @@ specified key is pressed in the specified context.
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if
 nothing should be done on key release.
-[From scwm/binding.c:1027]
+[From scwm/binding.c:1083]
 
 
 (bind-mouse contexts button proc #&optional immediate-proc)
@@ -398,22 +398,26 @@ for a list of the contexts. If IMMEDIATE-PROC is given, it will be
 executed immediately on a button-click.  If IMMEDIATE-PROC returns
 #f, then PROC will still get executed after determining the mouse click
 type.
-[From scwm/binding.c:1058]
+[From scwm/binding.c:1114]
 
 
 (bind-three-modifier-key-events 
 		modkey1 modkey2 modkey3
 		proc-press proc-release)
 - (app scwm modifier-key-bindings)
-No documentation supplied.
-[From scheme/modifier-key-bindings.scm:21]
+Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
+[From scheme/modifier-key-bindings.scm:24]
 
 
 (bind-two-modifier-key-events 
 		modkey1 modkey2 
 		proc-press proc-release)
 - (app scwm modifier-key-bindings)
-No documentation supplied.
+Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
 [From scheme/modifier-key-bindings.scm:6]
 
 
@@ -642,7 +646,7 @@ resource class matches STRING in the manner specified by the optional
 argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
 optional CASE-SENSITIVE argument determines whether the matching is
 case-sensitive or not.
-[From scheme/wininfo.scm:288]
+[From scheme/wininfo.scm:294]
 
 
 (clear-color-cache-entry name)
@@ -732,7 +736,7 @@ client hostname matches STRING in the manner specified by the optional
 argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
 optional CASE-SENSITIVE argument determines whether the matching is
 case-sensitive or not.
-[From scheme/wininfo.scm:315]
+[From scheme/wininfo.scm:321]
 
 
 (clone-scaled-image image width height)
@@ -868,10 +872,10 @@ only the Xpm menu look uses the EXTRA information.
 [From scwm/menulook.c:94]
 
 
-(copy-window-configuration configuration #&optional (w (get-window)))
+(copy-window-configuration configuration #&optional (win (get-window)))
 - (app scwm window-configuration)
-No documentation supplied.
-[From scheme/window-configuration.scm:43]
+Apply a saved state CONFIGURATION to window WIN.
+[From scheme/window-configuration.scm:44]
 
 
 (create-pixmap-cursor image #&optional fg-color bg-color x-hotspot y-hotspot)
@@ -950,7 +954,7 @@ Return the default decor.
 - (app scwm winops)
 Return #t if WIN has area <= *opaque-move-percent* of the screen, else #f.
 If *opaque-move-percent* is a boolean, not a number, just return it.
-[From scheme/winops.scm:214]
+[From scheme/winops.scm:220]
 
 
 (default-placement-proc win)
@@ -973,7 +977,7 @@ is not set, or the window starts iconic.
 - (app scwm winops)
 Return #t if WIN has area <= *opaque-resize-percent* of the screen, else #f.
 If *opaque-resize-percent* is a boolean, not a number, just return it.
-[From scheme/winops.scm:205]
+[From scheme/winops.scm:211]
 
 
 (default-transient-placement-proc win)
@@ -1391,7 +1395,7 @@ file. If the file is found, the full pathname to it is returned; if not,
 Return a window satisfying predicate PRED.
 If there are multiple such windows, an unspecified one of them
 will be returned.
-[From scheme/wininfo.scm:403]
+[From scheme/wininfo.scm:409]
 
 
 (find-window-by-class-resource class resource)
@@ -1400,7 +1404,7 @@ Return a window by its CLASS and RESOURCE names (as strings).
 If there are multiple such windows, an unspecified one of them
 will be returned. See also `find-window-by', `class-match??' 
 and `title-match??'
-[From scheme/wininfo.scm:418]
+[From scheme/wininfo.scm:424]
 
 
 (find-window-by-name window-name)
@@ -1408,7 +1412,7 @@ and `title-match??'
 Return a window with name WINDOW-NAME.
 If there are multiple such windows, an unspecified one of them
 will be returned.  See also `find-window-by' and `title-match??'.
-[From scheme/wininfo.scm:412]
+[From scheme/wininfo.scm:418]
 
 
 (first-line-output-of-system-cmd cmd)
@@ -1690,12 +1694,12 @@ fg or bg may be #f, which means that the color is inherited from the decor.
 
 (get-window-nonant select-list)
 - 
-SELECT-LIST is a list of (win x y); returns list (win nonant).
+SELECT-LIST is a list of (win x y), returns list (win nonant).
 The returned value window is the same as the car of SELECT-LIST, and the
 nonant is a number in [0,8] referring to which of the tic-tac-toe board
 squares x,y is in of WIN. x,y are viewport positions.
 `select-viewport-position' returns lists of the form needed by this procedure.
-[From scheme/window-locations.scm:107]
+[From scheme/window-locations.scm:106]
 
 
 (get-wm-command win)
@@ -1719,13 +1723,15 @@ this procedure..
 
 (global-window-configuration)
 - (app scwm window-configuration)
-No documentation supplied.
-[From scheme/window-configuration.scm:56]
+Return an object abstracting all of the current windows' states.
+[From scheme/window-configuration.scm:59]
 
 
 (gravity->alignments gravity)
 - (app scwm message-window)
-No documentation supplied.
+Return a list of two numeric alignments corresponding to a GRAVITY.
+GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
+or spelled-out versions of these.
 [From scheme/message-window.scm:18]
 
 
@@ -1880,7 +1886,9 @@ specified.
 
 (hide-titlebar-in-place #&optional (win get-window))
 - (app scwm winops)
-No documentation supplied.
+Turn off display of the titlebar for WIN without moving the client window.
+This may move the frame to keep the application client window area in
+the same position as before the call.
 [From scheme/winops.scm:69]
 
 
@@ -1947,7 +1955,7 @@ title matches STRING in the manner specified by the optional argument
 TYPE, which may be 'exact, 'regexp, or 'wildcard. The optional
 CASE-SENSITIVE argument determines whether the matching is
 case-sensitive or not.
-[From scheme/wininfo.scm:306]
+[From scheme/wininfo.scm:312]
 
 
 (icon-viewport-position #&optional (win (get-window)))
@@ -2048,7 +2056,7 @@ attempts to load it as such.
 (in-viewport-any-desk? #&optional (win (get-window)))
 - (app scwm wininfo)
 Return #t if WIN is in the current viewport ignoring the desk, else #f.
-[From scheme/wininfo.scm:67]
+[From scheme/wininfo.scm:73]
 
 
 (in-viewport-placement xx yy)
@@ -2109,7 +2117,7 @@ If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
 spcified, `interactive-move' calls `*move-opaquely-proc*' on WIN and moves
 opaquely if that returns #t and uses a rubber-band if it returns #f.
-[From scheme/winops.scm:236]
+[From scheme/winops.scm:242]
 
 
 (interactive-move-group #&optional (group (get-window #t #f #f)))
@@ -2180,7 +2188,7 @@ should be resized opaquely, or using a rubber-band. If it is not
 spcified, `interactive-resize' calls `*resize-opaquely-proc*' on WIN and
 moves opaquely if that returns #t and uses a rubber-band if it returns
 #f.
-[From scheme/winops.scm:246]
+[From scheme/winops.scm:252]
 
 
 (interactive-resize-window-with-focus)
@@ -2208,10 +2216,12 @@ that corner fixed.
 [From scheme/flux.scm:480]
 
 
-(intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
+(intersection-area x1 y1 w1 h1 x2 y2 w2 h2)
 - (app scwm wininfo)
-No documentation supplied.
-[From scheme/wininfo.scm:49]
+Returns the size of the intersection of two rectangles.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle.
+[From scheme/wininfo.scm:52]
 
 
 (iota n)
@@ -2377,7 +2387,7 @@ Return a string containing the X11 keysym for key with code KEYCODE.
 - Built-in Primitive
 Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
-[From scwm/binding.c:1323]
+[From scwm/binding.c:1423]
 
 
 (keysym->keycode keysym-name)
@@ -2385,7 +2395,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
 Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
-[From scwm/binding.c:893]
+[From scwm/binding.c:949]
 
 
 (kill-all-fvwm2-modules)
@@ -2551,7 +2561,7 @@ KEY is a modifiers and keysym string.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding.
-[From scwm/binding.c:812]
+[From scwm/binding.c:868]
 
 
 (lookup-mouse contexts button)
@@ -2562,7 +2572,7 @@ BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
 The return values is the procedure object, or #f if there is no
 matching binding.
-[From scwm/binding.c:1133]
+[From scwm/binding.c:1189]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -2900,13 +2910,13 @@ module packet for WIN as a Scheme string.
 - (app scwm winops)
 Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed.
-[From scheme/winops.scm:87]
+[From scheme/winops.scm:93]
 
 
 (maximized? #&optional (win (get-window)))
 - (app scwm winops)
 Return #t if WIN is maximized, #f otherwise.
-[From scheme/winops.scm:128]
+[From scheme/winops.scm:134]
 
 
 (maybe-make-color obj)
@@ -3320,7 +3330,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1278]
+[From scwm/binding.c:1334]
 
 
 (mod-mask-control)
@@ -3328,7 +3338,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1262]
+[From scwm/binding.c:1318]
 
 
 (mod-mask-hyper)
@@ -3336,7 +3346,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1286]
+[From scwm/binding.c:1342]
 
 
 (mod-mask-meta)
@@ -3344,7 +3354,23 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1270]
+[From scwm/binding.c:1326]
+
+
+(mod-mask-numlock)
+- Built-in Primitive
+Return the bit-mask for the NumLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as NumLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
+[From scwm/binding.c:1360]
+
+
+(mod-mask-scrolllock)
+- Built-in Primitive
+Return the bit-mask for the ScrollLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
+returns a power of two corresponding to the bit-mask of the modifier
+[From scwm/binding.c:1369]
 
 
 (mod-mask-shift)
@@ -3352,7 +3378,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1254]
+[From scwm/binding.c:1310]
 
 
 (mod-mask-super)
@@ -3360,7 +3386,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1295]
+[From scwm/binding.c:1351]
 
 
 (module-and-proc-names->proc module-name proc-name)
@@ -3383,7 +3409,7 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:1241]
+[From scwm/binding.c:1297]
 
 
 (mouse-focus-click-raises?)
@@ -3730,8 +3756,8 @@ of this function, as a string.
 
 (pair-virtual->viewport pt)
 - (app scwm window-locations)
-A version of virtual->viewport that works on the pair points used by this
-module.
+Convert a pair point from virtual to viewport coordinates.
+Return value is (viewport-x . viewport-y).
 [From scheme/window-locations.scm:10]
 
 
@@ -3748,7 +3774,7 @@ Return the percent of WIN currently in the viewport as a real in [0,100].
 Note that this does not consider other windows which may
 obscure WIN;  it only checks what fraction of WIN would be visible
 if it were on top (unobscured).
-[From scheme/wininfo.scm:104]
+[From scheme/wininfo.scm:110]
 
 
 (pix->%x pix)
@@ -3870,7 +3896,9 @@ See also `constraint-toggle-menu'.
 
 (position-message-window! msgwin x y gravity)
 - (app scwm message-window)
-No documentation supplied.
+Move the move/resize message window's GRAVITY point to (X,Y).
+GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
+or spelled-out versions of these. See also `gravity->alignments'.
 [From scheme/message-window.scm:35]
 
 
@@ -3890,7 +3918,7 @@ See also `next-window'.
 (print-window #&optional (win (get-window)))
 - (app scwm winops)
 Print WIN using xpr and lpr.
-[From scheme/winops.scm:263]
+[From scheme/winops.scm:269]
 
 
 (printable-char->keysym-string char)
@@ -3899,12 +3927,6 @@ Return the keysym string corresponding to a printable character.
 CHAR is a scheme character.  The return value is appropriate for
 use by `send-key-press'.  See also `X-synthetic-send-string'.
 [From scheme/send-string.scm:12]
-
-
-(process-use-scwm-module module)
-- 
-No documentation supplied.
-[From scheme/minimal.scm:135]
 
 
 (process-use-scwm-modules module-list)
@@ -4377,7 +4399,7 @@ No documentation supplied.
 - Built-in Primitive
 Return #t iff key events are being qutoed.
 See also `set-quote-key-events!'.
-[From scwm/binding.c:800]
+[From scwm/binding.c:856]
 
 
 (quotify-single-quotes str)
@@ -4460,9 +4482,11 @@ scratch. This is hopefully not necessary during normal operation.
 [From scwm/miscprocs.c:254]
 
 
-(rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
+(rectangle-overlap? x1 y1 w1 h1 x2 y2 w2 h2)
 - (app scwm wininfo)
-No documentation supplied.
+Returns #t iff the two specified rectangles overlap.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle.
 [From scheme/wininfo.scm:46]
 
 
@@ -4673,7 +4697,7 @@ Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified.
-[From scheme/winops.scm:273]
+[From scheme/winops.scm:279]
 
 
 (resource-match?? STRING TYPE CASE-SENSITIVE?)
@@ -4684,7 +4708,7 @@ resource instance matches STRING in the manner specified by the
 optional argument TYPE, which may be 'exact, 'regexp, or
 'wildcard. The optional CASE-SENSITIVE argument determines whether the
 matching is case-sensitive or not.
-[From scheme/wininfo.scm:297]
+[From scheme/wininfo.scm:303]
 
 
 (restack-windows winlist)
@@ -4714,8 +4738,8 @@ Returns true if scwm is being restarted by itself.
 
 (restore-global-window-configuration global-configuration)
 - 
-No documentation supplied.
-[From scheme/window-configuration.scm:61]
+Restore the states of all windows from GLOBAL-CONFIGURATION.
+[From scheme/window-configuration.scm:65]
 
 
 (restore-scwm-handlers)
@@ -4727,10 +4751,10 @@ after the (gtk gtk) module.
 
 
 (restore-window-configuration global-configuration 
-					     #&optional (w (get-window)))
+					     #&optional (win (get-window)))
 - (app scwm window-configuration)
-No documentation supplied.
-[From scheme/window-configuration.scm:51]
+Restore the state of WIN from GLOBAL-CONFIGURATION.
+[From scheme/window-configuration.scm:53]
 
 
 (reverse-iota n)
@@ -5753,6 +5777,24 @@ to the window context in the usual way if not specified.
 [From scwm/window.c:3817]
 
 
+(set-mod-mask-numlock! mask)
+- Built-in Primitive
+Set the bit-mask for the NumLock modifier key.
+MASK must be a power of 2. The NumLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm.
+[From scwm/binding.c:1377]
+
+
+(set-mod-mask-scrolllock! mask)
+- Built-in Primitive
+Set the bit-mask for the ScrollLock modifier key.
+MASK must be a power of 2. The ScrollLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm.
+[From scwm/binding.c:1390]
+
+
 (set-mouse-focus-click-raises! flag)
 - Built-in Primitive
 Determine whether a mouse-focus-click will raise the window.
@@ -5830,7 +5872,7 @@ usual way if not specified.
 (set-quote-key-events! quoting-on?)
 - Built-in Primitive
 Set key event quoting to QUOTING-ON?.
-[From scwm/binding.c:789]
+[From scwm/binding.c:845]
 
 
 (set-random-placement! flag #&optional win)
@@ -6158,8 +6200,10 @@ specified.
 
 (show-titlebar-in-place #&optional (win get-window))
 - (app scwm winops)
-No documentation supplied.
-[From scheme/winops.scm:72]
+Turn on display of the titlebar for WIN without moving the client window.
+This may move the frame to keep the application client window area in
+the same position as before the call.
+[From scheme/winops.scm:75]
 
 
 (show-window-list-matching-interactively)
@@ -6641,7 +6685,7 @@ expected.
 (time-t->seconds-ago timet)
 - (app scwm wininfo)
 Return the number of seconds that have passed since TIMET was the current time.
-[From scheme/wininfo.scm:142]
+[From scheme/wininfo.scm:148]
 
 
 (title-font)
@@ -6673,7 +6717,7 @@ matches STRING in the manner specified by the optional argument TYPE,
 which may be 'exact, 'regexp, or 'wildcard. The optional
 CASE-SENSITIVE argument determines whether the matching is
 case-sensitive or not.
-[From scheme/wininfo.scm:279]
+[From scheme/wininfo.scm:285]
 
 
 (title-style #&key font height justify
@@ -6748,7 +6792,7 @@ Toggle the current window's maximization-vertically to 95% of the screen height.
 (toggle-maximize nw nh #&optional (win (get-window)))
 - (app scwm winops)
 Maximize to width NW, height NH if not maximized, or unmaximize.
-[From scheme/winops.scm:168]
+[From scheme/winops.scm:174]
 
 
 (transient?  #&optional win)
@@ -6946,7 +6990,7 @@ way if not specified.
 Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-[From scwm/binding.c:861]
+[From scwm/binding.c:917]
 
 
 (unbind-mouse contexts button)
@@ -6954,7 +6998,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:928]
+[From scwm/binding.c:984]
 
 
 (undo)
@@ -7014,7 +7058,7 @@ on for.
 (unmaximize #&optional (win (get-window)))
 - (app scwm winops)
 Unmaximize WIN so it returns to its size/position before maximization.
-[From scheme/winops.scm:133]
+[From scheme/winops.scm:139]
 
 
 (unregister-image-loader extension)
@@ -7176,7 +7220,7 @@ Return #t if any of WIN is currently potentially visible, else #f.
 Note that this just checks if WIN is in the current viewport
 and on the current desk.  It may still return #t if WIN is completely
 obscured by other windows.
-[From scheme/wininfo.scm:96]
+[From scheme/wininfo.scm:102]
 
 
 (vx- x)
@@ -7249,7 +7293,7 @@ Just a toy--- perhaps could be useful to call attention to a window.
 Return the regular expresision string corresponding to WILDCARD.
 This involves quoting meta characters and replacing the wildcard
 meta-characters "*" with ".*" and "?" with ".".
-[From scheme/wininfo.scm:155]
+[From scheme/wininfo.scm:161]
 
 
 (wildcard-match? wildcard #&optional (win (get-window))
@@ -7258,7 +7302,7 @@ meta-characters "*" with ".*" and "?" with ".".
 - (app scwm wininfo)
 Returns #t if WILDCARD matches WIN (in the sense of `wildcard-matcher').
 See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS.
-[From scheme/wininfo.scm:205]
+[From scheme/wininfo.scm:211]
 
 
 (wildcard-matcher wildcard #&key (full-regexp #f)
@@ -7270,7 +7314,7 @@ the WILDCARD is considered to be a regular-expression instead of
 a shell-like wildcard.  The returned procedure takes a window
 and returns #t if WILDCARD matches the title, class, or resource
 of the window.
-[From scheme/wininfo.scm:178]
+[From scheme/wininfo.scm:184]
 
 
 (window->image win #&optional x-offset y-offset width height)
@@ -7295,27 +7339,26 @@ does.
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the center, bottom of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:39]
+[From scheme/window-locations.scm:38]
 
 
 (window-center-middle win)
 - (app scwm window-locations)
-Return a pair (X . Y) that is the pixel position of the middle of the WIN
-relative to current viewport.
+Return pair (viewport-x . viewport-y) that is the middle of WIN.
 [From scheme/window-locations.scm:18]
 
 
 (window-center-position win)
 - (app scwm wininfo)
 Return the coordinates of the center of WIN as a list of the X and Y coordinate.
-[From scheme/wininfo.scm:120]
+[From scheme/wininfo.scm:126]
 
 
 (window-center-top win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the center, top of WIN
 relative to current viewport.
-[From scheme/window-locations.scm:29]
+[From scheme/window-locations.scm:28]
 
 
 (window-class  #&optional win)
@@ -7329,12 +7372,12 @@ specified.
 (window-client-machine-name #&optional (win (get-window)))
 - (app scwm wininfo)
 Return the name of the client machine on which WIN is running.
-[From scheme/wininfo.scm:171]
+[From scheme/wininfo.scm:177]
 
 
-(window-configuration #&optional (w (get-window)))
+(window-configuration #&optional (win (get-window)))
 - (app scwm window-configuration)
-No documentation supplied.
+Return a list containing the state of WIN.
 [From scheme/window-configuration.scm:31]
 
 
@@ -7392,7 +7435,7 @@ No documentation supplied.
 (window-frame-area win)
 - (app scwm winops)
 Return the area of WIN's frame in square pixels.
-[From scheme/winops.scm:196]
+[From scheme/winops.scm:202]
 
 
 (window-frame-border-width  #&optional win)
@@ -7434,7 +7477,7 @@ Return a string corresponding to the geometry specifications for WIN.
 The virtual position and the frame size are used.  The resulting string
 looks like "157x133+200+306".  If WIN is iconified, the string
 returned is in parentheses.
-[From scheme/wininfo.scm:127]
+[From scheme/wininfo.scm:133]
 
 
 (window-gravity  #&optional win)
@@ -7500,28 +7543,28 @@ Return the time that WIN was last focussed in seconds since 1/1/70.
 (window-last-focus-time-string #&optional (win (get-window)))
 - (app scwm wininfo)
 Return a string corresponding to the last focus time for WIN.
-[From scheme/wininfo.scm:146]
+[From scheme/wininfo.scm:152]
 
 
 (window-left-bottom win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the left, bottom of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:76]
+[From scheme/window-locations.scm:75]
 
 
 (window-left-middle win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the left, middle of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:50]
+[From scheme/window-locations.scm:49]
 
 
 (window-left-top win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the left, top of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:71]
+[From scheme/window-locations.scm:70]
 
 
 (window-map-pending? win)
@@ -7567,7 +7610,7 @@ name, and `window-pid' to get the process id.
 		 #&optional (win2 (get-window)))
 - (app scwm wininfo)
 Return a function which takes WIN2 and returns #t if it overlaps WIN.
-[From scheme/wininfo.scm:91]
+[From scheme/wininfo.scm:97]
 
 
 (window-pid win)
@@ -7632,21 +7675,21 @@ the window context in the usual way if not specified.
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the right, bottom of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:96]
+[From scheme/window-locations.scm:95]
 
 
 (window-right-middle win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the right, middle of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:60]
+[From scheme/window-locations.scm:59]
 
 
 (window-right-top win)
 - (app scwm window-locations)
 Return a pair (X . Y) that is the pixel position of the right, top of WIN
 relative to the current viewport.
-[From scheme/window-locations.scm:86]
+[From scheme/window-locations.scm:85]
 
 
 (window-shade  #&optional win)
@@ -7800,7 +7843,7 @@ Returns #t if OBJ is a window object, otherwise returns #f.
 Return #t if WIN and WIN2 overlap at all, else #f.
 I.e., returns #t if the intersection of the windows' areas
 is non-empty.
-[From scheme/wininfo.scm:77]
+[From scheme/wininfo.scm:83]
 
 
 (winlist-hit #&optional (win (get-window)))
@@ -7912,7 +7955,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:1304]
+[From scwm/binding.c:1404]
 
 
 (X-properties win)

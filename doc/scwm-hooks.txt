@@ -13,7 +13,7 @@ setting the relevant parameters when a new window is created.
 
 See also `before-new-window-hook' and `before-place-new-window-hook'.
 
-[From scwm/add_window.c:111]
+[From scwm/add_window.c:112]
 
 
 before-new-window-hook (1 args)
@@ -30,7 +30,7 @@ interface to setting the relevant parameters when a new window is
 created.
 
 See also `before-place-new-window-hook' and `after-new-window-hook'.  
-[From scwm/add_window.c:87]
+[From scwm/add_window.c:88]
 
 
 before-place-new-window-hook (1 args)
@@ -43,7 +43,7 @@ two hooks, despite being invoked at a slightly different time.
 
 See also `before-new-window-hook' and `after-new-window-hook'.
 
-[From scwm/add_window.c:101]
+[From scwm/add_window.c:102]
 
 
 broadcast-config-hook (1 args)
@@ -304,7 +304,7 @@ It is invoked on deletes, destroys, or for any reason that a window
 is closed. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. 
-[From scwm/add_window.c:126]
+[From scwm/add_window.c:127]
 
 
 window-enter-hook (1 args)
