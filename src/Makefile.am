@@ -44,6 +44,7 @@ scwm_SOURCES =  string_token.c \
                 shutdown.c \
                 init_scheme_string.c \
 		constraint-primitives.c \
+		scwm-constraints.c \
                 guile-compat.c \
                 syscompat.c \
 		getopt.c \
