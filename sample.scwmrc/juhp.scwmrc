@@ -110,8 +110,6 @@
 	      #:icon-box (list (x- 5)  (%y 30) (x- 90) (y- 5))
 	      #:border-width 6 
 	      #:focus 'click
-	      #:random-placement #t
-	      #:smart-placement #t
 	      #:mwm-func-hint #t
 	      #:mwm-decor-hint #t
 	      #:hint-override #t

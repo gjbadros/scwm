@@ -229,7 +229,7 @@
               #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
               #:icon-box (list 520 1 (x- 520) 200) ; (x- 70) 1 69 (y- 141))
               #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
-              #:random-placement #t #:smart-placement #t #:use-decor std-d
+              #:use-decor std-d
 	      #:mwm-func-hint #t #:mwm-decor-hint #t #:hint-override #t
               #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
               #:squashed-titlebar #f

@@ -511,7 +511,6 @@
 	      #:focus 'mouse
 ;	      #:plain-border #t
 	      #:sticky-icon #t
-	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:mwm-border #t
 	      #:hint-override #t #:decorate-transient #t
@@ -520,10 +519,6 @@
 	      #:mini-icon pic-lambda-mini)
 
 ;;(window-style "*" #:icon #f #:show-icon #f)
-
-;; This gets my netscape bookmarks windows to do the right thing
-;; and stay on screen (instead of being half off screen when mapped)
-(set-smart-placement-is-really-smart! #t)
 
 (enable-dynamic-netscape-actions)
 

@@ -758,8 +758,6 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 ;;              #:placement-proc place-at-point
 ;;              #:transient-placement-proc place-at-point
-;;              #:random-placement #t
-;;              #:smart-placement #t
 
               #:mwm-func-hint #t
               #:mwm-decor-hint #t

@@ -243,7 +243,6 @@
 (window-style "*" 
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:focus 'mouse
-	      #:random-placement #t #:smart-placement #t
               #:transient-placement-proc place-at-point
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:hint-override #t #:decorate-transient #t

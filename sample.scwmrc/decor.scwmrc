@@ -303,7 +303,6 @@
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:focus 'mouse
 	      #:icon "unknown1.xpm"
-	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:hint-override #t #:decorate-transient #t
 	      #:PPosition-hint #f

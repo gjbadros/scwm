@@ -173,7 +173,6 @@
 	      #:fg "black" #:bg "#a3a3c4"
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:focus 'sloppy
-	      #:random-placement #f #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:hint-override #f #:decorate-transient #f
 	      #:PPosition-hint #t
@@ -784,22 +783,21 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:start-on-desk (desk-number "Games")
 	      #:use-style FixedSize)
 (window-style (title-match?? "povray")
-	      #:icon "xpovicon.xpm.gz"
-	      #:random-placement #t #:use-style FixedSize)
+	      #:icon "xpovicon.xpm.gz" ;; #:placement-proc random-place-window
+	      #:use-style FixedSize)
 (window-style (title-match?? "rxvt*")
 	      #:icon "term.xpm.gz")
 (window-style (title-match?? "xcalc")
-	      #:icon "Calculator.xpm.gz"
-	      #:random-placement #t)
+	      #:icon "Calculator.xpm.gz")
 (window-style (title-match?? "xclock")
 	      #:use-style Widget)
 (window-style (title-match?? "xconsole")
 	      #:icon "rterm.xpm.gz" #:use-style NoFocus)
 (window-style (title-match?? "xmag")
-	      #:icon "view_3d.xpm.gz" #:random-placement #t
+	      #:icon "view_3d.xpm.gz" ;; #:placement-proc random-place-window
 	      #:use-style NoFocus)
 (window-style (title-match?? "xman")
-	      #:icon "xman.xpm.gz" #:random-placement #t
+	      #:icon "xman.xpm.gz" ;; #:placement-proc random-place-window
 	      #:use-style NoFocus)
 (window-style (class-match?? "XSm")
 	      #:focus 'click)
