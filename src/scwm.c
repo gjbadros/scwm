@@ -654,6 +654,10 @@ scwm_main(int argc, char **argv)
 	}
 	sprintf(message + strlen(message), ".%d", myscreen);
 	dpy = XOpenDisplay(message);
+        if (!dpy) {
+          scwm_msg(ERR,__FUNCTION__,
+                   "Could not open display %s",message);
+        }
 	Scr.screen = myscreen;
 	Scr.NumberOfScreens = ScreenCount(dpy);
 	

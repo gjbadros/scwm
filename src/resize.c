@@ -123,7 +123,7 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heigh
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
 
-  dwidth -= 2 * psw->boundary_width;
+  dwidth -= 2 * psw->xboundary_width;
   dheight -= (psw->title_height + 2 * psw->boundary_width);
 
   minWidth = psw->hints.min_width;
@@ -226,7 +226,7 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heigh
   /*
    * Fourth, account for border width and title height
    */
-  *widthp = dwidth + 2 * psw->boundary_width;
+  *widthp = dwidth + 2 * psw->xboundary_width;
   *heightp = dheight + psw->title_height + 2 * psw->boundary_width;
   return;
 }

@@ -461,11 +461,37 @@ MoveTo(ScwmWindow *psw, int x, int y)
 }
 
 
+static
+void
+SendClientConfigureNotify(const ScwmWindow *psw)
+{
+  XEvent client_event;
+
+  client_event.type = ConfigureNotify;
+  client_event.xconfigure.display = dpy;
+  client_event.xconfigure.event = psw->w;
+  client_event.xconfigure.window = psw->w;
+  
+  client_event.xconfigure.x = FRAME_X(psw) + psw->xboundary_width;
+  client_event.xconfigure.y = FRAME_Y(psw) + psw->title_height + psw->boundary_width;
+  client_event.xconfigure.width = FRAME_WIDTH(psw) - 2 * psw->xboundary_width;
+  client_event.xconfigure.height = FRAME_HEIGHT(psw) - 2 * psw->boundary_width - psw->title_height;
+  
+  client_event.xconfigure.border_width = psw->bw;
+  /* Real ConfigureNotify events say we're above title window, so ... */
+  /* what if we don't have a title ????? */
+  client_event.xconfigure.above = psw->frame;
+  client_event.xconfigure.override_redirect = False;
+  DBUG_RESIZE(__FUNCTION__, "Sending configure event");
+  XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
+}
+
 void 
 MovePswToCurrentPosition(const ScwmWindow *psw)
 {
   int x = FRAME_X(psw), y = FRAME_Y(psw);
   XMoveWindow(dpy, psw->frame, x, y);
+  SendClientConfigureNotify(psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 }
 
@@ -477,6 +503,7 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
   int x = FRAME_X(psw), y = FRAME_Y(psw);
 
+  SendClientConfigureNotify(psw);
   SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
 }
 
@@ -1344,6 +1371,8 @@ DestroyScwmWindow(ScwmWindow *psw)
     XFreePixmap(dpy, IMAGE(psw->icon_image)->image);
   }
 
+  /* FIXGJB: these should check if the windows were created,
+     not if the feature is currently turned on */
   if (psw->icon_w) {
     XDestroyWindow(dpy, psw->icon_w);
     XDeleteContext(dpy, psw->icon_w, ScwmContext);
@@ -2697,7 +2726,7 @@ WIN defaults to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
   ScwmDecor *fl;
-  int w, oldw;
+  int cpix, oldw;
   int oldxadj, oldyadj;
 
   SCM_REDEFER_INTS;
@@ -2706,7 +2735,7 @@ WIN defaults to the window context in the usual way if not specified. */
   if (!gh_number_p(width)) {
     scm_wrong_type_arg(FUNC_NAME, 1, width);
   }
-  w = gh_scm2int(width);
+  cpix = gh_scm2int(width);
 
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
@@ -2714,13 +2743,13 @@ WIN defaults to the window context in the usual way if not specified. */
   oldxadj = GRAV_X_ADJUSTMENT(psw);
   oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
-  psw->boundary_width = w;
+  psw->boundary_width = cpix;
 
   MoveResizeTo(psw, 
 	       psw->frame_x + GRAV_X_ADJUSTMENT(psw) - oldxadj,
 	       psw->frame_y + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
-	       FRAME_WIDTH(psw) + 2 * (w - oldw),
-	       FRAME_HEIGHT(psw) + 2 * (w - oldw));
+	       FRAME_WIDTH(psw) + 2 * (cpix - oldw),
+	       FRAME_HEIGHT(psw) + 2 * (cpix - oldw));
 
 #if 0
   /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */

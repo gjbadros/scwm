@@ -45,6 +45,13 @@ extern Window PressedW;
 #define SQUASHED_TITLEBAR_P(psw) \
   SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("squashed-titlebar")))
 
+#define NO_SIDE_DECORATIONS_P(psw) \
+  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-side-decorations")))
+
+#define NO_TOP_BORDER_DECORATION_P(psw) \
+  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-top-border-decoration")))
+
+
 /* macro rules to get button state */
 /* FIXGJB: ugh! dynamic scoping in a macro! --07/26/98 gjb */
 #define GetButtonState(window)						\
@@ -72,15 +79,15 @@ SetShape(ScwmWindow *psw, int w)
     XRectangle rect;
 
     XShapeCombineShape(dpy, psw->frame, ShapeBounding,
-		       psw->boundary_width,
+		       psw->xboundary_width,
 		       psw->title_height + psw->boundary_width,
 		       psw->w,
 		       ShapeBounding, ShapeSet);
     if (psw->title_w) {
       /* windows w/ titles */
-      rect.x = psw->boundary_width;
+      rect.x = psw->xboundary_width;
       rect.y = psw->title_y;
-      rect.width = w - 2 * psw->boundary_width + psw->bw;
+      rect.width = w - 2 * psw->xboundary_width + psw->bw;
       rect.height = psw->title_height;
 
       XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
@@ -1276,10 +1283,12 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 {
   XWindowChanges xwc;
   unsigned long xwcm;
-  int cx, cy, i;
-  int xwidth, ywidth, left, right;
+  int i;
   int tbar_right;
   Bool shaded = SHADED_P(psw);
+  Bool fNoSideDecorations = NO_SIDE_DECORATIONS_P(psw);
+  /*  Bool fNoTopDecoration = NO_TOP_BORDER_DECORATION_P(psw); */
+  Bool fSquashedTitlebar = SQUASHED_TITLEBAR_P(psw);
 
   assert(!fMoved || fMoved == WAS_MOVED);
   assert(!fResized || fResized == WAS_RESIZED);
@@ -1291,6 +1300,11 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     psw->orig_width = w;
     psw->orig_height = h;
   }
+
+  if (fNoSideDecorations)
+    psw->xboundary_width = 0;
+  else
+    psw->xboundary_width = psw->boundary_width;
 
   { /* scope */
     /* 16 pixels is the amount to force the window onto
@@ -1320,12 +1334,13 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     sendEvent = True;
 
   if (fResized) {
-    int button_width;
-    DBUG(__FUNCTION__,"Resized!");
-    left = psw->nr_left_buttons;
-    right = psw->nr_right_buttons;
     /* make the decoration buttons square */
-    button_width = psw->title_height;
+    int button_width = psw->title_height;
+
+    int left = psw->nr_left_buttons;
+    int right = psw->nr_right_buttons;
+
+    DBUG(__FUNCTION__,"Resized!");
 
     psw->title_width = (w - (left + right) * button_width
                         - 2 * psw->boundary_width + psw->bw);
@@ -1337,7 +1352,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
       tw += 2*psw->boundary_width + psw->bw + 10;
       tbar_right = w;
-      if (psw->fTitle && (SQUASHED_TITLEBAR_P(psw))) {
+      if (psw->fTitle && fSquashedTitlebar) {
         if (psw->title_width > tw) {
           tbar_right = w - (psw->title_width - tw);
           psw->title_width = tw;
@@ -1346,8 +1361,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     }
 
     if (SHOW_TITLE_P(psw)) {
-      psw->title_x = psw->boundary_width +
-	(left * button_width);
+      psw->title_x = psw->boundary_width + (left * button_width);
       if (psw->title_x >= w - psw->boundary_width)
 	psw->title_x = -10;
       psw->title_y = psw->boundary_width;
@@ -1398,15 +1412,13 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	psw->corner_width = w / 3;
       if ((h < 2 * psw->corner_width) && !shaded)
 	psw->corner_width = h / 3;
-      xwidth = w - 2 * psw->corner_width + psw->bw;
-      ywidth = h - 2 * psw->corner_width;
+
       xwcm = CWWidth | CWHeight | CWX | CWY;
-      if (xwidth < 2)
-	xwidth = 2;
-      if (ywidth < 2)
-	ywidth = 2;
 
       if (psw->boundary_width + psw->bw > 0) {
+        int ywidth = h - 2 * psw->corner_width;
+        if (ywidth < 2)
+          ywidth = 2;
         /* position the four sides */
         for (i = 0; i < 4; i++) {
           if (i == 0) { /* top side */
@@ -1423,17 +1435,21 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
             xwc.x = psw->corner_width;
             xwc.y = h - psw->boundary_width + psw->bw;
             xwc.height = psw->boundary_width; /* FIXGJB: + psw->bw; */
-            xwc.width = xwidth;
+            xwc.width = w - 2 * psw->corner_width + psw->bw;
           } else { /* left side */
             xwc.x = 0;
             xwc.y = psw->corner_width;
             xwc.width = psw->boundary_width;
             xwc.height = ywidth;
           }
-          if (!shaded || (i != 2)) { /* skip bottom side when shaded */
-            XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
-            /* make sure sides are mapped */
-            XMapWindow(dpy,psw->sides[i]);
+          if (fNoSideDecorations && (i == 1 || i == 3)) {
+            XUnmapWindow(dpy,psw->sides[i]);
+          } else {
+            if (!shaded || (i != 2)) { /* skip bottom side when shaded */
+              XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
+              /* make sure sides are mapped */
+              XMapWindow(dpy,psw->sides[i]);
+            }
           }
         }
       } else {
@@ -1446,6 +1462,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       xwc.width = psw->corner_width;
       xwc.height = psw->corner_width;
 
+      if (fNoSideDecorations) {
+        xwc.height = psw->boundary_width;
+      }
+
       /* now position the four corners 
          0 = NW, 1 = NE, 2 = SW, 3 = SE */
       for (i = 0; i < 4; i++) {
@@ -1456,7 +1476,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	  xwc.x = 0;
 
 	if (i == 2 || i == 3) /* Bottom corners: SW, SE */
-	  xwc.y = h - psw->corner_width;
+	  xwc.y = h - xwc.height;
 	else /* Top corners:  */
 	  xwc.y = 0;
 
@@ -1466,16 +1486,18 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       }
     }
   }
-  psw->attr.width = w - 2 * psw->boundary_width;
+  psw->attr.width = w - 2 * psw->xboundary_width;
   psw->attr.height = h - psw->title_height - 2 * psw->boundary_width;
+  
+  { /* scope */
+    int cx = psw->xboundary_width - psw->bw;
+    int cy = psw->title_height + psw->boundary_width - psw->bw;
 
-  cx = psw->boundary_width - psw->bw;
-  cy = psw->title_height + psw->boundary_width - psw->bw;
-
-  if (!shaded && (fMoved || fResized)) {
-    XResizeWindow(dpy, psw->w, psw->attr.width, psw->attr.height);
-    XMoveResizeWindow(dpy, psw->Parent, cx, cy,
-		      psw->attr.width, psw->attr.height);
+    if (!shaded && (fMoved || fResized)) {
+      XResizeWindow(dpy, psw->w, psw->attr.width, psw->attr.height);
+      XMoveResizeWindow(dpy, psw->Parent, cx, cy,
+                        psw->attr.width, psw->attr.height);
+    }
   }
 
   /* fix up frame and assign size/location values in psw */
@@ -1487,7 +1509,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     if (fResized) {
       if (psw->fShaped) {
         SetShape(psw, w);
-      } else if (SQUASHED_TITLEBAR_P(psw)) {
+      } else if (fSquashedTitlebar) {
         SetShapedTitlebar(psw, tbar_right);
       }
     }
@@ -1497,28 +1519,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
   XSetWindowBorderWidth(dpy,psw->Parent,psw->bw);
 
   XSync(dpy, False);
-  /* FIXGJB: maybe this should be moved into a function and called from
-     ResizePswToCurrentSize and MovePswToCurrentPosition */
-  if (sendEvent && !shaded) {
-    XEvent client_event;
-    client_event.type = ConfigureNotify;
-    client_event.xconfigure.display = dpy;
-    client_event.xconfigure.event = psw->w;
-    client_event.xconfigure.window = psw->w;
 
-    client_event.xconfigure.x = x + psw->boundary_width;
-    client_event.xconfigure.y = y + psw->title_height + psw->boundary_width;
-    client_event.xconfigure.width = w - 2 * psw->boundary_width;
-    client_event.xconfigure.height = h - 2 * psw->boundary_width - psw->title_height;
-
-    client_event.xconfigure.border_width = psw->bw;
-    /* Real ConfigureNotify events say we're above title window, so ... */
-    /* what if we don' thave a title ????? */
-    client_event.xconfigure.above = psw->frame;
-    client_event.xconfigure.override_redirect = False;
-    DBUG_RESIZE(__FUNCTION__, "Sending configure event");
-    XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
-  }
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 }
 

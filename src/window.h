@@ -69,7 +69,7 @@ typedef struct _gravity_info {
 } gravity_info;
 
 
-#define GRAV_X_ADJUSTMENT(psw) ((psw)->grav.x * ((psw)->old_bw - (psw)->bw - (psw)->boundary_width))
+#define GRAV_X_ADJUSTMENT(psw) ((psw)->grav.x * ((psw)->old_bw - (psw)->bw - (psw)->xboundary_width))
 
 #define GRAV_Y_ADJUSTMENT(psw) (((psw)->grav.y * ((psw)->old_bw - (psw)->bw - (psw)->boundary_width)) - ((psw)->grav.t * ((psw)->title_height) / 2))
 
@@ -107,7 +107,8 @@ typedef struct ScwmWindow {
   struct ScwmWindowConstraintInfo *pswci; /* Constraint information for this scheme window */
                                 /* NULL if built w/o cassowary support */
 
-  int boundary_width;           /* the decoration boundary's width, in pixels */
+  int boundary_width;           /* the decoration vertical boundary's width, in pixels */
+  int xboundary_width;          /* the decoration horizontal boundary's width, in pixels */
   int corner_width;             /* the width of the decoration handles, in pixels */
   int bw;                       /* the border_width for the frame, w, and Parent, in pixels */
   int title_x;
