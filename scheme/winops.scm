@@ -67,14 +67,12 @@ WIN is only destroyed if it is not deleteable."
 (define-public toggle-titlebar
   (make-toggling-winop titlebar-shown? hide-titlebar show-titlebar))
 
-;; GJB:FIXME:: this is broken for non-nw gravity
 (define*-public (hide-titlebar-in-place #&optional (win get-window))
   "Turn off display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
   (hide-titlebar win #t))
 
-;; GJB:FIXME:: this is broken for non-nw gravity
 (define*-public (show-titlebar-in-place #&optional (win get-window))
   "Turn on display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
