@@ -1,4 +1,4 @@
-;;; File: <.scwmrc - 1998-12-02 Wed 22:19:26 EST sds@eho.eaglets.com>
+;;; File: <.scwmrc - 1998-12-22 Tue 09:45:37 EST sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
@@ -37,8 +37,7 @@
  (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
- (app scwm animation) (app scwm message-window)
- )
+ (app scwm animation) (app scwm message-window))
 
 ;; user settable!
 (define want-pictures? #f)
@@ -114,6 +113,8 @@
 (define bolt-i    (make-image "mini-ray.xpm"))
 (define bomb-i    (make-image "mini-bomb.xpm"))
 (define bomb2-i   (make-image "mini-bomb2.xpm"))
+(define book2-i   (make-image "mini-book2.xpm"))
+(define books-i   (make-image "mini-books.xpm"))
 (define calc-i    (make-image "mini-calc.xpm"))
 (define cd-i      (make-image "mini-cdlabel.xpm"))
 (define clock-i   (make-image "mini-clock.xpm"))
@@ -256,7 +257,7 @@
 (window-style "ical" #:icon "calendar.next.xpm" #:mini-icon bolt-i)
 (window-style "xman" #:icon "xman.xpm" #:mini-icon manx-i)
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
-(window-style "xplaycd" #:icon "Music.xpm" #:mini-icon cd-i)
+(window-style "xplaycd" #:icon "CompactDisk.xpm" #:mini-icon cd-i) ; Music.xpm
 (window-style "xamp" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
 (window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
@@ -272,8 +273,13 @@
 ;(window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "Ace*" #:mini-icon games-i)
 (window-style "xpat2" #:mini-icon games-i)
+(window-style "gnothello" #:mini-icon games-i)
 (window-style "xmessage" #:mini-icon quest-i)
+(window-style "conf" #:icon "settings.xpm" #:mini-icon "mini-penguin.xpm")
 (window-style "gtkfind" #:mini-icon mag-i #:icon "find1.xpm")
+(window-style "ee" #:mini-icon eyes-i)
+(window-style "Gnome*help*browser" #:mini-icon books-i)
+(window-style "helptool" #:mini-icon book2-i)
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
               #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
 (window-style "emacs*mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
@@ -292,7 +298,8 @@
               (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
               (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
               menu-separator
-              (menuitem "Guile" #:action (run-in-xterm "guile")))))
+              (menuitem "Guile" #:action (run-in-xterm "guile"))
+              (menuitem "SCWM" #:action (run-in-xterm "scwmrepl")))))
 
 (define start-xterm (run-in-xterm "bash"))
 
@@ -377,21 +384,22 @@
   (menu (list (menuitem "Applications" #:image-left x2-i #f)
               menu-title menu-separator
               ;; (menuitem "Acroread" #:image-left pdf-i #:action
-                ;;      "/usr/local/Acrobat3/bin/acroread")
+              ;;           "/usr/local/Acrobat3/bin/acroread")
               (menuitem "Netscape" #:image-left nscape-i #:action
                         "/usr/bin/netscape")
-              (menuitem "Mozilla" #:image-left nscape-i #:action
-                        "/usr/bin/mozilla")
+              ;; (menuitem "Mozilla" #:image-left nscape-i #:action
+              ;;           "/usr/bin/mozilla")
               (menuitem "GhostView" #:image-left "mini-gv.xpm"
                         #:action "ghostview")
               (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
               (menuitem "Emacs Pretest" #:image-left edit-i #:action
                         "xxgdb -i /usr/src/emacs/src/.gdbinit -cd=/usr/src/emacs/src emacs")
-              (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
+              (menuitem "vim 5" #:image-left edit-i #:action "gvim")
               (menuitem "Xfig" #:image-left fig-i #:action "xfig")
               (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
               (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
               (menuitem "XPDF" #:image-left pdf-i #:action "xpdf")
+              (menuitem "EE" #:image-left eyes-i #:action "ee")
               (menuitem "XV" #:image-left xv-i #:action "xv"))))
 
 ;;(define menu-multimedia
@@ -399,21 +407,36 @@
 (define menu-games
   (menu (list (menuitem "Games" #f) ; #:image-left games-i
               menu-title menu-separator
-              (menuitem "XJewel" #:action "xjewel")
-              (menuitem "XPat2" #:action "xpat2")
+              (menuitem "misc" #:action
+                        (menu (list (menuitem "XJewel" #:action "xjewel")
+                                    (menuitem "XPat2" #:action "xpat2")
+                                    (menuitem "Nethack" #:action "nethack")
+                                    (menuitem "XBill" #:action "xbill")
+                                    (menuitem "XBL" #:action "xbl")
+                                    (menuitem "Gagaga" #:action "xgal"))))
               menu-separator
-              (menuitem "Bogged" #:action "/home/sds/bin/bog")
-              ;; (menuitem "Nethack" #:action "/usr/games/nethack")
-              (menuitem "freecell" #:action "/home/sds/bin/freecell")
-              (menuitem "golf" #:action "/home/sds/bin/golf")
-              (menuitem "minesweeper" #:action "/home/sds/bin/minesweeper")
-              (menuitem "pegged" #:action "/home/sds/bin/pegged")
-              (menuitem "solitaire" #:action "/home/sds/bin/solitaire")
-              (menuitem "taipedit" #:action "/home/sds/bin/taipedit")
-              (menuitem "taipei" #:action "/home/sds/bin/taipei"))))
-;;            menu-separator
-;;            (menuitem "Frei" #:action
-;;                      (exe "bash -c '(cd text/frei; xterm -fn koi9x15)'")))))
+              (menuitem "Gnome" #:action
+                        (menu (list (menuitem "freecell" #:action
+                                              "/usr/bin/freecell")
+                                    (menuitem "othello" #:action "gnothello")
+                                    (menuitem "minesweeper" #:action "gnomine")
+                                    (menuitem "robots" #:action "gnobots")
+                                    (menuitem "mahjongg" #:action "mahjongg")
+                                    (menuitem "same" #:action "same-gnome"))))
+              menu-separator
+              (menuitem
+               "Ace" #:action
+               (menu (list
+                      (menuitem "Bogged" #:action "/home/sds/bin/bog")
+                      (menuitem "freecell" #:action "/home/sds/bin/freecell")
+                      (menuitem "golf" #:action "/home/sds/bin/golf")
+                      (menuitem "minesweeper" #:action
+                                "/home/sds/bin/minesweeper")
+                      (menuitem "pegged" #:action "/home/sds/bin/pegged")
+                      (menuitem "solitaire" #:action "/home/sds/bin/solitaire")
+                      (menuitem "taipedit" #:action "/home/sds/bin/taipedit")
+                      (menuitem "taipei" #:action "/home/sds/bin/taipei")))))))
+
 ;;(define menu-desk
 ;;  (menu (list (menuitem "Desks" #f) menu-title menu-separator
 ;;            (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
@@ -505,8 +528,10 @@ Based on fvwm; uses guile. Distributed under the GPL2.\\n\
 See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "&Help scwm" #:image-left quest-i
                         #:action (show-mesg "No scwm help yet. Sorry."))
+              (menuitem "&Gnome Help" #:image-left books-i
+                        #:action "gnome-help-browser")
               (menuitem "&XMan" #:image-left manx-i #:action "xman")
-              (menuitem "Help&Tool" #:image-left "mini-book2.xpm"
+              (menuitem "Help&Tool" #:image-left book2-i
                         #:action "helptool"))))
 
 (define menu-root-start
@@ -519,11 +544,11 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "&Utilities" #:image-left hamm-i #:action menu-util)
               (menuitem "H&osts" #:image-left ctd-i #:action
                         (make-hosts-menu ; "stormbringer" "right.ml.org"
-                         '(("mute" . "rlogin") ("delysid" . "rlogin")
-                           ("mescaline" . "rlogin") ("melange" . "rlogin")
+                         '(("mute" . "rlogin") ("eho" . "rlogin")
+                           ("delysid" . "rlogin") ("mescaline" . "rlogin")
+                           ("melange" . "rlogin") ("huis-clos" . "ssh")
                            ("cellar" . "ssh -P") ("fatty" . "ssh -P")
-                           ("huis-clos" . "ssh") "central1" "eagle_one"
-                           "gandalf" "phish" ("eho" . "rlogin"))))
+                           "central1" "eagle_one" "gandalf" "phish")))
               ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
               ;;                #:action menu-multimedia)
               (menuitem "&Games" #:image-left games-i #:action menu-games)
