@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-21 Fri 16:53:13 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-08-24 Mon 09:13:05 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -317,9 +317,9 @@ Returns a string which is present in the `scwm-obarray'."
   (help-setup-xref (list 'scwm-documentation pat) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
     (with-current-buffer "*Help*"
-      (with-face 'highlight
-        (princ "SCWM documentation for `") (princ pat) (princ "'"))
-      (princ ":\n\n ")
+      (princ "SCWM documentation for `")
+      (with-face 'highlight (princ pat))
+      (princ "':\n\n ")
       (with-face 'highlight (princ "value"))
       (princ ":\n\n ")
       (scwm-eval (concat "(if (defined? '" pat ") " pat
@@ -377,9 +377,9 @@ Returns a string which is present in the `scwm-obarray'."
    (list (read-string "SCWM Apropos: " (format "%s" (scwm-symbol-at-point)))))
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
-      (princ "Click mouse-2 for documentation.\n\n")
-      (with-face 'highlight (princ "SCWM apropos `") (princ pat) (princ "'"))
-      (princ ":\n\n")
+      (princ "Click mouse-2 for documentation.\n\nSCWM apropos `")
+      (with-face 'highlight (princ ) (princ pat))
+      (princ "':\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
       (delete-region (point) (progn (beginning-of-line) (point)))
