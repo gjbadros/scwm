@@ -1,3 +1,24 @@
+Sat Dec  5 12:26:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Fixed bugs in previous checkin's display-message-briefly
+
+Sat Dec  5 12:05:31 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added back in the menu-* variables to avoid order
+	dependency in initialization;  added select-window-interactively
+	to mimic the old primitive by the same name -- uses message window 
+	SMOBs now.
+
+	* flux.scm: Rewrite display-message-briefly to use message-window
+	SMOBs, add gravity->alignments proc since it's more generally useful
+
+	* move-resize-message-window.scm, move-with-message-window.scm,
+	resize-with-message-window.scm,
+	standard-move-resize-message-window.scm:  Added -- by Jeff
+	W. Nichols.  Supports previously-built-in support for message
+	window display of move position and resize size during interactive 
+	moves and resizes.
+
 1998-12-04  Todd Larason  <jtl@molehill.org>
 
 	* animation.scm: doc update

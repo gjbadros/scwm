@@ -1,3 +1,64 @@
+Sat Dec  5 12:27:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* borders.c: Fix bug whereby GET_DECOR was assumed to return an
+	image;  it can return #f, which was causing a seg fault when
+	trying to dereference #f to get the IMAGE object (triggered by
+	sds.scwmrc when images are missing).
+
+	* resize.c: Remove unused fOpaque variable in rubber_band_resize.
+
+	* events.c: #include virtual.h for prototype of raisePanFrames()
+
+
+Sat Dec  5 11:51:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window object support -- implemented by Jeff W. Nichols
+
+	* message-window.c, message-window.h: Added -- code from move.c,
+	resize.c that now supports multiple message-windows objects as SMOBs
+
+	* window.c: Rename select-window-interactively to
+	select-window-interactively-no-message since message-windows are
+	now more at the scheme level.  select-window-interactively is
+	defined in base.scm, now.  Clean up `convert_move_data' -- it had
+	unused variables and an error message that was unneeded.
+
+	* scwm.c: Added MsgWindowContext and ExposeWindowProcContext for
+	message-window support and generalized expose procedures. Call
+	init_message_window, and eliminate the global message window (that 
+	support is at the scheme level now).
+
+	* screen.h: Drop the MsgWindow field of struct ScreenInfo -- they
+	are first class scheme objects now.
+
+	* resize.h, resize.c: Elimnate CreateMessageWindow,
+	set-message-window-attributes!, set-message-window-position!,
+	display-message!, message-window-mapped?, DisplaySize.  Drop
+	C-level support for displaying resize sizes.  Be sure to call
+	new-size-hook once at the beginning of resizes (after start-resize 
+	hook)
+
+	* move.h, move.c: Eliminate DisplayMessage, MapMessageWindow,
+	UnmapMessageWindow, DisplayPosition.  Generalized code is now in
+	message-window.c
+
+	* menu.c: Move "global" vars back into scheme module with
+	pre-define-module hack to avoid initialization order dependencies
+	(thanks Craig Struble!)
+
+	* icons.c: Added FIXME comment
+
+	* events.h, events.c: Added ExposeWindowProcContex extern, ExposeProc
+	typedef for generalized expose event handling to support
+	re-drawing message window objects.  Use the expose proc in
+	HandleExpose if one is attached to the window.
+
+	* Makefile.am: Added message-window.c, .x, .h
+
+	* window.h: Added prototype for convert_move_data
+
+	* xproperty.c (X_property_delete_x): Remove unused local var, "value"
+
 1998-12-04  Todd Larason  <jtl@molehill.org>
 
 	* add_window.c: grammar fix
