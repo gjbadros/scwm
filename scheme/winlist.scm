@@ -119,7 +119,7 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (proc window-list-proc)
 				       (flash-window-proc #f)
 				       (unflash-window-proc #f)
-				       (hover-delay #f)
+				       (hover-delay 0)
 				       (popup-delay #f)
 				       (show-geometry #f)
 				       (show-last-focus-time #f)
