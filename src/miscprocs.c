@@ -470,6 +470,17 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 #undef FUNC_NAME
 
 
+SCWM_PROC(scwm_version_date, "scwm-version-date", 0, 0, 0,
+          ())
+     /** Return the date that the running scwm was last changed as a string. */
+#define FUNC_NAME s_scwm_version_date
+{
+  extern char *szRepoLastChanged;
+  return gh_str02scm(szRepoLastChanged);
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
           ())
      /** Return the <envar>$PREFIX</envar> directory path that scwm was installed with. */
