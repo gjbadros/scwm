@@ -2,7 +2,7 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
-* GNOME icons are not positioned
+* Copyright issues -- get release from UW
 
 * Leader windows and window groups could be made implicit
 
@@ -16,15 +16,13 @@ See also doc/dev/scwm-1.0-release-todo
 ;;;   -> changing orientation
 ;;;   -> changing auto-orientation
 
-* Error messages in a text window
+* Error messages in a text window (like guile-gtk)
 
 * layers support for GNOME
 
 * path-cache.scm -- test w/o zsh
 
 * Revisit all FIXME lines
-
-* Multi-line message windows -- maybe just use gtk for this...
 
 * improve look of scwm-options-dialog, expose more options.
 ** (copy econf's widget layout?)
@@ -36,10 +34,6 @@ See also doc/dev/scwm-1.0-release-todo
 
 * face.c (add_spec_to_face_x) should use color objects, not strings, for gradients; see also colors.c (AllocLinearGradient)
 
-* sticky-icons -- does it deiconify to the current viewport? (Hubert Canon's bug from 22-Mar-99)
-
-* better dynamic linking test for platforms like HP/UX?
-
 * Improve esound wrapper
 
 * Test proplist module
@@ -47,27 +41,13 @@ See also doc/dev/scwm-1.0-release-todo
 * multi-window animated move/resize; scheme level slower, not-synchronous, anim. move/resize
 ** do this with constraint solver and a "t" variable?  Super cool!
 
-* separate frame-size and client-size; introduce client-offset window parameter
--> like fvwmscroll
-
 * make gravity of windows visible somehow
 
-* Why did I have to do "cd libtool-1.3.2; cp libtool.m4 /usr/share/aclocal" to get "aclocal" to run on alpha? -- aclocal running gave "AM_PROG_LIBTOOL not found"
-
 * Finish C-level API review, renaming things, adding getters, etc
+
 * Finish documenting scheme procedures
 
-* Advice (like emacs) mechanism for augmenting procedures 
-** (Robert has done some work on this)
-
-* Autoloading, and ##autoload scanning
-
-* Module-global docstring, and module scanning 
-
-* interactive declarations
-
-* overlay plane support (or grab server during constraint draws)
-** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
+* Module-global docstring, and module scanning for preferences support
 
 * beta testing
 Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
@@ -76,11 +56,32 @@ Solaris and SunOS.  On each of this try compiling and running guile-1.3.1
 
 After Scwm 1.0:
 
+* Integrate z-ordering constraints
+
+* better dynamic linking test for platforms like HP/UX?
+
+* Advice (like emacs) mechanism for augmenting procedures 
+** (Robert has done some work on this)
+
+* interactive declarations
+
+* rewrite configure.in
+
+* Multi-line message windows -- maybe just use gtk for this...
+
+* Autoloading, and ##autoload scanning
+
+* separate frame-size and client-size; introduce client-offset window parameter
+-> like fvwmscroll
+
 * Generalize stickiness -- permit windows to appear on multiple desktops,
   but not all (can we do anything funky for viewports, too?)
 
 * Generalize stays-on-top -- Layers code from fvwm2?  shadows for showing
   depth?  Needs to have this for GNOME support!
+
+* overlay plane support (or grab server during constraint draws)
+** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
 
 * event rewrite
 ** Read about Tk's multi-event sequences:
@@ -262,6 +263,8 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 
 ** DONE STUFF
+* GNOME icons are not positioned --09/29/99 gjb
+
 * use ms, not usec for timer hooks --09/26/99 gjb
 
 * Rename scwm/scwm directory to scwm/src --09/26/99 gjb

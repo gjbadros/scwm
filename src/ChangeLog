@@ -1,3 +1,17 @@
+Wed Sep 29 23:04:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_move_window_to_desk): Return immediately if moving
+	window to the desk it is currently on.
+
+	* placement.c: Added some debug code.  Call
+ 	MovePswToCurrentPosition() after interactive placement to
+	eliminate the jumping of the mapped window from 0,0 to its final
+	place.
+
+	* icons.c: ws change, drop some unused code that was #if 0.
+
+	* add_window.c: ws change.
+
 Wed Sep 29 17:53:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* resize.h, resize.c: Added ComputeDeltaForResize() and use it in
