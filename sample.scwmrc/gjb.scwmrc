@@ -5,10 +5,12 @@
 	     (app scwm winops)
 	     (app scwm winlist)
 	     (app scwm wininfo)
-             (app scwm style))
+             (app scwm style)
+	     (app scwm face))
 
 
-(define HOME (getenv "HOME"))
+(define HOME ;(getenv "HOME")
+  "/u1/mstachow")
 (define USER (getenv "USER"))
 (define xterm-user-shell-options "-e start-zsh")
 (define xterm-other-host-use-local-xterm #t)
@@ -18,7 +20,7 @@
 (define user-pixmap-path (string-append HOME "/pixmaps"))
 (define user-bitmap-path (string-append HOME "/bitmaps"))
 
-(define want-close-button #f)
+(define want-close-button #t) ;; was #f
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -66,7 +68,8 @@
 
 
 ;;; FIXGJB: #:raised true 
-(title-style #:font font12 #:justify 'left)
+;;; MS: see below for the new right way 
+(title-style #:font font12 #:justify 'left #:relief 'raised)
 
 (set-icon-font! font12)
 (set-xor-value! 255)  ;; FIXGJB: rename to rubber-band-mask?
@@ -96,9 +99,13 @@
 ;	      #:icon "unknown1.xpm" 
 	      #:icon #f        ;; MS - specify #f to not get an icon.
 ;	      #:icon-box (list (x- 70) 1 69 (y- 141))
-	      #:border-width 3 
+	      #:border-width 4 ;; MS borderwidth of 4 looks slightly better
+	                       ;; to my eye than 3.
 	      #:focus 'mouse
-	      #:plain-border #t ;; replaces handle-width
+
+;	      #:plain-border #t ;; replaces handle-width
+				;; MS no, it replaces no-handles, plus
+	                        ;; it doesn't work right now.
 	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
@@ -110,9 +117,11 @@
 (set-border-face! border-face)
 
 ;; FIXGJB: wrong-type-arg in below
+;; MS: not for me....
 (define title-face (make-face '((relief raised)) '()))
 (set-title-face! title-face)
 
+;; MS: temporarily replaced pixmaps with ones I have installed.
 (define system-button-face (make-face '((relief flat))
 				      '((pixmap "mini-sys3d-full.xpm"))))
 
@@ -121,14 +130,24 @@
 
 (define sticky-button-face (make-face '((relief flat))
 				      '((pixmap "mini-hbars-full.xpm"))))
+
+
 (define sysutils-button-face (make-face '((relief flat))
 					'((pixmap "mini-lightbolt-full.xpm"))))
+
+
 (define close-button-face (make-face '((relief flat))
 				     '((pixmap "mini-stylized-x-full.xpm"))))
+
+
 (define tall-maximize-button-face (make-face '((relief flat))
 					     '((pixmap "mini-exp-windows-full.xpm"))))
+
+
 (define iconify-button-face (make-face '((relief flat))
 				       '((pixmap "mini-shrink-windows-full.xpm"))))
+
+
 
 (define left-button-number 1)
 (define right-button-number 2)
@@ -157,15 +176,31 @@
 ;;; FIXGJB: use mini-icon-button-face instead of system-button-face
 ;;; but then I need to be able to associate mini-icons w/ different
 ;;; windows
+;;; MS: works now!
+
 ;;; FIXGJB: how does the number of buttons to be displayed get
 ;;; chosen;  is this dynamically changeable?
+;;; MS: Right now I think you need to recapture.
+
 ;;(add-left-button system-button-face (lambda () (popup-small-ops)))
 (add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
-(add-left-button sticky-button-face (lambda () (display "toggle sticky")))
+
+
+;; MS: I presume this is the desired efffect.
+;; random thought: A nice extension would be buttons that change
+;; appearance with given window properties. This would be an extension of
+;; the fvwm2 "MWMButton" concept whereby a button reverses its vector 
+;; pattern when the window is maximized. It should be much more general, 
+;; of course.
+(add-left-button sticky-button-face toggle-stick)
+
 (add-left-button sysutils-button-face (lambda () (display "sysutils")))
 
+;; MS: (lambda () close-window) was definitely not the right thing.
+;; I prefer just using close-window, but (lambda () (close-window))
+;; may be preferrable in some way.
 (if want-close-button
-    (add-right-button close-button-face (lambda () close-window)))
+    (add-right-button close-button-face close-window))
 
 (add-right-button tall-maximize-button-face
 		  (lambda () (vertical-toggle-maximize)))
@@ -469,7 +504,7 @@
 (key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
-(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+;(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
 
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
@@ -517,8 +552,8 @@
 
 (set-hilight-colors! "white" "navyblue")
 
-;(unbind-mouse 'all "C-S-M-1")
-;(unbind-mouse 'all "C-S-M-2")
+(unbind-mouse 'all "C-S-M-1")
+(unbind-mouse 'all "C-S-M-2")
 
 (define (animated-move-to x y)
   (let* ((w (get-window))
@@ -548,15 +583,15 @@
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
 
-(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
-(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
-(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
-(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
+;(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
+;(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
+;(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
+;(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
 
-(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
-(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
-(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
-(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
+;(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
+;(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
+;(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
+;(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 (bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
