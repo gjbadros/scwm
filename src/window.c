@@ -2857,12 +2857,12 @@ the window context in the usual way if not specified. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(window_class, "window-class", 0, 1, 0,
+SCWM_PROC(window_class_hint, "window-class-hint", 0, 1, 0,
           (SCM win))
-     /** Return the window resource class of WIN.
+     /** DEPRECATED. Return the window resource class of WIN.
 WIN defaults to the window context in the usual way if not
-specified. */
-#define FUNC_NAME s_window_class
+specified. You should prefer `window-class'. */
+#define FUNC_NAME s_window_class_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_class);
@@ -2870,11 +2870,12 @@ specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(window_resource, "window-resource", 0, 1, 0,
+SCWM_PROC(window_resource_hint, "window-resource-hint", 0, 1, 0,
           (SCM win))
-     /** Return the window resource instance of WIN. WIN defaults to
-the window context in the usual way if not specified. */
-#define FUNC_NAME s_window_resource
+     /** DEPRECATED. Return the window resource instance of WIN. 
+WIN defaults to the window context in the usual way if not specified. 
+You should prefer `window-resource'. */
+#define FUNC_NAME s_window_resource_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_name);

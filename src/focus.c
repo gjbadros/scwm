@@ -124,10 +124,15 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
     XSync(dpy, 0);
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++) {
       if (Scr.buttons2grab & (1 << i)) {
-        GrabButtonWithModifiersMaskXcPm(i+1,0,Scr.Ungrabbed->frame,
-                                        ButtonPressMask,
-                                        XCURSOR_SET_FOCUS,
-                                        GrabModeSync);
+        /* GJB:FIXME:: segfaulted on a NULL Scr.Ungrabbed 
+           once below, even with above guard so duplicate guard
+           here in case something is running at the XSync call
+           that changes Scr.Ungrabbed... */
+        if (Scr.Ungrabbed && Scr.Ungrabbed != psw)
+          GrabButtonWithModifiersMaskXcPm(i+1,0,Scr.Ungrabbed->frame,
+                                          ButtonPressMask,
+                                          XCURSOR_SET_FOCUS,
+                                          GrabModeSync);
       }
     }
     Scr.Ungrabbed = NULL;

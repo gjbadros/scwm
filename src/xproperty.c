@@ -107,8 +107,8 @@ WIN is the window to set the X property on, an X window id, or 'root-window.
 NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
-VALUE may be a string, if FORMAT is 8, and may always be a vector
-of FORMAT-bit integers.
+If FORMAT is 8, VALUE may be a string or a list of null-terminated STRINGS.
+Otherwise it will be a vector of FORMAT-bit integers.
 ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
 how the new VALUE should be merged (if at all) with the existing
 value. */
@@ -222,6 +222,29 @@ unsigned char *GetXProperty(Window win, Atom prop, Bool del,
   return val;
 }
 
+/* Return a list of the possibly-multiple
+   null-terminated strings in the buffer of
+   length cch pointed to by pch */
+static
+SCM
+ScmListOfStringsFromStringLen( char *pch, int cch)
+{
+  if (strlen(pch) == cch)
+    return gh_str2scm(pch,cch);
+  else {
+    SCM items = SCM_EOL;
+    char *pchNull = pch + cch - 1;
+    while (pchNull >= pch) {
+      if ('\0' == *pchNull) {
+        items = gh_cons(gh_str02scm(pchNull+1),items);
+      }
+      --pchNull;
+    }
+    items = gh_cons(gh_str02scm(pch),items);
+    return items;
+  }
+}
+
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume_p))
      /** Get X property NAME of window WIN.
@@ -244,8 +267,7 @@ If the X property could be found, a list "(value type format)" is returned.
   int i, fmt;
   long len;
   Atom aprop, atype;
-  SCM value, type;
-  Window w;
+  SCM value, type;  Window w;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
   VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
@@ -262,7 +284,7 @@ If the X property could be found, a list "(value type format)" is returned.
 
   switch (fmt) {
   case 8:
-    value=gh_str2scm(val, len);
+    value = ScmListOfStringsFromStringLen(val,len);
     break;
   case 16:
     v16=(INT16 *)val;
