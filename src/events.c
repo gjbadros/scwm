@@ -1,7 +1,12 @@
+/* $Id$
+ * events.c
+ */
+
 /****************************************************************************
- * This module is based on Twm, but has been siginificantly modified 
- * by Rob Nation 
+ * This module is derived from code
+ * based on Twm, and was siginificantly modified by Rob Nation 
  ****************************************************************************/
+
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/
 /**                          Salt Lake City, Utah                           **/
@@ -84,6 +89,7 @@
 #define WithdrawnState 0
 #endif
 
+SCM x_propertynotify_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -531,8 +537,7 @@ HandlePropertyNotify()
     return;
   }
 
-  if ((!swCurrent) || (XGetGeometry(dpy, swCurrent->w, &JunkRoot, &JunkX, &JunkY,
-			&JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0))
+  if (!swCurrent || !FXWindowAccessible(dpy, swCurrent->w))
     return;
 
   switch (Event.xproperty.atom) {
@@ -662,6 +667,18 @@ HandlePropertyNotify()
 	Scr.Focus = NULL;
 	SetFocus(swCurrent->w, swCurrent, 0);
       }
+    } else if (Event.xproperty.state != PropertyDelete) {
+      char *szName = XGetAtomName(dpy,Event.xproperty.atom);
+      
+      if (NULL != swCurrent) {
+	set_window_context(swCurrent->schwin);
+      }
+      scwm_msg(WARN,__FUNCTION__,"Calling hook (maybe empty)");
+      call2_hooks(x_propertynotify_hook, gh_str02scm(szName), window_context);
+      if (NULL != swCurrent) {
+	unset_window_context();
+      }
+      XFree(szName);
     }
     break;
   }
@@ -1758,6 +1775,7 @@ send_key_press(SCM key, SCM win,
 void 
 init_events()
 {
+  DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif
