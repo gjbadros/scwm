@@ -266,7 +266,7 @@ SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
 
 SCWM_PROC(set_edge_move_threshold_x, "set-edge-move-threshold!", 1, 0, 0,
           (SCM pixels),
-" Set the edge move threshold to PIXELS.
+"Set the edge move threshold to PIXELS.
 Attempts to move a window so that it is off the edge of the screen by
 fewer than PIXELS pixels will leave the window entirely onscreen.")
 #define FUNC_NAME s_set_edge_move_threshold_x

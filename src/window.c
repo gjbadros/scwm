@@ -934,7 +934,7 @@ a subset of procedures can be successfully called on them.")
 
 SCWM_PROC(window_mapped_p, "window-mapped?", 1, 0, 0,
           (SCM win),
-"Returns #t if WIN is mapped, otherwise returns #f")
+"Returns #t if WIN is mapped, otherwise returns #f.")
 #define FUNC_NAME s_window_mapped_p
 {
   ScwmWindow *psw;
