@@ -1,3 +1,12 @@
+Thu Sep  2 18:03:05 1999    <gjb@cs.washington.edu>
+
+	* configure.in: Bump to pre4
+
+Thu Sep  2 17:59:06 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Added Distribution tag.  Split up %files section a 
+	bit and better separate into %config and %doc types.
+
 Wed Sep  1 19:03:42 1999    <gjb@cs.washington.edu>
 
 	* configure.in: Added XEXT_LIB to -lXtst link attempt, and -lICE
