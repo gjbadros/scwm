@@ -469,6 +469,7 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 }
 #undef FUNC_NAME
 
+
 SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
           ())
      /** Return the <envar>$PREFIX</envar> directory path that scwm was installed with. */
