@@ -88,8 +88,8 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 static SCM *loc_image_load_path;
 
-/* used by C code to create image objects for images not loaded from
-   files, e.g. app-provided icon bitmaps or window. */
+static SCM str_default;
+
 
 size_t 
 free_image(SCM obj)
@@ -135,6 +135,8 @@ image_p(SCM obj)
   return ((SCM_NIMP(obj) && IMAGE_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
+/* used by C code to create image objects for images not loaded from
+   files, e.g. app-provided icon bitmaps or window. */
 
 SCM
 make_empty_image(SCM name)
@@ -287,6 +289,7 @@ load_image(SCM name)
   char *c_name, *c_fname, *c_ext;
   int length;
   int max_path_len = 0;
+  int default_tried = 0;
 
   if (!gh_string_p(name)) {
     scm_wrong_type_arg("load-image", 1, name);
@@ -363,11 +366,26 @@ load_image(SCM name)
   loader=scm_hash_ref(image_loader_hash_table, extension, SCM_BOOL_F);
 
   if (loader==SCM_BOOL_F) {
-    /* Warn: unknown imge type. */
-    return SCM_BOOL_F;
+    /* try the default loader; */
+    default_tried=1;
+    loader=scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
+    if (loader==SCM_BOOL_F) {
+      /* Warn: unknown imge type. */
+      return SCM_BOOL_F;
+    }
   }
   
   result=gh_call1(loader,full_name);
+
+  if (result==SCM_BOOL_F && !default_tried) {
+    /* try the default loader if not already tried */
+    loader=scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
+    if (loader==SCM_BOOL_F) {
+      /* Warn: unknown imge type. */
+      return SCM_BOOL_F;
+    }
+    result=gh_call1(loader,full_name);
+  }
 
   if (SCM_NIMP(result) && IMAGE_P(result)) {
     IMAGE(result)->name=name;
@@ -440,6 +458,9 @@ void init_image()
 {
   SCM val_load_xbm, val_load_xpm;
 
+  /* Save a convenient Scheme "default" string */
+  str_default=gh_str02scm("default");
+  scm_protect_object(str_default);
 
   /* Include registration of procedures and other things. */
 # include "image.x"
@@ -468,6 +489,7 @@ void init_image()
   register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
   register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
   register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
+  register_image_loader (str_default, val_load_xbm);
 
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
