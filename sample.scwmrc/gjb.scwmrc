@@ -1417,3 +1417,5 @@ union of all other window managers!
 ;;(load "/scratch/gjb/scwm/scheme/winops.scm")
 ;;(load "/scratch/gjb/scwm/scheme/style.scm")
 ;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
+
+;;(set-handle-segv #f)
