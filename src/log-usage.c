@@ -143,7 +143,7 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
     close(sock);
   }
 
-  scwm_msg(INFO,__FUNCTION__,"Sent usage log with your hostname -- thank you!");
+  scwm_msg(INFO,__FUNCTION__,"Sent usage note with your hostname and version number-- thank you!");
 
 #endif /* !NO_REPORT_USAGE */
 

@@ -372,16 +372,17 @@ InitVariables(void)
 }
 
 static void
-scwm_log_usage()
+scwm_maybe_send_thankyou_packet()
 {
   char buf[256];
   extern char *szRepoLastChanged;
-  SCM no_log_usage = gh_lookup("scwm-do-not-log-usage");
+  SCM log_usage = gh_lookup("thank-scwm-authors-with-usage-note");
 
-  /* use (define scwm-do-not-log-usage #t) to turn off sending
-     the packet to let us know you're using scwm.
-     Or set the environment variable SCWM_DO_NOT_LOG_USAGE to anything */
-  if (no_log_usage == SCM_BOOL_T)
+  /* use (define thank-scwm-authors-with-usage-note #t) to
+     send a packet to let us know you're using scwm.
+     Or set the environment variable SCWM_DO_NOT_LOG_USAGE to 
+     never do anything */
+  if (log_usage != SCM_BOOL_T)
     return;
   
   sprintf(buf, "%s, %s: STARTED", VERSION, szRepoLastChanged);
@@ -863,7 +864,7 @@ scwm_main(int argc, char **argv)
   CoerceEnterNotifyOnCurrentWindow();
   run_startup_hook();
 
-  scwm_log_usage();
+  scwm_maybe_send_thankyou_packet();
 
   DBUG("main", "Entering HandleEvents loop...");
   HandleEvents();
