@@ -1,4 +1,4 @@
-;; $Id$ -*- scwm -*-
+; $Id$ -*- scwm -*-
 ;; gjb.scwmrc -- Greg J. Badros's Scwm initialization file
 ;;
 ;; Copyright (C) 1997-1999 Greg J. Badros
@@ -267,8 +267,11 @@
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desk-size! 3 3)
+;;(set-window-focus! 'click (get-window))
+;;(set-window-focus! 'mouse (get-window))
 
 (set-edge-resistance! 500 10)
+;;(set-edge-scroll! (%x 20) (%y 20))
 ;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
 (set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
 
@@ -342,6 +345,7 @@
 ;;; set path to use for image searches
 (map (lambda (s) (set! image-load-path (cons s image-load-path)))
      (list
+      (string-append scwmdir "/pixmaps")
       "/uns/lib/X11/mini-icons"
       "/uns/lib/X11/pixmaps"
       "/usr/X11/lib/X11/mini-icons"
@@ -410,12 +414,18 @@
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
 
+;; (window-style "*" #:show-icon #t #:sticky-icon #f)
+;; (window-style "*" #:show-icon #t #:sticky-icon #t)
 ;; (window-style "xterm" #:use-theme (load-theme "gjb"))
 ;; (window-style "*" #:show-icon #t)
 ;; (window-style "*" #:show-icon #f)
-;; (window-style "*" #:sticky-icon #f)
 ;; (window-style "*" #:sticky-icon #t)
 ;; (window-style "*" #:random-placement #f #:smart-placement #f)
+
+;; (window-style "xclock" #:show-icon #t)
+;; (window-style "XTerm" #:show-icon #f)
+;; (window-style "XTerm" #:show-icon #f)
+;; (window-style "*xterm*" #:show-icon #f)
 
 ;; (deiconify-to-current-viewport (select-window-interactively))
 
@@ -697,6 +707,14 @@
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
+
+#!  This shows a bug in dealing with 0 bordered windows (from HJ Stein)
+(define desk-widget-hjs
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 0 #:circulate-skip #t #:focus 'none))
+!#
+
+;; (window-style "XClock" #:no-titlebar #t #:use-style desk-widget-hjs)
 
 ;; Inherit above style options and specialize
 (define desk-widget-on-top
@@ -1146,7 +1164,7 @@ union of all other window managers!
 		       (display-message-briefly
 			(string-append key " is bound to " 
 				       (if (and proc (pair? proc) (procedure? (car proc)))
-					   (procedure-name (car proc))
+					   (or (procedure-name (car proc)) "anonymous proc")
 					   "nothing")))))))
 
 (bind-key 'all "H-w" describe-key)
@@ -1375,6 +1393,15 @@ union of all other window managers!
 (bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
 (bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
+
+;; Need to allow SendEvents in XTerm before synthetic events will work
+;;(bind-mouse 'window 1 (lambda () (raise-window) (send-button-press 1 (get-window) #t #f)))
+;;(bind-mouse 'window 3 (lambda () (lower-window) (send-button-press 3 (get-window) #t #t)))
+;; (unbind-mouse 'window 1)
+;; (unbind-mouse 'window 3)
+;; (bind-mouse 'window 1 raise-window)
+;; (set-window-focus! 'click (get-window))
+
 
 ;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
 (bind-key 'all "C-M-S-4" (lambda () (X-synthetic-send-string "hello world")))
