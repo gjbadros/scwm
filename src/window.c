@@ -382,7 +382,6 @@ mark_window(SCM obj)
 {
   SCM_SETGC8MARK(obj);
     
-  /* FIXGJB: revisit this */
   if (VALIDWINP(obj)) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
     if (psw->fl != NULL) {
@@ -1887,7 +1886,7 @@ specified. */
 #undef FUNC_NAME
 
 
-/* FIXGJB: rename to window-iconify */
+/* GJB:FIXME:: rename to window-iconify */
 
 SCWM_PROC(iconify, "iconify", 0, 1, 0,
           (SCM win))
@@ -1913,18 +1912,37 @@ specified. */
 }
 #undef FUNC_NAME
 
-/* FIXGJB: rename to window-deiconify */
+/* GJB:FIXME:: rename to window-deiconify */
 
-SCWM_PROC(deiconify, "deiconify", 0, 1, 0,
-          (SCM win))
+SCWM_PROC(deiconify, "deiconify", 0, 3, 0,
+          (SCM win, SCM x, SCM y))
      /** Deiconify WIN.
 Hides its icon, and shows its regular window.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified. 
+If X and Y are given, then move WIN to virtual position (X . Y)
+before de-iconifying.  If X is specified, Y must be specified, too.
+These arguments are useful since `move-window' and `move-to' will
+refer to the icon window (not the frame window) if a window is iconified.
+Without being able to specify a position on de-iconification, the window
+cannot, e.g., cleanly be brought back onto the current viewport.
+*/
 #define FUNC_NAME s_deiconify
 {
   SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
+  if (!UNSET_SCM(x)) {
+    int x_virt, y_virt;
+    if (!gh_number_p(x)) {
+      scm_wrong_type_arg(FUNC_NAME,2,x);
+    }
+    if (!gh_number_p(y)) {
+      scm_wrong_type_arg(FUNC_NAME,3,y);
+    }
+    x_virt = gh_scm2int(x);
+    y_virt = gh_scm2int(y);
+    MoveTo(PSWFROMSCMWIN(win),x_virt,y_virt);
+  }
   DeIconify(PSWFROMSCMWIN(win));
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
