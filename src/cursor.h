@@ -67,8 +67,9 @@ void CreateScmGlobalCursors();
   do { if (UNSET_SCM(arg)) arg = SCM_BOOL_F; \
        else if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
 
-#define VALIDATE_ARG_CURSOR_COPY_USE_NONE(pos,arg,cvar) \
-  do { if (UNSET_SCM(arg)) { arg = SCM_BOOL_F; cvar = None; } \
+#define VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(pos,arg,cvar) \
+  do { if (UNSET_SCM(arg)) { arg = SCM_BOOL_F; cvar = XCURSOR_SELECT; } \
+       else if (SCM_BOOL_T == arg) { cvar = XCURSOR_KILL; } \
        else if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
        else cvar = XCURSOR(arg); } while (0)
 

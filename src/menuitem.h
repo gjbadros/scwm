@@ -38,6 +38,7 @@ typedef enum menu_item_state {
  */
 typedef struct MenuItem_tag
 {
+  SCM self;                     /* pointer back to the scheme object */
   char *szLabel;		/* main label of the item */
   int cchLabel;
   char *szExtra;		/* extra information to display */

@@ -305,7 +305,7 @@ resize frames. VALUE should be an integer. */
   unsigned long gcm;
   int v;
 
-  VALIDATE_ARG_INT_RANGE_COPY(1,value,0,255,v);
+  VALIDATE_ARG_INT_RANGE_COPY(1,value,0,65535,v);
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
   gcv.line_width = 0;

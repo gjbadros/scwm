@@ -915,7 +915,7 @@ destroy-window), or #f or omitted for the standard circle cursor. */
   Bool fRelease;
   Cursor x_cursor;
 
-  VALIDATE_ARG_CURSOR_COPY_USE_NONE(1,cursor,x_cursor);
+  VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(1,cursor,x_cursor);
   VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
 
   if (SCM_BOOL_F == cursor || x_cursor == None) {
@@ -970,7 +970,7 @@ circle cursor. */
   Cursor xcursor;
   VALIDATE_ARG_BOOL_COPY_USE_T(1,select_p,fSelect);
   VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
-  VALIDATE_ARG_CURSOR_COPY_USE_NONE(3,cursor,xcursor);
+  VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(3,cursor,xcursor);
 
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {

@@ -41,6 +41,7 @@ typedef struct MenuDrawingVtable_tag MenuDrawingVtable;
    to modify mark_menu */
 typedef struct Menu_tag
 {
+  SCM self;                     /* pointer back to the scheme object */
   SCM scmMenuTitle;		/* Menu title */
   SCM scmMenuItems;		/* list of menu items */
   SCM scmImgSide;		/* side image */

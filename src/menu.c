@@ -337,6 +337,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->pchUsedShortcutKeys = NULL;
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
+  pmenu->self = answer;
   return answer;
 }
 #undef FUNC_NAME
@@ -1381,11 +1382,19 @@ FreeDynamicMenu(DynamicMenu *pmd)
   int ipmiim = 0;
   int cmiim = pmd->cmiim;
   for ( ; ipmiim < cmiim; ipmiim++) {
-    pmd->pmdv->fnFreePmidi(pmd->rgpmiim[ipmiim]->pmidi);
-    FREE(pmd->rgpmiim[ipmiim]);
+    MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
+    pmd->pmdv->fnFreePmidi(pmiim->pmidi);
+    /* permit the menu item to be freed again */
+    scm_unprotect_object(pmiim->pmi->self);
+    FREE(pmiim);
+    pmd->rgpmiim[ipmiim] = NULL;
   }
   FREEC(pmd->rgpmiim);
   pmd->pmdv->fnFreePmdi(pmd->pmdi);
+  /* now let the menu get gc-d if appropriate */
+  scm_unprotect_object(pmd->pmenu->self);
+
+  FREE(pmd);
 }  
   
   
@@ -1412,6 +1421,8 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   /* save some back pointers so we can find a dynamic menu
      just from the menu item */
   pmiim->pmi = pmi;
+  pmiim->pmi->self = item;
+  scm_protect_object(item); /* be sure the item is not gc-d */
   pmiim->pmd = pmd;
   pmiim->ipmiim = ipmiim;
   pmiim->chShortcut = '\0';
@@ -1439,6 +1450,9 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   int ipmiim = 0;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim = NEWC(cmiim, MenuItemInMenu *);
   SCM rest = pmd->pmenu->scmMenuItems;
+
+  /* be sure the menu does not get gc-d */
+  scm_protect_object(pmenu->self);
 
   /* Initialize the list of dynamic menu items;
      only the drawing-independent code here */
