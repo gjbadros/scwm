@@ -1,3 +1,8 @@
+Fri Feb  5 20:36:30 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+        * configure.in: Bump version number to something appropriate for
+        CVS.
+
 Wed Jan 27 08:15:20 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* **/*: Updated all refs to huis-clos.mit.edu to
