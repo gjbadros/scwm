@@ -13,6 +13,7 @@
 '(image-load-path)
 '(locale-fullname)
 '(locale-language-territory)
+'(netscape-new-window)
 '(opaque-move-percent)
 '(opaque-resize-percent)
 '(pie-menu-look)
