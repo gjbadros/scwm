@@ -1,3 +1,9 @@
+Sat Feb 16 01:12:38 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* hover-focus.scm: Moved the add-hook! calls into a 
+	install-hover-focus function so that hover-focus can be
+	re-installed after being uninstalled.
+
 Sun Feb 10 03:53:04 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* focus-stack.scm: Changed pop-focus-window so that it skips

@@ -125,8 +125,6 @@ the delay before the window gets focus."
           (set! hover-focus-timer
                 (add-timer-hook! delay (lambda () (focus-window window))))))))
 
-(add-hook! window-enter-hook hover-focus-enter-proc)
-
 
 ;;; hover-focus-leave-proc runs whenever the mouse pointer leaves a
 ;;; window.  It kills any active focus timer.
@@ -135,11 +133,18 @@ the delay before the window gets focus."
   (remove-timer-hook! hover-focus-timer)
   (set! hover-focus-window #f))
 
-(add-hook! window-leave-hook hover-focus-leave-proc)
+(define-public (install-hover-focus)
+  "Add the hover-focus procedures from the Scwm hooks.
+This will turn on hover focus for any windows that it was
+on for before."
+  (add-hook! window-leave-hook hover-focus-leave-proc)
+  (add-hook! window-enter-hook hover-focus-enter-proc))
 
 (define-public (uninstall-hover-focus)
   "Remove the hover-focus procedures from the Scwm hooks.
 This will turn off hover focus for any windows that it was
-on for."
+on for leaving the windows in 'click focus mode."
   (remove-hook! window-leave-hook hover-focus-leave-proc)
   (remove-hook! window-enter-hook hover-focus-enter-proc))
+
+(install-hover-focus)
