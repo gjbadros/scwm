@@ -1,3 +1,9 @@
+Sun Apr 25 18:49:16 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.hpp: Use ClsMedium-strength stay constraints
+	  for frame width/height instead of just perturbing the weight to
+	  be greater than the x/y position.  Prefer moving to resizing.
+
 Sun Apr 25 16:16:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* menu.c: Fix bug in menu-properties -- was using gh_scm2int

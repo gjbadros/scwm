@@ -1,3 +1,9 @@
+Sun Apr 25 18:50:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-toggle-menu.scm: Added missing use-module of (app
+	  scwm flash-window) that I forgot to introduce before.  Drop use
+	  of flux.scm.  Added #:hover-delay of 100 (better when demoing).
+
 Sun Apr 25 16:22:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* wmconfig-menu.scm, winlist.scm, std-menus.scm, preferences.scm,
