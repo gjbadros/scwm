@@ -22,7 +22,6 @@
 (define-module (app scwm menus-extras)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
-  :use-module (app scwm sort)  ;; GJB:FIXME:G1.3.2: not needed in guile-1.3.2
   :use-module (app scwm optargs))
 
 
@@ -36,8 +35,10 @@
     (round/ (cadr (display-size)) (+ 7 menu-font-height))))
 
 (define-public (sorted-by-car-string l)
-  "Sort the elements of list L based on the string value of their `car'."
-  (sort l (lambda (a b) (string>? (car a) (car b)))))
+  "Sort the elements of list L based on the string value of their `car'.
+Uses string<? to compare the elements which results in using alphabetical
+order."
+  (sort l (lambda (a b) (string<? (car a) (car b)))))
 
 ;;; ----------------------------------------------
 ;;; General functionality for splitting long menus
@@ -50,44 +51,68 @@
   #:range '(5 . 100)
   #:favorites '(10 20 25 30 35 40 50))
 
-(define (split-list ls max)
+;;; Returns a list of lists with the same elements as LS.
+;;; The returned list will have the same elements in the same order.  Each
+;;; sublist returned will have no more than max elements
+;;; This function destroys the original list.
+(define (split-list! ls max)
   (let ((le (length ls)) (tt ()) (t1 ()))
-    (cond ((< le max) (list ls))
+    (cond ((<= le max) (list ls))
 	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
-	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
+	      (set-cdr! tt ()) (cons ls (split-list! t1 max))))))
 
-(define*-public (fold-menu-list
+(define*-public (fold-menu-list!
 		ml #&optional (max-lines (optget *menu-max-fold-lines*)))
   "Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
-defaults to `default-menu-max-fold-lines'."
+defaults to `*menu-max-fold-lines*'.  Destroys the argument ML."
   (if (<= (length ml) max-lines) ml
-      (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
-	   (split-list ml max-lines))))
+      (map (lambda (lm) (menuitem "more..." #:submenu (lambda () (menu lm))))
+	   (split-list! ml max-lines))))
 
-(define*-public (split-list-by-group ls #&optional (rest #f))
-  "Split the a-list LS into groups according to the car of each of its cells."
-  (cond ((null? ls) rest)
-	((and rest (string=? (caar ls) (caar rest)))
-	 (begin
-	   (set-cdr! (car rest) (cons (cdar ls) (cdar rest)))
-	   (split-list-by-group (cdr ls) rest)))
-	(else (split-list-by-group (cdr ls) (cons (cons (caar ls) (list (cdar ls))) 
-						  (if rest rest '()))))))
+;;; DEPRECATED
+(define-public fold-menu-list fold-menu-list!)
+
+;;; SRL:FIXME::Can't we just call 'sorted-by-car-string' here since
+;;;   all the callers have to call it anyway for this to work?
+(define*-public (split-list-by-group ls)
+  "Split the association list LS into groups according to the keys of the
+list.  The elements of LS must already be sorted such that equal keys are
+next to each other in the list (see 'sorted-by-car-string').  Returns an
+association list where the items from LS with the same key share a single
+entry in the new list and the items with that key are stored as a list of
+values.  Uses 'string=?' to compare keys.  Maintains the relative order of
+the elements of LS in the same group.  Maintains the order of the groups."
+  (letrec ((slbg-help 
+             (lambda (ls result)
+               (cond ((null? ls) result)
+                     ((and (not (null? result))
+                           result (string=? (caar ls) (caar result)))
+                      (begin
+                        (set-cdr! (car result) (cons (cdar ls) (cdar result)))
+                        (slbg-help (cdr ls) result)))
+                     (else (slbg-help (cdr ls) 
+                                      (cons (cons (caar ls) (list (cdar ls)))
+                                            result)))))))
+           (reverse 
+            (map (lambda (kv) (cons (car kv) (reverse (cdr kv))))
+                 (slbg-help ls '())))))
+
 ;; menus-extras
-;; (split-list-by-group '() '(("Emacs" "em1")))
-;; (split-list-by-group '(("Emacs" . "em1")) #f)
-;; (split-list-by-group '(("Emacs" . "em1") ("XTerm" . "xt1")) #f)
-;; (split-list-by-group '(("Emacs" . "em1") ("Emacs" . "em2") ("XTerm" . "xt1") ("XLogo" . "xl1") ("XLogo" . "xl2")) #f)
-;; (split-list-by-group '(("Emacs" . "em1") ("Emacs" . "em2") ("Emacs" . "em3") ("XTerm" . "xt1") ("XLogo" . "xl1") ("XLogo" . "xl2")) #f)
-;; (define answer '(("Emacs" "em3" "em2" "em1") ("XTerm" "xt1") ("XLogo" "xl2" "xl1")))
+;; (split-list-by-group '(("Emacs" . "em1")))
+;; (split-list-by-group '(("Emacs" . "em1") ("XTerm" . "xt1")))
+;; (split-list-by-group '(("Emacs" . "em1") ("Emacs" . "em2") ("XTerm" . "xt1") ("XLogo" . "xl1") ("XLogo" . "xl2")))
+;; (split-list-by-group '(("Emacs" . "em1") ("Emacs" . "em2") ("Emacs" . "em3") ("XTerm" . "xt1") ("XLogo" . "xl1") ("XLogo" . "xl2")))
+;; (define answer '(("Emacs" "em1" "em2" "em3") ("XTerm" "xt1") ("XLogo" "xl1" "xl2")))
 
+;;; SRL:FIXME:: This interface stinks.  Fix it.
 (define*-public (fold-menu-list-by-group ml-cons #&rest rest)
   "Split ML-CONS into chained menus based on their group.
-ML-CONS is a list of lists. Each sublist's car is the name of the
-group, and the cdr is a list of the menuitems for that group.
-The list must be sorted by GROUP.  Returns a list of menu items
-for each group, popping up the group's MENUITEMs."
+ML-CONS is a association list. Each sublist's car is the name of the
+group, and the cdr is a menuitem for that group.  See 'sorted-by-car-string'
+and 'split-list-by-group'.  The list must be sorted by GROUP.  Returns a list of menu items
+for each group, popping up the group's MENUITEMs.  REST are optional arguments
+to be used when creating the sub-menus."
   (map (lambda (lm)
 	 (if (null? (cddr lm))
 	     (cadr lm)

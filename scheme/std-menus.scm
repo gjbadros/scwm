@@ -58,7 +58,7 @@ To use this, add the following to the menu of your choice:
 An optional USER argument specifies the user to telnet as.
 The element of the list of hosts can be a host (in which case telnet is
 used) or a cons of (host . command)."
-  (menu (fold-menu-list
+  (menu (fold-menu-list!
          (map (lambda (hh)
                 (if (pair? hh)
                     (menuitem (car hh) #:action
@@ -121,6 +121,8 @@ The selection must contain a single full pathname."
 	       ())))))
 
 
+;;; SRL:FIXME:: This function usually closes the window.
+;;;   The only them that works is darkside.
 ;; contributed by Glenn Trig
 (define*-public (make-menu-window-theme #&optional force?)
   "Return a menu that lets the user set the theme for a single window.

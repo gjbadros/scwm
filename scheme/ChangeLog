@@ -1,3 +1,30 @@
+Tue Apr  9 02:00:40 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* menus-extras.scm: 
+	Removed unneeded :use-module.
+	Changed 'sorted-by-car-string' to sort in alphabetical order.
+	Added comment for 'split-list' and changed name to 'split-list!' to
+	  reflect its destructive nature.
+	Fixed bug in 'split-list!' where it would create an extra empty list
+	  if the group size divided the number of elements.
+	Changed name of 'fold-menu-list' to 'fold-menu-list!' to reflect its
+	  destructive nature.
+	Fixed doc for 'fold-menu-list!' to give the correct variable name for
+	  where the default menu length comes from.
+	Added FIXMEs about stupid interface to several functions in this file.
+	Made the comment for 'split-list-by-group' complete enough to be useful.
+	Moved recursive accumulator variable of 'split-list-by-group' into a
+	  helper function rather than exposing it to the world as a default
+	  parameter.
+	Made 'split-list-by-group' preserve the order of the input list
+	  reasonably.
+	Updated the commented out tests for 'split-list-by-group'.
+	Improved doc string for 'fold-menu-list-by-group' so that it is actually
+	  useful.
+
+	* std-menus.scm, xlock-menus.scm:
+	Modified to match new name ('fold-menu-list!') for 'fold-menu-list'.
+
 Tue Apr  9 00:06:10 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* desk-background.scm: Made 'desk-background' apply the change

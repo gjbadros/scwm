@@ -80,6 +80,6 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
 	       (menuitem "Random!" #:action (run-xlock "random" lock?))
 	       (menuitem "Blank" #:action (run-xlock "blank" lock?))
 	       (menuitem "Bomb" #:action (run-xlock "bomb" lock?)))
-	 (fold-menu-list
+	 (fold-menu-list!
 	  (map (lambda (str) (menuitem str #:action (run-xlock str lock?)))
 	       (xlock-query-modes))))))
