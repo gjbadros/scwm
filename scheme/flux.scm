@@ -489,6 +489,11 @@ that corner fixed."
 	 (nonant->gravity (get-window-nonant win-pos))
 	 win))))
 
+(define-public (procedure->string proc)
+  (if (and proc (procedure? proc))
+      (symbol->string (or (procedure-name proc) 'anonymous-procedure))
+      "<none>"))
+
 (define-public (describe-key)
   (add-timer-hook! 
    (ms->usec 150) ; GJB:FIXME:: why do I have to do this for
@@ -496,9 +501,48 @@ that corner fixed."
                   ; (otherwise I get the C-j keystroke)
    (lambda ()
      (let* ((key (get-key-event))
-	    (proc (lookup-key 'all key)))
+	    (procs (lookup-key 'all key)))
        (display-message-briefly
 	(string-append key " is bound to " 
-		       (if (and proc (pair? proc) (procedure? (car proc)))
-			   (or (procedure-name (car proc)) "anonymous proc")
+		       (if (pair? procs)
+			   (string-append (procedure->string (car procs))
+					  ", "
+					  (procedure->string (cadr procs)))
 			   "nothing")))))))
+
+(define-public (context->brief-context context)
+  (cond ((memq 'all context) 'all)
+	((= 1 (length context)) (car context))
+	(else context)))
+
+(define-public (context->string context)
+  (with-output-to-string (lambda () (write context))))
+
+(define-public (raw-binding->string raw-binding)
+  (let ((mouse? (list-ref raw-binding 0))
+	(context (list-ref raw-binding 1))
+	(modmask (list-ref raw-binding 2))
+	(keybut (list-ref raw-binding 3))
+	(proc1 (list-ref raw-binding 4))
+	(proc2 (list-ref raw-binding 5)))
+    (let ((brief-context (context->brief-context context))
+	  (descriptor
+	   (if mouse?
+	       (string-append "mouse: "
+			      (keymask->string modmask)
+			      (number->string keybut))
+	       (string-append "key: "
+			      (keymask-keycode->string modmask keybut))))
+	  (proc1nm (procedure->string proc1))
+	  (proc2nm (procedure->string proc2)))
+      (string-append "Context " (context->string brief-context) ":: "
+		     descriptor " -> " proc1nm ", " proc2nm))))
+
+(define-public (procedure->bindings-description proc)
+  (apply
+   string-append
+   (map (lambda (bnd) (string-append (raw-binding->string bnd) "\n"))
+	(lookup-procedure-bindings proc))))
+
+;; (procedure->bindings-description describe-key)
+;; (procedure->bindings-description popup-root-start)
