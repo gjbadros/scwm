@@ -92,7 +92,7 @@ SRCS = \
 	face.c \
 	image.c
 
-OBJS := $(SRCS:.c=.o)
+OBJS := $(SRCS:.c=.o) init_scheme_string.o
 DEPS := $(SRCS:.c=.d)
 
 BUILT_SOURCES = image.x
@@ -116,15 +116,24 @@ clean: mostlyclean
 
 distclean: clean
 
+${PROG}: ${OBJS}
+	rm -f ${PROG}
+	${CC} -o ${PROG} ${OBJS} ${LIBS}
+
+# Build the scheme string to include in the executable
+init_scheme_string.c: ../scheme/minimal.scm
+	( echo -n "char *init_scheme_string = \"" ; \
+	  sed -e 's/;.*$$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g" ; \
+	  echo \"\; ) <$< > $@
+
+# guile-snarf builds the .x file which gets included by the .c
+# file.  It is needed to create the dependencies, and to compile
+# the .c file into the .o file
 image.d image.o: image.x
 
 image.x: image.c
 	guile-snarf $(CFLAGS) $< >tmp && mv tmp $@
 
-
-${PROG}: ${OBJS}
-	rm -f ${PROG}
-	${CC} -o ${PROG} ${OBJS} ${LIBS}
 
 %.d: %.c
 	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< \
