@@ -57,7 +57,7 @@ WIN is only destroyed if it is not deleteable."
 	      (delete-window win)
 	      (destroy-window win))))
 
-(define*-public (focus-or-toggle-raise #&optional (win (get-window)))
+(define*-public (focus-or-toggle-raise #&optional (win (window-with-pointer)))
   "Focus on WIN if it does not have the focus, else toggle-raise WIN."
   (if (equal? (window-with-focus) win)
       (toggle-raise win)
