@@ -1,3 +1,8 @@
+Sat Oct 23 12:51:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to 0.99.5pre1, and use imlib_prefix/include
+	in @PREFIX_INCLUDES@ (Thanks to bug report from Jonas Steverud!).
+
 Tue Oct 19 15:47:08 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added --enable-dump option to turn on unexec

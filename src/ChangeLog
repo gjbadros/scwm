@@ -1,3 +1,8 @@
+Sat Oct 23 14:16:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Do not decorate message-windows.  Thanks to Dirk Hermann 
+	for the bug report.
+
 Fri Oct 22 17:18:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Renamed `get-window-focus' to `window-focus-style'

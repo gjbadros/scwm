@@ -1,3 +1,18 @@
+Sat Oct 23 13:17:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prefs-menu.scm: Deprecate the module.
+
+	* nonants.scm: Be more robust in case anchor.xpm cannot be loaded.
+
+	* lambda-startup-logo.scm: Use image-not-found-message
+
+	* base.scm: Added `image-not-found-message'
+
+	* fvwm-module.scm: Added a newline in debugging code.
+
+	* winlist-menu.scm: Document show-window-list-menu's new
+	permit-alt-release-selection?
+
 Fri Oct 22 17:56:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Needs winlist, wininfo (fixes unbound variables when 
