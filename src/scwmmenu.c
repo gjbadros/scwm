@@ -989,12 +989,20 @@ InitializeDynamicMenu(DynamicMenu *pmd)
      only the drawing-independent code here */
   while (True) {
     SCM item = gh_car(rest);
-    MenuItem *pmi = SAFE_MENUITEM(item);
-    MenuItemInMenu *pmiim = safemalloc(sizeof(MenuItemInMenu));
+    MenuItem *pmi;
+    MenuItemInMenu *pmiim;
+
+    /* FIXGJB: strip #f-s in make-menu!
+       allow #f-s to be embed and just skip them */
+    if (item == SCM_BOOL_F) {
+      goto NEXT_MENU_ITEM;
+    }
+    pmi = SAFE_MENUITEM(item);
     if (!pmi) {
       scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
       goto NEXT_MENU_ITEM;
     }
+    pmiim = safemalloc(sizeof(MenuItemInMenu));
     rgpmiim[ipmiim] = pmiim;
 
     /* save some back pointers so we can find a dynamic menu

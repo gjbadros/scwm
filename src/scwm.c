@@ -189,6 +189,7 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = False;
+  extern int scm_ice_9_already_loaded; 
 
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
@@ -196,6 +197,21 @@ scwm_main(int argc, char **argv)
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
+
+  { 
+    /* We want a path only containing directories from GUILE_LOAD_PATH, 
+       SCM_SITE_DIR and SCM_LIBRARY_DIR when searching for the site init 
+       file, so we do this before loading Ice-9.  */ 
+    SCM init_path = scm_sys_search_load_path (scm_makfrom0str ("init.scm")); 
+    
+    /* Load Ice-9.  */ 
+    if (!scm_ice_9_already_loaded) 
+      scm_primitive_load_path (scm_makfrom0str ("ice-9/boot-9.scm")); 
+    
+    /* Load the init.scm file.  */ 
+    if (SCM_NFALSEP (init_path)) 
+      scm_primitive_load (init_path); 
+  }
 
   init_scwm_types();
   init_image();

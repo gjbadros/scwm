@@ -140,6 +140,7 @@ sleep_ms(int n)
  * do something with it.  By then, the file might not be accessible.
  * Oh well.
  * FIXGJB: race conditions here!
+ * FIXGJB: This function is not used --gjb 12/04/97 
  * Note that the returned char * must be free-ed
  ****************************************************************************/
 char *
