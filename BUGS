@@ -1,3 +1,7 @@
+- Jim Blandy's patch to load boot-9 for newer guile versions is
+problematic; it can't tell wether or not we are running under an older
+guile which has already loaded boot-9, resulting in a segfault. - MS
+
 - Click to focus bugs
 
 1a. At startup usually a window, which I don't want given focus,
@@ -11,8 +15,6 @@
 
 Jens	<http://www.kurims.kyoto-u.ac.jp/~petersen/>
 
-- buggy icon handling everywhere -- needs thorough testing
-
 
 gjb gets this on recapture
 [Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
@@ -24,10 +26,15 @@ Possibly stop making resizes account for decorations, so that maximize
 is happier.
 
 callbacks should run from a new dynamic root. [ huh? --11/08/97 gjb ]
+[ this would prevent them from calling continuations that escape
+outside the callback handler - the code would lose big on this -ms]
 
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+
+- buggy icon handling everywhere -- needs thorough testing
+  -- 2-20-97 mstachow
 
 should initially focus/hilight some window (also a bug in fvwm2)
   -- Fixed by adding CoerceEnterNotifyOnCurrentWindow()
@@ -41,7 +48,7 @@ ensure_valid(); MS says fixed ~ 11/1/97
 
 
 functions should be renamed to end with _x 
-  -- This looks done... is it not? --11/08/97 gjb
+  -- This looks done... is it not? --11/08/97 gjb	
 
 (get-window) acts wierdly when a window needs to be selected, or
 when executed via scwmsend's property mechanism -- was a problem with
