@@ -884,7 +884,7 @@ HandlePropertyNotify()
     }
     break;
   }
-  if (Event.xproperty.state != PropertyDelete) {
+  { /* scope */
     char *szName = XGetAtomName(dpy,Event.xproperty.atom);
     
     call2_hooks(x_propertynotify_hook, gh_str02scm(szName),
