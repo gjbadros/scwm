@@ -83,9 +83,6 @@
 ;; do this early, since gnome times out in 10 seconds
 (enable-gnome-hints)
 
-(use-scwm-modules lambda-startup-logo)
-(logo-setup #t)
-
 ;; SCWMDIR is mostly used for testing and running Scwm w/o installing
 ;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if
 ;; you want the installation locations
@@ -106,6 +103,11 @@
       "/usr/local/lib/icons"
       "/usr/local/icons"
       ))
+
+;; be sure you install scwm-icons package for this to work,
+;; or update the image-load-path, above
+(use-scwm-modules lambda-startup-logo)
+(logo-setup #t)
 
 ;; Use below lines for help when debugging a GC issue during startup
 ;;(set-load-processing-frequency! 1)
