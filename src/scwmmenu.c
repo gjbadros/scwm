@@ -4,6 +4,7 @@
  *
  */
 
+
 #define SCWMMENU_IMPLEMENTATION
 
 #include <config.h>
@@ -25,6 +26,10 @@
 #include "font.h"
 #include "system.h"
 #include "scwmmenu.h"
+
+#ifndef HAVE_GH_LENGTH
+#define gh_length gh_list_length
+#endif /* HAVE_GH_LENGTH */
 
 
 SCM 
@@ -95,7 +100,7 @@ scwmmenu_p(SCM obj)
 char *
 NewPchKeysUsed(SCM list_of_menuitems)
 {
-  int cItems = gh_list_length(list_of_menuitems);
+  int cItems = gh_length(list_of_menuitems);
   char *pch = safemalloc(sizeof(char) * (cItems + 1));
   int ich = 0;
   SCM item;
