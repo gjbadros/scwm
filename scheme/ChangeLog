@@ -1,3 +1,8 @@
+1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
+
+	* fvwm-module.scm(run-fvwm-module): Add a few sanity checks to
+	make sure running a nonexistent module won't break things.
+
 1998-06-23  Maciej Stachowiak  <maciej@roc-ny1-07.ix.netcom.com>
 
 	* std-menus.scm: Use the (ice-9 regex) module. 

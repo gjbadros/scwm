@@ -58,6 +58,11 @@
 ;; module (q.v.).
 ;;
 
+;;(sigaction SIGPIPE
+;;	   (lambda (sig)
+;;	     (display "In the sigpipe handler, wheee!")
+;;	     (newline)))
+
 (define app-window "0")
 (define context "0") ; C_NO_CONTEXT
 
@@ -296,8 +301,10 @@
 			      (lambda ()
 				(close-port to-module-write)
 				(close-port from-module-read))
-			      (lambda args args))
-		       (remove-inout-hook! input-hook-handle)
+			      (lambda args 
+				(display "Step 5.5\n")
+				args))
+		       (remove-input-hook! input-hook-handle)
 		       (list-set! fmod 4 #f))))))
 
     ;; actually, scwm waits on its children so it should be no problem.
@@ -310,14 +317,21 @@
       (close-port from-module-read)
       (let ((write-fd (number->string (fileno from-module-write)))
 	    (read-fd (number->string (fileno to-module-read))))
-;;	(display (string-append 
-;;		  "child: " module-file " " write-fd " " read-fd " " config-file 
-;;		  " " app-window " " context " " (apply string-append
-;;	(map (lambda (x) (string-apppend " " x)) other-args) "\n") 
-;;	(current-output-port))
-	(apply execl module-file module-file write-fd read-fd config-file 
-	       app-window context other-args))
+	(cond
+	 ((file-exists? module-file)
+	  ;;	(display (string-append 
+	  ;;		  "child: " module-file " " write-fd " " read-fd " " config-file 
+	  ;;		  " " app-window " " context " " (apply string-append
+	  ;;	(map (lambda (x) (string-apppend " " x)) other-args) "\n") 
+	  ;;	(current-output-port))
+	  (catch #t
+		 (lambda () (apply execl module-file module-file write-fd 
+				   read-fd config-file 
+				   app-window context other-args))
+		 (lambda args #t)))))
       (display "Exec failed.\n")
+      (close-port from-module-write)
+      (close-port to-module-read)
       (exit 0)))
 
     ;; parent process
@@ -330,7 +344,7 @@
     (fcntl from-module-read F_SETFD 1)
 
     ;; FIXGJB: set o_nonblock for TO_MODULE_WR
-    ;; GJBFIX: why is that necessary?
+    ;; GJBFIX: why is this necessary?
     ;; (fctl to-module-write F_SETFL O_NONBLOCK)
 
     (add-active-module! fmod)
@@ -339,27 +353,30 @@
     (letrec 
 	((packet-handler
 	  (lambda ()
-	    (let* ((packet (fvwm2-module-read-packet from-module-read))
-		   (window-id (car packet))
-		   (command (caddr packet))
-		   ;;(split-result (split-before-char #\space command 
-		   ;;				    (lambda args args)))
-		   ;; (main-cmd (car split-result))
-		   ;;(args (cadr split-result))
-		   )	
+	    (catch #t
+		   (lambda ()
+		     (let* ((packet (fvwm2-module-read-packet 
+				     from-module-read))
+			    (window-id (car packet))
+			    (command (caddr packet)))	
 	      
-	      ;; (display "packet: ")
-	      ;; (write packet)
-	      ;; (newline)
+		       ;; (display "packet: ")
+		       ;; (write packet)
+		       ;; (newline)
+		       
+		       (eval-fvwm-command command fmod (id->window window-id))
 
-	      (eval-fvwm-command command fmod (id->window window-id))
-
-	    (if (not (list-ref fmod 4))
-		(remove-input-hook! input-hook-handle))))))
+		       (if (not (list-ref fmod 4))
+			   (remove-input-hook! input-hook-handle))))
+		   (lambda args
+		     (display "scwm: Error communicating with module ")
+		     (write fmod)
+		     (display ";\n terminating connection.\n")
+     		     (kill-fvwm-module fmod))))))
       
-      (set! input-hook-handle (add-input-hook! from-module-read 
-					       packet-handler))
-      fmod)))
+	  (set! input-hook-handle (add-input-hook! from-module-read 
+						   packet-handler))
+	  fmod)))
 
 (define-public (kill-fvwm-module fmod)
   ((list-ref fmod 5)))

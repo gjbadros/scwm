@@ -1,3 +1,9 @@
+1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
+
+	* callbacks.c (force_new_input_hooks): Check if an input hook's
+	port is still open before attempting to check if it has characters
+	ready; this was causing severe problems for fvwm modules.
+
 1998-06-23  Maciej Stachowiak  <maciej@roc-ny1-07.ix.netcom.com>
 
 	* callbacks.c (force_new_input_hooks): Don't compare the result of

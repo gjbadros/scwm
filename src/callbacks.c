@@ -130,13 +130,13 @@ scwm_safe_apply (SCM proc, SCM args)
   apply_data.proc = proc;
   apply_data.args = args;
 
+#if 0
   return scm_internal_stack_catch(SCM_BOOL_T,scwm_body_apply, &apply_data,
 				  scwm_handle_error, "scwm");
-#if 0
+#endif
   return scm_internal_stack_cwdr(scwm_body_apply, &apply_data,
 				 scwm_handle_error, "scwm",
 				 &stack_item);
-#endif
 }
 
 
@@ -533,6 +533,7 @@ force_new_input_hooks()
     SCM port = SCM_CAR(item);
     SCM proc = SCM_CDR(item);
     while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
+	   SCM_OPINFPORTP(port) &&
 	   SCM_BOOL_T==scm_char_ready_p(port)) {
       scwm_safe_call0(proc);
     }
