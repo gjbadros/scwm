@@ -4,7 +4,7 @@
 
 ## Distribute and install
 scwm_theme_DATA = fvwm2.@TAR_SUFFIX@ mwm.@TAR_SUFFIX@ win95.@TAR_SUFFIX@ \
-                  woven.@TAR_SUFFIX@
+                  woven.@TAR_SUFFIX@ twm.@TAR_SUFFIX@ afterstep.@TAR_SUFFIX@
 EXTRA_DIST=$(srcdir)/fvwm2/* $(srcdir)/mwm/* $(srcdir)/win95/* \
            $(srcdir)/woven/* 
 

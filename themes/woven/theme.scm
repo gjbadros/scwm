@@ -35,13 +35,13 @@
 		(xlib-set-drawing-mask! color-mask)
 		(set-rubber-band-mask! color-mask)
 		(set-icon-font! helvetica-12-font)
-		(set-hilight-foreground! "ghost white")
-		(set-hilight-background! "#600000")
+		(set-highlight-foreground! "ghost white")
+		(set-highlight-background! "#600000")
 		(set-rubber-band-mask! 127)
 		(title-style #:justify 'left #:font helvetica-12-font
 			     #:relief 'flat #:height 20)
 		(set-shadow-factor! .7)
-		(set-hilight-factor! 1.2)
+		(set-highlight-factor! 1.2)
 		
 		(button-style 1 #:relief 'flat
 			      #:solid "#600000" #:pixmap ghost-x

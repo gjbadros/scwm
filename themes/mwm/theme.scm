@@ -18,8 +18,8 @@
 		(title-style #:justify 'center #:relief 'raised
 			     #:font times-14-font)
 		(border-style #:no-inset #f #:hidden-handles #f)
-		(set-hilight-foreground! "black")
-		(set-hilight-background! "cadet blue"))
+		(set-highlight-foreground! "black")
+		(set-highlight-background! "cadet blue"))
     (make-theme "mwm" #:window-style mwm-style
 		#:background-style
 		(lambda () (reset-background!)))))

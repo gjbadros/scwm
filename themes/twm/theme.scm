@@ -38,8 +38,8 @@
 		(xlib-set-drawing-mask! color-mask)
 		(set-rubber-band-mask! color-mask)
 		(set-icon-font! helvetica-12-font)
-		(set-hilight-foreground! "light gray")
-		(set-hilight-background! "maroon")
+		(set-highlight-foreground! "light gray")
+		(set-highlight-background! "maroon")
 		(set-rubber-band-mask! 255)
 		(title-style #:justify 'left #:font helvetica-12-font
 			     #:relief 'flat #:height 20)

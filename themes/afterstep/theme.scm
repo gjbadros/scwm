@@ -46,15 +46,15 @@
 		(xlib-set-drawing-mask! color-mask)
 		(set-rubber-band-mask! color-mask)
 		(set-icon-font! helvetica-12-font)
-		(set-hilight-foreground! "white")
-		(set-hilight-background! "gray30")
+		(set-highlight-foreground! "white")
+		(set-highlight-background! "gray30")
 		(set-rubber-band-mask! 255)
 		(title-style #:justify 'left #:font helvetica-12-font
 			     #:relief 'flat)
 ;;			     #:h-gradient (list 10 (list "gray0" 20)
 ;;						"gray0" "gray70"))
 		(set-shadow-factor! .7)  ;; GJB:FIXME:: want default
-		(set-hilight-factor! 1.2)  ;; GJB:FIXME:: want default
+		(set-highlight-factor! 1.2)  ;; GJB:FIXME:: want default
 		
 		(button-style 1 #:relief 'flat
 			      #:pixmap xpm-system) ;;'mini-program-icon

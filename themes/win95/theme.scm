@@ -40,8 +40,8 @@
 			      (list #:solid "grey50" 
 				    #:pixmap (load-theme-image
 					      "win95-minimize-full.xpm")))
-		(set-hilight-foreground! "white")
-		(set-hilight-background! "grey76"))
+		(set-highlight-foreground! "white")
+		(set-highlight-background! "grey76"))
     
     (make-theme "win95" #:window-style win95-style
 		#:background-style 

@@ -29,8 +29,8 @@
 ;;; large down triangle
 		(button-style 4 #:relief-pattern
 			      '((50 75 #t) (25 25 #t) (75 25 #t) (50 75 #f)))
-		(set-hilight-foreground! "black")
-		(set-hilight-background! "salmon"))
+		(set-highlight-foreground! "black")
+		(set-highlight-background! "salmon"))
     (make-theme "fvwm2"	#:window-style fvwm2-style
 		#:background-style 
 		(lambda () (set-background-color! "gray50")))))
