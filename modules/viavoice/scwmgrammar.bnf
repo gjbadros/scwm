@@ -1,0 +1,22 @@
+// $Id$
+// (C) 1999 Greg J. Badros
+// Modified from gramsam.bnf, (C) 1999 IBM
+//
+
+//--------------------------------------------------------------------
+// A simple grammar for manipulating the focus window
+//
+//  move window up <amount>
+//  move window down <amount>
+//  move window left <amount>
+//  move window right <amount>
+//
+//--------------------------------------------------------------------
+
+<sample> = move window <direction> <amount>? .
+
+<direction> = up | down | left | right .
+
+<amount> = five : 5 | ten : 10 | fifteen : 15 | twenty : 20 |
+           "twenty five" : 25 | thirty : 30 | "thirty five" : 35 |
+           forty : 40 | "forty five" : 45 | fifty : 50 | "one hundred" : 100.
