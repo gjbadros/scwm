@@ -9,7 +9,13 @@ AC_PREREQ(2.4)
 
 AC_CONFIG_HEADER(include/config.h)
 
-CFLAGS="-O -g"
+# We need to honor CFLAGS if its set
+# e.g., 
+# CFLAGS="-g -O -I/uns/include" LDFLAGS=-L/uns/lib ./configure  --prefix=/uns
+if test "$CFLAGS" = ""; then
+  CFLAGS="-O -g"
+fi
+
 
 #-------------------------------------------------------------------
 #
@@ -18,15 +24,15 @@ CFLAGS="-O -g"
 #
 #-------------------------------------------------------------------
 
-AC_CHECK_PROG(UNAME, uname -a, [uname -a], "")
-if test "$UNAME" = ""; then
-    AC_CHECK_PROG(UNAME, uname, [uname], "")
+AC_CHECK_PROG(UNAME_A, uname -a, [uname -a], "")
+if test "$UNAME_A" = ""; then
+    AC_CHECK_PROG(UNAME_A, uname, [uname], "")
 fi
 
-if test "$UNAME" != ""; then
-    uname=`$UNAME`
+if test "$UNAME_A" != ""; then
+    uname=`$UNAME_A`
     AC_MSG_CHECKING('checking cached value of \$uname')
-    AC_CACHE_VAL(ac_cv_prog_uname, [nocached=1 ac_cv_prog_uname=`$UNAME`])
+    AC_CACHE_VAL(ac_cv_prog_uname, [nocached=1 ac_cv_prog_uname=`$UNAME_A`])
     if test "$nocached" = "1"; then
         AC_MSG_RESULT(no)
     else
