@@ -1,3 +1,16 @@
+Sat Jul 17 19:04:06 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c:  Replace binding_contexts and context_strings
+	parallel arrays with an extended symnum struct that contains the
+	string, too.  Reorder the array so that depracated symbols are all 
+	at the end.  Warn about deprecated symbols used in contexts, and
+	suggest correct version.  Make `lookup-mouse' return both the proc 
+	and the new immediate-proc.  Added `lookup-procedure-bindings' and 
+	several helper functions to convert internal binding
+	representation out to Guile lists.  Added `keymask->string' for
+	modifier conversions when there is no keycode (e.g., for the mouse 
+	bindings).
+
 Sat Jul 17 12:53:33 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h, xmisc.c (NFromXPropertyCardinal): Added this fn.

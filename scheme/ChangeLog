@@ -1,3 +1,21 @@
+Sat Jul 17 19:59:56 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* animated-iconify.scm: Set 'last-viewport-position property in
+	animated-iconify, and add
+	animated-deiconify-to-last-viewport-position to bring it back
+	to where (relative to the viewport) it was before
+
+	* ScwmButtons.scm: Added some bugs notes.
+
+	* flux.scm: Added `procedure->string', `context->string',
+	`raw-binding->string', `procedure->bindings-description' (for
+	doing scwm-whereis, among other things).
+
+Sat Jul 17 16:15:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* listops.scm: Fix commments for iota, reverse-iota (starts/ends
+	at 0, not 1).
+
 Sat Jul 17 02:06:39 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* modifier-key-bindings.scm, message-window.scm: doc fixes.
