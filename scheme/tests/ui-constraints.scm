@@ -9,17 +9,17 @@
 (define (ui-cnctr-keep-lefts-even)
   (let ((w1 (select-window-interactively "W1?"))
 	(w2 (select-window-interactively "W2?")))
-    (cnctr-keep-lefts-even w1 w2)))
+    (cnctr-keep-lefts-even (list w1 w2))))
 
 (xlib-set-line-width! 5)
 
-(define (draw-cn-keep-lefts-even ui-constraint)
+(define (draw-cn-keep-lefts-even ui-constraint color width mode)
   (xlib-draw-rectangle! 0 0 20 20))
 
 ;; (define (cl-is-constraint-satisfied) #t)
 
 (define uicc-kle (make-ui-constraint-class "keep-lefts-even" 2 cnctr-keep-lefts-even 
-					   ui-cnctr-keep-lefts-even draw-cn-keep-lefts-even cl-is-constraint-satisfied))
+					   ui-cnctr-keep-lefts-even draw-cn-keep-lefts-even cl-is-constraint-satisfied?))
 
 ;; global-constraint-class-list
 ;; (delete-ui-constraint-class! uicc-kle)
@@ -39,7 +39,14 @@
 
 ;; (ui-constraint-class-satisfied-proc uicc-kle)
 
+(make-ui-constraint uicc-kle (list (select-window-interactively) (select-window-interactively)))
 
+(make-ui-constraint-interactively uicc-kle)
 
+(draw-constraint (car global-constraint-instance-list))
 
+(ui-constraint? (car global-constraint-instance-list))
 
+;; (ui-constraint? 4)
+
+(ui-constraint-class (car global-constraint-instance-list))
