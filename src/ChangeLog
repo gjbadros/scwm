@@ -9,7 +9,10 @@ Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	The icon settings are now in four procedures: 
 
 	set-icon! - sets the requested icon image; if #f, no picture is
- 	shown, just the icon title. However, unless force-icon is set,
+ 	shown, just the icon title. However, unless force-icon is set, the
+ 	app icon will take precedence over this setting, so for instance
+ 	if there is an app icon, it will show up even if this setting is
+ 	#f.
 
 	set-force-icon! - if #t, the specified icon image or #f indicating
  	no icon image will override the app-provided icon, if any. If #f,

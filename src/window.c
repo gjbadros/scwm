@@ -51,6 +51,7 @@ mark_window(SCM obj)
       ScwmWindow *psw = SCWMWINDOW(obj);
       scm_gc_mark(psw->fl->scmdecor);
       scm_gc_mark(psw->mini_icon_image);
+      scm_gc_mark(psw->icon_req_image);
       scm_gc_mark(psw->icon_image);
     }
   }
@@ -209,7 +210,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 #ifndef NON_VIRTUAL
   if (t->flags & ICONIFIED) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
+    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
     cx = t->frame_x + t->frame_width / 2;
     cy = t->frame_y + t->frame_height / 2;
@@ -223,7 +224,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 
   if (t->flags & ICONIFIED) {
     x = t->icon_xl_loc + t->icon_w_width / 2;
-    y = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
+    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
     x = t->frame_x;
     y = t->frame_y;
@@ -268,7 +269,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 #ifndef NON_VIRTUAL
   if (t->flags & ICONIFIED) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
+    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
   } else {
     cx = t->frame_x + t->frame_width / 2;
     cy = t->frame_y + t->frame_height / 2;
@@ -282,7 +283,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 
   if (t->flags & ICONIFIED) {
     x = t->icon_xl_loc + t->icon_w_width / 2 + 2;
-    y = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2 + 2;
+    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2 + 2;
   } else {
     if (x_unit != Scr.MyDisplayWidth)
       x = t->frame_x + 2 + warp_x;
@@ -1106,15 +1107,15 @@ move_finalize(Window w, ScwmWindow * sw, int x, int y)
   } else {			/* icon window */
     sw->flags |= ICON_MOVED;
     sw->icon_x_loc = x;
-    sw->icon_xl_loc = y - (sw->icon_w_width - ICON_P_WIDTH(sw)) / 2;
+    sw->icon_xl_loc = y - (sw->icon_w_width - sw->icon_p_width) / 2;
     sw->icon_y_loc = y;
     Broadcast(M_ICON_LOCATION, 7, sw->w, sw->frame,
 	      (unsigned long) sw,
 	      sw->icon_x_loc, sw->icon_y_loc,
 	      sw->icon_w_width, sw->icon_w_height
-	      + ICON_P_HEIGHT(sw));
+	      + sw->icon_p_height);
     XMoveWindow(dpy, sw->icon_w,
-		sw->icon_xl_loc, y + ICON_P_HEIGHT(sw));
+		sw->icon_xl_loc, y + sw->icon_p_height);
     if (sw->icon_pixmap_w != None) {
       XMapWindow(dpy, sw->icon_w);
       XMoveWindow(dpy, sw->icon_pixmap_w, sw->icon_x_loc, y);
@@ -2011,31 +2012,6 @@ set_window_colors_x(SCM fg, SCM bg, SCM win)
   return SCM_BOOL_T;
 }
 
-SCM 
-set_icon_title_x(SCM title, SCM win)
-{
-  int dummy;
-  ScwmWindow *tmp_win;
-
-  /* XXX - this should redraw the icon if necessary */
-
-  VALIDATEN(win, 2, "set-icon-title!");
-  tmp_win = SCWMWINDOW(win);
-
-  if (!gh_string_p(title)) {
-    if (title == SCM_BOOL_F) {
-      tmp_win->flags |= NOICON_TITLE;
-      return SCM_BOOL_T;
-    } else {
-      scm_wrong_type_arg("set-icon-title!", 1, title);
-    }
-  }
-  tmp_win->icon_name = gh_scm2newstr(title, &dummy);
-  tmp_win->flags &= ~NOICON_TITLE;
-
-  return SCM_BOOL_T;
-}
-
 
 
 SCM 
@@ -2126,6 +2102,84 @@ set_mwm_border_x(SCM val, SCM win)
   return SCM_BOOL_T;
 }
 
+
+void
+force_icon_redraw (ScwmWindow *tmp_win)
+{
+  XDestroyWindow(dpy, tmp_win->icon_w);
+  tmp_win->icon_w = None;
+
+  if (tmp_win->flags & ICONIFIED) {
+    Iconify(tmp_win, 0, 0);
+  }  
+}
+
+SCM 
+set_icon_title_x(SCM title, SCM win)
+{
+  int dummy;
+  ScwmWindow *tmp_win;
+
+  /* Should changing the icon title string be allowed? */
+
+  VALIDATEN(win, 2, "set-icon-title!");
+  tmp_win = SCWMWINDOW(win);
+
+  if (title == SCM_BOOL_F) {
+    tmp_win->flags |= NOICON_TITLE;
+  } else if (title == SCM_BOOL_T) {
+    tmp_win->flags &= ~NOICON_TITLE;
+  } else {
+    scm_wrong_type_arg("set-icon-title!", 1, title);
+  }
+
+  force_icon_redraw (tmp_win);
+
+  return SCM_BOOL_T;
+}
+
+
+SCM
+set_force_icon_x (SCM flag, SCM win)
+{
+  ScwmWindow *tmp_win;
+
+  VALIDATEN(win, 2, "set-force-icon!");
+  tmp_win = SCWMWINDOW(win);
+
+  if (flag== SCM_BOOL_F) {
+    tmp_win->fForceIcon=False; 
+  } else if (flag== SCM_BOOL_T) {
+    tmp_win->fForceIcon=True; 
+  } else {
+    scm_wrong_type_arg("set-force-icon!", 1, flag);
+  }
+
+  force_icon_redraw (tmp_win);
+  return SCM_BOOL_T;
+}
+
+SCM 
+set_show_icon_x (SCM flag, SCM win)
+{
+  ScwmWindow *tmp_win;
+
+  VALIDATEN(win, 2, "set-show-icon!");
+  tmp_win = SCWMWINDOW(win);
+
+  if (flag== SCM_BOOL_F) {
+    tmp_win->flags |= SUPPRESSICON_FLAG;
+  } else if (flag == SCM_BOOL_T) {
+    tmp_win->flags &= ~SUPPRESSICON_FLAG;
+  } else {
+    scm_wrong_type_arg("set-show-icon!", 1, flag);
+  }
+
+  force_icon_redraw (tmp_win);
+
+  return SCM_BOOL_T;
+}
+
 SCM 
 set_icon_x(SCM picture, SCM win)
 {
@@ -2133,40 +2187,15 @@ set_icon_x(SCM picture, SCM win)
 
   VALIDATEN(win, 2, "set-icon!");
   tmp_win = SCWMWINDOW(win);
-  if (picture == SCM_BOOL_F) {
-    tmp_win->flags |= SUPPRESSICON_FLAG;
-    XDestroyWindow(dpy, tmp_win->icon_w);
-    tmp_win->icon_w = None;
-  } else if (picture == SCM_BOOL_T) {
-    tmp_win->flags &= ~SUPPRESSICON_FLAG;
-    XDestroyWindow(dpy, tmp_win->icon_w);
-    tmp_win->icon_w = None;
-  } else if (gh_string_p(picture)) {
-    tmp_win->flags &= ~SUPPRESSICON_FLAG;
-    tmp_win->flags |= ICON_FLAG;
-    tmp_win->icon_image = make_image(picture);
-    XDestroyWindow(dpy, tmp_win->icon_w);
-    tmp_win->icon_w = None;
-  } else if (IMAGE_P(picture)) {
-    tmp_win->flags &= ~SUPPRESSICON_FLAG;
-    tmp_win->flags |= ICON_FLAG;
-    if (!((tmp_win->wmhints)
-	  && (tmp_win->wmhints->flags &
-	      (IconWindowHint | IconPixmapHint)))) {
-      tmp_win->icon_image = picture;
-      XDestroyWindow(dpy, tmp_win->icon_w);
-      tmp_win->icon_w = None;
-    }
+  if (gh_string_p(picture)) {
+    tmp_win->icon_req_image = make_image(picture);
+  } else if (IMAGE_P(picture) || picture == SCM_BOOL_F) {
+    tmp_win->icon_req_image = picture;
   } else {
     scm_wrong_type_arg("set-icon!", 1, picture);
   }
-  if (tmp_win->flags & ICONIFIED) {
-    Iconify(tmp_win, 0, 0);
-  }
-  /* FIXGJB: also it should redraw automatically */
-  /* It seems to redraw automatically for me with just the above --11/08/97 gjb
-  DrawIconWindow(tmp_win);
-  */
+
+  force_icon_redraw (tmp_win);
   return SCM_BOOL_T;
 }
 
