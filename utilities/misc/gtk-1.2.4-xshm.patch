@@ -1,0 +1,19 @@
+*** gdk/gdkimage.c.orig	Tue Aug 31 15:50:14 1999
+--- gdk/gdkimage.c	Tue Aug 31 15:48:32 1999
+***************
+*** 38,44 ****
+  #include <sys/types.h>
+  
+  #if defined (HAVE_IPC_H) && defined (HAVE_SHM_H) && defined (HAVE_XSHM_H)
+! #define USE_SHM
+  #endif
+  
+  #ifdef USE_SHM
+--- 38,44 ----
+  #include <sys/types.h>
+  
+  #if defined (HAVE_IPC_H) && defined (HAVE_SHM_H) && defined (HAVE_XSHM_H)
+! /* #define USE_SHM */
+  #endif
+  
+  #ifdef USE_SHM
