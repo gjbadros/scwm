@@ -276,14 +276,17 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       
       for (p=arg; p != SCM_EOL; p = SCM_CDR(p)) {
 	pel=SCM_CAR(p);
-	if (!(gh_list_p(pel) && (gh_length(pel)==3))) {
+	if ((gh_list_p(pel) && (gh_length(pel)==3))) {
 	  vc.x[vc.num]=gh_scm2int(gh_car(pel));
 	  vc.y[vc.num]=gh_scm2int(gh_cadr(pel));
 	  vc.line_style[vc.num]=gh_scm2bool(gh_caddr(pel));
+	  printf("Added %dx%d@%d ; ", vc.x[vc.num], vc.y[vc.num],
+		 vc.line_style[vc.num]);
 	  vc.num++;
 	}
       }
-      
+      printf("Total is: %d\n", vc.num);
+
       /* paritally destructive, so find the last face and 
 	 append (or mutate if its style is SimpleButton) */
       bf = append_new_face(bf);
@@ -293,6 +296,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       memcpy(&(bf->vector), &vc, sizeof(struct vector_coords));
       bf->style &= ~ButtonFaceTypeMask;
       bf->style |= VectorButton;
+      puts("Did it.");
     } else {
       /* FIXMS give a better error message */
       scm_wrong_type_arg("add_spec_to_face_x",3,arg);
