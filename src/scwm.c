@@ -69,6 +69,7 @@
 #endif
 #endif
 
+#include <libguile.h>
 #include <guile/gh.h>
 
 #include "scwm.h"
@@ -115,6 +116,51 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #endif
 
 #define MAXHOSTNAME 255
+
+#ifdef ENABLE_DUMP
+
+#define GDB_TYPE SCM
+#include <libguile/gdb_interface.h>
+GDB_INTERFACE;
+
+extern int scm_boot_guile_1_live;
+extern int scm_ice_9_already_loaded;
+
+void
+scm_prepare_dump()
+{
+  scm_boot_guile_1_live = 0;
+  scm_ice_9_already_loaded = 1;
+  scm_flush_all_ports();
+}
+
+void
+scwm_init_after_dump ()
+{
+  scwm_msg(ERR,"scwm_init_after_dump","Initializing from dump file.");
+}
+
+void unexec (char *new_name, char *old_name, 
+             unsigned data_start, unsigned bss_start,
+             unsigned entry_address);
+
+static void
+dodump(char *progname, char *dumpfile)
+{
+  scm_prepare_dump();
+  scm_igc("dump");
+  sbrk(4096);  /* work around a bug somewhere */
+  unexec(dumpfile, progname, 0, 0, 0);
+  printf("dumped `%s'.\n", dumpfile);
+}
+
+#ifdef DUMP_DECL
+DUMP_DECL
+#endif
+
+#endif /* ENABLE_DUMP */
+
+
 
 void init_borders(); /* borders.c */
 
@@ -551,6 +597,10 @@ main(int argc, char **argv)
 void 
 scwm_main(int argc, char **argv)
 {
+  static int dumped = 0;
+  static Bool fShouldDump = False;
+  static char *szBinaryPath = NULL;
+  static char *szDumpFile = NULL;
   int i;
   extern int x_fd;
   int len;
@@ -723,6 +773,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
+      {"dump", 1, NULL, 'm'},
       {"document-formals", 0, NULL, 'F'},
       {"segv-reset-count", 1, NULL, 'p'},
       {"segv-just-stop", 0, NULL, 'P'},
@@ -736,6 +787,11 @@ is probably of no use to you unless you're a session manager or debbuging.
     if(getopt_ret == EOF) break;
     
     switch(getopt_ret) {
+    case 'm':
+      fShouldDump = True;
+      szBinaryPath = argv[0];
+      szDumpFile = strdup(optarg);
+      break;
     case 'D':
       debugging = True; break;
     case 's':
@@ -1015,13 +1071,14 @@ Repository Timestamp: %s\n",
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
   
+
   /* Add the SCWM_LOAD_PATH preprocessor symbol and evironment
      variable to the guile load path. */
   
   init_scwm_load_path();
   
   DBUG((DBG,"main", "Setting up rc file defaults..."));
-
+  
   /* the default for this seems to have changed between guile-1.3
      and guile-1.3.2;  only the first clause is needed when 
      we drop support for guile-1.3.2 */
@@ -1030,23 +1087,24 @@ Repository Timestamp: %s\n",
   } else {
     gh_eval_str("(debug-disable 'debug) (read-disable 'positions)");
   }
-
+  
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
   { /* scope */
-  extern char *init_scheme_string;
-  scwm_safe_eval_str(init_scheme_string);
+    extern char *init_scheme_string;
+    scwm_safe_eval_str(init_scheme_string);
   } /* end scope */
-
-  DBUG((DBG,"main", "Running config_commands..."));
   
+  if (!dumped) {
+    DBUG((DBG,"main", "Running config_commands..."));
+    
 #ifndef SCWMRC
 #define SCWMRC ".scwmrc"
 #endif
-  
-  /* MS:FIXME:: clean this ugly mess up. */
-  /* GJB:FIXME:: look for $HOME/scwm/.scwmrc, too */
-  if (strlen(szCmdConfig) == 0) {
+    
+    /* MS:FIXME:: clean this ugly mess up. */
+    /* GJB:FIXME:: look for $HOME/scwm/.scwmrc, too */
+    if (strlen(szCmdConfig) == 0) {
 #ifdef I18N
       scwm_safe_eval_str(
            "(let ((home-scwmrc"
@@ -1065,20 +1123,36 @@ Repository Timestamp: %s\n",
 	   "                     (if (access? system-scwmrc R_OK)"
 	   "                         (safe-load system-scwmrc))))))))");
 #else
-    scwm_safe_eval_str("(let ((home-scwmrc"
-		       "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
-		       "      (system-scwmrc \"" SCWMRCDIR "/system" SCWMRC "\"))"
-		       " (if (access? home-scwmrc R_OK)"
-		       "     (safe-load home-scwmrc)"
-		       "     (if (access? system-scwmrc R_OK)"
-		       "         (safe-load system-scwmrc))))");
+      scwm_safe_eval_str("(let ((home-scwmrc"
+                         "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
+                         "      (system-scwmrc \"" SCWMRCDIR "/system" SCWMRC "\"))"
+                         " (if (access? home-scwmrc R_OK)"
+                         "     (safe-load home-scwmrc)"
+                         "     (if (access? system-scwmrc R_OK)"
+                         "         (safe-load system-scwmrc))))");
 #endif
-  } else {
-    scwm_safe_eval_str(szCmdConfig);
+    } else {
+      scwm_safe_eval_str(szCmdConfig);
+    }
+    
+    FREEC(szCmdConfig);
+    
   }
-  
-  FREEC(szCmdConfig);
-  
+
+#ifdef ENABLE_DUMP  
+  if (fShouldDump) {
+    dumped = 1;
+    fShouldDump = False;
+    dodump(szBinaryPath,szDumpFile);
+    exit(0); /* not reached */
+  }
+#endif
+
+#ifdef ENABLE_DUMP
+  if (dumped) {
+    scwm_init_after_dump();
+  }
+#endif
   restart_vp_offset_x = 
     NFromXPropertyCardinal(Scr.Root, XA_SCWM_VIEWPORT_OFFSET_X, 
                            False,0);
@@ -1130,7 +1204,8 @@ Repository Timestamp: %s\n",
      is corrupting several of the global variable values!
      InternUsefulAtoms(); 
   */
-  /* this code is coupled with the code that restores this
+
+  /* BEWARE: this code is coupled with the code that restores this
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
