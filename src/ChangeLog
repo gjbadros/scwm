@@ -1,3 +1,9 @@
+1999-04-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* borders.c (SetShape): Correctly check for title bar presence.
+	(SetTitleBar): Relieve title bar even when squashed.
+	(SetupFrame): NW corner was misplaced.
+
 Tue Apr 27 20:46:42 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (scwm_handle_error): Ugly hack to avoid a throw in

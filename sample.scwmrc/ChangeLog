@@ -1,3 +1,7 @@
+1999-04-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Style changes.
+
 Tue Apr 27 20:57:46 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Fix doc-files to include hooks and variables, too.
