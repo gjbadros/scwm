@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define ver @VERSION@
-%define rel 2
+%define rel 1
 %define prefix /usr
 
 Name: scwm
@@ -35,6 +35,9 @@ provides A powerful protocol for interacting with the window manager
 from other processes
 
 %changelog
+* Sat Sep 25 1999  Greg J. Badros <gjb@cs.washington.edu>
+- Updated for Scwm-0.99.3, removed gjb.scwmrc from filelist.
+
 * Sun Aug 22 1999  Greg J. Badros <gjb@cs.washington.edu>
 - Updates to the description, general cleanup of package to get
   rpm building to be less painful and more complete
@@ -96,7 +99,6 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %{prefix}/share/emacs/site-lisp/scwm.el
 ## GJB:FIXME:: should byte compile scwm.el in %postun
 #%{prefix}/share/emacs/site-lisp/scwm.elc
-%{prefix}/share/scwm/scwmrc/gjb.scwmrc
 %{prefix}/share/scwm/scwmrc/juhp.scwmrc
 %{prefix}/share/scwm/scwmrc/mstachow.scwmrc
 %{prefix}/share/scwm/scwmrc/sds.scwmrc
