@@ -72,77 +72,75 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 ;; false otherwise
 
 (define-public (ui-constraint-class? UI-CONSTRAINT-CLASS)
-  (if (and (list? UI-CONSTRAINT-CLASS) (not (null? UI-CONSTRAINT-CLASS)))
-      (eq? (car UI-CONSTRAINT-CLASS) obid-ui-constraint-class)
-      #f))
+  (and (pair? UI-CONSTRAINT-CLASS) (eq? (car UI-CONSTRAINT-CLASS) obid-ui-constraint-class)))
 
 
 ;; ui-constraint-class-name
 
 ;; returns the name of the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-name UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadr UI-CONSTRAINT-CLASS)
-      #f))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; ui-constraint-class-num-windows
 
 ;; returns the number of windows constrainable by instances of
 ;;   the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-num-windows UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (caddr UI-CONSTRAINT-CLASS)
-      #f))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; ui-constraint-class-ctr
 
 ;; returns the constructor for instances of the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-ctr UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr UI-CONSTRAINT-CLASS)
-      #f))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; ui-constraint-class-ui-ctr
 
 ;; returns the UI constructor for instances of the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr (cdr UI-CONSTRAINT-CLASS))
-      #f))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; ui-constraint-class-draw-proc
 
 ;; returns the drawing procedure for instances of the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-draw-proc UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr (cddr UI-CONSTRAINT-CLASS))
-      (error "Must pass UI-CONSTRAINT-CLASS-ARGUMENT")))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; ui-constraint-class-satisfied
 
 ;; returns the satisfaction checking procedure for instances of 
 ;;   the constraint class.
-;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
 (define-public (ui-constraint-class-satisfied-proc UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr (cdddr UI-CONSTRAINT-CLASS))
-      #f))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 
@@ -162,7 +160,7 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 ;; UI-CONSTRAINT-CLASS specifies the type of constraint to be created.
 ;; WIN-LIST specifies the windows to constraint
 ;; returns a new constraint instance objects that is NOT enabled.
-;; returns #f is UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 ;; SIDE-EFFECT: adds new instance object to the global list
 
 (define-public (make-ui-constraint UI-CONSTRAINT-CLASS WIN-LIST)
@@ -170,7 +168,7 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
       (let ((uc (cons obid-ui-constraint ((ui-constraint-class-ctr UI-CONSTRAINT-CLASS) WIN-LIST))))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	uc)
-      #f))
+      (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; make-ui-constraint-interactively
@@ -178,15 +176,15 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 ;; UI-CONSTRAINT-CLASS specifies the type of constraint to be created.
 ;; uses the ui constructor
 ;; returns a new constraint instance objects that is NOT enabled.
-;; returns #f is UI-CONSTRAINT-CLASS is not a ui-constraint-class
+;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 ;; SIDE-EFFECT: adds new instance object to the global list
 
 (define-public (make-ui-constraint-interactively UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (let ((uc (cons obid-ui-constraint ((ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)))))
-	(cons uc global-constraint-instance-list)
+	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	uc)
-      #f))
+      (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; delete-ui-constraint
@@ -204,9 +202,7 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 ;; returns #f otherwise
 
 (define-public (ui-constraint? UI-CONSTRAINT)
-  (if (and (list? UI-CONSTRAINT) (not (null? UI-CONSTRAINT)))
-      (eq? (car UI-CONSTRAINT) obid-ui-constraint)
-      #f))
+  (and (pair? UI-CONSTRAINT) (eq? (car UI-CONSTRAINT) obid-ui-constraint)))
 
 
 ;; ui-constraint-cn
@@ -217,46 +213,47 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 (define-public (ui-constraint-cn UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (cadr UI-CONSTRAINT)
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-enable
 
 ;; returns the ENABLE from the ui-constraint object UI-CONSTRAINT
-;; returns #f if UI-CONSTRAINT is not an ui-constraint
+;; errors if UI-CONSTRAINT is not an ui-constraint
 
 (define-public (ui-constraint-enable UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (caddr UI-CONSTRAINT)
-      #f))
-
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 ;; ui-constraint-class
 
 ;; returns the UI-CONSTRAINT-CLASS from the ui-constraint object UI-CONSTRAINT
-;; returns #f if UI-CONSTRAINT is not an ui-constraint
+;; errors if UI-CONSTRAINT is not an ui-constraint
 
 (define-public (ui-constraint-class UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (cadddr UI-CONSTRAINT)
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; ui-constraint-windows
 
 ;; returns the LIST-OF-WINDOWS from the ui-constraint object UI-CONSTRAINT
-;; returns #f if UI-CONSTRAINT is not an ui-constraint
+;; errors if UI-CONSTRAINT is not an ui-constraint
 
 (define-public (ui-constraint-windows UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (cadddr (cdr UI-CONSTRAINT))
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; set-enable
 
 ;; PRIVATE
 ;; sets the enable of a UI-CONSTRAINT object
+;; Invariant: UI-CONSTRAINT *must* be a ui-constraint object
+;; (test must be performed by caller)
 
 (define (set-enable! UI-CONSTRAINT BOOL)
   (set-car! (cddr UI-CONSTRAINT) BOOL))
@@ -265,7 +262,7 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
 ;; enable-ui-constraint
 
 ;; enables the constraint in the constraint solver
-;; returns #f if UI-CONSTRAINT is not a ui-constraint
+;; errors if UI-CONSTRAINT is not a ui-constraint
 ;; returns #t otherwise
 
 (define-public (enable-ui-constraint UI-CONSTRAINT)
@@ -273,13 +270,13 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
       (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
 	(cl-add-constraint solver cn)
 	(set-enable! UI-CONSTRAINT #t))
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; disable-ui-constraint
 
 ;; disables the constraint in the constraint solver
-;; returns #f if UI-CONSTRAINT is not a ui-constraint
+;; errors if UI-CONSTRAINT is not a ui-constraint
 ;; returns #t otherwise
 
 (define-public (disable-ui-constraint UI-CONSTRAINT)
@@ -287,20 +284,20 @@ SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if
       (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
 	(cl-remove-constraint solver cn)
 	(set-enable! UI-CONSTRAINT #f))
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; constraint-satisfied?
 
 ;; Returns the status of whether a UI-CONSTRAINT is satisfied.
-;; Also returns #f if UI-CONSTRAINT is not a ui-constraint
+;; errors if UI-CONSTRAINT is not a ui-constraint
 
 (define-public (constraint-satisfied? UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (let* ((class (ui-constraint-class UI-CONSTRAINT))
 	     (satisfied? (ui-constraint-class-satisfied class)))
 	(satisfied? UI-CONSTRAINT))
-      #f))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; constrained-window-in-focus?
