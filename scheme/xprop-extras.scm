@@ -276,7 +276,6 @@ If RECURSE is non-#f, also list properties of referenced windows."
 			 "\n\t\tprogram specified resize increment: " " by "
 			 "\n\t\tprogram specified minimum aspect ratio: " "/"
 			 "\n\t\tprogram specified maximum aspect ratio: " "/"
-			 "\n\t\tmax_aspect: " " by "
 			 "\n\t\tprogram specified base size: " " by "
 			 "\n\t\twindow gravity: ")
 		       (list WSH-USPosition WSH-USPosition
