@@ -30,8 +30,6 @@
  */
 
 
-
-
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <ctype.h>
@@ -42,7 +40,7 @@
 
 /* FIXGJB: strcasecmp and strncasecmp should be autoconf tested for,
    and versions should be linked in if they don't exist */
-#ifdef MISSING_STRCASECMP
+#ifndef HAVE_STRCASECMP
 int 
 strcasecmp(char *s1, char *s2)
 {
@@ -68,7 +66,9 @@ strcasecmp(char *s1, char *s2)
     n--, s1++, s2++;
   }
 }
+#endif /* !HAVE_STRCASECMP */
 
+#ifndef HAVE_STRNCASECMP
 int 
 strncasecmp(char *s1, char *s2, int n)
 {
@@ -89,7 +89,7 @@ strncasecmp(char *s1, char *s2, int n)
     n--, s1++, s2++;
   }
 }
-#endif
+#endif /* !HAVE_STRNCASECMP */
 
 /****************************************************************************
  * 
@@ -124,3 +124,5 @@ stripcpy(char *source)
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+
+
