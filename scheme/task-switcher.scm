@@ -4,6 +4,7 @@
 
 (define-module (app scwm task-switcher)
   :use-module (app scwm optargs)
+  :use-module (app scwm winlist-menu)
   :use-module (app scwm winlist))
 
 (define*-public (window-task-switcher-menu #&optional (last? #f) #&rest rest)

@@ -8,6 +8,7 @@
   :use-module (app scwm std-menus)
   :use-module (app scwm animation)
   :use-module (app scwm stylist)
+  :use-module (app scwm winlist-menu)
   :use-module (app scwm window-selection)
   :use-module (app scwm wininfo)
   :use-module (app scwm group)

@@ -16,6 +16,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm xprop-extras)
   :use-module (app scwm winlist)
+  :use-module (app scwm winlist-menu)
   :use-module (app scwm time-convert)
   :use-module (app scwm prompt-string)
   :use-module (app scwm winops)
