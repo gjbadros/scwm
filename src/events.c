@@ -613,7 +613,8 @@ HandleScwmExec()
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success && 
 	  XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
-			     0, bytes_after*4, False, XA_STRING, 
+			     0, (bytes_after / 4) +
+			     (bytes_after % 4 ? 1 : 0), False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
 	SCM val;
