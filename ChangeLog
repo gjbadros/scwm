@@ -1,3 +1,7 @@
+Wed Jun 30 09:38:12 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Updated all refs to vicarious-existence.mit.edu to serveuse.mit.edu
+
 Tue Jun 29 15:55:12 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* include/config.h.in: Added HAVE_SETENV to list of cpp macros to
