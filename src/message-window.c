@@ -233,12 +233,13 @@ UnmapMessageWindow(scwm_msgwindow* msg)
   XUnmapWindow(dpy, msg->win);
 }
 
-
+/*  GJB:FIXME:: below should get defaults from a prototype object, not
+    the ScreenInfo struct */
 SCWM_PROC (make_message_window, "make-message-window", 1, 0, 0,
            (SCM message))
      /** Returns a newly created message window object with string MESSAGE.
 MESSAGE is the initial string for the message window. 
-GJB:FIXME:: Uses defaults from the ScreenInfo struct for the other values. */
+Uses defaults from the ScreenInfo struct for the other values. */
 #define FUNC_NAME s_make_message_window
 {
   SCM answer;
