@@ -40,9 +40,6 @@
   :use-module (app scwm optargs)
   :use-module (app scwm ui-constraints))
 
-;; (load "/home/jwnichls/scwm/scheme/ui-constraints/toggle-menu.scm")
-;; (set-current-module the-root-module)
-
 
 ;; PRIVATE variables held for the module
 
@@ -186,6 +183,7 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
 	 (disable (gtk-button-new-with-label "Disable All"))
 	 (enable (gtk-button-new-with-label "Enable All"))
 	 (close (gtk-button-new-with-label "Close")))
+    (gtk-window-set-title toplevel "ScwmUIConstraintsList")
     (add-constraint-add-hook! 
      (lambda (cn) (make-cn-widget cn)))
     (add-constraint-delete-hook!

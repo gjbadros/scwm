@@ -42,6 +42,15 @@
 ;; (use-modules (app scwm ui-constraints))
 ;; (draw-all-constraints)
 
+;; JWN 5/12/99
+;; define the window used by these buttons publicly
+;; this is a hack for ui-constraints-gdk-drawing...a visible window is
+;; required to create a gc for drawing.  Since this window is generally 
+;; visible once constraints are in use, it seemed like the best choice to
+;; create the gc from
+
+(define-public ui-constraints-buttons-window (gtk-window-new 'toplevel))
+
 (define tooltips (gtk-tooltips-new))
 
 (define-public (start-ui-constraints-buttons)
@@ -52,7 +61,7 @@
 ;;	 (cn-buttons (map gtk-button-new-with-label cn-names))
 	 (cn-pixmaps (map (lambda (c b) (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name c) b))
 			  ui-constraint-classes cn-buttons))
-	 (toplevel (gtk-window-new 'toplevel))
+	 (toplevel ui-constraints-buttons-window)
 	 (hbox (gtk-hbutton-box-new)))
     (for-each (lambda (b tip)
 		(gtk-tooltips-set-tip tooltips b tip ""))

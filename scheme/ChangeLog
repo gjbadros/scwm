@@ -1,3 +1,18 @@
+1999-05-16  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-buttons.scm: A change required by 
+	ui-constraints-gdk-drawing.  The gdk drawing module requires a 
+	visible gtk window to initialize.  Since the constraint buttons
+	are always available, they seemed like a good choice.
+
+	* ui-constraints-gdk-drawing.scm: A module that essentially 
+	duplicates the functionality of xlib-drawing except that it goes
+	through gdk to do so.  Requires the latest version of guile-gtk
+	from cvs.
+
+	* ui-constraints-gtk-toggle-menu.scm: Gave the toggle menu window 
+	a better name.
+
 Tue May 11 15:06:11 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added some missing files.
