@@ -189,14 +189,6 @@ example usage."
 			    #f)))
 	     menu-info-list)))
 
-
-(define-public (sleep-ms ms)
-  "Delay for MS milliseconds.
-Note that timer-hooks are much more useful in nearly all
-cases.  See `add-timer-hook!'."
-  (select '() '() '() 0 (* 1000 ms)))
-
-
 (define-public (select-window-group)
   "Prompt for multiple windows and return the list of selected windows.
 Windows are highlighted (see `flash-window') as they are selected.  The

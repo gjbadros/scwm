@@ -20,6 +20,7 @@
 (define-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm wininfo)
+  :use-module (app scwm winlist)
   :use-module (app scwm optargs)
   :use-module (app scwm listops)
   :use-module (app scwm window-selection)

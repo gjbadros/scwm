@@ -26,8 +26,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs)
   :use-module (app scwm animation)
-  :use-module (app scwm base)
-  :use-module (app scwm winlist))
+  :use-module (app scwm base))
 
 (define*-public (window-configuration #&optional (win (get-window)))
   "Return a list containing the state of WIN."

@@ -57,6 +57,12 @@
   "Return the closest integer to half of X."
   (quotient x 2))
 
+(define-public (sleep-ms ms)
+  "Delay for MS milliseconds.
+Note that timer-hooks are much more useful in nearly all
+cases.  See `add-timer-hook!'."
+  (select '() '() '() 0 (* 1000 ms)))
+
 (define-public (maybe-make-color obj)
   "Try to make OBJ into a color and return that color object.
 Returns #f if OBJ is not a color object or a string."

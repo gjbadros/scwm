@@ -28,8 +28,8 @@ ui-constraints-buttons.scm ui-constraints-classes.scm ui-constraints-toggle-menu
 ui-constraints-composition.scm ui-constraints.scm \
 undo.scm viavoice.scm viavoice-smrc.scm virtual.scm \
 wavplay.scm window-locations.scm window-selection.scm \
-window-configuration.scm \
-wininfo.scm winlist.scm winops.scm winops-menu.scm \
+window-configuration.scm wininfo.scm \
+winlist.scm winlist-menu.scm winops.scm winops-menu.scm \
 wmconfig-menu.scm xlock-menus.scm xprop-extras.scm
 
 scwm_gtk_scheme = \

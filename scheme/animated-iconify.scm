@@ -20,17 +20,6 @@
 (define (round-to-pct n pct)
   (round (* n pct)))
 
-(define (move-point-pair pair dx dy)
-  (let ((x (car pair))
-	(y (cdr pair)))
-    (cons (+ x dx) (+ y dy))))
-
-(define (half n)
-  (round (/ n 2)))
-
-(define (sleep-ms ms)
-  (select '() '() '() 0 (* 1000 ms)))
-
 (define (animate-iconify-or-deiconify icon-pos win-pos icon-size win-size 
                                       ms-delay before-animation-proc 
                                       after-animation-proc pct-sizes)
