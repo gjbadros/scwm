@@ -28,7 +28,11 @@ AC_ARG_ENABLE(gtktest, [  --disable-gtktest       Do not try to compile and run 
      fi
   fi
 
-  AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
+  AC_MSG_CHECKING(for location of gtk-config script)
+  AC_MSG_RESULT(${GTK_CONFIG})
+  if test x${GTK_CONFIG+set} != xset ; then
+    AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
+  fi
   min_gtk_version=ifelse([$1], ,0.99.7,$1)
   AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
   no_gtk=""
