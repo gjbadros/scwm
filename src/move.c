@@ -55,7 +55,8 @@ float rgpctMovementDefault[32] = {
 int cmsDelayDefault = 10; /* milliseconds */
 
 /* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
-   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry */
+   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
+   The positions given are viewport positions (not virtual */
 void 
 AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 		   Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )

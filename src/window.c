@@ -441,6 +441,7 @@ ResizeTo(ScwmWindow *psw, int width, int height)
   CassowaryEndEdit(psw);
 }
 
+/* x, y are virtual coordinates */
 void
 MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height)
 {
@@ -450,6 +451,7 @@ MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height)
   CassowaryEndEdit(psw);
 }
 
+/* x, y are virtual coordinates */
 void
 MoveTo(ScwmWindow *psw, int x, int y)
 {
@@ -510,7 +512,7 @@ void
 ResizePswToCurrentSize(ScwmWindow *psw)
 {
   int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
-  int x = FRAME_X(psw), y = FRAME_Y(psw);
+  int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
 
   SendClientConfigureNotify(psw);
 
@@ -586,7 +588,9 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 
 /* This will involve cassowary as needed, through
    use of MoveTo 
-   Same as MoveTo, except it knows about icons as well */
+   Same as MoveTo, except it knows about icons as well 
+   x, y are virtual coordinates 
+*/
 void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
@@ -2085,9 +2089,9 @@ animated window shades and animated moves. */
  
 /* FIXMS: move frame or window? How to deal w/ gravity? */
 
-SCWM_PROC(move_to, "move-to", 2, 3, 0,
+SCWM_PROC(move_window, "move-window", 2, 3, 0,
           (SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p))
-     /** Move WIN to coordinates X, Y.
+     /** Move WIN to coordinates virtual coordinates X, Y.
 If X is #f, then X defaults to the current X position of WIN.
 If Y is #f, then Y defaults to the current Y position of WIN.
 If ANIMATED? is specified and true, animate the motion of the window,
@@ -2096,7 +2100,7 @@ and true, move the mouse pointer by the same amount as the window,
 animating the motion of the pointer along with the window if ANIMATED?
 is true. WIN defaults to the window context in the usual way if not
 specified. */
-#define FUNC_NAME s_move_to
+#define FUNC_NAME s_move_window
 {
   ScwmWindow *psw;
   Window w;
@@ -2172,7 +2176,7 @@ specified. */
 	gh_number_p(animation_ms_delay)) {
       cmsDelay = gh_scm2int(animation_ms_delay);
     }
-    AnimatedMoveWindow(w,startX,startY,destX,destY,
+    AnimatedMoveWindow(w,startX,startY,destX - Scr.Vx,destY - Scr.Vy,
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
@@ -2374,10 +2378,10 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(window_position, "window-position", 0, 1, 0,
           (SCM win))
-     /** Return the position of WIN in pixels.
+     /** Return the position of WIN in pixels in virtual space.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.  See also `window-viewport-position'. */
 #define FUNC_NAME s_window_position
 {
   ScwmWindow *psw;
