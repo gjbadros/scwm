@@ -64,14 +64,16 @@ cassowary_objs = $(cassowary_srcs:.cc=.o)
 
 EXTRA_scwm_SOURCES = $(cassowary_srcs) $(session_manager_srcs)
 
-noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
-callbacks.h color.h colormaps.h colors.h complex.h decor.h \
-decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
-font.h getopt.h guile-compat.h log-usage.h icons.h image.h menu.h menuitem.h \
-menulook.h miscprocs.h module-interface.h module-types.h move.h \
-placement.h resize.h screen.h scwm.h \
-scwm-snarf.h shutdown.h string_token.h syscompat.h system.h \
-util.h virtual.h window.h xmisc.h
+noinst_HEADERS = Grab.h events.h placement.h ICCCM.h face.h resize.h \
+add_window.h focus.h screen.h binding.h font.h scwm-constraints.h \
+borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h \
+color.h icons.h session-manager.h colormaps.h image.h shutdown.h \
+colors.h log-usage.h string_token.h complex.h menu.h syscompat.h \
+constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
+decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
+drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
+move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
+events.h scm_init_funcs.h dbug_resize.h
 
 noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
 
@@ -98,6 +100,8 @@ BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 ## (Sadly it does not work with Automake 1.2f)
 ## Add -MG to make the .x magic work with auto-dep code.
 ## MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+EXTRA_DIST=generate_scm_init_funcs
 
 SUFFIXES = .x
 

@@ -1,3 +1,8 @@
+Mon Nov 16 17:41:54 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Make sure all headers are in noinst_HEADERS; put
+ 	generate_scm_init_funcs in EXTRA_DIST.
+
 1998-11-16  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* add_window.c: Forgot to include "session-manager.h".
