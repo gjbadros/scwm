@@ -1,6 +1,7 @@
 Thanks to:
 
-  Rebecca Schulman -- hosts the Scwm CVS repository machine
+  Rebecca Schulman -- for hosting the Scwm cvs/anoncvs/ftp/web/
+  mailing-list machine
 
   Jens-Ulrik Holger Petersen - improved functionality of window list
   operations, contributed his .scwmrc to be distributed as a sample
@@ -15,8 +16,6 @@ Thanks to:
   Danius Michaelides - fvwm2 module and compatibility support
 
   Harvey Stein - Guile implementation of the document extractor
-
-  Todd Larason - Alignment option of side images for menus
 
   Francesco Tapparo -- maintainer of Debian scwm package
 
@@ -40,11 +39,13 @@ Bug reports and/or fixes and/or code snippets have been contributed by:
   Lieven Marchand
   Harald Meland
   Perry E. Metzger 
+  Stephanie Miller
   Eric Moore
   Shuji Narazaki
   Jeff Nichols
   Jens-Ulrik Holger Petersen
   Jeremie Petit
+  Tim Phipps
   Ken Pizzini
   Juha Pohjalainen
   Hideki Sakurada
@@ -57,6 +58,7 @@ Bug reports and/or fixes and/or code snippets have been contributed by:
   Sam Steingold
   Craig Struble
   Andrei Tcherepanov
+  Stephen Tell
   Oleg Tihnov
   James Troup
   Drew Whitehouse

@@ -1,3 +1,9 @@
+Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* THANKS: Added new contributors since 0.8; corrected some details
+ 	on Rebecca Schulman's entry; removed Todd Larason since he has
+ 	been promoted to AUTHORS.
+
 Mon Nov 16 22:21:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in: Generate scwmdoc and scwmdoc.scm from the default
