@@ -111,7 +111,7 @@ order in which they appear in HOOK-LIST"
   (let ((entry (assoc module *scwm-modules*))) 
     (and entry (null? (cdr entry)))))
 
-;;; GJB:FIXME:G1.4:  This might work in guile-1.4
+;;; GJB:FIXME:G1.3.2:  This might work in guile-1.3.2
 ;;  (environment-bound? module-environment name))
 
 

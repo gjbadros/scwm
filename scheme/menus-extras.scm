@@ -22,7 +22,7 @@
 (define-module (app scwm menus-extras)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
-  :use-module (app scwm sort)  ;; GJB:FIXME:G1.4: not needed in guile-1.4
+  :use-module (app scwm sort)  ;; GJB:FIXME:G1.3.2: not needed in guile-1.3.2
   :use-module (app scwm optargs))
 
 
