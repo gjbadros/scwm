@@ -58,14 +58,13 @@
 (define-public (message . str)
   (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
-			   "\'| xmessage -file - -default Okay -nearmouse")))
+			   "\'| xmessage -file - -default okay -nearmouse")))
 
 (define-public (show-mesg . str) (lambda () (apply message str)))
 (define-public (show-file fl)	; return lambda
-  (exe (string-append
-	"xmessage -buttons ok:0 -default Okay -nearmouse -file " fl)))
+  (exe (string-append "xmessage -default okay -nearmouse -file " fl)))
 (define-public (show-com com) ; return lambda
-  (exe (string-append com "| xmessage -file - -default Okay -nearmouse")))
+  (exe (string-append com "| xmessage -file - -default okay -nearmouse")))
 
 (define-public (bool->str arg) (if arg "true" "false"))
 
