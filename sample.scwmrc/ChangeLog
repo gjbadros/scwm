@@ -1,3 +1,9 @@
+1998-03-04  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* juhp.scwmrc: Latest version with wooden decor!  Brought back
+ 	some mouse bindings too.  Fixed `image-load-path' and a few other
+ 	things.
+
 Thu Feb 26 20:24:12 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Added constraints.scm; these are for the Cassowary extension to
