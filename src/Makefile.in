@@ -25,8 +25,8 @@ LDFLAGS=@LDFLAGS@
 X_LIBRARY=-lX11 @LIBS@
 XEXT_LIBRARY=-lXext
 XPM_LIBRARY=-lXpm
-SCWM_LIBRARY=-l${scwm_name}
-LIBS=-L../libs ${x_libraries} ${SCWM_LIBRARY} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
+#SCWM_LIBRARY=-l${scwm_name} # removed from below line, too
+LIBS=-L../libs ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
 
 PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
                -DSCWMDIR=\"${scwm_dir}\" \
@@ -47,12 +47,14 @@ PROG=${scwm_name}
 
 HEADERS = $(wildcard *.h)
 
-LIBRARY_SRCS = $(wildcard ../libs/*.c)
-
-LIBRARY_HEADERS = $(wildcard ../libs/*.h)
-
-
 SRCS = \
+        string_token.c \
+	ICCCM.c \
+	Picture.c \
+	system.c \
+	envvar.c \
+	Grab.c \
+	wildcard.c \
 	add_window.c \
 	borders.c \
 	builtins.c \
@@ -62,7 +64,6 @@ SRCS = \
 	decorations.c \
 	events.c \
 	focus.c \
-	functions.c \
 	scwm.c \
 	icons.c \
 	menus.c \
@@ -85,44 +86,13 @@ SRCS = \
 	deskpage.c \
 	decor.c \
 	face.c
- 
-OBJS = \
-	add_window.o \
-	borders.o \
-	builtins.o \
-	colormaps.o \
-	colors.o \
-	complex.o \
-	decorations.o \
-	events.o \
-	focus.o \
-	functions.o \
-	scwm.o \
-	icons.o \
-	menus.o \
-	misc.o \
-	move.o \
-	placement.o \
-	resize.o \
-	virtual.o \
-	scmprocs.o \
-	scmtypes.o \
-	font.o \
-	color.o \
-	miscprocs.o \
-	binding.o \
-	errors.o \
-	util.o \
-	window.o \
-	menu.o \
-	paths.o \
-	deskpage.o \
-	decor.o \
-	face.o
+
+OBJS := $(SRCS:.c=.o)
+DEPS := $(SRCS:.c=.d)
 
 all: ${PROG}
 
-tags: $(SRCS) $(HEADERS) $(LIBRARY_SRCS) $(LIBRARY_HEADERS)
+tags: $(SRCS) $(HEADERS)
 	etags $^
 
 depend:
@@ -132,7 +102,7 @@ install: all
 	${INSTALL_PROGRAM} ${PROG} ${bin_dir}
 
 mostlyclean:
-	${RM} ${OBJS} *~ core *.bak
+	${RM} ${OBJS} ${DEPS} *~ core *.bak
 
 clean: mostlyclean
 	${RM} ${PROG}
@@ -148,4 +118,4 @@ ${PROG}: ${OBJS}
 	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< \
 		| sed '\''s/$*\\.o[ :]*/& $@/g'\'' > $@'
 
-include $(SRCS:.c=.d)
+include ${DEPS}
