@@ -302,7 +302,6 @@ Hint styles are not applied."
 (add-window-hint-option #:mwm-decor-hint set-mwm-decor-hint!)
 ;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:mwm-func-hint set-mwm-func-hint!)
-;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:PPosition-hint set-PPosition-hint!)
 ;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:OL-decor-hint set-OL-decor-hint!)

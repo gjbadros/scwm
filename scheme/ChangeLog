@@ -1,3 +1,7 @@
+Tue Apr  9 23:35:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* style.scm: #:PPosition-hint tested so FIXME for testing removed.
+
 Tue Apr  9 22:06:59 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* style.scm: 
