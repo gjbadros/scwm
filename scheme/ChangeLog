@@ -1,3 +1,7 @@
+1999-04-07  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* Makefile.am (scwm_gtk_scheme): Some scm .files were omitted.
+
 Wed Apr  7 17:27:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Added Ken Pizzini's warp-placement feature.  Use
