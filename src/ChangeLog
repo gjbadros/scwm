@@ -1,3 +1,27 @@
+Tue Dec 16 14:41:16 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* Replace TRUE with True, and FALSE with False
+	
+	* scwm.h: Moved ScwmWindow into window.h, moved ColorPair and
+	MyFont (renamed to FontWithInfo) into screen.h, other cleanup to
+	make smaller since this is included virtually everywhere, move
+	binding context macros in binding.h
+
+	* misc.h: remove protos for stuff in virtual.c
+
+	* image.c: No longer warn about pixmap library since I'm not 100%
+	sure the depth is supposed to be returned by libXpm
+
+	* virtual.h: added w/ protos of fns in virtual.c
+
+Tue Dec 16 12:41:18 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmmenu.c: Check isascii(keysym) before isgraph(keysym) to
+	avoid segfaults on SGI IRIX 5.3 due to out-of-bounds array access
+
+	* string_token.c, string_token.h: Remove stripcpy() as it is no
+	longer used.
+
 Fri Dec 12 16:18:48 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Rename COLORP to COLOR_P, and FONTP to FONT_P for consistency
