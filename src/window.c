@@ -17,6 +17,7 @@
 #include "scwm.h"
 #include "screen.h"
 #include "misc.h"
+#include "focus.h"
 #include "move.h"
 #include "icons.h"
 #include "ICCCM.h"
@@ -859,6 +860,15 @@ focus(SCM win)
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
+
+SCM
+unfocus()
+{
+  SCM_REDEFER_INTS;
+  Unfocus();
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}  
 
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 

@@ -271,6 +271,7 @@ SCM delete_window(SCM win);
 SCM destroy_window(SCM win);
 SCM window_deletable_p(SCM win);
 SCM focus(SCM win);
+SCM unfocus();
 SCM warp_to_window(SCM win);
 SCM raise_window(SCM win);
 SCM lower_window(SCM win);
