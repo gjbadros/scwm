@@ -18,7 +18,8 @@
 
 
 
-(define-module (app scwm decor))
+(define-module (app scwm decor)
+  :use-module (app scwm style-options))
 
 
 
@@ -33,5 +34,4 @@
 (defmacro-public with-decor (decor . body)
   `(call-with-decor ,decor (lambda () ,@body)))
 
-
-
+(add-window-style-option #:use-decor set-window-decor!)
