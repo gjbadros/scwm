@@ -370,7 +370,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				       ("X&Cd" "xcd")
 				       ("X&Synaesthesia" "xsynaesthesia cd"
 							 "xsynaesthesia")
-				       ("G&mp3" "gmp3" "gmp3"))))
+				       ("G&mp3" "gmp3" "gmp3")
+				       ("&Gqmpeg" "gqpmpeg"))))
 		       ("&Visual Stims"
 			,(build-menu "Visual Stims"
 				     '(("X&colmix" "xcolmix" "colorMixer")
@@ -411,10 +412,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (popup-softs)
   (popup-menu softs-menu))
 
-(define (xprop-window)
-  (execute (string-append "xprop -id " (number->string (window-id))
-			  " | xmessage -nearmouse -file -")))
-
 (define (xwininfo-window)
   (execute (string-append "xwininfo -id " (number->string (window-id))
 			  " | xmessage -nearmouse -file -")))
@@ -436,7 +433,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "(Un)Keep On &Top" #:extra-label "Home" #:action toggle-on-top)
     (menuitem "(Un)S&kip" #:extra-label "Ins" #:action toggle-circulate-skip)
     menu-separator
-    (menuitem "Properties" #:action xprop-window)
+    (menuitem "Properties" #:action show-X-properties)
     (menuitem "Info" #:action xwininfo-window)
     menu-separator
     (menuitem "&Close" #:extra-label "Del" #:action close-window)
@@ -477,7 +474,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		   (menuitem (if (circulate-skip? w) "~S" "S")
 			     #:action toggle-circulate-skip)
 		   menu-separator
-		   (menuitem "P" #:action xprop-window)
+		   (menuitem "P" #:action show-X-properties)
 		   (menuitem "?" #:action xwininfo-window))
 		  #:look circle-pie-menu-look))
        menu-separator
@@ -579,34 +576,24 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define focused-windows ())
 
 (define (change-desk inc)
-  (set-current-desk! (+ (current-desk) inc))
-  '(let* ((desk (current-desk))
-	 (ref (assoc desk focused-windows))
-	 (win (current-window-with-focus)))
+  (set-current-desk! (+ (current-desk) inc)))
+
+(define (remember-focus new-desk desk)
+  (let ((win (current-window-with-focus)))
     (if win
-	(if ref
-	    (set-cdr! ref win)
-	    (set! focused-windows (append focused-windows
-					  (list (cons desk win))))))
-    (set! desk (+ desk inc))
-    (set-current-desk! desk)
-    (for-each display (list "desk: " desk " focus: "
-			    (window-title (current-window-with-focus)) "\n"))
-    (set! ref (assoc desk focused-windows))
-    (set! win (and ref (cdr ref)))
-    (if (and win
-	     (or (sticky? win)
-		 (on-desk? desk win)))
-	(begin
-	  (for-each display (list "refocus: " (window-title win) "\n"))
-	  (focus win)
-	  )
-	(if (not (current-window-with-focus))
-	    (begin
-	      (display "no focus, fixing it.\n")
-	      (next-window #:only visible? #:except iconified?
-				  #:proc warp-to-window)))))
-  )
+	(let ((ref (assoc desk focused-windows)))
+	  (if ref
+	      (set-cdr! ref win)
+	      (set! focused-windows (cons (cons desk win) focused-windows)))))
+    (let ((ref (assoc new-desk focused-windows)))
+;      (write `(leaving desk ,desk and focus ,win new desk ,ref)) 
+      (cond
+       ((and win (on-current-desk? win)) (focus win))
+       ((and ref (on-current-desk? (cdr ref))) (focus (cdr ref)))
+       (else (next-window #:proc focus))))))
+
+;(remove-hook! change-desk-hook (car change-desk-hook))
+(add-hook! change-desk-hook remember-focus)
 
 (bind-key 'all (super-kp "Page_Up")
 	  (lambda () (change-desk -1)))
@@ -639,7 +626,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
-(bind-mouse 'frame-sides (super "1") interactive-resize)
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
@@ -661,70 +647,113 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (make-style #:no-titlebar #t #:plain-border #t #:sticky #t
 	      #:winlist-skip #t #:border-width 3 #:use-style NoFocus))
 
-(window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
-				#:use-style FixedSize #:use-style NoFocus)
+(window-style (title-match?? "Color Mixer")
+	      #:icon "colormap_3d.xpm.gz"
+	      #:use-style FixedSize #:use-style NoFocus)
 (window-style (class-match?? "Gimp")
 	      #:start-on-desk 3)
+(window-style (resource-match?? "gimp_startup")
+	      #:start-on-desk #f)
 (window-style (title-match?? "GimpConsole")
-	      #:start-on-desk 3)
-(window-style "GTimer"		#:start-lowered #t #:use-style NoFocus)
+	      #:start-on-desk 3 #:skip-mapping #t)
+(window-style (title-match?? "GTimer")
+	      #:start-lowered #t #:use-style NoFocus)
 (window-style (class-match?? "GTimeTracker")
 	      #:start-lowered #t) ; #:other-proc circulate-skip
-(window-style "UAE"		#:icon "amiga.xpm.gz"
-				#:placement-proc (lambda (win)
-						   (move-to 0 0 win)))
-(window-style "Control"		#:icon "amiga.xpm.gz" #:use-style FixedSize
-				#:placement-proc (lambda (win)
-						   (move-to 600 0 win)))
-(window-style "UAE - Debuger"	#:icon "amiga.xpm.gz" #:use-style FixedSize)
-(window-style "XCd"		#:icon "CompactDisc.xpm.gz"
-				#:random-placement #t #:use-style FixedSize)
-(window-style "XZip Status"	#:random-placement #t #:use-style FixedSize)
-(window-style "povray"		#:icon "xpovicon.xpm.gz"
-				#:random-placement #t #:use-style FixedSize)
-(window-style "rxvt*"		#:icon "term.xpm.gz")
-(window-style "xcalc"		#:icon "Calculator.xpm.gz"
-				#:random-placement #t)
-(window-style "xclock"		#:use-style Widget)
-(window-style "xconsole"	#:icon "rterm.xpm.gz" #:use-style NoFocus)
-(window-style "xmag"		#:icon "view_3d.xpm.gz" #:random-placement #t
-				#:use-style NoFocus)
-(window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
-				#:use-style NoFocus)
+(window-style (title-match?? "UAE")
+	      #:icon "amiga.xpm.gz"
+	      #:placement-proc (lambda (win)
+				 (move-to 0 0 win)))
+(window-style (title-match?? "Control")
+	      #:icon "amiga.xpm.gz" #:use-style FixedSize
+	      #:placement-proc (lambda (win)
+				 (move-to 600 0 win)))
+(window-style (title-match?? "UAE - Debuger")
+	      #:icon "amiga.xpm.gz" #:use-style FixedSize)
+(window-style (title-match?? "XCd")
+	      #:icon "CompactDisc.xpm.gz"
+	      #:random-placement #t #:use-style FixedSize)
+(window-style (title-match?? "XZip Status")
+	      #:random-placement #t #:use-style FixedSize)
+(window-style (title-match?? "povray")
+	      #:icon "xpovicon.xpm.gz"
+	      #:random-placement #t #:use-style FixedSize)
+(window-style (title-match?? "rxvt*")
+	      #:icon "term.xpm.gz")
+(window-style (title-match?? "xcalc")
+	      #:icon "Calculator.xpm.gz"
+	      #:random-placement #t)
+(window-style (title-match?? "xclock")
+	      #:use-style Widget)
+(window-style (title-match?? "xconsole")
+	      #:icon "rterm.xpm.gz" #:use-style NoFocus)
+(window-style (title-match?? "xmag")
+	      #:icon "view_3d.xpm.gz" #:random-placement #t
+	      #:use-style NoFocus)
+(window-style (title-match?? "xman")
+	      #:icon "xman.xpm.gz" #:random-placement #t
+	      #:use-style NoFocus)
 (window-style (class-match?? "XSm")
 	      #:focus 'click)
 (window-style (class-match?? "XTerm")
 	      #:icon "xterm-linux.xpm.gz")
-(window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
-				#:use-style NoFocus)
-(window-style "xv load"		#:icon "xv.color.xpm.gz" #:use-style FixedSize
-				#:use-style NoFocus)
-(window-style "xterm root*"	#:start-on-desk 1)
+(window-style (title-match?? "xv controls")
+	      #:icon "xv.color.xpm.gz" #:use-style FixedSize
+	      #:use-style NoFocus)
+(window-style (title-match?? "xv load")
+	      #:icon "xv.color.xpm.gz" #:use-style FixedSize
+	      #:use-style NoFocus)
+(window-style (title-match?? "xterm root*")
+	      #:start-on-desk 1)
 
-(window-style "bitmap"		#:icon "draw3_3d.xpm.gz")
-(window-style "editres"		#:icon "editres_3d.xpm.gz")
-(window-style "ghostview"	#:icon "ghostbuster.xpm.gz")
-(window-style "lyx"		#:icon "WordProcessing.xpm.gz")
-(window-style "minicom"		#:icon "DFUe.xpm.gz")
-(window-style "mpeg_*"		#:icon "Animator.xpm.gz")
-(window-style "oclock"		#:icon "clock4_3d.xpm.gz")
-(window-style "viewres"		#:icon "flowchart_3d.xpm.gz")
-(window-style "x*perf*"		#:icon "meter_3d.xpm.gz")
-(window-style "xbiff"		#:icon "Mail.xpm.gz")
-(window-style "xclipboard"	#:icon "data_3d.xpm.gz")
-(window-style "xcmap"		#:icon "colormap_3d.xpm.gz")
-(window-style "xcutsel"		#:icon "data_3d.xpm.gz")
-(window-style "xditview"	#:icon "cadview.next.xpm.gz")
-(window-style "xdos"		#:icon "win31_msdos.xpm.gz")
-(window-style "xdvi"		#:icon "xdvi.next.xpm.gz")
-(window-style "xfig"		#:icon "Drawing2.xpm.gz")
-(window-style "xfontsel"	#:icon "fonts_3d.xpm.gz")
-(window-style "xfractint"	#:icon "Fractal.xpm.gz")
-(window-style "xgc"		#:icon "xdesigner_3d.xpm.gz")
-(window-style "xhextris"	#:icon "Tetris.xpm.gz")
-(window-style "xpcd"		#:icon "gold_cone_3d.xpm.gz")
-(window-style "xvidtune"	#:icon "window3d.xpm.gz")
-(window-style "xwud"		#:icon "Viewer.xpm.gz")
+(window-style (title-match?? "bitmap")
+	      #:icon "draw3_3d.xpm.gz")
+(window-style (title-match?? "editres")
+	      #:icon "editres_3d.xpm.gz")
+(window-style (title-match?? "ghostview")
+	      #:icon "ghostbuster.xpm.gz")
+(window-style (title-match?? "lyx")
+	      #:icon "WordProcessing.xpm.gz")
+(window-style (title-match?? "minicom")
+	      #:icon "DFUe.xpm.gz")
+(window-style (title-match?? "mpeg_*")
+	      #:icon "Animator.xpm.gz")
+(window-style (title-match?? "oclock")
+	      #:icon "clock4_3d.xpm.gz")
+(window-style (title-match?? "viewres")
+	      #:icon "flowchart_3d.xpm.gz")
+(window-style (title-match?? "x*perf*")
+	      #:icon "meter_3d.xpm.gz")
+(window-style (title-match?? "xbiff")
+	      #:icon "Mail.xpm.gz")
+(window-style (title-match?? "xclipboard")
+	      #:icon "data_3d.xpm.gz")
+(window-style (title-match?? "xcmap")
+	      #:icon "colormap_3d.xpm.gz")
+(window-style (title-match?? "xcutsel")
+	      #:icon "data_3d.xpm.gz")
+(window-style (title-match?? "xditview")
+	      #:icon "cadview.next.xpm.gz")
+(window-style (title-match?? "xdos")
+	      #:icon "win31_msdos.xpm.gz")
+(window-style (title-match?? "xdvi")
+	      #:icon "xdvi.next.xpm.gz")
+(window-style (title-match?? "xfig")
+	      #:icon "Drawing2.xpm.gz")
+(window-style (title-match?? "xfontsel")
+	      #:icon "fonts_3d.xpm.gz")
+(window-style (title-match?? "xfractint")
+	      #:icon "Fractal.xpm.gz")
+(window-style (title-match?? "xgc")
+	      #:icon "xdesigner_3d.xpm.gz")
+(window-style (title-match?? "xhextris")
+	      #:icon "Tetris.xpm.gz")
+(window-style (title-match?? "xpcd")
+	      #:icon "gold_cone_3d.xpm.gz")
+(window-style (title-match?? "xvidtune")
+	      #:icon "window3d.xpm.gz")
+(window-style (title-match?? "xwud")
+	      #:icon "Viewer.xpm.gz")
 
 ; list of windows currently flashing
 (define flash-window-list ())
