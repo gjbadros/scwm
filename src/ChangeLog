@@ -1,3 +1,18 @@
+Fri Jul  9 15:07:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Fix order of arguments in calls to
+	select_viewport_position;  the cursor argument is now the third
+	argument. 
+
+	* ICCCM.c: Generalize send-client-message to take a rest argument
+	with up to 4 integers to fill the ClientMessage event's data.l[..]
+	fields.  Do complete error checking on the arguments.
+
+Fri Jul  9 09:13:29 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c (s_set_rubber_band_mask_x): Permit to be in range
+	[0,+Inf]; 65535 was a poor choice before.
+
 Fri Jul  9 09:04:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added -DGUILE_CPLUSPLUS_SNRF to arguments to guile-snarf 
