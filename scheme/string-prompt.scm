@@ -28,20 +28,12 @@
 
 
 ;; (use-modules (app scwm string-prompt))
-<<<<<<< string-prompt.scm
-;; (load "/scratch/gjb/scwm/scheme/string-prompt.scm")
-=======
 ;; (use-modules (gtk gtk))
->>>>>>> 1.5
 ;;(define e (string-prompt "Enter: " (lambda (txt) (display (string-append "Got: " txt "\n")))))
 
 
 
-<<<<<<< string-prompt.scm
-(define*-public (string-prompt prompt proc #&key (warp #f))
-=======
 (define*-public (string-prompt prompt proc #&optional (title "string-prompt"))
->>>>>>> 1.5
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
 E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
   (let* ((toplevel (gtk-window-new 'dialog))
