@@ -32,7 +32,7 @@
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
-;;  :use-module (app scwm flash-window)
+  :use-module (app scwm flash-window)
   :use-module (app scwm ui-constraints))
 
 ;; (load "/home/jwnichls/scwm/scheme/ui-constraints/toggle-menu.scm")
@@ -114,10 +114,3 @@ Allows the user to disable/enable constraints on their windows."
   "Pops up the constraint toggle menu.
 Maintains consistency with previous toggle menu code."
   (ui-constraints-gtk-toggle-menu))
-
-
-
-
-
-
-    

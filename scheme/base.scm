@@ -747,3 +747,22 @@ a new message window."
 
 (define-public (run-dot-xclients-at-startup)
   (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))
+
+;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
+(define-public (call-hook-procedures hook-list args)
+  "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
+If any error, the others still run.  The procedures are executed in the
+order in which they appear in HOOK-LIST"
+  (for-each (lambda (p) 
+	      (catch #t
+		     (lambda () (apply p args))
+		     (lambda args
+		       (display "Error running hook: ")
+		       (write p)
+		       (newline))))
+	    hook-list))
+
+;; (call-hook-procedures (list 'bong display write 'baz) '("foo\n"))
+;; (define-public foo-hook '())
+;; (add-hook! foo-hook write)
+;; (add-hook! foo-hook display)
