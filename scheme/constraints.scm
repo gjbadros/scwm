@@ -3,12 +3,14 @@
 
 (define-module (app scwm constraints)
   :use-module (app scwm ui-constraints-buttons)
+  :use-module (app scwm ui-constraints-toggle-menu)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm modifier-key-bindings))
 
 
 ;; (use-modules (app scwm constraints))
 ;; (use-modules (app scwm ui-constraints-buttons))
+;; (use-modules (app scwm ui-constraints-toggle-menu))
 
 (start-ui-constraints-buttons) 
 
@@ -17,3 +19,5 @@
 ;; (37 . 4) (115 . 16) (50 . 1)
  draw-all-constraints
  undraw-all-constraints)
+
+(bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu)
