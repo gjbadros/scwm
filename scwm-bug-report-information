@@ -1,0 +1,38 @@
+#!/bin/sh -
+# $Id$
+# Quick hack -- pointers to general, better solutions?
+# Any other packages have nice abstractions for this?
+
+echo "uname -a:"; echo "------------------" 
+uname -a
+echo
+
+echo "guile -v:"; echo "------------------"
+guile -v
+echo
+
+echo "scwm -V:"; echo "------------------"
+./scwm/scwm -V
+echo
+
+echo "changed.c:"; echo "------------------"
+cat scwm/changed.c
+echo
+
+echo "scwmpaths.h:"; echo "------------------"
+cat scwm/scwmpaths.h
+echo
+
+echo "ldd scwm:"; echo "------------------"
+ldd scwm/scwm
+echo
+
+echo "relevant env:"; echo "------------------"
+env | egrep "(SCWM|^(LD_LIBRARY_)?PATH)"
+echo
+
+echo "config.h:"; echo "------------------"
+cat include/config.h
+echo
+
+echo "Please also see ./BUG-REPORTING" 1>&2
