@@ -1,3 +1,9 @@
+Wed Mar 31 17:15:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use *foo* form for options.  Use $SCWMDIR, not
+	/home/gjb when restarting dev scwm.  Test for KP_Left keysym, and
+	avoid a bunch of keysym warnings.
+
 Mon Mar 29 15:36:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use time-convert module.  Fix old use of

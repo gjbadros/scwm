@@ -1,3 +1,33 @@
+Wed Mar 31 17:27:30 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-range.scm: Set size of scale to 300 wide, do not fill or
+	expand the scale, and do not expand the label
+
+	* primopts.scm: Change *auto-raise* to 'focus group, not
+	'focus-behaviour.
+
+	* preferences.scm: Use a GtkNotebook widget, sort based on types,
+	improve layout a lot.  Pretty usable now.
+
+	* menus-extras.scm: Make split-list-by-group public, and second
+	arg optional for initial condition.
+
+	* flux.scm: Added move-all-windows-relative.
+
+	* defoption.scm: Added note about some new types ('command,
+	'percent-or-on-off) [not yet support specially, but worth
+	distinguishing].
+
+	* base.scm: Use define-scwm-option, instead of **VAR.  Drop
+	scwm-user-var, use *foo* option names.  Added move-window-relative.
+
+	* hover-focus.scm, gnome-hints.scm, flux.scm, auto-raise.scm: Use
+ 	define-scwm-option instead of **VAR
+
+	* winops.scm: Use defoption, rename each option foo to *foo*.  Fix 
+	bug in default-move-opaquely? (was using opaque-resize-percent).
+	Define *foo*'s as scwm options.
+
 Tue Mar 30 20:23:37 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added edge-ops.scm
