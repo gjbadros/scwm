@@ -1,3 +1,8 @@
+Thu Mar 26 11:32:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* fvwm-eval.scm: Added support for "Focus" and "Iconify" fvwm
+ 	builtins, reportedly needed by TkDesk.
+
 Wed Mar 25 14:38:03 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: use-module (ice-9 regex)
