@@ -84,3 +84,30 @@ Returns that string."
   "Convert S, a colon-separated directory pathlist, into a list of directory strings.
 Returns that list."
   (separate-fields-discarding-char #\: s list))
+
+
+(define-public (write-all port . lst)
+  "Write all arguments into the port. #t means `current-output-port'."
+  (if (eq? port #t) (set! port (current-output-port)))
+  (do ((zz lst (cdr zz))) ((null? zz))
+    (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
+
+
+(define-public (read-until-eof in)
+  "Return all the text from input port IN until eof.
+IN should be a newline-terminated Ascii input port."
+  (let ((l (read-line in))
+	(answer ""))
+    (while (not (eof-object? l))
+	   (set! answer (string-append answer l "\n"))
+	   (set! l (read-line in)))
+    answer))
+
+(define-public (output-of-system-cmd cmd)
+  "Return the output of command shell execution of CMD.
+CMD is run synchronously and its output is piped into the return value
+of this function, as a string."
+  (let* ((p (open-input-pipe cmd))
+	 (answer (read-until-eof p)))
+    (close-pipe p)
+    answer))

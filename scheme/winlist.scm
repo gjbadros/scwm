@@ -157,8 +157,9 @@ exist to fit vertically on the menu).
 
 If ENUMERATE-HOT-KEYS is #t, then add alpha-numeric hot keys for the window-list.
 For the hotkey, the characters 1 through 9 are used first, followed by
-the letters a through z.
+the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 "
+  (if by-resource (set! enumerate-hotkeys #f))
   (let* 
       ((lw (list-windows #:only only #:except 
 			 (if ignore-winlist-skip
@@ -233,6 +234,25 @@ the letters a through z.
 	    => (lambda (x)
 		 (reverse (cdr x))))
 	   (else '()))))
+
+(define*-public (select-window-from-window-list #&key
+						(only '()) (except '())
+						(ignore-winlist-skip #f))
+  "Permit selecting a window from a window list.
+Return the selected window object, or #f if none was selected"
+  (show-window-list-menu #:only only #:except except
+			 #:flash-window-proc
+			 (lambda (w) (flash-window w #:unflash-delay #f))
+			 #:unflash-window-proc
+			 (lambda (w) (unflash-window w))
+			 #:hover-delay 0
+			 #:ignore-winlist-skip ignore-winlist-skip #:proc (lambda (w) w)))
+
+;; e.g.
+;; (let ((w (select-window-from-window-list #:only iconified?)))
+;;  (deiconify w) (move-to 0 0 w))
+;; (select-window-from-window-list)
+;; (unflash-window (get-window))
 
 
 (define*-public (circulate-hit #&optional (win (get-window)))

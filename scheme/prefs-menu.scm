@@ -29,6 +29,8 @@
   :use-module (app scwm optargs)
   :use-module (app scwm user-options)
   :use-module (app scwm doc)
+  :use-module (app scwm file)
+  :use-module (app scwm stringops)
   :use-module (app scwm flux))
 
 
@@ -45,7 +47,7 @@
          (if (eof-object? ll) (write-all fd save-header "\n"))))
     (truncate-file fd (ftell fd))
     (write-all fd "(set-edge-scroll! 0 0)\n"
-               "(set-desk-size! " (size->str (desk-size) " "))
+               "(set-desk-size! " (size->string (desk-size) " "))
     (for-each
      (lambda (ll)
        (let ((getter (cadddr ll)) (setter (caddr ll)))

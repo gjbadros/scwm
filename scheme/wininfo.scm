@@ -396,3 +396,29 @@ case-sensitive or not."
   (win-or?? (title-match?? string type case-sensitive) 
 	    (class-match?? string type case-sensitive) 
 	    (resource-match?? string type case-sensitive)))
+
+
+;; from Harvey Stein; rewritten by Carl Witty
+(define-public (find-window-by pred)
+  "Return a window satisfying predicate PRED.
+If there are multiple such windows, an unspecified one of them
+will be returned."
+  (let ((wlist (list-windows #:only pred)))
+    (if (not (null? wlist))
+	(car wlist)
+	#f)))
+
+(define-public (find-window-by-name window-name)
+  "Return a window with name WINDOW-NAME.
+If there are multiple such windows, an unspecified one of them
+will be returned.  See also `find-window-by' and `title-match??'."
+  (find-window-by (title-match?? window-name)))
+
+(define-public (find-window-by-class-resource class resource)
+  "Return a window by its CLASS and RESOURCE names (as strings).
+If there are multiple such windows, an unspecified one of them
+will be returned. See also `find-window-by', `class-match??' 
+and `title-match??'"
+  (find-window-by (win-and?? 
+		   (class-match?? class)
+		   (resource-match?? resource))))

@@ -220,3 +220,11 @@ all other instances are removed."
      ((memq (car l) (cdr l)) (loop (cdr l) accum))
      (else (loop (cdr l) (cons (car l) accum))))))
 
+
+
+(define-public (list-without-elem l e)
+  "Return the list L with element E deleted.
+Uses `eq?' for testing equality with E."
+  (cond ((null? l) l)
+	((eq? (car l) e) (cdr l))
+	(else (cons (car l) (list-without-elem (cdr l) e)))))

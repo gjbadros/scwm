@@ -44,8 +44,12 @@
 
 
 
-(define-public (hash-table->alist h) 
-  (apply append (vector->list h))) 
+(if (bound? hash-fold)
+    (define-public (hash-table->alist table)
+      (hash-fold acons () table))
+    (define-public (hash-table->alist h) 
+      (apply append (vector->list h))))
+
 
 (define-public (round/ x y)
   "Return the closest integer to X divided by Y."
@@ -260,14 +264,19 @@ See `move-window' if you wish to move a window to a virtual position."
 ;; GJB:FIXME:DOC: Can this have a doc string?
 (define-public move-window-viewport-position move-to)
 
+(define-public (delta-position xy-list dx dy)
+  "Return a new coordinate list that is DX,DY offset from XY-LIST.
+E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17)."
+  (map + xy-list (list dx dy)))
+;; (delta-position '(2 10) 5 7)
+
 (define*-public (move-window-relative x y #&optional (win (get-window)))
   "Move WIN X, Y pixels from where it is currently.
 Positive X moves right, negative moves left.
 Positive Y moves down, negative moves up."
-  (let* ((old-pos (window-position win))
-	 (old-x (car old-pos))
-	 (old-y (cadr old-pos)))
-    (move-to (+ old-x x) (+ old-y y) win)))
+  (with-window win
+	       (let ((pos (window-position)))
+		 (apply move-window (delta-position pos dx dy)))))
 
 (define*-public (window-title-height #&optional (win (get-window)))
   "Return WIN's titlebar's height.
@@ -695,3 +704,10 @@ a new message window."
 	answer)
       (select-window-interactively-no-message)))
 ;; (select-window-interactively "foo")
+
+(define-public (run-dot-xclients-script)
+  "Runs the ~/.clients script."
+  (system "$HOME/.xclients &"))
+
+(define-public (run-dot-xclients-at-startup)
+  (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))

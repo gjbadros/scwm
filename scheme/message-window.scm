@@ -9,6 +9,7 @@
 (define-module (app scwm message-window)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
+  :use-module (app scwm time-convert)
   :use-module (app scwm optargs))
 
 (provide 'scwm-message-window)
@@ -256,3 +257,11 @@ Returns a list of the font, fg-color, bg-color of msgwin-source"
 
 (message-window-options 'interactive-resize #:enable #t)
 (message-window-options 'interactive-move #:enable #t)
+
+(define*-public (display-message-briefly msg #&optional (sec-timeout 3))
+  "Display MSG in the message window for SEC-TIMEOUT seconds.
+See `display-message' for details about MSG."
+  (let ((mwn (make-message-window-clone-default msg)))
+    (message-window-show! mwn)
+    (add-timer-hook! (sec->usec sec-timeout)
+		     (lambda () (message-window-hide! mwn)))))
