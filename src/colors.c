@@ -121,7 +121,7 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
     p = AllocLinearGradient(s_colors[i], s_colors[i + 1], n);
     if (!p) {
       scwm_msg(ERR, "AllocNonlinearGradient",
-	       "couldn't allocate gradient");
+	       "could not allocate gradient");
       FREEC(pixels);
       return NULL;
     }
