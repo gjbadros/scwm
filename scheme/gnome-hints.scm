@@ -390,7 +390,7 @@ Used in `enable-gnome-hints'."
 (define (gnome-desk-size-change-hook width height)
   (gnome-set-area-count! width height))
 
-(define (gnome-viewport-position-change-hook x y)
+(define (gnome-viewport-position-change-hook x y dx dy)
   (gnome-set-area! x y))
 
 (define (gnome-window-property-change-hook win property newval oldval)
