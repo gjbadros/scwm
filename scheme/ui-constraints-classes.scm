@@ -5,17 +5,46 @@
   :use-module (app scwm base)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm simple-constraints)
+  :use-module (app scwm message-window)
   :use-module (app scwm window-locations)
   :use-module (app scwm xlib-drawing))
+
+;; (use-modules (app scwm ui-constraints-classes))
+
 
 ;; (load "/scratch/gjb/scwm/scheme/ui-constraints-classes.scm")
 ;; (set-current-module the-root-module)
 (reset-ui-constraint-classes!)
 
-(define (ui-cnctr-keep-lefts-even)
-  (let ((w1 (select-window-interactively "keep-lefts-even: First window?"))
-	(w2 (select-window-interactively "keep-lefts-even: Second window?")))
+;;; GJB:FIXME:: we'd like to be able to use color, mode
+;;; but cannot w/o using an overlay plance;  Also,
+;;; the draw functions should get passed semantic parameters
+;;; e.g., is-enabled? and is-focussed? instead of color, width
+
+(define-public ui-constraint-prompter-msgwin (make-message-window ""))
+
+(message-window-style ui-constraint-prompter-msgwin
+		      #:font (make-font "*helvetica*bold-r*24*")
+		      #:fg "yellow" #:bg "black")
+
+;; (select-window-interactively "Select one:" ui-constraint-prompter-msgwin)
+
+;; alias for internal use
+(define msgwin ui-constraint-prompter-msgwin)
+
+(define (draw-window-line-anchor point radius)
+  "Draw the circles that anchor a line to a window."
+  (let ((diameter (* 2 radius)))
+    (xlib-draw-arc! (cons (- (car point) radius) (- (cdr point) radius))
+		    diameter diameter 0 360)))
+
+(define (two-window-prompter name p1 p2)
+  (let ((w1 (select-window-interactively (string-append name ": " p1) msgwin))
+	(w2 (select-window-interactively (string-append name ": " p2) msgwin)))
     (list w1 w2)))
+
+(define (ui-cnctr-keep-lefts-even)
+  (two-window-prompter "keep-lefts-even" "First window?" "Second window?"))
 
 (define (draw-cn-keep-lefts-even ui-constraint color width mode)
   (let ((cn (ui-constraint-cn ui-constraint))
@@ -25,18 +54,13 @@
     (let* ((w1 (car win-list))
 	   (w2 (cadr win-list))
 	   (w1pos (window-left-middle w1))
-	   (w2pos (window-left-middle w2))
-	   (w1x (car w1pos))
-	   (w1y (cadr w1pos))
-	   (w2x (car w2pos))
-	   (w2y (cadr w2pos)))
+	   (w2pos (window-left-middle w2)))
       (xlib-set-line-width! width)
       ;; GJB:FIXME:: we'd like to be able to use color, mode
       ;; but cannot w/o using an overlay plance
-      (xlib-draw-line! w1x w1y w2x w2y)
-      (xlib-draw-arc! (- w1x 5) (- w1y 5) 10 10 0 360)
-      (xlib-draw-arc! (- w2x 5) (- w2y 5) 10 10 0 360)
-      )))
+      (xlib-draw-line! w1pos w2pos)
+      (draw-window-line-anchor w1pos 5)
+      (draw-window-line-anchor w2pos 5))))
 
 (define-public uicc-kle
   (make-ui-constraint-class 
@@ -47,9 +71,7 @@
 
 
 (define (ui-cnctr-keep-above)
-  (let ((w1 (select-window-interactively "keep-above: Window on top?"))
-	(w2 (select-window-interactively "keep-above: Window below?")))
-    (list w1 w2)))
+  (two-window-prompter "keep-above" "Window on top?" "Window below?"))
 
 (define (draw-cn-keep-above ui-constraint color width mode)
   (let ((cn (ui-constraint-cn ui-constraint))
@@ -59,18 +81,13 @@
     (let* ((w1 (car win-list))
 	   (w2 (cadr win-list))
 	   (w1pos (window-center-bottom w1))
-	   (w2pos (window-center-top w2))
-	   (w1x (car w1pos))
-	   (w1y (cadr w1pos))
-	   (w2x (car w2pos))
-	   (w2y (cadr w2pos)))
+	   (w2pos (window-center-top w2)))
       (xlib-set-line-width! width)
       ;; GJB:FIXME:: we'd like to be able to use color, mode
       ;; but cannot w/o using an overlay plance
-      (xlib-draw-line! w1x w1y w2x w2y)
-      (xlib-draw-arc! (- w1x 5) (- w1y 5) 10 10 0 360)
-      (xlib-draw-arc! (- w2x 5) (- w2y 5) 10 10 0 360)
-      )))
+      (xlib-draw-line! w1pos w2pos)
+      (draw-window-line-anchor w1pos 5)
+      (draw-window-line-anchor w2pos 5))))
 
 (define-public uicc-ka
   (make-ui-constraint-class 
@@ -81,9 +98,7 @@
 
 
 (define (ui-cnctr-keep-to-left-of)
-  (let ((w1 (select-window-interactively "keep-to-left-of: Window on left?"))
-	(w2 (select-window-interactively "keep-to-left-of: Window on right?")))
-    (list w1 w2)))
+  (two-window-prompter "keep-to-left-of" "Window on left?" "Window on right?"))
 
 (define (draw-cn-keep-to-left-of ui-constraint color width mode)
   (let ((cn (ui-constraint-cn ui-constraint))
@@ -93,18 +108,11 @@
     (let* ((w1 (car win-list))
 	   (w2 (cadr win-list))
 	   (w1pos (window-left-middle w1))
-	   (w2pos (window-right-middle w2))
-	   (w1x (car w1pos))
-	   (w1y (cadr w1pos))
-	   (w2x (car w2pos))
-	   (w2y (cadr w2pos)))
+	   (w2pos (window-right-middle w2)))
       (xlib-set-line-width! width)
-      ;; GJB:FIXME:: we'd like to be able to use color, mode
-      ;; but cannot w/o using an overlay plance
-      (xlib-draw-line! w1x w1y w2x w2y)
-      (xlib-draw-arc! (- w1x 5) (- w1y 5) 10 10 0 360)
-      (xlib-draw-arc! (- w2x 5) (- w2y 5) 10 10 0 360)
-      )))
+      (xlib-draw-line! w1pos w2pos)
+      (draw-window-line-anchor w1pos 5)
+      (draw-window-line-anchor w2pos 5))))
 
 (define-public uicc-klo
   (make-ui-constraint-class 

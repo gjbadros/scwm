@@ -593,10 +593,16 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
-(define*-public (select-window-interactively #&optional (msg #f))
-  "Return an interactively-selected window after prompting (optionally) with MSG."
+(define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
+  "Return an interactively-selected window after prompting (optionally) with MSG.
+If given, use message window MESSAGE-WINDOW to display the message, otherwise create
+a new message window."
   (if msg
-      (let ((msgwin (make-message-window msg))
+      (let ((msgwin (or (and message-window
+			     (begin 
+			       (message-window-set-message! message-window msg)
+			       message-window))
+			(make-message-window msg)))
 	    (answer #f))
 	(message-window-show! msgwin)
 	(set! answer (select-window-interactively-no-message))

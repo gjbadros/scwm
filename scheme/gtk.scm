@@ -26,6 +26,9 @@
 
 
 (define-public (scwm-gtk-sync)
+  "Dispatch all pending gtk-events.
+This ought to be called from inside Scwm-controlled loops that do not return
+to the main event loop"
   (while (not (= 0 (gtk-events-pending)))
 	 (gtk-main-iteration)))
 

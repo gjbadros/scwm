@@ -160,8 +160,8 @@ These options are cumulative for repeated calls to
 (define msgwin-enabler-table (make-vector 3))
 (define msgwin-disabler-table (make-vector 3))
 
-(hashq-set! msgwin-enabler-table 'interactive-resize enable-resize-msgwin)
-(hashq-set! msgwin-disabler-table 'interactive-resize disable-resize-msgwin)
+(hashq-set! msgwin-enabler-table 'interactive-move enable-move-msgwin)
+(hashq-set! msgwin-disabler-table 'interactive-move disable-move-msgwin)
 (hashq-set! msgwin-enabler-table 'interactive-resize enable-resize-msgwin)
 (hashq-set! msgwin-disabler-table 'interactive-resize disable-resize-msgwin)
 

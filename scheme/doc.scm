@@ -19,7 +19,7 @@
        '("scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"
          "scwm-concepts.txt" "cassowary_scm-procedures.txt")))
 
-(define-public documentation-debug #t)
+(define-public documentation-debug #f)
 
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.

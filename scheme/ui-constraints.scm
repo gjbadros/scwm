@@ -139,7 +139,6 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
       (cadddr (cddr UI-CONSTRAINT-CLASS))
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
-
 ;; ui-constraint-class-satisfied
 
 ;; returns the satisfaction checking procedure for instances of 
@@ -388,3 +387,7 @@ Errors if object is not a ui-constraint-class object."
 
 (define-public (disable-all-constraints)
   (map disable-ui-constraint global-constraint-instance-list))
+
+
+(define-public (enable-all-constraints)
+  (map enable-ui-constraint global-constraint-instance-list))

@@ -30,6 +30,7 @@
 
 ;; (load "/scratch/gjb/scwm/scheme/ui-constraints-buttons.scm")
 ;; (set-current-module the-root-module)
+;; (start-ui-constraints-buttons)
 
 
 ;; example usage: 
@@ -51,13 +52,17 @@
 	 (cn-pixmaps (map (lambda (c b) (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name c) b))
 			  ui-constraint-classes cn-buttons))
 	 (toplevel (gtk-window-new 'toplevel))
-	 (hbox (gtk-hbox-new 0 0)))
+	 (hbox (gtk-hbutton-box-new)))
     (for-each (lambda (b tip)
 		(gtk-tooltips-set-tip tooltips b tip ""))
 	      cn-buttons cn-names)
+    (gtk-button-box-set-spacing hbox 0)
+    (gtk-button-box-set-child-ipadding hbox 0 0)
+    (gtk-button-box-set-child-size hbox 32 32)
     (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
     (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")
     (gtk-container-add toplevel hbox)
+    (gtk-container-border-width toplevel 0)
     (for-each (lambda (b) (gtk-box-pack-start hbox b)) cn-buttons)
     (for-each (lambda (b p l) 
 		(if p

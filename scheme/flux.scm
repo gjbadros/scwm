@@ -381,16 +381,22 @@ will be returned."
 ;; should probably turn off the invalid interaction hook
 ;; or provide a way of telling select-window-interactively that
 ;; the root window is not an error
-(define*-public (select-multiple-windows-interactively #&optional (max 32000))
+(define*-public (select-multiple-windows-interactively
+		 #&optional (max 32000) (proc-when-selected #f))
   "Return a list of user-selected windows, up to MAX.
-The list is in the reverse order from the way by which they were selected."
+The list is in the reverse order from the way by which they were selected.
+PROC-WHEN-SELECTED will be run on each window as it is selected."
+  (if (not (integer? max))
+      (set! max 32000))
   (do ((w '())
        (wlist '() (cons w wlist))
        (i 0 (+ 1 i)))
       ((or (not w) (>= i max))
        (if w wlist
 	   (cdr wlist)))
-    (set! w (select-window-interactively (string-append "select #" (number->string i))))))
+    (set! w (select-window-interactively (string-append "select #" (number->string i))))
+    (if (and proc-when-selected w)
+	(proc-when-selected w))))
 
 ;; e.g.
 ;;(select-multiple-windows-interactively 10)
@@ -728,3 +734,6 @@ in the user's home directory."
 ;;     str))
 ;; 
 ;; (get-string-from-palm-clipboard)
+
+(define-public (delete-multiple-windows-interactively)
+  (select-multiple-windows-interactively #f delete-window))
