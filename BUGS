@@ -1,14 +1,12 @@
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
-xterm-s started from scwm die when scwm dies.... why?  
-The controlling tty may be the controlling influence... not sure--09/08/98 gjb
--------------
 Incorrect usage of keyword arguments by a scheme function fails silently.
 Both wrong keyword names and missing arguments should be reported.
 -------------
 Race conditions cause scwm to hang when talking to fvwm2 modules when, e.g.,
 recapturing.
+May have just been forgetting the O_NONBLOCK flag... --09/17/98 gjb
 -------------
 1. I pop up an xterm
 2. I do a horizontal-toggle-maximize
@@ -106,6 +104,12 @@ outside the callback handler - the code would lose big on this -ms]
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+
+xterm-s started from scwm die when scwm dies.... why?  
+see scwm-system in base.scm -- the terminal process group was getting
+the SIGINT from the controlling tty --09/17/98 gjb
+-------------
+
 
 gjb gets this on recapture
 [Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
