@@ -140,6 +140,7 @@ deprecated `SM-client-id'.
 ** --segv-just-stop [-P]  (also `set-handle-segv!')
 
 * Misc. new primitives not discussed above
+** `window-creation-time' returns the time that a window was created
 ** `get-key-event' returns the next arbitrary key w/ modifiers that the user hits
 ** `lookup-key' returns the procedures bound to a specific key
 ** `lookup-mouse' returns the procedures bound to a specific mouse event

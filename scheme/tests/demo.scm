@@ -27,11 +27,16 @@
 
 ;;;; DECORATIONS
 (window-style "XTerm" #:use-theme (load-theme "woven"))
+(window-style "XTerm" #:use-theme (load-theme "gjb"))
 (window-style (title-match?? "demo*") #:use-theme (load-theme "mwm"))
 ;; change one xterm using the menu
 ;; change the global theme using preferences menu
 
 (animated-window-shade)
+(get-window #t)
+(select-viewport-position)
+(window-context)
+
 ;; also by double-clicking on titlebar
 
 (define w
@@ -56,6 +61,8 @@
 (map iconified? (list-windows))
 
 (list-windows #:only iconified?)
+(list-windows #:only (lambda (w) (string=? (window-class w) "XTerm")))
+(list-windows #:only (wildcard-matcher?? "XTerm"))
 ;; de-iconify via window list
 
 
