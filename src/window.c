@@ -1064,7 +1064,7 @@ circle cursor.")
 /* GJB:FIXME:: we'd like to not need this, though
    it might be nice to leave in just in case */
 SCWM_IPROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
-            (SCM win),
+            (SCM win), "%W",
 "This redraws the window frame and decorations of WIN.
 Ideally it would never be necessary, but it is useful for debugging
 and for new window objects set via object properties.")
@@ -1710,9 +1710,8 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 
 SCWM_IPROC(delete_window, "delete-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Request that WIN remove itself from the display.
-
 This is the friendly way of closing a window, but it will not work if
 the application does not cooperate. WIN defaults to the window context
 in the usual way if not specified.")
@@ -1736,7 +1735,7 @@ in the usual way if not specified.")
 
 
 SCWM_IPROC(destroy_window, "destroy-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Forcibly remove WIN from the screen.
 This will kill the application without giving it a chance to save its
 state or do any other shutdown, but is guaranteed to work. WIN
@@ -1796,7 +1795,7 @@ specified.")
 
 
 SCWM_IPROC(focus_window, "focus-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Give WIN the keyboard input focus.
 This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
@@ -1815,7 +1814,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 
 
 SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
-           (),
+           (), NULL,
 "Remove the input focus from any window that may have it.")
 #define FUNC_NAME s_unfocus
 {
@@ -1826,9 +1825,8 @@ SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
 
 
 SCWM_IPROC(warp_to_window, "warp-to-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Move the mouse pointer to the upper left corner of WIN.
-
 If WIN is on a different desk or in a different viewport, these will
 be changed appropriately so that the window is visible. WIN defaults
 to the window context in the usual way if not specified.  Note that
@@ -1845,7 +1843,7 @@ with the keyboard focus.")
 
 
 SCWM_IPROC(raise_window, "raise-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Raise WIN to the top of the window stack.
 Stays-on-top windows still take priority. WIN defaults to the window
 context in the usual way if not specified.")
@@ -1869,7 +1867,7 @@ context in the usual way if not specified.")
 
 
 SCWM_IPROC(lower_window, "lower-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Lower WIN to the bottom of the window stack. WIN defaults to
 the window context in the usual way if not specified.")
 
@@ -2034,7 +2032,7 @@ specified.")
 
 
 SCWM_IPROC(iconify_window, "iconify-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Iconify WIN.
 Iconifying hides the regular window, and shows the window's icon.
 WIN defaults to the window context in the usual way if not
@@ -2054,7 +2052,7 @@ specified.")
 #undef FUNC_NAME
 
 SCWM_IPROC(deiconify_window, "deiconify-window", 0, 3, 0,
-           (SCM win, SCM x, SCM y),
+           (SCM win, SCM x, SCM y), "%W",
 "Deiconify WIN.
 Hides its icon, and shows its regular window.
 WIN defaults to the window context in the usual way if not
@@ -2101,7 +2099,7 @@ desktop.*/
 
 
 SCWM_IPROC(stick_window, "stick-window", 0, 1, 0,
-  (SCM win),
+           (SCM win), "%W",
 "Make WIN \"sticky\" so that it stays stationary in the viewport.
 WIN defaults to the window context in the usual way if not
 specified.")
@@ -2135,7 +2133,7 @@ specified.")
 
 
 SCWM_IPROC(unstick_window, "unstick-window", 0, 1, 0,
-  (SCM win),
+           (SCM win), "%W",
 "Cause a window to no longer be \"sticky\", if it is.
 See `stick-window' for an explanation. WIN defaults to the window context in
 the usual way if not specified.")
@@ -2204,7 +2202,7 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_window_p, set_sticky);
 
 
 SCWM_IPROC(shade_window, "shade-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Cause WIN to become \"window-shaded\".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
@@ -2247,7 +2245,7 @@ the client application window is not visible.")
 
 
 SCWM_IPROC(unshade_window, "unshade-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Reverse the effect of `shade-window' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
@@ -2451,7 +2449,7 @@ The list returned contains 4 cons pairs containing:
 
 
 SCWM_IPROC(refresh_window, "refresh-window", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Refresh the decorations on window WIN.
 Refreshing ensuring that everything, including the decorations is up
 to date. `refresh' does this in a more efficient way for all windows,
@@ -3034,7 +3032,7 @@ The order is from most recently focussed to least recently focussed.")
 
 
 SCWM_IPROC(keep_on_top, "keep-on-top", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Ensure that WIN is kept on top of all other windows.
 Obviously, other windows that are also on-top may obscure WIN.
 WIN defaults to the window context in the usual way if not specified.")
@@ -3064,7 +3062,7 @@ WIN defaults to the window context in the usual way if not specified.")
 
 
 SCWM_IPROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Remove the on-top property from WIN, if it has it.
 See `keep-on-top'. WIN defaults to the window context in the usual
 way if not specified.")
@@ -3147,7 +3145,7 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
 }
 
 SCWM_IPROC(show_titlebar, "show-titlebar", 0, 2, 0,
-           (SCM win, SCM in_place_p),
+           (SCM win, SCM in_place_p), "%W",
 "Cause WIN to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
 See also `hide-titlebar'.
@@ -3175,7 +3173,7 @@ specified.")
 
 
 SCWM_IPROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
-           (SCM win, SCM in_place_p),
+           (SCM win, SCM in_place_p), "%W", 
 "Cause WIN not to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
 See also `show-titlebar'.
@@ -3215,7 +3213,7 @@ specified.")
 
 
 SCWM_IPROC(normal_border, "normal-border", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Cause WIN to be decorated with a normal border.
 This means that there will be resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified.")
@@ -3244,7 +3242,7 @@ defaults to the window context in the usual way if not specified.")
 
 
 SCWM_IPROC(plain_border, "plain-border", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Cause WIN to be decorated with a plain border.
 This means that there will be no resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified.")
@@ -3324,7 +3322,7 @@ WIN defaults to the window context in the usual way if not specified.")
 
 
 SCWM_IPROC(stick_icon, "stick-icon", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W", 
 "Cause WIN's icon to become \"sticky\". 
 A sticky window stays at its current viewport position
 no matter how where the viewport is in the virtual desktop.
@@ -3344,7 +3342,7 @@ WIN defaults to the window context in the usual way if not specified.")
 
 
 SCWM_IPROC(unstick_icon, "unstick-icon", 0, 1, 0,
-           (SCM win),
+           (SCM win), "%W",
 "Cause WIN's icon to no longer be \"sticky\". 
 A sticky window stays at its current viewport position
 no matter how where the viewport is in the virtual desktop.

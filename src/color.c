@@ -218,7 +218,7 @@ ScmMakeColor(const char *cn, int *perror_status)
 
   sc = NEW(scwm_color);
   sc->pixel = color.pixel;
-  sc->name = gh_str02scm(cn);
+  sc->name = gh_str02scm((char *)cn); /* GJB:FIXME:CONST */
   sc->borrowed = fBorrowedColor;
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);

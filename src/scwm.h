@@ -127,7 +127,6 @@ static scm_smobfuns T ## _smobfuns = { \
   do { scm_sysintern(name,val); \
      } while (0)
 
-
 #endif /* !SCWM_EXTRACT_COMMENTS */
 
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
@@ -202,7 +201,8 @@ void newhandler(int sig);
 void newhandler_doreset(int sig);
 void newsegvhandler(int sig);
 SCM scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList);
-SCM scwm_make_igsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList);
+SCM scwm_make_igsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), 
+                     char *szInteractiveSpecification, char *szArgList);
 
 /* Global variables */
 extern int master_pid;

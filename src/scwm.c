@@ -1721,7 +1721,7 @@ scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char 
 
 SCM
 scwm_make_igsubr(const char *name, int req, int opt, int var,
-                 SCM (*fcn)(), char *szArgList)
+                 SCM (*fcn)(), char *szInteractiveSpecification, char *szArgList)
 {
   extern SCM sym_interactive;
   /* GJB:FIXME:: a hack to guarantee that this is initialized
@@ -1731,7 +1731,9 @@ scwm_make_igsubr(const char *name, int req, int opt, int var,
       scm_permanent_object(((scm_cell *)scm_intern0("interactive"))->car);
   { /* scope */
     SCM p = scwm_make_gsubr(name,req,opt,var,fcn,szArgList);
-    scm_set_procedure_property_x(p,sym_interactive,SCM_BOOL_T);
+    scm_set_procedure_property_x(p,sym_interactive,
+                                 szInteractiveSpecification?
+                                 gh_str02scm(szInteractiveSpecification):SCM_BOOL_T);
     return p;
   }
 }

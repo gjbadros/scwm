@@ -49,7 +49,7 @@ print_cursor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   scwm_cursor *xp=CURSOR(obj);
   scm_puts("#<cursor ", port);
   if (xp->szName)
-    scm_puts(xp->szName, port);
+    scm_puts((char *) xp->szName, port); /* GJB:FIXME:CONST */
   else
     scm_write(gh_ulong2scm((unsigned long)xp->cursor), port);
   scm_putc('>', port);

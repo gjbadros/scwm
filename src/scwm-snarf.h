@@ -29,7 +29,7 @@ SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(), c
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
 
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, intspec, docstring) \
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
 #else
@@ -37,15 +37,15 @@ SCM fname ARGLIST
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST, docstring) \
 %%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST); \
 $$$ primname #ARGLIST req opt var @@@ docstring @!!!
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
-%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST); \
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, intspec, docstring) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, intspec, %/%/ #ARGLIST); \
 $$$ primname #ARGLIST req opt var @@@ docstring @!!!
 #else
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST, docstring) \
 %%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST); \
 $$$ primname #ARGLIST req opt var @@@ docstring @!!!
-#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, docstring) \
-%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST); \
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST, intspec, docstring) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, intspec, %/%/ #ARGLIST); \
 $$$ primname #ARGLIST req opt var @@@ docstring @!!!
 #endif
 #endif
