@@ -22,8 +22,6 @@ Sticky windows do not de-iconify properly.
 -------
 XEmacs pixmap icon doesn't survive after a restart (James Achtung Crippe) --09/15/99 gjb
 -------
-quote undefined problem w/ guile
--------
 There seems to be a bug in window size (or allowable size) 
 communication between scwm & applications. 
  
