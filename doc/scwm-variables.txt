@@ -13,6 +13,13 @@ build a menuitem which is then added to the context menu.
 [From scheme/std-menus.scm:99]
 
 
+debug-gnome-hints
+- (app scwm gnome-hints)
+Set true to enable debugging messages for the gnome-hints module
+
+[From scheme/gnome-hints.scm:32]
+
+
 default-auto-raise-delay
 - (app scwm auto-raise)
 Number of ms to delay before raising the window the mouse pointer entered.
@@ -52,6 +59,21 @@ default-menu-max-fold-lines
 The default number of items that menus are split into by `fold-menu-list'.
 
 [From scheme/base.scm:396]
+
+
+gnome-desktop-number
+- (app scwm gnome-hints)
+The number of desktops to show in the GNOME pager.
+Used in `enable-gnome-hints'.
+
+[From scheme/gnome-hints.scm:39]
+
+
+gnome-shade-animated
+- (app scwm gnome-hints)
+Should the shading be animated or not?
+
+[From scheme/gnome-hints.scm:45]
 
 
 image-load-path

@@ -61,7 +61,7 @@ will ever need. You can change the current desk with
 `current-desk'; and set the desk a window is on with
 `set-window-desk!'.
 
-[From scwm/deskpage.c:47]
+[From scwm/deskpage.c:50]
 
 
 Event Contexts
@@ -69,7 +69,7 @@ Event Contexts
 
 
  
-[From scwm/binding.c:533]
+[From scwm/binding.c:548]
 
 
 Face Flags
@@ -224,7 +224,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3087]
+[From scwm/window.c:3194]
 
 
 Fonts
@@ -250,7 +250,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!'
 and `reset-hook!'. 
 
-[From scwm/callbacks.c:306]
+[From scwm/callbacks.c:340]
 
 
 Image Loaders
@@ -290,7 +290,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:575]
+[From scwm/callbacks.c:690]
 
 
 Key Specifier
@@ -358,7 +358,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:594]
+[From scwm/scwm.c:595]
 
 
 SCWMEXEC Protocol
@@ -376,7 +376,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:478]
+[From scwm/events.c:481]
 
 
 Shadow and Highlight Factors
@@ -418,7 +418,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:1949]
+[From scwm/window.c:1996]
 
 
 The Window Context
@@ -435,7 +435,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:788]
+[From scwm/window.c:814]
 
 
 Themes
@@ -458,7 +458,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:444]
+[From scwm/callbacks.c:559]
 
 
 Viewports
@@ -473,7 +473,7 @@ coordinate is relative to the current viewport (i.e., it is the
 coordinate you actually see on the screen).  A virtual coordinate
 is relative to the origin of the current desk.
 
-[From scwm/deskpage.c:86]
+[From scwm/deskpage.c:89]
 
 
 Windows
@@ -484,7 +484,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:366]
+[From scwm/window.c:387]
 
 
 X atoms
