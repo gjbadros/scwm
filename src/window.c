@@ -2788,7 +2788,7 @@ such window object, return #f. */
   w =(Window) gh_scm2int(window_id);
   psw = PswFromWindow(dpy, w);
 
-  return ((psw&& psw->w==w) ? psw->schwin : SCM_BOOL_F);
+  return ((psw && psw->w==w) ? psw->schwin : SCM_BOOL_F);
 }
 #undef FUNC_NAME
 
@@ -2810,6 +2810,27 @@ such window object, return #f. */
   psw = PswFromWindow(dpy, w);
 
   return ((psw && psw->frame==w) ? psw->schwin : SCM_BOOL_F);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(any_id_to_window, "any-id->window", 1, 0, 0,
+          (SCM window_id))
+     /** Return the window object that contains the window with id WINDOW-ID.
+WINDOW-ID can be the X id of any child window in the application. If there is no
+such window object, return #f. */
+#define FUNC_NAME s_frame_id_to_window
+{
+  ScwmWindow *psw = NULL;
+  Window w;
+
+  if (!gh_number_p(window_id)) {
+    SCWM_WRONG_TYPE_ARG(1, window_id);
+  }
+
+  w =(Window) gh_scm2int(window_id);
+  psw = PswFromAnyWindow(dpy, w);
+
+  return psw? psw->schwin : SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
