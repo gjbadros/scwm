@@ -1,3 +1,18 @@
+Thu Aug 26 21:12:44 1999    <gjb@cs.washington.edu>
+
+	* flash-window.scm: Avoid trying to flash a window that has been
+	closed (was getting an error).
+
+	* window-selection.scm, ui-constraints.scm: Use `run-hook', not
+ 	`call-hook-procedures'
+
+	* property-respond.scm: Added window-flashing-start-hook,
+	window-flashing-stop-hook. 
+
+	* minimal.scm: Define run-hook if not defined and use that
+	interface, instead of always creating a new `call-hook-procedures' 
+	sometimes in terms of run-hook.
+
 Thu Aug 26 13:01:41 1999    <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: More map bug-fixes where lists were
