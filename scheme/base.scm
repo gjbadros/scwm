@@ -94,5 +94,16 @@
   (if (bound? justify)
       (set-title-justify! justify)))
 
+(define-public (menu-title)
+  'title)
 
+(define-public (menu-separator)
+  'separator)
+
+(define*-public (menu-item name #&key above-pixmap left-pixmap (action noop))
+	(if (bound? above-pixmap)
+	    (set! name (string-append name "*" pixmap "*")))
+	(if (bound? left-pixmap)
+	    (set! name (string-append name "%" left-pixmap "%")))
+	(list name action))
 
