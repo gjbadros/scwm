@@ -16,7 +16,7 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
-#include <values.h>
+#include <float.h>
 
 #define COLOR_IMPLEMENTATION
 #include "color.h"
@@ -160,7 +160,7 @@ ClosestColor(XColor *pcolor)
       mb = pcolor->blue;
     int ccols = 1 << Scr.d_depth;
     /* track closest match distance in mindist, index into cols in icolBest */
-    double mindist = MAXDOUBLE;
+    double mindist = DBL_MAX;
     int icolBest = -1;
     for (i = 0; i < ccols; ++i ) {
       cols[i].pixel = i;
