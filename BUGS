@@ -1,3 +1,8 @@
+kept-on-top windows cannot be restacked relative to each other. I
+tried finding some quick fixes but they cause segfaults, thus this is
+something to fix by reconsidering all this code and implementing true
+layers functionality.
+-------------
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------

@@ -1,3 +1,7 @@
+Sun Dec  6 02:57:38 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* BUGS: Document limitations of kept-on-top windows.
+
 Sat Dec  5 18:45:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* HACKING: Add required perl, makeinfo, Parse-RecDescent package
