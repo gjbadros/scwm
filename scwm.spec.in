@@ -75,7 +75,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/ldconfig
-cd /etc/X11/xdm; patch < %{prefix}/share/scwm/Xsession.patch
+#cd /etc/X11/xdm; patch < %{prefix}/share/scwm/Xsession.patch
+install -c -m 755 %{prefix}/share/scwm/Xsession /etc/X11/xdm/Xsession
 install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/Scwm
 
 %postun
@@ -93,6 +94,7 @@ rm -f %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
 %{prefix}/man/*
 %{prefix}/share/emacs/site-lisp/*
 %{prefix}/share/scwm/*
+%{prefix}/share/pixmaps/scwm/*
 %{prefix}/include/*
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
