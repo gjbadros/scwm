@@ -1,3 +1,11 @@
+Tue Dec  7 15:14:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-composition.scm: Write out the class-creator for
+	compositions after they are recorded so that they can be reloaded
+	later in a mechanical (if tedious) way.  Later this should be
+	written to a file and automatically reloaded, but for now I need
+	the functionality for user testing.
+
 Tue Dec  7 14:52:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm:  Added `ui-constraint-class-creator' to
