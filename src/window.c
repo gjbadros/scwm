@@ -1435,8 +1435,8 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   }
 
   *w = eventp->xany.window;
-  *px = eventp->xbutton.x;
-  *py = eventp->xbutton.y;
+  *px = eventp->xbutton.x_root;
+  *py = eventp->xbutton.y_root;
   if (((*w == Scr.Root) || (*w == Scr.NoFocusWin))
       && (eventp->xbutton.subwindow != (Window) 0)) {
     *w = eventp->xbutton.subwindow;
