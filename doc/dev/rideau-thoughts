@@ -1,0 +1,67 @@
+   After recompiling guile and scwm once more, I tried scwm without a
+config file, and it worked (though the nonconfig was bad). Then I retried
+with my usual .scwmrc (i.e. with almost no change but in paths), and it
+died as usual with its #f not being the right type. So I dichotomy-booted
+the scwmrc to isolate the faulty instruction. As a result, I found that
+(getenv "USER") would return #f, for USER wasn't defined in my RH5.0 install,
+whereas some lame default zsh startup in /etc/zsh would define it in my
+old RH4.2 (with upgrades) install. What zsh defines as a standard builtin is
+actually $USERNAME, and what /bin/login defines is $LOGNAME.
+So the bug was not in scwm proper, but in a hidden dependency of the
+the config file! And the determining problem was not going from libc5 to
+glibc2, but having different zsh startup files in /etc...
+
+
+Here are some remarks out of my experiments:
+* startup is *slow*. This seems to be due to guile not being fast,
+ and particularly not with reading configuration files.
+ Do you know if GUILE has some fasl (fast loading) capability, to
+ precompile configuration files or perhaps even dump image of a configured
+ system?
+* C code for set-edge-scroll! divides by 100, which is redundant and
+ inconsistent with the convention to go through (%x 100) and such: I must use
+ (set-edge-scroll! (%x 10000) (%y 10000)) which is ridiculous.
+* it would be nice if all the macros commonly defined by FvwmM4 could
+ be easily retrieved under scwm
+* because I like not to re-develop a new configuration file for every
+ computer I work on, I would like to use some auto-detection of (external)
+ features and programs to shape menus accordingly. But because such detection
+ is also tedious, how do you recommend to do it, possibly in a way that would
+ cache results? i.e. how to get/split/use the PATH, etc.
+* another useful detection would be of programs already running, to provide
+ actions dependent on that info, like either launching a new server, or
+ a client to it, and/or launching a new program or warping to opened window.
+* another interesting feature could be to have window-specific settings,
+ instead of window-class specific ones, so I could have a resident clock,
+ and another one that isn't. One problem is to correctly associate the
+ settings to a window, when you don't launch the window yourself, but
+ need to exec an external program. The solution could be to tell the
+ external program to use some dummy +x+y geometry, that would serve as
+ an id tag, and that the wm would promptly change to a normal one after
+ having identified the window. This requires some cooperation from
+ the program launching windows, and the writer of the config file.
+
+All in all, scheme may be a real language with real semantics,
+it does not seem that GUILE or any other platform do provide real efficient
+implementation providing way to relieve the user from most common tasks
+(i.e. caching results accross user sessions). The X window protocol is
+also much too low-level and badly integrated with the rest of the system.
+Persistence under UNIX *sucks*. I appreciate scwm, but I'm longing for LispOS.
+
+
+* Integration with the bash+guile project, to unify command-line and GUI.
+ dynamically programmable icons would be cool.
+* Persistence of some (selectable) session-dependent information
+ This would also provide a generic way to deal with caching of features
+ (and/or external programs) found accross sessions...
+
+* finding a program verifying some conditions in the process list would
+ be good. So I can choose to launch a new emacs or run a client,
+ and detect which client to use (emacsclient vs gnuclient vs sending ugly
+ synthetic keycodes to emacs); same with netscape; warping to whichever
+ window/xterm was detected to have opened the mailbox.
+* Detection that a window hasn't changed for some time and/or
+ its process is idle, so we know it's time to show it/warp to it/notify
+ the user, who doesn't have to stubbornly wait at things being drawn
+ in "real-time" in front of him (cf ghostview et al).
+
