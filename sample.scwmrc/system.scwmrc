@@ -114,7 +114,7 @@
 (debug-display "Starting reading scwm modules\n")
 
 ;; import the rest of the scwm modules
-(use-scwm-modules base defoption optargs primopts 
+(use-scwm-modules defoption optargs primopts 
 		  describe task-switcher
 		  winops winlist wininfo listops placement
 		  style stylist basic-styles
