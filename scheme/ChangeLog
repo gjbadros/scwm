@@ -1,3 +1,13 @@
+Thu Sep 30 10:12:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added last-mapped-window.scm.
+
+	* menus-extras.scm: Added REST args to fold-menu-list-by-group to
+	let, e.g., hover-delay, popup-delay be set for the window list by
+	resource menus.
+
+	* last-mapped-window.scm: Added.  Thanks to Craig Kaplan for idea!
+
 Wed Sep 29 23:09:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gnome-hints.scm: Added some commented out debugging.  Do not set 

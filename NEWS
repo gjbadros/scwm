@@ -5,8 +5,12 @@ See the end for copying conditions.
 Changes for scwm-0.99.4 (released )
 
 * Bug fixes
+** gnome icon placement, animated resize/moves, more!
 
 * Minor overhaul of system.scwmrc, rearranged menus, eliminated half-working features, etc.
+
+* New modules
+** last-mapped-window.scm for remembering the last window that got mapped
 
 * Changed primitives
 ** `animated-deiconify-to-last-viewport-position' to `animated-deiconify-to-viewport'

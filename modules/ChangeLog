@@ -1,3 +1,11 @@
+Thu Sep 30 10:15:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c (animated_resize_common): Only correct 
+	for position on resizes when then destination position is given.
+	Otherwise, let the correction for gravity take effect.  This fixes 
+	the bug whereby `resize-halfscreen' was not honouring gravity
+	since I made it use animated resizes.
+
 Wed Sep 29 17:58:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Fix non-north gravity bug in
