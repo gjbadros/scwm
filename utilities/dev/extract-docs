@@ -47,6 +47,8 @@ use File::Basename;
 my $getopts_option_letters = 'hqQDo:sCd:';
 use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d);
 
+my $scwm_version = "post-0.8";
+
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
 -q       Be reasonably quiet-- do not warn about spacing or purpose strings
@@ -217,7 +219,7 @@ if ($opt_o) {
   	</affiliation>
       </author>
     </authorgroup>
-    <releaseinfo>Release pre-0.8</releaseinfo>
+    <releaseinfo>Release $scwm_version</releaseinfo>
     <pubdate>$date</pubdate>
     <copyright>
       <year>1997&ndash;$year</year>
