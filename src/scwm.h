@@ -50,8 +50,12 @@ EXTERN char **g_argv;
 EXTERN int g_argc;
 
 #define STATIC_CAST(cast,val) ((cast) (val))
+#define CONST_CAST(cast,val) ((cast) (val))
+#define REINTERPRET_CAST(cast,val) ((cast) (val))
+
 #define min(a,b) (((a)<(b)) ? (a) : (b))
 #define max(a,b) (((a)>(b)) ? (a) : (b))
+
 #define STREQ(a,b) (!strcmp(a,b))
 
 /* Check if the scm variable is undefined or #f -- these cases
