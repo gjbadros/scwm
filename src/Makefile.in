@@ -80,6 +80,8 @@ SRCS = \
 	util.c \
 	window.c \
 	menu.c \
+	scwmmenu.c \
+	menuitem.c \
 	paths.c \
 	deskpage.c \
 	decor.c \

@@ -36,6 +36,8 @@
 #include "color.h"
 #include "window.h"
 #include "menu.h"
+#include "menuitem.h"
+#include "scwmmenu.h"
 #include "decor.h"
 #include "face.h"
 #include "Picture.h"
@@ -96,6 +98,22 @@ static scm_smobfuns picture_smobfuns =
   0
 };
 
+static scm_smobfuns menuitem_smobfuns =
+{
+  &mark_menuitem,
+  &free_menuitem,
+  &print_menuitem,
+  0
+};
+
+static scm_smobfuns scwmmenu_smobfuns =
+{
+  &mark_scwmmenu,
+  &free_scwmmenu,
+  &print_scwmmenu,
+  0
+};
+
 /* add new scwm object types here */
 void 
 init_scwm_types(void)
@@ -107,6 +125,8 @@ init_scwm_types(void)
   scm_tc16_scwm_decor = scm_newsmob(&decor_smobfuns);
   scm_tc16_scwm_face = scm_newsmob(&face_smobfuns);
   scm_tc16_scwm_picture = scm_newsmob(&picture_smobfuns);
+  scm_tc16_scwm_menuitem = scm_newsmob(&menuitem_smobfuns);
+  scm_tc16_scwm_scwmmenu = scm_newsmob(&scwmmenu_smobfuns);
 }
 
 /* Local Variables: */

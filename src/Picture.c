@@ -235,7 +235,7 @@ make_picture(SCM picture_filename)
     szName = gh_scm2newstr(picture_filename, &len);
   } else {
     scm_wrong_type_arg(__FUNCTION__, 1, picture_filename);
-    return SCM_UNDEFINED;
+    /* FIXNOWGJB: return SCM_UNDEFINED; */
   }
 
   pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);
