@@ -1,6 +1,7 @@
 ;;; ".scwmrc"   -*-scheme-*-
 
-;; import the scwm modules
+;;-------------------------------;;
+;; import the scwm modules       ;;
 
 (use-modules (app scwm base)
 	     (app scwm winops)
@@ -25,7 +26,8 @@
 		  rest)))
     (menu form)))
 
-;; set some basic styles info
+;;-------------------------------;;
+;; set some basic styles info    ;;
 
 (define font12
   (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
@@ -37,42 +39,49 @@
 	    #:stipple "grey30"
 	    #:font font14
 	    #:mwm #f)
-
-(title-style #:font font12
-	     #:justify 'center)
+(define menu-bg-color (load-color "grey"))
+(define menu-text-color (load-color "black"))
 
 (set-icon-font! font12)
-(set-hilight-colors! "white" "blue4")
+
 (set-rubber-band-mask! 127)
 
 (set-opaque-move-size! 100)
 
-;; paths
-(set! image-load-path (string-append
-		       "/home/petersen/work/scwm-icons/icons"
-		       ":"
-		       "/home/petersen/work/scwm-icons/mini-icons"
-		       ":"
-		       "/usr/local/X11R6.1/include/X11/pixmaps"
-		       ":"
-		       "/usr/local/X11R6.1/include/X11/bitmaps"))
+;;-------------------------------;;
+;; set some paths                ;;
+;;
+
+(set! image-load-path '("/home/petersen/work/scwm-icons/icons"
+			"/home/petersen/work/scwm-icons/mini-icons"
+			"/usr/local/X11R6.1/include/X11/pixmaps"
+			"/usr/local/X11R6.1/include/X11/bitmaps"))
 
 ;;; decor
-;; (define pix-decor (make-decor))
-;; (with-decor pix-decor
-;; 	    (border-style #:hidden-handles #t #:no-inset #t
-;; 			  #:pixmap (make-image "lizard.xpm")
-;; 			  #:inactive
-;; 			  (list #:hidden-handles #t #:no-inset #t
-;; 				#:pixmap (make-image "lizard2.xpm")))
-;; 	    (title-style #:justify 'center #:font font12
-;; 			 #:relief 'raised)
-;; 	    (set-hilight-colors! "white" "#3cb21c"))
+(define initial-decor (default-decor))
+(with-decor initial-decor
+	    (set-hilight-colors! "white" "blue4"))
 
-;; set some window styles
+(define pix-decor (make-decor))
+(with-decor pix-decor
+	    (border-style #:hidden-handles #f
+			  #:no-inset #t
+			  #:pixmap (make-image "br_wood_1.xpm")
+			  #:inactive
+			  (list #:hidden-handles #f
+				#:no-inset #t
+				#:pixmap (make-image "br_wood_0.xpm")))
+	    (title-style #:justify 'center
+			 #:font font12
+			 #:relief 'flat)
+	    (set-hilight-colors! "white" "black"))
+
+;;-------------------------------;;
+;; set some window styles        ;;
+
 (window-style "*"
-	      #:fg "lightgrey" #:bg "dimgrey" 
-	      #:icon #t
+	      #:fg "grey"
+ 	      #:bg "black" 
 	      #:icon-box (list (x- 5)  (%y 30) (x- 90) (y- 5))
 	      #:border-width 6 
 	      #:focus 'click
@@ -85,13 +94,16 @@
 	      #:PPosition-hint #f
 	      #:OL-decor-hint #t
 	      #:lenience #t
-;; 	      #:use-style pix-style
+	      #:use-decor pix-decor
 	      )
 
 (define desk-widget
-  (make-style #:sticky #t
+  (make-style #:use-decor initial-decor
+	      #:fg "lightgrey"
+ 	      #:bg "darkgrey" 
+	      #:sticky #t
 	      #:winlist-skip #t
-	      #:border-width 2
+	      #:border-width 3
 	      #:circulate-skip #t
 	      #:no-titlebar #t
 	      ))
@@ -109,7 +121,7 @@
 (window-style "*clock" #:use-style desk-widget)
 (window-style "swisswatch" #:use-style desk-widget)
 (window-style "perfmeter" #:use-style desk-widget)
-(window-style "xconsole" #:sticky #t #:circulate-skip #t #:winlist-skip #t)
+(window-style "xconsole" #:use-style desk-widget)
 (window-style "NoClass" #:use-style desk-widget)
 (window-style "balloon-help" #:use-style desk-widget)
 (window-style "* Properties" #:no-titlebar #f)
@@ -117,7 +129,9 @@
 
 (set-edge-scroll! 0 0)
 
-;; define some useful menus
+;;-------------------------------;;
+;; define some useful menus      ;;
+
 (define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 100)))
 
@@ -192,6 +206,9 @@
    (menuitem "Close" #:image-left "mini-bomb.xpm" #:action close-window)
    (menuitem "Destroy" #:image-left "mini-bomb.xpm" #:action destroy-window)))
 
+(define* (window-list-proc #&optional (w (get-window)))
+  (default-winlist-proc w))
+
 (define (quit-verify-menu)
   (display-menu
    (apply list
@@ -209,19 +226,8 @@
 		 (menuitem "Yes, quit" #:action quit)
 		 (menuitem "No" #:action noop))))))
 
-(define* (window-list-proc #&optional (w (get-window)))
-  (default-winlist-proc w))
+;;; screen movement
 
-;;; now set some mouse and key bindings
-
-;; key bindings for the menus
-(bind-key 'all "M-F1" root-menu)
-(bind-key 'window "M-F2" window-menu)
-
-;; in case of emergency
-(bind-key 'all "C-M-S-q" quit)
-
-;;
 (define screen-focus-array
   (let ((size (desk-size)))
     (make-array #f (car size) (cadr size))))
@@ -236,29 +242,28 @@
 		  #f)
 	      (car screen) (cadr screen)))
 
-(define (restore-focus screen)
-  (let ((window
-	 (array-ref screen-focus-array
-		    (car screen) (cadr screen))))
-    (if (and window
-	     (visible? window))
-	(focus window)
-	(next-window #:only visible? #:except iconified?))))
-
 (define (move-screen x y)
   (let ((rel-screen-move (map * (display-size) (list x y)))
 	(old-screen (current-screen))
-	(old-window (get-window #f #f)))
-    (save-focus old-window old-screen)
+	(old-window (current-window-with-focus)))
     (move-viewport (car rel-screen-move) (cadr rel-screen-move))
     (if old-window
 	(begin
-	  (set-window-focus! 'mouse old-window)
-	  (set-window-focus! 'click old-window)))
-    (let ((new-screen (current-screen)))
-      (if (equal? old-screen new-screen)
+	 (set-window-focus! 'none old-window)
+	 (set-window-focus! 'click old-window)))
+    (let ((screen (current-screen)))
+      (if (equal? old-screen screen)
 	  (beep)
-	  (restore-focus new-screen)))))
+	(let ((window (or (array-ref screen-focus-array
+				 (car screen) (cadr screen))
+			  (current-window-with-pointer))))
+	  (if (and window
+		   (not (equal? window old-window))
+		   (visible? window))
+	      (begin
+	       (focus window)
+	       (save-focus old-window old-screen))
+	    (next-window #:only visible? #:except iconified?)))))))
 
 (define (windows-off-screen-menu)
   (display-menu
@@ -280,6 +285,7 @@
 		   (window-title has-focus)
 		   "none") #f))))
 
+;; NB My ".Xmodmap" is such that "M-" doesn't map to meta
 (bind-key 'all "M-Left" (lambda () (move-screen -1 0)))
 (bind-key 'all "M-Right" (lambda () (move-screen 1 0)))
 (bind-key 'all "M-Up" (lambda () (move-screen 0 -1)))
@@ -299,42 +305,62 @@
 (bind-key 'all "S-M-Up" (lambda () (move-window 0 -1)))
 (bind-key 'all "S-M-Down" (lambda () (move-window 0 1)))
 
-;; rotate the current window with the keyboard
-(bind-key 'all "M-Tab"
-	  (lambda ()
-	    (next-window #:only visible? #:except iconified?)))
+;;; wm related bindings
+;; (bind-key 'all "M-\`" popup-ops)  ;; Bad binding specifier
+(bind-key 'all "M-f" focus-window-menu)
+(bind-key 'all "M-l" refresh)
+(bind-key 'all "M-r" toggle-raise)
+(bind-key 'all "M-S-r" (lambda () (restart "scwm")))
+(bind-key 'all "M-q" quit-verify-menu)
+(bind-key 'all "C-M-S-q" quit)
+(bind-key 'all "M-s" toggle-window-shade)
+(bind-key 'all "M-w" windows-off-screen-menu)
+(bind-key '(window icon) "M-z" toggle-iconify)
+(bind-key 'all "M-F1" root-menu)
+(bind-key '(window icon) "M-F2" window-menu)
+;; (bind-key 'all "M-g" (lambda () (display (get-window #t #f))))
+;; (bind-mouse 'all "M-1" (lambda () (display (get-window #t #f))))
+(bind-mouse 'root 1 root-menu)
+(bind-mouse 'root 2 show-window-list-menu)
+(bind-mouse '(title frame sidebar) 3 window-menu)
+(bind-mouse '(frame sidebar) 2 resize-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 2 lower-window)
 
-(bind-key 'all "M-S-Tab" 
-	  (lambda ()
-	    (prev-window #:only visible? #:except iconified?)))
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((click) (deiconify))))
 
-;; more key bindings
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 3 window-menu)
+
+;; app bindings
 (bind-key 'all "M-e" (lambda ()
 		       (execute "emacs --debug-init -fn fontset-standard")))
 (bind-key 'all "M-S-e"
 	  (lambda ()
 	    (execute "emacs -q --no-site-file -fn fontset-standard")))
-
-(bind-key 'all "M-f" focus-window-menu)
-(bind-key 'all "M-l" refresh)
 (bind-key 'all "M-S-l" (lambda ()
 			 (execute "xlock")))
 (bind-key 'all "M-m" (lambda ()
 		       (execute "mule -q --no-site-file")))
 (bind-key 'all "M-n" (lambda ()
 		       (execute "netscape -install")))
-(bind-key 'all "M-r" toggle-raise)
-(bind-key 'all "M-S-r" (lambda () (restart "scwm")))
-(bind-key 'all "M-q" quit-verify-menu)
-(bind-key 'all "M-s" toggle-window-shade)
+(bind-key 'all "M-c" (lambda ()
+		       (execute "communicator")))
 (bind-key 'all "M-t" (lambda ()
 		       (execute "xterm")))
 (bind-key 'all "M-x" (lambda ()
 		       (execute "xemacs -debug-init")))
 (bind-key 'all "M-S-x" (lambda ()
 		       (execute "xemacs --vanilla")))
-(bind-key 'all "M-w" windows-off-screen-menu)
-(bind-key '(window icon) "M-z" toggle-iconify)
 
 (define (print-info thunk windows)
 	(if (not (null? windows))
@@ -344,6 +370,15 @@
 	      (display (thunk (car windows)))
 	      (display #\newline)
 	      (print-info thunk (cdr windows)))))
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-Tab"
+	  (lambda ()
+	    (next-window #:only visible? #:except iconified?)))
+
+(bind-key 'all "M-S-Tab" 
+	  (lambda ()
+	    (prev-window #:only visible? #:except iconified?)))
 
 (write-line "\n\".scwmrc\" parsed.")
 ;;; end of ".scwmrc"
