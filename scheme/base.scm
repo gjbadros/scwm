@@ -247,7 +247,7 @@
   `(beep))
 
 (add-hook! invalid-interaction-hook
-	   (lambda () (beep) (display "inv interaction\n")))
+	   (lambda () (beep) (display "scwm: invalid interaction\n")))
 
 (add-hook! cannot-grab-hook
-	   (lambda () (beep) (display "cannot grab\n")))
+	   (lambda () (beep) (display "scwm: cannot grab\n")))
