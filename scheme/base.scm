@@ -79,14 +79,14 @@ Returns #f otherwise."
   (set! set-menu-foreground!
 	(lambda (fg)
 	  (old-smfg! fg)
-	  (set! menu-text-color (make-color fg)))))
+	  (set! menu-text-color (if (color? fg) fg (make-color fg))))))
 
 ;; (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
 (let ((old-smbg! set-menu-background!))
   (set! set-menu-background!
 	(lambda (bg)
 	  (old-smbg! bg)
-	  (set! menu-bg-color (make-color bg)))))
+	  (set! menu-bg-color (if (color? bg) bg (make-color bg))))))
 
 ;; (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
 ;; (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))

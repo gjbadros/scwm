@@ -213,3 +213,12 @@ a number."
 ;; (animated-move-to 0 'y)
 ;; (animated-move-to 'x -1 (current-window-with-pointer))
 ;; (animated-move-to #f -1 (current-window-with-pointer))
+
+
+;; FIXGJB: the resize-to primitive should just be renamed
+(define*-public (resize-window w h #&optional (win (get-window)))
+  "Resize WIN's client area to a size of W by H in pixels. 
+The size does not include the window decorations -- only the client
+application size. WIN defaults to the window context in the usual way
+if not specified."
+  (resize-to w h win))
