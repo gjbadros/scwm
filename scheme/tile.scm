@@ -160,12 +160,3 @@ control the tiling options as for `tile-windows'."
     #:by-stacking by-stacking #:by-focus by-focus #:reverse reverse)
    #:start-pos start-pos #:end-pos end-pos #:raise raise 
    #:resize resize #:max-windows max-windows #:order order))
-
-
-
-
-
-
-
-
-
