@@ -1,3 +1,14 @@
+Fri Aug  6 17:33:29 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* animated-iconify.scm
+	(animated-deiconify-to-last-viewport-position): Fix bugs in this.
+	Was using deiconify-to-current-viewport, not just deiconify to
+	actually do the final positioning of the window.
+
+	* winlist.scm (show-window-list-menu): Make flash-window-proc,
+ 	unflash-window-proc default to flash-window-on and unflash-window,
+ 	respectively
+
 Fri Aug  6 17:03:29 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Added register.scm
