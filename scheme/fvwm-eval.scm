@@ -85,27 +85,34 @@
 	   (* y display-height)))))
 
 (define-fvwm-command "Iconify"
-  (if window
-      (let ((arg (get-one-numeric-arg args)))
-	((cond 
+  (let* ((arg (get-one-numeric-arg args))
+         (fn (cond 
 	  ((or (not arg) (= arg 0)) toggle-iconify)
 	  ((< arg 0) deiconify)
-	  (else iconify)) window))))
+	           (else iconify))))
+    (if window
+      (fn window)
+      (fn))))
 
 (define-fvwm-command "Move"
-  (if window
       (get-two-numeric-args
-       args (lambda (x y)
+    args
+    (lambda (x y)
 	      (if (and x y)
+          (if window
 		  (move-to x y window)
+            (move-to x y))
+          (if window
 		  (begin
 		    (if fmod (move-to (car (pointer-position))
 				      (cadr (pointer-position)) window))
-		    (interactive-move window)))))))
+		       (interactive-move window))
+             (interactive-move))))))
 
 (define-fvwm-command "Raise"
   (if window
-      (raise-window window)))
+      (raise-window window)
+      (raise-window)))
 
 (define-fvwm-command "Scroll"
   (get-two-numeric-args args move-viewport))
@@ -125,8 +132,41 @@
 (define-fvwm-command "KillMe"
    ((list-ref 5 fmod)))
 
+(define-fvwm-command "Eval"
+  (eval-string args))
+
+(define-fvwm-command "Exec"
+  (execute args))
+
+(define-fvwm-command "Restart"
+  (restart))
+
+(define-fvwm-command "Quit"
+  (quit))
+
+(define-fvwm-command "Resize"
+  (get-two-numeric-args
+    args
+    (lambda(x y)
+      (if (and x y)
+        (if window
+          (resize-to x y window)
+          (resize-to x y))
+        (if window
+          (interactive-resize window)
+          (interactive-resize))))))
+
+(define-fvwm-command "Lower"
+  (if window
+      (lower-window window)
+      (lower-window)))
+
+(define-fvwm-command "WarpToWindow"
+  (if window
+    (warp-to-window window)))
+
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
-				   (window (get-window)))
+				   (window #f))
   (let* ((split-result (split-before-char #\space command 
 					  (lambda args args)))
 	 (main-cmd (car split-result))

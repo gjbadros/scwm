@@ -355,9 +355,17 @@
 		       ;; (display "packet: ")
 		       ;; (write packet)
 		       ;; (newline)
-		       
-		       (eval-fvwm-command command fmod (id->window window-id))
-
+              (catch #t
+                     (lambda()
+                       (if (= window-id 0)
+                         (eval-fvwm-command command fmod)
+                         (eval-fvwm-command command
+                                            fmod
+                                            (id->window window-id))))
+                     (lambda args (display "Error evaling packet: ")
+                                  (write packet)
+                                  (newline))
+                     )
 		       (if (not (list-ref fmod 4))
 			   (remove-input-hook! input-hook-handle))))
 		   (lambda args

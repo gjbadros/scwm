@@ -1,3 +1,16 @@
+1998-07-20  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* fvwm-module.scm (run-fvwm-module): Make sure to do something
+	more sensible when reciving a packet that specifies no
+	window. Patch from Danius Michaelides <danius@duff.org>
+
+	* fvwm-eval.scm: Handle the case where no window is specified more
+	gracefully. Add support for Exec, Restart, Quit, Resize, Lower,
+	and WarpToWindow fvwm commands. Add support for a special Eval
+	command; this lets Fvwm modules evaluate arbitrary Scheme
+	expressions, allowing for FvwmButtons configs for instance, to be
+	very flexible. Patch from Danius Michaelides <danius@duff.org>
+	
 1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
 
 	* style.scm: Added #:placement-proc and #:transient-placement-proc
