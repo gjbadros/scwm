@@ -10,6 +10,7 @@
 (define-module (app scwm ui-constraints)
   :use-module (app scwm message-window)
   :use-module (app scwm base)
+  :use-module (app scwm listops)
   :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
   )

@@ -127,9 +127,15 @@ If NW or NH is 0, that dimension is not changed."
 			(#t 0))))
 	      (move-window-viewport-position nx ny win)
 	      (if (not (maximized? win))
-		  (set-window-property!
-		   win 'maximized (list x y cli-width cli-height
-					nx ny ncw nch)))))))
+		  (begin
+		    ;; GJB:FIXME:: better if we restored the
+		    ;; gravity on unmaximization.  I get
+		    ;; windows moving offscreen when unmaximizing
+		    ;; if gravity is not northwest --07/28/99 gjb
+		    (set-window-gravity! 'northwest win)
+		    (set-window-property!
+		     win 'maximized (list x y cli-width cli-height
+					  nx ny ncw nch))))))))
 
 
 (define*-public (maximized? #&optional (win (get-window)))
