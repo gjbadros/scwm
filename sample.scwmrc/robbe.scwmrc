@@ -444,10 +444,12 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (popup-menu window-ops-menu))
 
 (define tooltip-window (make-message-window ""))
+
 (define (tooltip-show tip)
   (message-window-set-message! tooltip-window tip)
   (apply message-window-set-position! `(,tooltip-window ,@(pointer-position) -1 -1))
   (message-window-show! tooltip-window))
+
 (define (tooltip-hide)
   (message-window-hide! tooltip-window))
 
@@ -485,16 +487,17 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		  (list
 		   (menuitem (if (maximized? w) "~^" "^")
 			     #:image-left "maximize.xpm"
-			     #:action vertical-toggle-maximize
-			     #:hover-action (lambda () (tooltip-show
-							"vertical maximize"))
+			     #:action toggle-maximize-vertical
+			     #:hover-action (lambda ()
+					      (tooltip-show
+					       "vertical maximize"))
 			     #:unhover-action tooltip-hide)
-		   (menuitem (if (sticky? w) "~*" "*")
+		   (menuitem (if (sticky-window? w) "~*" "*")
 			     #:action toggle-stick
 			     #:hover-action (lambda ()
 					      (tooltip-show "stick"))
 			     #:unhover-action tooltip-hide)
-		   (menuitem (if (window-shaded? w) "~=" "=")
+		   (menuitem (if (shaded-window? w) "~=" "=")
 			     #:action toggle-window-shade
 			     #:hover-action (lambda ()
 					      (tooltip-show "shade"))
