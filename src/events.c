@@ -281,6 +281,24 @@ HandleEvents(void)
   }
 }
 
+SCWM_PROC(handle_pending_events, "handle-pending-events", 0,0,0,
+          ())
+     /** Handle all pending Scwm events, returns number of dispatched events.
+This is useful to maintain responsiveness of Scwm when in the middle
+of a long computation. */
+#define FUNC_NAME s_handle_pending_events
+{
+  int cevents = 0;
+  last_event_type = 0;
+  while (!NextScwmEvent(dpy, &Event)) {
+    ++cevents;
+    DispatchEvent();
+  }
+  return gh_int2scm(cevents);
+}
+#undef FUNC_NAME
+
+
 /* keyboard remapping has occurred */
 void
 HandleMappingNotify()

@@ -831,8 +831,7 @@ window that can be deiconified is still represented by a valid window object. */
 
 SCWM_PROC(window_fully_constructed_p, "window-fully-constructed?", 1, 0, 0,
           (SCM win))
-     /** Returns #t if WIN is a fully-constructed window object, otherwise retur
-ns #f.
+     /** Returns #t if WIN is a fully-constructed window, otherwise #f.
 In the `before-new-window-hook' windows are not yet fully constructed, and only
 a subset of procedures can be successfully called on them. */
 #define FUNC_NAME s_window_fully_constructed_p

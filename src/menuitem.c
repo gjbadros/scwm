@@ -88,11 +88,14 @@ print_menuitem(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-SCM 
-menuitem_p(SCM obj)
+SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
+	  (SCM obj))
+    /** Return #t if and only if OBJ is a menu item object. */
+#define FUNC_NAME s_menuitem_p
 {
   return SCM_BOOL_FromBool(MENUITEM_P(obj));
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
