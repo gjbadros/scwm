@@ -48,7 +48,9 @@
 	((eof-object? wd) (close-input-port fd)
 	 (cons gr (if (eq? nm ()) () (apply menuitem nm mi))))
       (cond ((string=? wd "mini-icon")
-	     (set! mi (append (list #:image-left (string (read fd))) mi)))
+	     (let ((img (make-image (string (read fd)))))
+	       ;; could resize image here if we so choose --07/02/99 gjb
+	       (set! mi (append (list #:image-left img) mi))))
 	    ((string=? wd "exec")
 	     (set! mi (append (list #:action (exe (wmc-fix (read fd)))) mi)))
 	    ((string=? wd "name") (set! nm (read fd)))
