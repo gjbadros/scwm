@@ -31,6 +31,8 @@ AM_CONFIG_HEADER(include/config.h)
 dnl ## Checks for programs ##
 
 AC_PROG_CC
+AC_PROG_CXX
+
 dnl Ensure compiler sanity on pathological platforms
 AC_ISC_POSIX
 AC_AIX
@@ -122,7 +124,6 @@ CASSOWARY_OBJECTS=""
 SCWM_ARG_PATH(cassowary,
 [  --with-cassowary=DIR   Use Cassowary constraint solver from DIR ],
 [
-	AC_PROG_CXX
 	AC_DEFINE(USE_CASSOWARY)
 	AC_DEFINE(CL_NO_TRACE)
 	AC_MSG_CHECKING(where to expect to find cassowary headers and library)
@@ -194,14 +195,19 @@ AC_CHECK_LIB(X11, _Xsetlocale, [ AC_DEFINE(X_LOCALE) ], [], $x_libs)
 
 dnl # Check for libSM, libIce
 SM_LIB=""
+SESSION_MANAGER_OBJECTS=""
+
 AC_CHECK_LIB(SM, SmcOpenConnection, [
   AC_CHECK_LIB(ICE, IceAddConnectionWatch, [
   SM_LIB="-lSM -lICE"
+  SESSION_MANAGER_OBJECTS='$(session_manager_objs)'
   AC_DEFINE(HAVE_LIBSM_LIBICE)
   ], AC_MSG_WARN(libICE not found -- no session manager support)
 , $x_libs)
 ], AC_MSG_WARN(libSM not found -- no session manager support)
 , $x_libs)
+
+AC_SUBST(SESSION_MANAGER_OBJECTS)
 
 x_cflags="$X_CFLAGS"
 x_ldflags="$X_LDFLAGS $X_LIBS"
@@ -213,8 +219,6 @@ AC_SUBST(x_libs)
 AC_SUBST(XEXT_LIB)
 AC_SUBST(XPM_LIB)
 AC_SUBST(XMU_LIB)
-AC_SUBST(CASSOWARY_LIBS)
-AC_SUBST(CASSOWARY_INCLUDES)
 
 CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
