@@ -21,6 +21,11 @@ int print_face(SCM obj, SCM port, scm_print_state * pstate);
 
 void init_face();
 
+extern SCM default_titlebar_face;
+extern SCM default_border_face;
+extern SCM default_lbutton_face[5];
+extern SCM default_rbutton_face[5];
+
 SCM make_face(SCM flags, SCM specs);
 
 #endif /* FACE_H */

@@ -40,6 +40,13 @@ free_face(SCM obj)
   return (0);
 }
 
+
+SCM default_titlebar_face;
+SCM default_border_face;
+SCM default_lbutton_face[5];
+SCM default_rbutton_face[5];
+
+
 void set_face_flag_x(SCM face, SCM flag, SCM flagval);
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
@@ -466,6 +473,8 @@ ButtonFace *append_new_face(ButtonFace *bf) {
 void 
 init_face()
 {
+  int i;
+
   sym_clear = gh_symbol2scm("clear");
   scm_protect_object(sym_clear);
   sym_justify = gh_symbol2scm("justify");
@@ -517,6 +526,24 @@ init_face()
   scm_protect_object(sym_mini_icon);
   sym_tiled = gh_symbol2scm("tiled");
   scm_protect_object(sym_tiled);
+
+  /* these should probably be exported as Scheme variables */
+  default_titlebar_face=make_face(SCM_EOL, SCM_EOL);
+  scm_protect_object(default_titlebar_face);
+
+  default_border_face=make_face(SCM_EOL, SCM_EOL);
+  scm_protect_object(default_border_face);
+
+  for (i=0; i<5; i++) {
+    default_lbutton_face[i]= make_face(SCM_EOL, SCM_EOL);
+    LoadDefaultLeftButton(BUTTONFACE(default_lbutton_face[i]),i);
+    scm_protect_object(default_lbutton_face[i]);
+    default_rbutton_face[i]= make_face(SCM_EOL, SCM_EOL);
+    LoadDefaultRightButton(BUTTONFACE(default_rbutton_face[i]),i);
+    scm_protect_object(default_rbutton_face[i]);
+  }
+
+
 }
 
 
