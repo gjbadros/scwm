@@ -45,6 +45,9 @@ my $fDebug = FALSE;
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
 my %procedure = ();
+# maps from a filename to a list reference containing the names of 
+# primitives defined in that file
+my %file_funcs = ();
 
 while (<>) {
   close(ARGV) if (eof);
@@ -114,7 +117,7 @@ print MARKUP_OUT <<END_HEADER
     </copyright>
   </bookinfo>
   <chapter>
-    <title>Primitives</title>
+    <title>Primitives in Alphabetical Order</title>
 END_HEADER
 ;
 
@@ -133,6 +136,30 @@ EOC
   ;
   print MARKUP_OUT $markup, "\n";
 }
+
+# FIXGJB: use links, not re-output!  Probably just
+# use an index for alpha ordering?
+print MARKUP_OUT <<END_CHAP_PRIM_IN_ALPHA
+  </chapter>
+  <chapter>
+    <title>Primitives By Defined-in File</title>
+END_CHAP_PRIM_IN_ALPHA
+  ;
+
+foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
+  my @prims = @{$file_funcs{$file}};
+  if (scalar(@prims) > 0) {
+    foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
+      my $usage = $procedure{$proc}{usage};
+      my $comment = $procedure{$proc}{comment};
+      my $line = $procedure{$proc}{line};
+      my $markup = $procedure{$proc}{markup};
+      print MARKUP_OUT $markup, "\n";
+    }
+  }
+}
+
+
 
 print MARKUP_OUT <<END_TRAILER
 </chapter>
@@ -231,8 +258,8 @@ sub ProcessHeader( $ ) {
 
   # check to make sure all all-uppercase words in the comment
   # refer to formals
-  foreach my $word (split /[^\w-?!\"]+/, $comment) {
-    if ($word =~ /^[A-Z][-A-Z0-9_+]+$/) {
+  foreach my $word (split /[^\w-\"]+/, $comment) {
+    if ($word =~ /^[A-Z][-A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
       }
@@ -258,13 +285,13 @@ sub ProcessHeader( $ ) {
   # FIXGJB: fold into testing, above
   my $markup_comment = $comment;
 
-  # convert & into &amp; < into &lt;, > into &gt;
+  # convert & into &amp; space-delimited <, > into &lt; and &gt;
   $markup_comment =~ s%&%&amp;%g;
   $markup_comment =~ s%<%&lt;%g;
   $markup_comment =~ s%>%&lt;%g;
   $usage =~ s%&%&amp;%g;
-  $usage =~ s%<%&lt;%g;
-  $usage =~ s%>%&gt;%g;
+  $usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
+  $usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
 
   # Mark formals within comment with <parameter> tag
   foreach my $formal (keys %argnames) {
@@ -272,6 +299,9 @@ sub ProcessHeader( $ ) {
   }
   # Mark #t and #f within comment with <literal> tag
   $markup_comment =~ s%(\#[tf])%<literal>$1</literal>%g;
+
+  # Replace `procedure' with <function>procedure</function>
+  $markup_comment =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%<function>$1</function>%g;
 
   # FIXGJB: use some sgml perl library!
 
@@ -317,6 +347,7 @@ EOC
 			    file => $ARGV,
 			    line => $.,
 			  };
+  push @{$file_funcs{$ARGV}}, $primname;
 
   return TRUE;
 }
