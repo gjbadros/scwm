@@ -1,3 +1,7 @@
+Mon Sep 20 23:26:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Remove float->integer-- it's in flux.scm now.
+
 Mon Sep 20 22:47:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use ui-constraints-{gtk-,}toggle-menu.  Make

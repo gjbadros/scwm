@@ -1,3 +1,12 @@
+Mon Sep 20 23:23:33 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm, rgb-database.scm, path-cache.scm, flux.scm,
+	file.scm: use conditional use-modules, instead of expanding out
+	define-module twice to pick whether or not the popen module is
+	included based on guile-version.
+
+	* flux.scm: Added `make-X-geometry', `float->integer'
+
 Mon Sep 20 17:29:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* animated-iconify.scm: Use xlib-set-line-attributes!, not removed 
