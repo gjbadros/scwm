@@ -30,7 +30,7 @@
 (popup-menu (menu (list (menuitem "foo" #:image-above i))))
 
 (define m (make-message-window-clone-default "Testing..."))
-(define m (make-message-window-clone-default "")
+(define m (make-message-window-clone-default ""))
 
 (message-window-message m)
 
