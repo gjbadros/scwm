@@ -511,7 +511,7 @@ GrabButtonsForPsw(ScwmWindow * psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) && 
+    if ((pbnd->Context & C_WINDOW) && 
         pbnd->IsMouse) {
       GrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
@@ -525,7 +525,7 @@ UngrabButtonsForPsw(ScwmWindow * psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) && 
+    if ((pbnd->Context & C_WINDOW) &&
         pbnd->IsMouse) {
       UngrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
@@ -545,7 +545,7 @@ GrabKeysForPsw(ScwmWindow *psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+    if ((pbnd->Context & C_WINDOW) &&
 	!pbnd->IsMouse) {
       GrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
@@ -559,7 +559,7 @@ UngrabKeysForPsw(ScwmWindow *psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+    if ((pbnd->Context & C_WINDOW) &&
 	!pbnd->IsMouse) {
       UngrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
@@ -648,7 +648,7 @@ remove_binding(int context, unsigned int mods, int button, KeySym keysym,
   if (!mouse_binding) {
     keycode = XKeysymToKeycode(dpy, keysym);
     ungrab_key_all_windows(keycode, mods);
-  } else if (context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) {
+  } else if (context & C_WINDOW) {
     ungrab_button_all_windows(button,mods);
   }
 
@@ -705,7 +705,7 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
     scm_protect_object(release_proc);
 
   if (mouse_p) {
-    if ( (context & (C_WINDOW)) && Scr.fWindowsCaptured) {
+    if ( (context & C_WINDOW) && Scr.fWindowsCaptured) {
       /* only grab the button press if we have already captured,
 	 otherwise it's a waste of time since we will grab
 	 them all later when we do the initial capture;
@@ -825,12 +825,16 @@ PBindingFromMouse(int button,
                   unsigned int modifier, int context)
 {
   Binding *pbnd;
+  unsigned int mask =
+    (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
+     Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
+
   for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
     if (pbnd->IsMouse &&
         ((pbnd->Button_Key == button) ||
          (pbnd->Button_Key == 0)) &&
-	((pbnd->Modifier == (modifier & (~LockMask))) ||
-	 (pbnd->Modifier == AnyModifier)) &&
+	((pbnd->Modifier == (modifier & mask)) ||
+         (pbnd->Modifier == AnyModifier)) &&
 	(pbnd->Context & context)) {
       return pbnd;
     }
