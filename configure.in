@@ -124,7 +124,12 @@ AC_CHECK_FUNC(gethostbyname, , AC_CHECK_LIB(nsl, main, [LIBS="$LIBS -lnsl"]))
 AC_CHECK_LIB(m, main)
 AC_CHECK_LIB(dl, main)
 
-AC_CHECK_LIB(qt, main)
+AC_CHECK_LIB(qthreads,main,[
+LIBS="-lqt $LIBS"
+],[
+AC_CHECK_LIB(qt, qt_null)
+],$LIBS)
+
 AC_CHECK_LIB(guile, scm_handle_by_message_noexit,[
 LIBS="-lguile $LIBS"
 guile_scheme_prefix=`guile -c "(display (cdr (assq 'pkgdatadir %guile-build-info))) (newline)"`
@@ -137,6 +142,13 @@ dnl to have a scm_eval_string that is safe against re-entry by continuations.
 dnl I was to lazy to write a real test macro so I just check for a function
 dnl that was added soon after.
 AC_CHECK_LIB(guile, scm_done_malloc,AC_DEFINE(HAVE_SAFE_SCM_EVAL_STRING))
+
+dnl This checks if the new printer functions are available, and should
+dnl be used instead of the old ones.
+AC_CHECK_LIB(guile, scm_puts,AC_DEFINE(HAVE_SCM_PUTS))
+
+dnl This checks if we have gh_vref or gh_vector_ref
+AC_CHECK_LIB(guile, gh_vector_ref,AC_DEFINE(HAVE_GH_VECTOR_REF))
 
 
 # AC_CHECK_LIB(Xpm,XpmFree); /* ?? */
