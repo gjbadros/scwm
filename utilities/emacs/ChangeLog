@@ -1,3 +1,8 @@
+1999-03-18  Sam Steingold  <sds@goems.com>
+
+	* scwm.el: added scheme-mode compatibility bindings.
+	removed a compile warning.
+
 Fri Mar 12 14:43:35 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Added note about using C-u C-c C-l <RETURN> to reload

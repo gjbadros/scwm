@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1999-02-09 Tue 15:28:59 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1999-03-18 Thu 10:32:51 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -13,28 +13,8 @@
 ;; Functions for editing and running SCWM code under Emacs|
 ;; $Date$|$Revision$||
 
-;;; History:
-
-;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
-;;    03/11/98 gjb
-;;
-;; Completition, help and apropos are completely re-worked by sds
-;;	1998-03-13 Fri 13:58:16 EST	sds
-;;
-;; Fixed scwm-run to restart in the same buffer after a crash.
-;;	1998-03-17 Tue 15:50:55 EST	sds
-;;
-;; Made into a major mode.
-;;	1998-04-16 Thu 10:38:19 CEST	robbe@orcus.priv.at
-;;
-;; Added font-lock support for the major mode stuff.
-;;	1998-04-16 Thu 17:04:43 EDT	sds
-;;
-;; Added font-lock support for XEmacs and Emacs19 compatibility.
-;;	1998-06-19 Fri 09:28:19 EDT	sds
-;;
 ;; This file is distributed under the GPL. See
-;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
+;;	<URL:http://www.gnu.org/copyleft/gpl.html>
 ;; for further details.
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -161,9 +141,8 @@ See also `with-temp-buffer'."
 
 ;;; XEmacs doesn't have thingatpt. Too bad.
 (eval-and-compile
+ (autoload 'id-select-symbol "id-select")
  (unless (fboundp 'thing-at-point)
-   ;; this line gives a warning for Emacs, but is needed for XEmacs
-   (autoload 'id-select-symbol "id-select")
    (defun thing-at-point (what)
      "Return the thing at point (crippled: symbols only!)."
      (unless (eq what 'symbol)
@@ -192,7 +171,9 @@ If you are using Emacs 20.2 or earlier and want to use fontifications,
 you have to (require 'font-lock) first.  Sorry.")
 
 (define-key scwm-mode-map [(control j)] 'scwm-eval-last)
+(define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
+(define-key scwm-mode-map [(control c) (control z)] 'scwm-run)
 (define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
 (define-key scwm-mode-map [(control c) (control l)] 'scwm-load-file)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
@@ -200,6 +181,15 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map [(control h) (control f)]
   'scwm-goto-guile-procedure-node)
 (define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
+;; scheme compatibility bindings
+(define-key scwm-mode-map "\M-\C-x" 'scheme-send-definition)
+(define-key scwm-mode-map "\C-c\C-e" 'scheme-send-definition)
+(define-key scwm-mode-map "\C-c\M-e" 'scheme-send-definition-and-go)
+(define-key scwm-mode-map "\C-c\M-r" 'scheme-send-region-and-go)
+(define-key scwm-mode-map "\C-c\M-c" 'scheme-compile-definition)
+(define-key scwm-mode-map "\C-c\C-c" 'scheme-compile-definition-and-go)
+(define-key scwm-mode-map "\C-c\C-l" 'scheme-load-file)
+(define-key scwm-mode-map "\C-c\C-k" 'scheme-compile-file)
 
 ;;;###autoload
 (defun scwm-run ()
