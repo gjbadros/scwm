@@ -330,6 +330,44 @@ will be returned."
 	(car wlist)
 	#f)))
 
+(define (list-without-elem l e)
+  (cond ((null? l) l)
+	((eq? (car l) e) (cdr l))
+	(else (cons (car l) (list-without-elem (cdr l) e)))))
+
+(define-public (select-window-group)
+  (do ((w #f)
+       (wlist '())
+       (cwin-selected 0)
+       (w #f)
+       (done #f))
+      (done
+       wlist)
+    (set! w (select-window-interactively
+	     (string-append "select #" (number->string cwin-selected))))
+    (if w
+	(if (memq w wlist)
+	    (begin
+	      ;; remove w from wlist
+	      (set! wlist (list-without-elem wlist w))
+	      (unflash-window w)
+	      (set! cwin-selected (- cwin-selected 1)))
+	    (begin
+	      (set! wlist (cons w wlist))
+	      (flash-window w (make-color "red") #f)
+	      (set! cwin-selected (+ cwin-selected 1))))
+	(set! done #t))))
+;; (define wg (select-window-group))
+;; (for-each (lambda (w) (unflash-window w)) wg)
+;; (unflash-window)
+    
+(define-public (select-window-interactively-and-highlight)
+  (let ((w (select-window-interactively)))
+    (flash-window w (make-color "red") #f)
+    w))
+;; (unflash-window (select-window-interactively))
+
+
 ;; Returns them in reverse the order they were selected
 ;; should probably turn off the invalid interaction hook
 ;; or provide a way of telling select-window-interactively that
