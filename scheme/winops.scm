@@ -76,42 +76,42 @@ WIN is only destroyed if it is not deleteable."
 ;;; Maximization
 
 (define*-public (maximize nw nh #&optional (win (get-window)))
-"Maximize WIN to new pixel width NW and new pixel height NH.
+  "Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed."
-(if win (let* ((pos (window-viewport-position win))
-	     (x (car pos))
-	     (y (cadr pos))
-	     (frame-size (window-frame-size win))
-	     (pix-width (car frame-size))
-	     (pix-height (cadr frame-size))
-	     (cli-size (window-size win))
-	     (cli-width (caddr cli-size))
-	     (cli-height (cadddr cli-size)))
-	(resize-frame-to (if (> nw 0) nw pix-width)
-			 (if (> nh 0) nh pix-height) win)
-	;; above is just a hint, get the actual...
-	;; FIXGJB: race conditions?
-	(let* ((new-frame-size (window-frame-size win))
-	       (new-client-size (window-size win))
-	       (nfw (car new-frame-size))
-	       (nfh (cadr new-frame-size))
-	       (ncw (caddr new-client-size))
-	       (nch (cadddr new-client-size))
-	       (nx (cond
-		    ((> 0 x) 0)
-		    ((> display-width (+ x nfw)) x)
-		    ((> display-width nfw) (- display-width nfw))
-		    (#t 0)))
-	       (ny (cond
-		    ((> 0 y) 0)
-		    ((> display-height (+ y nfh)) y)
-		    ((> display-height nfh) (- display-height nfh))
-		    (#t 0))))
-	  (move-window-viewport-position nx ny win)
-	  (if (not (maximized? win))
-	      (set-window-property!
-	       win 'maximized (list x y cli-width cli-height
-				    nx ny ncw nch)))))))
+  (if win (let* ((pos (window-viewport-position win))
+		 (x (car pos))
+		 (y (cadr pos))
+		 (frame-size (window-frame-size win))
+		 (pix-width (car frame-size))
+		 (pix-height (cadr frame-size))
+		 (cli-size (window-size win))
+		 (cli-width (caddr cli-size))
+		 (cli-height (cadddr cli-size)))
+	    (resize-frame-to (if (> nw 0) nw pix-width)
+			     (if (> nh 0) nh pix-height) win)
+	    ;; above is just a hint, get the actual...
+	    ;; FIXGJB: race conditions?
+	    (let* ((new-frame-size (window-frame-size win))
+		   (new-client-size (window-size win))
+		   (nfw (car new-frame-size))
+		   (nfh (cadr new-frame-size))
+		   (ncw (caddr new-client-size))
+		   (nch (cadddr new-client-size))
+		   (nx (cond
+			((> 0 x) 0)
+			((> display-width (+ x nfw)) x)
+			((> display-width nfw) (- display-width nfw))
+			(#t 0)))
+		   (ny (cond
+			((> 0 y) 0)
+			((> display-height (+ y nfh)) y)
+			((> display-height nfh) (- display-height nfh))
+			(#t 0))))
+	      (move-window-viewport-position nx ny win)
+	      (if (not (maximized? win))
+		  (set-window-property!
+		   win 'maximized (list x y cli-width cli-height
+					nx ny ncw nch)))))))
 
 
 (define*-public (maximized? #&optional (win (get-window)))

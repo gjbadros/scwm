@@ -50,10 +50,10 @@
 (define-public (make-style . args)
   (apply make-conditional-style always? args))
 
-  (define (mcs-complain warning key)
-    (error (string-append 
-	    warning " style option: "
-	    (objects->string key))))
+(define (mcs-complain warning key)
+  (error (string-append 
+	  warning " style option: "
+	  (objects->string key))))
 
 
 (define (mcs-parse-args condition args)
