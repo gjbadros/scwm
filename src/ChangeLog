@@ -1,5 +1,20 @@
 1998-11-02  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
+	* session-manager.h (XA_WM_CLIENT_LEADER): New variable.
+
+	* session-manager.c (initSM): Initialize it.
+	(hton32, ntoh32): Removed.
+	(writeI32, readI32): Use `ntohl' and `htonl' instead.
+	(readI32): Return 0 on EOF.
+	(getWindowClientId): New function.
+	(writeWindow): Use it.
+	Write out width/height of client window instead of frame.
+	(readWindow): Return NULL on EOF.
+	(restoreWindowState): Actually implemented.
+	(loadMyself): Would load only the first record.
+
+	* add_window.c (AddWindow): Call to `restoreWindowState' moved up.
+
 	* menu.c (print_menu): But using SAFE_MENUITEM is wasteful, use
 	MENUITEM_P instead.
 
