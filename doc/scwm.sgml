@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-0.8</releaseinfo>
-    <pubdate>23 July 1998</pubdate>
+    <pubdate>24 July 1998</pubdate>
     <copyright>
       <year>1997&ndash;1998</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -72,7 +72,7 @@ returned.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 569 </para> </refsect1>
+  at line 559 </para> </refsect1>
 </refentry>
 
 <refentry id="add-timer-hook-x">
@@ -95,7 +95,7 @@ called with no arguments. A handle suitable for passing to
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 429 </para> </refsect1>
+  at line 422 </para> </refsect1>
 </refentry>
 
 <refentry id="beep">
@@ -115,7 +115,7 @@ called with no arguments. A handle suitable for passing to
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 363 </para> </refsect1>
+  at line 360 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-key">
@@ -138,7 +138,7 @@ called with no arguments. A handle suitable for passing to
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 464 </para> </refsect1>
+  at line 457 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-mouse">
@@ -161,7 +161,7 @@ called with no arguments. A handle suitable for passing to
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 565 </para> </refsect1>
+  at line 558 </para> </refsect1>
 </refentry>
 
 <refentry id="border-normal-p">
@@ -183,7 +183,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2510 </para> </refsect1>
+  at line 2545 </para> </refsect1>
 </refentry>
 
 <refentry id="capturing-p">
@@ -207,7 +207,7 @@ placed at all.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 181 </para> </refsect1>
+  at line 174 </para> </refsect1>
 </refentry>
 
 <refentry id="clear-color-cache-entry">
@@ -231,7 +231,7 @@ associated with <parameter>name</parameter> from the color cache.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 186 </para> </refsect1>
+  at line 178 </para> </refsect1>
 </refentry>
 
 <refentry id="clear-font-cache-entry">
@@ -256,7 +256,7 @@ cache.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 412 </para> </refsect1>
+  at line 357 </para> </refsect1>
 </refentry>
 
 <refentry id="clear-image-cache-entry">
@@ -281,7 +281,7 @@ associated with <parameter>name</parameter> from the image cache.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 553 </para> </refsect1>
+  at line 544 </para> </refsect1>
 </refentry>
 
 <refentry id="clever-place-window">
@@ -308,7 +308,7 @@ returns <literal>#f</literal>; otherwise it returns <literal>#t</literal>.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
-  at line 479 </para> </refsect1>
+  at line 468 </para> </refsect1>
 </refentry>
 
 <refentry id="color-properties">
@@ -330,7 +330,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 98 </para> </refsect1>
+  at line 92 </para> </refsect1>
 </refentry>
 
 <refentry id="color-p">
@@ -350,7 +350,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 84 </para> </refsect1>
+  at line 80 </para> </refsect1>
 </refentry>
 
 <refentry id="current-decor">
@@ -370,7 +370,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
-  at line 297 </para> </refsect1>
+  at line 293 </para> </refsect1>
 </refentry>
 
 <refentry id="current-desk">
@@ -390,7 +390,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 283 </para> </refsect1>
+  at line 279 </para> </refsect1>
 </refentry>
 
 <refentry id="current-window-with-focus">
@@ -410,7 +410,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 481 </para> </refsect1>
+  at line 478 </para> </refsect1>
 </refentry>
 
 <refentry id="current-window-with-pointer">
@@ -430,7 +430,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 491 </para> </refsect1>
+  at line 488 </para> </refsect1>
 </refentry>
 
 <refentry id="default-decor">
@@ -450,7 +450,7 @@ color, and 'pixel, the X pixel value it uses.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
-  at line 257 </para> </refsect1>
+  at line 253 </para> </refsect1>
 </refentry>
 
 <refentry id="default-placement-proc">
@@ -478,7 +478,7 @@ by the user, the position was specified by the program, and
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
-  at line 555 </para> </refsect1>
+  at line 543 </para> </refsect1>
 </refentry>
 
 <refentry id="default-transient-placement-proc">
@@ -499,7 +499,7 @@ It simply leaves the window <parameter>win</parameter> in place, exactly as requ
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
-  at line 600 </para> </refsect1>
+  at line 595 </para> </refsect1>
 </refentry>
 
 <refentry id="deiconify">
@@ -522,7 +522,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1564 </para> </refsect1>
+  at line 1558 </para> </refsect1>
 </refentry>
 
 <refentry id="delete-window">
@@ -545,7 +545,7 @@ the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1222 </para> </refsect1>
+  at line 1216 </para> </refsect1>
 </refentry>
 
 <refentry id="desk-size">
@@ -567,7 +567,7 @@ of the width and the height.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 258 </para> </refsect1>
+  at line 252 </para> </refsect1>
 </refentry>
 
 <refentry id="destroy-window">
@@ -590,7 +590,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1252 </para> </refsect1>
+  at line 1246 </para> </refsect1>
 </refentry>
 
 <refentry id="display-size">
@@ -612,7 +612,7 @@ width is the <link linkend="car"><function>car</function></link>, the height is 
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 244 </para> </refsect1>
+  at line 238 </para> </refsect1>
 </refentry>
 
 <refentry id="focus">
@@ -634,7 +634,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1296 </para> </refsect1>
+  at line 1291 </para> </refsect1>
 </refentry>
 
 <refentry id="font-properties">
@@ -656,7 +656,7 @@ color, and 'height, it's total height in pixels.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 248 </para> </refsect1>
+  at line 241 </para> </refsect1>
 </refentry>
 
 <refentry id="font-p">
@@ -676,7 +676,7 @@ color, and 'height, it's total height in pixels.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 236 </para> </refsect1>
+  at line 231 </para> </refsect1>
 </refentry>
 
 <refentry id="frame-id-to-window">
@@ -698,7 +698,7 @@ such window object, return <literal>#f</literal>.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2212 </para> </refsect1>
+  at line 2247 </para> </refsect1>
 </refentry>
 
 <refentry id="get-window">
@@ -729,7 +729,7 @@ arguments)
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 450 </para> </refsect1>
+  at line 436 </para> </refsect1>
 </refentry>
 
 <refentry id="hide-titlebar">
@@ -750,7 +750,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2402 </para> </refsect1>
+  at line 2438 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-background">
@@ -771,7 +771,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 687 </para> </refsect1>
+  at line 682 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-factor">
@@ -791,7 +791,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 458 </para> </refsect1>
+  at line 454 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-foreground">
@@ -812,7 +812,7 @@ Applies to the focus in the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 614 </para> </refsect1>
+  at line 609 </para> </refsect1>
 </refentry>
 
 <refentry id="icon-sticky-p">
@@ -834,7 +834,7 @@ the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2597 </para> </refsect1>
+  at line 2632 </para> </refsect1>
 </refentry>
 
 <refentry id="iconified-p">
@@ -856,7 +856,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1580 </para> </refsect1>
+  at line 1575 </para> </refsect1>
 </refentry>
 
 <refentry id="iconify">
@@ -879,7 +879,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1538 </para> </refsect1>
+  at line 1532 </para> </refsect1>
 </refentry>
 
 <refentry id="id-to-window">
@@ -901,7 +901,7 @@ such window object, return <literal>#f</literal>.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2191 </para> </refsect1>
+  at line 2226 </para> </refsect1>
 </refentry>
 
 <refentry id="image-properties">
@@ -924,7 +924,7 @@ depth, it's color depth.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 167 </para> </refsect1>
+  at line 159 </para> </refsect1>
 </refentry>
 
 <refentry id="image-p">
@@ -944,7 +944,7 @@ depth, it's color depth.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 153 </para> </refsect1>
+  at line 149 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-move">
@@ -968,7 +968,7 @@ usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1969 </para> </refsect1>
+  at line 2002 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-resize">
@@ -991,7 +991,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 381 </para> </refsect1>
+  at line 387 </para> </refsect1>
 </refentry>
 
 <refentry id="keep-on-top">
@@ -1013,7 +1013,7 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2312 </para> </refsect1>
+  at line 2347 </para> </refsect1>
 </refentry>
 
 <refentry id="kept-on-top-p">
@@ -1035,7 +1035,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2355 </para> </refsect1>
+  at line 2390 </para> </refsect1>
 </refentry>
 
 <refentry id="list-all-windows">
@@ -1056,7 +1056,7 @@ semi-arbitrary order that is convenient for the sake of circulation.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2294 </para> </refsect1>
+  at line 2330 </para> </refsect1>
 </refentry>
 
 <refentry id="load-xbm">
@@ -1076,7 +1076,7 @@ semi-arbitrary order that is convenient for the sake of circulation.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 223 </para> </refsect1>
+  at line 219 </para> </refsect1>
 </refentry>
 
 <refentry id="load-xpm">
@@ -1096,7 +1096,7 @@ semi-arbitrary order that is convenient for the sake of circulation.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 257 </para> </refsect1>
+  at line 253 </para> </refsect1>
 </refentry>
 
 <refentry id="lower-window">
@@ -1117,7 +1117,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1371 </para> </refsect1>
+  at line 1366 </para> </refsect1>
 </refentry>
 
 <refentry id="make-color">
@@ -1139,7 +1139,7 @@ allocated, an error results.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 116 </para> </refsect1>
+  at line 110 </para> </refsect1>
 </refentry>
 
 <refentry id="make-decor">
@@ -1161,7 +1161,7 @@ printed.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
-  at line 231 </para> </refsect1>
+  at line 225 </para> </refsect1>
 </refentry>
 
 <refentry id="make-face">
@@ -1183,7 +1183,7 @@ printed.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 328 </para> </refsect1>
+  at line 322 </para> </refsect1>
 </refentry>
 
 <refentry id="make-font">
@@ -1205,7 +1205,7 @@ allocated, an error results.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 106 </para> </refsect1>
+  at line 99 </para> </refsect1>
 </refentry>
 
 <refentry id="make-image">
@@ -1229,7 +1229,7 @@ appropriate file.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 483 </para> </refsect1>
+  at line 475 </para> </refsect1>
 </refentry>
 
 <refentry id="make-menu">
@@ -1255,7 +1255,7 @@ drawing code (not used currently).
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 210 </para> </refsect1>
+  at line 196 </para> </refsect1>
 </refentry>
 
 <refentry id="make-menuitem">
@@ -1290,7 +1290,7 @@ for assigning shortcut keys to the various menuitems.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menuitem.c"><filename>scwm/menuitem.c</filename></ulink>
-  at line 139 </para> </refsect1>
+  at line 118 </para> </refsect1>
 </refentry>
 
 <refentry id="make-relief-color">
@@ -1315,7 +1315,7 @@ which is suitable for use as a hilight.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 372 </para> </refsect1>
+  at line 363 </para> </refsect1>
 </refentry>
 
 <refentry id="marshal-fvwm2-config-info">
@@ -1337,7 +1337,7 @@ module packet for <parameter>win</parameter> as a Scheme string.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/module-interface.c"><filename>scwm/module-interface.c</filename></ulink>
-  at line 89 </para> </refsect1>
+  at line 83 </para> </refsect1>
 </refentry>
 
 <refentry id="marshal-fvwm2-iconify-info">
@@ -1359,7 +1359,7 @@ module packet for <parameter>win</parameter> as a Scheme string.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/module-interface.c"><filename>scwm/module-interface.c</filename></ulink>
-  at line 133 </para> </refsect1>
+  at line 127 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-hilight-factor">
@@ -1379,7 +1379,7 @@ module packet for <parameter>win</parameter> as a Scheme string.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 533 </para> </refsect1>
+  at line 529 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-properties">
@@ -1402,7 +1402,7 @@ font extra-options used-shortcut-keys)
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 177 </para> </refsect1>
+  at line 170 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-shadow-factor">
@@ -1422,7 +1422,7 @@ font extra-options used-shortcut-keys)
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 562 </para> </refsect1>
+  at line 558 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-p">
@@ -1442,7 +1442,7 @@ font extra-options used-shortcut-keys)
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 116 </para> </refsect1>
+  at line 112 </para> </refsect1>
 </refentry>
 
 <refentry id="menuitem-properties">
@@ -1468,7 +1468,7 @@ primitive
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menuitem.c"><filename>scwm/menuitem.c</filename></ulink>
-  at line 100 </para> </refsect1>
+  at line 90 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-alt">
@@ -1490,7 +1490,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 763 </para> </refsect1>
+  at line 758 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-hyper">
@@ -1512,7 +1512,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 771 </para> </refsect1>
+  at line 766 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-meta">
@@ -1534,7 +1534,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 755 </para> </refsect1>
+  at line 750 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-super">
@@ -1556,7 +1556,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 780 </para> </refsect1>
+  at line 775 </para> </refsect1>
 </refentry>
 
 <refentry id="mouse-event-type">
@@ -1577,7 +1577,7 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 744 </para> </refsect1>
+  at line 739 </para> </refsect1>
 </refentry>
 
 <refentry id="move-pointer-to">
@@ -1597,7 +1597,7 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 288 </para> </refsect1>
+  at line 285 </para> </refsect1>
 </refentry>
 
 <refentry id="move-to">
@@ -1623,7 +1623,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1883 </para> </refsect1>
+  at line 1914 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window-to-desk">
@@ -1644,7 +1644,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2079 </para> </refsect1>
+  at line 2115 </para> </refsect1>
 </refentry>
 
 <refentry id="normal-border">
@@ -1666,7 +1666,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2446 </para> </refsect1>
+  at line 2481 </para> </refsect1>
 </refentry>
 
 <refentry id="plain-border">
@@ -1689,7 +1689,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2480 </para> </refsect1>
+  at line 2512 </para> </refsect1>
 </refentry>
 
 <refentry id="pointer-position">
@@ -1710,7 +1710,7 @@ The return value is a two-element list of the x and y coordinates.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 273 </para> </refsect1>
+  at line 269 </para> </refsect1>
 </refentry>
 
 <refentry id="popup-menu">
@@ -1730,7 +1730,7 @@ The return value is a two-element list of the x and y coordinates.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1240 </para> </refsect1>
+  at line 1236 </para> </refsect1>
 </refentry>
 
 <refentry id="raise-window">
@@ -1752,7 +1752,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1345 </para> </refsect1>
+  at line 1340 </para> </refsect1>
 </refentry>
 
 <refentry id="raised-p">
@@ -1774,7 +1774,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1476 </para> </refsect1>
+  at line 1471 </para> </refsect1>
 </refentry>
 
 <refentry id="random-place-window">
@@ -1799,7 +1799,7 @@ interaction. <literal>#t</literal> is always returned.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
-  at line 515 </para> </refsect1>
+  at line 506 </para> </refsect1>
 </refentry>
 
 <refentry id="recapture">
@@ -1821,7 +1821,7 @@ scratch. This is hopefully not necessary during normal operation.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 317 </para> </refsect1>
+  at line 312 </para> </refsect1>
 </refentry>
 
 <refentry id="refresh">
@@ -1842,7 +1842,7 @@ this should not be needed.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 192 </para> </refsect1>
+  at line 188 </para> </refsect1>
 </refentry>
 
 <refentry id="refresh-window">
@@ -1866,7 +1866,7 @@ way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2058 </para> </refsect1>
+  at line 2091 </para> </refsect1>
 </refentry>
 
 <refentry id="register-image-loader">
@@ -1891,7 +1891,7 @@ image object, or <literal>#f</literal> if it succeeds.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 310 </para> </refsect1>
+  at line 301 </para> </refsect1>
 </refentry>
 
 <refentry id="remove-input-hook-x">
@@ -1913,7 +1913,7 @@ input hook may safely remove itself.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 595 </para> </refsect1>
+  at line 589 </para> </refsect1>
 </refentry>
 
 <refentry id="remove-timer-hook-x">
@@ -1936,7 +1936,7 @@ timer hook that has already been triggered.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 471 </para> </refsect1>
+  at line 464 </para> </refsect1>
 </refentry>
 
 <refentry id="reset-scwmexec-protocol">
@@ -1961,7 +1961,7 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 466 </para> </refsect1>
+  at line 458 </para> </refsect1>
 </refentry>
 
 <refentry id="resize-to">
@@ -1983,7 +1983,7 @@ usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2010 </para> </refsect1>
+  at line 2045 </para> </refsect1>
 </refentry>
 
 <refentry id="restack-windows">
@@ -2007,7 +2007,7 @@ fvwm2 modules).
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1390 </para> </refsect1>
+  at line 1383 </para> </refsect1>
 </refentry>
 
 <refentry id="restart">
@@ -2030,7 +2030,7 @@ arguments as given previously.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
-  at line 133 </para> </refsect1>
+  at line 126 </para> </refsect1>
 </refentry>
 
 <refentry id="restarted-p">
@@ -2050,7 +2050,7 @@ arguments as given previously.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 168 </para> </refsect1>
+  at line 165 </para> </refsect1>
 </refentry>
 
 <refentry id="safe-load">
@@ -2074,7 +2074,47 @@ errors.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 251 </para> </refsect1>
+  at line 243 </para> </refsect1>
+</refentry>
+
+<refentry id="scwm-path-exec-prefix">
+  <refnamediv>
+    <refname>scwm-path-exec-prefix</refname>
+    <refpurpose>Return the <envar>$EXECPREFIX</envar> directory path that scwm was installed with.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(scwm-path-exec-prefix)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the <envar>$EXECPREFIX</envar> directory path that scwm was installed with.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Implemenation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
+  at line 464 </para> </refsect1>
+</refentry>
+
+<refentry id="scwm-path-prefix">
+  <refnamediv>
+    <refname>scwm-path-prefix</refname>
+    <refpurpose>Return the <envar>$PREFIX</envar> directory path that scwm was installed with.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(scwm-path-prefix)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Implemenation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
+  at line 455 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-quit">
@@ -2095,7 +2135,7 @@ scwm. <parameter>args</parameter> is ignored.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
-  at line 157 </para> </refsect1>
+  at line 152 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-version">
@@ -2115,7 +2155,7 @@ scwm. <parameter>args</parameter> is ignored.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 449 </para> </refsect1>
+  at line 446 </para> </refsect1>
 </refentry>
 
 <refentry id="select-window">
@@ -2141,7 +2181,7 @@ place-holder until we have proper cursor support in scwm.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 867 </para> </refsect1>
+  at line 858 </para> </refsect1>
 </refentry>
 
 <refentry id="select-window-interactively">
@@ -2161,7 +2201,7 @@ place-holder until we have proper cursor support in scwm.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 502 </para> </refsect1>
+  at line 499 </para> </refsect1>
 </refentry>
 
 <refentry id="send-button-press">
@@ -2189,7 +2229,7 @@ worry about this unless you know what it means.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1760 </para> </refsect1>
+  at line 1744 </para> </refsect1>
 </refentry>
 
 <refentry id="send-key-press">
@@ -2216,7 +2256,7 @@ should not have to worry about this unless you know what it means.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1847 </para> </refsect1>
+  at line 1832 </para> </refsect1>
 </refentry>
 
 <refentry id="set-animation-x">
@@ -2242,7 +2282,7 @@ animated window shades and animated moves.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1836 </para> </refsect1>
+  at line 1867 </para> </refsect1>
 </refentry>
 
 <refentry id="set-border-face-x">
@@ -2265,7 +2305,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 944 </para> </refsect1>
+  at line 937 </para> </refsect1>
 </refentry>
 
 <refentry id="set-border-width-x">
@@ -2286,7 +2326,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2523 </para> </refsect1>
+  at line 2559 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-face-x">
@@ -2314,7 +2354,7 @@ default.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 855 </para> </refsect1>
+  at line 843 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-mwm-flag-x">
@@ -2337,7 +2377,7 @@ when the window is maximized.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 911 </para> </refsect1>
+  at line 904 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-time-x">
@@ -2360,7 +2400,7 @@ single click is definitively identified as not a double click.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 206 </para> </refsect1>
+  at line 200 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-to-focus-passes-click-x">
@@ -2382,7 +2422,7 @@ will not pass the event on to the client.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 396 </para> </refsect1>
+  at line 391 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-to-focus-raises-x">
@@ -2404,7 +2444,7 @@ window
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 413 </para> </refsect1>
+  at line 408 </para> </refsect1>
 </refentry>
 
 <refentry id="set-colormap-focus-x">
@@ -2428,7 +2468,7 @@ makes a difference only when using focus policies other than 'mouse.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 227 </para> </refsect1>
+  at line 220 </para> </refsect1>
 </refentry>
 
 <refentry id="set-current-decor-x">
@@ -2450,7 +2490,7 @@ one.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
-  at line 269 </para> </refsect1>
+  at line 263 </para> </refsect1>
 </refentry>
 
 <refentry id="set-current-desk-x">
@@ -2471,7 +2511,7 @@ small enough to fit in one machine word.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 63 </para> </refsect1>
+  at line 58 </para> </refsect1>
 </refentry>
 
 <refentry id="set-decorate-transient-x">
@@ -2495,7 +2535,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3045 </para> </refsect1>
+  at line 3078 </para> </refsect1>
 </refentry>
 
 <refentry id="set-desk-size-x">
@@ -2511,14 +2551,14 @@ defaults to the window context in the usual way if not specified.
   <para>
   Sets the desk size to <parameter>width</parameter>, <parameter>height</parameter>.
 Both numbers are given in units of the physical screen size.
-For example &lt;code&lt;(set-desk-size 3 3)&lt;/code&lt; creates a
+For example <code>(set-desk-size 3 3)</code> creates a
 virtual world 9 times the size of the physical display.
   </para>
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 209 </para> </refsect1>
+  at line 202 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-resistance-x">
@@ -2547,7 +2587,7 @@ will really go past the edge.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 182 </para> </refsect1>
+  at line 169 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -2571,7 +2611,7 @@ and `%y' to convert from a percent of screen size to pixels.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 113 </para> </refsect1>
+  at line 105 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-wrap-x">
@@ -2595,7 +2635,7 @@ wraparound is in effect
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 141 </para> </refsect1>
+  at line 133 </para> </refsect1>
 </refentry>
 
 <refentry id="set-force-icon-x">
@@ -2618,7 +2658,7 @@ way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2877 </para> </refsect1>
+  at line 2911 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-background-x">
@@ -2639,7 +2679,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 633 </para> </refsect1>
+  at line 628 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-factor-x">
@@ -2660,7 +2700,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 436 </para> </refsect1>
+  at line 431 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-foreground-x">
@@ -2681,7 +2721,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 590 </para> </refsect1>
+  at line 585 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hint-override-x">
@@ -2705,7 +2745,7 @@ not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3028 </para> </refsect1>
+  at line 3061 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-x">
@@ -2728,7 +2768,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2923 </para> </refsect1>
+  at line 2957 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-box-x">
@@ -2751,7 +2791,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2611 </para> </refsect1>
+  at line 2645 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-font-x">
@@ -2771,7 +2811,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 263 </para> </refsect1>
+  at line 258 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-title-x">
@@ -2792,7 +2832,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2858 </para> </refsect1>
+  at line 2894 </para> </refsect1>
 </refentry>
 
 <refentry id="set-lenience-x">
@@ -2817,7 +2857,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3161 </para> </refsect1>
+  at line 3193 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-background-x">
@@ -2837,7 +2877,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 727 </para> </refsect1>
+  at line 723 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-font-x">
@@ -2857,7 +2897,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 384 </para> </refsect1>
+  at line 334 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-foreground-x">
@@ -2877,7 +2917,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 700 </para> </refsect1>
+  at line 696 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-hilight-factor-x">
@@ -2898,7 +2938,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 515 </para> </refsect1>
+  at line 510 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-mwm-style-x">
@@ -2919,7 +2959,7 @@ This option is currently ignored.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 37 </para> </refsect1>
+  at line 33 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-shadow-factor-x">
@@ -2940,7 +2980,7 @@ This option is currently ignored.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 544 </para> </refsect1>
+  at line 539 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-stipple-x">
@@ -2961,7 +3001,30 @@ May not be used any longer.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 783 </para> </refsect1>
+  at line 778 </para> </refsect1>
+</refentry>
+
+<refentry id="set-message-window-attributes-x">
+  <refnamediv>
+    <refname>set-message-window-attributes!</refname>
+    <refpurpose>Set the attributes to be used for the message window.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(set-message-window-attributes! font fg-color bg-color)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Set the attributes to be used for the message window.
+The font will be <parameter>font</parameter>, foreground color <parameter>fg-color</parameter>, and background color <parameter>bg-color</parameter>.
+This the window which is used to display the current size or position of the window
+being moved or resized interactively.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Implemenation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
+  at line 147 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mini-icon-x">
@@ -2983,7 +3046,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2974 </para> </refsect1>
+  at line 3009 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mouse-focus-click-raises-x">
@@ -3005,7 +3068,7 @@ makes sense any more.  FIXDOC.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 435 </para> </refsect1>
+  at line 430 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-border-x">
@@ -3028,7 +3091,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2830 </para> </refsect1>
+  at line 2864 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-buttons-x">
@@ -3051,7 +3114,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2814 </para> </refsect1>
+  at line 2848 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-decor-hint-x">
@@ -3073,7 +3136,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3059 </para> </refsect1>
+  at line 3094 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-func-hint-x">
@@ -3096,7 +3159,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3074 </para> </refsect1>
+  at line 3108 </para> </refsect1>
 </refentry>
 
 <refentry id="set-OL-decor-hint-x">
@@ -3118,7 +3181,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3105 </para> </refsect1>
+  at line 3140 </para> </refsect1>
 </refentry>
 
 <refentry id="set-opaque-move-size-x">
@@ -3141,7 +3204,7 @@ a rubber band instead.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 255 </para> </refsect1>
+  at line 249 </para> </refsect1>
 </refentry>
 
 <refentry id="set-PPosition-hint-x">
@@ -3166,7 +3229,7 @@ usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3091 </para> </refsect1>
+  at line 3123 </para> </refsect1>
 </refentry>
 
 <refentry id="set-random-placement-x">
@@ -3189,7 +3252,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2759 </para> </refsect1>
+  at line 2793 </para> </refsect1>
 </refentry>
 
 <refentry id="set-rubber-band-mask-x">
@@ -3211,7 +3274,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 64 </para> </refsect1>
+  at line 59 </para> </refsect1>
 </refentry>
 
 <refentry id="set-shadow-factor-x">
@@ -3232,7 +3295,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 473 </para> </refsect1>
+  at line 468 </para> </refsect1>
 </refentry>
 
 <refentry id="set-show-icon-x">
@@ -3256,7 +3319,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2905 </para> </refsect1>
+  at line 2938 </para> </refsect1>
 </refentry>
 
 <refentry id="set-skip-mapping-x">
@@ -3279,7 +3342,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3144 </para> </refsect1>
+  at line 3178 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-x">
@@ -3302,7 +3365,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2774 </para> </refsect1>
+  at line 2808 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-is-really-smart-x">
@@ -3326,7 +3389,7 @@ value <parameter>flag</parameter>.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 378 </para> </refsect1>
+  at line 371 </para> </refsect1>
 </refentry>
 
 <refentry id="set-start-on-desk-x">
@@ -3347,7 +3410,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3118 </para> </refsect1>
+  at line 3154 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-face-x">
@@ -3374,7 +3437,7 @@ state, it will be sunk in the <parameter>active-down</parameter> state by defaul
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 814 </para> </refsect1>
+  at line 803 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-height-x">
@@ -3395,7 +3458,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 129 </para> </refsect1>
+  at line 125 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-justify-x">
@@ -3417,7 +3480,7 @@ current decor
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 95 </para> </refsect1>
+  at line 90 </para> </refsect1>
 </refentry>
 
 <refentry id="set-viewport-position-x">
@@ -3438,7 +3501,7 @@ current decor
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 88 </para> </refsect1>
+  at line 83 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-background-x">
@@ -3462,7 +3525,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2730 </para> </refsect1>
+  at line 2763 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-button-x">
@@ -3485,7 +3548,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2789 </para> </refsect1>
+  at line 2823 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-decor-x">
@@ -3506,7 +3569,7 @@ the window context in the usual way.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
-  at line 312 </para> </refsect1>
+  at line 307 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-focus-x">
@@ -3528,7 +3591,7 @@ if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2670 </para> </refsect1>
+  at line 2705 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-font-x">
@@ -3548,7 +3611,7 @@ if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
-  at line 285 </para> </refsect1>
+  at line 280 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-foreground-x">
@@ -3571,7 +3634,7 @@ if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2706 </para> </refsect1>
+  at line 2740 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-text-property">
@@ -3592,7 +3655,7 @@ Uses format 8 (byte) and type "XA_STRING", and <parameter>value</parameter> as t
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 136 </para> </refsect1>
+  at line 131 </para> </refsect1>
 </refentry>
 
 <refentry id="shadow-factor">
@@ -3612,7 +3675,7 @@ Uses format 8 (byte) and type "XA_STRING", and <parameter>value</parameter> as t
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 496 </para> </refsect1>
+  at line 492 </para> </refsect1>
 </refentry>
 
 <refentry id="show-titlebar">
@@ -3634,7 +3697,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2371 </para> </refsect1>
+  at line 2406 </para> </refsect1>
 </refentry>
 
 <refentry id="smart-place-window">
@@ -3658,7 +3721,7 @@ returns <literal>#t</literal>.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
-  at line 431 </para> </refsect1>
+  at line 423 </para> </refsect1>
 </refentry>
 
 <refentry id="stick">
@@ -3682,7 +3745,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1595 </para> </refsect1>
+  at line 1588 </para> </refsect1>
 </refentry>
 
 <refentry id="stick-icon">
@@ -3703,7 +3766,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2557 </para> </refsect1>
+  at line 2593 </para> </refsect1>
 </refentry>
 
 <refentry id="sticky-p">
@@ -3725,7 +3788,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1636 </para> </refsect1>
+  at line 1631 </para> </refsect1>
 </refentry>
 
 <refentry id="string-to-xproperty">
@@ -3745,7 +3808,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 231 </para> </refsect1>
+  at line 227 </para> </refsect1>
 </refentry>
 
 <refentry id="titlebar-shown-p">
@@ -3767,7 +3830,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2433 </para> </refsect1>
+  at line 2468 </para> </refsect1>
 </refentry>
 
 <refentry id="transient-p">
@@ -3789,7 +3852,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1493 </para> </refsect1>
+  at line 1488 </para> </refsect1>
 </refentry>
 
 <refentry id="un-keep-on-top">
@@ -3811,7 +3874,7 @@ way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2334 </para> </refsect1>
+  at line 2369 </para> </refsect1>
 </refentry>
 
 <refentry id="un-window-shade">
@@ -3835,7 +3898,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1731 </para> </refsect1>
+  at line 1724 </para> </refsect1>
 </refentry>
 
 <refentry id="unbind-key">
@@ -3857,7 +3920,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 329 </para> </refsect1>
+  at line 323 </para> </refsect1>
 </refentry>
 
 <refentry id="unbind-mouse">
@@ -3879,7 +3942,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 390 </para> </refsect1>
+  at line 384 </para> </refsect1>
 </refentry>
 
 <refentry id="unfocus">
@@ -3899,7 +3962,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1313 </para> </refsect1>
+  at line 1310 </para> </refsect1>
 </refentry>
 
 <refentry id="unregister-image-loader">
@@ -3922,7 +3985,7 @@ empty string (for files with no extension), or the string "default"
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 334 </para> </refsect1>
+  at line 327 </para> </refsect1>
 </refentry>
 
 <refentry id="unstick">
@@ -3944,7 +4007,7 @@ the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1616 </para> </refsect1>
+  at line 1611 </para> </refsect1>
 </refentry>
 
 <refentry id="unstick-icon">
@@ -3966,7 +4029,7 @@ not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2577 </para> </refsect1>
+  at line 2612 </para> </refsect1>
 </refentry>
 
 <refentry id="viewport-position">
@@ -3987,7 +4050,7 @@ The returned value is a list of the x and y positions.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 271 </para> </refsect1>
+  at line 266 </para> </refsect1>
 </refentry>
 
 <refentry id="wait-for-window">
@@ -4009,7 +4072,7 @@ usefulness.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 334 </para> </refsect1>
+  at line 329 </para> </refsect1>
 </refentry>
 
 <refentry id="warp-to-window">
@@ -4032,7 +4095,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1329 </para> </refsect1>
+  at line 1323 </para> </refsect1>
 </refentry>
 
 <refentry id="window-class">
@@ -4054,7 +4117,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2270 </para> </refsect1>
+  at line 2305 </para> </refsect1>
 </refentry>
 
 <refentry id="window-deletable-p">
@@ -4077,7 +4140,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1283 </para> </refsect1>
+  at line 1277 </para> </refsect1>
 </refentry>
 
 <refentry id="window-desk">
@@ -4098,7 +4161,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2234 </para> </refsect1>
+  at line 2270 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-id">
@@ -4120,7 +4183,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2178 </para> </refsect1>
+  at line 2213 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon">
@@ -4142,7 +4205,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2957 </para> </refsect1>
+  at line 2992 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-title">
@@ -4164,7 +4227,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2258 </para> </refsect1>
+  at line 2293 </para> </refsect1>
 </refentry>
 
 <refentry id="window-id">
@@ -4186,7 +4249,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2165 </para> </refsect1>
+  at line 2200 </para> </refsect1>
 </refentry>
 
 <refentry id="window-mini-icon">
@@ -4208,7 +4271,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3009 </para> </refsect1>
+  at line 3044 </para> </refsect1>
 </refentry>
 
 <refentry id="window-position">
@@ -4230,7 +4293,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2127 </para> </refsect1>
+  at line 2162 </para> </refsect1>
 </refentry>
 
 <refentry id="window-resource">
@@ -4251,7 +4314,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2282 </para> </refsect1>
+  at line 2318 </para> </refsect1>
 </refentry>
 
 <refentry id="window-shade">
@@ -4276,7 +4339,7 @@ not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1663 </para> </refsect1>
+  at line 1655 </para> </refsect1>
 </refentry>
 
 <refentry id="window-shaded-p">
@@ -4298,7 +4361,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1774 </para> </refsect1>
+  at line 1769 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size">
@@ -4320,7 +4383,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2146 </para> </refsect1>
+  at line 2181 </para> </refsect1>
 </refentry>
 
 <refentry id="window-title">
@@ -4341,7 +4404,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2246 </para> </refsect1>
+  at line 2282 </para> </refsect1>
 </refentry>
 
 <refentry id="window-transient-for">
@@ -4366,7 +4429,7 @@ specified.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1511 </para> </refsect1>
+  at line 1503 </para> </refsect1>
 </refentry>
 
 <refentry id="window-xproperty">
@@ -4388,7 +4451,7 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 168 </para> </refsect1>
+  at line 162 </para> </refsect1>
 </refentry>
 
 <refentry id="window-p">
@@ -4408,7 +4471,7 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 417 </para> </refsect1>
+  at line 414 </para> </refsect1>
 </refentry>
 
 <refentry id="X-display-information">
@@ -4437,7 +4500,7 @@ be shared among multiple machines.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 488 </para> </refsect1>
+  at line 496 </para> </refsect1>
 </refentry>
 
 <refentry id="X-pointer-mapping">
@@ -4451,7 +4514,7 @@ be shared among multiple machines.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the mapping of physical-&lt;logical pointer buttons as a list.
+  Return the mapping of physical->logical pointer buttons as a list.
 The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
@@ -4461,7 +4524,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 792 </para> </refsect1>
+  at line 784 </para> </refsect1>
 </refentry>
 
 <refentry id="X-version-information">
@@ -4483,7 +4546,7 @@ revision, the X server vendor, and the vendor release number.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 461 </para> </refsect1>
+  at line 476 </para> </refsect1>
 </refentry>
 
 <refentry id="xproperty-to-string">
@@ -4503,7 +4566,7 @@ revision, the X server vendor, and the vendor release number.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 218 </para> </refsect1>
+  at line 214 </para> </refsect1>
 </refentry>
 
 <refentry id="xproperty-p">
@@ -4523,7 +4586,7 @@ revision, the X server vendor, and the vendor release number.
   <refsect1>
   <title>Implemenation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 105 </para> </refsect1>
+  at line 101 </para> </refsect1>
 </refentry>
 
   </chapter>
@@ -4651,6 +4714,8 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="set-click-to-focus-raises-x"><function>set-click-to-focus-raises!</function></link> &mdash; Determine whether a click to focus raises the clicked-on window.</para></listitem>
       <listitem><para><link linkend="set-mouse-focus-click-raises-x"><function>set-mouse-focus-click-raises!</function></link> &mdash; Determine whether a mouse-focus-click will raise the window.</para></listitem>
       <listitem><para><link linkend="scwm-version"><function>scwm-version</function></link> &mdash; Return the version of scwm running.</para></listitem>
+      <listitem><para><link linkend="scwm-path-prefix"><function>scwm-path-prefix</function></link> &mdash; Return the <envar>$PREFIX</envar> directory path that scwm was installed with.</para></listitem>
+      <listitem><para><link linkend="scwm-path-exec-prefix"><function>scwm-path-exec-prefix</function></link> &mdash; Return the <envar>$EXECPREFIX</envar> directory path that scwm was installed with.</para></listitem>
       <listitem><para><link linkend="X-version-information"><function>X-version-information</function></link> &mdash; Return some information about the version of the running X server.</para></listitem>
       <listitem><para><link linkend="X-display-information"><function>X-display-information</function></link> &mdash; Return some information about the screen.</para></listitem>
     </itemizedlist> </sect1>
@@ -4666,6 +4731,7 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="default-transient-placement-proc"><function>default-transient-placement-proc</function></link> &mdash; This is the default placement procedure for transient windows.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/resize.c</title> <itemizedlist>
+      <listitem><para><link linkend="set-message-window-attributes-x"><function>set-message-window-attributes!</function></link> &mdash; Set the attributes to be used for the message window.</para></listitem>
       <listitem><para><link linkend="interactive-resize"><function>interactive-resize</function></link> &mdash; Resize WIN interactively.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/shutdown.c</title> <itemizedlist>
@@ -4764,6 +4830,387 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="xproperty-to-string"><function>xproperty->string</function></link> &mdash; Convert that data portion of xproperty object PROP to a string.</para></listitem>
       <listitem><para><link linkend="string-to-xproperty"><function>string->xproperty</function></link> &mdash; Create an xproperty object from STR.</para></listitem>
     </itemizedlist> </sect1>
+  </chapter>
+  <chapter>
+    <title>Hooks</title>
+    <sect1 id="after-new-window-hook"><title>after-new-window-hook</title><para>
+  This hook is invoked when a new window has been completely created
+and placed on the screen. Any window operations may be performed at
+this time. However, it is recommended that placement-related
+operations, such as setting the position, desk, viewport location and
+z-ordering of a window be done in the placement procedure instead.
+
+This hook does not typically need to be used directly by the user;
+<link linkend="window-style"><function>window-style</function></link> from the (app scwm style) module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. 
+    </para></sect1>
+    <sect1 id="before-new-window-hook"><title>before-new-window-hook</title><para>
+  This hook is invoked when a new window structure is first starting
+to be created. Only a subset of the usual window paramenters should be
+set here, in particular, those that control what hints will be
+respected for this window, and those that control how the window will
+be placed.
+
+This hook does not typically need to be used directly by the user;
+<link linkend="window-style"><function>window-style</function></link> from the (app scwm style) module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. 
+    </para></sect1>
+    <sect1 id="boradcast-mini-icon-hook"><title>boradcast-mini-icon-hook</title><para>
+  This hook is invoked whenever BroadcastMiniIcon would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures The procedures in this hook are passed a window
+structure as the sole argument.  
+    </para></sect1>
+    <sect1 id="boradcast-name-hook"><title>boradcast-name-hook</title><para>
+  This hook is invoked whenever BroadcastName would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways
+that can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed an event type, three
+numeric data arguments, and a string.  
+  
+    </para></sect1>
+    <sect1 id="broadcast-config-hook"><title>broadcast-config-hook</title><para>
+  This hook is invoked whenever BroadcastConfig would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a window structure as the
+sole argument.
+  
+    </para></sect1>
+    <sect1 id="broadcast-hook"><title>broadcast-hook</title><para>
+  This hook is invoked whenever Broadcast would be called in
+fvwm2. This hook is principlally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a numerical code
+representing the event type, a number that indicates how many of the
+following data arguments are meaningful, and 7 numeric data arguments.
+  
+    </para></sect1>
+    <sect1 id="cannot-grab-hook"><title>cannot-grab-hook</title><para>
+  This hook is invoked with no arguments whenever scwm cannot
+successfully grab the X server. <link linkend="beep"><function>beep</function></link> is one example of a procedure
+to use here.  
+    </para></sect1>
+    <sect1 id="error-hook"><title>error-hook</title><para>
+  Whenever an error or other uncaught throw occurs on any callback,
+whether a hook, a mouse binding, a key binding, a menu entry, a file
+being processed, or anything else, error-hook will be invoked. Each
+procedure in the hook will be called with the throw arguments; these
+will generally include information about the nature of the error. 
+
+    </para></sect1>
+    <sect1 id="invalid-interaction-hook"><title>invalid-interaction-hook</title><para>
+This hook is invoked with no arguments when the user hits an invalid
+key or performs an invalid mouse action during an interactive
+operation like <link linkend="interactive-resize"><function>interactive-resize</function></link> or <link linkend="interactive-move"><function>interactive-move</function></link>. <link linkend="beep"><function>beep</function></link> is
+one example of a procedure to use here.
+  
+    </para></sect1>
+    <sect1 id="shutdown-hook"><title>shutdown-hook</title><para>
+The procedures in shutdown-hook are called with no arguments right
+before scwm quits or restarts. 
+  
+    </para></sect1>
+    <sect1 id="startup-hook"><title>startup-hook</title><para>
+The procedures in startup-hook are called with no arguments after scwm
+has processed the scwmrc and captured all application windows, and
+right before it enters the main event loop.
+ 
+    </para></sect1>
+    <sect1 id="X-MappingNotify-hook"><title>X-MappingNotify-hook</title><para>
+  This hook is invoked whenever a MappingNotify X even is received. A
+MappingNotify event indicates a change of keymapping - in particular,
+it may indicate a change of available modifiers or mouse buttons. The hook procedures are invoked with no arguments.
+
+    </para></sect1>
+    <sect1 id="X-PropertyNotify-hook"><title>X-PropertyNotify-hook</title><para>
+  This hook is invoked whenever a PropertyNotify event is received for
+a window scwm is managing. This indicates that an X window property
+has changed. Watching for window property changes can be used to
+construct your own custom window manager protocols. The hook
+procedures are invoked with two arguments, the name of the property
+that changed (as a string) and the window that it changed for.
+
+    </para></sect1>
+  </chapter>
+  <chapter>
+    <title>Concepts</title>
+    <sect1 id="Colors"><title>Colors</title><para>
+  Colors are first-class objects. However, anywhere that a color is
+taken as an argument, a string containing an X color specification
+will also be accepted, and will be automatically converted to the
+proper color object. Using the same color specifier string more than
+once is not inefficient, as caching ensures that color objects are
+shared.
+
+    </para></sect1>
+    <sect1 id="Decors"><title>Decors</title><para>
+
+  Decors are a hack. In the original Fvwm code, there were many
+options that could only be set globally, although they affected window
+appearance. Decors are a compromise between leaving them global and
+making them fully settable per window. These quasi-global options may
+be set in a particular decor, and a decor may be attached to one or
+more windows.
+
+  Having to use decors to change certain aspects of the look and feel
+is confusing. Scwm will probably move to some way of making these
+options directly settable per-window at some point, especially if we
+can figure out a way to not increase the memory overhead much.
+
+    </para></sect1>
+    <sect1 id="Desks"><title>Desks</title><para>
+
+  Multiple virtual desktops are supported. A virtual desktop may be
+bigger than the physical screen, in which case the current viewport on
+the desktop may be moved around, as described in the Viewports entry.
+Desks are identified by integers. There is currently an arbitrary
+limit on the number of desks, but it should be much higher than anyone
+will ever need. You can change the current desk with
+<link linkend="set-current-desk-x"><function>set-current-desk!</function></link>; find out what the current desk is with
+<link linkend="current-desk"><function>current-desk</function></link>; and set the desk a window is on with
+<link linkend="set-window-desk-x"><function>set-window-desk!</function></link>.
+
+    </para></sect1>
+    <sect1 id="Face-Flags"><title>Face Flags</title><para>
+   Face flags are two-element lists that specify certain properties
+that are set once and only once for a give face (as opposed to specs,
+which may be chained arbitrarily). Nearly all flags may be used for
+button faces. Exceptions, as well as the flags that may be used for
+title and border faces, are indicated below.
+
+
+  Key               | Possible values      | Explanation
+  ------------------|----------------------|----------------
+  'justify          | 'left 'right 'center | How should the contents of the
+                    |                      | face (pixmap, relief pattern, etc)
+                    |                      | be justified?
+  'vertical-justify | 'top 'bottom 'center | How should the contents of the
+                    |                      | face (pixmap, relief pattern, etc)
+                    |                      | be justified vertically?
+  'relief           | 'flat 'sunk 'raised  | Should the face appear flat, 
+                    |                      | raised or sunk? This is the only
+                    |                      | face flag that may be used for 
+                    |                      | titles. It may be used for buttons
+                    |                      | as well, of course.
+  'use-style-of     | 'title 'border <literal>#f</literal>    | Before handling this faces specs,
+                    |                      | possibly apply the faces of the
+                    |                      | title or the border first.
+  'hidden-handles   | <literal>#t</literal> <literal>#f</literal>                | This flag may only be used for
+                    |                      | border faces; it indicates that
+                    |                      | the corner <link linkend="handles"><function>handles</function></link> of a window
+                    |                      | should not be visually separated.
+  'no-inset         | <literal>#t</literal> <literal>#f</literal>                | This flag may only be used for
+                    |                      | border faces; it indicates that
+                    |                      | the border should be relieved only
+                    |                      | on the outside, not on the inside.
+                    |                      | This gives a Win9x-like effect.
+
+    </para></sect1>
+    <sect1 id="Face-Specification-flags"><title>Face Specification flags</title><para>
+  Face specification flags are two-element lists that specify certain
+properties that may be chained to indicate how a face is drawn. Face
+specs may be fully or partially destructive. A fully destructive spec
+indicates how the whole area of the element is to be drawn, making
+previous specs irrelevant. A partially destructive spec overlays part,
+but not all, of the drawing area.
+
+  All specs may be used for button faces. All but non-tiled pixmaps may
+be used for titlebars, and only tiled pixmaps may be used for borders.
+
+  Format                                    : Explanation
+  ------------------------------------------:----------------------------
+ '(relief-pattern ((X Y BOOL) ...))   : Draw a relief pattern using
+                                            : the list of triples, each of 
+                                            : which indicates a pair of X,Y
+                                            : cooridnates given as a 
+                                            : percentage of the button size,
+                                            : and a boolean value indicating
+                                            : whether to use the lighter or
+                                            : darker color. This spec is 
+                                            : partially destructive.
+ '(solid COLOR)                             : Use COLOR as the color for 
+                                            : this element; fully destructive.
+ '(gradient (horizontal|vertical            : Draw a gradient in this element.
+    NCOLORS (COLOR PERCENT)* FINAL))        : The gradient may be horizontal
+                                            : or vertical. The number of colors
+                                            : is specified, followed by a 
+                                            : number of colors with percentages
+                                            : and a final color. The 
+                                            : percentages must add to 100.
+                                            : Fully destructive.
+ '(pixmap mini-icon|IMAGE|                  : Specify a pixmap to use, either
+   (tiled IMAGE))                           : the window's mini-icon, an image
+                                            : object or image specifier string,
+                                            : or a list of tiled and an image,
+                                            : indicating the image should be
+                                            : tiled. Partially destructive, 
+                                            : except when tiled, which makes 
+                                            : it fully destructive.  
+
+    </para></sect1>
+    <sect1 id="Faces"><title>Faces</title><para>
+  Faces are a data type used to specify in detail the way in which
+window decorations like the titlebar, the border and titlebar buttons
+will be drawn. They are currently somewhat kludgey and
+ad-hoc. However, they offer a great deal of flexibility. All faces are
+set in the current decor, so multiple decors must be used to use
+different faces for different windows. The low-level functionality
+offered in the face primitives will rarely be needed; the
+<link linkend="button-style"><function>button-style</function></link>, <link linkend="title-style"><function>title-style</function></link> and <link linkend="border-style"><function>border-style</function></link> procedures in the
+(app scwm face) module provide a more convenient interface to this
+functionality.
+
+    </para></sect1>
+    <sect1 id="Focus-Styles"><title>Focus Styles</title><para>
+
+   Scwm supports several focus styles, which are settable
+per-window. A window with the 'click focus style is click-to-focus: it
+requires that the user click on it before it will receive the input
+focus, and will not lose it again until some other window gains
+focus. The 'mouse focus style is mouse-focus in the traditional sense
+- the window will gain and lose focus as the mouse enters and leaves
+it. 
+
+  'sloppy indicates the sloppy-focus style. This is like mouse-focus,
+but the window will not lose the focus until another gains it. So if
+you focus the window with the mouse and then let the pointer slide
+into the root window or a window that has focus styles of 'click or
+'none, the window will not lose the focus. This style of focus was
+first introduced in fvwm.
+
+  A focus style of 'none indicates that the window should never gain
+the input focus, no matter what. This can be used for clocks,
+mailboxes, and other desktop gadgets that never need keyboard input.
+
+    </para></sect1>
+    <sect1 id="Fonts"><title>Fonts</title><para>
+  Fonts are first-class objects. However, anywhere that a font is
+taken as an argument, a string containing an X font specification
+will also be accepted, and will be automatically converted to the
+proper font object. Using the same font specifier string more than
+once is not inefficient, as caching ensures that font objects are
+shared.
+
+    </para></sect1>
+    <sect1 id="Hooks"><title>Hooks</title><para>
+  Hooks are used throughout scwm to provide a convenient mechanism for
+user callbacks on particular events. Fundamentally, a hook is just a
+variable that contains a list of procedures that are called in order
+when the relevant event occurs. However, several convenience macros
+are provided for manipulating hooks; see <link linkend="add-hook-x"><function>add-hook!</function></link>, <link linkend="remove-hook-x"><function>remove-hook!</function></link>
+and <link linkend="reset-hook-x"><function>reset-hook!</function></link>. 
+
+    </para></sect1>
+    <sect1 id="Image-Loaders"><title>Image Loaders</title><para>
+  Different loaders are available for various images types. <link linkend="load-xbm"><function>load-xbm</function></link>
+and <link linkend="load-xpm"><function>load-xpm</function></link> load X pixmaps and X bitmaps respecitvely. The user may
+register other image loaders using the extension or the special string
+"default" for the loader to be tried for an image that cannot be
+loaded any other way.
+
+    </para></sect1>
+    <sect1 id="Images"><title>Images</title><para>
+  Images are first-class objects. However, anywhere that a font is
+taken as an argument, a string containing an filename will also be
+accepted, and will be automatically converted to the proper image
+object by loading the image. Using the same image filename more than
+once is not inefficient, as caching ensures that image objects are
+shared.
+
+    </para></sect1>
+    <sect1 id="Input-Hooks"><title>Input Hooks</title><para>
+  Input hooks are a special form of hook that is called whenever input
+is available on a praticular port. They are treated differently than
+normal hooks - use <link linkend="add-input-hook-x"><function>add-input-hook!</function></link> and <link linkend="remove-input-hook-x"><function>remove-input-hook!</function></link> to
+manipulate them. Like regular hooks and unlike timer hooks, input
+hooks are not one-shot - they trigger every time input is made
+available on the particular port, and do not go away until explicitly
+removed. An input hook may safely remove itself from within it's own
+invocation.
+
+    </para></sect1>
+    <sect1 id="Key-Specifier"><title>Key Specifier</title><para>
+   A key specifier is a string denoting a keystroke, perhaps including
+modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
+for shift, control meta, alt, hyper, and super, respectively.  They
+can be combined arbitrarily, and in any order, but should precide the 
+
+    </para></sect1>
+    <sect1 id="SCWMEXEC-Protocol"><title>SCWMEXEC Protocol</title><para>
+  Scwm supports a protocol for other programs to send commands to the
+window manager. Programs send ordinary configuration language
+expressions and are returned a string representation of the return
+value, and the output and error output generated, if any.
+
+  For more information on how to make use of this protocol, see the
+documentation for the scwmexec and scwmrepl programs, the scwm.el
+emacs interaction mode, the libscwmexec library, and the details of
+the SCWMEXEC protocol.  Also see doc/scwmexec.proto.  FIXDOC: Link to file!
+
+    </para></sect1>
+    <sect1 id="The-Window-Context"><title>The Window Context</title><para>
+
+  When actions are triggered by mouse or keyboard events, or menu
+actions from menus originally popped up by mouse or keyboard events, a
+context window is saved, which is used as the default for window
+operations that are not passed their optional window argument. This
+allows the user to easily bind actions to events without worrying
+about passing around the window argument. 
+
+  However, it is unclear whether behind-the-scenes magic like this is
+a good idea.  The merit of this approach is still under consideration;
+it may be changed entirely. 
+    </para></sect1>
+    <sect1 id="Timer-Hooks"><title>Timer Hooks</title><para>
+  Timer hooks are a special form of hook that is called after a
+specified amount of time has passed. They are treated differently than
+normal hooks - use <link linkend="add-timer-hook-x"><function>add-timer-hook!</function></link> and <link linkend="remove-timer-hook-x"><function>remove-timer-hook!</function></link> to
+manipulate them. Timer hooks, unlike regular hooks, are one-shot -
+once the time limit expires and the timer hook is triggered, it is
+removed.
+
+    </para></sect1>
+    <sect1 id="Viewports"><title>Viewports</title><para>
+  The current viewport is the area of the current desk that may be
+seen on the physical screen. Since a desk can be larger than the
+physical screen size, the viewport can move around the desk.
+
+    </para></sect1>
+    <sect1 id="Windows"><title>Windows</title><para>
+  Windows are the most important scwm data type. A window object
+represents an onscreen window that scwm is managing, and is used to
+perform window management operations on the window, as well as to set
+options and retrieve information about the window.
+ 
+    </para></sect1>
+    <sect1 id="X-Properties"><title>X Properties</title><para>
+   X windows has a notion of window properties, which live in the X
+server. X window properties are often used to implement protocols
+between applications and the window manager, which can have several
+levels of standardization, from official X standard, to standardized
+by some other organization, to made up informally by groups of
+programmers, to specific to one window manager, to specific to an
+individual, or installation.
+
+  Scwm already internally implements many of these protocols,
+including all X standard protocols, as well as the Motif and Open Look
+protocols. However, the user should be able to implement any of these
+he likes, including making up his own for personal use.
+
+  This is possible through the low-level xproperty interface. Scwm has
+(for now) distinguished Scheme objects representing X properties, and
+several procedures to get, set and manipulate them.
+ 
+    </para></sect1>
+  </chapter>
 </chapter>
 </book>
 <!-- Keep this comment at the end of the file
