@@ -490,7 +490,9 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                            ButtonPressMask | ButtonReleaseMask | KeyPressMask |
                            ButtonMotionMask | PointerMotionMask | ExposureMask,
                            &ResizeEvent) == False) {
+#ifndef NOT_MORE_RESPONSIVE
       NoEventsScwmUpdate();
+#endif
       ms_sleep(10);
     }
     /* fallen through, so we got an event we're interested in */

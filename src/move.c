@@ -153,7 +153,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                            ButtonPressMask | ButtonReleaseMask | KeyPressMask |
                            PointerMotionMask | ButtonMotionMask | ExposureMask, 
                            &Event) == False) {
+#ifndef NOT_MORE_RESPONSIVE
       NoEventsScwmUpdate();
+#endif
       ms_sleep(10);
     }
     /* fallen through, so we got an event we're interested in */

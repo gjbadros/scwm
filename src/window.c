@@ -1407,7 +1407,9 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
                            ButtonMotionMask | PointerMotionMask |
                            EnterWindowMask,
                            eventp) == False) {
+#ifndef NOT_MORE_RESPONSIVE
       NoEventsScwmUpdate();
+#endif
       ms_sleep(10);
     }
 
@@ -2125,13 +2127,11 @@ specified. */
   old = psw->fSticky;
 
   if (!psw->fSticky) {
-    psw->fSticky = True;
     CassowaryEditPosition(psw);
     SuggestMoveWindowTo(psw,
-                        (FRAME_X_VP(psw) % Scr.DisplayWidth),
-                        (FRAME_Y_VP(psw) % Scr.DisplayHeight),
-                        True);
+                        FRAME_X_VP(psw),FRAME_Y_VP(psw),True);
     CassowaryEndEdit(psw);
+    psw->fSticky = True;
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
