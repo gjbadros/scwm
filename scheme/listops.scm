@@ -39,7 +39,7 @@
 
 
 (define-public (iota n) 
-  "Generate a list of the integers from 1 to N in order."
+  "Generate a list of the integers from 0 to N-1 in order."
   (let loop ((accum ())
 	     (n n))
     (if (<= n 0)
@@ -47,7 +47,7 @@
 	(loop (cons n accum) (1- n)))))
 
 (define-public (reverse-iota n) 
-  "Generate a list of the integers from N to 1 in order."
+  "Generate a list of the integers from N-1 to 0 in order."
   (reverse! (iota n)))
 
 (define-public (accumulate proc init l)
