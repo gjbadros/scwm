@@ -1,3 +1,14 @@
+Sun Sep 19 10:33:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* *.[ch]: MSFIX -> MS:FIXME::, FIXGJB -> GJB:FIXME::
+
+Sun Sep 19 00:34:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Use new-style SMOBs based on
+	HAVE_SCM_MAKE_SMOB_TYPE_MFPE configure constant.
+
+	* borders.c: Fix a macro to use do ... while(0)
+
 Sat Sep 18 12:31:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xrm.c, shutdown.c, menulook.c, drawmenu.c, deskpage.c, cursor.c, 

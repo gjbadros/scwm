@@ -1,3 +1,7 @@
+Sun Sep 19 00:36:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in, acconfig.h: Handle HAVE_SCM_MAKE_SMOB_TYPE_MFPE.
+
 Fri Sep 17 15:56:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Try to fix --enable-viavoice and

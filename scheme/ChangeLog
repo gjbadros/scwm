@@ -1,3 +1,14 @@
+Sun Sep 19 09:26:04 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm,
+	ui-constraints-gdk-drawing.scm, stylist.scm, prompting-shell.scm,
+	prompt-string.scm, prompt-range.scm, prompt-proc.scm,
+	prompt-font.scm, prompt-file.scm, prompt-enum.scm,
+	prompt-color.scm, prompt-bool.scm, preferences.scm, gtk.scm,
+	ScwmDeskButtons.scm, ScwmButtons.scm, ScwmBiff.scm: Remove some
+	gtk-widget-show calls and just use the simpler gtk-widget-show-all 
+	on a parent after the children have been added.
+
 Sat Sep 18 14:06:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ScwmBiff.scm: Replace incorrectly positioned define with a let
