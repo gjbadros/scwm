@@ -1,5 +1,8 @@
 Mon Nov 10 05:43:11 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* fvwm-compat.scm: In fvwm-pipe-read, use dup to properly connect
+ 	the pipe to the standard output for the subprocess.
+	
 	* style.scm: Use make-image in lieu of make-picture.
 
 Mon Nov 10 00:16:04 1997  Greg J. Badros  <gjb@cs.washington.edu>
