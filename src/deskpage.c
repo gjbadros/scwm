@@ -173,7 +173,7 @@ Sets two parameters indicating how much resistance should be
 offered when scrolling things past the edge, in two different
 senses. SR is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
-scrolls. If this paramenter is greater than 10,000, the viewport will
+scrolls. If this parameter is greater than 10,000, the viewport will
 not scroll at all at the screen edge (FIXMS: that's a bogus way to
 indicate that.) MR is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it

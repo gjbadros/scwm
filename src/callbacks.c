@@ -559,7 +559,7 @@ static SCM new_input_hooks;
 SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
           (SCM port, SCM proc))
      /** Add an input hook to run PROC on input from PORT.
-Whenever input becomes availabe on PORT, procedure PROC will be called
+Whenever input becomes available on PORT, procedure PROC will be called
 with no arguments repeatedly until no unprocessed input remains on
 PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or

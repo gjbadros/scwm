@@ -5,7 +5,6 @@
  *
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, 1998 Maciej stachowiak
  *
  */
 
@@ -861,10 +860,10 @@ SCWM_PROC(select_window, "select-window", 0, 2, 0,
      /** Select a window interactively.
 Use a special cursor and let the user click to select the window. The
 optional arguments KILL? and RELEASE? indicate whether to use the
-"skull and crossbones" kill cursor (reccomended for destructive
+"skull and cross-bones" kill cursor (recommended for destructive
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
-placeholder until we have proper cursor support in scwm. */
+place-holder until we have proper cursor support in scwm. */
 #define FUNC_NAME s_select_window
 {
   XEvent ev;
@@ -1277,8 +1276,8 @@ context in the usual way if not specified. */
 
 SCWM_PROC(window_deletable_p, "window-deletable?", 0, 1, 0,
           (SCM win))
-     /** Return #t if WIN is deletable, #f otherwise.
-The wm may call `delete-window' on WIN only if this procedure returns
+     /** Return #t if WIN is able to be deleted, #f otherwise.
+Scwm may call `delete-window' on WIN only if this procedure returns
 #t. WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_window_deletable_p
@@ -1386,7 +1385,7 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
      /** WINLIST is a list of windows. The first element of WINLIST
 will be kept in its current stacking order, the remainder will be
 stacked immediately below it in the order given. (Note: This will
-currently confuse the heck out of the pager and possibly other lagacy
+currently confuse the heck out of the pager and possibly other legacy
 fvwm2 modules). */
 #define FUNC_NAME s_restack_windows
 {
@@ -1826,9 +1825,9 @@ SCWM_PROC(set_animation_x, "set-animation!", 1,0,0,
           (SCM vector))
      /** Set the animation parameters to VECTOR. VECTOR is a vector of
 floats which give the fractions of the final position that the window
-should appear at. For intance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
-make the window appear at the initial positon, 1/4 of the way, 1/2 of
-the way, 3/4 of the way, overshoot the finall position slightly, and
+should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
+make the window appear at the initial position, 1/4 of the way, 1/2 of
+the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves. */
 #define FUNC_NAME s_set_animation_x
@@ -2387,7 +2386,7 @@ specified. */
 
 SCWM_PROC(id_to_window, "id->window", 1, 0, 0,
           (SCM window_id))
-     /** Return the window object corresponding to an app WINDOW-ID.
+     /** Return the window object corresponding to an application WINDOW-ID.
 WINDOW-ID should be the X id of the application window. If there is no
 such window object, return #f. */
 #define FUNC_NAME s_id_to_window
@@ -2409,7 +2408,7 @@ such window object, return #f. */
 SCWM_PROC(frame_id_to_window, "frame-id->window", 1, 0, 0,
           (SCM window_id))
      /** Return the window object corresponding to a frame WINDOW-ID.
-WINDOW-ID should be the X id of wm frame window. If there is no
+WINDOW-ID should be the X id of a scwm frame window. If there is no
 such window object, return #f. */
 #define FUNC_NAME s_frame_id_to_window
 {
@@ -2443,8 +2442,8 @@ window context in the usual way if not specified. */
 
 SCWM_PROC(window_title, "window-title", 0, 1, 0,
           (SCM win))
-     /** Return the window title of WIN, as requested by the app. WIN
-defaults to the window context in the usual way if not specified. */
+     /** Return the window title of WIN, as requested by the application.
+WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_title
 {
   VALIDATE(win, FUNC_NAME);
@@ -2455,8 +2454,8 @@ defaults to the window context in the usual way if not specified. */
 SCWM_PROC(window_icon_title, "window-icon-title", 0, 1, 0,
           (SCM win))
      /** Return the icon window title of WIN.
-This is the title as requested by the app. WIN defaults to the window
-context in the usual way if not specified. */
+This is the title as requested by the application . WIN defaults to
+the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_icon_title
 {
   VALIDATE(win, FUNC_NAME);
@@ -3025,7 +3024,7 @@ to the window context in the usual way if not specified. */
 
 SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
           (SCM flag, SCM win))
-     /** Set the mwm-border style flag of WIN to bealean FLAG.
+     /** Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
 specified. */
@@ -3072,9 +3071,9 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(set_force_icon_x, "set-force-icon!", 1, 1, 0,
           (SCM flag, SCM win))
-     /** Set the wm-overriding property for WIN to boolean FLAG.
-If #t, the icon spcified for WIN by the wm will override an
-app-provided icon.  WIN defaults to the window context in the usual
+     /** Set the window-manager-overriding property for WIN to boolean FLAG.
+If #t, the icon specified for WIN by the user through scwm will override an
+application-provided icon.  WIN defaults to the window context in the usual
 way if not specified. */
 #define FUNC_NAME s_set_force_icon_x
 {
@@ -3120,7 +3119,7 @@ SCWM_PROC(set_icon_x, "set-icon!", 1, 1, 0,
           (SCM image, SCM win))
      /** Set the image to use for the icon of WIN to IMAGE. 
 As usual, an image object or a filename string may be given. #f May
-also be specified, ndicating no icon image. WIN defaults to the window
+also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified. */
 #define FUNC_NAME s_set_icon_x
 {
@@ -3256,7 +3255,7 @@ defaults to the window context in the usual way if not specified. */
 SCWM_PROC(set_mwm_decor_hint_x, "set-mwm-decor-hint!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Set whether or not Motif decoration hints are used for WIN.
-If FLAG is #t, the MWM decor hint will be given for WIN.  WIN defaults
+If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_decor_hint_x
 {
@@ -3288,7 +3287,7 @@ SCWM_PROC(set_PPosition_hint_x, "set-PPosition-hint!", 1, 1, 0,
 If FLAG is #t, the hint will be set, otherwise reset.  This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
-ignoring it is reccomended. WIN defaults to the window context in the
+ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified. */
 #define FUNC_NAME s_set_PPosition_hint_x
 {

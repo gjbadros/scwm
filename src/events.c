@@ -1749,12 +1749,12 @@ SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
            SCM button_press_p, SCM button_release_p, SCM propagate_p))
      /** Send a synthetic mouse press event.
 Create a synthetic event of a press of mouse button BUTTON, with modifier
-MODIFIER and send the eent to window WIN if specified; otherwise the
+MODIFIER and send the event to window WIN if specified; otherwise the
 window to be used defaults to the window context in the usual way. By
 default, both a press and a release are sent. However, the boolean
 parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
 which are sent individually. PROPAGATE? indicates whether the propagate
-flag is set on the event; the default is #f. You shouldn't have to
+flag is set on the event; the default is #f. You should not have to
 worry about this unless you know what it means. */
 #define FUNC_NAME s_send_button_press
 {
@@ -1842,7 +1842,7 @@ context in the usual way. By default, both a press and a release are
 sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
-shouldn't have to worry about this unless you know what it means. */
+should not have to worry about this unless you know what it means. */
 #define FUNC_NAME s_send_key_press
 {
   KeySym keysym;

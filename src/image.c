@@ -302,7 +302,7 @@ SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
            (SCM extension, SCM proc))
      /** Register PROC as the loader to use for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds. */
@@ -328,7 +328,7 @@ SCWM_PROC(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
            (SCM extension))
      /** Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the strting "default"
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). */
 #define FUNC_NAME s_unregister_image_loader
 {
@@ -477,7 +477,7 @@ SCWM_PROC(make_image, "make-image", 1, 0, 0,
      /** Loads an image from the file NAME.
 To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
-fully qulified pathname; otherwise, the image path is searched for an
+fully qualified pathname; otherwise, the image path is searched for an
 appropriate file. */
 #define FUNC_NAME s_make_image
 {
@@ -543,7 +543,7 @@ appropriate file. */
 
 SCWM_PROC(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
            (SCM name))
-     /** Images are cached by both name and full pathnme. It is
+     /** Images are cached by both name and full pathname. It is
 remotely possible that the file that should be used for a particular
 name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,

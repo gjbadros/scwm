@@ -175,7 +175,7 @@ SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
 /** Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are: 
 '(menu-items side-image side-bg-color bg-color text-color image-bg
-font extra-options used-shortcutkeys) */
+font extra-options used-shortcut-keys) */
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu = SAFE_MENU(menu);

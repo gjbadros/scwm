@@ -748,34 +748,34 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks *
 
 
 SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
-     /** Return the bitmask for the Meta modifier key, or #f.
-Returns #f iff there is no key bound to act as Meta, otherwise
-returns a power of two corresponding to the bitmask of the modifier */
+     /** Return the bit-mask for the Meta modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Meta, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
 #define FUNC_NAME s_mod_mask_meta
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 #undef FUNC_NAME
 
 SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
-     /** Return the bitmask for the Alt modifier key, or #f.
-Returns #f iff there is no key bound to act as Alt, otherwise
-returns a power of two corresponding to the bitmask of the modifier */
+     /** Return the bit-mask for the Alt modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Alt, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
 #define FUNC_NAME s_mod_mask_alt
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 #undef FUNC_NAME
 
 SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
-     /** Return the bitmask for the Hyper modifier key, or #f.
-Returns #f iff there is no key bound to act as Hyper, otherwise
-returns a power of two corresponding to the bitmask of the modifier */
+     /** Return the bit-mask for the Hyper modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Hyper, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
 #define FUNC_NAME s_mod_mask_hyper
 { return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
 #undef FUNC_NAME
 
 
 SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
-     /** Return the bitmask for the Super modifier key, or #f.
-Returns #f iff there is no key bound to act as Super, otherwise
-returns a power of two corresponding to the bitmask of the modifier */
+     /** Return the bit-mask for the Super modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Super, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
 #define FUNC_NAME s_mod_mask_super
 { return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }
 #undef FUNC_NAME

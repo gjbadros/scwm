@@ -542,11 +542,11 @@ interaction. #t is always returned. */
 
 SCWM_PROC(default_placement_proc, "default-placement-proc", 1, 0, 0, 
            (SCM win))
-     /** Use settable flags to call an appropriate placement function.
+     /** Use various flags to call an appropriate placement function.
 This is the default placement procedure for non-transient windows. It
 tries `smart-place-window', `clever-place-window',
 `random-place-window', or `interactive-move' (to achieve interactive
-placement) on WIN depending on several settable style flags. However,
+placement) on WIN depending on several style flags. However,
 if one of the following factors holds, the window will instead be
 placed exactly as requested by the program: the position was specified
 by the user, the position was specified by the program, and

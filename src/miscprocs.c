@@ -172,7 +172,7 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
           ())
-     /** Returns #t when the windows are being caputured.
+     /** Returns #t when the windows are being captured.
 This happens at two times: both during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
@@ -199,8 +199,8 @@ this should not be needed. */
 SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
           (SCM ctime))
      /** Set the delay used in identifying mouse clicks and drags.
-CTIME is specified in microseconds. After CTIME usecs, a mouse-down
-without a mouse-up is considered a drag.  Also, after CTIME usecs, a
+CTIME is specified in microseconds. After CTIME microseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after CTIME microseconds, a
 single click is definitively identified as not a double click. */
 #define FUNC_NAME s_set_click_time_x
 {
@@ -222,7 +222,7 @@ SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
 'mouse, indicating that the window under the mouse pointer should
 always have it's colormap installed, or 'focus to indicate that the
 window with the input focus should also get the colormap focus. This
-makes a difference onl when using focus policies other than 'mouse. */
+makes a difference only when using focus policies other than 'mouse. */
 #define FUNC_NAME s_set_colormap_focus_x
 {
   SCM_REDEFER_INTS;
@@ -390,7 +390,7 @@ value FLAG. */
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
           (SCM flag))
      /** Determine whether a click-to-focus window receives the click.
-If FLAG is #t, the window will receive the event, if #f, the wm
+If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client. */
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
@@ -477,13 +477,13 @@ SCWM_PROC(X_display_information, "X-display-information", 0, 0, 0,
      /** Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
-bits per color supported by the hadware, the visual class (one of
+bits per color supported by the hardware, the visual class (one of
 "StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
 or "TrueColor") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
-be shared anmong multiple machines. */
+be shared among multiple machines. */
 #define FUNC_NAME s_X_display_information
 {
   int Mscreen = DefaultScreen(dpy);
