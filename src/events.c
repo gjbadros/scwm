@@ -69,6 +69,8 @@
 #include "module.h"
 #include "util.h"
 
+#undef MS_DELETION_COMMENT
+
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask| Mod3Mask| Mod4Mask| Mod5Mask);
 extern int menuFromFrameOrWindowOrTitlebar;
