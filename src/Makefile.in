@@ -52,7 +52,6 @@ SRCS = \
 	ICCCM.c \
 	Picture.c \
 	system.c \
-	envvar.c \
 	Grab.c \
 	add_window.c \
 	borders.c \

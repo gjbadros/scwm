@@ -35,7 +35,7 @@ set_pixmap_path_x(SCM newpath)
 
   tmp = gh_scm2newstr(newpath, &dummy);
 
-  PixmapPath = envDupExpand(tmp, 0);
+  PixmapPath = /* envDupExpand( */ tmp /* , 0) */ ;
   free(tmp);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -62,7 +62,7 @@ set_icon_path_x(SCM newpath)
   if ((IconPath != ptemp) && (IconPath != NULL))
     free(IconPath);
   tmp = gh_scm2newstr(newpath, &dummy);
-  IconPath = envDupExpand(tmp, 0);
+  IconPath = /* envDupExpand( */ tmp /* , 0) */;
   free(tmp);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
