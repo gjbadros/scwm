@@ -8,6 +8,9 @@ Menu Properties
  * Popup delay (could do this instead w/ a hook when a menu item becomes the
                 current selection, before mouse/key click)
  * Side pixmap, color
+ * Text color
+ * background color
+ * background pixmap
  * Font
  * Other things interpreted specially by the arbitrary drawing code
 
