@@ -1,3 +1,13 @@
+Sun Dec  5 14:53:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added gnome-panel-menus.scm
+	(forgot to when I first added that module).
+
+Sun Dec  5 14:48:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Make it rely on (app scwm optargs) and make some
+	procs interactive (thus needing that module).
+
 Sun Dec  5 12:04:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flash-window.scm, winops.scm: Make a bunch of procs interactive
