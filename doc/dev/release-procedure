@@ -1,0 +1,86 @@
+
+The release procedure for scwm:
+
+1) Try to do some pre-testing.
+
+2) When source has reached state believed to be releaseable, ask other
+developers w/ CVS access to hold off on making changes until the
+release.
+
+3) Update THANKS and AUTHORS, examining the ChangeLogs for
+contributors. Also update NEWS with all user-visible changes since the
+last release, ANNOUNCE with highlights from NEWS and other
+announcement information, and BUGS and TODO to make sure they are
+vaguely up to date.
+
+4) Grab hypothetical distribution directories by `cvs export'ing both
+the scwm and scwm-icons modules, and running `./autogen.sh'
+
+5) Make sure the sources configure, make, make install, run, and make
+uninstall with both the latest Guile snapshot and the most recent
+stable release. If this step fails, correct the problems and check in
+the results, then go back to step 4.
+
+6) Update the version number in configure.in, and make an appropriate
+ChangeLog entry for the release.
+
+7) Tag the repository (I've been using hte convention of using v
+followed by the version number with all periods replaced by dashes,
+e.g. v0-7).
+
+8) Export modules to tar up, creating directories that contain the
+version number (e.g. scwm-0.8/). 
+
+9) Make the tarballs.
+
+10) Place the tarballs in the usual locations:
+
+* /home/ftp/pub/scwm (group scwm-dev has write permissons)
+ 
+* My web server directory (I should obsolete this, the ftp site is
+probably more heavily used, and quite sufficient.)
+
+11) Update the web site. Taking some hilights from NEWS and fixing the
+version numbe references is useful (the web stuff will move to a CVS
+module RSN and the scwm web site will move to running off of
+huis-clos).
+
+12) Send out the release announcement. I send announcements to the
+following places:
+
+E-mail:
+scwm-announce@huis-clos.mit.edu
+guile@cygnus.com
+scsh@ai.mit.edu (this is at the invitation of Olin Shivers)
+
+I also usually send a brief announcement including mostly
+gnome-relevant things to gnome-list@gnome.org (I think you need to be
+on it to post), but this is not crucuial.
+
+Newsgroups:
+comp.lang.scheme
+comp.os.linux.announce
+comp.windows.x.announce
+
+Web Sites and/or Ftp Archives (getting volunteers to do these is sufficent):
+
+http://www.freshmeat.net
+ftp://ftp.red-bean.com/pub/guile/incoming 
+(and send mail to Pat Eyler <pate@nortom.com> to update the guile
+contrib directory)
+
+
+Other Announce Location Ideas (not tried yet):
+
+It is probably also a good idea to come up with a .lsm file and stick
+it in the distribution, and submit stuff the the Linux Software Map
+(how do you do this?) and the Sunsite archive.
+
+http://www.slashdot.org may also be willing to run a brief article
+They regularly cover Enlightenment, WindowMaker and AfterStep, and
+recently sometimes BlackBox; highlighting the way scwm differs from
+these [IMO: More emphasis on configuring behavior rather than snazzy
+look; old-school hacker appeal; the "emacs of window managers"] may be
+useful in convincing Rob Malda to run the announcement.
+
+
