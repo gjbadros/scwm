@@ -35,7 +35,6 @@ EXTERN long scm_tc16_scwm_msgwindow;
 
 #define MSGWINDOW_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_msgwindow)
 #define MSGWINDOW(X)   ((scwm_msgwindow *)(gh_cdr(X)))
-#define MSGWINDOW_MESSAGE(X)     (MSGWINDOW(X)->message)
 #define MSGWINDOW_IMAGE(X)     (MSGWINDOW(X)->bg_image)
 
 
@@ -43,13 +42,13 @@ EXTERN long scm_tc16_scwm_msgwindow;
    necessary for a msgwindow */
 
 typedef struct {
-  SCM message; /* string */
   SCM font;    /* font object */
   SCM fg_color; /* colors for message window (color object) */
   SCM bg_color;
   SCM shadow_color; /* relief colors for message window (color object) */
   SCM highlight_color;
   SCM bg_image; /* bg image, or SCM_BOOL_F if none */
+  char *sz;     /* the current message */
   Bool fRelief;  /* draw with relief? */
   int x, y;        /* current position */
   double x_align, y_align;  /* alignment (e.g., -.5,-.5 is centered*/

@@ -29,7 +29,7 @@
 #include "font.h"
 #include "events.h"
 
-SCM
+static SCM
 mark_msgwindow(SCM obj)
 {
   scwm_msgwindow* msg = MSGWINDOW( obj );
@@ -39,7 +39,6 @@ mark_msgwindow(SCM obj)
   GC_MARK_SCM_IF_SET(msg->bg_color);
   GC_MARK_SCM_IF_SET(msg->shadow_color);
   GC_MARK_SCM_IF_SET(msg->highlight_color);
-  GC_MARK_SCM_IF_SET(msg->message);
   GC_MARK_SCM_IF_SET(msg->bg_image);
 
   return SCM_BOOL_F;
@@ -48,24 +47,22 @@ mark_msgwindow(SCM obj)
 /* UnmapMessageWindow
    Unmap a message window.
 */
-void
+static void
 UnmapMessageWindow(scwm_msgwindow* msg)
 {
   XUnmapWindow(dpy, msg->win);
 }
 
 
-size_t 
+static size_t 
 free_msgwindow(SCM obj)
 {
   scwm_msgwindow *msg = MSGWINDOW(obj);
 #ifndef NDEBUG
   Window w = msg->win;
   if (FXIsWindowMapped(dpy,w)) {
-    char *sz = gh_scm2newstr(msg->message,NULL);
     scwm_msg(WARN,"free_msgwindow","Message window %s is visible when freeing.",
-             sz);
-    gh_free(sz);
+             msg->sz);
     UnmapMessageWindow(msg);
     XFlush(dpy);
   }
@@ -76,11 +73,12 @@ free_msgwindow(SCM obj)
   return 0;
 }
 
-int 
+static int 
 print_msgwindow(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
+  scwm_msgwindow *msg = MSGWINDOW(obj);
   scm_puts("#<msgwindow ", port);
-  scm_write(MSGWINDOW_MESSAGE(obj), port);
+  scm_puts(msg->sz, port);
   if (!UNSET_SCM(MSGWINDOW_IMAGE(obj))) {
     scm_puts("; ", port);
     scm_write(MSGWINDOW_IMAGE(obj),port);
@@ -99,34 +97,48 @@ SCWM_PROC(message_window_p, "message-window?", 1, 0, 0,
 #undef FUNC_NAME
 
 
-/* Create the X window object for the message window */
-
 const double message_highlight_factor = 1.2;  /* defined like this from move.c */
 const double message_shadow_factor = 0.5;
 
 
-/* DrawWindow
+static __inline__ int
+MessageWindowWidth(scwm_msgwindow *msg)
+{
+  if (msg->width > 0)
+    return msg->width;
+  else
+    return ComputeXTextWidth(XFONT(msg->font),msg->sz, -1) + SIZE_HINDENT*2;
+}
 
+
+static __inline__ int
+MessageWindowHeight(scwm_msgwindow *msg)
+{
+  if (msg->height > 0)
+    return msg->height;
+  else
+    return FONTHEIGHT(msg->font) + SIZE_VINDENT*2;
+}
+
+/* DrawWindow:
    Draws the contents of a message window.  Takes a pointer to
-the scwm_msgwindow to be drawn.
- */
-void
-DrawWindow( scwm_msgwindow* msg ) {
+the scwm_msgwindow to be drawn. */
+static void
+DrawWindow( scwm_msgwindow* msg ) 
+{
 
   GC gcMsg = Scr.ScratchGC2;
   GC gcHilite = Scr.ScratchGC2;
   GC gcShadow = Scr.ScratchGC3;
   SCM scmFgRelief, scmBgRelief;
-  int cch;
-  char *const sz = gh_scm2newstr(msg->message, &cch);
-  int textwidth = ComputeXTextWidth(XFONT(msg->font),sz, -1);
-  int winwidth = textwidth + SIZE_HINDENT*2;
-  int textheight = FONTHEIGHT(msg->font);
-  int winheight = textheight + SIZE_VINDENT*2;
+  int cch = strlen(msg->sz);
+  int winwidth = MessageWindowWidth(msg);
+  int winheight = MessageWindowHeight(msg);
 
   scmFgRelief = msg->highlight_color; 
   scmBgRelief = msg->shadow_color; 
 
+  XClearWindow(dpy, msg->win);
   if (msg->fRelief) {
     if (scmFgRelief != SCM_BOOL_F)
       SetGCFg(gcHilite,XCOLOR(scmFgRelief));
@@ -137,16 +149,13 @@ DrawWindow( scwm_msgwindow* msg ) {
       SetGCFg(gcShadow,XCOLOR(scmBgRelief));
     else
       SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
-
+    
     XClearWindow(dpy, msg->win);
     if (Scr.d_depth >= 2) {
       RelieveRectangle(msg->win, 0, 0, winwidth, winheight,
                        gcHilite, gcShadow);
     }
-  } else {
-    XClearArea(dpy, msg->win, 0, 0, 
-               textwidth, textheight, False);
-  }
+  } 
 
   NewFontAndColor(gcMsg,XFONTID(msg->font),
                   XCOLOR(msg->fg_color), XCOLOR(msg->bg_color)); 
@@ -157,11 +166,10 @@ DrawWindow( scwm_msgwindow* msg ) {
   XDrawString(dpy, msg->win, 
 #endif
 	  gcMsg, SIZE_HINDENT, FONTY(msg->font) + SIZE_VINDENT,
-	  sz, cch);
+	  msg->sz, cch);
 #if 0
   );  /* for paren matching of above to keep (x)emacs happy */
 #endif                
-  gh_free(sz);
 }
 
 /* ResizeMessageWindow
@@ -169,29 +177,17 @@ DrawWindow( scwm_msgwindow* msg ) {
    Resizes the scwm_msgwindow pointed at by msg and calls
 DrawWindow to redraw it.
  */
-void
-ResizeMessageWindow( scwm_msgwindow* msg ) {
-
-  char *const sz = gh_scm2newstr(msg->message,NULL);
-  int textwidth = ComputeXTextWidth(XFONT(msg->font),sz, -1);
-  int winwidth = textwidth + SIZE_HINDENT*2;
-  int textheight = FONTHEIGHT(msg->font);
-  int winheight = textheight + SIZE_VINDENT*2;
-  int win_x, win_y;
-
-  if (msg->width > 0)
-    winwidth = msg->width;
-  if (msg->height > 0)
-    winheight = msg->height;
-
-  win_x = msg->x + (msg->x_align * winwidth);
-  win_y = msg->y + (msg->y_align * winheight);
+static void
+ResizeMessageWindow( scwm_msgwindow* msg ) 
+{
+  int winwidth = MessageWindowWidth(msg);
+  int winheight = MessageWindowHeight(msg);
+  int win_x = msg->x + (msg->x_align * winwidth);
+  int win_y = msg->y + (msg->y_align * winheight);
 
   XMoveResizeWindow(dpy, msg->win, win_x, win_y, winwidth, winheight);
 
   DrawWindow( msg );
-
-  gh_free(sz);
 }
 
 /* OnExposeEvent
@@ -200,21 +196,22 @@ ResizeMessageWindow( scwm_msgwindow* msg ) {
 the message window.  Redraws the window with any appropriate
 size changes.
 */
-void
-OnExposeEvent( Window w ) {
+static void
+OnExposeEvent( Window w ) 
+{
   scwm_msgwindow* msg;
   if ( XFindContext(dpy, w, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL )
     ResizeMessageWindow( msg );
 }
 
 
-/* CreateMessageWindow
+/* CreateMessageWindow:
 
    Creates the X Window object that will be associated with
-a message window.
- */
-Window
-CreateMessageWindow( scwm_msgwindow* msg ) {
+a message window. */
+static Window
+CreateMessageWindow( scwm_msgwindow* msg ) 
+{
 
   const int width = 50; /* just some starting place-- we'll figure it out later */
   XSetWindowAttributes attributes;
@@ -237,7 +234,7 @@ CreateMessageWindow( scwm_msgwindow* msg ) {
 
    Map a message window to the screen.
 */
-void
+static void
 MapMessageWindow(scwm_msgwindow* msg)
 {
   int w, h;
@@ -266,16 +263,14 @@ Uses defaults from the ScreenInfo struct for the other values. */
   SCM answer;
   scwm_msgwindow* msg;
 
-  if (!gh_string_p(message)) {
-    SCWM_WRONG_TYPE_ARG(1, message);
-  }
+  VALIDATE_ARG_STR(1,message);
 
   msg = NEW(scwm_msgwindow);
 
   if (SCM_UNDEFINED == message)
-    message = SCM_BOOL_F;
-
-  msg->message = message;
+    msg->sz = NULL;
+  else
+    msg->sz = gh_scm2newstr(message,NULL);
 
   /* JWN:FIXME:: For now, I'll assume the ScreenInfo struct contains good defaults
      for the message window params.  Is there another better place? */
@@ -317,11 +312,10 @@ window on your X/11 display. */
   Window w;
   scwm_msgwindow* msg = NULL;
   SCM answer = SCM_BOOL_F;
+  unsigned long i;
 
-  if (!gh_number_p(winid)) {
-    SCWM_WRONG_TYPE_ARG(1,winid);
-  }
-  w = (Window) gh_scm2ulong(winid);
+  VALIDATE_ARG_INT_COPY(1,winid,i);
+  w = (Window) i;
   
   if ( XFindContext(dpy, w, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL ) {
     SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
@@ -342,7 +336,10 @@ The message will be MESSAGE.*/
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
   VALIDATE_ARG_STR(2,message);
 
-  msg->message = message;
+  if (msg->sz) {
+    gh_free(msg->sz);
+  }
+  msg->sz = gh_scm2newstr(message,NULL);
   ResizeMessageWindow( msg );
 
   return SCM_UNSPECIFIED;
@@ -596,7 +593,7 @@ SCWM_PROC (message_window_message, "message-window-message", 1, 0, 0,
 #define FUNC_NAME s_message_window_message
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
-  return MSGWINDOW_MESSAGE(mwn);
+  return gh_str02scm(MSGWINDOW(mwn)->sz);
 }
 #undef FUNC_NAME
 
