@@ -114,8 +114,8 @@ stick, shove, set the style, group, etc."
 	#f)
     menu-separator
     (menuitem "Group" #:submenu (lambda () (make-window-group-menu (window-context))))
-    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
-;;    (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
+    (menuitem "Change theme" #:submenu (lambda () (make-menu-window-theme)))
+;;    (menuitem "Reload and change theme" #:submenu (lambda () (make-menu-window-theme #t)))
     menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 

@@ -110,7 +110,7 @@ The selection must contain a single full pathname."
 
 
 ;; contributed by Glenn Trig
-(define*-public (menu-window-theme #&optional force?)
+(define*-public (make-menu-window-theme #&optional force?)
   "Return a menu that lets the user set the theme for a single window.
 If FORCE? is #t, then the cached theme file is reloaded."
   (menu  
@@ -123,7 +123,7 @@ If FORCE? is #t, then the cached theme file is reloaded."
 
 
 ;; contributed by Glenn Trig
-(define*-public (menu-global-theme #&optional force?)
+(define*-public (make-menu-global-theme #&optional force?)
   "Return a menu that lets the user set the theme for all windows.
 If FORCE? is #t, then the cached theme file is reloaded."
   (menu  
@@ -134,3 +134,28 @@ If FORCE? is #t, then the cached theme file is reloaded."
 		  (window-style 
 		   "*" #:use-theme (load-cached-theme x force?)))))
     (theme-names))))
+
+
+(define-public menu-desk 
+  (menu 
+   (list (menu-title "Desks")
+	 menu-separator
+	 (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+	 (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+
+
+(define-public menu-quit-verify
+  (menu 
+   (list
+    (menu-title "Really quit Scwm?")
+    menu-separator
+    (menuitem "&Restart scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart "scwm")))
+    (menuitem "Restart &development scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart 
+				    (string-append scwmdir "/src/scwm"))))
+    menu-separator
+    (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
+    (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
