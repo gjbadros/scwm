@@ -67,13 +67,13 @@ WIN is only destroyed if it is not deleteable."
 (define-public toggle-titlebar
   (make-toggling-winop titlebar-shown? hide-titlebar show-titlebar))
 
-(define*-public (hide-titlebar-in-place #&optional (win get-window))
+(define*-public (hide-titlebar-in-place #&optional (win (get-window)))
   "Turn off display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
   (hide-titlebar win #t))
 
-(define*-public (show-titlebar-in-place #&optional (win get-window))
+(define*-public (show-titlebar-in-place #&optional (win (get-window)))
   "Turn on display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."

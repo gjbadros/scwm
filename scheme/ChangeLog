@@ -1,3 +1,13 @@
+1999-09-08    <jwnichls@cs.washington.edu>
+
+	* winops.scm: Optional parameters for show-titlebar-in-place
+	and hide-titlebar-in-place were missing some parens.
+
+	* ui-constraints-classes.scm: Added the sum-to-width and 
+	sum-to-height constraint classes.  
+
+	* Makefile.am: added hooks.scm
+
 Wed Sep  8 18:12:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Wrote `window-class', `window-resource' using

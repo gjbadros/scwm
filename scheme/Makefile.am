@@ -8,7 +8,7 @@ defoption.scm desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
 face.scm file.scm flash-window.scm flux.scm focus-titlebar.scm \
 fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
 highlight-current-window.scm gnome-hints.scm \
-group.scm image-loaders.scm key-mover-xtest.scm \
+group.scm hooks.scm image-loaders.scm key-mover-xtest.scm \
 kde-hints.scm key-mover.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
 nonants.scm netscape.scm number-convert.scm optargs.scm \

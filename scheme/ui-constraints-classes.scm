@@ -881,4 +881,120 @@ Keep one window wholly to the left of another."
    "cn-keep-to-left-of.xpm" menuname-as-win-num))
 
 
+;;----------------------------------------------------------------------
+;; Relative inverse-size constraints
+;;----------------------------------------------------------------------
+
+;; NOTE: Although it is possible, I would not use these constraints with
+;; more than two windows.  I don't believe that the behavior (each 
+;; window sums-to-dimension with a master window) would be very intuitive.
+
+;; sum-to-width
+
+;; ui-constructor
+(define (ui-cnctr-sum-to-width)
+  (two-window-or-more-prompter
+   "Sum of Widths Constant"
+   "First window?"
+   "Second window?"))
+
+;; constructor
+(define* (cnctr-sum-to-width winlist #&optional (enable? #f))
+  (let* ((width1 (car (window-frame-size (car winlist))))
+	 (widthlist (map (lambda (w) (car (window-frame-size w))) (cdr winlist)))
+	 (clvlist (map (lambda (w) (make-cl-variable "clvwtotal" (+ width1 w))) widthlist))
+	 (cleqlist (map (lambda (w) (cl-plus (window-clv-width (car winlist)) (window-clv-width w))) (cdr winlist)))
+	 (cnlist (map (lambda (cleq clv) (make-cl-constraint cleq = clv)) cleqlist clvlist))
+	 (sclist (map (lambda (clv) (make-cl-stay-constraint clv cls-required 10)) clvlist)))
+    (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist)
+    (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
+    (list sclist winlist cnlist)))
+
+;; draw-proc
+(define (draw-cn-sum-to-width ui-constraint enable focus mode)
+  (let ((win-list (ui-constraint-windows ui-constraint))
+	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
+    (if (not (= (length win-list) 2))
+	(error "Expected at least two windows in win-list of cn for an relative inverse size constraint"))
+    (let* ((w1ctr (translate-point (window-center-middle (car win-list)) width 0))
+	   (w1lm (window-left-middle (car win-list)))
+	   (w1rm (window-right-middle (car win-list)))
+	   (wctrlist (map (lambda (w) (translate-point (window-center-middle w) width 0)) (cdr win-list))) 
+	   (wlmlist (map (lambda (w) (window-left-middle w)) (cdr win-list)))
+	   (wrmlist (map (lambda (w) (window-right-middle w)) (cdr win-list))))
+      (xlib-set-line-width! width)
+      (xlib-draw-line! w1lm w1rm)
+      (draw-window-line-anchor w1ctr 5)
+      (for-each (lambda (wctr wrm wlm)
+		  (xlib-draw-line! wlm wrm)
+		  (xlib-draw-line! w1ctr wctr)
+		  (draw-window-line-anchor wctr 5))
+		wctrlist wrmlist wlmlist))))
+
+;; declare horiz. relative size constraint
+(define-public uicc-sum-to-width
+  (make-ui-constraint-class
+   "Sum of Widths Constant"
+   "Sum of Widths Constant.
+The sum of the widths of the windows \
+in the constraint remain constant."
+   '(2 '+) cnctr-sum-to-width
+   ui-cnctr-sum-to-width draw-cn-sum-to-width
+   cl-is-constraint-satisfied?
+   "cn-window-width-sum.xpm" menuname-as-win-num))
+
+;; Vertical Size
+
+;; ui-constructor
+(define (ui-cnctr-sum-to-height)
+  (two-window-or-more-prompter
+   "Sum of Heights Constant" 
+   "First window?"
+   "Second window?"))
+
+;; constructor
+(define* (cnctr-sum-to-height winlist #&optional (enable? #f))
+  (let* ((h1 (cadr (window-frame-size (car winlist))))
+	 (hlist (map (lambda (w) (cadr (window-frame-size w))) (cdr winlist)))
+	 (clvlist (map (lambda (h) (make-cl-variable "clvhtotal" (+ h1 h))) hlist))
+	 (cleqlist (map (lambda (w) (cl-plus (window-clv-height (car winlist)) (window-clv-height w))) (cdr winlist)))
+	 (cnlist (map (lambda (cleq clv) (make-cl-constraint cleq = clv)) cleqlist clvlist))
+	 (sclist (map (lambda (clv) (make-cl-stay-constraint clv cls-required 10)) clvlist)))
+    (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist)
+    (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
+    (list sclist winlist cnlist)))
+
+;; draw-proc
+(define (draw-cn-sum-to-height ui-constraint enable focus mode)
+  (let ((win-list (ui-constraint-windows ui-constraint))
+	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
+    (let* ((w1ctr (translate-point (window-center-middle (car win-list)) 0 width))
+	   (w1ct (window-center-top (car win-list)))
+	   (w1cb (window-center-bottom (car win-list)))
+	   (wctrlist (map (lambda (w) (translate-point (window-center-middle w) 0 width)) (cdr win-list)))
+	   (wctlist (map (lambda (w) (window-center-top w)) (cdr win-list)))
+	   (wcblist (map (lambda (w) (window-center-bottom w)) (cdr win-list))))
+      (xlib-set-line-width! width)
+      (xlib-draw-line! w1ct w1cb)
+      (draw-window-line-anchor w1ctr 5)
+      (for-each (lambda (w2ctr w2ct w2cb)
+		  (xlib-draw-line! w2ct w2cb)
+		  (xlib-draw-line! w1ctr w2ctr)
+		  (draw-window-line-anchor w2ctr 5))
+		wctrlist wctlist wcblist))))
+
+;; declare the vert. relative size constraint
+(define-public uicc-sum-to-height
+  (make-ui-constraint-class
+   "Sum of Heights Constant"
+   "Sum of Hieghts Constant.
+The sum of the heights of the windows \
+in the constraint remain constant."
+   '(2 '+) cnctr-sum-to-height
+   ui-cnctr-sum-to-height draw-cn-sum-to-height
+   cl-is-constraint-satisfied?
+   "cn-window-height-sum.xpm" menuname-as-win-num))
+
+
+
 ;; global-constraint-instance-list
