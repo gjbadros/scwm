@@ -2,6 +2,13 @@
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
+;; Uncomment the below to send a single UDP packet to
+;; the scwm usage counter machine at startup
+;; The single packet just contains the hostname and version number
+;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
+;;(define thank-scwm-authors-with-usage-note #t)
+
+
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
