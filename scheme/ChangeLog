@@ -1,3 +1,9 @@
+1998-12-01  Sam Steingold  <sds@goems.com>
+
+	* flux.scm (move-inside): new function: ensures that the window is
+	inside the viewport.
+	(place-at-point): new function: place the window at mouse point.
+
 1998-11-22  Todd Larason  <jtl@molehill.org>
 
 	* base.scm (scwm-user-var): change #:menu-look tag to #:look for
@@ -20,7 +26,7 @@ Fri Nov 20 02:03:27 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* tests/scwm-gtk.scm: Remove cruft unneeded w/ new interface,
 	make a bit more interesting.
-	
+
 	* gtk.scm: New module to do all the grungework when you want to
  	use Gtk+ with scwm.
 
