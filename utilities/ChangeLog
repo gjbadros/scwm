@@ -1,6 +1,10 @@
+Wed Jan 26 18:22:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/Makefile.am: Use scwm_examples_DATA, not examples_DATA.
+
 Wed Jan 26 16:49:34 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
-	* Makefile.am: Split out examples_DATA; thanks Francesco!
+	* misc/Makefile.am: Split out examples_DATA; thanks Francesco!
 
 Sat Jan 22 13:12:20 2000  Greg J. Badros  <gjb@cs.washington.edu>
 

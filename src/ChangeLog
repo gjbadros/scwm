@@ -1,3 +1,13 @@
+Wed Jan 26 18:22:40 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_main): Call init_errors(), not init_error (the
+	former gets a prototype in scm_init_funcs.h).  #ifdef ENABLE_DUMP
+	guard stuff relating to dumping; add option help for dumping, use
+	-o, not -m (since SCM uses that, too).
+
+	* errors.c: Rename init_error to init_errors so the proto in
+	scm_init_funcs is accurate and useful.
+
 Wed Jan 26 16:50:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Comment out bin_SCRIPTS = scwm-doc-snarf, but leave 
