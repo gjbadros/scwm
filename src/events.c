@@ -441,7 +441,7 @@ SzGetWindowProperty(Window w, const char *szPropertyName, Bool fDelete)
 				  &bytes_after, &pchReturn);
 
   if (retval != Success || xproptype != XA_STRING) {
-    fprintf(stderr, "%s: did not get string property!\n", __FUNCTION__);
+    scwm_msg(WARN, __FUNCTION__, "did not get string property!")
     return NULL;
   }
   return (char *) pchReturn;
@@ -456,7 +456,7 @@ ScwmExecuteProperty()
   char *szExecute = SzGetWindowProperty(Scr.Root, "SCWM_EXECUTE", False);
 
   if (szExecute) {
-    fprintf(stderr, "Executing %s\n", szExecute);
+    scwm_msg(DBG, __FUNCTION__, "Executing %s", szExecute);
     /* WHICH OF THESE SHOULD I USE?? --gjb 
        gh.h:SCM gh_eval_str(char *scheme_code);
        gh.h:SCM gh_eval_str_with_catch(char *scheme_code, scm_catch_handler_t handler);
