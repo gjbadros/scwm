@@ -185,25 +185,33 @@ while (<>) {
     my $argnum = $2; # 1-based
     my $argname = $3;
     check_arg_name_number_match($1,$2,$3,\@argnames);
-  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*\)/o) {
+#  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*(\".*?[^\\]\")\s*\)\s*;/o) {
+  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*$/o) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
     my $num_args = $3;
     my $filename = $ARGV;
     my $line = $.;
     my $body = <>;
+#    print STDERR "Got hook body = $body\n";
     if (!CNameMatchesSchemeName($c_hookname,$scheme_hookname) &&
         ($c_hookname !~ m/^x_\S+_hook/ || 
 	 !CNameMatchesSchemeNameIgnoreCase($c_hookname,$scheme_hookname))) {
       # We permit the X-foo-hook's to mismatch as long as only the case is different
       print STDERR "$ARGV:$.:**** Scheme hook name `$scheme_hookname' does not match `$c_hookname'\n";
     }
-    if ($body !~ m%/\*\*\s*(.*)%) {
+    if ($body !~ m%^\s*\"(.*)$%) {
       $_ = $body;
-      print STDERR "$ARGV:$.:**** Hook $scheme_hookname is missing /** description comment\n";
+      print STDERR "$ARGV:$.:**** Hook $scheme_hookname is missing docstring\n";
       redo MAINLOOP;
     }
-    $body = ReadRestOfComment($1);
+#    $body = ReadRestOfComment($1);
+    if (!($body =~ s%\"\s*\)\s*;\s*$%%m)) {
+      $body = ReadRestOfDocstring($filename,$line,"$1\n");
+    } else { 
+      # Handle single-line docstrings
+      $body =~ s%^\s*\"%%;
+    }
     if ($fDebug) {
       print STDERR "GOT hook $c_hookname,$scheme_hookname at ",
           " $filename:$line body:\n$body\n";
@@ -1025,6 +1033,26 @@ sub ReadRestOfComment ( $$ ) {
     $comment =~ s%\*/\s*$%%s;
   }
   return $comment;
+}
+
+sub ReadRestOfDocstring ( $ ) {
+  my ($filename,$line,$docstring) = @_;
+  while (defined($_ = <>) && $_ !~ m%[^\\]\"\s*\)\s*;\s*$%) {
+    $docstring .= $_;
+    if (eof) {
+      close(ARGV);
+      $current_module = "";
+    }
+  }
+  $docstring .= $_;
+  $docstring =~ s%\"\s*\)\s*;\s*$%%m;
+  if ($docstring =~ m/[^\\]\"/) {
+    print STDERR "$filename:$line:****ERROR:docstring includes an un-escaped double-quote\n";
+  }
+  # Unquote quoted quotes (CRW:FIXME:GJB: are there other things we
+  # may need to unquote here?)
+  $docstring =~ s/\\"/"/g;
+  return $docstring;
 }
 
 sub ProcessConceptComment ( $$$$ ) {
