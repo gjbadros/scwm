@@ -109,9 +109,6 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
   int dwidth = *widthp, dheight = *heightp;
   DBUG((DBG,FUNC_NAME,"initially %d x %d",dwidth,dheight));
 
-  dwidth -= 2 * psw->xboundary_width;
-  dheight -= (psw->title_height + 2 * psw->boundary_width);
-
   minWidth = MinFrameWidth(psw);
   minHeight = MinFrameHeight(psw);
 
@@ -140,6 +137,11 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
   if (dheight > maxHeight)
     dheight = maxHeight;
 
+  /* now subtract off decoration sizes to 
+     use just the client area for the rest
+     of the computations */
+  dwidth -= 2 * psw->xboundary_width;
+  dheight -= (psw->title_height + 2 * psw->boundary_width);
 
   /*
    * Second, fit to base + N * inc
