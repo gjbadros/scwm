@@ -70,8 +70,8 @@ init_scwm_procs(void)
   gh_new_procedure("mouse-event-type", mouse_event_type, 0, 0, 0);
   gh_new_procedure("set-title-justify!", set_title_justify, 1, 0, 0);
   gh_new_procedure("set-title-height!", set_title_height, 1, 0, 0);
-  gh_new_procedure("get-window", get_window, 0, 2, 0);
-  gh_new_procedure("select-window", select_window, 0, 1, 0);
+  gh_new_procedure("get-window", get_window, 0, 3, 0);
+  gh_new_procedure("select-window", select_window, 0, 2, 0);
   /* maybe set-window-context! and unset-window-context! will be needed.. */
   gh_new_procedure("delete-window", delete_window, 0, 1, 0);
   gh_new_procedure("destroy-window", destroy_window, 0, 1, 0);

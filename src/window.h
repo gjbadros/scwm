@@ -16,13 +16,15 @@
 #include <libguile.h>
 #include "scwm.h"
 
-SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p);
+SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 
-#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
 
-#define VALIDATEKILL(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATEKILL(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_T, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
 
-#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
+
+#define VALIDATE_PRESS_ONLY(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
 typedef struct {
   ScwmWindow *sw;
@@ -51,8 +53,8 @@ SCM make_window(ScwmWindow * win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 
-SCM get_window(SCM kill_p, SCM select_p);
-SCM select_window(SCM kill_p);
+SCM get_window(SCM kill_p, SCM select_p, SCM release_p);
+SCM select_window(SCM kill_p, SCM release_p);
 SCM delete_window(SCM win);
 SCM destroy_window(SCM win);
 SCM window_deletable_p(SCM win);

@@ -100,10 +100,10 @@ invalidate_window(SCM schwin)
 
 
 SCM 
-ensure_valid(SCM win, int n, char *subr, SCM kill_p)
+ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
 {
   if (win == SCM_UNDEFINED) {
-    win = get_window(kill_p, SCM_BOOL_T);
+    win = get_window(kill_p, SCM_BOOL_T, release_p);
     if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;
     }
@@ -127,7 +127,7 @@ window_p(SCM obj)
 }
 
 SCM 
-get_window(SCM kill_p, SCM select_p)
+get_window(SCM kill_p, SCM select_p, SCM release_p)
 {
   if (kill_p == SCM_UNDEFINED) {
     kill_p = SCM_BOOL_F;
@@ -139,9 +139,14 @@ get_window(SCM kill_p, SCM select_p)
   } else if (!gh_boolean_p(select_p)) {
     scm_wrong_type_arg("get-window", 2, select_p);
   }
+  if (release_p == SCM_UNDEFINED) {
+    release_p = SCM_BOOL_T;
+  } else if (!gh_boolean_p(select_p)) {
+    scm_wrong_type_arg("get-window", 3, release_p);
+  }
   if (window_context == SCM_UNDEFINED) {
     if (select_p == SCM_BOOL_T) {
-      return select_window(kill_p);
+      return select_window(kill_p,release_p);
     } else {
       return SCM_BOOL_F;
     }
@@ -273,6 +278,9 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
   UngrabEm();
 }
 
+
+extern int orig_x, orig_y, have_orig_position;
+
 /***********************************************************************
  *
  *  Procedure:
@@ -322,8 +330,11 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
 	       ExposureMask | KeyPressMask | VisibilityChangeMask |
 	       ButtonMotionMask | PointerMotionMask, eventp); */
+    /* MS: I put the missing ones back, it was breaking selection
+       from root menus when looking for a press only. */
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-	       ExposureMask | KeyPressMask | VisibilityChangeMask, eventp);
+	       ExposureMask | KeyPressMask | VisibilityChangeMask |
+	       ButtonMotionMask | PointerMotionMask, eventp);
     StashEventTime(eventp);
 
     if (eventp->type == KeyPress)
@@ -384,11 +395,14 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   *context = GetContext(*tmp_win, eventp, &dummy);
 
   UngrabEm();
-  return FALSE;
+  /* interactive operations should not use the stashed mouse position
+     if we just selected the window. */
+  have_orig_position = 0; 
+  return FALSE; 
 }
 
 SCM 
-select_window(SCM kill_p)
+select_window(SCM kill_p, SCM release_p)
 {
   XEvent ev;
   Window w;
@@ -407,9 +421,21 @@ select_window(SCM kill_p)
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("select-window", 1, kill_p);
   }
+
+  if (release_p == SCM_UNDEFINED) {
+    release_p = SCM_BOOL_T;
+  } else if (!gh_boolean_p(release_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("select-window", 2, release_p);
+  }
+
+
   if (DeferExecution(&ev, &w, &tmp_win, &context,
 		     (kill_p != SCM_BOOL_F ? DESTROY : SELECT),
-		     ButtonRelease)) {
+		     (release_p != SCM_BOOL_F ? ButtonRelease :
+		      ButtonPress))) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
   }
   /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
   if (tmp_win && tmp_win->schwin != SCM_UNDEFINED) {
@@ -887,7 +913,6 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
   return SCM_BOOL_T;
 }
 
-extern int orig_x, orig_y, have_orig_position;
 
 SCM 
 interactive_move(SCM win)
@@ -898,7 +923,7 @@ interactive_move(SCM win)
   int x, y;
 
   SCM_REDEFER_INTS;
-  VALIDATE(win, "interactive-move");
+  VALIDATE_PRESS_ONLY(win, "interactive-move");
   tmp_win = SCWMWINDOW(win);
   w = tmp_win->frame;
   if (tmp_win->flags & ICONIFIED) {
@@ -991,7 +1016,7 @@ interactive_resize(SCM win)
   extern int Stashed_X, Stashed_Y;
   Bool flags;
 
-  VALIDATE(win, "interactive-resize");
+  VALIDATE_PRESS_ONLY(win, "interactive-resize");
   tmp_win = SCWMWINDOW(win);
 
 
