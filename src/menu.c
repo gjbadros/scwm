@@ -1331,7 +1331,7 @@ init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
 
-  SCWM_VAR(construct_menu_primitive,"construct-menu-primitive", SCM_BOOL_F);
+  SCWM_VAR_INIT(construct_menu_primitive,"construct-menu-primitive", SCM_BOOL_F);
   /** The function to call to construct a menu.
 This is only useful for testing dynamically-loaded menu drawing code,
 and should normally be left at its default of #f. */

@@ -359,11 +359,11 @@ path_expand_image_fname(SCM name, const char *func_name)
 			   && c_name[2]=='/')))) {
     /* absolute path */
 
-    if(access(c_name, R_OK)==0) {
-      c_fname=c_name;
+    if (access(c_name, R_OK)==0) {
+      c_fname = c_name;  /* alias the two names */
     } else {
       FREE(c_name);
-      return(SCM_BOOL_F);
+      return SCM_BOOL_F;
     }
   } else {
     SCM p;
@@ -422,8 +422,11 @@ path_expand_image_fname(SCM name, const char *func_name)
   }
 
   result = gh_str02scm(c_fname);
+  /* c_fname and c_name may be aliased from assignment above --
+     be sure to free only once */
+  if (c_fname != c_name)
+    FREE(c_fname);
   FREE(c_name);
-  FREE(c_fname);
   return result;
 }
 
@@ -613,7 +616,7 @@ void init_image()
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
   
-  SCWM_VAR(image_load_path,"image-load-path", gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH));
+  SCWM_VAR_INIT(image_load_path,"image-load-path", gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH));
   /** List of strings of directories in which to look for image files. */
 
 
