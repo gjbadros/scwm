@@ -28,8 +28,8 @@
 (set-not-menu-background! "gray")
 
 
-(set-highlight-foreground! "black")
-(set-highlight-background! "gray")
+(set-highlight-foreground! "white")
+(set-highlight-background! "navyblue")
 (set-icon-font! FIXED-FONT)
 (set-title-font! FIXED-FONT)
 (set-title-justify! 'center)

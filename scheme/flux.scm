@@ -132,7 +132,7 @@ See also `message'."
    "\nDesk:\t\t\t" (number->string (window-desk win)) "\nClass:\t\t\t\""
    (window-class win) "\"\nResource:\t\t\"" (window-resource win)
    "\"\nBorder Normal:\t\t" (bool->string (border-normal? win))
-   "\nFocus:\t\t\t" (get-window-focus win)
+   "\nFocus:\t\t\t" (window-focus-style win)
    "\nDeletable:\t\t" (bool->string (window-deletable? win))
    "\nIconified:\t\t" (bool->string (iconified-window? win))
    "\nKept On Top:\t\t" (bool->string (kept-on-top? win))

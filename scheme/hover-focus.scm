@@ -85,7 +85,7 @@ the delay before the window gets focus."
 	(if hover-focus? 
 	    ;; turning it on
 	    (begin
-	      (set-object-property! win 'hover-old-focus-style (get-window-focus win))
+	      (set-object-property! win 'hover-old-focus-style (window-focus-style win))
 	      (set-window-focus! 'click win))
 	    ;; turning it off
 	    (let ((old-focus (object-property win 'hover-old-focus-style)))
@@ -107,7 +107,7 @@ the delay before the window gets focus."
 (define (window-is-hoverable? window)
   (and window
        (not (iconified-window? window))
-       (not (eq? (get-window-focus window) 'none))
+       (not (eq? (window-focus-style window) 'none))
        (object-property window 'hover-focus)))
 
 

@@ -1013,8 +1013,9 @@ from other processes.
 (setenv "DISPLAY_PLANES" (number->string display-depth))
 (setenv "GNOME_SM" (if gnome-sm "true" "false"))
 
+;;(bind-key 'all "C-S-Down" iconify-window)
 (bind-key 'all "C-S-Down" animated-iconify)
-(bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "C-M-Return" focus-or-toggle-raise)
 (bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
 
 (bind-key 'all "C-S-Up" toggle-maximize-vertical)
