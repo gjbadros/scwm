@@ -709,12 +709,12 @@ SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
 SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 
-SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ()
-{ return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); })
+SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
+{ return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
 
 
-SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,()
-{ return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); })
+SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
+{ return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }
 
 
 SCWM_PROC(pointer_mapping, "X-pointer-mapping", 0, 0, 0,
