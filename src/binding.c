@@ -1331,7 +1331,7 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
   ycurrent = y;
   t0 = lastTimestamp;
 
-  XGrabPointer(dpy, Scr.Root, True, ButtonMotionMask | PointerMotionMask,
+  XGrabPointer(dpy, Scr.Root, True, ButtonMotionMask | ButtonReleaseMask | ButtonPressMask | PointerMotionMask,
                GrabModeAsync, GrabModeAsync, Scr.Root,
                None, CurrentTime);
                                           
@@ -1339,8 +1339,8 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
 	 (x - xcurrent < 3) && (x - xcurrent > -3) &&
 	 (y - ycurrent < 3) && (y - ycurrent > -3) &&
 	 ((lastTimestamp - t0) < Scr.ClickTime)) {
-    DBUG((scwm_msg(DBG,"IsClick","sleeping 5 -- %d vs %d, %d vs %d",
-             x, xcurrent, y, ycurrent)));
+    DBUG((DBG,"IsClick","sleeping 5 -- %d vs %d, %d vs %d",
+             x, xcurrent, y, ycurrent));
     ms_sleep(5);
     total += 5;
     if (XCheckMaskEvent(dpy, EndMask, d)) {
@@ -1352,7 +1352,7 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
       xcurrent = d->xmotion.x_root;
       ycurrent = d->xmotion.y_root;
       StashEventTime(d);
-      DBUG((scwm_msg(DBG,"IsClick","got %d %d",xcurrent, ycurrent)));
+      DBUG((DBG,"IsClick","got %d %d",xcurrent, ycurrent));
     }
   }
   XUngrabPointer(dpy,CurrentTime);
@@ -1764,9 +1764,9 @@ init_modifiers(void)
       }
       c_mask_mod_combos = im;
     }
-    DBUG((scwm_msg(INFO,"init_modifiers",
+    DBUG((INFO,"init_modifiers",
                    "Doing %d XGrabKey calls for window bindings when ignoring dubious modifiers",
-                   c_mask_mod_combos);))
+                   c_mask_mod_combos));
     XFreeModifiermap(mod);
   }
 }
