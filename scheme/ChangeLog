@@ -1,3 +1,7 @@
+1998-10-16  Sam Steingold  <sds@goems.com>
+
+	* flux.scm (system-info-string): fix alignment.
+
 Thu Oct 15 08:03:03 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm (maximize): Patch from Ken Pizzini to handle
