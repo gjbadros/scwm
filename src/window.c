@@ -581,13 +581,15 @@ make_window(ScwmWindow * win)
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
   SCWMWINDOW(answer) = win;
-  SET_VALIDWIN_FLAG(answer,True);
+  win->schwin = answer;
 
-  /* Warning, arbitrary constant, we really need growable hash
+  /* MS:FIXME:: 
+     Warning, arbitrary constant, we really need growable hash
      tables. */
   win->other_properties = gh_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
+  SET_VALIDWIN_FLAG(answer,True);
   scwm_allow_ints();
   return answer;
 }
