@@ -40,6 +40,12 @@
       (display arg)
       ()))
 
+(define (display-string-newline-to-error-port str)
+  (display str (current-error-port))
+  (newline (current-error-port)))
+
+(add-hook! error-hook display-string-newline-to-error-port)
+
 (debug-display "Starting...\n")
 
 ;; This will make things go a bit faster at the expense
@@ -154,6 +160,7 @@
 		  style stylist face time-convert menus-extras
 		  std-menus doc virtual prompt-color
 		  flux flux-gtk flash-window key-mover
+		  gtk
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify last-mapped-window
 		  modifier-key-bindings window-selection
@@ -993,6 +1000,7 @@ from other processes.
 (bind-mouse 'all "A-2" #f show-window-list-by-focus-with-geometry)
 
 (bind-key 'all "H-r" rename-window-interactively)
+
 ;; (lookup-key 'all "H-r")
 ;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
 ;; (procedure-name rename-window-interactively)
@@ -1432,6 +1440,13 @@ from other processes.
       
       (remove-hook! load-processing-hook next-logo-image-n)
       (set-background-image! scwm-logo 'tiled)))
+
+
+(use-scwm-modules gtk (gtk gtk))
+(add-hook! error-hook gtk-show-error)
+;; This is a bug binding for demonstrating above
+;; (bind-key 'all "H-o" (lambda () (function-with-stupid-name)))
+
 
 (wavplay "scwm-startup.wav")
 
