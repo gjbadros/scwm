@@ -1,3 +1,13 @@
+Mon Aug 30 10:18:01 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop xlock-query-program.  Move it into
+	std-menus.scm
+
+	* gjb.scwmrc: Added some debug code for change-desk-hook.
+
+	* Makefile.am: Make all .scwmrc files go in scwmrc_DATA target,
+ 	instead of putting some of them in /usr/doc/scwm/*.scwmrc.
+
 Fri Aug 27 20:56:50 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Set *theme-path* appropriately for rpm -- use
