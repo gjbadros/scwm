@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-13 Mon 18:28:31 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-14 Tue 12:44:41 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -156,6 +156,12 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (scwm-eval (buffer-substring-no-properties
 	      (point) (save-excursion (backward-sexp) (point))) out))
 
+(defsubst scwm-safe-call (func args out)
+  "Call FUNC with ARGS and output to OUT, checking existence of FUNC first."
+  (scwm-eval (concat "(if (bound? " func ") (" func " " args ") "
+                     "(display \"This Guile version lacks `" func "'.\n\"))")
+             out))
+
 ;;;###autoload
 (defun scwm-eval-print ()
   "Evaluate the last SEXP and insert the result into the current buffer."
@@ -185,7 +191,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (let ((obarray (make-vector 67 0)) (pos 2)
 	(tb (get-buffer-create " *scwm-obarray*")))
     (set-buffer tb) (erase-buffer)
-    (scwm-eval "(apropos-internal \".*\")" tb)
+    (scwm-safe-call "apropos-internal" "\".*\"" tb)
     (goto-char 1)
     (while (search-forward " " nil t)
       (intern (buffer-substring-no-properties pos (1- (point))) obarray)
@@ -237,8 +243,8 @@ Returns a string."
   (interactive (list (scwm-complete-symbol)))
   (with-output-to-temp-buffer "*Help*"
     (princ "SCWM documentation `") (princ pat) (princ "':\n\n")
-    (scwm-eval (concat "(procedure-documentation " pat ")")
-	       standard-output)))
+    (scwm-safe-call "procedure-documentation" pat standard-output)
+    (set-buffer standard-output) (help-mode)))
 
 ;;;###autoload
 (defun scwm-apropos (pat)
@@ -253,7 +259,7 @@ Returns a string."
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
     (princ "SCWM apropos `") (princ pat) (princ "':\n\n")
-    (scwm-eval (concat "(apropos \"" pat "\")") standard-output)
+    (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
     (set-buffer standard-output) (apropos-mode)))
 
 ;; info interface
@@ -275,23 +281,24 @@ i.e. (FILENAME NODENAME BUFFERPOS)"
 	(cmd-desc (concat "^\\* " (regexp-quote procedure)
 			  ":\\s *\\(.*\\)\\.$"))
 	(file-list scwm-info-file-list))
-    (while file-list
-      (let ((file (car (car file-list)))
-            (index (cdr (car file-list))))
-	(setq file-list (cdr file-list))
-	(save-excursion
-	  (ignore-errors
-            (Info-find-node file index)
-            ;; Take the index node off the Info history.
-            (setq Info-history (cdr Info-history))
-            (goto-char (point-max))
-            (while (re-search-backward cmd-desc nil t)
-              (setq where (cons (list Info-current-file
-                                      (buffer-substring
-                                       (match-beginning 1)
-                                       (match-end 1))
-                                      0)
-                                where)))))))
+    (save-window-excursion
+      (save-excursion
+        (while file-list
+          (let ((file (car (car file-list)))
+                (index (cdr (car file-list))))
+            (setq file-list (cdr file-list))
+            (ignore-errors
+              (Info-find-node file index)
+              ;; Take the index node off the Info history.
+              (setq Info-history (cdr Info-history))
+              (goto-char (point-max))
+              (while (re-search-backward cmd-desc nil t)
+                (setq where (cons (list Info-current-file
+                                        (buffer-substring
+                                         (match-beginning 1)
+                                         (match-end 1))
+                                        0)
+                                  where))))))))
     where))
 
 ;;;###autoload
