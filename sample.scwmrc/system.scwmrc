@@ -948,6 +948,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
 (bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
+(bind-key 'all "C-A-S-n" show-netscape-window-list-menu)
 
 (bind-key 'all (hyper "A-M-C-d") delete-window)
 ;; (delete-window)
