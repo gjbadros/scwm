@@ -646,7 +646,34 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT. */
   }
 }
 #undef FUNC_NAME
-#endif          
+
+
+SCWM_PROC (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
+           (SCM image, SCM width, SCM height))
+     /** Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.
+      */
+#define FUNC_NAME s_clone_scaled_image
+{
+  int w, h;
+  VALIDATE_ARG_IMAGE(1,image);
+  VALIDATE_ARG_INT_COPY(2,width,w);
+  VALIDATE_ARG_INT_COPY(3,height,h);
+
+  { /* scope */
+    ImlibImage *pimgSource = IMAGE(image)->im;
+    ImlibImage *pimgNew = Imlib_clone_scaled_image(imlib_data,pimgSource,w,h);
+    SCM result = make_empty_image(gh_str02scm("by window->image"));
+    scwm_image *ci = IMAGE(result);
+    if (!MakeScwmImageFromImlibImage(ci,pimgNew)) {
+      scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmap");
+    }
+    return result;
+  }
+}
+#undef FUNC_NAME
+
+
+#endif
 
 SCM
 make_image_from_pixmap(char *szDescription,
