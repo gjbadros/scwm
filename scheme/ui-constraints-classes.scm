@@ -758,6 +758,7 @@
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (let* ((wblist (map (lambda (w) (window-center-bottom w)) winlist))
 	   (wtlist (map (lambda (w) (window-center-top w)) (cdr winlist))))
+      (drop-last-element! wblist)
       (xlib-set-line-width! width)
       (for-each (lambda (wt wb) 
 		  (xlib-draw-line! wb wt)
@@ -802,6 +803,7 @@
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (let* ((wrlist (map (lambda (w) (window-right-middle w)) winlist))
 	   (wllist (map (lambda (w) (window-left-middle w)) (cdr winlist))))
+      (drop-last-element! wrlist)
       (xlib-set-line-width! width)
       (for-each (lambda (wl wr) 
 		  (xlib-draw-line! wr wl)
@@ -813,10 +815,11 @@
 (define* (cnctr-keep-to-left-of winlist #&optional (enable? #f))
   (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #t))
 	 (clvrlist (map (lambda (w) (window-clv-xr w)) sortedwl))
-	 (clvllist (map (lambda (w) (window-clv-xl w)) (cdr sortedwl)))
-	 (cnlist (map (lambda (cr cl) (make-cl-constraint cr <= cl)) clvrlist clvllist)))
-    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
-    (list cnlist sortedwl)))
+	 (clvllist (map (lambda (w) (window-clv-xl w)) (cdr sortedwl))))
+    (drop-last-element! clvrlist)
+    (let ((cnlist (map (lambda (cr cl) (make-cl-constraint cr <= cl)) clvrlist clvllist)))
+      (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+      (list cnlist sortedwl))))
 
 ;; declare the keep-to-left-of constraint
 (define-public uicc-klo
