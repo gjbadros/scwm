@@ -66,7 +66,7 @@ get_GC_overlay(Window win, GC *gc)
   unsigned long gcm = ( GCFunction | GCLineWidth | 
                         GCForeground | GCBackground |
                         GCPlaneMask | GCSubwindowMode );
-  gcv.function = GXset;
+  gcv.function = GXcopy;
   gcv.line_width = 2;
   gcv.foreground = overlay_pixel_1;
   gcv.background = overlay_pixel_2;
@@ -90,6 +90,7 @@ static void
 remove_overlay(Window win)
 {
   /* this clears the overlay plane set in the gc */
+  XSetForeground(dpy, clear_gc, 0);
   XFillRectangle(dpy, win, clear_gc, 0, 0, 10000, 10000);
 }
 
