@@ -1228,6 +1228,9 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "C-S-M-period" dir-focus-east)
 (bind-key 'all "C-S-A-p" xmms-send-pause-click)
 
+;;; (define (force-gc)  (display "gc...")  (gc) (display "done!\n"))
+;;; (bind-key 'all "C-S-A-g" force-gc)
+
 (bind-key 'all (hyper "q") quote-key-event)
 (bind-key 'all (hyper "m") quote-mouse-event)
 
