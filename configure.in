@@ -739,6 +739,8 @@ AC_SUBST(CPPEXTRAFLAGS)
 
 AC_OUTPUT(Makefile \
           scwm.spec \
+          ANNOUNCE \
+          README \
           sample.scwmrc/Makefile \
           scwm/Makefile \
           scheme/Makefile \
