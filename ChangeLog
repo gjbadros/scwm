@@ -1,3 +1,20 @@
+Tue Mar 23 11:46:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* THANKS: Added imlib support to James LewisMoss's contribution list.
+
+	* acconfig.h: Added #undef USE_IMLIB for that option.
+
+	* configure.imlib.in: Added temporarily, until someone else works
+	out how to integrate the IMLIB checks into the configure.in for
+	systems w/o imlib installed.  Can copy configure.imlib.in to
+	configure.in, sh autogen.sh, and the configure if you have imlib
+	installed.
+
+Tue Mar 23 11:43:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Drop checking for scm_make_vector behaviour -- no
+	longer used.
+
 Thu Mar 18 09:51:47 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* THANKS: Added entries at top for Carl Witty for his
