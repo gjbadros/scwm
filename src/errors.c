@@ -34,6 +34,11 @@
 #include <guile/gh.h>
 #include "errors.h"
 
+
+/* FIXGJB: this mechanism is *terrible*; I'm all for localizable
+ code, trying to keep indexes in sync with this array is
+ a maintenance headache, and debugging w/ broken error messages
+ is an utterly depressing notion */
 static char *scwm_errors[] =
 {
   "",
@@ -59,4 +64,14 @@ scwm_error(char *subr, int err)
   scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
 	    gh_list(gh_str02scm(scwm_errors[err]), SCM_UNDEFINED),
 	    gh_list(gh_int2scm(err), SCM_UNDEFINED));
+}
+
+/* FIXGJB: this does not work... does guile require using
+   the goofy error string array? */
+void 
+scwm_error_imm(char *subr, const char *szErrMsg)
+{
+  scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
+	    gh_list(gh_str02scm((char *)szErrMsg), SCM_UNDEFINED),
+	    gh_list(SCM_UNDEFINED, SCM_UNDEFINED));
 }
