@@ -30,6 +30,9 @@
 #include "module-interface.h"
 #include "xmisc.h"
 #include "syscompat.h"
+#include "callbacks.h"
+
+static SCM change_desk_hook;
 
 
 Bool
@@ -418,6 +421,8 @@ changeDesks(int val1, int val2)
       return;
   }
 
+  call2_hooks(change_desk_hook, gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
+  
   Broadcast(M_NEW_DESK, 1, Scr.CurrentDesk, 0, 0, 0, 0, 0, 0);
   /* Scan the window list, mapping windows on the new Desk,
    * unmapping windows on the old Desk */
@@ -478,6 +483,21 @@ changeDesks(int val1, int val2)
     SetFocus(Scr.NoFocusWin, NULL, 1);
   }
 }
+
+
+void
+init_virtual()
+{
+  SCWM_HOOK(change_desk_hook,"change-desk-hook");
+  /** This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number. */
+
+#ifndef SCM_MAGIC_SNARFER
+#include "virtual.x"
+#endif
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

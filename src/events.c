@@ -103,6 +103,7 @@ SCM x_propertynotify_hook;
 SCM x_mappingnotify_hook;
 SCM x_destroynotify_hook;
 SCM x_unmapnotify_hook;
+SCM window_focus_change_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -341,6 +342,7 @@ HandleFocusIn()
       Scr.UnknownWinFocused = w;
     } else {
       SetBorder(Scr.Hilite, False, True, True, None);
+      call1_hooks(window_focus_change_hook,SCM_BOOL_F);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
 		XCOLOR(Scr.DefaultDecor.HiColors.fg),
 		XCOLOR(Scr.DefaultDecor.HiColors.bg),
@@ -355,6 +357,7 @@ HandleFocusIn()
     }
   } else if (pswCurrent != Scr.Hilite) {
     SetBorder(pswCurrent, True, True, True, None);
+    call1_hooks(window_focus_change_hook,pswCurrent->schwin);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
 	      pswCurrent->frame, (unsigned long) pswCurrent,
 	      XCOLOR(GET_DECOR(pswCurrent, HiColors.fg)),
@@ -1953,6 +1956,11 @@ The WIN is still valid during the hook procedures. */
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. */
+
+  SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook");
+  /** This hook is invoked whenever the keyboard focus is changed.
+It is called with one argument, the window object of the window
+that now has the focus, or #f if no window now has the focus. */
 
 
 #ifndef SCM_MAGIC_SNARFER
