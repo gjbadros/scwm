@@ -630,6 +630,7 @@ ScwmWindow *AddWindow(Window w)
   tmp_win->frame_height = 0;
   SetupFrame (tmp_win, tmp_win->frame_x, tmp_win->frame_y,width,height, True);
 
+
   /* wait until the window is iconified and the icon window is mapped
    * before creating the icon window 
    */
@@ -687,6 +688,7 @@ ScwmWindow *AddWindow(Window w)
 #ifndef CLICKTORAISE
     }
 #endif
+
   BroadcastConfig(M_ADD_WINDOW,tmp_win);
 
   BroadcastName(M_WINDOW_NAME,tmp_win->w,tmp_win->frame,
@@ -716,6 +718,7 @@ ScwmWindow *AddWindow(Window w)
   FetchWmColormapWindows (tmp_win);
   if(!(XGetWindowAttributes(dpy,tmp_win->w,&(tmp_win->attr))))
     tmp_win->attr.colormap = Scr.ScwmRoot.attr.colormap;
+
   if(NeedToResizeToo)
     {
       XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth, 
@@ -730,11 +733,11 @@ ScwmWindow *AddWindow(Window w)
       Event.xbutton.y = (tmp_win->frame_height>>1);
       Event.xbutton.subwindow = None;
       Event.xany.window = tmp_win->w;
-      resize_window(&Event , tmp_win->w, tmp_win, C_WINDOW, "", 0);
+      interactive_resize(tmp_win->schwin);
     }
   InstallWindowColormaps(colormap_win);
-  /* XXX - Not sure if this is the right place to do this, but oh well.... */
-
+  /* XXX - Not sure if this is the right place to do this, 
+     but oh well.... */
   /* tmp_win->schwin=make_window(tmp_win); */
   run_new_window_hook(tmp_win->schwin);
 
