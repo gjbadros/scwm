@@ -17,7 +17,13 @@
 ;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
-
+#!
+(define guibiff (run-ScwmBiff "mini-mail.xpm" "mini-newmail.xpm"
+			      #:action "privtool"))
+(guibiff 'go-active)
+(guibiff 'go-passive)
+(guibiff 'quit)
+!#
 
 (define-module (app scwm ScwmBiff)
   :use-module (app scwm base)
@@ -35,6 +41,7 @@
   (let* ((button (gtk-button-new))
 	 (passive-image #f)
 	 (active-image #f)
+	 (state-active #f)
 	 )
     (if (not parent)
 	(begin
@@ -72,11 +79,17 @@
 		    (gtk-widget-destroy toplevel))))
 	((go-active)
 	 (beep)
-	 (gtk-container-remove button passive-image)
-	 (gtk-container-add button active-image))
+	 (if (not state-active)
+	     (begin
+	       (gtk-container-remove button passive-image)
+	       (gtk-container-add button active-image)
+	       (set! state-active #t))))
 	((go-passive)
-	 (gtk-container-remove button active-image)
-	 (gtk-container-add button passive-image))
+	 (if state-active
+	     (begin
+	       (gtk-container-remove button active-image)
+	       (gtk-container-add button passive-image)
+	       (set! state-active #f))))
 	((test)
 	 (display active-image) (display passive-image) (newline)))
 	)))
