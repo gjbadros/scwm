@@ -32,55 +32,10 @@ MODULEPATH=/usr/X11/lib/X11/fvwm2:$HOME/lib/fvwm2/modules/$UNAME:/uns/lib/fvwm2;
 
 if [ x"$DISPLAY" = x ]; then
     # we need to start an Xserver
-    # this starts one on display :0 (unless argument :1 is given to the script)
-    # and requires the mcookie, xauth, and X programs to work.
-    DISPLAY=:0; export DISPLAY
-    if [ x"$1" = ":1" ]; then
-        DISPLAY=:1
-    fi
-    XAUTHORITY=$HOME/.Xauthority; export XAUTHORITY
-
-    OPTIONS=""
-    #XCONFIG=$HOME/XF86Config.800x600; export XCONFIG
-    #OPTIONS="-bpp 16 dpms -xf86config $XCONFIG"
-    #OPTIONS="-bpp 16 dpms"
-
-    # use -audit 4, below, for more debugging
-    X $DISPLAY $OPTIONS -auth $XAUTHORITY >& $HOME/.Xserver-log &
-    XSERVERPID=$!; export XSERVERPID
-    sleep 5  # GJB:FIXME:: race condition... how do I tell when I can connect?
-
-
-    KEY=`mcookie`
-    xauth add $HOST$DISPLAY . $KEY
-    xauth add ${HOST}/unix$DISPLAY . $KEY
-
-    # This stuff is all from /etc/X11/xdm/Xsession
-    # and would normally get run from there or from .xsession
-    userresources=$HOME/.Xresources 
-    usermodmap=$HOME/.Xmodmap 
-    sysresources=/usr/X11R6/lib/X11/xinit/.Xresources 
-    sysmodmap=/usr/X11R6/lib/X11/xinit/.Xmodmap 
-	
-    # merge in defaults and keymaps 
-    if [ -f $sysresources ]; then 
-	xrdb -merge $sysresources 
-    fi 
-    
-    if [ -f $sysmodmap ]; then 
-	xmodmap $sysmodmap 
-    fi 
-    
-    if [ -f $userresources ]; then 
-	xrdb -merge $userresources 
-    fi 
-    
-    if [ -f $usermodmap ]; then 
-	xmodmap $usermodmap 
-    fi
+    xinit $0 "$@"
 fi
 
-# Now we know an X server is running and DISPLAY is set.    
+# Now we know an X server is running and DISPLAY is set.
 
 # Restart as a child of ssh-agent[12] if we are not already
 if which ssh-add >/dev/null && \
@@ -91,7 +46,7 @@ if which ssh-add >/dev/null && \
   SSA=""
   which ssh-agent2 >/dev/null && SSA="ssh-agent2 $SSA"
   which ssh-agent1 >/dev/null && SSA="ssh-agent1 $SSA"
-  exec $SSA $0 > $ERRORSFILE 2>&1
+  exec $SSA $0 "$@" > $ERRORSFILE 2>&1
 else
   exec > $ERRORSFILE 2>&1
 fi
