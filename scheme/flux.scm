@@ -17,6 +17,21 @@
 
 
 
+(define-public (interactive-move-window-with-focus)
+  (let ((w (current-window-with-focus))) (and w (interactive-move w))))
+
+(define-public (interactive-resize-window-with-focus)
+  (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
+
+(define-public (interactive-move-window-with-pointer)
+  (let ((w (current-window-with-pointer))) (and w (interactive-move w))))
+
+(define-public (interactive-resize-window-with-pointer)
+  (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
+
+(define-public (wiggle-window)
+  (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
+
 (define-public (write-all port . lst)
   (if (eq? port ()) (set! port (current-output-port)))
   (do ((zz lst (cdr zz))) ((null? zz))
