@@ -683,3 +683,11 @@ the first element for changes to desk 1, etc."
      ((se southeast south-east) '( -1   -1))
      (else (error "Invalid gravity specified.")))))
 
+(define-public (execute-on-selection command)
+  "Run COMMAND in the background, with arguments supplied by the X selection." 
+  (execute (string-append command " '" (X-cut-buffer-string) "'")))
+
+(define-public (exe-on-selection command)
+  "Return a procedure that runs COMMAND in the background on the X selection."
+  (lambda () (execute-on-selection command)))
+

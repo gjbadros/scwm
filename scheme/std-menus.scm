@@ -95,3 +95,37 @@ used or a cons of (host . command)."
                                (string-append "-T telnet:_" hh) "-n telnet"))))
               host-list))))
 
+(define-public context-map
+;;;**VAR
+;;; An alist mapping filename patterns to applicable menu entries.
+;;; Whenever the car (a regexp) matches a filename, the cdr is used to
+;;; build a menuitem which is then added to the context menu.
+  `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
+			  #:action ,(exe-on-selection "gnuclient -q"))
+    ("\.ps$" "View (gv)" #:action ,(exe-on-selection "gv"))
+    ("\.(gif|jpg)$" "View (ee)" #:action ,(exe-on-selection "ee"))
+    ("\.(gif|jpg|xcf)(\.gz)?$" "Edit (gimp)"
+			       #:action ,(exe-on-selection "gimp"))
+    ("\.mpe?g$" "Play (mpeg_play)"
+		#:action ,(exe-on-selection "mpeg_play -dither color"))
+    ("\.mp3$" "Play (mpg123)" #:action ,(exe-on-selection "mpg123"))))
+
+(define-public (make-context-menu)
+  "Create a menu of actions applicable to the filename in the X selection.
+The selection is limited to contain one filename, and the full path of the
+file must be given."
+  (let ((file (X-cut-buffer-string)))
+    (menu (append
+	   (list (menuitem (string-append "... " file))
+		 menu-separator)
+	   (if (and file (access? file F_OK))
+	       (apply append
+		      (map (lambda (entry)
+			     (if (not (regexp? (car entry)))
+				 (set-car! entry
+					   (make-regexp (car entry))))
+			     (if (and (regexp-exec (car entry) file))
+				 (list (apply menuitem (cdr entry)))
+				 ()))
+			   context-map))
+	       ())))))
