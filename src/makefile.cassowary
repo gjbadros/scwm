@@ -3,10 +3,16 @@
 
 # Makefile for scwm-cassowary
 # Copyright (C) 1998 Greg Badros <gjb@cs.washington.edu>
-# makefile 
-# Greg Badros 
 # Seattle, WA  USA
 # http://www.cs.washington.edu/homes/gjb
+#
+# use:
+#   make -f makefile.cassowary scwm_cl
+#
+# This makefile relies on the automatically-generated `Makefile'
+# for standard scwm.  Be sure to `./configure' using the
+# --with-cassowary=/path-to-cassowary
+# option
 
 CC = gcc
 CPP = g++
@@ -17,9 +23,10 @@ CPPLINK = $(LIBTOOL) --mode=link $(CPP) $(CFLAGS) $(LDFLAGS) -o $@
 include Makefile
 
 %.o: %.cc
-	$(CPPCOMPILE) -c $<
+	$(CPPCOMPILE) -Wp,-MD,.deps/$(*F).P -c $<
 
 SRCS = constraint-primitives.cc scwm-constraints.cc
+CPPDEP_FILES = $(SRCS:%.cc=.deps/%.P)
 OBJS = $(SRCS:.cc=.o)
 
 scwm_cl: $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
@@ -28,3 +35,5 @@ scwm_cl: $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
 
 constraint-primitives.x: constraint-primitives.cc
 	CC=$(CPP) guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
+
+-include $(CPPDEP_FILES)
