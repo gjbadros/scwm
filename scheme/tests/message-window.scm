@@ -19,3 +19,36 @@
 
 ;; (set! mwn #f)   ;; this will make it impossible to remove mwn, but should not dump core
 
+;; images stuff
+
+(define i (window->image (get-window)))
+(define root (window->image 'root-window))
+
+(image-properties i)
+(image-properties root)
+
+(popup-menu (menu (list (menuitem "foo" #:image-above i))))
+
+(define m (make-message-window-clone-default "Testing..."))
+(define m (make-message-window-clone-default "")
+
+(message-window-message m)
+
+(message-window-set-image! m i)
+(message-window-set-image! m root)
+
+(message-window-show! m)
+(message-window-hide! m)
+
+(message-window-set-size! m 100 100)
+(message-window-set-size! m #f #f)
+
+(message-window-set-relief! m #f)
+
+(message-window-set-message! m "Foo")
+(message-window-set-message! m "")
+(message-window-set-message! m "")
+(message-window-set-size! m 100 100)
+(message-window-set-size! m 500 500)
+
+(message-window-set-position! m 20 20)
