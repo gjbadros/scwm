@@ -192,6 +192,17 @@ AC_DEFINE(HAVE_LIBXMU)
 dnl # check if X11 library was compiled with X_LOCALE definition
 AC_CHECK_LIB(X11, _Xsetlocale, [ AC_DEFINE(X_LOCALE) ], [], $x_libs)
 
+dnl # Check for libSM, libIce
+SM_LIB=""
+AC_CHECK_LIB(SM, SmcOpenConnection, [
+  AC_CHECK_LIB(ICE, IceAddConnectionWatch, [
+  SM_LIB="-lSM -lICE"
+  AC_DEFINE(HAVE_LIBSM_LIBICE)
+  ], AC_MSG_WARN(libICE not found -- no session manager support)
+, $x_libs)
+], AC_MSG_WARN(libSM not found -- no session manager support)
+, $x_libs)
+
 x_cflags="$X_CFLAGS"
 x_ldflags="$X_LDFLAGS $X_LIBS"
 
