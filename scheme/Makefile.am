@@ -3,7 +3,7 @@
 
 scwm_common_scheme = \
 advice.scm animated-edge-moves.scm animated-iconify.scm animation.scm \
-auto-raise.scm auto-unobscure.scm \
+auto-raise.scm auto-shrink.scm auto-unobscure.scm \
 base.scm basic-styles.scm bincomm.scm \
 cascade.scm constraints.scm constraint-animation.scm corba.scm cursor.scm \
 debianapps-menu.scm decor.scm defoption.scm describe.scm \
