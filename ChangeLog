@@ -1,3 +1,9 @@
+Mon Nov 24 14:00:09 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* README: bumped version number to 0.5
+
+	* INSTALL: added "What You Need" section re: guile requirements
+
 Tue Nov 18 01:23:38 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* version.h: Bumped to version 0.5.

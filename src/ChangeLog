@@ -1,3 +1,12 @@
+Mon Nov 24 14:00:49 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.in: Fixed some dependence problems using image.x file.
+	Added rule to build init_scheme_string.c from
+	../scheme/minimal.scm and link that in with the binary
+
+	* scwm.c: SetRCDefaults() now uses the extern char
+	*init_scheme_string from the .c file that the makefile builds.
+
 Mon Nov 24 00:07:05 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: Compile image.c; use guile-snarf on it as well to

@@ -1,3 +1,5 @@
 *.d
 Makefile
+image.x
+init_scheme_string.c
 scwm
