@@ -845,8 +845,8 @@ PBndFromMouse(int button,
 }
 
 SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
-          (SCM quoting_on_p))
-     /** Set key event quoting to QUOTING-ON?. */
+          (SCM quoting_on_p),
+"Set key event quoting to QUOTING-ON?.")
 #define FUNC_NAME s_set_quote_key_events_x
 {
   VALIDATE_ARG_BOOL_COPY(1,quoting_on_p,fQuotingKeystrokes);
@@ -856,9 +856,9 @@ SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
 
 
 SCWM_PROC(quote_key_events_p, "quote-key-events?", 0, 0, 0,
-          ())
-     /** Return #t iff key events are being qutoed.
-See also `set-quote-key-events!'. */
+          (),
+"Return #t iff key events are being qutoed.
+See also `set-quote-key-events!'.")
 #define FUNC_NAME s_quote_key_events_p
 {
   return gh_bool2scm(fQuotingKeystrokes);
@@ -868,12 +868,12 @@ See also `set-quote-key-events!'. */
 
 
 SCWM_PROC(lookup_key, "lookup-key", 2, 0, 0,
-          (SCM contexts, SCM key))
-     /** Return the procedures bound to KEY within the CONTEXTS.
+          (SCM contexts, SCM key),
+"Return the procedures bound to KEY within the CONTEXTS.
 KEY is a modifiers and keysym string.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 The return value is a list: (press-proc release-proc), or #f
-if there is no matching binding. */
+if there is no matching binding.")
 #define FUNC_NAME s_lookup_key
 {
   KeySym keysym;
@@ -916,12 +916,12 @@ if there is no matching binding. */
 
 
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
-          (SCM contexts, SCM key))
-     /** Remove any bindings attached to KEY in given CONTEXTS.
+          (SCM contexts, SCM key),
+"Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
 The return value is #t if the binding was removed successfully, #f 
-otherwise.  */
+otherwise. ")
 #define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
@@ -951,10 +951,10 @@ otherwise.  */
 
 
 SCWM_PROC(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
-          (SCM keysym_name))
-     /** Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
+          (SCM keysym_name),
+"Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
-is not a valid keysym. */
+is not a valid keysym.")
 #define FUNC_NAME s_keysym_to_keycode
 {
   SCM answer = SCM_EOL;
@@ -986,10 +986,10 @@ is not a valid keysym. */
 #undef FUNC_NAME
 
 SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
-          (SCM contexts, SCM button))
-     /** Remove any bindings attached to mouse BUTTON in given CONTEXTS.
+          (SCM contexts, SCM button),
+"Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
-BUTTON is a string or integer giving the mouse button number */
+BUTTON is a string or integer giving the mouse button number")
 #define FUNC_NAME s_unbind_mouse
 {
   int bnum = 0;
@@ -1013,8 +1013,8 @@ BUTTON is a string or integer giving the mouse button number */
 
 
 SCWM_PROC(bind_key, "bind-key", 3, 1, 0,
-          (SCM contexts, SCM key, SCM proc, SCM release_proc))
-     /** Bind the given KEY within the CONTEXTS to invoke PROC.
+          (SCM contexts, SCM key, SCM proc, SCM release_proc),
+"Bind the given KEY within the CONTEXTS to invoke PROC.
 Return value is #t if the binding was made successfully, #f otherwise
 (e.g., if unbound modifiers or an unknown keysym is used, the binding will fail).
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides)) KEY is
@@ -1034,8 +1034,7 @@ invoked when the key is released.  The contexts include:
 'root-window
 'left-button-N  (N=1-5)
 'right-button-N (N=1-5)
-
-*/
+")
 #define FUNC_NAME s_bind_key
 {
   KeySym keysym;
@@ -1087,16 +1086,15 @@ invoked when the key is released.  The contexts include:
 
 
 SCWM_PROC(bind_keycode, "bind-keycode", 4, 1, 0,
-          (SCM contexts, SCM keycode, SCM modifier_mask, SCM proc, SCM release_proc))
-     /** Bind the given KEYCODE within the CONTEXTS to invoke PROC.
+          (SCM contexts, SCM keycode, SCM modifier_mask, SCM proc, SCM release_proc),
+"Bind the given KEYCODE within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers,
 PROC is a procedure that will be invoked (with no arguments) when the 
 specified key is pressed in the specified context. 
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if 
-nothing should be done on key release.
-*/
+nothing should be done on key release.")
 #define FUNC_NAME s_bind_keycode
 {
   int min, max;
@@ -1117,10 +1115,9 @@ nothing should be done on key release.
 #undef FUNC_NAME
 
 SCWM_PROC(unbind_keycode, "unbind-keycode", 2, 1, 0,
-          (SCM contexts, SCM keycode, SCM modifier_mask))
-     /** Unbind the given KEYCODE within the CONTEXTS.
-KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
-*/
+          (SCM contexts, SCM keycode, SCM modifier_mask),
+"Unbind the given KEYCODE within the CONTEXTS.
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.")
 #define FUNC_NAME s_unbind_keycode
 {
   int min, max;
@@ -1140,8 +1137,8 @@ KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
 
 
 SCWM_PROC(bind_mouse, "bind-mouse", 3, 1, 0,
-          (SCM contexts, SCM button, SCM proc, SCM immediate_proc))
-     /** Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
+          (SCM contexts, SCM button, SCM proc, SCM immediate_proc),
+"Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure that will be invoked (with no arguments) when the 
@@ -1149,7 +1146,7 @@ specified button is pressed in the specified context. See `bind-key'
 for a list of the contexts. If IMMEDIATE-PROC is given, it will be
 executed immediately on a button-click.  If IMMEDIATE-PROC returns
 #f, then PROC will still get executed after determining the mouse click
-type. */
+type.")
 #define FUNC_NAME s_bind_mouse
 {
   int bnum = 0;
@@ -1215,15 +1212,15 @@ type. */
 
 
 SCWM_PROC(lookup_mouse, "lookup-mouse", 2, 0, 0,
-          (SCM contexts, SCM button))
-     /** Return the procedure bound to mouse BUTTON within the CONTEXTS.
+          (SCM contexts, SCM button),
+"Return the procedure bound to mouse BUTTON within the CONTEXTS.
 BUTTON is a string that may contain modifier prefixes, e.g.,
 "C-S-M-1". 
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
 The return values is the procedure object, or #f if there is no
-matching binding. */
+matching binding.")
 #define FUNC_NAME s_lookup_mouse
 {
   int bnum = 0;
@@ -1273,15 +1270,15 @@ ScmBindingDescriptionFromPbnd(const Binding *pbnd)
 }
 
 SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 2, 0,
-          (SCM proc, SCM context))
-     /** Return any bindings that invoke PROC in context CONTEXT.
+          (SCM proc, SCM context),
+"Return any bindings that invoke PROC in context CONTEXT.
 If PROC is omitted or #f, match all bindings in context CONTEXT.
 If CONTEXT is omitted or #f, match bindings regardless of context.
 If both PROC and CONTEXT are omitted or #f, return all bindings.
 The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
-symbols. */
+symbols.")
 #define FUNC_NAME s_lookup_procedure_bindings
 {
   SCM bindings = SCM_EOL;
@@ -1396,11 +1393,11 @@ clear_mouse_event_type()
 }
 
 SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
-          ())
-     /** Return a symbol corresponding to the type of the most recent mouse event.
+          (),
+"Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
-to determine, e.g., whether the user single clicked or double clicked. */
+to determine, e.g., whether the user single clicked or double clicked.")
 #define FUNC_NAME s_mouse_event_type
 {
   return mouse_ev_type;
@@ -1408,86 +1405,86 @@ to determine, e.g., whether the user single clicked or double clicked. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(number_of_mouse_buttons,"number-of-mouse-buttons", 0, 0, 0, ())
-     /** Return the number of mouse buttons of the current mouse. */
+SCWM_PROC(number_of_mouse_buttons,"number-of-mouse-buttons", 0, 0, 0, (),
+"Return the number of mouse buttons of the current mouse.")
 #define FUNC_NAME s_number_of_mouse_buttons
 { return gh_int2scm(cMouseButtons); }
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_shift,"mod-mask-shift", 0, 0, 0, ())
-     /** Return the bit-mask for the Shift modifier key, or #f.
+SCWM_PROC(mod_mask_shift,"mod-mask-shift", 0, 0, 0, (),
+"Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_shift
 { return ShiftMask == 0? SCM_BOOL_F : gh_int2scm(ShiftMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_control,"mod-mask-control", 0, 0, 0, ())
-     /** Return the bit-mask for the Control modifier key, or #f.
+SCWM_PROC(mod_mask_control,"mod-mask-control", 0, 0, 0, (),
+"Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_control
 { return ControlMask == 0? SCM_BOOL_F : gh_int2scm(ControlMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
-     /** Return the bit-mask for the Meta modifier key, or #f.
+SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, (),
+"Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_meta
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
-     /** Return the bit-mask for the Alt modifier key, or #f.
+SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, (),
+"Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_alt
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
-     /** Return the bit-mask for the Hyper modifier key, or #f.
+SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, (),
+"Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_hyper
 { return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0, ())
-     /** Return the bit-mask for the Super modifier key, or #f.
+SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0, (),
+"Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_super
 { return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_numlock, "mod-mask-numlock", 0, 0, 0, ())
-     /** Return the bit-mask for the NumLock modifier key, or #f.
+SCWM_PROC(mod_mask_numlock, "mod-mask-numlock", 0, 0, 0, (),
+"Return the bit-mask for the NumLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as NumLock, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_numlock
 { return numlock_mask == 0? SCM_BOOL_F : gh_int2scm (numlock_mask); }
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_scrolllock, "mod-mask-scrolllock", 0, 0, 0, ())
-     /** Return the bit-mask for the ScrollLock modifier key, or #f.
+SCWM_PROC(mod_mask_scrolllock, "mod-mask-scrolllock", 0, 0, 0, (),
+"Return the bit-mask for the ScrollLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
-returns a power of two corresponding to the bit-mask of the modifier */
+returns a power of two corresponding to the bit-mask of the modifier")
 #define FUNC_NAME s_mod_mask_scrolllock
 { return scrollock_mask == 0? SCM_BOOL_F : gh_int2scm (scrollock_mask); }
 #undef FUNC_NAME
 
 SCWM_PROC(set_mod_mask_numlock_x, "set-mod-mask-numlock!", 1, 0, 0, 
-          (SCM mask))
-     /** Set the bit-mask for the NumLock modifier key.
+          (SCM mask),
+"Set the bit-mask for the NumLock modifier key.
 MASK must be a power of 2. The NumLock modifier mask is
 set automatically, but you can use this procedure if you
-need to override the built-in algorithm. */
+need to override the built-in algorithm.")
 #define FUNC_NAME s_set_mod_mask_numlock_x
 {
   VALIDATE_ARG_INT_COPY(1,mask,numlock_mask);
@@ -1496,11 +1493,11 @@ need to override the built-in algorithm. */
 #undef FUNC_NAME
 
 SCWM_PROC(set_mod_mask_scrolllock_x, "set-mod-mask-scrolllock!", 1, 0, 0, 
-          (SCM mask))
-     /** Set the bit-mask for the ScrollLock modifier key.
+          (SCM mask),
+"Set the bit-mask for the ScrollLock modifier key.
 MASK must be a power of 2. The ScrollLock modifier mask is
 set automatically, but you can use this procedure if you
-need to override the built-in algorithm. */
+need to override the built-in algorithm.")
 #define FUNC_NAME s_set_mod_mask_scrolllock_x
 {
   VALIDATE_ARG_INT_COPY(1,mask,scrollock_mask);
@@ -1510,12 +1507,12 @@ need to override the built-in algorithm. */
 
 
 SCWM_PROC(set_ignore_dubious_modifiers_x, "set-ignore-dubious-modifiers!", 1, 0, 0, 
-          (SCM flag))
-     /** If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.
+          (SCM flag),
+"If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.
 Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocations
 must occur for each binding made;  this can result in a noticeable delay when, e.g.,
 a new window is created.  If this bothers you, call this procedure with FLAG set
-to #f. The default is #t. */
+to #f. The default is #t.")
 #define FUNC_NAME s_set_ignore_dubious_modifiers_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,fIgnoreDubiousModifiers);
@@ -1524,9 +1521,9 @@ to #f. The default is #t. */
 #undef FUNC_NAME
 
 SCWM_PROC(ignore_dubious_modifiers_p, "ignore-dubious-modifiers?", 0, 0, 0, 
-          ())
-     /** Return the status of the ignore-dubious-modifiers flag.
-See `set-ignore-dubious-modifiers!'. */
+          (),
+"Return the status of the ignore-dubious-modifiers flag.
+See `set-ignore-dubious-modifiers!'.")
 #define FUNC_NAME s_ignore_dubious_modifiers_p
 {
   return gh_bool2scm(fIgnoreDubiousModifiers);
@@ -1536,12 +1533,12 @@ See `set-ignore-dubious-modifiers!'. */
 
 
 SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
-          ())
-     /** Remove all passive grabs of keys and buttons of bindings.
+          (),
+"Remove all passive grabs of keys and buttons of bindings.
 See `redo-all-passive-grabs' for re-establishing those bindings.
 This procedure can be useful for quoting numerous keystrokes or
 mouse events. Beware that it can take several seconds to execute. 
-This procedure considers the state of `ignore-dubious-modifiers?' */
+This procedure considers the state of `ignore-dubious-modifiers?'")
 #define FUNC_NAME s_undo_all_passive_grabs
 {
   ungrab_all_keys_all_buttons_all_windows();
@@ -1551,13 +1548,13 @@ This procedure considers the state of `ignore-dubious-modifiers?' */
 
 
 SCWM_PROC(redo_all_passive_grabs, "redo-all-passive-grabs", 0, 0, 0,
-          ())
-     /** Re-instate all passive grabs of keys and buttons of bindings.
+          (),
+"Re-instate all passive grabs of keys and buttons of bindings.
 See `undo-all-passive-grabs' for temporarily removing those bindings.
 This procedure might be useful for re-establishing bindings after
 quoting numerous keystrokes or mouse events.  Beware that it can
 take several seconds to execute. 
-This procedure considers the state of `ignore-dubious-modifiers?'.*/
+This procedure considers the state of `ignore-dubious-modifiers?'")
 #define FUNC_NAME s_redo_all_passive_grabs
 {
   grab_all_keys_all_buttons_all_windows();
@@ -1567,10 +1564,10 @@ This procedure considers the state of `ignore-dubious-modifiers?'.*/
 
 
 SCWM_PROC(undo_passive_grab, "undo-passive-grab", 2, 1, 0,
-          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p))
-     /** Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
+"Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
-a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
+a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
 #define FUNC_NAME s_undo_passive_grab
 {
   unsigned int mask;
@@ -1588,10 +1585,10 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
 #undef FUNC_NAME
 
 SCWM_PROC(redo_passive_grab, "redo-passive-grab", 2, 1, 0,
-          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p))
-     /** Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+          (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
+"Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
-a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
+a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
 #define FUNC_NAME s_redo_passive_grab
 {
   unsigned int mask;
@@ -1611,12 +1608,12 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab. */
 
 
 SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
-          ())
-     /** Return the mapping of physical->logical pointer buttons as a list.
+          (),
+"Return the mapping of physical->logical pointer buttons as a list.
 The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
-physical button acts as logical button 1, and the leftmost acts as button 3. */
+physical button acts as logical button 1, and the leftmost acts as button 3.")
 #define FUNC_NAME s_X_pointer_mapping
 {
   SCM mapping = SCM_EOL;
@@ -1630,9 +1627,9 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
 #undef FUNC_NAME
 
 SCWM_PROC (keymask_to_string, "keymask->string", 1, 0, 0,
-           (SCM keymask))
-     /** Return a string representing KEYMASK.
-E.g., (keymask->string 4) => "C-". Returns #f on an error. */
+           (SCM keymask),
+"Return a string representing KEYMASK.
+E.g., (keymask->string 4) => "C-". Returns #f on an error.")
 #define FUNC_NAME s_keymask_to_string
 {
   int mask;
@@ -1650,9 +1647,9 @@ E.g., (keymask->string 4) => "C-". Returns #f on an error. */
 #undef FUNC_NAME
 
 SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
-           (SCM keymask, SCM keycode))
-     /** Return a string representing the key press with mask KEYMASK, code KEYCODE.
-E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error. */
+           (SCM keymask, SCM keycode),
+"Return a string representing the key press with mask KEYMASK, code KEYCODE.
+E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.")
 #define FUNC_NAME s_keymask_keycode_to_string
 {
   int mask;

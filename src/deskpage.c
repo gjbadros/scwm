@@ -46,10 +46,10 @@
 #include "dmalloc.h"
 #endif
 
-  SCWM_HOOK(desk_size_change_hook,"desk-size-change-hook", 2);
-  /** This hook is invoked whenever the desk size is changed.  It is
+SCWM_HOOK(desk_size_change_hook,"desk-size-change-hook", 2,
+"This hook is invoked whenever the desk size is changed.  It is
 called with two arguments, both integers, which are the width and
-height of the new desk size in screens. */
+height of the new desk size in screens.");
 
 /**CONCEPT: Desks 
 
@@ -65,9 +65,9 @@ will ever need. You can change the current desk with
 */
 
 SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
-          (SCM desk))
-     /** Change the current desk to DESK. DESK should be an integer
-small enough to fit in one machine word. */
+          (SCM desk),
+"Change the current desk to DESK. DESK should be an integer
+small enough to fit in one machine word.")
 #define FUNC_NAME s_set_current_desk_x
 {
   int d;
@@ -79,8 +79,8 @@ small enough to fit in one machine word. */
 #undef FUNC_NAME
 
 SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
-          ())
-     /** Returns the integer identifying the current desk. */
+          (),
+"Returns the integer identifying the current desk.")
 #define FUNC_NAME s_current_desk
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
@@ -100,9 +100,9 @@ is relative to the origin of the current desk.
 */
 
 SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
-          (SCM x, SCM y))
-     /** Position the upper left corner of the viewport at coordinates X, Y.
-X and Y are given in pixels.  Does not affect the current desk. */
+          (SCM x, SCM y),
+"Position the upper left corner of the viewport at coordinates X, Y.
+X and Y are given in pixels.  Does not affect the current desk.")
 #define FUNC_NAME s_set_viewport_position_x
 {
   int cx, cy;
@@ -115,9 +115,9 @@ X and Y are given in pixels.  Does not affect the current desk. */
 #undef FUNC_NAME
 
 SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
-          ())
-     /** Returns the current position of the viewport in pixels.
-The returned value is a list of the x and y positions. */
+          (),
+"Returns the current position of the viewport in pixels.
+The returned value is a list of the x and y positions.")
 #define FUNC_NAME s_viewport_position
 {
   return gh_list(SCM_MAKINUM(Scr.Vx),
@@ -128,11 +128,11 @@ The returned value is a list of the x and y positions. */
 
 
 SCWM_PROC(set_edge_x_scroll_x, "set-edge-x-scroll!", 1, 0, 0,
-          (SCM pixels))
-     /** Set the horizontal edge scroll increment to PIXELS.
+          (SCM pixels),
+"Set the horizontal edge scroll increment to PIXELS.
 The horizontal edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the left or right edge. Use `%x' to
-convert from a percent of screen size to pixels. */
+convert from a percent of screen size to pixels.")
 #define FUNC_NAME s_set_edge_x_scroll_x
 {
   int pix;
@@ -145,8 +145,8 @@ convert from a percent of screen size to pixels. */
 #undef FUNC_NAME
 
 SCWM_PROC(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
-          ())
-     /** Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'. */
+          (),
+"Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'.")
 #define FUNC_NAME s_edge_x_scroll
 {
   return (gh_int2scm(Scr.EdgeScrollX));
@@ -155,11 +155,11 @@ SCWM_PROC(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_y_scroll_x, "set-edge-y-scroll!", 1, 0, 0,
-          (SCM pixels))
-     /** Set the vertical edge scroll increment to PIXELS.
+          (SCM pixels),
+"Set the vertical edge scroll increment to PIXELS.
 The vertical edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the top or bottom edge. Use `%y' to
-convert from a percent of screen size to pixels. */
+convert from a percent of screen size to pixels.")
 #define FUNC_NAME s_set_edge_y_scroll_x
 {
   int pix;
@@ -173,8 +173,8 @@ convert from a percent of screen size to pixels. */
 #undef FUNC_NAME
 
 SCWM_PROC(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
-          ())
-     /** Return the vertical edge scroll increment as set by `set-edge-y-scroll!'. */
+          (),
+"Return the vertical edge scroll increment as set by `set-edge-y-scroll!'.")
 #define FUNC_NAME s_edge_y_scroll
 {
   return (gh_int2scm(Scr.EdgeScrollY));
@@ -184,11 +184,11 @@ SCWM_PROC(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_x_wrap_x, "set-edge-x-wrap!", 1, 0, 0,
-          (SCM flag))
-     /** Set whether to wrap pointer around horizontal edges.
+          (SCM flag),
+"Set whether to wrap pointer around horizontal edges.
 If the boolean value FLAG is #t, the pointer will wrap from the right
 edge of the desktop to the left of the display as it moves off the
-right edge, and vice-versa. See also `set-edge-y-wrap!' */
+right edge, and vice-versa. See also `set-edge-y-wrap!'")
 #define FUNC_NAME s_set_edge_x_wrap_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fEdgeWrapX);
@@ -198,8 +198,8 @@ right edge, and vice-versa. See also `set-edge-y-wrap!' */
 #undef FUNC_NAME
 
 SCWM_PROC(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
-          ())
-     /** Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'. */
+          (),
+"Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'.")
 #define FUNC_NAME s_edge_x_wrap
 {
   return SCM_BOOL_FromBool(Scr.fEdgeWrapX);
@@ -208,11 +208,11 @@ SCWM_PROC(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_y_wrap_x, "set-edge-y-wrap!", 1, 0, 0,
-          (SCM flag))
-     /** Set whether to wrap pointer around vertical edges.
+          (SCM flag),
+"Set whether to wrap pointer around vertical edges.
 If the boolean value FLAG is #t, the pointer will wrap from the bottom
 edge of the desktop to the top of the display as it moves off the very
-bottom edge, and vice-versa. See also `set-edge-x-wrap!' */
+bottom edge, and vice-versa. See also `set-edge-x-wrap!'")
 #define FUNC_NAME s_set_edge_y_wrap_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fEdgeWrapY);
@@ -223,8 +223,8 @@ bottom edge, and vice-versa. See also `set-edge-x-wrap!' */
 
 
 SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
-          ())
-     /** Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'. */
+          (),
+"Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.")
 #define FUNC_NAME s_edge_y_wrap
 {
   return SCM_BOOL_FromBool(Scr.fEdgeWrapY);
@@ -233,12 +233,12 @@ SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_scroll_delay_x, "set-edge-scroll-delay!", 1, 0, 0,
-          (SCM ms))
-     /** Set the edge scroll delay to MS milliseconds.
+          (SCM ms),
+"Set the edge scroll delay to MS milliseconds.
 When the mouse pointer hits the edge of the screen, it must stay there
 for at least the edge scroll delay amount before the desktop will be
 scrolled. If this parameter is #f, the viewport will not scroll at all
-at the screen edge. */
+at the screen edge.")
 #define FUNC_NAME s_set_edge_scroll_delay_x
 {
   VALIDATE_ARG_INT_COPY_USE_DEF(1,ms,Scr.ScrollResistance,-1);
@@ -253,8 +253,8 @@ at the screen edge. */
 
 
 SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
-          ())
-     /** Return the edge scroll delay (in ms) as set by `set-edge-scroll-delay!'. */
+          (),
+"Return the edge scroll delay (in ms) as set by `set-edge-scroll-delay!'.")
 #define FUNC_NAME s_edge_scroll_delay
 {
   return gh_int2scm(Scr.ScrollResistance);
@@ -265,10 +265,10 @@ SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
 
 
 SCWM_PROC(set_edge_move_threshold_x, "set-edge-move-threshold!", 1, 0, 0,
-          (SCM pixels))
-	  /**  Set the edge move threshold to PIXELS.
+          (SCM pixels),
+" Set the edge move threshold to PIXELS.
 Attempts to move a window so that it is off the edge of the screen by
-fewer than PIXELS pixels will leave the window entirely onscreen. */
+fewer than PIXELS pixels will leave the window entirely onscreen.")
 #define FUNC_NAME s_set_edge_move_threshold_x
 {
   int pix;
@@ -281,8 +281,8 @@ fewer than PIXELS pixels will leave the window entirely onscreen. */
 
 
 SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
-          ())
-     /** Return the edge move threshold as set by `set-edge-move-threshold!'. */
+          (),
+"Return the edge move threshold as set by `set-edge-move-threshold!'.")
 #define FUNC_NAME s_edge_move_threshold
 {
   return gh_int2scm(Scr.MoveResistance);
@@ -292,12 +292,12 @@ SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
 
 
 SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
-          (SCM width, SCM height))
-     /** Sets the desk size to WIDTH, HEIGHT.
+          (SCM width, SCM height),
+"Sets the desk size to WIDTH, HEIGHT.
 Both numbers are given in units of the physical screen size.  For
 example <informalexample><programlisting>(set-desk-size! 3 3)
 </programlisting></informalexample> creates a virtual world 9 times the
-size of the physical display. */
+size of the physical display.")
 #define FUNC_NAME s_set_desk_size_x
 {
   int w, h;
@@ -327,10 +327,10 @@ size of the physical display. */
 
 
 SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
-          ())
-     /** Returns the size of the current desk.
+          (),
+"Returns the size of the current desk.
 The returned value is in units of the physical screen size, as a list
-of the width and the height. */
+of the width and the height.")
 #define FUNC_NAME s_desk_size
 {
   return gh_list(SCM_MAKINUM((int) (Scr.VxMax / Scr.DisplayWidth + 1)),
@@ -341,11 +341,11 @@ of the width and the height. */
 
 
 SCWM_PROC(display_size, "display-size", 0, 0, 0,
-          ())
-     /** Returns the size of the physical screen in pixels.
+          (),
+"Returns the size of the physical screen in pixels.
 The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list. 
-See also the variables "display-width" and "display-height". */
+See also the variables \"display-width\" and \"display-height\".")
 #define FUNC_NAME s_display_size
 {
   return gh_list(SCM_MAKINUM(Scr.DisplayWidth),

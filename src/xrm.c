@@ -40,9 +40,9 @@ XrmDatabase db;
 XrmDatabase dbSystem;
 
 SCWM_PROC (X_resource_put, "X-resource-put", 2, 0, 0,
-           (SCM resource, SCM value))
-     /** Stores string VALUE as X resource RESOURCE (also a string).
-Later, the value can be retrieved using `X-resource-get'. */
+           (SCM resource, SCM value),
+"Stores string VALUE as X resource RESOURCE (also a string).
+Later, the value can be retrieved using `X-resource-get'.")
 #define FUNC_NAME s_X_resource_put
 {
   char *szSpecifier;
@@ -59,11 +59,11 @@ Later, the value can be retrieved using `X-resource-get'. */
 
 
 SCWM_PROC (X_resource_get, "X-resource-get", 1, 1, 0,
-           (SCM name, SCM xclass))
-     /** Get X resource specified by NAME and XCLASS from Xrm database.
+           (SCM name, SCM xclass),
+"Get X resource specified by NAME and XCLASS from Xrm database.
 Both NAME and XCLASS are strings, as is the returned value.  If
 XCLASS is omitted, it defaults to the same string as NAME.
-If there is no resource under the given key, #f is returned. */
+If there is no resource under the given key, #f is returned.")
 #define FUNC_NAME s_X_resource_get
 {
   SCM answer = SCM_BOOL_F;
@@ -88,10 +88,10 @@ If there is no resource under the given key, #f is returned. */
 
 
 SCWM_PROC (X_resource_database_save, "X-resource-database-save", 1, 0, 0,
-           (SCM filename))
-     /** Save the Scwm resource database to FILENAME. 
+           (SCM filename),
+"Save the Scwm resource database to FILENAME. 
 Only the settings set or changed via `X-resource-put' go into
-the file. */
+the file.")
 #define FUNC_NAME s_X_resource_database_save
 {
   char *szFilename;
@@ -101,8 +101,6 @@ the file. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
-
 
 
 /* Modified from ORA, XLib Prging manual (X Vol 1)

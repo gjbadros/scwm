@@ -36,26 +36,26 @@
 #include "util.h"
 #include "cursor.h"
 
-  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
-  /** This hook is invoked at the start of an interactive resize.
+SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3,
+"This hook is invoked at the start of an interactive resize.
 It is called with three arguments: WINDOW, XMOTION, YMOTION.
 XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
 can happen on the right/bottom side, not at all, or the top/left side,
-respectively. */
+respectively.");
 
-  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7);
-  /** This hook is invoked during an interactive resize.  
+SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7,
+"This hook is invoked during an interactive resize.  
 It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
 NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
 NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
 first five arguments refer to the size and position of the frame
 window (not the client window). The -UNITS arguments refer to the size
 of the client window and are in client units (e.g., characters for
-Emacsen and XTerms).  */
+Emacsen and XTerms). ");
 
-SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1);
-  /** This hook is invoked at the end of an interactive resize.
-It is called with one argument, WINDOW. */
+SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1,
+"This hook is invoked at the end of an interactive resize.
+It is called with one argument, WINDOW.");
 
 extern SCM cannot_grab_hook;
 
@@ -316,10 +316,10 @@ static GC DrawRubberBandGC;
 /* MS:FIXME:: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
-          (SCM value))
-     /** Set the rubber band mask used when dragging or resizing.
+          (SCM value),
+"Set the rubber band mask used when dragging or resizing.
 VALUE is XORed with the background when dragging non-opaque move or
-resize frames. VALUE should be an integer. */
+resize frames. VALUE should be an integer.")
 #define FUNC_NAME s_set_rubber_band_mask_x
 {
   XGCValues gcv;
@@ -667,12 +667,12 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 }
 
 SCWM_PROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
-          (SCM win))
-     /** Resize WIN interactively, using a rubber band frame.
+          (SCM win),
+"Resize WIN interactively, using a rubber band frame.
 Returns a list '(width height) that is the new size of WIN.
 This allows the user to drag a rubber band frame to set the size of
 the window. WIN defaults to the window context in the usual way if not
-specified.  */
+specified. ")
 #define FUNC_NAME s_rubber_band_resize
 {
   ScwmWindow *psw;
@@ -699,17 +699,17 @@ specified.  */
 
 
 SCWM_PROC(opaque_resize, "opaque-resize", 0, 1, 0,
-          (SCM win))
-     /** Resize WIN interactively, opaquely.
+          (SCM win),
+"Resize WIN interactively, opaquely.
 Returns a list '(width height) that is the new size of WIN.
 This allows the user to drag the boundaries of the window to set its
 size. WIN defaults to the window context in the usual way if not
 specified. The window is updated immediately as the size changes take
-place. */
+place.")
 #define FUNC_NAME s_opaque_resize
 {
   ScwmWindow *psw;
-  int width, height;            /* not used, now */
+  int width, height;
 
   VALIDATE_PRESS_ONLY(win);
   psw = PSWFROMSCMWIN(win);

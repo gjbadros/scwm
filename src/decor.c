@@ -209,10 +209,10 @@ decor2scm(ScwmDecor * fl)
 
 
 SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
-          (SCM name))
-     /** Create a new decor object. NAME optionally provides a string
+          (SCM name),
+"Create a new decor object. NAME optionally provides a string
 that is used to name the decor, and is displayed when the decor is
-printed. */
+printed.")
 #define FUNC_NAME s_make_decor
 {
   char *tag;
@@ -230,8 +230,8 @@ printed. */
 
 
 SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
-          ())
-     /** Return the default decor. */
+          (),
+"Return the default decor.")
 #define FUNC_NAME s_default_decor
 {
   return Scr.DefaultDecor.scmdecor;
@@ -240,10 +240,10 @@ SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
 
 
 SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
-          (SCM decor))
-     /** Set the current decor to DECOR. Operations described as
+          (SCM decor),
+"Set the current decor to DECOR. Operations described as
 setting options "in the current decor" will now operate on this
-one. */
+one.")
 #define FUNC_NAME s_set_current_decor_x
 {
   ScwmDecor *new_cur;
@@ -259,8 +259,8 @@ one. */
 
 
 SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
-          ())
-     /** Return the current decor. */
+          (),
+"Return the current decor.")
 #define FUNC_NAME s_current_decor
 {
   if (cur_decor == NULL) {
@@ -273,8 +273,8 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
 
 
 SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
-          (SCM win, SCM decor))
-     /** Set WIN's decor to DECOR, updating its decorations appropriately. */
+          (SCM win, SCM decor),
+"Set WIN's decor to DECOR, updating its decorations appropriately.")
 #define FUNC_NAME s_set_window_decor_x
 {
   int old_height, extra_height;
@@ -299,8 +299,8 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(window_decor, "window-decor", 1, 0, 0,
-          (SCM win))
-     /** Return WIN's decor. */
+          (SCM win),
+"Return WIN's decor.")
 #define FUNC_NAME s_window_decor
 {
   ScwmWindow *psw;

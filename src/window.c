@@ -56,37 +56,35 @@
 #include "placement.h"
 
 
-SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
-  /** This hook is invoked with no arguments when the user hits an invalid
+SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0,
+"This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
-one example of a procedure to use here. */
+one example of a procedure to use here.");
 
-SCWM_GLOBAL_HOOK(cannot_grab_hook,"cannot-grab-hook",0);
-  /** This hook is invoked with no arguments whenever scwm cannot
+SCWM_GLOBAL_HOOK(cannot_grab_hook,"cannot-grab-hook",0,
+"This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
-to use here.  */
+to use here. ");
 
-SCWM_HOOK(select_window_enter_hook,"select-window-enter-hook",1);
-  /** This hook is invoked when a window is entered during window selection.
+SCWM_HOOK(select_window_enter_hook,"select-window-enter-hook",1,
+"This hook is invoked when a window is entered during window selection.
 The hook procedures are called with a single argument, the window just entered.
 This hook is invoked once `select-window-interactively-no-message' is
 called if the pointer is already in a window.  (But the
-leave hook is not invoked similarly when the selection completes).
-*/
+leave hook is not invoked similarly when the selection completes).");
 
-SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1);
-  /** This hook is invoked when a window is left during window selection.
+SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1,
+"This hook is invoked when a window is left during window selection.
 The hook procedures are called with a single argument, the window just left.
 This hook is not invoked upon selection completion (unlike
 `select-window-enter-hook' that is called initially upon calling
-`select-window-interactively-no-message'). See also `select-window-done-hook'.
-*/
+`select-window-interactively-no-message'). See also `select-window-done-hook'.");
 
-SCWM_HOOK(select_window_done_hook,"select-window-done-hook",1);
-  /** This hooks is run when a window is selected.
+SCWM_HOOK(select_window_done_hook,"select-window-done-hook",1,
+"This hooks is run when a window is selected.
 The hook procedures are called with a single argument, the window just left.
-See also `select-window-enter-hook' and `select-window-leave-hook'. */
+See also `select-window-enter-hook' and `select-window-leave-hook'.");
 
 /* also used by miscproc.c's set-colormap-focus! */
 SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
@@ -902,8 +900,8 @@ move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
 
 
 SCWM_PROC(window_p, "window?", 1, 0, 0,
-          (SCM obj))
-     /** Returns #t if OBJ is a window object, otherwise returns #f. */
+          (SCM obj),
+"Returns #t if OBJ is a window object, otherwise returns #f.")
 #define FUNC_NAME s_window_p
 {
   return SCM_BOOL_FromBool(WINDOWP(obj));
@@ -911,10 +909,10 @@ SCWM_PROC(window_p, "window?", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(window_valid_p, "window-valid?", 1, 0, 0,
-          (SCM obj))
-     /** Returns #t if OBJ is window object and is still valid, otherwise returns #f.
+          (SCM obj),
+"Returns #t if OBJ is window object and is still valid, otherwise returns #f.
 A window is no longer valid when it is destroyed or closed.  An iconified
-window that can be deiconified is still represented by a valid window object. */
+window that can be deiconified is still represented by a valid window object.")
 #define FUNC_NAME s_window_valid_p
 {
   return SCM_BOOL_FromBool(WINDOWP(obj) && VALIDWINP(obj));
@@ -922,10 +920,10 @@ window that can be deiconified is still represented by a valid window object. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_fully_constructed_p, "window-fully-constructed?", 1, 0, 0,
-          (SCM win))
-     /** Returns #t if WIN is a fully-constructed window, otherwise #f.
+          (SCM win),
+"Returns #t if WIN is a fully-constructed window, otherwise #f.
 In the `before-new-window-hook' windows are not yet fully constructed, and only
-a subset of procedures can be successfully called on them. */
+a subset of procedures can be successfully called on them.")
 #define FUNC_NAME s_window_fully_constructed_p
 {
   ScwmWindow *psw;
@@ -935,8 +933,8 @@ a subset of procedures can be successfully called on them. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_mapped_p, "window-mapped?", 1, 0, 0,
-          (SCM win))
-     /** Returns #t if WIN is mapped, otherwise returns #f.*/
+          (SCM win),
+"Returns #t if WIN is mapped, otherwise returns #f")
 #define FUNC_NAME s_window_mapped_p
 {
   ScwmWindow *psw;
@@ -946,11 +944,10 @@ SCWM_PROC(window_mapped_p, "window-mapped?", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(window_map_pending_p, "window-map-pending?", 1, 0, 0,
-          (SCM win))
-     /** Returns #t if the mapping of WIN is pending, otherwise returns #f.
+          (SCM win),
+"Returns #t if the mapping of WIN is pending, otherwise returns #f.
 The map is pending from the moment the MapRequest is entered until the
-map is actually performed.
-*/
+map is actually performed.")
 #define FUNC_NAME s_window_map_pending_p
 {
   ScwmWindow *psw;
@@ -961,8 +958,8 @@ map is actually performed.
 
 
 SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
-          (SCM cursor, SCM release_p))
-     /** Select a viewport position and return the window there.  
+          (SCM cursor, SCM release_p),
+"Select a viewport position and return the window there.  
 Use a special cursor and let the user click to select a viewport
 position Returns a list of three items: (selected-window viewport-x
 viewport-y).  selected-window is either the window object
@@ -974,7 +971,7 @@ indicates whether to whether to wait for a mouse release or act
 immediately on the click.  CURSOR is the cursor object to use, or
 #t for the "skull and cross-bones" kill cursor
 (recommended for destructive operations like delete-window and
-destroy-window), or #f or omitted for the standard circle cursor.  */
+destroy-window), or #f or omitted for the standard circle cursor. ")
 #define FUNC_NAME s_select_viewport_position
 {
   XEvent ev;
@@ -1026,8 +1023,8 @@ a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. */
 
 SCWM_PROC(get_window, "get-window", 0, 3, 0,
-          (SCM select_p, SCM release_p, SCM cursor))
-     /** Retrieve the window context or select interactively.
+          (SCM select_p, SCM release_p, SCM cursor),
+"Retrieve the window context or select interactively.
 If there is no window context, a window is selected interactively.
 The boolean SELECT? argument (default #t) determines whether or not a
 window should be selected interactively if there is no current window
@@ -1037,7 +1034,7 @@ or just a press. The latter behavior is useful if the action being
 performed on the window is an interactive one involving mouse
 drags. The CURSOR argument is either a cursor object or #t to use
 the "skull and crossbones" cursor, or #f to use the standard
-circle cursor. */
+circle cursor.")
 #define FUNC_NAME s_get_window
 {
   Bool fSelect, fRelease;
@@ -1067,10 +1064,10 @@ circle cursor. */
 /* GJB:FIXME:: we'd like to not need this, though
    it might be nice to leave in just in case */
 SCWM_IPROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
-           (SCM win))
-     /** This redraws the window frame and decorations of WIN.
+            (SCM win),
+"This redraws the window frame and decorations of WIN.
 Ideally it would never be necessary, but it is useful for debugging
-and for new window objects set via object properties. */
+and for new window objects set via object properties.")
 #define FUNC_NAME s_force_reset_window_frame_x
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -1081,10 +1078,10 @@ and for new window objects set via object properties. */
 
 
 SCWM_PROC (set_window_context_x, "set-window-context!", 1, 0, 0,
-           (SCM win))
-     /** Set the current window context to WIN and return the old context.
+           (SCM win),
+"Set the current window context to WIN and return the old context.
 WIN can be either a window, or #f, to reset the current window-context.
-See also `with-window' and `get-window'. */
+See also `with-window' and `get-window'.")
 #define FUNC_NAME s_set_window_context_x
 {
   SCM answer = scm_window_context;
@@ -1097,9 +1094,9 @@ See also `with-window' and `get-window'. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_context, "window-context", 0, 0, 0,
-          ())
-     /** Returns the current window context, or #f if there is none.
-See also `with-window' and `set-window-context!' */
+          (),
+"Returns the current window context, or #f if there is none.
+See also `with-window' and `set-window-context!'")
 #define FUNC_NAME s_window_context
 {
   if (scm_window_context == SCM_UNDEFINED)
@@ -1111,8 +1108,8 @@ See also `with-window' and `set-window-context!' */
 
 
 SCWM_PROC(window_with_focus, "window-with-focus", 0, 0, 0,
-          ())
-     /** Return the window that currently has the input focus. */
+          (),
+"Return the window that currently has the input focus.")
 #define FUNC_NAME s_window_with_focus
 {
   return Scr.Hilite? Scr.Hilite->schwin : SCM_BOOL_F;
@@ -1121,8 +1118,8 @@ SCWM_PROC(window_with_focus, "window-with-focus", 0, 0, 0,
 
 
 SCWM_PROC(window_with_pointer, "window-with-pointer", 0, 0, 0,
-          ())
-     /** Return the window that currently contains the mouse pointer. */
+          (),
+"Return the window that currently contains the mouse pointer.")
 #define FUNC_NAME s_window_with_pointer
 {
   ScwmWindow *psw = PswFromPointerLocation(dpy);
@@ -1713,12 +1710,12 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 
 SCWM_IPROC(delete_window, "delete-window", 0, 1, 0,
-          (SCM win))
-     /** Request that WIN remove itself from the display.
+           (SCM win),
+"Request that WIN remove itself from the display.
 
 This is the friendly way of closing a window, but it will not work if
 the application does not cooperate. WIN defaults to the window context
-in the usual way if not specified. */
+in the usual way if not specified.")
 #define FUNC_NAME s_delete_window
 {
   ScwmWindow *psw;
@@ -1739,11 +1736,11 @@ in the usual way if not specified. */
 
 
 SCWM_IPROC(destroy_window, "destroy-window", 0, 1, 0,
-          (SCM win))
-     /** Forcibly remove WIN from the screen.
+           (SCM win),
+"Forcibly remove WIN from the screen.
 This will kill the application without giving it a chance to save its
 state or do any other shutdown, but is guaranteed to work. WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_destroy_window
 {
   ScwmWindow *psw;
@@ -1785,11 +1782,11 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(window_deletable_p, "window-deletable?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is able to be deleted, #f otherwise.
+          (SCM win),
+"Return #t if WIN is able to be deleted, #f otherwise.
 If this procedure returns #f, then a call to `delete-window' on WIN
 will do nothing.  WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_window_deletable_p
 {
   VALIDATEKILL(win);
@@ -1799,12 +1796,12 @@ specified. */
 
 
 SCWM_IPROC(focus_window, "focus-window", 0, 1, 0,
-          (SCM win))
-     /** Give WIN the keyboard input focus.
+           (SCM win),
+"Give WIN the keyboard input focus.
 This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
 specified. Note that WIN is not raised by giving it the focus;  see
-`raise-window' if that is your intent. */
+`raise-window' if that is your intent.")
 #define FUNC_NAME s_focus_window
 {
   ScwmWindow *psw;
@@ -1818,8 +1815,8 @@ specified. Note that WIN is not raised by giving it the focus;  see
 
 
 SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
-          ())
-     /** Remove the input focus from any window that may have it. */
+           (),
+"Remove the input focus from any window that may have it.")
 #define FUNC_NAME s_unfocus
 {
   Unfocus();
@@ -1829,15 +1826,15 @@ SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
 
 
 SCWM_IPROC(warp_to_window, "warp-to-window", 0, 1, 0,
-          (SCM win))
-     /** Move the mouse pointer to the upper left corner of WIN.
+           (SCM win),
+"Move the mouse pointer to the upper left corner of WIN.
 
 If WIN is on a different desk or in a different viewport, these will
 be changed appropriately so that the window is visible. WIN defaults
 to the window context in the usual way if not specified.  Note that
 the target window is not raised, so if the target window's upper
 left corner is under another window, that other window may end up
-with the keyboard focus. */
+with the keyboard focus.")
 #define FUNC_NAME s_warp_to_window
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -1848,10 +1845,10 @@ with the keyboard focus. */
 
 
 SCWM_IPROC(raise_window, "raise-window", 0, 1, 0,
-          (SCM win))
-     /** Raise WIN to the top of the window stack.
+           (SCM win),
+"Raise WIN to the top of the window stack.
 Stays-on-top windows still take priority. WIN defaults to the window
-context in the usual way if not specified. */
+context in the usual way if not specified.")
 #define FUNC_NAME s_raise_window
 {
   ScwmWindow *psw;
@@ -1872,9 +1869,9 @@ context in the usual way if not specified. */
 
 
 SCWM_IPROC(lower_window, "lower-window", 0, 1, 0,
-          (SCM win))
-     /** Lower WIN to the bottom of the window stack. WIN defaults to
-the window context in the usual way if not specified. */
+           (SCM win),
+"Lower WIN to the bottom of the window stack. WIN defaults to
+the window context in the usual way if not specified.")
 
 #define FUNC_NAME s_lower_window
 {
@@ -1887,12 +1884,12 @@ the window context in the usual way if not specified. */
 
 
 SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
-          (SCM winlist))
-     /** Restack the windows in WINLIST from front to back.
+          (SCM winlist),
+"Restack the windows in WINLIST from front to back.
 The first element of WINLIST will be kept in its current stacking
 order, the remainder will be stacked immediately below it in the order
 given. (Note: This will currently confuse the heck out of the pager
-and possibly other legacy fvwm2 modules). */
+and possibly other legacy fvwm2 modules).")
 #define FUNC_NAME s_restack_windows
 {
   Window *windows;
@@ -1976,13 +1973,12 @@ and possibly other legacy fvwm2 modules). */
 
 
 SCWM_PROC(raised_p, "raised?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is currently raised, #f if not.
+          (SCM win),
+"Return #t if WIN is currently raised, #f if not.
 WIN defaults to the window context in the usual way if not
 specified. A window is considered to be raised if the application
 window (not the frame) is unobscured (or if this was the last
-window you called `raise-window' on).
-*/
+window you called `raise-window' on).")
 #define FUNC_NAME s_raised_p
 {
   ScwmWindow *psw;
@@ -1996,10 +1992,10 @@ window you called `raise-window' on).
 
 
 SCWM_PROC(transient_p, "transient?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is transient, #f if not.
+          (SCM win),
+"Return #t if WIN is transient, #f if not.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_transient_p
 {
   ScwmWindow *psw;
@@ -2011,13 +2007,13 @@ specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_transient_for, "window-transient-for", 0, 1, 0,
-          (SCM win))
-     /** Return the window for which WIN is transient.
+          (SCM win),
+"Return the window for which WIN is transient.
 If WIN is transient, and the window it is transient for is
 not the root window and is being managed by scwm, this returns the window
 object of the window that WIN is transient for, otherwise return
 #f. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_window_transient_for
 {
   ScwmWindow *psw, *tpsw;
@@ -2038,11 +2034,11 @@ specified. */
 
 
 SCWM_IPROC(iconify_window, "iconify-window", 0, 1, 0,
-          (SCM win))
-     /** Iconify WIN.
+           (SCM win),
+"Iconify WIN.
 Iconifying hides the regular window, and shows the window's icon.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_iconify_window
 {
   ScwmWindow *psw;
@@ -2058,8 +2054,8 @@ specified. */
 #undef FUNC_NAME
 
 SCWM_IPROC(deiconify_window, "deiconify-window", 0, 3, 0,
-          (SCM win, SCM x, SCM y))
-     /** Deiconify WIN.
+           (SCM win, SCM x, SCM y),
+"Deiconify WIN.
 Hides its icon, and shows its regular window.
 WIN defaults to the window context in the usual way if not
 specified.
@@ -2068,8 +2064,7 @@ before de-iconifying.  If X is specified, Y must be specified, too.
 These arguments are useful since `move-window' and `move-to' will
 refer to the icon window (not the frame window) if a window is iconified.
 Without being able to specify a position on de-iconification, the window
-cannot, e.g., cleanly be brought back onto the current viewport.
-*/
+cannot, e.g., cleanly be brought back onto the current viewport.")
 #define FUNC_NAME s_deiconify_window
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2086,31 +2081,30 @@ cannot, e.g., cleanly be brought back onto the current viewport.
 
 
 SCWM_PROC(iconified_window_p, "iconified-window?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is iconified, otherwise return #f.
+          (SCM win),
+"Return #t if WIN is iconified, otherwise return #f.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_iconified_window_p
 
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fIconified);
 }
-#undef FUNC_NAME
+#undef FUNC_NAME,
 
 /**CONCEPT: Sticky
 
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
-desktop.
-*/
+desktop.*/
 
 
 SCWM_IPROC(stick_window, "stick-window", 0, 1, 0,
-          (SCM win))
-     /** Make WIN "sticky" so that it stays stationary in the viewport.
+  (SCM win),
+"Make WIN \"sticky\" so that it stays stationary in the viewport.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_stick_window
 {
   ScwmWindow *psw;
@@ -2141,10 +2135,10 @@ specified. */
 
 
 SCWM_IPROC(unstick_window, "unstick-window", 0, 1, 0,
-          (SCM win))
-     /** Cause a window to no longer be "sticky", if it is.
+  (SCM win),
+"Cause a window to no longer be "sticky", if it is.
 See `stick' for an explanation. WIN defaults to the window context in
-the usual way if not specified. */
+the usual way if not specified.")
 #define FUNC_NAME s_unstick_window
 {
   ScwmWindow *psw;
@@ -2175,10 +2169,10 @@ the usual way if not specified. */
 
 
 SCWM_PROC(sticky_window_p, "sticky-window?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is "sticky", #f otherwise.
+          (SCM win),
+"Return #t if WIN is "sticky", #f otherwise.
 See `stick' for an explanation. WIN defaults to the
-window context in the usual way if not specified. */
+window context in the usual way if not specified.")
 #define FUNC_NAME s_sticky_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2210,13 +2204,13 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_window_p, set_sticky);
 
 
 SCWM_IPROC(shade_window, "shade-window", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN to become "window-shaded".
+           (SCM win),
+"Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
 way if not specified. See also `window-unshade'.
 A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
-the client application window is not visible. */
+the client application window is not visible.")
 #define FUNC_NAME s_shade_window
 {
   ScwmWindow *psw;
@@ -2253,12 +2247,12 @@ the client application window is not visible. */
 
 
 SCWM_IPROC(unshade_window, "unshade-window", 0, 1, 0,
-          (SCM win))
-    /** Reverse the effect of `shade-window' on WIN.
+           (SCM win),
+"Reverse the effect of `shade-window' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
 A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
-the client application window is not visible. */
+the client application window is not visible.")
 #define FUNC_NAME s_unshade_window
 {
   ScwmWindow *psw;
@@ -2288,10 +2282,10 @@ the client application window is not visible. */
 
 
 SCWM_PROC(shaded_window_p, "shaded-window?", 0, 1, 0,
-          (SCM win))
-    /** Return #t if WIN is shaded.
+          (SCM win),
+"Return #t if WIN is shaded.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_shaded_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2345,10 +2339,10 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 #undef FUNC_NAME
 
 SCWM_PROC(window_decoration_size, "window-decoration-size", 1, 0, 0,
-          (SCM win))
-     /** Return (decor-width decor-height) for WIN.
+          (SCM win),
+"Return (decor-width decor-height) for WIN.
 These are the extra width/height (in pixels) of the frame
-beyond that of the client window width/height. */
+beyond that of the client window width/height.")
 #define FUNC_NAME s_window_decoration_size
 {
   ScwmWindow *psw;
@@ -2360,12 +2354,12 @@ beyond that of the client window width/height. */
 #undef FUNC_NAME
 
 SCWM_PROC(move_window, "move-window", 2, 1, 0,
-          (SCM x, SCM y, SCM win))
-     /** Move WIN to virtual coordinates X, Y.
+          (SCM x, SCM y, SCM win),
+"Move WIN to virtual coordinates X, Y.
 If X is #f, then X defaults to the current X position of WIN.
 If Y is #f, then Y defaults to the current Y position of WIN.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_move_window
 {
   ScwmWindow *psw;
@@ -2387,14 +2381,14 @@ specified. */
 
 
 SCWM_PROC(resize_frame, "resize-frame", 2, 3, 0,
-          (SCM w, SCM h, SCM win, SCM x, SCM y))
-     /** Resize WIN to a size of W by H in pixels.
+          (SCM w, SCM h, SCM win, SCM x, SCM y),
+"Resize WIN to a size of W by H in pixels.
 Also moves WIN to virtual coordinates X, Y if both of them are specified.
 The size includes the window decorations. WIN defaults to the window
 context in the usual way if not specified.  The resulting size
 of the frame may not be W by H due to rounding to the nearest
 acceptable size for the client window (e.g., Emacs windows can
-only be sizes that are multiples of the basic character size).*/
+only be sizes that are multiples of the basic character size)")
 #define FUNC_NAME s_resize_frame
 {
   int width, height;
@@ -2428,11 +2422,11 @@ only be sizes that are multiples of the basic character size).*/
 #undef FUNC_NAME
 
 SCWM_PROC (window_size_hints, "window-size-hints", 1, 0, 0,
-           (SCM win))
-     /** Return a list of the window size hints associated with WIN.
+           (SCM win),
+"Return a list of the window size hints associated with WIN.
 The list returned contains 4 cons pairs containing:
 '((min-width . max-width) (min-height . max-height)
-(width-inc . height-inc) (base-width . base-height)) */
+(width-inc . height-inc) (base-width . base-height))")
 #define FUNC_NAME s_window_size_hints
 {
   SCM answer = SCM_EOL;
@@ -2457,12 +2451,12 @@ The list returned contains 4 cons pairs containing:
 
 
 SCWM_IPROC(refresh_window, "refresh-window", 0, 1, 0,
-          (SCM win))
-     /** Refresh the decorations on window WIN.
+           (SCM win),
+"Refresh the decorations on window WIN.
 Refreshing ensuring that everything, including the decorations is up
 to date. `refresh' does this in a more efficient way for all windows,
 as well as the root. WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.")
 #define FUNC_NAME s_refresh_window
 {
   ScwmWindow *psw;
@@ -2488,9 +2482,9 @@ notify_new_desk(ScwmWindow *psw, int desk, int old)
 
 
 SCWM_PROC(move_window_to_desk, "move-window-to-desk", 1, 1, 0,
-          (SCM desk, SCM win))
-     /** Move WIN to DESK. DESK is an integer desk identifier. WIN
-defaults to the window context in the usual way if not specified. */
+          (SCM desk, SCM win),
+"Move WIN to DESK. DESK is an integer desk identifier. WIN
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_move_window_to_desk
 {
   ScwmWindow *psw;
@@ -2535,12 +2529,12 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(window_gravity, "window-gravity", 0, 1, 0,
-          (SCM win))
-     /** Return the gravity for WIN as a symbol.
+          (SCM win),
+"Return the gravity for WIN as a symbol.
 Return value is one of the following: 
 'forget, 'northwest, 'north, 'northeast,
 'west, 'center, 'east, 'southwest 'south, 'southeast,
-'static. */
+'static.")
 #define FUNC_NAME s_window_gravity
 {
   ScwmWindow *psw;
@@ -2554,12 +2548,12 @@ Return value is one of the following:
 
 
 SCWM_PROC(set_window_gravity_x, "set-window-gravity!", 1, 1, 0,
-          (SCM gravity, SCM win))
-     /** Sets the gravity for WIN to GRAVITY.
+          (SCM gravity, SCM win),
+"Sets the gravity for WIN to GRAVITY.
 GRAVITY must be one of the following: 
 'forget, 'northwest, 'north, 'northeast,
 'west, 'center, 'east, 'southwest 'south, 'southeast,
-'static. */
+'static.")
 #define FUNC_NAME s_set_window_gravity_x
 {
   ScwmWindow *psw;
@@ -2578,12 +2572,12 @@ GRAVITY must be one of the following:
 
 
 SCWM_PROC(window_position, "window-position", 0, 1, 0,
-          (SCM win))
-     /** Return the position of WIN in pixels.
+          (SCM win),
+"Return the position of WIN in pixels.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. If the window is sticky, the position will
 always be in the 0,0 viewport. WIN defaults to the window context in the usual
-way if not specified.  See also `window-viewport-position'. */
+way if not specified.  See also `window-viewport-position'.")
 #define FUNC_NAME s_window_position
 {
   ScwmWindow *psw;
@@ -2599,12 +2593,12 @@ way if not specified.  See also `window-viewport-position'. */
 
 
 SCWM_PROC(icon_position, "icon-position", 0, 1, 0,
-          (SCM win))
-     /** Return the position of the icon for WIN.
+          (SCM win),
+"Return the position of the icon for WIN.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels.  If the icon is sticky, the position will
 always be in the 0,0 viewport. WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.")
 #define FUNC_NAME s_icon_position
 {
   ScwmWindow *psw;
@@ -2619,11 +2613,11 @@ way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(icon_size, "icon-size", 0, 1, 0,
-          (SCM win))
-     /** Return the size of the icon for WIN.
+          (SCM win),
+"Return the size of the icon for WIN.
 The position is returned as a list of the width and height in pixels.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 
 #define FUNC_NAME s_icon_size
 {
@@ -2641,12 +2635,12 @@ specified. */
 
 
 SCWM_PROC(window_frame_size, "window-frame-size", 0, 1, 0,
-          (SCM win))
-/** Return the size of the frame of WIN.
+          (SCM win),
+"Return the size of the frame of WIN.
 The position is returned as a list of the width and the height in
 pixels. WIN defaults to the window context in the usual way if not
 specified. See `window-size' if you want the size of the application
-(client) window. */
+(client) window.")
 #define FUNC_NAME s_window_frame_size
 {
   ScwmWindow *psw;
@@ -2683,13 +2677,13 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
 
 
 SCWM_PROC(window_size, "window-size", 0, 1, 0,
-          (SCM win))
-/** Return the size of the application window of WIN.
+          (SCM win),
+"Return the size of the application window of WIN.
 WIN defaults to the window context in the usual way if not specified.
 The position is returned as a list of four numbers. The first two are
 the width and the height in pixels, the third and fourth are the width
 and height in resize units (e.g., characters for an xterm).  See
-`window-frame-size' if you want the size of the frame window. */
+`window-frame-size' if you want the size of the frame window.")
 #define FUNC_NAME s_window_size
 {
   ScwmWindow *psw;
@@ -2714,8 +2708,8 @@ and height in resize units (e.g., characters for an xterm).  See
 
 
 SCWM_PROC (window_title_size, "window-title-size", 0, 1, 0,
-           (SCM win))
-     /** Return a list with the width and height of WIN's titlebar. */
+           (SCM win),
+"Return a list with the width and height of WIN's titlebar.")
 #define FUNC_NAME s_window_title_size
 {
   ScwmWindow *psw;
@@ -2729,9 +2723,9 @@ SCWM_PROC (window_title_size, "window-title-size", 0, 1, 0,
 
 
 SCWM_PROC (window_frame_border_width, "window-frame-border-width", 0, 1, 0,
-           (SCM win))
-     /** Return the width of WIN's frame's border.
-WIN defaults to the window context in the usual way if not specified. */
+           (SCM win),
+"Return the width of WIN's frame's border.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_frame_border_width
 {
   ScwmWindow *psw;
@@ -2743,10 +2737,10 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(window_id, "window-id", 0, 1, 0,
-          (SCM win))
-     /** Return the X window id for WIN.
+          (SCM win),
+"Return the X window id for WIN.
 This is the X id for the actual application window. WIN defaults to
-the window context in the usual way if not specified. */
+the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_id
 {
   if (win == sym_root_window) {
@@ -2759,10 +2753,10 @@ the window context in the usual way if not specified. */
 
 
 SCWM_PROC(window_frame_id, "window-frame-id", 0, 1, 0,
-          (SCM win))
-     /** Return the X window id for the outermost frame window of WIN.
+          (SCM win),
+"Return the X window id for the outermost frame window of WIN.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_window_frame_id
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2772,10 +2766,10 @@ specified. */
 
 
 SCWM_PROC(id_to_window, "id->window", 1, 0, 0,
-          (SCM window_id))
-     /** Return the window object corresponding to an application WINDOW-ID.
+          (SCM window_id),
+"Return the window object corresponding to an application WINDOW-ID.
 WINDOW-ID should be the X id of the application window. If there is no
-such window object, return #f. */
+such window object, return #f.")
 #define FUNC_NAME s_id_to_window
 {
   ScwmWindow *psw;
@@ -2789,10 +2783,10 @@ such window object, return #f. */
 #undef FUNC_NAME
 
 SCWM_PROC(frame_id_to_window, "frame-id->window", 1, 0, 0,
-          (SCM window_id))
-     /** Return the window object corresponding to a frame WINDOW-ID.
+          (SCM window_id),
+"Return the window object corresponding to a frame WINDOW-ID.
 WINDOW-ID should be the X id of a scwm frame window. If there is no
-such window object, return #f. */
+such window object, return #f.")
 #define FUNC_NAME s_frame_id_to_window
 {
   ScwmWindow *psw;
@@ -2806,10 +2800,10 @@ such window object, return #f. */
 #undef FUNC_NAME
 
 SCWM_PROC(any_id_to_window, "any-id->window", 1, 0, 0,
-          (SCM window_id))
-     /** Return the window object that contains the window with id WINDOW-ID.
+          (SCM window_id),
+"Return the window object that contains the window with id WINDOW-ID.
 WINDOW-ID can be the X id of any child window in the application. If there is no
-such window object, return #f. */
+such window object, return #f.")
 #define FUNC_NAME s_any_id_to_window
 {
   ScwmWindow *psw;
@@ -2826,9 +2820,9 @@ such window object, return #f. */
 
 
 SCWM_PROC(window_desk, "window-desk", 0, 1, 0,
-          (SCM win))
-     /** Return the desk that WIN is currently on.
-WIN defaults to the window context in the usual way if not specified. */
+          (SCM win),
+"Return the desk that WIN is currently on.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_desk
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2838,9 +2832,9 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(window_title, "window-title", 0, 1, 0,
-          (SCM win))
-     /** Return the window title of WIN, as requested by the application.
-WIN defaults to the window context in the usual way if not specified. */
+          (SCM win),
+"Return the window title of WIN, as requested by the application.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_title
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2849,10 +2843,10 @@ WIN defaults to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_icon_title, "window-icon-title", 0, 1, 0,
-          (SCM win))
-     /** Return the icon window title of WIN.
+          (SCM win),
+"Return the icon window title of WIN.
 This is the title as requested by the application. WIN defaults to
-the window context in the usual way if not specified. */
+the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_icon_title
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2861,10 +2855,10 @@ the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_class_hint, "window-class-hint", 0, 1, 0,
-          (SCM win))
-     /** DEPRECATED. Return the window resource class of WIN.
+          (SCM win),
+"DEPRECATED. Return the window resource class of WIN.
 WIN defaults to the window context in the usual way if not
-specified. You should prefer `window-class'. */
+specified. You should prefer `window-class'.")
 #define FUNC_NAME s_window_class_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2874,10 +2868,10 @@ specified. You should prefer `window-class'. */
 
 
 SCWM_PROC(window_resource_hint, "window-resource-hint", 0, 1, 0,
-          (SCM win))
-     /** DEPRECATED. Return the window resource instance of WIN. 
+          (SCM win),
+"DEPRECATED. Return the window resource instance of WIN. 
 WIN defaults to the window context in the usual way if not specified. 
-You should prefer `window-resource'. */
+You should prefer `window-resource'.")
 #define FUNC_NAME s_window_resource_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2890,8 +2884,8 @@ You should prefer `window-resource'. */
    in X server time (that time wraps every 50 days or so, though! */
 
 SCWM_PROC (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
-           (SCM win))
-     /** Return the time that WIN was last focussed in seconds since 1/1/70. */
+           (SCM win),
+"Return the time that WIN was last focussed in seconds since 1/1/70.")
 #define FUNC_NAME s_window_last_focus_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2900,10 +2894,10 @@ SCWM_PROC (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_last_focus_x_time, "window-last-focus-x-time", 0, 1, 0,
-           (SCM win))
-     /** Return the X11 time that WIN was last focussed. 
+           (SCM win),
+"Return the X11 time that WIN was last focussed. 
 These are not reliable to compare over long times since they wrap
-too frequenly. */
+too frequenly.")
 #define FUNC_NAME s_window_last_focus_x_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2913,8 +2907,8 @@ too frequenly. */
 
 
 SCWM_PROC (window_creation_time, "window-creation-time", 0, 1, 0,
-           (SCM win))
-     /** Return the time that WIN was created in seconds since 1/1/70. */
+           (SCM win),
+"Return the time that WIN was created in seconds since 1/1/70.")
 #define FUNC_NAME s_window_creation_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2923,9 +2917,9 @@ SCWM_PROC (window_creation_time, "window-creation-time", 0, 1, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_visibility, "window-visibility", 0, 1, 0,
-           (SCM win))
-     /** Return the visibility state for WIN.
-Returns either 'partially-obscured, 'fully-obscured, or 'unobscured. */
+           (SCM win),
+"Return the visibility state for WIN.
+Returns either 'partially-obscured, 'fully-obscured, or 'unobscured.")
 #define FUNC_NAME s_window_visibility
 {
   ScwmWindow *psw;
@@ -2947,11 +2941,10 @@ Returns either 'partially-obscured, 'fully-obscured, or 'unobscured. */
 
 
 SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
-          ())
-     /** Return a list of all of the top-level window objects.
-
+          (),
+"Return a list of all of the top-level window objects.
 The list is in a semi-arbitrary order that is convenient for the sake
-of circulation.*/
+of circulation")
 #define FUNC_NAME s_list_all_windows
 {
   ScwmWindow *psw; SCM result = SCM_EOL;
@@ -2967,10 +2960,10 @@ of circulation.*/
 
 /* GJB:FIXME:: this should not exclude iconified windows */
 SCWM_PROC (list_stacking_order, "list-stacking-order", 0, 0, 0,
-           ())
-     /** Return a list of all non-iconified the top-level window objects, from top to bottom.
+           (),
+"Return a list of all non-iconified the top-level window objects, from top to bottom.
 The order is the stacking order of the windows. The first element is
-the topmost window, the last is the bottommost */
+the topmost window, the last is the bottommost")
 #define FUNC_NAME s_list_stacking_order
 {
   SCM result = SCM_EOL;
@@ -3010,9 +3003,9 @@ static int compare_focus_time(ScwmWindow **a, ScwmWindow **b)
 }
 
 SCWM_PROC(list_focus_order, "list-focus-order", 0, 0, 0,
-           ())
-     /** Return a list of all the top-level window objects in focus order.
-The order is from most recently focussed to least recently focussed. */
+          (),
+"Return a list of all the top-level window objects in focus order.
+The order is from most recently focussed to least recently focussed.")
 #define FUNC_NAME s_list_focus_order
 {
   ScwmWindow *psw, **rgpsw;
@@ -3041,10 +3034,10 @@ The order is from most recently focussed to least recently focussed. */
 
 
 SCWM_IPROC(keep_on_top, "keep-on-top", 0, 1, 0,
-          (SCM win))
-     /** Ensure that WIN is kept on top of all other windows.
+           (SCM win),
+"Ensure that WIN is kept on top of all other windows.
 Obviously, other windows that are also on-top may obscure WIN.
-WIN defaults to the window context in the usual way if not specified. */
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_keep_on_top
 {
   ScwmWindow *psw;
@@ -3071,10 +3064,10 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_IPROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
-          (SCM win))
-     /** Remove the on-top property from WIN, if it has it.
+           (SCM win),
+"Remove the on-top property from WIN, if it has it.
 See `keep-on-top'. WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.")
 #define FUNC_NAME s_un_keep_on_top
 {
   ScwmWindow *psw;
@@ -3099,10 +3092,10 @@ way if not specified. */
 
 
 SCWM_PROC(kept_on_top_p, "kept-on-top?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is an on-top window, #f otherwise.
+          (SCM win),
+"Return #t if WIN is an on-top window, #f otherwise.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_kept_on_top_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3154,12 +3147,12 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
 }
 
 SCWM_IPROC(show_titlebar, "show-titlebar", 0, 2, 0,
-          (SCM win, SCM in_place_p))
-     /** Cause WIN to be decorated with a titlebar.
+           (SCM win, SCM in_place_p),
+"Cause WIN to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
 See also `hide-titlebar'.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_show_titlebar
 {
   ScwmWindow *psw;
@@ -3182,12 +3175,12 @@ specified. */
 
 
 SCWM_IPROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
-          (SCM win, SCM in_place_p))
-     /** Cause WIN not to be decorated with a titlebar.
+           (SCM win, SCM in_place_p),
+"Cause WIN not to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
 See also `show-titlebar'.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_hide_titlebar
 {
   ScwmWindow *psw;
@@ -3208,11 +3201,11 @@ specified. */
 
 
 SCWM_PROC(titlebar_shown_p, "titlebar-shown?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is decorated with a titlebar, #f otherwise.
+          (SCM win),
+"Return #t if WIN is decorated with a titlebar, #f otherwise.
 
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_titlebar_shown_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3222,10 +3215,10 @@ specified. */
 
 
 SCWM_IPROC(normal_border, "normal-border", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN to be decorated with a normal border.
+           (SCM win),
+"Cause WIN to be decorated with a normal border.
 This means that there will be resize handles in the corners. WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_normal_border
 {
   ScwmWindow *psw;
@@ -3251,10 +3244,10 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_IPROC(plain_border, "plain-border", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN to be decorated with a plain border.
+           (SCM win),
+"Cause WIN to be decorated with a plain border.
 This means that there will be no resize handles in the corners. WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_plain_border
 {
   ScwmWindow *psw;
@@ -3278,11 +3271,11 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(border_normal_p, "border-normal?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN has a normal border, #f if it has a plain border.
+          (SCM win),
+"Return #t if WIN has a normal border, #f if it has a plain border.
 WIN defaults to the window context in the
 usual way if not specified.  See `normal-border' and
-`plain-border'. */
+`plain-border'.")
 #define FUNC_NAME s_border_normal_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3291,9 +3284,9 @@ usual way if not specified.  See `normal-border' and
 #undef FUNC_NAME
 
 SCWM_PROC(set_border_width_x, "set-border-width!", 1, 1, 0,
-          (SCM width, SCM win))
-     /** Set the border width of WIN's border to WIDTH pixels.
-WIN defaults to the window context in the usual way if not specified. */
+          (SCM width, SCM win),
+"Set the border width of WIN's border to WIDTH pixels.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_border_width_x
 {
   ScwmWindow *psw;
@@ -3331,9 +3324,9 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_IPROC(stick_icon, "stick-icon", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN's icon to become "sticky". See `stick'. WIN
-defaults to the window context in the usual way if not specified. */
+           (SCM win),
+"Cause WIN's icon to become "sticky". See `stick'. WIN
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_stick_icon
 {
   ScwmWindow *psw;
@@ -3348,10 +3341,10 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_IPROC(unstick_icon, "unstick-icon", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN's icon to no longer by "sticky". See `stick-icon'
+           (SCM win),
+"Cause WIN's icon to no longer by "sticky". See `stick-icon'
 and `stick'. WIN defaults to the window context in the usual way if
-not specified. */
+not specified.")
 #define FUNC_NAME s_unstick_icon
 {
   ScwmWindow *psw;
@@ -3366,10 +3359,10 @@ not specified. */
 
 
 SCWM_PROC(icon_sticky_p, "icon-sticky?", 0, 1, 0,
-          (SCM win))
-     /** Return #t if WIN is "sticky", #f otherwise.
+          (SCM win),
+"Return #t if WIN is "sticky", #f otherwise.
 See `stick-icon' and `stick'. WIN defaults to the window context in
-the usual way if not specified. */
+the usual way if not specified.")
 #define FUNC_NAME s_icon_sticky_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3379,11 +3372,11 @@ the usual way if not specified. */
 
 
 SCWM_PROC(set_icon_box_x, "set-icon-box!", 4, 1, 0,
-          (SCM x, SCM y, SCM w, SCM h, SCM win))
-     /** Set the icon box in which WIN's icon will be placed.
+          (SCM x, SCM y, SCM w, SCM h, SCM win),
+"Set the icon box in which WIN's icon will be placed.
 This set the box to the rectangle at coordinates X, Y with width W and
 height H. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_icon_box_x
 {
   int cx, cy, cw, ch;
@@ -3427,10 +3420,10 @@ mailboxes, and other desktop gadgets that never need keyboard input.
 */
 
 SCWM_PROC(set_window_focus_x, "set-window-focus!", 1, 1, 0,
-          (SCM sym, SCM win))
-     /** Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
+          (SCM sym, SCM win),
+"Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
 'sloppy or 'none. WIN defaults to the window context in the usual way
-if not specified. */
+if not specified.")
 #define FUNC_NAME s_set_window_focus_x
 {
   ScwmWindow *psw;
@@ -3460,9 +3453,9 @@ if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_focus_style, "window-focus-style", 0, 1, 0,
-	  (SCM win))
-     /** Get the focus style of WIN.
-Returns one of 'mouse, 'click, 'sloppy, or 'none. */
+	  (SCM win),
+"Get the focus style of WIN.
+Returns one of 'mouse, 'click, 'sloppy, or 'none.")
 #define FUNC_NAME s_window_focus_style
 {
   ScwmWindow *psw;
@@ -3484,8 +3477,8 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none. */
 #undef FUNC_NAME
 
 SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
-          (SCM win))
-     /** Return a two-element list, "(fg bg)", the colors for WIN. */
+          (SCM win),
+"Return a two-element list, "(fg bg)", the colors for WIN.")
 #define FUNC_NAME s_get_window_colors
 {
   ScwmWindow *psw;
@@ -3498,10 +3491,9 @@ SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
 
 
 SCWM_PROC(get_window_highlight_colors, "get-window-highlight-colors", 0, 1, 0,
-          (SCM win))
-     /** Return a two-element list, "(fg bg)", the highlight colors for WIN.
-fg or bg may be #f, which means that the color is inherited from the decor.
-*/
+          (SCM win),
+"Return a two-element list, "(fg bg)", the highlight colors for WIN.
+fg or bg may be #f, which means that the color is inherited from the decor.")
 #define FUNC_NAME s_get_window_highlight_colors
 {
   ScwmWindow *psw;
@@ -3515,10 +3507,10 @@ fg or bg may be #f, which means that the color is inherited from the decor.
 
 
 SCWM_PROC(window_decoration_ids, "window-decoration-ids", 0, 1, 0,
-          (SCM win))
-     /** Returns a list of long integer window ids of the decoration windows for WIN.
+          (SCM win),
+"Returns a list of long integer window ids of the decoration windows for WIN.
 Returned list is ( frame title_w (side-n side-e side-s side-w)
-(corner-nw corner-ne corner-se corner-sw) ). */
+(corner-nw corner-ne corner-se corner-sw) ).")
 #define FUNC_NAME s_window_decoration_ids
 {
   ScwmWindow *psw;
@@ -3542,11 +3534,11 @@ Returned list is ( frame title_w (side-n side-e side-s side-w)
 
 
 SCWM_PROC(set_window_id_background_x, "set-window-id-background!", 1, 1, 0,
-          (SCM bg, SCM winid))
-     /** Set the background color of X11 window with id WINID to BG. 
+          (SCM bg, SCM winid),
+"Set the background color of X11 window with id WINID to BG. 
 This is not necessarily persistent.  In particular, if you set 
 the background color of a window decoration, that decoration
-will revert to its usual color.  See also `window-decoration-ids'. */
+will revert to its usual color.  See also `window-decoration-ids'.")
 #define FUNC_NAME s_set_window_id_background_x
 {
   Window w;
@@ -3560,9 +3552,9 @@ will revert to its usual color.  See also `window-decoration-ids'. */
 #undef FUNC_NAME
 
 SCWM_PROC (set_window_highlighted_nonant_x, "set-window-highlighted-nonant!", 1, 1, 0,
-           (SCM nonant, SCM win))
-     /** Highlight NONANT for WIN.
-NONANT is a number between 0 and 8, inclusive, or #f to unhighlight. */
+           (SCM nonant, SCM win),
+"Highlight NONANT for WIN.
+NONANT is a number between 0 and 8, inclusive, or #f to unhighlight.")
 #define FUNC_NAME s_set_window_highlighted_nonant_x
 {
   ScwmWindow *psw;
@@ -3582,8 +3574,8 @@ NONANT is a number between 0 and 8, inclusive, or #f to unhighlight. */
 #undef FUNC_NAME
 
 SCWM_PROC (window_highlighted_nonant, "window-highlighted-nonant", 0, 1, 0,
-           (SCM win))
-     /** Returnt the highlighted nonant for WIN, or #f if none highlighted. */
+           (SCM win),
+"Returnt the highlighted nonant for WIN, or #f if none highlighted.")
 #define FUNC_NAME s_window_highlighted_nonant
 {
   ScwmWindow *psw;
@@ -3596,8 +3588,8 @@ SCWM_PROC (window_highlighted_nonant, "window-highlighted-nonant", 0, 1, 0,
 
 
 SCWM_PROC (set_nonant_highlight_color_x, "set-nonant-highlight-color!", 1, 0, 0,
-           (SCM color))
-     /** Use COLOR for highlighting nonants. */
+           (SCM color),
+"Use COLOR for highlighting nonants.")
 #define FUNC_NAME s_set_nonant_highlight_color_x
 {
   VALIDATE_ARG_COLOR(1,color);
@@ -3608,8 +3600,8 @@ SCWM_PROC (set_nonant_highlight_color_x, "set-nonant-highlight-color!", 1, 0, 0,
 
 
 SCWM_PROC (nonant_highlight_color, "nonant-highlight-color", 0, 0, 0,
-           ())
-     /** Return the color used for highlighting nonants. */
+           (),
+"Return the color used for highlighting nonants.")
 #define FUNC_NAME s_nonant_highlight_color
 {
   return Scr.nonant_highlight_color;
@@ -3618,11 +3610,11 @@ SCWM_PROC (nonant_highlight_color, "nonant-highlight-color", 0, 0, 0,
 
 
 SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
-          (SCM fg, SCM win))
-     /** Set the foreground color of WIN to FG.
+          (SCM fg, SCM win),
+"Set the foreground color of WIN to FG.
 This color is used to draw the title text currently. In the future, it
 may have other uses as well. WIN defaults to the window context in the
-usual way if not specified. See also `get-window-colors'.*/
+usual way if not specified. See also `get-window-colors'")
 #define FUNC_NAME s_set_window_foreground_x
 {
   ScwmWindow *psw;
@@ -3640,12 +3632,12 @@ usual way if not specified. See also `get-window-colors'.*/
 
 
 SCWM_PROC(set_window_background_x, "set-window-background!", 1, 1, 0,
-          (SCM bg, SCM win))
-     /** Set the background color of WIN to BG.
+          (SCM bg, SCM win),
+"Set the background color of WIN to BG.
 This color is used to draw most of the window decorations, along with
 the relief colors generated from it, which are used to draw the
 window's 3-D bevels.  WIN defaults to the window context in the usual
-way if not specified. See also `get-window-colors'. */
+way if not specified. See also `get-window-colors'.")
 #define FUNC_NAME s_set_window_background_x
 {
   ScwmDecor * fl;
@@ -3669,14 +3661,14 @@ way if not specified. See also `get-window-colors'. */
 
 
 SCWM_PROC(set_window_highlight_foreground_x, "set-window-highlight-foreground!", 1, 1, 0,
-          (SCM fg, SCM win))
-     /** Set the highlighted foreground color of WIN to FG.
+          (SCM fg, SCM win),
+"Set the highlighted foreground color of WIN to FG.
 This color is used to draw the title text when WIN has the focus.
 In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified. If FG is #f, then lets the decor highlight
 foreground color be used (turns off a special highlight
-color for WIN). See also `get-window-highlight-colors'. */
+color for WIN). See also `get-window-highlight-colors'.")
 #define FUNC_NAME s_set_window_highlight_foreground_x
 {
   ScwmWindow *psw;
@@ -3693,14 +3685,14 @@ color for WIN). See also `get-window-highlight-colors'. */
 
 
 SCWM_PROC(set_window_highlight_background_x, "set-window-highlight-background!", 1, 1, 0,
-          (SCM bg, SCM win))
-     /** Set the highlighted background color of WIN to BG.
+          (SCM bg, SCM win),
+"Set the highlighted background color of WIN to BG.
 This color is used when WIN has the focus to draw most of the window
 decorations, along with the relief colors generated from it, which are
 used to draw the window's 3-D bevels.  WIN defaults to the window context
 in the usual way if not specified. If BG is #f, then lets the decor
 highlight background color be used (turns off a special highlight color
-for WIN).  See also `get-window-highlight-colors'. */
+for WIN).  See also `get-window-highlight-colors'.")
 #define FUNC_NAME s_set_window_highlight_background_x
 {
   ScwmDecor * fl;
@@ -3728,11 +3720,11 @@ for WIN).  See also `get-window-highlight-colors'. */
 
 
 SCWM_PROC(set_random_placement_x, "set-random-placement!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the random-placement flag of WIN to boolean FLAG.
+          (SCM flag, SCM win),
+"Set the random-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_random_placement_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -3743,11 +3735,11 @@ specified. */
 
 
 SCWM_PROC(set_smart_placement_x, "set-smart-placement!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the smart-placement flag of WIN to boolean FLAG.
+          (SCM flag, SCM win),
+"Set the smart-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_smart_placement_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -3758,13 +3750,13 @@ specified. */
 
 
 SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
-          (SCM n, SCM flag, SCM win))
-     /** Set the visibility of button number N on window WIN.
+          (SCM n, SCM flag, SCM win),
+"Set the visibility of button number N on window WIN.
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: the titlebar will not expand if you disable
 a button via this procedure -- the decoration code is still
-far from perfect.) */
+far from perfect.)")
 #define FUNC_NAME s_set_window_button_x
 {
   ScwmWindow *psw;
@@ -3795,11 +3787,11 @@ far from perfect.) */
 
 
 SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the mwm-buttons flag of WIN to boolean FLAG.
+          (SCM flag, SCM win),
+"Set the mwm-buttons flag of WIN to boolean FLAG.
 The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
-to the window context in the usual way if not specified. */
+to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_mwm_buttons_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -3811,11 +3803,11 @@ to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the mwm-border style flag of WIN to boolean FLAG.
+          (SCM flag, SCM win),
+"Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_mwm_border_x
 {
   ScwmWindow *psw;
@@ -3855,9 +3847,9 @@ force_icon_redraw (ScwmWindow *psw)
 
 
 SCWM_PROC(set_icon_title_x, "set-icon-title!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the visibility of WIN's icon title according to FLAG. WIN
-defaults to the window context in the usual way if not specified. */
+          (SCM flag, SCM win),
+"Set the visibility of WIN's icon title according to FLAG. WIN
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_icon_title_x
 {
   ScwmWindow *psw;
@@ -3871,11 +3863,11 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_force_icon_x, "set-force-icon!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set the window-manager-overriding property for WIN to boolean FLAG.
+          (SCM flag, SCM win),
+"Set the window-manager-overriding property for WIN to boolean FLAG.
 If #t, the icon specified for WIN by the user through scwm will override an
 application-provided icon.  WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.")
 #define FUNC_NAME s_set_force_icon_x
 {
   ScwmWindow *psw;
@@ -3889,12 +3881,12 @@ way if not specified. */
 
 
 SCWM_PROC(set_show_icon_x, "set-show-icon!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set whether or not the icon of WIN will be visible.  If FLAG
+          (SCM flag, SCM win),
+"Set whether or not the icon of WIN will be visible.  If FLAG
 is #t, the icon will be displayed, if #f, it will not appear when the
 window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_show_icon_x
 {
   ScwmWindow *psw;
@@ -3908,11 +3900,11 @@ specified. */
 
 
 SCWM_PROC(set_icon_x, "set-icon!", 1, 1, 0,
-          (SCM image, SCM win))
-     /** Set the image to use for the icon of WIN to IMAGE.
+          (SCM image, SCM win),
+"Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
 also be specified, indicating no icon image. WIN defaults to the window
-context in the usual way if not specified. */
+context in the usual way if not specified.")
 #define FUNC_NAME s_set_icon_x
 {
   ScwmWindow *psw;
@@ -3938,10 +3930,10 @@ context in the usual way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_icon, "window-icon", 0, 1, 0,
-          (SCM win))
-     /** Get the icon image being used for WIN.
+          (SCM win),
+"Get the icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
-in the usual way if not specified. */
+in the usual way if not specified.")
 #define FUNC_NAME s_window_icon
 {
   ScwmWindow *psw;
@@ -3952,10 +3944,10 @@ in the usual way if not specified. */
 
 
 SCWM_PROC(set_mini_icon_x, "set-mini-icon!", 1, 1, 0,
-          (SCM image, SCM win))
-     /** Set the image to use for the mini-icon of WIN to IMAGE. As
+          (SCM image, SCM win),
+"Set the image to use for the mini-icon of WIN to IMAGE. As
 usual, an image object or a filename string may be given. WIN defaults
-to the window context in the usual way if not specified. */
+to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_mini_icon_x
 {
   ScwmWindow *psw;
@@ -3980,11 +3972,11 @@ to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(window_mini_icon, "window-mini-icon", 0, 1, 0,
-          (SCM win))
-#define FUNC_NAME s_window_mini_icon
-     /** Get the mini-icon image being used for WIN.
+          (SCM win),
+"Get the mini-icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
-in the usual way if not specified. */
+in the usual way if not specified.")
+#define FUNC_NAME s_window_mini_icon
 {
   ScwmWindow *psw;
   VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
@@ -3994,9 +3986,9 @@ in the usual way if not specified. */
 
 
 SCWM_PROC (window_shaped_p, "window-shaped?", 0, 1, 0,
-           (SCM win))
-     /** Return #t if WIN is a shaped window, #f otherwise.
-WIN defaults to the window context in the usual way if not specified. */
+  (SCM win),
+"Return #t if WIN is a shaped window, #f otherwise.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_shaped_p
 {
   ScwmWindow *psw;
@@ -4007,9 +3999,9 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC (window_icon_shaped_p, "window-icon-shaped?", 1, 0, 0,
-           (SCM win))
-     /** Return #t if WIN has shaped icon, #f otherwise.
-WIN defaults to the window context in the usual way if not specified. */
+           (SCM win),
+"Return #t if WIN has shaped icon, #f otherwise.
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_icon_shaped_p
 {
   ScwmWindow *psw;
@@ -4021,12 +4013,12 @@ WIN defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_hint_override_x, "set-hint-override!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set whether or not Mwm and Open Look function hints are used.
+          (SCM flag, SCM win),
+"Set whether or not Mwm and Open Look function hints are used.
 If FLAG is #t, the hints, which indicate what operations should be
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
 be honoured. WIN defaults to the window context in the usual way if
-not specified. */
+not specified.")
 #define FUNC_NAME s_set_hint_override_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4039,12 +4031,12 @@ not specified. */
 
 
 SCWM_PROC(set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set decoration of transients property on WIN.
+          (SCM flag, SCM win),
+"Set decoration of transients property on WIN.
 If FLAG is #t, then if WIN is transient it will be fully
 decorated. Transient windows that are not fully decorated will be
 given only a border and no titlebar regardless of other settings. WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_decorate_transient_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4055,10 +4047,10 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_mwm_decor_hint_x, "set-mwm-decor-hint!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set whether or not Motif decoration hints are used for WIN.
+          (SCM flag, SCM win),
+"Set whether or not Motif decoration hints are used for WIN.
 If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
-to the window context in the usual way if not specified. */
+to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_mwm_decor_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4069,11 +4061,11 @@ to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_mwm_func_hint_x, "set-mwm-func-hint!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set whether or not Motif function hints are used for WIN.
+          (SCM flag, SCM win),
+"Set whether or not Motif function hints are used for WIN.
 If FLAG is #t, the Motif function hints are respected for WIN.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_mwm_func_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4084,13 +4076,13 @@ specified. */
 
 
 SCWM_PROC(set_PPosition_hint_x, "set-PPosition-hint!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set or reset the program-specified position hint for WIN.
+          (SCM flag, SCM win),
+"Set or reset the program-specified position hint for WIN.
 If FLAG is #t, the hint will be set, otherwise reset.  This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
 ignoring it is recommended. WIN defaults to the window context in the
-usual way if not specified. */
+usual way if not specified.")
 #define FUNC_NAME s_set_PPosition_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4101,10 +4093,10 @@ usual way if not specified. */
 
 
 SCWM_PROC(set_OL_decor_hint_x, "set-OL-decor-hint!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Determine whether or not to respect Open Look decoration hints.
+          (SCM flag, SCM win),
+"Determine whether or not to respect Open Look decoration hints.
 If FLAG is #t, the decoration hints will be respected for WIN. WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_OL_decor_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4115,9 +4107,9 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_start_on_desk_x, "set-start-on-desk!", 1, 1, 0,
-          (SCM desk, SCM win))
-     /** Make WIN start on DESK when first mapped. WIN defaults to the
-window context in the usual way if not specified. */
+          (SCM desk, SCM win),
+"Make WIN start on DESK when first mapped. WIN defaults to the
+window context in the usual way if not specified.")
 #define FUNC_NAME s_set_start_on_desk_x
 {
   ScwmWindow *psw;
@@ -4137,11 +4129,11 @@ window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_skip_mapping_x, "set-skip-mapping!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set or reset whether scwm should not change desktops on a map.
+          (SCM flag, SCM win),
+"Set or reset whether scwm should not change desktops on a map.
 This only affect the behaviour upon initial mapping of WIN. If FLAG is
 #t, the virtual desktop will not be changed when WIN is mapped.  WIN
-defaults to the window context in the usual way if not specified. */
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_skip_mapping_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
@@ -4152,13 +4144,13 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_lenience_x, "set-lenience!", 1, 1, 0,
-          (SCM flag, SCM win))
-     /** Set or reset the input focus lenience flag.
+          (SCM flag, SCM win),
+"Set or reset the input focus lenience flag.
 Determine whether or not to try to give WIN the input focus
 when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
 FLAG. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_set_lenience_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);

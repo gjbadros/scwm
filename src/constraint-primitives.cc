@@ -34,14 +34,14 @@ static SCM scmMasterSolver = SCM_BOOL_F;
 
 static set<ScwmWindow *> setpswDirty;
 
-SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook", 1);
-  /** Called upon completion of each constraint re-solve.
+SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook", 1,
+"Called upon completion of each constraint re-solve.
 The hook is passed a single argument, the solver object that just re-solved.
 The various 'changed-proc hooks on cl-variable objects are called as the solver
 changes variables.  Often, those callbacks should just remember what
 has changed and then act on all the changes at once using this
 callback.  The alternative--acting on all variable changes as they
-occur--can be inefficent and visually distracting. */
+occur--can be inefficent and visually distracting.");
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSolver *)
@@ -121,12 +121,12 @@ ScwmResolve(ClSimplexSolver *psolver)
 
 
 SCWM_PROC(add_stays_on_window, "add-stays-on-window", 1, 0, 0,
-          (SCM win))
-  /** Add stay constraint on all window dimensions.
+          (SCM win),
+"Add stay constraint on all window dimensions.
 WIN is a window object.  This is done automatically for all
 current windows when a solver is made the master solver via
 `scwm-set-master-solver' and is also done for all newly-created
-windows.   Occasions for using this primitive are rare. */
+windows.   Occasions for using this primitive are rare.")
 #define FUNC_NAME s_add_stays_on_window
 {
   if (!WINDOWP(win)) {
@@ -144,8 +144,8 @@ windows.   Occasions for using this primitive are rare. */
 #undef FUNC_NAME
 
 SCWM_PROC (scwm_set_master_solver_x, "scwm-set-master-solver!", 1, 0, 0,
-           (SCM solver))
-     /** Use SOLVER as the master solver for scwm */
+           (SCM solver),
+"Use SOLVER as the master solver for scwm")
 #define FUNC_NAME s_scwm_set_master_solver_x
 {
   if (!FIsClSimplexSolverScm(solver))
@@ -173,9 +173,9 @@ SCWM_PROC (scwm_set_master_solver_x, "scwm-set-master-solver!", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (scwm_master_solver, "scwm-master-solver", 0, 0, 0,
-           ())
-  /** Return the constraint solver object that is the current master for Scwm.
-Returns #f if no master solver has yet been asssigned via `scwm-set-master-solver!'. */
+           (),
+"Return the constraint solver object that is the current master for Scwm.
+Returns #f if no master solver has yet been asssigned via `scwm-set-master-solver!'.")
 #define FUNC_NAME s_scwm_master_solver
 {
   return scmMasterSolver;
@@ -185,9 +185,8 @@ Returns #f if no master solver has yet been asssigned via `scwm-set-master-solve
 
 
 SCWM_PROC (window_clv_xl, "window-clv-xl", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-variable object for the left X coordinate of WINDOW.
-      */
+           (SCM window),
+"Return the cl-variable object for the left X coordinate of WINDOW.")
 #define FUNC_NAME s_window_clv_xl
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -198,9 +197,8 @@ SCWM_PROC (window_clv_xl, "window-clv-xl", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_clv_yt, "window-clv-yt", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-variable object for the top Y coordinate of WINDOW.
-      */
+           (SCM window),
+"Return the cl-variable object for the top Y coordinate of WINDOW.")
 #define FUNC_NAME s_window_clv_yt
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -211,9 +209,8 @@ SCWM_PROC (window_clv_yt, "window-clv-yt", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_clv_xr, "window-clv-xr", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-expression object for the right X coordinate of WINDOW.
-      */
+           (SCM window),
+"Return the cl-expression object for the right X coordinate of WINDOW.")
 #define FUNC_NAME s_window_clv_xr
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -224,9 +221,8 @@ SCWM_PROC (window_clv_xr, "window-clv-xr", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_clv_yb, "window-clv-yb", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-expression object for the bottom Y coordinate of WINDOW.
-      */
+           (SCM window),
+"Return the cl-expression object for the bottom Y coordinate of WINDOW.")
 #define FUNC_NAME s_window_clv_yb
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -238,9 +234,8 @@ SCWM_PROC (window_clv_yb, "window-clv-yb", 1, 0, 0,
 
 
 SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-variable object for the width of WINDOW.
-      */
+           (SCM window),
+"Return the cl-variable object for the width of WINDOW.")
 #define FUNC_NAME s_window_clv_width
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -251,9 +246,8 @@ SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (window_clv_height, "window-clv-height", 1, 0, 0,
-           (SCM window))
-     /** Return the cl-variable object for the height of WINDOW.
-      */
+           (SCM window),
+"Return the cl-variable object for the height of WINDOW.")
 #define FUNC_NAME s_window_clv_height
 {
   if (!WINDOWP(window)) SCWM_WRONG_TYPE_ARG(1,window);
@@ -263,13 +257,11 @@ SCWM_PROC (window_clv_height, "window-clv-height", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-
-/*** Now the wrappers for the screen ClVariables */
+/* Now the wrappers for the screen ClVariables */
 
 SCWM_PROC (screen_clv_vx, "screen-clv-vx", 0, 0, 0,
-           ())
-     /** Return the cl-variable object for the virtual screen X coordinate.
-*/
+  (),
+"Return the cl-variable object for the virtual screen X coordinate.")
 #define FUNC_NAME s_screen_clv_vx
 {
   return Scr.pssci->_scmVx;
@@ -278,9 +270,8 @@ SCWM_PROC (screen_clv_vx, "screen-clv-vx", 0, 0, 0,
 
 
 SCWM_PROC (screen_clv_vy, "screen-clv-vy", 0, 0, 0,
-           ())
-     /** Return the cl-variable object for the virtual screen Y coordinate.
-*/
+  (),
+"Return the cl-variable object for the virtual screen Y coordinate.")
 #define FUNC_NAME s_screen_clv_vy
 {
   return Scr.pssci->_scmVy;
@@ -288,9 +279,8 @@ SCWM_PROC (screen_clv_vy, "screen-clv-vy", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (screen_clv_pointerx, "screen-clv-pointerx", 0, 0, 0,
-           ())
-     /** Return the cl-variable object for the pointer's X coordinate.
-*/
+           (),
+"Return the cl-variable object for the pointer's X coordinate.")
 #define FUNC_NAME s_screen_clv_pointerx
 {
   return Scr.pssci->_scmPointerX;
@@ -299,9 +289,8 @@ SCWM_PROC (screen_clv_pointerx, "screen-clv-pointerx", 0, 0, 0,
 
 
 SCWM_PROC (screen_clv_pointery, "screen-clv-pointery", 0, 0, 0,
-           ())
-     /** Return the cl-variable object for the pointer's Y coordinate.
-*/
+           (),
+"Return the cl-variable object for the pointer's Y coordinate.")
 #define FUNC_NAME s_screen_clv_pointery
 {
   return Scr.pssci->_scmPointerY;
@@ -309,8 +298,8 @@ SCWM_PROC (screen_clv_pointery, "screen-clv-pointery", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
-          (SCM cn))
-  /** Return a list of window objects who have variables used by CN */
+          (SCM cn),
+"Return a list of window objects who have variables used by CN")
 #define FUNC_NAME s_cl_windows_of_constraint
 {
   if (!FIsClConstraintScm(cn))
@@ -344,11 +333,11 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
 
 
 SCWM_PROC(cl_resolve_xforms,"cl-resolve-xforms", 0, 1, 0,
-          (SCM move_threshold))
-  /** Return a list of window xforms that corresponds to changes made in last resolve.
+          (SCM move_threshold),
+"Return a list of window xforms that corresponds to changes made in last resolve.
 Only windows that have been moved or resized more the MOVE-THRESHOLD pixels
 in any direction/dimension have xforms listed.
-See `animate-windows' for the format of the xforms return value. */
+See `animate-windows' for the format of the xforms return value.")
 #define FUNC_NAME s_cl_resolve_xforms 
 {
   SCM answer = SCM_EOL;
@@ -388,11 +377,11 @@ See `animate-windows' for the format of the xforms return value. */
 #undef FUNC_NAME
 
 SCWM_PROC(cl_reset_dirty_windows,"cl-reset-dirty-windows", 0, 0, 0,
-          ())
-  /** Empty the dirty-windows list.
+          (),
+"Empty the dirty-windows list.
 This is useful if the handling of the resolves are done in 
 the `scwm-resolve-hook' using `cl-resolve-xforms' and, e.g.,
-`animate-windows'. */
+`animate-windows'.")
 #define FUNC_NAME s_cl_reset_dirty_windows
 {
   setpswDirty.clear();

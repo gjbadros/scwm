@@ -428,16 +428,15 @@ default_select_desk(ScwmWindow *psw)
 
 
 SCWM_PROC(place_on_default_desk, "place-on-default-desk", 1, 0, 0, 
-           (SCM win))
-     /**Place WIN on a desk according to the default algorithm.
-
+          (SCM win),
+"Place WIN on a desk according to the default algorithm.
 Place a window with it's window group, with a window it is transient
 for, on the desk it was on previous to a restart, on the desk
 specified with the starts-on-desk flag,
 
 This is called as part of `default-placement-proc'.  It could also be
 used in user-defined placement procedures (see 
-`set-window-placement-proc!'). */
+`set-window-placement-proc!').")
 #define FUNC_NAME s_place_on_default_desk
 {
   ScwmWindow *psw;
@@ -449,8 +448,8 @@ used in user-defined placement procedures (see
 
 
 SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0, 
-           (SCM win))
-     /** Places WIN using fvwm2's SmartPlacement algorithm.
+          (SCM win),
+"Places WIN using fvwm2's SmartPlacement algorithm.
 The placement is just as if SmartPlacementIsReallySmart were not in
 effect. That is, it tries to place the window so that it does not
 overlap any other. If it fails to do so, it returns #f; otherwise it
@@ -458,7 +457,7 @@ returns #t.
 
 This is called as part of `default-placement-proc'.  It could also be
 used in user-defined placement procedures (see 
-`set-window-placement-proc!'). */
+`set-window-placement-proc!').")
 #define FUNC_NAME s_smart_place_window
 {
   ScwmWindow *psw;
@@ -492,8 +491,8 @@ used in user-defined placement procedures (see
 #undef FUNC_NAME
 
 SCWM_PROC(clever_place_window, "clever-place-window", 1, 0, 0, 
-           (SCM win))
-     /** Places WIN using fvwm2's "ReallySmart" algorithm.
+          (SCM win),
+"Places WIN using fvwm2's "ReallySmart" algorithm.
 The placement is just as if being placed by fvwm2's SmartPlacement,
 as if SmartPlacementIsReallySmart were in effect. That is, it
 tries to place the window so as to minimize its area of
@@ -504,7 +503,7 @@ returns #f; otherwise it returns #t.
 
 This is called as part of `default-placement-proc'.  It could also be
 used in user-defined placement procedures (see 
-`set-window-placement-proc!'). */
+`set-window-placement-proc!').")
 #define FUNC_NAME s_clever_place_window
 {
   ScwmWindow *psw;
@@ -530,8 +529,8 @@ used in user-defined placement procedures (see
 
 
 SCWM_PROC(random_place_window, "random-place-window", 1, 0, 0, 
-           (SCM win))
-     /** Places WIN just as if being placed by fvwm2's RandomPlacement.
+          (SCM win),
+"Places WIN just as if being placed by fvwm2's RandomPlacement.
 This placement is not truly random; it is based on two state variables
 which are incremented for the x and y coordinates, and which wrap
 around once a window would be forced off the screen. The placement is
@@ -540,7 +539,7 @@ interaction. #t is always returned.
 
 This is called as part of `default-placement-proc'.  It could also be
 used in user-defined placement procedures (see 
-`set-window-placement-proc!'). */
+`set-window-placement-proc!').")
 #define FUNC_NAME s_random_place_window
 {
   ScwmWindow *psw;
@@ -566,8 +565,8 @@ used in user-defined placement procedures (see
 
 
 SCWM_PROC(default_placement_proc, "default-placement-proc", 1, 0, 0, 
-           (SCM win))
-     /** Use various flags to call an appropriate placement function.
+          (SCM win),
+"Use various flags to call an appropriate placement function.
 This is the default placement procedure for non-transient windows. It
 tries `smart-place-window', `clever-place-window',
 `random-place-window', or `interactive-move' (to achieve interactive
@@ -577,7 +576,7 @@ and `set-random-placement!'.) However, if one of the following
 factors holds, the window will instead be placed exactly as 
 requested by the program: the position was specified by the user, 
 the position was specified by the program and #:no-PPosition-hint 
-is not set, or the window starts iconic. */
+is not set, or the window starts iconic.")
 #define FUNC_NAME s_default_placement_proc
 { 
   ScwmWindow *psw;
@@ -642,9 +641,9 @@ is not set, or the window starts iconic. */
 #undef FUNC_NAME
 
 SCWM_PROC(default_transient_placement_proc, "default-transient-placement-proc", 1, 0, 0, 
-           (SCM win))
-     /** This is the default placement procedure for transient windows.
-It simply leaves the window WIN in place, exactly as requested. */
+          (SCM win),
+"This is the default placement procedure for transient windows.
+It simply leaves the window WIN in place, exactly as requested.")
 #define FUNC_NAME s_default_transient_placement_proc
 {
   ScwmWindow *psw;

@@ -48,20 +48,20 @@
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 
-SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook", 1);
-  /** This hook is invoked at the start of an interactive move.
-It is called with one argument, WINDOW. */
+SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook", 1,
+"This hook is invoked at the start of an interactive move.
+It is called with one argument, WINDOW.");
 
-SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3);
-  /** This hook is invoked during an interactive move.
+SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3,
+"This hook is invoked during an interactive move.
 It is called with three arguments, WINDOW, NEW-VP-X, and NEW-VP-Y,
 whenever the window is moved to a new location. The position refers
 to the position of the frame window (not the client window) in
-viewport coordinates. */
+viewport coordinates.");
 
-SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1);
-  /** This hook is invoked at the end of an interactive move.
-It is called with one argument, WINDOW. */
+SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1,
+"This hook is invoked at the end of an interactive move.
+It is called with one argument, WINDOW.");
 
 /* New version from Todd Larson */
 static void
@@ -533,12 +533,12 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 
 
 SCWM_PROC(rubber_band_move, "rubber-band-move", 0, 1, 0,
-          (SCM win))
-     /** Move WIN interactively, using a rubber band frame.
+          (SCM win),
+"Move WIN interactively, using a rubber band frame.
 Returns a list '(X Y) which is the new viewport position of WIN.
 This allows the user to drag a rubber band frame around the
 screen. WIN defaults to the window context in the usual way if not
-specified. */
+specified.")
 #define FUNC_NAME s_rubber_band_move
 {
   int x, y;                     /* not used now */
@@ -552,15 +552,14 @@ specified. */
 
 
 SCWM_PROC(opaque_move, "opaque-move", 0, 1, 0,
-          (SCM win))
-     /** Move WIN interactively, opaquely.
+          (SCM win),
+"Move WIN interactively, opaquely.
 Returns a list '(X Y) which is the new viewport position of WIN.
 This allows the user to drag the window itself around the screen. WIN
-defaults to the window context in the usual way if not specified.  
-*/
+defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_opaque_move
 {
-  int x, y;                     /* not used now */
+  int x, y;
 
   VALIDATE_PRESS_ONLY(win);
   InteractiveMove(PSWFROMSCMWIN(win), True, &x, &y);

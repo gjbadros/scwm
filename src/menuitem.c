@@ -89,8 +89,8 @@ print_menuitem(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
-	  (SCM obj))
-    /** Return #t if and only if OBJ is a menu item object. */
+	  (SCM obj),
+"Return #t if and only if OBJ is a menu item object.")
 #define FUNC_NAME s_menuitem_p
 {
   return SCM_BOOL_FromBool(MENUITEM_P(obj));
@@ -99,14 +99,14 @@ SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
 
 
 SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
-          (SCM menu_item))
-     /** Return a list of the properties of the given MENU-ITEM.
+          (SCM menu_item),
+"Return a list of the properties of the given MENU-ITEM.
 MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
 returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
 unhover-action hotkey-preferences force-submenu?)
 Note that this is the same as the arguments to the `make-menuitem'
-primitive. */
+primitive.")
 #define FUNC_NAME s_menuitem_properties
 {
   MenuItem *pmi;
@@ -128,8 +128,8 @@ primitive. */
 SCWM_PROC(make_menuitem, "make-menuitem", 2,7,0,
           (SCM label, SCM action, SCM extra_label, SCM picture_above,
            SCM picture_left, SCM hover_action, SCM unhover_action,
-           SCM hotkey_prefs, SCM submenu_p))
-     /** Return a newly created menuitem object using the given arguments.
+           SCM hotkey_prefs, SCM submenu_p),
+"Return a newly created menuitem object using the given arguments.
 LABEL is a string giving the main text label of the menu item;
 ACTION is a procedure or menu object -- if it is a procedure, it gets
 invoked when the menuitem is selected, if it is a menu object, that
@@ -146,7 +146,7 @@ over the item, respectively.
 HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
 for the given menu-item; the menu creation routine uses these as hints 
 for assigning shortcut keys to the various menuitems.
-For a higher-level interface to this function, see `menuitem'. */
+For a higher-level interface to this function, see `menuitem'.")
 #define FUNC_NAME s_make_menuitem
 {
   MenuItem *pmi = NEW(MenuItem);
@@ -203,10 +203,10 @@ For a higher-level interface to this function, see `menuitem'. */
 
 
 SCWM_PROC(set_menuitem_colors_x,"set-menuitem-colors!",3,0,0,
-          (SCM menuitem, SCM fg, SCM bg))
-     /** Sets the fg and bg colors of MENUITEM to FG and BG respectively.
+          (SCM menuitem, SCM fg, SCM bg),
+"Sets the fg and bg colors of MENUITEM to FG and BG respectively.
 Use #f for either/both component to have MENUITEM inherit that color
-from the menu in which it is embedded. */
+from the menu in which it is embedded.")
 #define FUNC_NAME s_set_menuitem_colors_x
 {
   MenuItem *pmi;
@@ -224,10 +224,10 @@ from the menu in which it is embedded. */
 #undef FUNC_NAME
 
 SCWM_PROC(menuitem_colors,"menuitem-colors",1,0,0,
-          (SCM menuitem))
-     /** Returns a list of the fg and bg colors for MENUITEM.
+          (SCM menuitem),
+"Returns a list of the fg and bg colors for MENUITEM.
 Will return #f for either/both components if MENUITEM inherits its color from
-the menu in which it is embedded. */
+the menu in which it is embedded.")
 #define FUNC_NAME s_menuitem_colors
 {
   MenuItem *pmi;
@@ -237,10 +237,10 @@ the menu in which it is embedded. */
 #undef FUNC_NAME
 
 SCWM_PROC(set_menuitem_font_x,"set-menuitem-font!",2,0,0,
-          (SCM menuitem, SCM font))
-     /** Sets the font of MENUITEM to FONT.
+          (SCM menuitem, SCM font),
+"Sets the font of MENUITEM to FONT.
 Use #f to have MENUITEM inherit its font
-from the menu in which it is embedded. */
+from the menu in which it is embedded.")
 #define FUNC_NAME s_set_menuitem_font_x
 {
   MenuItem *pmi;
@@ -254,10 +254,10 @@ from the menu in which it is embedded. */
 #undef FUNC_NAME
 
 SCWM_PROC(menuitem_font,"menuitem-font",1,0,0,
-          (SCM menuitem))
-     /** Returns the font of MENUITEM.
+          (SCM menuitem),
+"Returns the font of MENUITEM.
 Returns #f if MENUITEM inherits its font
-from the menu in which it is embedded. */
+from the menu in which it is embedded.")
 #define FUNC_NAME s_menuitem_font
 {
   MenuItem *pmi;

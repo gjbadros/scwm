@@ -142,8 +142,8 @@ print_menu(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 SCWM_PROC(menu_p,"menu?", 1,0,0,
-          (SCM obj))
-/** Return #t if and only if OBJ is a menu object. */
+          (SCM obj),
+"Return #t if and only if OBJ is a menu object.")
 #define FUNC_NAME s_menu_p
 {
   return SCM_BOOL_FromBool(MENU_P(obj));
@@ -205,12 +205,12 @@ NewPchKeysUsed(DynamicMenu *pmd)
    a name for menu-items if we did */
 
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
-          (SCM menu))
-/** Returns the a list of the menu properties of MENU, a menu object.
+          (SCM menu),
+"Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are: 
 '(menu-title menu-items side-image side-image-align side-bg-color bg-color
 text-color stipple-color
-image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
+image-bg font extra-options used-shortcut-keys popup-delay hover-delay)")
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu;
@@ -247,8 +247,8 @@ SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
            SCM bg_color, SCM text_color, SCM stipple_color, SCM font,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
            SCM picture_bg, 
-           SCM extra_options))
-/** Make and return a menu object from the given arguments.
+           SCM extra_options),
+"Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
 BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
 FONT is a font object or symbol;
@@ -256,8 +256,7 @@ PICTURE-SIDE is an image object to draw on the left side of the menu;
 SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
 SIDE-BG-COLOR is a color object or symbol;
 PICTURE-BG is an image object;
-EXTRA-OPTIONS can be anything understood by the menu-look
-*/
+EXTRA-OPTIONS can be anything understood by the menu-look")
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
@@ -328,9 +327,9 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
-          (SCM menu, SCM popup_delay))
-     /** Set MENU's submenu popup delay to POPUP-DELAY.
-POPUP-DELAY is the number of ms to wait before popping up submenus. */
+          (SCM menu, SCM popup_delay),
+"Set MENU's submenu popup delay to POPUP-DELAY.
+POPUP-DELAY is the number of ms to wait before popping up submenus.")
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -341,9 +340,9 @@ POPUP-DELAY is the number of ms to wait before popping up submenus. */
 
 
 SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
-          (SCM menu))
-     /** Return MENU's submenu popup delay.
-See `set-menu-popup-delay!'. */
+          (SCM menu),
+"Return MENU's submenu popup delay.
+See `set-menu-popup-delay!'.")
 #define FUNC_NAME s_menu_popup_delay
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -354,9 +353,9 @@ See `set-menu-popup-delay!'. */
 
 
 SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
-          (SCM menu, SCM hover_delay))
-     /** Set MENU's hover delay to HOVER-DELAY.
-HOVER-DELAY is the number of ms to wait before invoking the hover action. */
+          (SCM menu, SCM hover_delay),
+"Set MENU's hover delay to HOVER-DELAY.
+HOVER-DELAY is the number of ms to wait before invoking the hover action.")
 #define FUNC_NAME s_set_menu_hover_delay_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -366,9 +365,9 @@ HOVER-DELAY is the number of ms to wait before invoking the hover action. */
 #undef FUNC_NAME
 
 SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
-          (SCM menu))
-     /** Return MENU's hover action delay.
-See `set-menu-hover-delay!'. */
+          (SCM menu),
+"Return MENU's hover action delay.
+See `set-menu-hover-delay!'.")
 #define FUNC_NAME s_menu_hover_delay
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -378,8 +377,8 @@ See `set-menu-hover-delay!'. */
 
 
 SCWM_PROC(set_menu_look_x, "set-menu-look!", 2, 0, 0,
-           (SCM menu, SCM menu_look))
-/** Use MENU-LOOK as the menu-look for MENU. */
+          (SCM menu, SCM menu_look),
+"Use MENU-LOOK as the menu-look for MENU.")
 #define FUNC_NAME s_set_menu_look_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -392,8 +391,8 @@ SCWM_PROC(set_menu_look_x, "set-menu-look!", 2, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
-           (SCM menu, SCM menu_title))
-/** Use MENU-TITLE as the title for MENU. */
+          (SCM menu, SCM menu_title),
+"Use MENU-TITLE as the title for MENU.")
 #define FUNC_NAME s_set_menu_title_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -406,10 +405,10 @@ SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_colors_x, "set-menu-colors!", 3, 1, 0,
-           (SCM menu, SCM text_color, SCM bg_color, SCM stipple_color))
-     /** Use TEXT-COLOR and BG-COLOR as the colors for MENU.
+          (SCM menu, SCM text_color, SCM bg_color, SCM stipple_color),
+"Use TEXT-COLOR and BG-COLOR as the colors for MENU.
 STIPPLE-COLOR is optional, and if given will be used for the
-stipple color for the MENU. */
+stipple color for the MENU.")
 #define FUNC_NAME s_set_menu_colors_x
 {
   Menu *pm;
@@ -432,9 +431,9 @@ stipple color for the MENU. */
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_highlight_colors_x, "set-menu-highlight-colors!", 3, 0, 0,
-           (SCM menu, SCM text_color, SCM bg_color))
-     /** Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
-These colors will be used for the selected item. */
+          (SCM menu, SCM text_color, SCM bg_color),
+"Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
+These colors will be used for the selected item.")
 #define FUNC_NAME s_set_menu_highlight_colors_x
 {
   Menu *pm;
@@ -453,9 +452,9 @@ These colors will be used for the selected item. */
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_highlight_relief_x, "set-menu-highlight-relief!", 2, 0, 0,
-           (SCM menu, SCM highlight_relief_p))
-     /** If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
-Otherwise, do not.  See also `set-menu-highlight-colors!'. */
+          (SCM menu, SCM highlight_relief_p),
+"If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
+Otherwise, do not.  See also `set-menu-highlight-colors!'.")
 #define FUNC_NAME s_set_menu_highlight_relief_x
 {
   Menu *pm;
@@ -467,8 +466,8 @@ Otherwise, do not.  See also `set-menu-highlight-colors!'. */
 #undef FUNC_NAME
 
 SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
-           (SCM menu))
-     /** Return list text-color, bg-color, the highlight colors for MENU. */
+          (SCM menu),
+"Return list text-color, bg-color, the highlight colors for MENU.")
 #define FUNC_NAME s_menu_highlight_colors
 {
   Menu *pm;
@@ -478,8 +477,8 @@ SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
-           (SCM menu))
-     /** Return #t if MENU's selected item is relieved, #f otherwise. */
+          (SCM menu),
+"Return #t if MENU's selected item is relieved, #f otherwise.")
 #define FUNC_NAME s_menu_highlight_relief_p
 {
   Menu *pm;
@@ -490,8 +489,8 @@ SCWM_PROC(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
 
 
 SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
-           (SCM menu, SCM font))
-/** Use FONT as the font for MENU. */
+          (SCM menu, SCM font),
+"Use FONT as the font for MENU.")
 #define FUNC_NAME s_set_menu_font_x
 {
   Menu *pm;
@@ -506,10 +505,10 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
 
 
 SCWM_PROC(set_menu_side_picture_x, "set-menu-side-picture!", 2, 2, 0,
-           (SCM menu, SCM picture, SCM align, SCM bg_color))
-/** Use PICTURE as the side picture for MENU.
+          (SCM menu, SCM picture, SCM align, SCM bg_color),
+"Use PICTURE as the side picture for MENU.
 Set its alignment to ALIGN, and its background
-color to BG-COLOR. */
+color to BG-COLOR.")
 #define FUNC_NAME s_set_menu_side_picture_x
 {
   Menu *pm;
@@ -540,8 +539,8 @@ color to BG-COLOR. */
 
 
 SCWM_PROC(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0,
-           (SCM menu, SCM picture))
-/** Use PICTURE as the background image for MENU. */
+          (SCM menu, SCM picture),
+"Use PICTURE as the background image for MENU.")
 #define FUNC_NAME s_set_menu_background_picture_x
 {
   Menu *pm;
@@ -556,8 +555,8 @@ SCWM_PROC(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0
 
 
 SCWM_PROC(set_menu_extra_options_x, "set-menu-extra-options!", 2, 0, 0,
-          (SCM menu, SCM options))
-     /** Set MENU's extra options to OPTIONS. */
+          (SCM menu, SCM options),
+"Set MENU's extra options to OPTIONS.")
 #define FUNC_NAME s_set_menu_extra_options_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -1639,10 +1638,10 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
 }
 
 SCWM_PROC(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1, 0, 0,
-          (SCM activate_p))
-/** If ACTIVATE? is #t, let menu hotkeys invoke the item.
+          (SCM activate_p),
+"If ACTIVATE? is #t, let menu hotkeys invoke the item.
 If #f, a menuitem hotkey just makes that item selected and still requires
-a Return or Space keypress to activate the item. */
+a Return or Space keypress to activate the item.")
 #define FUNC_NAME s_set_menu_hotkeys_activate_item_x
 {
   VALIDATE_ARG_BOOL_COPY_USE_T(1,activate_p,fMenuHotkeysActivateItems);
@@ -1651,8 +1650,8 @@ a Return or Space keypress to activate the item. */
 #undef FUNC_NAME
 
 SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
-          ())
-/** Return #t if hotkeys invoke item, #f if they just select the item. */
+          (),
+"Return #t if hotkeys invoke item, #f if they just select the item.")
 #define FUNC_NAME s_menu_hotkeys_activate_item_p
 {
   return SCM_BOOL_FromBool(fMenuHotkeysActivateItems);
@@ -1661,12 +1660,12 @@ SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
 
 
 SCWM_PROC(popup_menu,"popup-menu", 1,5,0,
-          (SCM menu, SCM warp_to_index, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p))
-/** Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.
+          (SCM menu, SCM warp_to_index, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p),
+"Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
 right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing
-the Alt/Meta modifier select a menu item. */
+the Alt/Meta modifier select a menu item.")
 #define FUNC_NAME s_popup_menu
 {
   int warp_to;
@@ -1694,9 +1693,6 @@ void
 init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
-  /** The function to call to construct a menu.
-This is only useful for testing dynamically-loaded menu drawing code,
-and should normally be left at its default of #f. */
 
 #ifndef SCM_MAGIC_SNARFER
 # include "menu.x"

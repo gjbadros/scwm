@@ -106,8 +106,8 @@ print_color(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 SCWM_PROC(color_p, "color?", 1, 0, 0, 
-           (SCM obj))
-     /** Returns #t if OBJ is a color object, otherwise #f. */
+          (SCM obj),
+"Returns #t if OBJ is a color object, otherwise #f.")
 #define FUNC_NAME s_color_p
 {
   return SCM_BOOL_FromBool(COLOR_P(obj));
@@ -118,10 +118,10 @@ SCWM_PROC(color_p, "color?", 1, 0, 0,
    perhaps even store those in the color structure? */
 
 SCWM_PROC(color_properties, "color-properties", 1, 0, 0,
-           (SCM color))
-     /** Return an association list giving some properties of COLOR.
+          (SCM color),
+"Return an association list giving some properties of COLOR.
 Currently defined properties are 'name, the string name of the
-color, and 'pixel, the X pixel value it uses. */
+color, and 'pixel, the X pixel value it uses.")
 #define FUNC_NAME s_color_properties
 {
   VALIDATE_ARG_COLOR(1,color);
@@ -232,10 +232,10 @@ ScmMakeColor(const char *cn, int *perror_status)
    amounts to a hash lookup. */
 
 SCWM_PROC(make_color, "make-color", 1, 0, 0,
-           (SCM cname))
-     /** Return the color object corresponding to the X color specifier CNAME.
+          (SCM cname),
+"Return the color object corresponding to the X color specifier CNAME.
 If CNAME is not a valid X color name, or cannot be
-allocated, an error results. */
+allocated, an error results.")
 #define FUNC_NAME s_make_color
 {
   SCM answer;
@@ -268,12 +268,12 @@ allocated, an error results. */
 
 
 SCWM_PROC(clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
-           (SCM name))
-     /** Colors are cached by name. It is remotely possible that the
+          (SCM name),
+"Colors are cached by name. It is remotely possible that the
 meaning of a particular string as a color will change in your X
 server, if you try hard enough. For this unlikely eventuality,
 `clear-color-cache-entry' is provided - it removes the color
-associated with NAME from the color cache.*/
+associated with NAME from the color cache")
 #define FUNC_NAME s_clear_color_cache_entry
 {
   scm_hash_remove_x(color_hash_table, name);
@@ -482,13 +482,13 @@ invert_color(SCM color) {
 
 
 SCWM_PROC(make_relief_color, "make-relief-color", 2, 0, 0,
-           (SCM color, SCM factor))
-     /** Convert a color into a new color appropriate for a relief.
+          (SCM color, SCM factor),
+"Convert a color into a new color appropriate for a relief.
 Multiplies the luminosity and saturation of COLOR by the
 positive floating point number FACTOR. Using a FACTOR smaller than 1
 will result in a dimmer color, suitable for use as a darker
 relief. Using a factor greater than 1 will result in a brighter color
-which is suitable for use as a highlight. */
+which is suitable for use as a highlight.")
 #define FUNC_NAME s_make_relief_color
 {
   double f;
@@ -502,11 +502,11 @@ which is suitable for use as a highlight. */
 
 
 SCWM_PROC(make_reversed_color, "make-reversed-color", 1, 0, 0,
-           (SCM color))
-     /** Return a new color that is opposite COLOR.
+          (SCM color),
+"Return a new color that is opposite COLOR.
 Note that the returned color will not necessarily contrast with
 COLOR; (make-reversed-color "gray50") is almost indistinguishable
-from "gray50". */
+from "gray50".")
 #define FUNC_NAME s_make_reversed_color
 {
   VALIDATE_ARG_COLOR(1,color);
@@ -550,9 +550,9 @@ static void reset_decor_relief()
 }
 
 SCWM_PROC(set_highlight_factor_x, "set-highlight-factor!", 1, 0, 0,
-           (SCM factor))
-     /** Use FACTOR to generate highlight colors for the current decor.
-FACTOR is a positive floating point number. */
+          (SCM factor),
+"Use FACTOR to generate highlight colors for the current decor.
+FACTOR is a positive floating point number.")
 #define FUNC_NAME s_set_highlight_factor_x
 {
   double f;
@@ -571,8 +571,8 @@ FACTOR is a positive floating point number. */
 #undef FUNC_NAME
 
 SCWM_PROC(highlight_factor, "highlight-factor", 0, 0, 0,
-           ())
-     /** Return the current highlight factor. */
+          (),
+"Return the current highlight factor.")
 #define FUNC_NAME s_highlight_factor
 {
   ScwmDecor *fl;
@@ -586,9 +586,9 @@ SCWM_PROC(highlight_factor, "highlight-factor", 0, 0, 0,
 
 
 SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
-           (SCM factor))
-     /** Use FACTOR to generate shadow colors in the current decor. 
-FACTOR is a positive floating point number */
+          (SCM factor),
+"Use FACTOR to generate shadow colors in the current decor. 
+FACTOR is a positive floating point number")
 #define FUNC_NAME s_set_shadow_factor_x
 {
   double f;
@@ -608,8 +608,8 @@ FACTOR is a positive floating point number */
 
 
 SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
-           ())
-     /** Return the current shadow factor. */
+          (),
+"Return the current shadow factor.")
 #define FUNC_NAME s_shadow_factor
 {
   ScwmDecor *fl;
@@ -622,9 +622,9 @@ SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
 
 /* FIXJTL: these should go away */
 SCWM_PROC(set_menu_highlight_factor_x, "set-menu-highlight-factor!", 1, 0, 0,
-           (SCM factor))
-     /** Use FACTOR to generate highlight colors for menus. 
-FACTOR is a positive floating point number */
+          (SCM factor),
+"Use FACTOR to generate highlight colors for menus. 
+FACTOR is a positive floating point number")
 #define FUNC_NAME s_set_menu_highlight_factor_x
 {
   double f;
@@ -635,8 +635,8 @@ FACTOR is a positive floating point number */
 #undef FUNC_NAME
 
 SCWM_PROC(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
-           ())
-     /** Return the current menu highlight factor. */
+          (),
+"Return the current menu highlight factor.")
 #define FUNC_NAME s_menu_highlight_factor
 {
   return (gh_double2scm(menu_highlight_factor_val));
@@ -645,9 +645,9 @@ SCWM_PROC(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
 
 
 SCWM_PROC(set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
-           (SCM factor))
-     /** Use FACTOR to generate shadow colors for menus. 
-FACTOR is a positive floating point number */
+          (SCM factor),
+"Use FACTOR to generate shadow colors for menus. 
+FACTOR is a positive floating point number")
 #define FUNC_NAME s_set_menu_shadow_factor_x
 {
   double f;
@@ -658,8 +658,8 @@ FACTOR is a positive floating point number */
 #undef FUNC_NAME
 
 SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
-           ())
-     /** Return the current menu shadow factor. */
+          (),
+"Return the current menu shadow factor.")
 #define FUNC_NAME s_menu_shadow_factor
 {
   return (gh_double2scm(menu_shadow_factor_val));
@@ -679,10 +679,10 @@ redraw_highlight_window()
 /* MS:FIXME:: Need to protect color objects in the below! */
 
 SCWM_PROC(set_highlight_foreground_x, "set-highlight-foreground!", 1, 0, 0,
-           (SCM fg))
-     /** Use FG for the foreground color of a window with the input focus.
+          (SCM fg),
+"Use FG for the foreground color of a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
-have their own foreground color. */
+have their own foreground color.")
 #define FUNC_NAME s_set_highlight_foreground_x
 { 
   ScwmDecor *fl;
@@ -704,10 +704,10 @@ have their own foreground color. */
 
 
 SCWM_PROC (highlight_foreground, "highlight-foreground", 0, 0, 0,
-           ())
-     /** Return the default foreground color for windows with the input focus.
+           (),
+"Return the default foreground color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
-have their own foreground color. */
+have their own foreground color.")
 #define FUNC_NAME s_highlight_foreground
 { 
   ScwmDecor *fl;
@@ -724,10 +724,10 @@ have their own foreground color. */
    abstraction. */
 
 SCWM_PROC(set_highlight_background_x, "set-highlight-background!", 1, 0, 0,
-           (SCM bg))
-     /** Use BG as the background color for a window with the input focus.
+          (SCM bg),
+"Use BG as the background color for a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
-have their own background color. */
+have their own background color.")
 #define FUNC_NAME s_set_highlight_background_x
 {
   XGCValues gcv;
@@ -779,10 +779,10 @@ have their own background color. */
 
 
 SCWM_PROC (highlight_background, "highlight-background", 0, 0, 0,
-           ())
-     /** Return the default background color for windows with the input focus.
+           (),
+"Return the default background color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
-have their own background color. */
+have their own background color.")
 #define FUNC_NAME s_highlight_background
 { 
   ScwmDecor *fl;
@@ -794,8 +794,8 @@ have their own background color. */
 
 
 SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
-           (SCM fg))
-     /** Use FG as the default foreground color for icons, titlebars, etc. */
+          (SCM fg),
+"Use FG as the default foreground color for icons, titlebars, etc.")
 #define FUNC_NAME s_set_not_menu_foreground_x
 { 
   VALIDATE_ARG_COLOR(1,fg);
@@ -813,8 +813,8 @@ SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
-           ())
-     /** Return the default foreground color for icons, titlebars, etc. */
+           (),
+"Return the default foreground color for icons, titlebars, etc.")
 #define FUNC_NAME s_not_menu_foreground
 { 
   return (Scr.NotMenuColors.fg);
@@ -822,8 +822,8 @@ SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
-           (SCM bg))
-     /** Use BG as the default background color for icons, window frames, etc. */
+          (SCM bg),
+"Use BG as the default background color for icons, window frames, etc.")
 #define FUNC_NAME s_set_not_menu_background_x
 { 
   VALIDATE_ARG_COLOR(1,bg);
@@ -848,8 +848,8 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
 
 
 SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
-           ())
-     /** Return the default background color for icons, window frames, etc. */
+           (),
+"Return the default background color for icons, window frames, etc.")
 #define FUNC_NAME s_not_menu_background
 { 
   return (Scr.NotMenuColors.bg);

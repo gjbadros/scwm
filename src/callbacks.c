@@ -42,19 +42,18 @@
 #undef SCWM_DEBUG_SAFE_APPLY
 #undef SCWM_DEBUG_RUN_HOOK
 
-SCWM_HOOK(error_hook, "error-hook", 1);
-  /** Called on all kinds of errors and exceptions.
+SCWM_HOOK(error_hook, "error-hook", 1,
+"Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file
 being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
-will generally include information about the nature of the error. 
-*/
+will generally include information about the nature of the error. ");
 
-SCWM_HOOK(load_processing_hook,"load-processing-hook",1);
-  /** This hook is invoked for every several top-level s-exps in the startup file.
+SCWM_HOOK(load_processing_hook,"load-processing-hook",1,
+"This hook is invoked for every several top-level s-exps in the startup file.
 The hook procedures are invoked with one argument, the count of the
-s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'. */
+s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'.");
 
 SCM timer_hooks;
 
@@ -689,12 +688,12 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
 
 
 SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
-           (SCM fname))
-     /** Load file FNAME while trapping and displaying errors.
+          (SCM fname),
+"Load file FNAME while trapping and displaying errors.
 Each individual top-level-expression is evaluated separately and all
 errors are trapped and displayed.  You should use this procedure if
 you need to make sure most of a file loads, even if it may contain
-errors. */
+errors.")
 #define FUNC_NAME s_safe_load
 {
   SCM_STACKITEM stack_item;
@@ -719,9 +718,9 @@ SCM scwm_safe_eval_str (char *string)
 }
 
 SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
-          (SCM num_lines))
-     /** Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
-Returns the old value. */
+          (SCM num_lines),
+"Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
+Returns the old value.")
 #define FUNC_NAME s_set_load_processing_frequency_x
 {
   int i = clnsProcessingHook;
@@ -742,11 +741,11 @@ removed.
 */
 
 SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
-          (SCM msec, SCM proc))
-     /** Add a timer hook to call PROC once sometime after MSEC milliseconds.
+          (SCM msec, SCM proc),
+"Add a timer hook to call PROC once sometime after MSEC milliseconds.
 When at least MSEC milliseconds have passed, procedure PROC will be
 called with no arguments. A handle suitable for passing to
-`remove-timer-hook!' is returned. */
+`remove-timer-hook!' is returned.")
 #define FUNC_NAME s_add_timer_hook_x
 {
   SCM newcell;
@@ -776,11 +775,11 @@ called with no arguments. A handle suitable for passing to
 #undef FUNC_NAME
 
 SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
-          (SCM handle))
-/** Remove a timer hook identified by HANDLE.
+          (SCM handle),
+"Remove a timer hook identified by HANDLE.
 The HANDLE should be an object that was returned by
 `add-timer-hook!'. No warning or error will occur if HANDLE is for a
-timer hook that has already been triggered. */
+timer hook that has already been triggered.")
 #define FUNC_NAME s_remove_timer_hook_x
 {
   gh_set_cdr_x(timer_hooks,scm_delq_x (handle, gh_cdr(timer_hooks)));
@@ -790,8 +789,8 @@ timer hook that has already been triggered. */
 #undef FUNC_NAME
 
 SCWM_PROC(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
-          ())
-     /** Remove all timer-hook procedures. */
+          (),
+"Remove all timer-hook procedures.")
 #define FUNC_NAME s_reset_timer_hook_x
 {
   gh_set_cdr_x(timer_hooks,SCM_EOL);
@@ -801,8 +800,8 @@ SCWM_PROC(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(get_timer_hooks_list, "get-timer-hooks-list", 0, 0, 0,
-          ())
-     /** Return the timer-hooks list. */
+          (),
+"Return the timer-hooks list.")
 #define FUNC_NAME s_get_timer_hooks_list
 {
   return timer_hooks;
@@ -891,14 +890,14 @@ static SCM input_hooks;
 static SCM new_input_hooks;
 
 SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
-          (SCM port, SCM proc))
-     /** Add an input hook to run PROC on input from PORT.
+          (SCM port, SCM proc),
+"Add an input hook to run PROC on input from PORT.
 Whenever input becomes available on PORT, procedure PROC will be called
 with no arguments repeatedly until no unprocessed input remains on
 PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
 soft ports). A handle suitable for passing to `remove-input-hook!' is
-returned. */
+returned.")
 #define FUNC_NAME s_add_input_hook_x
 {
   SCM newcell;
@@ -919,10 +918,10 @@ returned. */
 #undef FUNC_NAME
 
 SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
-          (SCM handle))
-     /** Remove an input hook identified by HANDLE.
+          (SCM handle),
+"Remove an input hook identified by HANDLE.
 HANDLE should be an object that was returned by `add-input-hook!'. An
-input hook may safely remove itself. */
+input hook may safely remove itself.")
 #define FUNC_NAME s_remove_input_hook_x
 {
   gh_set_cdr_x(input_hooks,scm_delq_x (handle, gh_cdr(input_hooks)));
@@ -936,8 +935,8 @@ input hook may safely remove itself. */
 
 
 SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
-          ())
-     /** Remove all procedures from the input hook. */
+          (),
+"Remove all procedures from the input hook.")
 #define FUNC_NAME s_reset_input_hook_x
 {
   gh_set_cdr_x(input_hooks,SCM_EOL);
@@ -951,8 +950,8 @@ SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
 
 
 SCWM_PROC(get_input_hooks_list, "get-input-hooks-list", 0, 0, 0,
-          ())
-     /** Return the input-hooks list. */
+          (),
+"Return the input-hooks list.")
 #define FUNC_NAME s_get_input_hooks_list
 {
   return input_hooks;

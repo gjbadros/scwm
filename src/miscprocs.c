@@ -38,19 +38,19 @@ extern Bool fHandleSegv;
 
 SCWM_SYMBOL(sym_focus, "focus");
 
-SCWM_HOOK(scwm_test_hook_0,"scwm-test-hook-0",0);
-/** Just a test hook that takes no arguments.
-See `scwm-run-test-hook-0'. */
+SCWM_HOOK(scwm_test_hook_0,"scwm-test-hook-0",0,
+"Just a test hook that takes no arguments.
+See `scwm-run-test-hook-0'");
 
-SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1);
-/** Just a test hook that takes one argument.
-See `scwm-run-test-hook-1'. */
+SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1,
+"Just a test hook that takes one argument.
+See `scwm-run-test-hook-1'.");
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
-          (SCM just))
-     /** Set the justification for the title to JUST.
+          (SCM just),
+"Set the justification for the title to JUST.
 JUST should be one of 'right, 'left, or 'center. Applies to the
-current decor. */
+current decor.")
 #define FUNC_NAME s_set_title_justify_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -73,10 +73,10 @@ current decor. */
 #undef FUNC_NAME
 
 SCWM_PROC(title_justify,"title-justify", 0, 0, 0,
-          ())
-     /** Return the current justification for the title, as set by `set-title-justify!'.
+          (),
+"Return the current justification for the title, as set by `set-title-justify!'.
 The return value will be one of 'right, 'left, or 'center. Applies to the
-current decor. */
+current decor.")
 #define FUNC_NAME s_title_justify
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -95,9 +95,9 @@ current decor. */
 
 
 SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
-          (SCM height))
-     /** Set the height of the titlebar in pixels to HEIGHT.
-Applies to the current decor. */
+          (SCM height),
+"Set the height of the titlebar in pixels to HEIGHT.
+Applies to the current decor.")
 #define FUNC_NAME s_set_title_height_x
 {
   int th, extra_height;
@@ -122,9 +122,9 @@ Applies to the current decor. */
 
 
 SCWM_PROC(title_height,"title-height", 0, 0, 0,
-          ())
-     /** Return the height of the titlebar in pixels, as set by `set-title-height!'.
-Applies to the current decor. */
+          (),
+"Return the height of the titlebar in pixels, as set by `set-title-height!'.
+Applies to the current decor.")
 #define FUNC_NAME s_title_height
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -136,8 +136,8 @@ Applies to the current decor. */
 
 
 SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
-          ())
-/** Returns true if scwm is being restarted by itself. */
+          (),
+"Returns true if scwm is being restarted by itself.")
 #define FUNC_NAME s_restarted_p
 {
   return SCM_BOOL_FromBool(Restarting);
@@ -145,12 +145,12 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
-          ())
-     /** Returns #t when the windows are being captured.
+          (),
+"Returns #t when the windows are being captured.
 This happens at two times: during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
-placed at all. */
+placed at all.")
 #define FUNC_NAME s_capturing_p
 {
   return SCM_BOOL_FromBool(PPosOverride);
@@ -159,10 +159,10 @@ placed at all. */
 
 
 SCWM_IPROC(refresh, "refresh", 0, 0, 0,
-          ())
-     /** Make sure all windows and their decorations are up to date.
+           (),
+"Make sure all windows and their decorations are up to date.
 This forces a redraw of the entire current viewport. Should not be
-necessary during normal operation. */
+necessary during normal operation.")
 #define FUNC_NAME s_refresh
 {
   refresh_common(Scr.Root);
@@ -172,11 +172,11 @@ necessary during normal operation. */
 
 
 SCWM_PROC(set_click_delay_x, "set-click-delay!", 1, 0, 0,
-          (SCM msec))
-     /** Set the delay used in identifying mouse clicks and drags.
+          (SCM msec),
+"Set the delay used in identifying mouse clicks and drags.
 MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down
 without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a
-single click is definitively identified as not a double click. */
+single click is definitively identified as not a double click.")
 #define FUNC_NAME s_set_click_delay_x
 {
   int ms;
@@ -187,9 +187,9 @@ single click is definitively identified as not a double click. */
 #undef FUNC_NAME
 
 SCWM_PROC(click_delay, "click-delay", 0, 0, 0,
-          ())
-     /** Returns the delay used in identifying mouse clicks and drags, in milliseconds. 
-See also `set-click-delay!' */
+          (),
+"Returns the delay used in identifying mouse clicks and drags, in milliseconds. 
+See also `set-click-delay!'")
 #define FUNC_NAME s_click_delay
 {
   return gh_long2scm(Scr.ClickTime);
@@ -197,13 +197,13 @@ See also `set-click-delay!' */
 #undef FUNC_NAME
 
 SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
-          (SCM ftype))
-     /** Set the colormap focus policy to FTYPE. 
+          (SCM ftype),
+"Set the colormap focus policy to FTYPE. 
 FTYPE can either be 'mouse, indicating that the window under the mouse
 pointer should always have its colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus. This makes a difference only when using focus policies
-other than 'mouse. */
+other than 'mouse.")
 #define FUNC_NAME s_set_colormap_focus_x
 {
   VALIDATE_ARG_SYM(1,ftype);
@@ -221,12 +221,12 @@ other than 'mouse. */
 #undef FUNC_NAME
 
 SCWM_PROC(colormap_focus, "colormap-focus", 0, 0, 0,
-          ())
-     /** Return the colormap focus policy, as set by `set-colormap-focus!'. 
+          (),
+"Return the colormap focus policy, as set by `set-colormap-focus!'. 
 The value can be either be 'mouse, indicating that the window under
 the mouse pointer will always colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
-colormap focus.  */
+colormap focus.")
 #define FUNC_NAME s_colormap_focus
 {
   return Scr.fColormapFollowsMouse ? sym_mouse : sym_focus; 
@@ -234,9 +234,9 @@ colormap focus.  */
 #undef FUNC_NAME
 
 SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
-          ())
-     /** Return the current position of the mouse pointer in pixels.
-The return value is a two-element list of the x and y coordinates. */
+          (),
+"Return the current position of the mouse pointer in pixels.
+The return value is a two-element list of the x and y coordinates.")
 #define FUNC_NAME s_pointer_position
 {
   int x, y;
@@ -249,8 +249,8 @@ The return value is a two-element list of the x and y coordinates. */
 
 
 SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
-          (SCM sx, SCM sy))
-     /** Move the mouse pointer to viewport coordinates SX, SY. */
+          (SCM sx, SCM sy),
+"Move the mouse pointer to viewport coordinates SX, SY.")
 #define FUNC_NAME s_move_pointer_to
 {
   int x, y;
@@ -265,10 +265,10 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 
 
 SCWM_IPROC(recapture, "recapture", 0, 0, 0,
-          ())
-     /** Recapture all the windows.
+           (),
+"Recapture all the windows.
 This destroys all the current frame windows and recreate them from
-scratch. This is hopefully not necessary during normal operation. */
+scratch. This is hopefully not necessary during normal operation.")
 #define FUNC_NAME s_recapture
 {
   BlackoutScreen();		/* if they want to hide the recapture */
@@ -281,8 +281,8 @@ scratch. This is hopefully not necessary during normal operation. */
 
 
 SCWM_IPROC(beep, "beep", 0, 0, 0,
-          ())
-     /** Ring the standard X bell. */
+           (),
+"Ring the standard X bell.")
 #define FUNC_NAME s_beep
 {
   XBell(dpy, 0);
@@ -292,11 +292,11 @@ SCWM_IPROC(beep, "beep", 0, 0, 0,
 
 
 SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
-          (SCM flag))
-     /** Determine whether or not `clever-place-window' will be used when smart-placing.
+          (SCM flag),
+"Determine whether or not `clever-place-window' will be used when smart-placing.
 If FLAG is #t, then `clever-place-window' will be used instead of
 `smart-place-window' when the default placement procedure is used, and
-the window's smart-placement flag is on. */
+the window's smart-placement flag is on.")
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fSmartPlacementIsClever);
@@ -307,11 +307,11 @@ the window's smart-placement flag is on. */
 /* MS:FIXME:: this returns true or false always, give it a predicate name? */
 
 SCWM_PROC(smart_placement_is_really_smart_p, "smart-placement-is-really-smart?", 0, 0, 0,
-          ())
-     /** Return whether or not `clever-place-window' will be used when smart-placing.
+          (),
+"Return whether or not `clever-place-window' will be used when smart-placing.
 If the value is #t, then `clever-place-window' will be used instead of
 smart-place-window when the default placement procedure is used, and
-the window's smart-placement flag is on. */
+the window's smart-placement flag is on.")
 #define FUNC_NAME s_smart_placement_is_really_smart_p
 {
   return SCM_BOOL_FromBool(Scr.fSmartPlacementIsClever);
@@ -324,10 +324,10 @@ the window's smart-placement flag is on. */
    should be implemented by adding new event bindings eventually */
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
-          (SCM flag))
-     /** Determine whether a click-to-focus window receives the click.
+          (SCM flag),
+"Determine whether a click-to-focus window receives the click.
 If FLAG is #t, the window will receive the event, if #f, scwm
-will not pass the event on to the client. */
+will not pass the event on to the client.")
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fClickToFocusPassesClick);
@@ -336,8 +336,8 @@ will not pass the event on to the client. */
 #undef FUNC_NAME
 
 SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0,
-          ())
-     /** Returns a boolean valude indicating whether a click-to-focus window receives the click. */
+          (),
+"Returns #t iff a click-to-focus window is sent the click, else #f.")
 #define FUNC_NAME s_click_to_focus_passes_click_p
 {
   return SCM_BOOL_FromBool(Scr.fClickToFocusPassesClick);
@@ -348,10 +348,10 @@ SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0
 /* MS:FIXME:: remove this one in particular once window-focus-hook exists. */
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
-          (SCM flag))
-     /** Determine whether a click to focus raises the clicked-on window.
+          (SCM flag),
+"Determine whether a click to focus raises the clicked-on window.
 If FLAG is #t, clicks which transfer focus will also raise the target 
-window */
+window.")
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fClickToFocusRaises);
@@ -363,8 +363,8 @@ window */
 /* MS:FIXME:: - this seems to be redundant with auto-raise to some degree... */
 
 SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
-          ())
-     /** Returns a boolean valude indicating whether a click-to-focus window gets raised on focus. */
+          (),
+"Returns #t iff a click-to-focus window gets raised on focus, else #f.")
 #define FUNC_NAME s_click_to_focus_raises_p
 {
   return SCM_BOOL_FromBool(Scr.fClickToFocusRaises);
@@ -380,10 +380,10 @@ SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
    the exact same effect?  Examine further... */
 
 SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
-          (SCM flag))
-     /** Determine whether a mouse-focus-click will raise the window.
+          (SCM flag),
+"Determine whether a mouse-focus-click will raise the window.
 If FLAG is #t it will raise the window. Not sure if this function
-makes sense any more. */
+makes sense any more.")
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fMouseFocusClickRaises);
@@ -393,8 +393,8 @@ makes sense any more. */
 
 
 SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
-          ())
-     /** Returns a boolean value indicating whether a mouse-focus-click will raise the window. */
+          (),
+"Returns a boolean value indicating whether a mouse-focus-click will raise the window.")
 #define FUNC_NAME s_mouse_focus_click_raises_p
 {
   return SCM_BOOL_FromBool(Scr.fMouseFocusClickRaises);
@@ -403,11 +403,11 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 
 
 
-SCWM_PROC (X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
-           (SCM n))
-     /** Rotate the X cut buffers by N positions.
+SCWM_PROC(X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
+          (SCM n),
+"Rotate the X cut buffers by N positions.
 This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
-and so on.  This cut buffer numbering is global to the display. */
+and so on.  This cut buffer numbering is global to the display.")
 #define FUNC_NAME s_X_rotate_cut_buffers
 {
   int num_to_rotate;
@@ -426,9 +426,9 @@ by 60. */
 /* CRW:FIXME:MS: Maybe this function should just be deleted?  It
 doesn't seem to be used anywhere, and (as mentioned above) its implementation
 is inconsistent... */
-SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
-           ())
-     /** Return the elapsed time in milliseconds since O.S. has been up. */
+SCWM_PROC(elapsed_time, "elapsed-time", 0, 0, 0,
+          (),
+"Return the elapsed time in milliseconds since O.S. has been up.")
 #define FUNC_NAME s_elapsed_time
 {
   /* code borrowed from GWM's wool_used_time */
@@ -454,8 +454,8 @@ SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
 
 
 SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
-          ())
-     /** Return the timestamp of the last event Scwm handled. */
+          (),
+"Return the timestamp of the last event Scwm handled.")
 #define FUNC_NAME s_scwm_last_timestamp
 {
   extern Time lastTimestamp;
@@ -465,8 +465,8 @@ SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
 
 
 SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
-          ())
-     /** Return the version of scwm running. */
+          (),
+"Return the version of scwm running.")
 #define FUNC_NAME s_scwm_version
 {
   return gh_str02scm(VERSION);
@@ -475,8 +475,8 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 
 
 SCWM_PROC(scwm_version_date, "scwm-version-date", 0, 0, 0,
-          ())
-     /** Return the date that the running scwm was last changed as a string. */
+          (),
+"Return the date that the running scwm was last changed as a string.")
 #define FUNC_NAME s_scwm_version_date
 {
   extern char *szRepoLastChanged;
@@ -486,8 +486,8 @@ SCWM_PROC(scwm_version_date, "scwm-version-date", 0, 0, 0,
 
 
 SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
-          ())
-     /** Return the <envar>$PREFIX</envar> directory path that scwm was installed with. */
+          (),
+"Return the <envar>$PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_prefix
 {
   return gh_str02scm(SCWM_PREFIX);
@@ -496,8 +496,8 @@ SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
 
 
 SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
-          ())
-     /** Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with. */
+          (),
+"Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_exec_prefix
 {
   return gh_str02scm(SCWM_PREFIX);
@@ -506,11 +506,11 @@ SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 
 
 SCWM_PROC(set_X_server_synchronize_x, "set-X-server-synchronize!", 1, 0, 0,
-          (SCM flag))
-     /** Set X server sychronization flag to FLAG.
+          (SCM flag),
+"Set X server sychronization flag to FLAG.
 If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG 
 is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
-synchronous mode, but can be easier to debug. */
+synchronous mode, but can be easier to debug.")
 #define FUNC_NAME s_set_X_server_synchronize_x
 {
   Bool fSynch;
@@ -523,10 +523,10 @@ synchronous mode, but can be easier to debug. */
 
 /* MS:FIXME:: this should probably be split into multiple procs. */
 SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
-          ())
-     /** Return some information about the version of the running X server.
+          (),
+"Return some information about the version of the running X server.
 Return value is a list of the X protocol version, the X protocol
-revision, the X server vendor, and the vendor release number. */
+revision, the X server vendor, and the vendor release number.")
 #define FUNC_NAME s_X_version_information
 {
   return gh_list(SCM_MAKINUM(ProtocolVersion(dpy)),
@@ -543,17 +543,17 @@ revision, the X server vendor, and the vendor release number. */
    string.*/
 
 SCWM_PROC(X_display_information, "X-display-information", 0, 0, 0,
-          ())
-     /** Return some information about the screen. In particular,
+          (),
+"Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
 bits per color supported by the hardware, the visual class (one of
-"StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
-or "TrueColor") and a boolean indicating whether the display is color.
+\"StaticGray\", \"GrayScale\", \"StaticColor\", \"PseudoColor\", \"DirectColor\"
+or \"TrueColor\") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
-be shared among multiple machines. */
+be shared among multiple machines.")
 #define FUNC_NAME s_X_display_information
 {
   int Mscreen = DefaultScreen(dpy);
@@ -613,12 +613,12 @@ be shared among multiple machines. */
 #undef FUNC_NAME
 
 SCWM_PROC(user_name, "user-name", 0, 0, 0,
-	  ())
-     /** Return the current user's name.
+	  (),
+"Return the current user's name.
 This is set to one of the following (in order of relevance):
 <envar>$USER</envar>, <envar>$LOGNAME</envar>,
 the name field of the current uid's entry in the password file,
-the constant string "nobody". */
+the constant string "nobody".")
 #define FUNC_NAME s_user_name
 {
   return gh_str02scm(UserName);
@@ -626,12 +626,12 @@ the constant string "nobody". */
 #undef FUNC_NAME
 
 SCWM_PROC(user_home, "user-home", 0, 0, 0,
-	  ())
-     /** Return the current user's home directory.
+	  (),
+"Return the current user's home directory.
 This is set to one of the following (in order of relevance):
 <envar>$HOME</envar>,
 the directory field of the current uid's entry in the password file,
-the constant string "/tmp". */
+the constant string "/tmp".")
 #define FUNC_NAME s_user_home
 {
   return gh_str02scm(UserHome);
@@ -639,9 +639,9 @@ the constant string "/tmp". */
 #undef FUNC_NAME
 
 SCWM_IPROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
-	  ())
-     /** Cause a segmentation violation.
-Do not do this unless you are testing segv handling! */
+           (),
+"Cause a segmentation violation.
+Do not do this unless you are testing segv handling!")
 #define FUNC_NAME s_force_segv_for_testing
 {
   int *pn = 0;
@@ -651,12 +651,11 @@ Do not do this unless you are testing segv handling! */
 #undef FUNC_NAME
 
 SCWM_PROC(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
-	  (SCM number_to_reset))
-     /** Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.
+	  (SCM number_to_reset),
+"Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.
 The default is 100, but if you catch a segv and and are willing to 
 track it or send in a bug report, use this to permit a C-level backtrace
-by setting it to 0.  See also `set-handle-segv!'.
-*/
+by setting it to 0.  See also `set-handle-segv!'.")
 #define FUNC_NAME s_set_reset_on_segv_x
 {
   extern int segvs_to_reset;
@@ -666,10 +665,9 @@ by setting it to 0.  See also `set-handle-segv!'.
 #undef FUNC_NAME
 
 SCWM_PROC(reset_on_segv, "reset-on-segv", 0, 0, 0,
-	  ())
-     /** Return the number of segv signals Scwm will reset on.
-See `set-reset-on-segv!'.
-*/
+	  (),
+"Return the number of segv signals Scwm will reset on.
+See `set-reset-on-segv!'.")
 #define FUNC_NAME s_reset_on_segv
 {
   extern int segvs_to_reset;
@@ -680,13 +678,13 @@ See `set-reset-on-segv!'.
 
 
 SCWM_PROC(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
-	  (SCM flag))
-     /** If FLAG, tell Scwm to catch segv signals.
+	  (SCM flag),
+"If FLAG, tell Scwm to catch segv signals.
 This is the default, but if you catch a segv and really need it to 
 dump right away to figure out what is wrong then use this.  No
 cleanup is done if handling segv is #f.  Be sure to have an extra
 terminal handy on a console or separate X server.
-For developers and hackers only. */
+For developers and hackers only.")
 #define FUNC_NAME s_set_handle_segv_x
 {
   VALIDATE_ARG_BOOL_COPY(1,flag,fHandleSegv);
@@ -701,8 +699,8 @@ For developers and hackers only. */
 
 
 SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
-          ())
-     /** Return the X connection file descriptor number. */
+          (),
+"Return the X connection file descriptor number.")
 #define FUNC_NAME s_x_connection_number
 {
   int c = ConnectionNumber(dpy);
@@ -713,8 +711,8 @@ SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
 #ifdef SCWM_TEST_HOOK_PROCS
 
 SCWM_IPROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
-          (SCM count))
-     /** Invoke `scwm-test-hook-0' COUNT times. */
+           (SCM count),
+"Invoke `scwm-test-hook-0' COUNT times.")
 #define FUNC_NAME s_scwm_run_test_hook_0
 {
   int c, i;
@@ -727,8 +725,8 @@ SCWM_IPROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
-          (SCM count, SCM arg))
-     /** Invoke `scwm-test-hook-1' COUNT times with ARG as the single argument. */
+           (SCM count, SCM arg),
+"Invoke `scwm-test-hook-1' COUNT times with ARG as the single argument.")
 #define FUNC_NAME s_scwm_run_test_hook_1
 {
   int c, i;
@@ -744,17 +742,16 @@ SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
 
 
 SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
-          ())
-     /** Return a represention of the next key event.
+          (),
+"Return a represention of the next key event.
 The return value is (string modmask keycode). The
 `cdr' of the return value can be used as the arguments to 
 `undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a key binding string.  Modifiers 
-are listed first, separated by "-" followed by a "-" and the
-keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
+are listed first, separated by \"-\" followed by a \"-\" and the
+keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.
 If the event is only modifier keys, then the string will
-end in a "-"; e.g., "S-C-M-"
-*/
+end in a \"-\"; e.g., \"S-C-M-\"")
 #define FUNC_NAME s_get_key_event
 {
   Bool fAsyncMouse = False;
@@ -810,14 +807,14 @@ end in a "-"; e.g., "S-C-M-"
 #undef FUNC_NAME
 
 SCWM_PROC(get_mouse_event, "get-mouse-event", 0, 0, 0,
-          ())
-     /** Return a represention of the next mouse event.
+          (),
+"Return a represention of the next mouse event.
 The return value is (string modmask button-number #t).  The
 `cdr' of the return value can be used as the arguments to 
 `undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a mouse binding string.  Modifiers 
 are listed first, separated by "-" followed by a "-" and the
-button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
+button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.")
 #define FUNC_NAME s_get_mouse_event
 {
   Bool fAsyncMouse = True;
@@ -867,9 +864,9 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
 
 
 SCWM_PROC(X_fetch_bytes, "X-fetch-bytes", 0, 0, 0,
-	  ())
-     /** Returns a string representing the value of the cut buffer.
-XFetchBytes is called. */
+	  (),
+"Returns a string representing the value of the cut buffer.
+XFetchBytes is called.")
 #define FUNC_NAME s_X_fetch_bytes
 {
   char *str;
@@ -888,8 +885,8 @@ XFetchBytes is called. */
 #undef FUNC_NAME
 
 SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
-	  (SCM string))
-     /** Set the cut buffer to STRING by calling XStoreBytes. */
+	  (SCM string),
+"Set the cut buffer to STRING by calling XStoreBytes.")
 #define FUNC_NAME s_X_store_bytes
 {
   char *sz;
@@ -909,8 +906,8 @@ SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
    to get XtGetSelectionValue;  maybe not worth it */
 #if 0
 SCWM_PROC(X_get_primary_selection, "X-get-primary-selection", 0, 0, 0,
-	  ())
-     /** Return the X primary selection. */
+	  (),
+"Return the X primary selection.")
 #define FUNC_NAME s_X_get_primary_selection
 {
   

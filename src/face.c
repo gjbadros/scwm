@@ -344,9 +344,9 @@ pointers to functions that know how to set each individual flag, but
 this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
 SCWM_PROC(set_face_flag_x,"set-face-flag!", 3, 0, 0,
-          (SCM face, SCM flag, SCM flagval))
-     /** Set the given FLAG to the given FLAGVAL for face FACE.
-See the section on the `Face Flags' concept. */
+          (SCM face, SCM flag, SCM flagval),
+"Set the given FLAG to the given FLAGVAL for face FACE.
+See the section on the `Face Flags' concept.")
 #define FUNC_NAME s_set_face_flag_x
 {
   ButtonFace *bf;
@@ -441,10 +441,10 @@ See the section on the `Face Flags' concept. */
 #undef FUNC_NAME
 
 SCWM_PROC(make_face, "make-face",2,0,0,
-          (SCM flags, SCM specs))
-	  /** Create a new face.
+          (SCM flags, SCM specs),
+"Create a new face.
 FLAGS is a list of face flags (see concept) and
-SPECS is a list of face specifiers. */
+SPECS is a list of face specifiers.")
 #define FUNC_NAME s_make_face
 {
   SCM answer;
@@ -855,15 +855,15 @@ extern ScwmDecor *cur_decor;
 
 
 SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
-          (SCM active_up, SCM active_down, SCM inactive))
-     /** Set the titlebar faces for the various window states.
+          (SCM active_up, SCM active_down, SCM inactive),
+"Set the titlebar faces for the various window states.
 In the current decor, use ACTIVE-UP as the face for the title
 bar when active and not pressed in. Use ACTIVE-DOWN when the title bar
 is active and pressed in, and INACTIVE when the window is
 inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
 specified. Note that ACTIVE-DOWN will magically reverse the sense of
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
-state, it will be sunk in the ACTIVE-DOWN state by default.  */
+state, it will be sunk in the ACTIVE-DOWN state by default. ")
 #define FUNC_NAME s_set_title_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -883,8 +883,8 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 #undef FUNC_NAME
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
-          (SCM button, SCM active_up, SCM active_down, SCM inactive))
-     /** Set the button faces for the various window states.
+          (SCM button, SCM active_up, SCM active_down, SCM inactive),
+"Set the button faces for the various window states.
 See `set-left-button-face!' and `set-right-button-face!' for a
 more natural interface for this.
 In the current decor, use ACTIVE-UP as the face for the
@@ -894,7 +894,7 @@ when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to
 ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
 reverse the sense of the relief flag, so if the button is raised in
 the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
-default.  */
+default. ")
 #define FUNC_NAME s_set_button_face_x
 {
   int n;
@@ -929,12 +929,12 @@ default.  */
 
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
-          (SCM button, SCM flag))
-     /** Specify the Mwm flag for BUTTON.
+          (SCM button, SCM flag),
+"Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
 when the window is maximized (has a non-#f "maximized" window
-property). */
+property).")
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;
@@ -956,11 +956,11 @@ property). */
 
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
-          (SCM active, SCM inactive))
-     /** Set the face for the border In the current decor.
+          (SCM active, SCM inactive),
+"Set the face for the border In the current decor.
 Use ACTIVE as the face for the border when the window is active. Use
 INACTIVE when the window is inactive. INACTIVE defaults to the same as
-ACTIVE when not specified. */
+ACTIVE when not specified.")
 #define FUNC_NAME s_set_border_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;

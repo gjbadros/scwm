@@ -119,8 +119,8 @@ SCWM_SYMBOL(sym_desk_release,"desk-release");
 SCWM_SYMBOL(sym_desk_click,"desk-click");
 
 
-SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6);
-  /** This hook is invoked upon ConfigureRequest events.
+SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6,
+"This hook is invoked upon ConfigureRequest events.
 The arguments are: "(win icon? x y width height)" where win
 is the window requesting the configuration change, icon? is #t
 iff that window's icon is requesting the change, x, y, width,
@@ -128,18 +128,18 @@ and height are either integers or #f to indicate that that
 aspect was not part of the configure request event. 
 If `configure-request-handled' is #t after execution of the
 hook procedures, then no C-level handling of the request
-will be performed. */
+will be performed.");
 
-SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
-  /** This hook is invoked whenever a PropertyNotify event is received
+SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2,
+"This hook is invoked whenever a PropertyNotify event is received
 for a window scwm is managing. This indicates that an X window
 property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
-that changed (as a string) and the window that it changed for. */
+that changed (as a string) and the window that it changed for.");
 
-SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2);
-  /** This hook is invoked whenever a PropertyNotify event is received
+SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2,
+"This hook is invoked whenever a PropertyNotify event is received
 on the root window.  This indicates that an X window
 property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols, or interface
@@ -147,76 +147,75 @@ to other desktop environments such as KDE or GNOME. The hook
 procedures are invoked with two arguments: the atom for the changed
 property and a boolean telling whether the property was deleted. 
 These arguments are different from those passed to
-X-PropertyNotify-hook's procedures. */
+X-PropertyNotify-hook's procedures.");
 
-SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook", 0);
-  /** This hook is invoked whenever a MappingNotify X event is
+SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook", 0,
+"This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
-buttons. The hook procedures are invoked with no arguments. */
+buttons. The hook procedures are invoked with no arguments.");
 
-SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1);
-  /** This hook is invoked upon DestroyNotify X events.
+SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1,
+"This hook is invoked upon DestroyNotify X events.
 It indicates a window was destroyed.  The hook procedures are
 invoked with one argument, WINID, the X id of the window that was destroyed. 
 This hook is invoked for both the client window and the window frame
 IDs (i.e., twice per top-level window).  You probably want to use
-`window-close-hook' or `X-UnmapNotify-hook' instead.
-*/
+`window-close-hook' or `X-UnmapNotify-hook' instead.");
 
-SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1);
-  /** This hook is invoked upon UnmapNotify X events.  It indicates a
+SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1,
+"This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
-WIN is still valid during the hook procedures. */
+WIN is still valid during the hook procedures.");
 
-SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook", 1);
-  /** This hook is invoked upon MapRequest X events.  It indicates a
+SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook", 1,
+"This hook is invoked upon MapRequest X events.  It indicates a
 window is trying to map itself (add itself to the display).  The hook 
 procedures are invoked with one argument, WIN, the window being mapped.  
-The WIN is valid during the hook procedures. */
+The WIN is valid during the hook procedures.");
 
-SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1);
-  /** This hook is invoked whenever the keyboard focus is changed.
+SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1,
+"This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
-See also `window-focus-lost-hook'. */
+See also `window-focus-lost-hook'.");
 
-SCWM_HOOK(window_enter_hook, "window-enter-hook", 1);
-  /** This hook is invoked whenever the mouse pointer enters a top-level window.
+SCWM_HOOK(window_enter_hook, "window-enter-hook", 1,
+"This hook is invoked whenever the mouse pointer enters a top-level window.
 It is called with one argument, the window object of the window just
-entered. */
+entered.");
 
-SCWM_HOOK(window_leave_hook, "window-leave-hook", 1);
-  /** This hook is invoked whenever the mouse pointer leaves a top-level window.
+SCWM_HOOK(window_leave_hook, "window-leave-hook", 1,
+"This hook is invoked whenever the mouse pointer leaves a top-level window.
 The hook procedures are invoked with one argument, the window object
-of the window just left. */
+of the window just left.");
 
-SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1);
-  /** Invoked when window receives a VisibilityFullyObscured event.
+SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1,
+"Invoked when window receives a VisibilityFullyObscured event.
 The hook procedures are invoked with one argument, the window object
-of the window that is now fully obscured. */
+of the window that is now fully obscured.");
 
-SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1);
-  /** Invoked when window receives a VisibilityPartiallyObscured
+SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1,
+"Invoked when window receives a VisibilityPartiallyObscured
 event.  The hook procedures are invoked with one argument, the window
 object of the window that is now partially obscured.  Beware that this
 event happens more often than you might expect and an action procedure
 attached here should be very careful about manipulating windows in a way
-that might cause more Visibility events. */
+that might cause more Visibility events.");
 
-SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1);
-  /** Invoked when window receives a VisibilityUnobscured event.
+SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1,
+"Invoked when window receives a VisibilityUnobscured event.
 The hook procedures are invoked with one argument, the window object
 of the window that is now fully visible. Beware that this
 event happens more often than you might expect and an action procedure
 attached here should be very careful about manipulating windows in a way
-that might cause more Visibility events. */
+that might cause more Visibility events.");
 
-SCWM_HOOK(client_message_hook,"client-message-hook", 4);
-  /** This hook is invoked whenever Scwm receives an X/11 client message.
+SCWM_HOOK(client_message_hook,"client-message-hook", 4,
+"This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
-and the vector of data. */
+and the vector of data.");
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -335,10 +334,10 @@ HandleEvents(void)
 }
 
 SCWM_PROC(handle_pending_events, "handle-pending-events", 0,0,0,
-          ())
-     /** Handle all pending Scwm events, returns number of dispatched events.
+          (),
+"Handle all pending Scwm events, returns number of dispatched events.
 This is useful to maintain responsiveness of Scwm when in the middle
-of a long computation. */
+of a long computation.")
 #define FUNC_NAME s_handle_pending_events
 {
   int cevents = 0;
@@ -626,13 +625,13 @@ FIXDOC: Link to file!
 
 
 SCWM_PROC (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
-           ())
-     /** Reset the scwmexec protocol.
+           (),
+"Reset the scwmexec protocol.
 This procedure removes the "XA_SCWMEXEC_REQUEST" property on the
 root window.  It should not be necessary but may be useful in case
 your X server goes awry (and otherwise you would have to restart your
 X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
-if your Emacs hangs when you try evaluating a scwm expression). */
+if your Emacs hangs when you try evaluating a scwm expression).")
 #define FUNC_NAME s_reset_scwmexec_protocol
 {
   XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
@@ -2152,10 +2151,10 @@ extern long basic_event_mask;
 
 /* GJB:FIXME:: Only for newer guiles for now */
 SCWM_PROC(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
-          (SCM proc))
-     /** Call PROC on XMotionEvents.
+          (SCM proc),
+"Call PROC on XMotionEvents.
 This can considerably slow Scwm down so use it only when
-necessary.  See `remove-motion-handler' and `reset-motion-handlers'. */
+necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_add_motion_handler_x
 {
   VALIDATE_ARG_PROC(1,proc);
@@ -2165,10 +2164,10 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'. */
 #undef FUNC_NAME
 
 SCWM_PROC(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
-          (SCM proc))
-     /** No longer call PROC on XMotionEvents.
+          (SCM proc),
+"No longer call PROC on XMotionEvents.
 Handling motion events can considerably slow Scwm down so use it only when
-necessary.  See `add-motion-handler' and `reset-motion-handlers'. */
+necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_remove_motion_handler_x
 {
   SCM answer;
@@ -2181,10 +2180,10 @@ necessary.  See `add-motion-handler' and `reset-motion-handlers'. */
 #undef FUNC_NAME
 
 SCWM_PROC(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
-          ())
-     /** Call no procedures on XMotionEvents.
+          (),
+"Call no procedures on XMotionEvents.
 Handling motion events can considerably slow Scwm down so use it only when
-necessary.  See `add-motion-handler' and `remove-motion-handler'. */
+necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 #define FUNC_NAME s_reset_motion_handlers_x
 {
   XSelectInput(dpy, Scr.Root,basic_event_mask);
@@ -2197,8 +2196,8 @@ necessary.  See `add-motion-handler' and `remove-motion-handler'. */
 /* Inspired by GWM 1.8c --gjb */
 
 SCWM_PROC(send_key, "send-key", 1,4,0,
-          (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p))
-     /** Send a synthetic press/release of KEY.  
+          (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p),
+"Send a synthetic press/release of KEY.  
 The usual key specification format (with modifiers) is used. The event
 is sent to window WIN if specified; otherwise the window to be used
 defaults to the window context in the usual way. By default, both a
@@ -2206,7 +2205,7 @@ press and a release are sent. However, the boolean parameters
 KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent
 individually. PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
-this unless you know what it means. */
+this unless you know what it means.")
 #define FUNC_NAME s_send_key
 {
   KeySym keysym;
@@ -2247,8 +2246,8 @@ this unless you know what it means. */
 #undef FUNC_NAME
 
 SCWM_PROC(send_button, "send-button", 1, 5, 0,
-          (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy))
-     /** Send a synthetic mouse button/release event.
+          (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy),
+"Send a synthetic mouse button/release event.
 Create a synthetic event of a press of mouse button BUTTON. The usual
 mouse button specification format (with modifiers) is used. Send the
 event to window WIN if specified; otherwise the window to be used
@@ -2260,7 +2259,7 @@ the button events to occur.  If one is not specified or #f, then the
 pointer offset of that coordinate is used instead.
 PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
-this unless you know what it means. */
+this unless you know what it means.")
 #define FUNC_NAME s_send_button
 {
   int bnum;

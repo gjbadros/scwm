@@ -44,10 +44,10 @@
  */
 Time lastTimestamp = CurrentTime;	/* until Xlib does this for us */
 
-SCWM_HOOK(window_focus_lost_hook,"window-focus-lost-hook", 1);
-  /** This hook is invoked whenever the focus is lost on a window.
+SCWM_HOOK(window_focus_lost_hook,"window-focus-lost-hook", 1,
+"This hook is invoked whenever the focus is lost on a window.
 It is called with one argument, the window object of the window
-that just lost the keyboard focus. See also `window-focus-change-hook'. */
+that just lost the keyboard focus. See also `window-focus-change-hook'.");
 
 
 /* Invoke the window_focus_lost_hook iff Scr.Focus is a SchemeWindow 
@@ -77,10 +77,10 @@ FFocussableWin(ScwmWindow *psw)
 }
 
 SCWM_PROC(focussable_window_p,"focussable-window?",0,1,0,
-          (SCM win))
-     /** Return #t iff WIN may receive the keyboard focus.
+          (SCM win),
+"Return #t iff WIN may receive the keyboard focus.
 This will return #f, e.g., if WIN's focus style is 'none, or
-its X11 hints do not permit it to receive the focus. */
+its X11 hints do not permit it to receive the focus.")
 #define FUNC_NAME s_focussable_window_p
 {
   ScwmWindow *psw;

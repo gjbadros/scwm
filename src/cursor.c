@@ -220,12 +220,12 @@ XCursorByNumber(int cursor_num)
 
 
 SCWM_PROC(set_window_cursor_x,"set-window-cursor!",2,0,0,
-          (SCM win, SCM cursor))
-     /** Set the default cursor for WIN to CURSOR. 
+          (SCM win, SCM cursor),
+"Set the default cursor for WIN to CURSOR. 
 If CURSOR is #f, this undefines the cursor for WIN and
 makes that window use its parent window's cursor.
 See `get-x-cursor', and `create-pixmap-cursor' for ways
-to create cursor objects. */
+to create cursor objects.")
 #define FUNC_NAME s_set_window_cursor_x
 {
   Window w;
@@ -242,13 +242,13 @@ to create cursor objects. */
 
 
 SCWM_PROC(get_x_cursor,"get-x-cursor",1,0,0,
-	  (SCM name_or_number))
-     /** Return the cursor object corresponding to NAME-OR-NUMBER.
+	  (SCM name_or_number),
+"Return the cursor object corresponding to NAME-OR-NUMBER.
 NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,
 "trek") or a number specifying the cursor number.  See 
 <file>X11/cursorfont.h</file> for the standard cursors.  Note
 that the "XC_" macro prefix should be omitted when used with
-this procedure.. */
+this procedure..")
 #define FUNC_NAME s_get_x_cursor
 {
   SCM sc;
@@ -267,12 +267,12 @@ this procedure.. */
 #undef FUNC_NAME
 
 SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
-          (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot))
-     /** Create and return a new cursor object from the pixmap image.
+          (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot),
+"Create and return a new cursor object from the pixmap image.
 IMAGE specifies the look of the cursor that will be returned.
 FG-COLOR and BG-COLOR specify the foreground and background colors
 respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the
-cursor's hot spot (from the top-left of the cursor). */
+cursor's hot spot (from the top-left of the cursor).")
 #define FUNC_NAME s_create_pixmap_cursor
 {
   int dpixX, dpixY;

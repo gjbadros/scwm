@@ -95,8 +95,8 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 static SCM *pscm_image_load_path;
 
-SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1);
-  /** Called with image name as a string when not found. */
+SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1,
+          "Called with image name as a string when not found.");
   
 
 
@@ -162,8 +162,8 @@ mark_scwmimage(SCM obj)
 }
 
 SCWM_PROC(image_p, "image?", 1, 0, 0,
-           (SCM obj))
-     /** Returns #t if OBJ is an image object, otherwise #f. */
+          (SCM obj),
+"Returns #t if OBJ is an image object, otherwise #f.")
 #define FUNC_NAME s_image_p
 {
   return SCM_BOOL_FromBool(IMAGE_P(obj));
@@ -172,12 +172,11 @@ SCWM_PROC(image_p, "image?", 1, 0, 0,
 
 
 SCWM_PROC(image_properties, "image-properties", 1, 0, 0,
-           (SCM image))
-     /** Return an association list giving some properties of IMAGE.
+          (SCM image),
+"Return an association list giving some properties of IMAGE.
 Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, its width, 'height, its height, and
-depth, its color depth. 
-*/
+depth, its color depth. ")
 #define FUNC_NAME s_image_properties
 {
   scwm_image *psimg;
@@ -207,10 +206,10 @@ SzNewImageShortName(scwm_image *psimg)
 }
 
 SCWM_PROC(image_short_name, "image-short-name", 1, 0, 0,
-           (SCM image))
-     /** Return the short name of IMAGE. 
+          (SCM image),
+"Return the short name of IMAGE. 
 Use `image-properties' to access other properties of IMAGE
-including its full name. */
+including its full name.")
 #define FUNC_NAME s_image_short_name
 {
   scwm_image *psimg;
@@ -227,8 +226,8 @@ including its full name. */
 
 
 SCWM_PROC(image_size, "image-size", 1, 0, 0,
-           (SCM image))
-     /** Return the size of IMAGE as a list (width height). */
+          (SCM image),
+"Return the size of IMAGE as a list (width height).")
 #define FUNC_NAME s_image_size
 {
   scwm_image *psimg;
@@ -270,8 +269,8 @@ loaded any other way.
 
 #ifndef USE_IMLIB
 SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
-           (SCM full_path))
-     /** Load an X Bitmap file identified by the pathname FULL-PATH. */
+          (SCM full_path),
+"Load an X Bitmap file identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_xbm
 {
   SCM result;
@@ -304,8 +303,8 @@ SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
 
 #ifdef HAVE_LIBXPM
 SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
-           (SCM full_path))
-     /** Load an X Pixmap file identified by the pathname FULL-PATH. */
+          (SCM full_path),
+"Load an X Pixmap file identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_xpm
 {
   SCM result;
@@ -373,8 +372,8 @@ MakeScwmImageFromImlibImage(scwm_image *ci,ImlibImage *pimg)
 
 
 SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
-           (SCM full_path))
-     /** Load an image file using imlib identified by the pathname FULL-PATH. */
+          (SCM full_path),
+"Load an image file using imlib identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_imlib_image
 {
   SCM result;
@@ -408,13 +407,13 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
 
 
 SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
-           (SCM extension, SCM proc))
-     /** Register PROC as the loader to use for images ending in EXTENSION.
+          (SCM extension, SCM proc),
+"Register PROC as the loader to use for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
-image object, or #f if it succeeds. */
+image object, or #f if it succeeds.")
 #define FUNC_NAME s_register_image_loader
 {
   VALIDATE_ARG_STR(1,extension);
@@ -429,11 +428,11 @@ image object, or #f if it succeeds. */
 #undef FUNC_NAME
 
 SCWM_PROC(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
-           (SCM extension))
-     /** Unregister the loader, if any, for images ending in EXTENSION.
+          (SCM extension),
+"Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the string "default"
-(for files that no other image loader succeeds in loading). */
+(for files that no other image loader succeeds in loading).")
 #define FUNC_NAME s_unregister_image_loader
 {
   VALIDATE_ARG_STR(1,extension);
@@ -567,12 +566,12 @@ get_image_loader(SCM name)
 
 
 SCWM_PROC(make_image, "make-image", 1, 0, 0,
-           (SCM name))
-     /** Loads an image from the file NAME.
+          (SCM name),
+"Loads an image from the file NAME.
 To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
-appropriate file. */
+appropriate file.")
 #define FUNC_NAME s_make_image
 {
   SCM result;
@@ -635,13 +634,13 @@ appropriate file. */
 
 /* GJB:FIXME:: make name == #t do a clear of all entries (ie. reset hash table). */
 SCWM_PROC(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
-           (SCM name))
-     /** Images are cached by both name and full pathname. It is
+          (SCM name),
+"Images are cached by both name and full pathname. It is
 remotely possible that the file that should be used for a particular
 name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
-associated with NAME from the image cache.*/
+associated with NAME from the image cache")
 #define FUNC_NAME s_clear_image_cache_entry
 {
   scm_hash_remove_x(image_hash_table, name);
@@ -652,11 +651,11 @@ associated with NAME from the image cache.*/
 
 #ifdef USE_IMLIB
 SCWM_PROC(window_to_image,"window->image", 1, 4, 0,
-          (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height))
-     /** Return an image with the contents of window WIN.
+          (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height),
+"Return an image with the contents of window WIN.
 WIN can be a window id (as a long), a window object, or
 the symbol 'root-window. Captures the rectangle of the window
-at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT. */
+at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
 #define FUNC_NAME s_window_to_image
 {
   Window w;
@@ -685,9 +684,9 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT. */
 
 
 SCWM_PROC (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
-           (SCM image, SCM width, SCM height))
-     /** Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. 
-See also `clone-resized-image' from the background module. */
+           (SCM image, SCM width, SCM height),
+"Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. 
+See also `clone-resized-image' from the background module.")
 #define FUNC_NAME s_clone_scaled_image
 {
   int w, h;

@@ -42,39 +42,39 @@ SCWM_SYMBOL(sym_west,"west");
 
 #define SCROLL_REGION (gh_scm2int(*pscm_scroll_region))
 
-SCWM_HOOK(change_desk_hook,"change-desk-hook", 2);
-/** This hook is invoked whenever the current desktop is changed.
+SCWM_HOOK(change_desk_hook,"change-desk-hook", 2,
+"This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number. It is
-called before the desk is changed.  See also `after-change-desk-hook'. */
+called before the desk is changed.  See also `after-change-desk-hook'.");
 
-SCWM_HOOK(after_change_desk_hook,"after-change-desk-hook", 2);
-/** This hook is invoked whenever the current desktop is changed.
+SCWM_HOOK(after_change_desk_hook,"after-change-desk-hook", 2,
+"This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number.  It
-is called after the desk is changed. See also `change-desk-hook'. */
+is called after the desk is changed. See also `change-desk-hook'.");
 
-SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 4);
-/** This hook is invoked whenever the viewport position is changed.
+SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 4,
+"This hook is invoked whenever the viewport position is changed.
 It is called with four arguments, all integers.  The first two are 
 the x and y coordinates of the new viewport position in pixels and
-the second two are the change in x and y from the previous position. */
+the second two are the change in x and y from the previous position.");
 
-SCWM_HOOK(edge_enter_hook,"edge-enter-hook", 1);
-/** This hook is invoked whenever the mouse pointer enters a screen edge.
+SCWM_HOOK(edge_enter_hook,"edge-enter-hook", 1,
+"This hook is invoked whenever the mouse pointer enters a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
-entered. */
+entered.");
 
-SCWM_HOOK(edge_leave_hook,"edge-leave-hook", 1);
-/** This hook is invoked whenever the mouse pointer leaves a screen edge.
+SCWM_HOOK(edge_leave_hook,"edge-leave-hook", 1,
+"This hook is invoked whenever the mouse pointer leaves a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
-entered. */
+entered.");
 
-SCWM_HOOK(edge_scroll_hook,"edge-scroll-hook", 0);
-/** This hook is invoked whenever an edge scroll takes place.
-Procedures in the hook are called with no arguments. */
+SCWM_HOOK(edge_scroll_hook,"edge-scroll-hook", 0,
+"This hook is invoked whenever an edge scroll takes place.
+Procedures in the hook are called with no arguments.");
 
 
 static Edge in_edge = EDGE_NONE;

@@ -95,10 +95,10 @@ print_font(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
    a font object. */
 
 SCWM_PROC(make_font, "make-font", 1, 0, 0,
-           (SCM fname))
-     /** Return the font object for the X font specifier FNAME.
+          (SCM fname),
+"Return the font object for the X font specifier FNAME.
 If FNAME is not a valid X font name, or cannot be
-allocated, an error results. */
+allocated, an error results.")
 #define FUNC_NAME s_make_font
 {
   SCM answer;
@@ -220,8 +220,8 @@ allocated, an error results. */
 
 
 SCWM_PROC(font_p, "font?", 1, 0, 0,
-           (SCM obj))
-     /** Returns #t if OBJ is a font object, otherwise #f. */
+          (SCM obj),
+"Returns #t if OBJ is a font object, otherwise #f.")
 #define FUNC_NAME s_font_p
 {
   return SCM_BOOL_FromBool(FONT_P(obj));
@@ -230,10 +230,10 @@ SCWM_PROC(font_p, "font?", 1, 0, 0,
 
 
 SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
-           (SCM font))
-     /** Return an association list giving some properties of FONT.
+          (SCM font),
+"Return an association list giving some properties of FONT.
 Currently defined properties are 'name, the string name of the
-color, and 'height, its total height in pixels. */
+color, and 'height, its total height in pixels.")
 #define FUNC_NAME s_font_properties
 {
   VALIDATE_ARG_FONT(1,font);
@@ -244,8 +244,8 @@ color, and 'height, its total height in pixels. */
 #undef FUNC_NAME
 
 SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
-           (SCM font))
-     /** Set the font used for drawing icon titles to FONT. */
+          (SCM font),
+"Set the font used for drawing icon titles to FONT.")
 #define FUNC_NAME s_set_icon_font_x
 {
   VALIDATE_ARG_FONT_OR_STRING(1,font);
@@ -259,8 +259,8 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
 
 
 SCWM_PROC(icon_font, "icon-font", 0, 0, 0,
-           ())
-     /** Return the font used for drawing icon titles. */
+          (),
+"Return the font used for drawing icon titles.")
 #define FUNC_NAME s_icon_font
 {
   return Scr.icon_font;
@@ -269,8 +269,8 @@ SCWM_PROC(icon_font, "icon-font", 0, 0, 0,
 
 
 SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
-           (SCM font))
-	/** Set the font for window titles In the current decor to FONT. */
+          (SCM font),
+"Set the font for window titles In the current decor to FONT.")
 #define FUNC_NAME s_set_title_font_x
 {
   int extra_height;
@@ -291,8 +291,8 @@ SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(title_font, "title-font", 0, 0, 0,
-           ())
-     /** Return the font used for drawing window titles in the current decor. */
+          (),
+"Return the font used for drawing window titles in the current decor.")
 #define FUNC_NAME s_title_font
 {
   ScwmDecor *fl;
@@ -304,13 +304,13 @@ SCWM_PROC(title_font, "title-font", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
-           (SCM name))
-     /** Fonts are cached by name. It is remotely possible that the
+          (SCM name),
+"Fonts are cached by name. It is remotely possible that the
 meaning of a particular string as a fonts will change in your X
 server, if you try hard enough (perhaps if you add or remove font
 servers). For this unlikely eventuality, `clear-font-cache-entry' is
 provided - it removes the font associated with NAME from the font
-cache.*/
+cache")
 #define FUNC_NAME s_clear_font_cache_entry
 {
   scm_hash_remove_x(font_hash_table, name);

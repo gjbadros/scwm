@@ -34,11 +34,11 @@
 
 #define HANDLER_TABLE_SIZE 7
 
-SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4);
-  /** This hook is invoked whenever a window property changes.
+SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4,
+"This hook is invoked whenever a window property changes.
 The hook procedures are invoked with four arguments, the window whose
 property changed, the name of the changed property, the new value and
-the old value. */
+the old value.");
 
 SCM property_handler_hash_table;
 
@@ -82,8 +82,8 @@ signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val)
 
 
 SCWM_PROC(set_window_property_x, "set-window-property!", 3, 0, 0,
-          (SCM win, SCM prop, SCM val))
-     /** Set window property PROP of WIN to VAL.
+          (SCM win, SCM prop, SCM val),
+"Set window property PROP of WIN to VAL.
 PROP should be a symbol. VAL may be any Scheme object. This name/value
 pair will be associated with the window, and may be retrieved with
 `window-property'. Passing #f as the value will delete the property
@@ -91,7 +91,7 @@ instead. Soon, some properties will have magical meanings, altering
 particular fields in the window structure. Also, a
 window-property-change-hook mechanism will soon be implemented for
 notification of all window property changes. This is not yet done. The
-window property primitives should be considered in flux. */
+window property primitives should be considered in flux.")
 #define FUNC_NAME s_set_window_property_x
 {
   SCM old_val;
@@ -125,15 +125,15 @@ window property primitives should be considered in flux. */
 
 
 SCWM_PROC(window_property, "window-property", 2, 0, 0,
-          (SCM win, SCM prop))
-     /** Retrieve window property PROP of WIN.
+          (SCM win, SCM prop),
+"Retrieve window property PROP of WIN.
 PROP should be a symbol. #f will be returned if the property does not
 exist (whether set by `set-window-property!' or otherwise). Soon, some
 properties will have magical meanings, accessing particular fields in
 the window structure. Also, a window-property-change-hook mechanism
 will soon be implemented for notification of all window property
 changes. This is not yet done. The window property primitives should
-be considered in flux. */
+be considered in flux.")
 #define FUNC_NAME s_window_property
 {
   SCM handler;

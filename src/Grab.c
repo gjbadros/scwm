@@ -68,12 +68,12 @@ XUngrabServer_withSemaphore(Display * disp)
 #undef FUNC_NAME
 
 SCWM_PROC(X_grab_server, "X-grab-server", 0, 0, 0,
-	  ())
-/** Grab the X server.
+	  (),
+"Grab the X server.
 This is very risky; you should almost definitely use
 `with-grabbed-server' instead.  This must be paired with
 X-ungrab-server.  This primitive is undefined at startup
-to make it hard to access directly. See also `X-server-grabs'.*/
+to make it hard to access directly. See also `X-server-grabs'")
 #define FUNC_NAME s_X_grab_server
 {
   XGrabServer_withSemaphore(dpy);
@@ -82,12 +82,12 @@ to make it hard to access directly. See also `X-server-grabs'.*/
 #undef FUNC_NAME
 
 SCWM_PROC(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
-	  ())
-/** Ungrab the X server.
+	  (),
+"Ungrab the X server.
 Using `X-grab-server' and `X-ungrab-server' directly is risky; you 
 should almost definitely use `with-grabbed-server' instead. This 
 primitive is undefined at startup to make it hard to access directly. 
-See also `X-server-grabs'.*/
+See also `X-server-grabs'")
 #define FUNC_NAME s_X_ungrab_server
 {
   XUngrabServer_withSemaphore(dpy);
@@ -97,10 +97,10 @@ See also `X-server-grabs'.*/
 
 
 SCWM_PROC(X_server_grabs, "X-server-grabs", 0, 0, 0,
-	  ())
-     /** Return the number of nested server grabs.
+	  (),
+"Return the number of nested server grabs.
 Nonzero means the server is currently grabbed. 
-See also `with-grabbed-server', `X-grab-server' and `X-ungrab-server'.*/
+See also `with-grabbed-server', `X-grab-server' and `X-ungrab-server'")
 #define FUNC_NAME s_X_server_grabs
 {
   return gh_int2scm(xgrabcount);
