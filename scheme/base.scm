@@ -174,20 +174,32 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   (map - (list x y) (viewport-position)))
 
 (define-public (vpx->vx x)
-  "Convert from a viewport to a virtual X coordinate."
-  (+ (car (viewport-position)) x))
+  "Convert from a viewport to a virtual X coordinate.
+If X is #f, just return #f."
+  (if x 
+      (+ (car (viewport-position)) x)
+      #f))
 
 (define-public (vpy->vy y)
-  "Convert from a viewport to a virtual Y coordinate."
-  (+ (cadr (viewport-position)) y))
+  "Convert from a viewport to a virtual Y coordinate.
+If Y is #f, just return #f."
+  (if y
+      (+ (cadr (viewport-position)) y)
+      #f))
 
 (define-public (vx->vpx x)
-  "Convert from a virtual to a viewport X coordinate."
-  (- x (car (viewport-position))))
+  "Convert from a virtual to a viewport X coordinate.
+If X is #f, just return #f."
+  (if x
+      (- x (car (viewport-position)))
+      #f))
 
 (define-public (vy->vpy y)
-  "Convert from a virtual to a viewport Y coordinate."
-  (- y (cadr (viewport-position))))
+  "Convert from a virtual to a viewport Y coordinate.
+If Y is #f, just return #f."
+  (if y
+      (- y (cadr (viewport-position)))
+      #f))
 
 (define-public (virtual-size)
   "Return the size of the virtual screen in pixels."

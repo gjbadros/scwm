@@ -901,8 +901,8 @@ Use `add-hook!' to attach this to `X-ConfigureRequest-hook'."
   (if (and (not icon?) win)
       (begin
 	(if (or width height)
-	    (animated-resize-window width height win x y)
-	    (animated-move-window x y win))
+	    (animated-resize-window width height win (vpx->vx x) (vpy->vy y))
+	    (animated-move-window (vpx->vx x) (vpy->vy) win))
 	(set! configure-request-handled #t))))
 
 (define-public (focus-window-with-pointer)
