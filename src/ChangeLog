@@ -1,3 +1,8 @@
+Sat Feb 28 00:57:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c: Slight change to HandleScwmExec: don't delete
+ 	XA_SCWMEXEC_REQUEST properties; it just confuses clients.
+
 Fri Feb 27 18:02:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Added new procedure HandleScwmExec to handle the new
