@@ -474,7 +474,7 @@ HandleScwmExec()
                           (unsigned char **) &pw)==Success && pw!=NULL) {
       w=*pw;
       XFree(pw);
-      last_offset+=last_offset+1;
+      ++last_offset;
       saved_bytes_after=bytes_after;
       
       /* Get and delete its request. */
