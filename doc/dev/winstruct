@@ -1,0 +1,97 @@
+
+Window structure rewrite plans
+
+
+Key goals of the rewrite:
+
+* End the two-level wrapping of the window structure (the smob has a
+pointer to a structure, which has a pointer to the real C window
+struct, currently, unlike the 1-level wrapping of fonts, colors, etc).
+
+* Allow named extension structures to be hung off of the main window
+struct. This is so that pieces can be added to the window structure as
+necessary, while keeping the main structure itself compact. Features
+in optional extensions would be able to extend the window structure
+with their own data, and perhaps data relating to certain features
+could be consigned to extension structures that are not created until
+they are needed. For instance, a window would not get the icon data
+extension unless the user actually uses visible icons, saving some
+memory for those who don't.
+
+* Provide a sane interface for user code to get notified when any
+property of a window changes (i.e. `property-change-hook').
+
+* Ensure that all properties of a window can be set and accessed in a
+uniform manner.
+
+
+Implementation strategies:
+
+* Try to always pass windows around as SCMs, not psw's. If possible,
+use a Scheme list instead of the current handmade linked list code as
+the window list. This would be a huge, pervasive change, however.
+
+* Have a generic interface to getting and setting window properties:
+
+procedure: window-property WINDOW SYMBOL
+
+Get the property named SYMBOL for WINDOW.
+
+procedure: set-window-property! WINDOW SYMBOL VALUE
+
+Set the property named SYMBOL for WINDOW to VALUE.
+
+
+* Some properties will be represented directly as fields directly in
+the C struct; others may be in various extension hooks. C code can
+register methods for setting/getting properties to handle those that
+are implemented as fields in the C struct. Other properties will live
+in the other_properties association list at the end of the window
+struct.
+
+** Mental note: will it be necessary to let C code be established that
+manages certain properties for only _some_ windows, and that can
+on-demand rip them out of the other_properties alist and put them in
+it's own choice of extension struct? Say a decoration module cares
+about some special properties and wants to redirect them to
+itself. But windows not managed by that decoration style should treat
+those properties as normal Scheme-ish properties.
+
+* Whenever any property gets changed, whether by user code or within
+the C code, trigger property-change-hook with the window, the property
+name, and possibly the old value (is this useful?)
+
+* Many window operations would then just become Scheme-level wrappers
+for getting and/or setting special C-implemented properties. But not
+all of them. For instance, anything involving animation or
+interaction, or that changes more than one property, or that has an
+imperative/destructive nature would not fit this category.
+
+
+
+Random things to think about while doing this:
+
+* Various operations may want to save the size and position of the
+window. For example, maximizing does this, and so does window-shading
+(for the height). Right now they use orthogonal mechanisms and
+therefore do not play nice together (maximize, window-shade,
+unamiximize, un-window-shade -> the window will be a ridiculous size)
+
+* There will probably be a lot of hooks looking at window properties
+eventually, but most will only care about one property, or only one
+window. Will all the duds hurt performance? Is it worthwhile adding a
+mechanism to set hooks for a specific property and/or a specific
+window?
+
+* How does stacking order fit into this? Is it a property of the
+window or should we handle it in some orthogonal way? Certainly it is
+not logical to think of `raised' as being a property of the window
+which should be set to #t and #f to raise and lower it, especially
+since we have a `restack' primitive that allows arbitrarty restacking.
+
+* Ensure the constrain solver's needs at minimum are met, so it can be
+implemented using the new window structure facilities witout _any_
+additional special hooks in the core code. This should be a good
+example of how advanced an extension we want to support.
+
+
