@@ -1,3 +1,17 @@
+Tue Dec 16 15:38:02 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* misc.h, misc.c: Move Destroy, RaiseWindow, LowerWindow, and Unmap into
+	window.c, and rename to DestroyScwmWindow, UnmapScwmWindow; move
+	HandleHardFocus into events.c
+
+	* errors.c: Removed scwm_error_imm()
+
+	* binding.c: use MAX_BUTTONS, not 3 for highest mouse button
+	number
+
+	* add_window.c: remove CLICK_TO_RAISE compile time option ifndefs
+	
+
 Tue Dec 16 14:41:16 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Replace TRUE with True, and FALSE with False
