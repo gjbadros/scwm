@@ -1,3 +1,8 @@
+Mon Jul 26 14:39:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in (scwm_pixmapdir): Switch pixmaps to use
+	${datadir}/${PACKAGE}/pixmaps (Thanks Francessco Tapparo!)
+
 Fri Jul 23 21:44:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* AUTHORS: Updated and organized into more categories;
