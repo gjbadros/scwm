@@ -1,5 +1,9 @@
 Sat Feb 28 01:34:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Makefile.in: Install wmconfig-menu.scm, std-menus.scm
+	
+	* base.scm: Added run-in-xterm from Sam Steingold <sds@usa.net>
+
 	* std-menus.scm: Renamed the former xlock-menu.scm to this and
  	added make-hosts-menu, a useful menu for a set of hosts to telnet
  	to.
