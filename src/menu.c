@@ -932,6 +932,13 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 
   fNeedControl = True;
   fWrapAround = False;
+
+  /* let shift-tab be XK_ISO_Left_Tab
+     and below it'll do the same thing as up-arrow */
+  if (XK_Tab == keysym && fShiftedKey) {
+    keysym = XK_ISO_Left_Tab;
+  }
+
   switch(keysym)		/* Other special keyboard handling	*/
     {
     case XK_Escape:		/* Escape key pressed. Abort		*/
@@ -971,7 +978,14 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 
       /* GJB:FIXME:: Don't let keyboard movements go to
 	 unenabled items */
-      
+
+    case XK_ISO_Left_Tab:
+      fWrapAround = True;
+      if (fAltedKey) {
+        *pfPermitAltReleaseToSelect = True;
+        fShiftedKey = False;
+      }
+      /* fall through */
     case XK_Up:
       fNeedControl = False;
       /* fall through */
@@ -991,7 +1005,12 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 	  pmiimSelected = pmd->rgpmiim[pmd->cmiim-1];
 	  cmiimToMove--;
 	}
-	pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,-1);
+        if (fWrapAround && pmiimSelected->ipmiim == 
+            PmiimStepItems(pmd->rgpmiim[0],0,+1)->ipmiim) {
+          pmiimNewItem = pmd->rgpmiim[pmd->cmiim-1];
+        } else {
+          pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,-1);
+        }
       }
       *pmenu_status = MENUSTATUS_NEWITEM;
       return pmiimNewItem;
@@ -1106,6 +1125,8 @@ MenuInteraction(DynamicMenu *pmd, int warp_to, Bool fPermitAltReleaseToSelect)
      (perhaps selected if the keyboard was used to pop up this menu) */
   if (warp_to >= 1)
     pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+warp_to));
+  else if (warp_to < 0)
+    pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[pmd->cmiim-1],0,warp_to+1));
 
   /* Don't assume all menu types pop up with the pointer on the first
      item; pie menus for instance will pop up with nothing selected */
@@ -1648,6 +1669,7 @@ the Alt/Meta modifier select a menu item. */
   VALIDATE_ARG_INT_COPY_USE_DEF(4,y_pos,y,-1);
   VALIDATE_ARG_BOOL_COPY_USE_T(5,left_side_p,fLeftSide);
   VALIDATE_ARG_BOOL_COPY_USE_F(6,permit_alt_release_selection_p,fPermitAltReleaseToSelect);
+
   return PopupGrabMenu(MENU(menu),NULL,warp_to,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);
 }
