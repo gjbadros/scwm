@@ -30,6 +30,11 @@
 extern "C" {
 #endif
 
+/* pair gh_free with gh_scm2newstr, etc. */
+#ifndef gh_free
+#define gh_free(x) free(x)
+#endif
+
 #ifndef HAVE_SCM_PUTS
 #define scm_putc(x,y) scm_gen_putc(x,y)
 #define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)
@@ -114,6 +119,11 @@ void scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog);
 }
 #endif
 
+
+SCM make_output_strport(char *fname);
+#ifndef HAVE_SCM_STRPORT_TO_STRING
+SCM scm_strport_to_string(SCM port);
+#endif
 
 #endif GUILE_COMPAT_H
 

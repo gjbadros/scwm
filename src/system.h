@@ -47,7 +47,9 @@ char *xgetcwd(char *, int);
 #endif
 
 /* pair gh_free with gh_scm2newstr, etc. */
+#ifndef gh_free
 #define gh_free(x) free(x)
+#endif
 
 #ifndef DEBUG_C_ALLOC
 #define NEW(x) ((x *) safemalloc(sizeof(x)))

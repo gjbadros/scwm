@@ -564,30 +564,6 @@ HandleKeyRelease()
 }
 
 
-static SCM make_output_strport(char *fname)
-{
-  return scm_mkstrport(SCM_INUM0, scm_make_string(SCM_INUM0, 
-						  SCM_UNDEFINED),
-		       SCM_OPN | SCM_WRTNG,
-		       fname);
-}
-
-#ifndef HAVE_SCM_STRPORT_TO_STRING
-static SCM scm_strport_to_string(SCM port)
-{
-  SCM answer;
-  { /* scope */
-    gh_defer_ints();
-    answer = scm_makfromstr (SCM_CHARS (gh_cdr (SCM_STREAM (port))),
-			     SCM_INUM (gh_car (SCM_STREAM (port))),
-			     0);
-    gh_allow_ints();
-  }
-  return answer;
-}
-#endif
-
-
 /**CONCEPT: SCWMEXEC Protocol 
   Scwm supports a protocol for other programs to send commands to the
 window manager. Programs send ordinary configuration language
