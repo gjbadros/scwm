@@ -1,3 +1,8 @@
+Mon Sep 20 23:46:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* drawmenu.c (InPopupZone): Use /2, instead of *3/4 for
+	InPopupZone to make the code match a change to draw-xpm-menu.c.
+
 Mon Sep 20 22:44:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added a missing ConstraintSize() call in

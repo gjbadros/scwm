@@ -1,3 +1,10 @@
+Mon Sep 20 23:46:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c: Synch this up a bit with drawmenu.c.
+	Maybe should drop drawmenu.c in favor of only this implementation, 
+	and move the rest of the menuing code into a module (since gtk
+	menus could be used instead).
+
 Mon Sep 20 22:44:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (AnimatedResizeWindow): Make it use
