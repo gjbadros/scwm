@@ -199,6 +199,12 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (add-window-style-option #:bg set-window-background!)
 (add-window-style-option #:foreground set-window-foreground!)
 (add-window-style-option #:fg set-window-foreground!)
+(add-window-style-option #:highlight-background
+			 set-window-highlight-background!)
+(add-window-style-option #:highlight-bg set-window-highlight-background!)
+(add-window-style-option #:highlight-foreground
+			 set-window-highlight-foreground!)
+(add-window-style-option #:highlight-fg set-window-highlight-foreground!)
 (add-window-style-option #:focus set-window-focus!)
 (add-boolean-style-option #:plain-border plain-border normal-border)
 (add-window-style-option #:icon-title set-icon-title!)
