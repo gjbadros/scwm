@@ -53,9 +53,11 @@
 
 (define*-public (move-window-to-viewport xx yy #&optional ww)
   "Move the window to the viewport; the first one being (0 0)."
-  (let ((pos (window-position ww)) (sz (display-size)))
-    (move-to  (+ (* xx (car sz)) (modulo (car pos) (car sz)))
-              (+ (* yy (cadr sz)) (modulo (cadr pos) (cadr sz))) ww)))
+  (let ((pos (window-position ww)) (sz (display-size))
+        (vp (viewport-position)))
+    (move-to (+ (* xx (car sz)) (- (car vp)) (modulo (car pos) (car sz)))
+             (+ (* yy (cadr sz)) (- (cadr vp))
+                (modulo (cadr pos) (cadr sz))) ww)))
 
 (define-public (in-viewport xx yy)
   "Return a function of one argument, a window, moving it to the viewport."
@@ -94,6 +96,7 @@ Use `show-system-info' to display it in a window."
 
 ;;; FIXGJB: how set width of an xmessage?
 (define-public (message . str)
+  "Display the string arguments in a message window."
   (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
 			   "\'| xmessage -file - -default okay -nearmouse")))
@@ -101,16 +104,18 @@ Use `show-system-info' to display it in a window."
 (define-public (show-mesg . str) (lambda () (apply message str)))
 (define-public (show-file fl)	; return lambda
   (exe (string-append "xmessage -default okay -nearmouse -file " fl)))
-(define-public (show-com com) ; return lambda
+(define-public (show-com com)   ; return lambda
   (exe (string-append com "| xmessage -file - -default okay -nearmouse")))
 
 (define-public (bool->str arg) (if arg "true" "false"))
 
 (define*-public (size->str sz #&optional (sep "x"))
-  (let ((xx (car sz)) (yy (cadr sz)))
-    (string-append (number->string xx) sep (number->string yy))))
+  "Convert a two-element list to a string.
+Use the optional second argument as the separator."
+  (string-append (number->string (car sz)) sep (number->string (cadr sz))))
 
 (define*-public (window-info #&optional (ww (get-window)))
+  "Display information about a window in a message window."
   (message
    "Window ID:\t\t" (number->string (window-id ww))
    "\nWindow Frame ID:\t" (number->string (window-frame-id ww))
