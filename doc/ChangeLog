@@ -1,3 +1,8 @@
+Sun Sep  6 16:16:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Use -V option to output user-option variables to
+	scheme/user-options.scm
+
 Fri Aug 21 15:47:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Use -d option on extract-docs and redirect stdin from

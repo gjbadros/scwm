@@ -1,3 +1,8 @@
+Sun Sep  6 16:17:42 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Added -V option to write a
+	user-options variable definition out to a file
+
 Sun Sep  6 15:53:02 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Fix ReadRestOfComment for Scheme
