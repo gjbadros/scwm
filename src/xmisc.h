@@ -20,6 +20,7 @@ extern XEvent Event;
 
 Bool FXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
 Bool FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
+Bool FXGetWindowSize(Window w, int *pwidthReturn, int *pheightReturn);
 Bool FXWindowAccessible(Display *dpy, Window w);
 Bool XGetGeometryCacheIt(Display *dpy, Window w);
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
@@ -29,4 +30,6 @@ void RestoreWithdrawnLocation(ScwmWindow *, Bool);
 void SetGCColors(GC gc, Pixel pix, Pixel pixBG);
 void SetGCFg(GC gc, Pixel pix);
 void SetGCFb(GC gc, Pixel pix);
+void RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow);
+
 #endif

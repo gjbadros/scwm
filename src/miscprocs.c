@@ -27,7 +27,7 @@
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
 
-SCM sym_focus;
+SCWM_SYMBOL(sym_focus, "focus");
 
 /* GJBFIX: Maybe the menus should do something w/ this? */
 SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 0, 1, 0,
@@ -566,9 +566,6 @@ be shared among multiple machines. */
 void 
 init_miscprocs()
 {
-  sym_focus = gh_symbol2scm("focus");
-  scm_protect_object(sym_focus);
-
 #ifndef SCM_MAGIC_SNARFER
 #include "miscprocs.x"
 #endif

@@ -196,7 +196,7 @@ typedef struct ScreenInfo {
 
   ScwmWindow ScwmRoot;		/* the head of the scwm window list */
   Window Root;			/* the root window */
-  Window SizeWindow;		/* the resize dimensions window */
+  Window MsgWindow;		/* the resize dimensions window */
   Window NoFocusWin;		/* Window which will own focus when no other
 				 * windows have it */
 #ifndef NON_VIRTUAL
@@ -237,7 +237,6 @@ typedef struct ScreenInfo {
   GC ScratchGC1;
   GC ScratchGC2;
   GC ScratchGC3;
-  int SizeStringWidth;		/* minimum width of size window */
   int CornerWidth;		/* corner width for decoratedwindows */
   int BoundaryWidth;		/* frame width for decorated windows */
   int NoBoundaryWidth;		/* frame width for decorated windows */
@@ -258,7 +257,6 @@ typedef struct ScreenInfo {
   ScwmWindow *Ungrabbed;
   ScwmWindow *PreviousFocus;	/* Window which had focus before scwm stole it
 				 * to do moves/menus/etc. */
-  int EntryHeight;		/* menu entry height */
   int EdgeScrollX;		/* #pixels to scroll on screen edge */
   int EdgeScrollY;		/* #pixels to scroll on screen edge */
   unsigned char buttons2grab;	/* buttons to grab in click to focus mode */

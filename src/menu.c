@@ -67,14 +67,14 @@ mark_menu(SCM obj)
   pmenu = MENU(obj);
   SCM_SETGC8MARK(obj);
 
-  scm_gc_mark(pmenu->scmMenuItems);
-  scm_gc_mark(pmenu->scmImgSide);
-  scm_gc_mark(pmenu->scmSideBGColor);
-  scm_gc_mark(pmenu->scmBGColor);
-  scm_gc_mark(pmenu->scmTextColor);
-  scm_gc_mark(pmenu->scmImgBackground);
-  scm_gc_mark(pmenu->scmFont);
-  scm_gc_mark(pmenu->scmExtraOptions);
+  GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
+  GC_MARK_SCM_IF_SET(pmenu->scmImgSide);
+  GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
+  GC_MARK_SCM_IF_SET(pmenu->scmFont);
+  GC_MARK_SCM_IF_SET(pmenu->scmExtraOptions);
 
   return SCM_BOOL_F;
 }

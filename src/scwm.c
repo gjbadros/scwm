@@ -274,11 +274,6 @@ InitVariables(void)
   /* create graphics contexts */
   CreateGCs();
 
-  SCM_DEFER_INTS;
-  scmScreen = ScmFromPScreenInfo(&Scr);
-  scm_protect_object(scmScreen);
-  SCM_ALLOW_INTS;
-
   Scr.d_depth = DefaultDepth(dpy, Scr.screen);
   Scr.ScwmRoot.w = Scr.Root;
   Scr.ScwmRoot.next = 0;
@@ -315,7 +310,11 @@ InitVariables(void)
 #endif
   Scr.Vx = Scr.Vy = 0;
 
-  Scr.SizeWindow = None;
+  Scr.MsgWindow = None;
+
+  SCM_DEFER_INTS;
+  scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
+  SCM_ALLOW_INTS;
 
   /* Sets the current desktop number to zero */
   /* Multiple desks are available even in non-virtual
@@ -452,6 +451,7 @@ scwm_main(int argc, char **argv)
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
+  SCM_REDEFER_INTS;
   init_font();
   init_decor();
   init_screen();
@@ -473,9 +473,10 @@ scwm_main(int argc, char **argv)
   init_deskpage();
   init_placement();
 #ifdef USE_CASSOWARY
-  init_constraint_primitives();
   init_cassowary_scm();
+  init_constraint_primitives();
 #endif
+  SCM_ALLOW_INTS;
 
   szCmdConfig = NEWC(1,char);
   
@@ -716,10 +717,8 @@ scwm_main(int argc, char **argv)
   InitVariables();
 
   /* must come after variables are init'd */
-  Scr.SizeWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
-                                        WhitePixel(dpy,Scr.screen), 
-                                        Scr.flags & MWMMenus);
-
+  Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
+                                       WhitePixel(dpy,Scr.screen) );
 
   InitEventHandlerJumpTable();
 

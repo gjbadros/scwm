@@ -41,6 +41,14 @@ FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn)
 
 
 Bool
+FXGetWindowSize(Window w, int *pwidthReturn, int *pheightReturn)
+{
+  return XGetGeometry(dpy,w,&JunkRoot,&JunkX,&JunkY,
+                      pwidthReturn,pheightReturn,&JunkBW,&JunkDepth);
+}
+
+
+Bool
 FXWindowAccessible(Display *dpy, Window w)
 {
   /* XGetGeometry returns true if the call was successful */
@@ -211,4 +219,16 @@ SetGCColors(GC gc, Pixel pixFG, Pixel pixBG)
   Globalgcv.background = pixBG;
   Globalgcm = GCForeground | GCBackground;
   XChangeGC(dpy,gc,Globalgcm,&Globalgcv);
+}
+
+/*
+ * RelieveRectangle - add relief lines to a rectangular window
+ */
+void
+RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow)
+{
+  XDrawLine(dpy, win, Hilite, x, y, w+x-1, y);
+  XDrawLine(dpy, win, Hilite, x, y, x, h+y-1);
+  XDrawLine(dpy, win, Shadow, x, h+y-1, w+x-1, h+y-1);
+  XDrawLine(dpy, win, Shadow, w+x-1, y, w+x-1, h+y-1);
 }

@@ -37,6 +37,7 @@ CassowaryNewWindow(ScwmWindow *psw)
 {
   if (psolver) {
     psw->pswci->AddStays(psolver);
+    psw->pswci->AddSizeConstraints(psolver);
   }
 }
 
@@ -100,6 +101,8 @@ CassowaryEditSize(PScwmWindow psw)
 
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   (*psolver)
+    .addEditVar(pswci->_frame_x)
+    .addEditVar(pswci->_frame_y)
     .addEditVar(pswci->_frame_width)
     .addEditVar(pswci->_frame_height)
     .beginEdit();
@@ -110,10 +113,20 @@ void
 SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 {
   if (!psolver) {
-    XMoveWindow(dpy, psw->frame, x, y);
+    if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
+      FRAME_X(psw) = x; 
+      FRAME_Y(psw) = y; 
+      XMoveWindow(dpy, psw->frame, x, y); 
+    }
     return;
   }
   ScwmWindowConstraintInfo *pswci = psw->pswci;
+
+  /* do not bother with re-solve if nothing has changed */
+  if (pswci->_frame_x.intValue() == x &&
+      pswci->_frame_y.intValue() == y)
+    return;
+
   (*psolver)
     .suggestValue(pswci->_frame_x,x)
     .suggestValue(pswci->_frame_y,y)
@@ -121,17 +134,32 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 }
 
 void 
-SuggestSizeWindowTo(PScwmWindow psw, int w, int h)
+SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h)
 {
   if (!psolver) {
-    XResizeWindow(dpy, psw->frame, w, h);
+    SetScwmWindowGeometry(psw,x,y,w,h);
     return;
   }
   ScwmWindowConstraintInfo *pswci = psw->pswci;
+
+  /* do not bother with re-solve if nothing has changed */
+  if (pswci->_frame_x.intValue() == x &&
+      pswci->_frame_y.intValue() == y &&
+      pswci->_frame_width.intValue() == w &&
+      pswci->_frame_height.intValue() == h)
+    return;
+
   (*psolver)
+    .suggestValue(pswci->_frame_x,x)
+    .suggestValue(pswci->_frame_y,y)
     .suggestValue(pswci->_frame_width,w)
     .suggestValue(pswci->_frame_height,h)
     .resolve();
+
+  scwm_msg(DBG,__FUNCTION__,
+           "Now clv-width,height are %d x %d",
+           pswci->_frame_width.intValue(),
+           pswci->_frame_height.intValue());
 }
 
 

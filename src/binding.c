@@ -30,6 +30,14 @@
 #include "dmalloc.h"
 #endif
 
+
+/* also used by window.c's set-window-focus! */
+SCWM_GLOBAL_SYMBOL(sym_click,"click");
+
+SCWM_SYMBOL(sym_motion,"motion");
+SCWM_SYMBOL(sym_one_and_a_half_clicks,"one-and-a-half-clicks");
+SCWM_SYMBOL(sym_double_click,"double-click");
+
 struct symnum {
   SCM sym;
   int value;
@@ -69,8 +77,8 @@ static int cMouseButtons = 3;
 /**CONCEPT: Key Specifier
    A key specifier is a string denoting a keystroke, perhaps including
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
-for shift, control meta, alt, hyper, and super, respectively.  They
-can be combined arbitrarily, and in any order, but should precide the 
+for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
+can be combined arbitrarily, and in any order, but should precede the 
 */
 
 static const char *
@@ -697,8 +705,6 @@ PROC is a procedure (possibly a thunk) that should be invoked */
 
 /* to distinguish click, double-click, move */
 
-SCM sym_motion, sym_click, sym_one_and_a_half_clicks, sym_double_click;
-
 SCM mouse_ev_type = SCM_BOOL_F;
 
 int have_orig_position = 0;
@@ -850,7 +856,6 @@ init_modifiers(void)
   }
 }
 
-
 void 
 init_binding(void)
 {
@@ -881,16 +886,8 @@ init_binding(void)
 
   for (i = 0; context_strings[i] != NULL; i++) {
     binding_contexts[i].sym = gh_symbol2scm(context_strings[i]);
-    scm_protect_object(binding_contexts[i].sym);
+    scm_permanent_object(binding_contexts[i].sym);
   }
-  sym_motion = gh_symbol2scm("motion");
-  scm_protect_object(sym_motion);
-  sym_click = gh_symbol2scm("click");
-  scm_protect_object(sym_click);
-  sym_one_and_a_half_clicks = gh_symbol2scm("one-and-a-half-clicks");
-  scm_protect_object(sym_one_and_a_half_clicks);
-  sym_double_click = gh_symbol2scm("double-click");
-  scm_protect_object(sym_double_click);
 
 #ifndef SCM_MAGIC_SNARFER
 #include "binding.x"

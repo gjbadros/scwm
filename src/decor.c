@@ -65,7 +65,8 @@ InitScwmDecor(ScwmDecor * fl)
 
 /**CONCEPT: Decors
 
-  Decors are a hack. In the original Fvwm code, there were many
+  Decors are a means of managing the abundance of visual appearance
+options for windows. In the original Fvwm code, there were many
 options that could only be set globally, although they affected window
 appearance. Decors are a compromise between leaving them global and
 making them fully settable per window. These quasi-global options may

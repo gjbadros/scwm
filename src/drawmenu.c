@@ -62,18 +62,6 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
   DrawImage(w,psimg,MENU_ITEM_RR_SPACE,MENU_ITEM_RR_SPACE,NULL);
 }
 
-/*
- * RelieveRectangle - add relief lines to a rectangular window
- */
-static
-void
-RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow)
-{
-  XDrawLine(dpy, win, Hilite, x, y, w+x-1, y);
-  XDrawLine(dpy, win, Hilite, x, y, x, h+y-1);
-  XDrawLine(dpy, win, Shadow, x, h+y-1, w+x-1, h+y-1);
-  XDrawLine(dpy, win, Shadow, w+x-1, y, w+x-1, h+y-1);
-}
 
 /*
  * RelieveHalfRectangle - add relief lines to the sides only of a

@@ -27,4 +27,7 @@ SCM fname ARGLIST
 #endif
 #endif
 
+#define SCWM_SYMBOL(cname,scheme_name) SCM_SYMBOL(cname,scheme_name)
+#define SCWM_GLOBAL_SYMBOL(cname,scheme_name) SCM_GLOBAL_SYMBOL(cname,scheme_name)
+
 #endif

@@ -28,6 +28,7 @@ void SetTitleBar(ScwmWindow *psw, Bool onoroff, Bool NewTitle);
 void SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent, 
                 Bool fMoved, Bool fResized);
 
+
 /* A bit dangerous -- since we have to get the order right, but
    still lots more readable */
 #define WAS_MOVED 5  /* for checking -- just True, really */

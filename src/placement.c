@@ -495,8 +495,8 @@ returns #f; otherwise it returns #t. */
     psw->attr.y = y = y - psw->old_bw + psw->bw;
     keep_on_screen(psw);
 
-    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
-	     SCM_BOOL_F, SCM_BOOL_F);
+    move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
+            SCM_BOOL_F, SCM_BOOL_F);
     return SCM_BOOL_T;
   }
 }
@@ -533,8 +533,8 @@ interaction. #t is always returned. */
   psw->attr.x = Scr.randomx - psw->old_bw;
   psw->attr.y = Scr.randomy - psw->old_bw;
 
-  move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
-	   SCM_BOOL_F, SCM_BOOL_F);
+  move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
+          SCM_BOOL_F, SCM_BOOL_F);
   return SCM_BOOL_T; 
 }
 #undef FUNC_NAME
@@ -567,8 +567,8 @@ by the user, the position was specified by the program, and
       ((psw->wmhints) &&
        (psw->wmhints->flags & StateHint) &&
        (psw->wmhints->initial_state == IconicState))) {
-    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
-	     SCM_BOOL_F, SCM_BOOL_F);    
+    move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
+            SCM_BOOL_F, SCM_BOOL_F);    
   } else {
     SCM result=SCM_BOOL_F;
 

@@ -82,6 +82,7 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "xmisc.h"
+#include "dbug_resize.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -450,7 +451,8 @@ value, and the output and error output generated, if any.
   For more information on how to make use of this protocol, see the
 documentation for the scwmexec and scwmrepl programs, the scwm.el
 emacs interaction mode, the libscwmexec library, and the details of
-the SCWMEXEC protocol.  Also see doc/scwmexec.proto.  FIXDOC: Link to file!
+the SCWMEXEC protocol.  Also see <filename>doc/scwmexec.proto</filename>.
+FIXDOC: Link to file!
 */
 
 
@@ -731,7 +733,7 @@ HandlePropertyNotify()
       GetWindowSizeHints(pswCurrent);
       new_width = FRAME_WIDTH(pswCurrent);
       new_height = FRAME_HEIGHT(pswCurrent);
-      ConstrainSize(pswCurrent, &new_width, &new_height);
+      ConstrainSize(pswCurrent, 0, 0, &new_width, &new_height);
       if ((new_width != FRAME_WIDTH(pswCurrent)) ||
 	  (new_height != FRAME_HEIGHT(pswCurrent)))
 	SetupFrame(pswCurrent, FRAME_X(pswCurrent), FRAME_Y(pswCurrent),
@@ -1345,13 +1347,9 @@ HandleLeaveNotify()
   }
 }
 
-
-/***********************************************************************
- *
- *  Procedure:
- *	HandleConfigureRequest - ConfigureRequest event handler
- *
- ************************************************************************/
+/*
+ * HandleConfigureRequest - ConfigureRequest event handler
+ */
 void 
 HandleConfigureRequest()
 {
@@ -1361,7 +1359,7 @@ HandleConfigureRequest()
   XConfigureRequestEvent *cre = &Event.xconfigurerequest;
   Bool sendEvent = False;
 
-  DBUG("HandleConfigureRequest", "Routine Entered");
+  DBUG_RESIZE(__FUNCTION__, "Routine Entered");
 
   /*
    * Event.xany.window is Event.xconfigurerequest.parent, so pswCurrent will

@@ -544,7 +544,7 @@ void run_timed_out_timers()
 
 /**CONCEPT: Input Hooks 
   Input hooks are a special form of hook that is called whenever input
-is available on a praticular port. They are treated differently than
+is available on a particular port. They are treated differently than
 normal hooks - use `add-input-hook!' and `remove-input-hook!' to
 manipulate them. Like regular hooks and unlike timer hooks, input
 hooks are not one-shot - they trigger every time input is made
@@ -665,7 +665,6 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  /*FIXDOC: what's the right way to document hooks for the extractor?  */
   /**HOOK: error-hook
   Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file

@@ -36,6 +36,7 @@
 #include "font.h"
 #include "xmisc.h"
 #include "scwm-constraints.h"
+#include "dbug_resize.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -1199,6 +1200,7 @@ RelieveWindow(ScwmWindow * psw, Window win,
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
+
 /*
  *  Procedure:
  *      Setupframe - set window sizes
@@ -1230,7 +1232,6 @@ void
 SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
            Bool fMoved, Bool fResized)
 {
-  XEvent client_event;
   XWindowChanges xwc;
   unsigned long xwcm;
   int cx, cy, i;
@@ -1285,9 +1286,8 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
     /* make the decoration buttons square */
     button_width = psw->title_height;
 
-    psw->title_width = w -
-      (left + right) * button_width
-      - 2 * psw->boundary_width + psw->bw;
+    psw->title_width = (w - (left + right) * button_width
+                        - 2 * psw->boundary_width + psw->bw);
 
     if (psw->title_width < 1)
       psw->title_width = 1;
@@ -1412,12 +1412,6 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
    */
   DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
 
-  SET_CVALUE(psw, frame_x, x);
-  SET_CVALUE(psw, frame_y, y);
-  SET_CVALUE(psw, frame_width, w);
-  SET_CVALUE(psw, frame_height, h);
-  CassowarySetCValuesAndSolve(psw,True);
-  
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
   if (ShapesSupported) {
@@ -1427,23 +1421,23 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
   }
   XSync(dpy, False);
   if (sendEvent && !shaded) {
+    XEvent client_event;
     client_event.type = ConfigureNotify;
     client_event.xconfigure.display = dpy;
     client_event.xconfigure.event = psw->w;
     client_event.xconfigure.window = psw->w;
 
     client_event.xconfigure.x = x + psw->boundary_width;
-    client_event.xconfigure.y = y + psw->title_height +
-      psw->boundary_width;
+    client_event.xconfigure.y = y + psw->title_height + psw->boundary_width;
     client_event.xconfigure.width = w - 2 * psw->boundary_width;
-    client_event.xconfigure.height = h - 2 * psw->boundary_width -
-      psw->title_height;
+    client_event.xconfigure.height = h - 2 * psw->boundary_width - psw->title_height;
 
     client_event.xconfigure.border_width = psw->bw;
     /* Real ConfigureNotify events say we're above title window, so ... */
     /* what if we don' thave a title ????? */
     client_event.xconfigure.above = psw->frame;
     client_event.xconfigure.override_redirect = False;
+    DBUG_RESIZE(__FUNCTION__, "Sending configure event");
     XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
   }
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);

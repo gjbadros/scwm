@@ -53,7 +53,7 @@ SCM
 mark_color(SCM obj)
 {
   SCM_SETGC8MARK(obj);
-  scm_gc_mark (COLORNAME(obj));
+  GC_MARK_SCM_IF_SET(COLORNAME(obj));
 
   return SCM_BOOL_F;
 }
@@ -774,7 +774,7 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
 #undef FUNC_NAME
 
 
-/* GJBFIX: I am not sure this is used for anything any more. */
+/* FIXGJB: I am not sure this is used for anything any more. */
 SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
      /** Use ST as the default stipple color for menus. 
@@ -824,10 +824,8 @@ init_color()
   protected_colors = scm_make_vector (SCM_MAKINUM(6), SCM_EOL);
   scm_protect_object(protected_colors);
 
-  str_black=gh_str02scm("black");
-  scm_protect_object(str_black);
-  str_white=gh_str02scm("white");
-  scm_protect_object(str_white);
+  scm_protect_object(str_black=gh_str02scm("black"));
+  scm_protect_object(str_white=gh_str02scm("white"));
 
   /* XXX XXX remaining to fix for the color object migration: 
      fix all the Scheme code */

@@ -298,10 +298,10 @@ mark_face(SCM obj)
   for (bf=BUTTONFACE(obj); bf != NULL; bf = bf->next) {
     if (((bf->style & ButtonFaceTypeMask) == PixmapButton) || 
 	((bf->style & ButtonFaceTypeMask) == TiledPixmapButton)) {
-      scm_gc_mark(bf->u.image);
+      GC_MARK_SCM_IF_SET(bf->u.image);
     }
     if ((bf->style & ButtonFaceTypeMask) == SolidButton) {
-      scm_gc_mark(bf->u.back);
+      GC_MARK_SCM_IF_SET(bf->u.back);
     }
   }
   
@@ -419,11 +419,26 @@ title and border faces, are indicated below.
 */
 
 
-SCM sym_clear, sym_justify, sym_vertical_justify, sym_relief,
-  sym_use_style_of, sym_hidden_handles, sym_no_inset, sym_left,
-  sym_right, sym_center, sym_top, sym_bottom, sym_flat, sym_sunk,
-  sym_raised, sym_title, sym_border;
+/* These three symbols are also used by msicprocs.c's
+   set-title-justify! */
+SCWM_GLOBAL_SYMBOL(sym_left , "left");
+SCWM_GLOBAL_SYMBOL(sym_right , "right");
+SCWM_GLOBAL_SYMBOL(sym_center , "center");
 
+SCWM_SYMBOL(sym_clear , "clear");
+SCWM_SYMBOL(sym_justify , "justify");
+SCWM_SYMBOL(sym_vertical_justify , "vertical-justify");
+SCWM_SYMBOL(sym_relief , "relief");
+SCWM_SYMBOL(sym_use_style_of , "use-style-of");
+SCWM_SYMBOL(sym_hidden_handles , "hidden-handles");
+SCWM_SYMBOL(sym_no_inset , "no-inset");
+SCWM_SYMBOL(sym_top , "top");
+SCWM_SYMBOL(sym_bottom , "bottom");
+SCWM_SYMBOL(sym_flat , "flat");
+SCWM_SYMBOL(sym_sunk , "sunk");
+SCWM_SYMBOL(sym_raised , "raised");
+SCWM_SYMBOL(sym_title , "title");
+SCWM_SYMBOL(sym_border , "border");
 
 
 /* FIXMS Probably the right way to do this is to keep a hash table of
@@ -537,27 +552,27 @@ be used for titlebars, and only tiled pixmaps may be used for borders.
 
   Format                                    : Explanation
   ------------------------------------------:----------------------------
- '(relief-pattern ((<X> <Y> <BOOL>) ...))   : Draw a relief pattern using
+ '(relief-pattern ((X Y BOOL) ...))   : Draw a relief pattern using
                                             : the list of triples, each of 
                                             : which indicates a pair of X,Y
-                                            : cooridnates given as a 
+                                            : coordinates given as a 
                                             : percentage of the button size,
                                             : and a boolean value indicating
                                             : whether to use the lighter or
                                             : darker color. This spec is 
                                             : partially destructive.
- '(solid <COLOR>)                           : Use <COLOR> as the color for 
+ '(solid COLOR)                             : Use COLOR as the color for 
                                             : this element; fully destructive.
-'(gradient (horizontal|vertical             : Draw a gradient in this element.
-   <NCOLORS> (<COLOR> <PERCENT>)* <FINAL>)) : The gradient may be horizontal
+ '(gradient (horizontal|vertical            : Draw a gradient in this element.
+    NCOLORS (COLOR PERCENT)* FINAL))        : The gradient may be horizontal
                                             : or vertical. The number of colors
                                             : is specified, followed by a 
                                             : number of colors with percentages
                                             : and a final color. The 
                                             : percentages must add to 100.
                                             : Fully destructive.
- '(pixmap mini-icon|<IMAGE>|                : Specify a pixmap to use, either
-   (tiled <IMAGE>))                         : the window's mini-icon, an image
+ '(pixmap mini-icon|IMAGE|                  : Specify a pixmap to use, either
+   (tiled IMAGE))                           : the window's mini-icon, an image
                                             : object or image specifier string,
                                             : or a list of tiled and an image,
                                             : indicating the image should be
@@ -566,9 +581,9 @@ be used for titlebars, and only tiled pixmaps may be used for borders.
                                             : it fully destructive.  
 */
 
-/* * '(simple #t)                                  ;; non-destructive
+/* * '(simple #t)                                ;; non-destructive
  *                                               ;; perhaps non-pointful?
- * '(default <N>)                                ;; fully destructive
+ * '(default N)                                  ;; fully destructive
  *                                               ;; perhaps there should
  *                                               ;; be variables for
  *                                               ;; these instead or
@@ -584,9 +599,14 @@ be used for titlebars, and only tiled pixmaps may be used for borders.
  */
 
 
-SCM sym_relief_pattern, sym_solid, sym_gradient, sym_horizontal,
-  sym_vertical, sym_pixmap, sym_mini_program_icon, sym_tiled;
-
+SCWM_SYMBOL(sym_relief_pattern , "relief-pattern");
+SCWM_SYMBOL(sym_solid , "solid");
+SCWM_SYMBOL(sym_gradient , "gradient");
+SCWM_SYMBOL(sym_horizontal , "horizontal");
+SCWM_SYMBOL(sym_vertical , "vertical");
+SCWM_SYMBOL(sym_pixmap , "pixmap");
+SCWM_SYMBOL(sym_mini_program_icon , "mini-program-icon");
+SCWM_SYMBOL(sym_tiled , "tiled");
 
 /* FIXMS this function is horrible, functions should never be this
    huge, but I did not see an easier way to translate it. */
@@ -1005,62 +1025,8 @@ void
 init_face()
 {
   int i;
-
   /* This needs to be done before the faces are created, below */
   REGISTER_SCWMSMOBFUNS(face);
-
-  /* FIXMS: Use SCM_SYMBOL for all these. */
-  sym_clear = gh_symbol2scm("clear");
-  scm_protect_object(sym_clear);
-  sym_justify = gh_symbol2scm("justify");
-  scm_protect_object(sym_justify);
-  sym_vertical_justify = gh_symbol2scm("vertical-justify");
-  scm_protect_object(sym_vertical_justify);
-  sym_relief = gh_symbol2scm("relief");
-  scm_protect_object(sym_relief);
-  sym_use_style_of = gh_symbol2scm("use-style-of");
-  scm_protect_object(sym_use_style_of);
-  sym_hidden_handles = gh_symbol2scm("hidden-handles");
-  scm_protect_object(sym_hidden_handles);
-  sym_no_inset = gh_symbol2scm("no-inset");
-  scm_protect_object(sym_no_inset);
-  sym_left = gh_symbol2scm("left");
-  scm_protect_object(sym_left);
-  sym_right = gh_symbol2scm("right");
-  scm_protect_object(sym_right);
-  sym_center = gh_symbol2scm("center");
-  scm_protect_object(sym_center);
-  sym_top = gh_symbol2scm("top");
-  scm_protect_object(sym_top);
-  sym_bottom = gh_symbol2scm("bottom");
-  scm_protect_object(sym_bottom);
-  sym_flat = gh_symbol2scm("flat");
-  scm_protect_object(sym_flat);
-  sym_sunk = gh_symbol2scm("sunk");
-  scm_protect_object(sym_sunk);
-  sym_raised = gh_symbol2scm("raised");
-  scm_protect_object(sym_raised);
-  sym_title = gh_symbol2scm("title");
-  scm_protect_object(sym_title);
-  sym_border = gh_symbol2scm("border");
-  scm_protect_object(sym_border);
-
-  sym_relief_pattern =gh_symbol2scm("relief-pattern");
-  scm_protect_object(sym_relief_pattern);
-  sym_solid =gh_symbol2scm("solid");
-  scm_protect_object(sym_solid);
-  sym_gradient =gh_symbol2scm("gradient");
-  scm_protect_object(sym_gradient);
-  sym_horizontal =gh_symbol2scm("horizontal");
-  scm_protect_object(sym_horizontal);
-  sym_vertical =gh_symbol2scm("vertical");
-  scm_protect_object(sym_vertical);
-  sym_pixmap =gh_symbol2scm("pixmap");
-  scm_protect_object(sym_pixmap);
-  sym_mini_program_icon =gh_symbol2scm("mini-program-icon");
-  scm_protect_object(sym_mini_program_icon);
-  sym_tiled = gh_symbol2scm("tiled");
-  scm_protect_object(sym_tiled);
 
   /* these should probably be exported as Scheme variables */
   default_titlebar_face=make_face(SCM_EOL, SCM_EOL);

@@ -65,7 +65,7 @@ SCM
 mark_font(SCM obj)
 {
   SCM_SETGC8MARK(obj);
-  scm_gc_mark (FONT(obj)->name);
+  GC_MARK_SCM_IF_SET(FONT(obj)->name);
   return SCM_BOOL_F;
 }
 
@@ -383,9 +383,11 @@ void init_font()
   str_fixed=gh_str02scm("fixed");
 #endif
   scm_protect_object(str_fixed);
+
   font_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
   scm_protect_object(font_hash_table);
+
   protected_fonts =
     scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
   scm_protect_object(protected_fonts);

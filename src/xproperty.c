@@ -67,7 +67,7 @@ SCM
 mark_xproperty(SCM obj)
 {
   SCM_SETGC8MARK(obj);
-  scm_gc_mark(XPROPERTYTYPE(obj));
+  GC_MARK_SCM_IF_SET(XPROPERTYTYPE(obj));
 
   return SCM_BOOL_F;
 }

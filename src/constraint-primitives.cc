@@ -24,13 +24,14 @@ extern "C" {
 #include "ClLinearInequality.h"
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
+#include "screen.h" /* to be able to add stays to all the windows */
 #include <strstream>
-#include <list>
+#include <set>
 
 
 ClSimplexSolver *psolver;
 
-static list<ScwmWindow *> rgpswDirty;
+static set<ScwmWindow *> setpswDirty;
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
@@ -40,21 +41,35 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
     DBUG(__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data());
     return;
   }
-  rgpswDirty.push_back(psw);
+  if (!psolver) {
+    return;
+  }
+  setpswDirty.insert(psw);
 }
 
 static void
 ScwmResolve(ClSimplexSolver *psolver)
 {
   // go through the dirty windows and move them
-  list<ScwmWindow *>::const_iterator it = rgpswDirty.begin();
-  for ( ; it != rgpswDirty.end(); ++it ) {
-    const ScwmWindow *psw = *it;
-    psw->pswci->CopyStateToPswVars();
-    MovePswToCurrentPosition(psw);
-    ResizePswToCurrentSize(psw);
+  set<ScwmWindow *>::const_iterator it = setpswDirty.begin();
+  for ( ; it != setpswDirty.end(); ++it ) {
+    bool fMoved, fResized;
+    ScwmWindow *psw = *it;
+    assert(psw);
+#ifndef NDEBUG
+    if (fMoved && fResized) {
+      scwm_msg(DBG,__FUNCTION__,"Move and resize of %s",psw->name);
+    } else if (fMoved) {
+      scwm_msg(DBG,__FUNCTION__,"Move of %s",psw->name);
+    } else if (fResized) {
+      scwm_msg(DBG,__FUNCTION__,"Resize of %s",psw->name);
+    }
+#endif
+    psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
+    if (fMoved) MovePswToCurrentPosition(psw);
+    if (fResized) ResizePswToCurrentSize(psw);
   }
-  rgpswDirty.clear();
+  setpswDirty.clear();
 }
 
 
@@ -88,6 +103,14 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
     scm_wrong_type_arg(FUNC_NAME,iarg++,solver);
 
   psolver = PsolverFromScm(solver);
+  /* empty the set of dirty windows, just in case */
+  setpswDirty.clear();
+
+  /* now add stay constriants on all existing windows */
+  for (ScwmWindow *psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+    psw->pswci->AddStays(psolver);
+  }
+
   psolver->SetChangeClvCallback(ScwmClvChanged);
   psolver->SetResolveCallback(ScwmResolve);
   return SCM_UNDEFINED;
@@ -97,7 +120,7 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
 
 SCWM_PROC (window_clv_x, "window-clv-x", 1, 0, 0,
            (SCM window))
-     /**
+     /** Return the cl-variable object for the X coordinate of WINDOW.
       */
 #define FUNC_NAME s_window_clv_x
 {
@@ -110,7 +133,7 @@ SCWM_PROC (window_clv_x, "window-clv-x", 1, 0, 0,
 
 SCWM_PROC (window_clv_y, "window-clv-y", 1, 0, 0,
            (SCM window))
-     /**
+     /** Return the cl-variable object for the Y coordinate of WINDOW.
       */
 #define FUNC_NAME s_window_clv_y
 {
@@ -123,7 +146,7 @@ SCWM_PROC (window_clv_y, "window-clv-y", 1, 0, 0,
 
 SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
            (SCM window))
-     /**
+     /** Return the cl-variable object for the width of WINDOW.
       */
 #define FUNC_NAME s_window_clv_width
 {
@@ -136,7 +159,7 @@ SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
 
 SCWM_PROC (window_clv_height, "window-clv-height", 1, 0, 0,
            (SCM window))
-     /**
+     /** Return the cl-variable object for the height of WINDOW.
       */
 #define FUNC_NAME s_window_clv_height
 {

@@ -21,15 +21,15 @@ void AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 void moveLoop(ScwmWindow *psw, int XOffset, int YOffset, int Width,
 	      int Height, int *FinalX, int *FinalY, Bool opaque_move);
 
-void DisplayPosition(ScwmWindow *psw, int x, int y, Bool fInitializeRelief);
-void DisplayMessage(ScwmWindow *psw, const char *sz, Bool fInitializeRelief);
 
 void Keyboard_shortcuts(XEvent * Event, int ReturnEvent);
 
 void InteractiveMove(Window w, ScwmWindow *psw, 
 		     int *FinalX, int *FinalY, XEvent *eventp);
 
-void MapSizePositionWindow();
+void DisplayMessage(const char *sz, Bool fRelief);
+void MapMessageWindow();
+void UnmapMessageWindow();
 
 #endif MOVE_H
 

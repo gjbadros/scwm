@@ -142,7 +142,7 @@ SCM
 mark_image(SCM obj)
 {
   SCM_SETGC8MARK(obj);
-  scm_gc_mark (IMAGE(obj)->full_name);
+  GC_MARK_SCM_IF_SET(IMAGE(obj)->full_name);
   return SCM_BOOL_F;
 }
 
@@ -210,7 +210,7 @@ make_empty_image(SCM name)
 
 /**CONCEPT: Image Loaders 
   Different loaders are available for various images types. `load-xbm'
-and `load-xpm' load X pixmaps and X bitmaps respecitvely. The user may
+and `load-xpm' load X pixmaps and X bitmaps respectively. The user may
 register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
@@ -591,12 +591,10 @@ void init_image()
   REGISTER_SCWMSMOBFUNS(image);
 
   /* Save a convenient Scheme "default" string */
-  str_default=gh_str02scm("default");
-  scm_protect_object(str_default);
+  scm_permanent_object(str_default=gh_str02scm("default"));
 
   /* Do the same for "" */
-  str_empty=gh_str02scm("");
-  scm_protect_object(str_empty);
+  scm_permanent_object(str_empty=gh_str02scm(""));
 
   /* Include registration of procedures and other things. */
 #ifndef SCM_MAGIC_SNARFER
@@ -606,12 +604,12 @@ void init_image()
   /* Initialize the image cache table. */
   image_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(IMAGE_HASH_SIZE));
-  scm_protect_object(image_hash_table);
+  scm_permanent_object(image_hash_table);
 
   /* Initialize the loader hash table. */
   image_loader_hash_table = 
     scm_make_vector (SCM_MAKINUM(IMAGE_LOADER_HASH_SIZE), SCM_EOL);
-  scm_protect_object(image_loader_hash_table);
+  scm_permanent_object(image_loader_hash_table);
 
   /* Register the standard loaders. */
 

@@ -165,6 +165,8 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 		    (int) (shaded_height + client_height * (*ppctMovement)));
       XMoveWindow(dpy, w, 0, (int) (-client_height * (1 - *ppctMovement)));
       XFlush(dpy);
+      while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+	DispatchEvent();
       usleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
@@ -174,26 +176,51 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 }
 
 void
-MapSizePositionWindow()
+MapMessageWindow()
 {
-  XMoveWindow(dpy, Scr.SizeWindow, 
-              Scr.MyDisplayWidth/2 - Scr.SizeStringWidth/2, 
-              Scr.MyDisplayHeight/2 - (FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA)/2);
-  XMapRaised(dpy, Scr.SizeWindow);
+  int w, h;
+  if (!FXGetWindowSize(Scr.MsgWindow,&w,&h))
+    assert(False);
+
+  /* center it onscreen */
+  XMoveWindow(dpy, Scr.MsgWindow, 
+              Scr.MyDisplayWidth/2 - w/2,
+              Scr.MyDisplayHeight/2 - h/2);
+  XMapRaised(dpy, Scr.MsgWindow);
+}
+
+void
+UnmapMessageWindow()
+{
+  XUnmapWindow(dpy, Scr.MsgWindow);
+}
+
+
+
+static void
+DisplayPosition(ScwmWindow *psw, int x, int y, Bool fRelief)
+{
+  char sz[30];
+  sprintf(sz, " %+-4d %+-4d ", x, y);
+  DisplayMessage(sz,fRelief);
 }
 
 
 /*
-  Move the window around, return with the new window location in Final[XY]
+  Move the window around, return with the new window location in
+  Final[XY]
   
-  XOffset, YOffset are amounts (in pixels) that the pointer has moved since
-  the original button press event (so the window should be moved by that amount, initially)
+  XOffset, YOffset are amounts (in pixels) that the pointer has moved
+  since the original button press event (so the window should be moved
+  by that amount, initially)
 
-  Width and Height refer to the size of the window (for drawing the rubberband)
+  Width and Height refer to the size of the window (for drawing the
+  rubberband)
 
   FinalX, FinalY are used to return the ending position of the move
 
-  opaque_move is true iff the window itself should be moved, instead of the rubberband
+  opaque_move is true iff the window itself should be moved, instead
+  of the rubberband
 
  */
 void 
@@ -205,7 +232,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   int xl, yt, delta_x, delta_y, paged;
 
   /* show the size/position window */
-  MapSizePositionWindow();
+  MapMessageWindow();
 
   FXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
@@ -327,7 +354,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
             SuggestMoveWindowTo(psw,xl,yt);
           }
 	}
-	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, False);
+	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
 /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
@@ -361,84 +388,91 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   CassowaryEndEdit(psw);
   *FinalX = xl;
   *FinalY = yt;
-  XUnmapWindow(dpy, Scr.SizeWindow);
+  UnmapMessageWindow();
 }
 
-
-void
-DisplayPosition(ScwmWindow *psw, int x, int y, Bool Init)
-{
-  char sz[30];
-  sprintf(sz, " %+-4d %+-4d ", x, y);
-  DisplayMessage(psw,sz,Init);
-}
 
 
 const double message_hilight_factor = 1.2;
 const double message_shadow_factor = 0.5;
 
+/* Return the width of the string sz in pixels
+   Takes the font as an XFontStruct or an XFontSet depending
+   on i18n support; the arg passed is XFONT(scmFont) */
+int
+ComputeXTextWidth(
+#ifdef I18N
+XFontSet
+#else
+XFontStruct
+#endif
+                  *pxfs, const char *sz)
+{
+#ifdef I18N
+  XRectangle dummy,log_ret;
+  XmbTextExtents(XFONT(Scr.msg_window_font), sz, strlen(sz), &dummy, &log_ret);
+  return log_ret.width;
+#else
+  return XTextWidth(pxfs, sz, strlen(sz));
+#endif
+}
+
+/* FIXGJB: It'd be nice to make this facility available at the scheme level */
+
 /*
  * DisplayMessage - Display a string in the dimensions window
  *      psw - the current scwm window
  *      x, y    - position of the window
- * FIXGJBNOW: still need to create a better relief GC
  */
 void 
-DisplayMessage(ScwmWindow * psw, const char *sz, Bool fInitializeRelief)
+DisplayMessage(const char *sz, Bool fRelief)
 {
-  int offset;
+  int textwidth = ComputeXTextWidth(XFONT(Scr.msg_window_font),sz);
+  int winwidth = textwidth + SIZE_HINDENT*2;
+  int textheight = FONTHEIGHT(Scr.msg_window_font);
+  int winheight = textheight + SIZE_VINDENT*2;
   GC gcMsg = Scr.ScratchGC2;
   GC gcHilite = Scr.ScratchGC2;
   GC gcShadow = Scr.ScratchGC3;
   SCM scmFgRelief, scmBgRelief;
-#ifdef I18N
-  XRectangle dummy,log_ret;
-#endif
   scmBgRelief = adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
   scmFgRelief = adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
 
   SetGCFg(gcHilite,XCOLOR(scmFgRelief));
   SetGCFg(gcShadow,XCOLOR(scmBgRelief));
   
-  if (fInitializeRelief) {
-    XClearWindow(dpy, Scr.SizeWindow);
+  XMoveResizeWindow(dpy, Scr.MsgWindow, 
+                    (Scr.MyDisplayWidth-winwidth)/2,(Scr.MyDisplayHeight-winheight)/2,
+                    winwidth, winheight);
+
+  if (fRelief) {
+    XClearWindow(dpy, Scr.MsgWindow);
     if (Scr.d_depth >= 2) {
-      RelieveWindow(psw, Scr.SizeWindow, 0, 0,
-		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2,
-		    gcHilite, gcShadow, FULL_HILITE);
+      RelieveRectangle(Scr.MsgWindow, 0, 0, winwidth, winheight,
+                       gcHilite, gcShadow);
     }
   } else {
-    XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       FONTHEIGHT(Scr.msg_window_font), False);
+    XClearArea(dpy, Scr.MsgWindow, 0, 0, 
+               textwidth, textheight, False);
   }
 
   NewFontAndColor(gcMsg,XFONT(Scr.msg_window_font)->fid,
                   XCOLOR(Scr.msg_window_fg), XCOLOR(Scr.msg_window_bg)); 
 
 #ifdef I18N
-  XmbTextExtents(XFONT(Scr.msg_window_font), sz, strlen(sz), &dummy, &log_ret);
-  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - log_ret.width ) / 2;
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.msg_window_font),gcMsg,
-	      offset, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
-	      sz, strlen(sz));
+  XmbDrawString(dpy, Scr.MsgWindow, XFONT(Scr.msg_window_font), /* ) */
 #else
-  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.msg_window_font), sz, strlen(sz))) / 2;
-  XDrawString(dpy, Scr.SizeWindow, gcMsg,
-	      offset, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
-	      sz, strlen(sz));
+  XDrawString(dpy, Scr.MsgWindow, 
 #endif
+              gcMsg, SIZE_HINDENT, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
+	      sz, strlen(sz));
 }
 
 
-/****************************************************************************
- *
+/*
  * For menus, move, and resize operations, we can effect keyboard 
  * shortcuts by warping the pointer.
- *
- ****************************************************************************/
+ */
 void 
 Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 {
@@ -447,7 +481,7 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
   KeySym keysym;
 
   /* Pick the size of the cursor movement */
-  move_size = Scr.EntryHeight;
+  move_size = 10;
   if (Event->xkey.state & ControlMask)
     move_size = 1;
   if (Event->xkey.state & ShiftMask)
@@ -525,7 +559,7 @@ InteractiveMove(Window w, ScwmWindow * psw,
   int border_width;
   int XOffset, YOffset;
   Bool opaque_move = False;
-  assert(psw->frame == w);
+  assert(w == psw->frame || w == psw->icon_w || w == psw->icon_pixmap_w);
 
   InstallRootColormap();
 

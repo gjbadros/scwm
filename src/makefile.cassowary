@@ -39,8 +39,8 @@ scwm_cl: $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
 constraint-primitives.x: constraint-primitives.cc
 	CC=$(CPP) guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
 
-extratags: $(SRCS) $(HDRS)
-	etags -a -C $(ETAGS_ARGS) $^
+extratags: $(SRCS) $(HDRS) TAGS
+	etags -a -C $(ETAGS_ARGS) $(SRCS) $(HDRS)
 
 -include $(CPPDEP_FILES)
 

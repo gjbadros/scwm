@@ -32,115 +32,24 @@
 #include "virtual.h"
 #include "events.h"
 
-static int dragx;			/* all these variables are used */
-static int dragy;			/* in resize operations */
-static int dragWidth;
-static int dragHeight;
-
-static int origx;
-static int origy;
-static int origWidth;
-static int origHeight;
-
-static int ymotion = 0, xmotion = 0;
-static int last_width, last_height;
-
-
-
-/*
- *  Procedure:
- *      DoResize - move the rubberband around.  This is called for
- *                 each motion event when we are resizing
- *
- *  Inputs:
- *      x_root  - the X corrdinate in the root window
- *      y_root  - the Y corrdinate in the root window
- *      psw - the current scwm window
- */
-void 
-DoResize(int x_root, int y_root, ScwmWindow * psw)
-{
-  int action = 0;
-
-  if ((y_root <= origy) || ((ymotion == 1) && (y_root < origy + origHeight - 1))) {
-    dragy = y_root;
-    dragHeight = origy + origHeight - y_root;
-    action = 1;
-    ymotion = 1;
-  } else if ((y_root >= origy + origHeight - 1) ||
-	     ((ymotion == -1) && (y_root > origy))) {
-    dragy = origy;
-    dragHeight = 1 + y_root - dragy;
-    action = 1;
-    ymotion = -1;
-  }
-  if ((x_root <= origx) ||
-      ((xmotion == 1) && (x_root < origx + origWidth - 1))) {
-    dragx = x_root;
-    dragWidth = origx + origWidth - x_root;
-    action = 1;
-    xmotion = 1;
-  }
-  if ((x_root >= origx + origWidth - 1) ||
-      ((xmotion == -1) && (x_root > origx))) {
-    dragx = origx;
-    dragWidth = 1 + x_root - origx;
-    action = 1;
-    xmotion = -1;
-  }
-  if (action) {
-    ConstrainSize(psw, &dragWidth, &dragHeight);
-    if (xmotion == 1)
-      dragx = origx + origWidth - dragWidth;
-    if (ymotion == 1)
-      dragy = origy + origHeight - dragHeight;
-
-    RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-                               dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
-  }
-  DisplaySize(psw, dragWidth, dragHeight, False);
-}
-
 
 /* Create the small window to show the interactively-moved/resized window's
    size/position */
 Window
-CreateMessageWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
+CreateMessageWindow(Pixel fg, Pixel bg) {
   Window w;
+  const int width = 50; /* just some starting place-- DisplayMessage resizes */
   XSetWindowAttributes attributes;
   unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
-#ifdef I18N
-  XRectangle dummy,log_ret;
-
-  XmbTextExtents(XFONT(Scr.msg_window_font)," +999999x999999", 15,&dummy,&log_ret);
-  Scr.EntryHeight = log_ret.height + HEIGHT_EXTRA;
-  Scr.SizeStringWidth = log_ret.width;
-#else
-  Scr.EntryHeight = FONTHEIGHT(Scr.msg_window_font) + HEIGHT_EXTRA;
-  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.msg_window_font),
-					 " +999999x999999", 15);
-#endif
   attributes.border_pixel = fg;
   attributes.background_pixel = bg;
   attributes.bit_gravity = NorthWestGravity;
 
-  if (!fMWMLike) {
-    w = XCreateWindow(dpy, Scr.Root,
-                      0, 0, (Scr.SizeStringWidth + SIZE_HINDENT * 2),
-                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
-                      0, 0, CopyFromParent, (Visual *) CopyFromParent,
-                      valuemask, &attributes);
-  } else {
-    w = XCreateWindow(dpy, Scr.Root,
-                      Scr.MyDisplayWidth / 2 - 
-                      (Scr.SizeStringWidth + SIZE_HINDENT * 2) / 2,
-                      Scr.MyDisplayHeight / 2 -
-                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2) / 2,
-                      (Scr.SizeStringWidth + SIZE_HINDENT * 2),
-                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
-                      0, 0, CopyFromParent, (Visual *) CopyFromParent,
-                      valuemask, &attributes);
-  }
+  w = XCreateWindow(dpy, Scr.Root,
+                    0, 0, width, 
+                    (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
+                    0, 0, CopyFromParent, (Visual *) CopyFromParent,
+                    valuemask, &attributes);
   return w;
 }
 
@@ -164,9 +73,9 @@ being moved or resized interactively. */
   Scr.msg_window_font=font;
   Scr.msg_window_fg = fg_color;
   Scr.msg_window_bg = bg_color;
-  XDestroyWindow(dpy,Scr.SizeWindow);
-  Scr.SizeWindow = CreateMessageWindow( XCOLOR(Scr.msg_window_fg), 
-                                        XCOLOR(Scr.msg_window_bg), Scr.flags & MWMMenus);
+
+  XSetWindowBorder(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_fg));
+  XSetWindowBackground(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_bg));
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
@@ -181,17 +90,16 @@ being moved or resized interactively. */
  *      width   - the width of the rubber band
  *      height  - the height of the rubber band
  */
-void 
-DisplaySize(ScwmWindow *psw, int width, int height, Bool fInitializeRelief)
+static void 
+DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
 {
   char sz[30];
   sprintf(sz, " %4d x %-4d ", width, height);
-  DisplayMessage(psw,sz,fInitializeRelief);
+  DisplayMessage(sz,fRelief);
 }
 
 /*
- *  Procedure:
- *      ConstrainSize - adjust the given width and height to account for the
+ * ConstrainSize - adjust the given width and height to account for the
  *              constraints imposed by size hints
  *
  *      The general algorithm, especially the aspect ratio stuff, is
@@ -199,7 +107,7 @@ DisplaySize(ScwmWindow *psw, int width, int height, Bool fInitializeRelief)
  */
 
 void 
-ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp)
+ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heightp)
 {
 #define makemult(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
@@ -315,6 +223,62 @@ ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp)
 }
 #undef makemult
 
+void
+ComputeNewGeometryOnResize(ScwmWindow *psw, 
+                           int x_orig, int y_orig,
+                           int w_orig, int h_orig,
+                           int x_root, int y_root,
+                           int *psgnXmotion, int *psgnYmotion,
+                           int *pxReturn, int *pyReturn,
+                           int *pwReturn, int *phReturn)
+{
+  Bool fChangedX = False;
+  Bool fChangedY = False;
+  int dragx, dragy, dragWidth, dragHeight;
+
+  if ((y_root <= y_orig) ||
+      ((*psgnYmotion == 1) && (y_root < y_orig + h_orig - 1))) {
+    dragy = y_root;
+    dragHeight = y_orig + h_orig - y_root;
+    *psgnYmotion = 1;
+    fChangedY = True;
+  } else if ((y_root >= y_orig + h_orig - 1) ||
+	     ((*psgnYmotion == -1) && (y_root > y_orig))) {
+    dragy = y_orig;
+    dragHeight = 1 + y_root - dragy;
+    *psgnYmotion = -1;
+    fChangedY = True;
+  }
+  if ((x_root <= x_orig) ||
+      ((*psgnXmotion == 1) && (x_root < x_orig + w_orig - 1))) {
+    dragx = x_root;
+    dragWidth = x_orig + w_orig - x_root;
+    *psgnXmotion = 1;
+    fChangedX = True;
+  } else if ((x_root >= x_orig + w_orig - 1) ||
+      ((*psgnXmotion == -1) && (x_root > x_orig))) {
+    dragx = x_orig;
+    dragWidth = 1 + x_root - x_orig;
+    *psgnXmotion = -1;
+    fChangedX = True;
+  }
+  if (fChangedX || fChangedY) {
+    ConstrainSize(psw, *psgnXmotion, *psgnYmotion, &dragWidth, &dragHeight);
+    if (*psgnXmotion == 1)
+      dragx = x_orig + w_orig - dragWidth;
+    if (*psgnYmotion == 1)
+      dragy = y_orig + h_orig - dragHeight;
+  }
+  if (fChangedX) {
+    *pxReturn = dragx;
+    *pwReturn = dragWidth;
+  }
+  if (fChangedY) {
+    *pyReturn = dragy;
+    *phReturn = dragHeight;
+  }
+}
+
 
 static void
 InitializeOutlineRects(XRectangle rects[], int lastx, int lasty, int lastWidth, int lastHeight)
@@ -392,6 +356,19 @@ the window. WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_interactive_resize
 {
+  int dragx;			/* all these variables are used */
+  int dragy;			/* in resize operations */
+  int dragWidth;
+  int dragHeight;
+
+  int origx;
+  int origy;
+  int origWidth;
+  int origHeight;
+
+  int ymotion = 0, xmotion = 0;
+
+  Bool fOpaque = True;
   extern Window PressedW;
   ScwmWindow *psw;
   Bool finished = False, done = False, abort = False;
@@ -423,7 +400,9 @@ specified. */
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  XGrabServer_withSemaphore(dpy);
+  if (!fOpaque) {
+    XGrabServer_withSemaphore(dpy);
+  }
 
   /* handle problems with edge-wrapping while resizing */
   flags = Scr.flags;
@@ -442,10 +421,11 @@ specified. */
   ymotion = xmotion = 0;
 
   /* pop up a resize dimensions window */
-  MapSizePositionWindow();
-  last_width = 0;
-  last_height = 0;
+  MapMessageWindow();
   DisplaySize(psw, origWidth, origHeight, True);
+
+  CassowaryEditSize(psw);
+
 
   /* Get the current position to determine which border to resize */
   if ((PressedW != Scr.Root) && (PressedW != None)) {
@@ -475,9 +455,11 @@ specified. */
     }
   }
   /* draw the rubber-band window */
-  RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-                             dragWidth + 2 * psw->bw,
-                             dragHeight + 2 * psw->bw);
+  if (!fOpaque) {
+    RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                               dragWidth + 2 * psw->bw,
+                               dragHeight + 2 * psw->bw);
+  }
 
   /* loop to resize */
   while (!finished) {
@@ -520,7 +502,18 @@ specified. */
       x = ResizeEvent.xmotion.x_root;
       y = ResizeEvent.xmotion.y_root;
       /* resize before paging request to prevent resize from lagging mouse - mab */
-      DoResize(x, y, psw);
+      ComputeNewGeometryOnResize(psw,origx,origy,origWidth,origHeight,
+                                 x, y, &xmotion, &ymotion, 
+                                 &dragx, &dragy, &dragWidth, &dragHeight);
+
+      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight);
+            
+      if (!fOpaque) {
+        RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                                   dragWidth + 2 * psw->bw, 
+                                   dragHeight + 2 * psw->bw);
+      }
+      DisplaySize(psw, dragWidth, dragHeight, True);
       /* need to move the viewport */
       HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
 		   &delta_x, &delta_y, False);
@@ -531,7 +524,11 @@ specified. */
 	dragx -= delta_x;
 	dragy -= delta_y;
 
-	DoResize(x, y, psw);
+        if (!fOpaque) {
+          RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                                     dragWidth + 2 * psw->bw, 
+                                     dragHeight + 2 * psw->bw);
+        }
       }
       done = True;
     default:
@@ -543,26 +540,33 @@ specified. */
       Event = ResizeEvent;
       DispatchEvent();
 
-      RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-                                 dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
-
+      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight);
+      if (!fOpaque) {
+        RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                                   dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
+      }
     }
   }
 
-  RemoveRubberbandOutline(Scr.Root);
+  if (!fOpaque) {
+    RemoveRubberbandOutline(Scr.Root);
+  }
 
   /* pop down the size window */
-  XUnmapWindow(dpy, Scr.SizeWindow);
+  UnmapMessageWindow();
 
+  CassowaryEndEdit(psw);
   if (!abort) {
-    ConstrainSize(psw, &dragWidth, &dragHeight);
+    ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
     SetupFrame(psw, dragx - psw->bw,
 	       dragy - psw->bw, dragWidth, dragHeight, False,
                NOT_MOVED, WAS_RESIZED);
   }
   UninstallRootColormap();
   ResizeWindow = None;
-  XUngrabServer_withSemaphore(dpy);
+  if (!fOpaque) {
+    XUngrabServer_withSemaphore(dpy);
+  }
   UngrabEm();
   xmotion = 0;
   ymotion = 0;

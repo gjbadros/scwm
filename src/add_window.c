@@ -98,12 +98,19 @@ void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
-void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) 
-{ XMoveWindow(dpy, psw->frame, x, y); }
-void SuggestSizeWindowTo(ScwmWindow *psw, int w, int h) 
-{ XResizeWindow(dpy, psw->frame, w, h); }
+void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) {
+  if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
+    FRAME_X(psw) = x; 
+    FRAME_Y(psw) = y; 
+    XMoveWindow(dpy, psw->frame, x, y); 
+  }
+}
+void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h) {
+  SetScwmWindowGeometry(psw,x,y,w,h);
+}
 void CassowaryEndEdit(ScwmWindow *psw) { /* empty */ }
 #endif
+
 
 /*
  *  Procedure:
@@ -206,7 +213,6 @@ GrabKeys(ScwmWindow * psw)
   }
   return;
 }
-
 
 /*
  * AddWindow - add a new window to the scwm list
@@ -381,7 +387,7 @@ AddWindow(Window w)
   frame_width = psw->attr.width + 2 * psw->boundary_width;
   frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
 
-  ConstrainSize(psw, &frame_width, &frame_height);
+  ConstrainSize(psw, 0, 0, &frame_width, &frame_height);
 
   /* Find out if the client requested a specific desk on the command line. */
   if (XGetCommand(dpy, psw->w, &client_argv, &client_argc)) {
@@ -394,11 +400,6 @@ AddWindow(Window w)
     XrmDestroyDatabase(db);
     db = NULL;
   }
-
-#if 0 /* Just testing how late placement can happen... */
-  if (!PlaceWindow(psw, Desk))
-    return NULL;
-#endif
 
   /*
    * Make sure the client window still exists.  We don't want to leave an
@@ -456,7 +457,7 @@ AddWindow(Window w)
   frame_width = psw->attr.width + 2 * psw->boundary_width;
   frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
 
-  ConstrainSize(psw, &frame_width, &frame_height);
+  ConstrainSize(psw, 0, 0, &frame_width, &frame_height);
 
   valuemask = CWBorderPixel | CWCursor | CWEventMask;
   if (Scr.d_depth < 2) {
@@ -529,8 +530,7 @@ AddWindow(Window w)
 			   EnterWindowMask | LeaveWindowMask);
   psw->title_x = psw->title_y = 0;
   psw->title_w = 0;
-  psw->title_width = frame_width - 2 * psw->corner_width
-    - 3 + psw->bw;
+  psw->title_width = frame_width - 2 * psw->corner_width - 3 + psw->bw;
   if (psw->title_width < 1)
     psw->title_width = 1;
   if (psw->fBorder) {
@@ -707,8 +707,10 @@ AddWindow(Window w)
 
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in it's new location? */
-  if (!PlaceWindow(psw, Desk))
+  if (!PlaceWindow(psw, Desk)) {
+    scwm_msg(ERR,__FUNCTION__,"PlaceWindow failed for %s",psw->name);
     return NULL;
+  }
 
   /* wait until the window is iconified and the icon window is mapped
    * before creating the icon window 
@@ -977,13 +979,13 @@ void init_add_window()
 {
   /**HOOK: before-new-window-hook 
   This hook is invoked when a new window structure is first starting
-to be created. Only a subset of the usual window paramenters should be
+to be created. Only a subset of the usual window parameters should be
 set here, in particular, those that control what hints will be
 respected for this window, and those that control how the window will
 be placed.
 
 This hook does not typically need to be used directly by the user;
-`window-style' from the (app scwm style) module provides a convenient
+`window-style' from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. */
   SCWM_DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");

@@ -166,7 +166,7 @@ void init_module_interface()
 
   /**HOOK: broadcast-hook 
   This hook is invoked whenever Broadcast would be called in
-fvwm2. This hook is principlally of use in implementing the fvwm2
+fvwm2. This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
 can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed a numerical code
@@ -175,9 +175,9 @@ following data arguments are meaningful, and 7 numeric data arguments.
   */
   SCWM_DEFINE_HOOK(broadcast_hook, "broadcast-hook");
 
-  /** HOOK: boradcast-config-hook 
+  /** HOOK: broadcast-config-hook 
   This hook is invoked whenever BroadcastConfig would be called in
-fvwm2. This hook is principlally of use in implementing the fvwm2
+fvwm2. This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
 can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed a window structure as the
@@ -187,7 +187,7 @@ sole argument.
 
   /** HOOK: boradcast-name-hook 
   This hook is invoked whenever BroadcastName would be called in
-fvwm2. This hook is principlally of use in implementing the fvwm2
+fvwm2. This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways
 that can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed an event type, three
@@ -195,13 +195,13 @@ numeric data arguments, and a string.
   */
   SCWM_DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
 
-  /** HOOK: boradcast-mini-icon-hook This hook is invoked whenever
-BroadcastMiniIcon would be called in fvwm2. This hook is principlally
-of use in implementing the fvwm2 module interface and for stuff that
-needs to be notified in ways that can't be done with the proper hooks
-that have been included so far. The procedures The procedures in this
-hook are passed a window structure as the sole argument.  
-  */
+  /** HOOK: boradcast-mini-icon-hook 
+  This hook is invoked whenever BroadcastMiniIcon would be called in
+fvwm2. This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures The procedures in this hook are passed a window
+structure as the sole argument.  */
   SCWM_DEFINE_HOOK(broadcast_mini_icon_hook, "broadcast-mini-icon-hook");
 }
 

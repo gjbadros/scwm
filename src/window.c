@@ -45,8 +45,16 @@
 #include "xmisc.h"
 #include "guile-compat.h"
 #include "callbacks.h"
+#include "add_window.h"
+#include "dbug_resize.h"
 
-SCM sym_mouse, sym_sloppy, sym_none;
+/* also used by miscproc.c's set-colormap-focus! */
+SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
+
+
+SCWM_SYMBOL(sym_sloppy , "sloppy");
+SCWM_SYMBOL(sym_none , "none");
+
 extern SCM sym_click;
 
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
@@ -303,7 +311,7 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 
 /**CONCEPT: Windows 
   Windows are the most important scwm data type. A window object
-represents an onscreen window that scwm is managing, and is used to
+represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  */
@@ -323,14 +331,14 @@ mark_window(SCM obj)
   /* FIXGJB: revisit this */
   if (VALIDWINP(obj) && PSWFROMSCMWIN(obj)->fl != NULL) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
-    scm_gc_mark(psw->fl->scmdecor);
-    scm_gc_mark(psw->mini_icon_image);
-    scm_gc_mark(psw->icon_req_image);
-    scm_gc_mark(psw->icon_image);
-    scm_gc_mark(psw->ReliefColor);
-    scm_gc_mark(psw->ShadowColor);
-    scm_gc_mark(psw->TextColor);
-    scm_gc_mark(psw->BackColor);
+    GC_MARK_SCM_IF_SET(psw->fl->scmdecor);
+    GC_MARK_SCM_IF_SET(psw->mini_icon_image);
+    GC_MARK_SCM_IF_SET(psw->icon_req_image);
+    GC_MARK_SCM_IF_SET(psw->icon_image);
+    GC_MARK_SCM_IF_SET(psw->ReliefColor);
+    GC_MARK_SCM_IF_SET(psw->ShadowColor);
+    GC_MARK_SCM_IF_SET(psw->TextColor);
+    GC_MARK_SCM_IF_SET(psw->BackColor);
   }
 
   return SCM_BOOL_F;
@@ -495,12 +503,31 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 0, 0,
-          ())
-     /** Should return a window selected interactively - unimplemented. */
+/* FIXGJB: it'd be nice to add an option to have the message window follow
+   the pointer around! --07/25/98 gjb */
+SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 1, 0,
+          (SCM msg))
+     /** Returns a window selected interactively while displaying MSG.
+Returns #f if no window was selected. Display no message if MSG not given. */
 #define FUNC_NAME s_select_window_interactively
 {
-  ScwmWindow *psw = PswSelectInteractively(dpy);
+  ScwmWindow *psw = NULL;
+  char *sz = NULL;
+  Bool fWindow = False;
+  if (!UNSET_SCM(msg) && !gh_string_p(msg)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, msg);
+  }
+  if (gh_string_p(msg)) {
+    sz = gh_scm2newstr(msg, NULL);
+    MapMessageWindow();
+    DisplayMessage(sz, True);
+    fWindow = True;
+  }
+  psw = PswSelectInteractively(dpy);
+  if (fWindow) {
+    FREE(sz);
+    UnmapMessageWindow();
+  }
   return psw? psw->schwin: SCM_BOOL_F;
 }
 #undef FUNC_NAME
@@ -677,10 +704,11 @@ GrabEm(enum cursor cursor)
   SetFocus(Scr.NoFocusWin, NULL, 0);
   mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
     | EnterWindowMask | LeaveWindowMask;
-  while ((i < 1000) && (val = XGrabPointer(dpy, Scr.Root, True, mask,
-				     GrabModeAsync, GrabModeAsync, Scr.Root,
-				    Scr.ScwmCursors[cursor], CurrentTime) !=
-			GrabSuccess)) {
+  while ((i < 1000) && 
+         (val = XGrabPointer(dpy, Scr.Root, True, mask,
+                             GrabModeAsync, GrabModeAsync, Scr.Root,
+                             Scr.ScwmCursors[cursor], 
+                             CurrentTime) != GrabSuccess)) {
     i++;
     /* If you go too fast, other windows may not get a change to release
      * any grab that they have. */
@@ -744,9 +772,12 @@ PswFromPointerLocation(Display *dpy)
 ScwmWindow *
 PswSelectInteractively(Display *dpy)
 {
-  /* FIXGJB: this needs to be written, but could
-     benefit from better, more general, event handling */
-  return NULL;
+  /* FIXGJB: this should be the primitive that select_window calls,
+     and this should replace DeferExecution. --07/25/98 gjb */
+  SCM result = select_window(SCM_BOOL_F, SCM_BOOL_T);
+  if (result == SCM_BOOL_F)
+    return NULL;
+  return PSWFROMSCMWIN(result);
 }
   
 
@@ -1640,16 +1671,18 @@ window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-/***********************************************************************
- *
- *  WindowShade -- shades or unshades a window (veliaa@rpi.edu)
- ***********************************************************************/
+/*
+ *  WindowShade -- shades or unshades a window
+ *  Originally written for fvwm2 by Andrew V. <veliaa@rpi.edu>
+ */
 
 /* Modified for scwm by mstachow@mit.edu, 
    animation added by gjb@cs.washington.edu */
 
 /* FIXMS: split out animated versions of this and move-to into their
-own procs! */
+own procs! 
+  why? so they're separate add-ons?  that's reasonable-- just curious --07/24/98 gjb
+*/
 
 SCWM_PROC(window_shade, "window-shade", 0, 2, 0,
           (SCM win, SCM animated_p))
@@ -1815,11 +1848,64 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
   XMoveWindow(dpy, psw->frame, x, y);
 }
 
+
+/* ResizePswToCurrentSize may updated psw->attr, so is not const */
 void 
-ResizePswToCurrentSize(const ScwmWindow *psw)
+ResizePswToCurrentSize(ScwmWindow *psw)
 {
   int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
-  XResizeWindow(dpy, psw->frame, w, h);
+  int x = FRAME_X(psw), y = FRAME_Y(psw);
+
+  SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
+
+#if 0
+  /* send configure event to client application */
+  { /* scope */
+    XEvent client_event;
+    client_event.type = ConfigureNotify;
+    client_event.xconfigure.display = dpy;
+    client_event.xconfigure.event = psw->w;
+    client_event.xconfigure.window = psw->w;
+
+    /* FIXGJB are x and y virtual or physical? may need to subtract paging pos */
+    client_event.xconfigure.x = x + psw->boundary_width;
+    client_event.xconfigure.y = y + psw->title_height + psw->boundary_width;
+    client_event.xconfigure.width = w - 2 * psw->boundary_width;
+    client_event.xconfigure.height = h - 2 * psw->boundary_width -
+      psw->title_height;
+
+    client_event.xconfigure.border_width = psw->bw;
+    /* Real ConfigureNotify events say we're above title window, so ... */
+    /* what if we don' thave a title ????? */
+    client_event.xconfigure.above = psw->frame;
+    client_event.xconfigure.override_redirect = False;
+    DBUG_RESIZE(__FUNCTION__, "Sending configure event to (%d,%d), %d x %d",
+                x,y,w,h);
+    XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
+  }
+#endif
+}
+
+
+/* Only resize if something has changed -- this gets called
+   when cassowary is not re-solving for this window, so we must be sure that
+   the window has really changed.
+   (Note that it may get called when cassowary is in use if there is
+   no master solver yet) */
+void
+SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h) {
+  Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
+  Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);
+  if (fNeedMove || fNeedResize) {
+    SET_CVALUE(psw,frame_x,x);
+    SET_CVALUE(psw,frame_y,y);
+    SET_CVALUE(psw,frame_width,w);
+    SET_CVALUE(psw,frame_height,h);
+    if (fNeedResize)
+      ResizePswToCurrentSize(psw);
+    else
+      MovePswToCurrentPosition(psw);
+  }
 }
 
 
@@ -2044,7 +2130,7 @@ usual way if not specified.*/
      height += (psw->title_height + 2*psw->boundary_width);
    */
 
-  ConstrainSize(psw, &width, &height);
+  ConstrainSize(psw, 0, 0, &width, &height);
   SetupFrame(psw, FRAME_X(psw),
 	     FRAME_Y(psw), width, height, False,
              NOT_MOVED, WAS_RESIZED);
@@ -3180,12 +3266,6 @@ init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
 
-  sym_mouse = gh_symbol2scm("mouse");
-  scm_protect_object(sym_mouse);
-  sym_sloppy = gh_symbol2scm("sloppy");
-  scm_protect_object(sym_sloppy);
-  sym_none = gh_symbol2scm("none");
-  scm_protect_object(sym_none);
   /**HOOK: invalid-interaction-hook 
 This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
