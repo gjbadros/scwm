@@ -1,3 +1,30 @@
+Fri Apr 16 14:49:04 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* move.c (InteractiveMove): Call the
+	interactive_move_new_position_hook consistently with viewport
+	coordinates and document it as such (the last call was using
+	virtual coords).
+
+	* image.c (free_image): Don't dereference through si if it's NULL, 
+	other safety tests.  (Modified from James LewisMoss's 2nd patch to 
+	add the free-ing).  Untested since I'm building without imlib for
+	a while.
+
+Fri Apr 16 12:26:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c: Added accessors to timer-hooks, input-hooks.  Can
+	we ensure that these aren't changed from the Scheme level?
+	They're useful for debugging, but are probably problematic if
+	messed with.
+
+	* add_window.c: Move the creation of the window object a little
+	bit later.
+
+Fri Apr 16 12:24:09 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* image.c (free_image): Call Imlib_free_pixmap,
+	Imlib_destroy_image if USE_IMLIB.  Thanks James LewisMoss.
+
 Thu Apr 15 19:24:28 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added `handle-pending-events';  this lets
