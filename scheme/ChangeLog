@@ -1,3 +1,10 @@
+Wed Jan 20 13:23:23 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Use delq, not remove-from-list, fix some
+	typos, begin adding some documentation, begin using (error ..)
+	instead of returning #f when accessors are called w/ wrong
+	objects, etc.
+
 Wed Jan 20 10:37:42 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Added

@@ -1,3 +1,14 @@
+Wed Jan 20 13:20:19 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: Use scm_misc_error for out-of-range
+	errors (not scm_wrong_type_arg);  doc string fixes; parenthesize
+	multiplication and cast.
+
+Wed Jan 20 11:00:21 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c, drawing.h: Simplify drawing.h -- needs
+	no prototypes and is just a filler -- move its #includes into drawing.c
+
 Wed Jan 20 10:44:02 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: Changed name from set-drawing-mask! to
