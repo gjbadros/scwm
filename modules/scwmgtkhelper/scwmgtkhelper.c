@@ -35,6 +35,7 @@
 
 SCWM_PROC(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
 	  ())
+     /** Return the integer connection number of the gdk_display. */
 #define FUNC_NAME s_scwm_gdk_X_fdes
 {
   return gh_int2scm(XConnectionNumber(gdk_display));
