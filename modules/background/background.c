@@ -1,5 +1,5 @@
 /* $Id$
- * Copyright (C) 1998, Maciej Stachowiak
+ * Copyright (C) 1999, Maciej Stachowiak, Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,8 @@ static Atom atom_XSETROOT_ID;
 SCM_SYMBOL(sym_centered, "centered");
 SCM_SYMBOL(sym_tiled, "tiled");
 
-/* Maybe once we can use Imlib?
-SCM_SYMBOL(sym_scale, "scale");
-*/
-
-/* MS:FIXME:: hack-around for scm_[un]protect_object not nesting, but
-   it does in Guile 1.3 so fix this when 1.3 support is dropped. */
-
-SCM protected_objs;
-
+static SCM root_bg_color = SCM_BOOL_F;
+static SCM root_image = SCM_BOOL_F;
 
 /* MS:FIXME:MS: Add docs! */
 
@@ -61,7 +54,6 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 
   VALIDATE_ARG_COLOR(1,color);
 
-  gh_vector_set_x(protected_objs, SCM_MAKINUM(0), color);
   XSetWindowBackground(dpy, Scr.Root, XCOLOR(color));
   XClearWindow(dpy, Scr.Root);
 
@@ -69,6 +61,8 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 		  (char *)&(XCOLOR(color)), 1);
   XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
 		  (char *)&dummy, 1);
+
+  root_bg_color = color;
 
   /* MS:FIXME:: Should set _XSETROOT_ID to a fake one-pixel pixmap, just delete for now. */
   XDeleteProperty(dpy, Scr.Root, atom_XSETROOT_ID);
@@ -149,7 +143,7 @@ is filled with BGCOLOR. See also `clone-scaled-image'.*/
     XCopyArea(dpy, pix, npix, gc, ox, oy, nnw, nnh, nx, ny);
 
 
-    /* Use a better name */
+    /* MS:FIXME:: Use a better name */
     retval=make_image_from_pixmap("(resized image)", npix, None, nw,
 				  nh, Scr.d_depth);
 
@@ -165,9 +159,7 @@ SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
 STYLE can be either 'centered or 'tiled. */
 #define FUNC_NAME s_set_background_image_x
 {
-  Pixmap dummy = 0;
-
-  SCM img;
+  int dummy = 0;
 
   VALIDATE_ARG_IMAGE_OR_STRING(1,image);
  
@@ -180,22 +172,24 @@ STYLE can be either 'centered or 'tiled. */
   }
 
   if (style==sym_centered) {
-    img=make_resized_image(img, gh_ulong2scm(Scr.DisplayWidth),
-			     gh_ulong2scm(Scr.DisplayHeight),
-			     gh_vector_ref(protected_objs, SCM_MAKINUM(0)));
+    image = clone_resized_image(image, gh_ulong2scm(Scr.DisplayWidth),
+                                gh_ulong2scm(Scr.DisplayHeight),
+                                root_bg_color);
   };
 
-  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), img);
-  XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(img)->image);
+  XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(image)->image);
   XClearWindow(dpy, Scr.Root);
+
+  root_image = image;
 
   XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
 		  (char *)&dummy, 1);
   XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(img)->image), 1);
+		  (char *)&(IMAGE(image)->image), 1);
   XChangeProperty(dpy, Scr.Root, atom_XSETROOT_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(img)->image), 1);
+		  (char *)&(IMAGE(image)->image), 1);
 
+  
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME 
@@ -208,10 +202,8 @@ SCWM_PROC(reset_background_x, "reset-background!", 0, 0, 0,
 {
   XSetWindowBackgroundPixmap(dpy, Scr.Root, (Pixmap) None);
   XClearWindow(dpy, Scr.Root);
- 
-  gh_vector_set_x(protected_objs, SCM_MAKINUM(0), SCM_BOOL_F);
-  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), SCM_BOOL_F);
-  
+  root_bg_color = SCM_BOOL_F;
+  root_image = SCM_BOOL_F;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME 
@@ -225,9 +217,8 @@ init_background()
   atom_XROOTPMAP_ID = XInternAtom (dpy, "_XROOTPMAP_ID", False);
   atom_XROOTCOLOR_PIXEL = XInternAtom (dpy,"_XROOTCOLOR_PIXEL", False);
   atom_XSETROOT_ID = XInternAtom (dpy, "_XSETROOT_ID", False);
-
-  protected_objs = scm_make_vector(SCM_MAKINUM(2), SCM_BOOL_F);
-  scm_permanent_object(protected_objs);
+  scm_permanent_object(root_image);
+  scm_permanent_object(root_bg_color);
 
 #ifndef SCM_MAGIC_SNARFER
  #include "background.x"
