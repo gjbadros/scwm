@@ -1,3 +1,25 @@
+Wed Apr 14 10:10:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): List all the other missing
+	.scm files that I added yesterday.  I need to run make check more
+	regularly!
+
+Wed Apr 14 10:06:33 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Added `use-scwm-modules' macro,
+	`process-use-scwm-modules' procedure.  Simplifies and makes using
+	modules from .scwmrcs much more robust.
+
+Tue Apr 13 19:55:14 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* stringops.scm, file.scm: Move `write-all' to stringops.scm from
+ 	file.scm
+
+	* preferences.scm: Use `scwm-option-set!', not just `set!' for
+	setting the options in the string to be written to file.
+
+	* doc.scm: use stringops.
+
 1999-04-13  Sam Steingold  <sds@goems.com>
 
 	* Makefile.am (scwm_common_scheme): added stringops.scm.

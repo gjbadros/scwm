@@ -11,6 +11,16 @@ up one pixel larger in height.
 
 --Harvey Stein
 -------
+Really smart placement (i.e., clever placement) has an off my one bug.
+
+Try starting a couple of xterms in the viewport one below the home viewport,
+then move back to the home viewport -- you can see one row of pixels at the
+bottom of the screen.
+--04/14/99 gjb
+-------
+xload windows (among others, probably) move and resize on restarts --
+gravity related?
+-------
 Backtrace:
  0* [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
  1* [apply-hint-style (#(#<procedure always? #> # #) #(#<procedure always? #> # 
