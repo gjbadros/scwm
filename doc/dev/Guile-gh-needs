@@ -91,6 +91,19 @@ scm_hash_remove_x
 scm_hashq_remove_x
 scm_hashq_set_x
 
+
+Lily sources have (according to Han-Wen Neinhuys --12/05/99 gjb)
+[in addition to the above]
+
+scm_assoc
+scm_assoc_set_x
+scm_reverse
+sm_mkstrpor
+scm_ftell
+scm_read
+scm_fill_input
+
+
 Types
 -----
 
