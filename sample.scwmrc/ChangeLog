@@ -1,3 +1,7 @@
+1998-07-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* robbe.scwmrc: More documentation.
+
 1998-07-06  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Fix hosts menus, add debug-display, use
