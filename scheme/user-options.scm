@@ -16,5 +16,6 @@
 '(opaque-resize-percent)
 '(remote-shell-command)
 '(shadow-factor)
+'(use-scwm-system-proc)
 '(xterm-command)
 ))
