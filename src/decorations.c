@@ -418,7 +418,8 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   if (t->title_height > 0)
     t->title_height += t->bw;
 
-#if 0 /* FIXGJB: I think we should keep these orthogonal --07/29/98 gjb */
+#if 1 /* FIXGJB: I think we should keep these orthogonal --07/29/98 gjb 
+       but it's buggy if we do for now */
   if (t->boundary_width == 0)
     t->fBorder = False;
 #endif

@@ -68,16 +68,27 @@ FlagsBitsFromSw(ScwmWindow *psw)
   int i = 0;
 
 #define SET_BIT_FOR(x) do { if (psw->x) flags |= (1 << i); i++; } while (0)
+
+#define SET_BIT_FOR_OBJ_PROP(s) \
+do { \
+  if (SCM_NFALSEP(scm_object_property(psw->schwin, \
+                                     gh_symbol2scm(s)))) { \
+/*    scwm_msg(DBG,__FUNCTION__,"fWinListSkip for %s",psw->name); */ \
+    flags |= (1 << i); \
+  } \
+  i++; \
+} while (0)
+
   SET_BIT_FOR(fStartIconic);
   SET_BIT_FOR(fOnTop);
   SET_BIT_FOR(fSticky);
-  SET_BIT_FOR(fWindowListSkip);
+  SET_BIT_FOR_OBJ_PROP("winlist-skip");
   SET_BIT_FOR(fSuppressIcon);
   SET_BIT_FOR(fNoIconTitle);
   SET_BIT_FOR(fLenience);
   SET_BIT_FOR(fSticky);
-  SET_BIT_FOR(fCirculateSkipIcon);
-  SET_BIT_FOR(fCirculateSkip);
+  SET_BIT_FOR_OBJ_PROP("circulate-skip-icon");
+  SET_BIT_FOR_OBJ_PROP("circulate-skip");
   SET_BIT_FOR(fClickToFocus);
   SET_BIT_FOR(fSloppyFocus);
   SET_BIT_FOR(fShowOnMap);
@@ -91,7 +102,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
   SET_BIT_FOR(fIconOurs);
   SET_BIT_FOR(fPixmapOurs);
   SET_BIT_FOR(fShapedIcon);
-  SET_BIT_FOR(fMaximized);
+  SET_BIT_FOR_OBJ_PROP("maximize");
   SET_BIT_FOR(fDoesWmTakeFocus);
   SET_BIT_FOR(fDoesWmDeleteWindow);
   SET_BIT_FOR(fIconMoved);
@@ -101,6 +112,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
   SET_BIT_FOR(fMWMButtons);
   SET_BIT_FOR(fMWMBorders);
 #undef SET_BIT_FOR
+#undef SET_BIT_FOR_OBJ_PROP
 
   assert(i == 32);
   return flags;
@@ -2706,8 +2718,10 @@ WIN defaults to the window context in the usual way if not specified. */
 	       FRAME_WIDTH(psw) + 2 * (w - oldw),
 	       FRAME_HEIGHT(psw) + 2 * (w - oldw));
 
+#if 0
   /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+#endif
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
