@@ -30,10 +30,13 @@ typedef struct {
   char *name;
 } scwm_font;
 
-#define FONTP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_font)
-#define FONT(X)  ((scwm_font *)SCM_CDR(X))
-#define XFONT(X) (((scwm_font *)SCM_CDR(X))->xfs)
+#define FONTP(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
+#define FONT(X)  ((scwm_font *)SCM_CDR((X)))
+#define SAFE_FONT(X)  (FONTP((X))?FONT((X)):NULL)
+#define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
+#define SAFE_XFONT(X) (FONTP((X))?XFONT((X)):NULL)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)
+#define SAFE_FONTNAME(X) (FONTP((X))?FONTNAME((X)):NULL)
 
 size_t free_font(SCM obj);
 int print_font(SCM obj, SCM port, scm_print_state * pstate);

@@ -37,6 +37,9 @@
 #define scmBLACK load_color(gh_str02scm("black"))
 #define scmWHITE load_color(gh_str02scm("white"))
 
+static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
+static void PopdownMenu(DynamicMenu *pmd);
+
 SCM 
 mark_menu(SCM obj)
 {
@@ -127,7 +130,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
 	if (!strchr(pch,ch)) {
 	  /* Found the char to use */
 	  rgpmiim[ipmiim]->chShortcut = ch;
-	  pch[ich++] = ch;
+	  pch[ich++] = tolower(ch);
 	  rgpmiim[ipmiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
 	  break;
 	}
@@ -287,37 +290,33 @@ SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
 			    &x, &y);
   pmd->pmdi->x = x;
   pmd->pmdi->y = y;
+}
 
-  /* May want to select a different object initially if we popped up
-     somewhere near an edge/bottom, depending on what behaviour
-     we choose there */
-  pmd->ipmiimSelected = 0;
+/* FIXGJB: this could be a callback */
+static
+void
+SetPopupMenuPositionFromMenuItem(DynamicMenu *pmd, 
+				 MenuItemInMenu *pmiimSelected)
+{
+  MenuDrawingInfo *pmdi = pmiimSelected->pmd->pmdi;
+  int cpixXmenu = pmdi->x;
+  int cpixYmenu = pmdi->y;
+  int cpixWidthMenu = pmdi->cpixWidth;
+  MenuDrawingInfo *pmdiNew = pmd->pmdi;
+  int cpixWidthNewMenu = pmdiNew->cpixWidth;
 
-  /* mark menu item as selected */
-  if (pmd->ipmiimSelected >= 0) {
-    pmd->rgpmiim[pmd->ipmiimSelected]->mis = MIS_Selected;
+  if (cpixXmenu + cpixWidthMenu + pmdiNew->cpixWidth <= Scr.MyDisplayWidth) {
+    pmd->pmdi->x = cpixXmenu + cpixWidthMenu - 2;
+  } else {
+    /* pop to the left */
+    pmd->pmdi->x = cpixXmenu - cpixWidthNewMenu;
   }
-}
-
-static
-void
-PopupMenu(DynamicMenu *pmd)
-{
-  MenuDrawingInfo *pmdi = pmd->pmdi;
-/*  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior; */
-  Window w = pmdi->w;
-  InstallRootColormap();
-  XMoveWindow(dpy, w, pmdi->x, pmdi->y);
-  XMapRaised(dpy, w);
-}
-
-static
-void
-PopdownMenu(DynamicMenu *pmd)
-{
-  XUnmapWindow(dpy, pmd->pmdi->w);
-  UninstallRootColormap();
-  XFlush(dpy);
+  pmd->pmdi->y = cpixYmenu + pmiimSelected->cpixOffsetY - 2;
+  if (pmd->pmdi->y + pmdiNew->cpixHeight > Scr.MyDisplayHeight) {
+    /* would go off the bottom edge of the screen;
+       force it up from the bottom of the screen */
+    pmd->pmdi->y = Scr.MyDisplayHeight-pmdiNew->cpixHeight;
+  }
 }
 
 
@@ -428,6 +427,11 @@ PmiimSelectedFromPmd(DynamicMenu *pmd)
   int ipmiimSelected = pmd->ipmiimSelected;
   if (ipmiimSelected < 0)
     return NULL;
+  if (ipmiimSelected >= pmd->cmiim) {
+    scwm_msg(WARN,__FUNCTION__,"ipmiimSelected = %d > pmd->cmiim = %d",
+	     ipmiimSelected, pmd->cmiim);
+    return NULL;
+  }
   return pmd->rgpmiim[ipmiimSelected];
 }
 
@@ -445,6 +449,11 @@ UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
   pmd->ipmiimSelected = -1;
   pmiim->mis = MIS_Enabled;
   RepaintMenuItem(pmiim);
+  if (pmd->pmdNext) {
+    PopdownMenu(pmd->pmdNext);
+    free(pmd->pmdNext);
+    pmd->pmdNext = NULL;
+  }
 }
 
 static
@@ -466,7 +475,251 @@ static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask |
 				     VisibilityChangeMask | ButtonMotionMask |
 				     PointerMotionMask );
 
-static int HOVER_DELAY_MS = 300;  /* FIXGJB: make configurable */
+static int HOVER_DELAY_MS = 500;  /* FIXGJB: make configurable */
+static int MENU_POPUP_DELAY_MS = 900;  /* FIXGJB: make configurable */
+
+static
+SCM
+InvokeUnhoverAction(DynamicMenu *pmd)
+{
+  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+  /* invoke the un-hover action */
+  if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
+    call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
+  } else {
+    scwm_msg(DBG,__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
+  }
+}
+
+
+static
+void
+PopupMenu(DynamicMenu *pmd)
+{
+  MenuDrawingInfo *pmdi = pmd->pmdi;
+/*  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior; */
+  Window w = pmdi->w;
+  pmd->fHoverActionInvoked = False;
+
+  InstallRootColormap();
+  XMoveWindow(dpy, w, pmdi->x, pmdi->y);
+  XMapRaised(dpy, w);
+}
+
+static
+void
+PopdownMenu(DynamicMenu *pmd)
+{
+  if (pmd->pmdNext) {
+    PopdownMenu(pmd->pmdNext);
+    free(pmd->pmdNext);
+    pmd->pmdNext = NULL;
+  }
+  InvokeUnhoverAction(pmd);
+  pmd->fHoverActionInvoked = False;
+  /* unconnect the window from the dynamic menu */
+  XSaveContext(dpy, pmd->pmdi->w,MenuContext,(caddr_t)NULL);
+  XUnmapWindow(dpy, pmd->pmdi->w);
+  UninstallRootColormap();
+  XFlush(dpy);
+}
+
+static
+Bool
+FPmdInPmdPriorChain(DynamicMenu *pmdToFind, DynamicMenu *pmd)
+{
+  while (pmd) {
+    if (pmd->pmdPrior == pmdToFind) {
+      return True;
+    }
+    pmd = pmd->pmdPrior;
+  }
+  return False;
+}
+
+enum menu_status { 
+  MENUSTATUS_ABORTED, 
+  MENUSTATUS_ITEM_SELECTED, 
+  MENUSTATUS_POPUP_AND_MOVE,
+  MENUSTATUS_NOP,
+  MENUSTATUS_NEWITEM
+};
+
+#define CMIIM_CONTROL_KEY_MOVES 5
+
+static
+MenuItemInMenu *
+PmiimStepItems(MenuItemInMenu *pmiim, int n, int direction)
+{
+  DynamicMenu *pmd = pmiim->pmd;
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim;
+  int ipmiimLastEnabled = pmiim->ipmiim;
+  int ipmiim = ipmiimLastEnabled;
+  
+  while (True) {
+    if (ipmiim >= pmd->cmiim || ipmiim < 0) 
+      break;
+    if (!UNSET_SCM(rgpmiim[ipmiim]->pmi->scmAction)) {
+      n--;
+      ipmiimLastEnabled = ipmiim;
+    }
+    if (n < 0 || (n == 0 && ipmiimLastEnabled != pmiim->ipmiim))
+      break;
+    ipmiim+=direction;
+  }
+  return rgpmiim[ipmiimLastEnabled];
+}
+
+static
+MenuItemInMenu *
+PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status)
+{
+  int fControlKey = Event->xkey.state & ControlMask? TRUE : FALSE;
+  int fShiftedKey = Event->xkey.state & ShiftMask? TRUE: FALSE;
+  KeySym keysym = XLookupKeysym(&Event->xkey,0);
+  int index = -1;
+  Menu *pmenu = pmd->pmenu;
+  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+  MenuItemInMenu *pmiimNewItem = NULL;
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim;
+
+  *pmenu_status = MENUSTATUS_NOP;
+  /* Is it okay to treat keysym-s as Ascii? */
+
+  /* Try to match hot keys */
+  if (isgraph(keysym) && fControlKey == FALSE) { 
+    /* allow any printable character to be a keysym, but be sure control
+       isn't pressed */
+    MenuItemInMenu *pmiim;
+    int ipmiim = 0;
+    keysym = tolower(keysym);
+    /* Search menu for matching hotkey */
+    for (; ipmiim < pmd->cmiim; ipmiim ++ ) {
+      if (keysym == tolower(rgpmiim[ipmiim]->chShortcut)) {
+	*pmenu_status = MENUSTATUS_NEWITEM;
+	return rgpmiim[ipmiim];
+      }
+    }
+  }
+  /* Fell through here, so it didn't match a shortcut key */
+
+  switch(keysym)		/* Other special keyboard handling	*/
+    {
+    case XK_Escape:		/* Escape key pressed. Abort		*/
+      *pmenu_status = MENUSTATUS_ABORTED;
+      return NULL;
+      break;
+
+    case XK_Return:
+      *pmenu_status = MENUSTATUS_ITEM_SELECTED;
+      return PmiimSelectedFromPmd(pmd);
+      break;
+
+    case XK_Left:
+    case XK_b: /* back */
+    case XK_h: /* vi left */
+      pmiimNewItem = pmd->pmdPrior? PmiimSelectedFromPmd(pmd->pmdPrior) : NULL;
+      if (pmiimNewItem) {
+	*pmenu_status = MENUSTATUS_NEWITEM;
+      }
+      return pmiimNewItem;
+      break;
+      
+    case XK_Right:
+    case XK_f: /* forward */
+    case XK_l: /* vi right */
+      *pmenu_status = MENUSTATUS_POPUP_AND_MOVE;
+      return pmiimSelected;
+      break;
+
+      /* FIXGJB: Don't let keyboard movements go to
+	 unenabled items */
+      
+    case XK_Up:
+    case XK_k: /* vi up */
+    case XK_p: /* prior */
+      if (isgraph(keysym))
+	  fControlKey = FALSE; /* don't use control modifier 
+				  for k or p, since those might
+				  be shortcuts too-- C-k, C-p will
+				  always work to do a single up */
+      if (fShiftedKey) {
+	pmiimNewItem = PmiimStepItems(pmd->rgpmiim[0],0,+1);
+      } else {
+	int cmiimToMove = fControlKey?CMIIM_CONTROL_KEY_MOVES:1;
+	if (pmiimSelected == NULL) {
+	  pmiimSelected = pmd->rgpmiim[pmd->cmiim-1];
+	  cmiimToMove--;
+	}
+	pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,-1);
+      }
+      *pmenu_status = MENUSTATUS_NEWITEM;
+      return pmiimNewItem;
+      break;
+
+    case XK_Down:
+    case XK_j: /* vi down */
+    case XK_n: /* next */
+      if (isgraph(keysym))
+	  fControlKey = FALSE; /* don't use control modifier
+				  for j or n, since those might
+				  be shortcuts too-- C-j, C-n will
+				  always work to do a single down */
+      if (fShiftedKey) {
+	pmiimNewItem = PmiimStepItems(pmd->rgpmiim[pmd->cmiim-1],0,-1);
+      } else {
+	int cmiimToMove = fControlKey?CMIIM_CONTROL_KEY_MOVES:1;
+	if (pmiimSelected == NULL) {
+	  pmiimSelected = pmd->rgpmiim[0];
+	  cmiimToMove--;
+	}
+	pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,+1);
+      }
+      *pmenu_status = MENUSTATUS_NEWITEM;
+      return pmiimNewItem;
+      break;
+      
+      /* Nothing special --- Allow other shortcuts */
+    default:
+      break;
+    }
+  
+  return NULL;
+}
+
+static
+DynamicMenu *
+PmdPrepopFromPmiim(MenuItemInMenu *pmiim) 
+{
+  DynamicMenu *pmd;
+  DynamicMenu *pmdNew = NULL;
+  if (pmiim) {
+    Menu *pmenu = SAFE_MENU(pmiim->pmi->scmAction);
+    if (pmenu) {
+      pmd = pmiim->pmd;
+      pmdNew = NewDynamicMenu(pmenu,pmd);
+      if (pmd->pmdNext) {
+	scwm_msg(WARN,__FUNCTION__,"pmdNext != NULL! Why?\n");
+      }
+      pmd->pmdNext = pmdNew;
+      SetPopupMenuPositionFromMenuItem(pmdNew,pmiim);
+      PopupMenu(pmdNew);
+    }
+  }
+  return pmdNew;
+}
+
+static
+void
+WarpPointerToPmiim(MenuItemInMenu *pmiim)
+{
+  DynamicMenu *pmd = pmiim->pmd;
+  MenuDrawingInfo *pmdi = pmd->pmdi;
+  /* FIXGJB: make fraction of menu that pointer goes to configurable */
+  int x = 2*(pmdi->cpixWidth - pmdi->cpixItemOffset)/3;
+  int y = pmiim->cpixOffsetY + pmiim->cpixItemHeight/2;
+  XWarpPointer(dpy, 0, pmdi->w, 0, 0, 0, 0, x, y);
+}
 
 static
 SCM
@@ -474,18 +727,29 @@ MenuInteraction(DynamicMenu *pmd)
 {
   int c10ms_delays = 0;
   SCM scmAction = SCM_UNDEFINED;
-  Bool fHoverActionInvoked = False;
+  MenuItemInMenu *pmiim = NULL;
+  int cpixXoffsetInMenu = 0;
+  Bool fGotMouseMove = False;
+  /* FIXGJB: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == FALSE) {
       sleep_ms(10);
 
+      if (c10ms_delays++ == MENU_POPUP_DELAY_MS/10) {
+	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	if (pmd->pmdNext == NULL) {
+	  PmdPrepopFromPmiim(pmiimSelected);
+	}
+      }
+
       if (c10ms_delays++ == HOVER_DELAY_MS/10 ) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiimSelected) {
-	  fHoverActionInvoked = True;
+	  SCM scmHover = pmiimSelected->pmi->scmHover;
+	  pmd->fHoverActionInvoked = True;
 	  /* invoke the hover action */
-	  if (gh_procedure_p(pmiimSelected->pmi->scmHover)) {
-	    call_thunk_with_message_handler(pmiimSelected->pmi->scmHover);
+	  if (gh_procedure_p(scmHover)) {
+	    call_thunk_with_message_handler(scmHover);
 	  }
 	}
 	/* block until there is an interesting event */
@@ -500,17 +764,23 @@ MenuInteraction(DynamicMenu *pmd)
 			     &Event))&&(Event.type != ButtonRelease));
     }
     
-    scwm_msg(DBG,__FUNCTION__,"Got an event");
+/*    scwm_msg(DBG,__FUNCTION__,"Got an event"); FIXGJB */
+
+    /* get the item the pointer is at */
+    pmiim = PmiimFromPointerLocation(dpy,&cpixXoffsetInMenu);
+
+    if (Event.type == MotionNotify) {
+      fGotMouseMove = True;
+    }
+
     switch(Event.type) {
     case ButtonRelease:
     { /* scope */
-      MenuItemInMenu *pmiim = PmiimFromPointerLocation(dpy,NULL);
       if (pmiim) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiim != pmiimSelected) {
 	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
-	}
-	if (gh_procedure_p(pmiim->pmi->scmAction)) {
+	} else {
 	  scmAction = pmiim->pmi->scmAction;
 	}
       }
@@ -524,37 +794,103 @@ MenuInteraction(DynamicMenu *pmd)
       
     case KeyPress:
     {
-      KeySym keysym = XLookupKeysym(&Event.xkey,0);
-      scwm_msg(DBG,__FUNCTION__,"Got a keypress");
+      enum menu_status ms = MENUSTATUS_NOP;
       /* Handle a key press events to allow mouseless operation */
-      /* FIXGJB: check shortcuts and other keybindings in the menu event map */
-      if (keysym == XK_Escape)
+      scwm_msg(DBG,__FUNCTION__,"Got a keypress");
+      pmiim = PmiimMenuShortcuts(pmd,&Event,&ms);
+      if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
-      break;
+      } else if (ms == MENUSTATUS_ITEM_SELECTED) {
+	if (pmiim) {
+	  /* FIXGJB: duplicated above */
+	  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	  if (pmiim != pmiimSelected) {
+	    scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
+	  } else {
+	    scmAction = pmiim->pmi->scmAction;
+	    goto MENU_INTERACTION_RETURN;
+	  }
+	}
+      } else if (ms == MENUSTATUS_POPUP_AND_MOVE) {
+	if (pmiim && pmiim->pmd) {
+	  DynamicMenu *pmdNew = NULL;
+	  if (pmiim->pmd->pmdNext == NULL) {
+	    pmdNew = PmdPrepopFromPmiim(pmiim);
+	  } else {
+	    pmdNew = pmiim->pmd->pmdNext;
+	  }
+	  if (pmdNew) {
+	    pmiim=pmdNew->rgpmiim[0];
+	  } else {
+	    /* couldn't prepop, so we're done -- don't change menu item */
+	    break;
+	  }
+	} else {
+	  scwm_msg(WARN,__FUNCTION__,"pmiim or pmiim->pmd == NULL");
+	  break;
+	}
+      } else if (ms == MENUSTATUS_NOP) {
+	break;
+      }
+      WarpPointerToPmiim(pmiim);
+      /* no break -- fall through to MotionNotify */
     }
       
     case MotionNotify:
+      /* BEWARE: fall through case above */
       /* FIXGJB: update selected item, mark mouse_moved boolean if
 	 it's moved enough, reset action hook timer, etc. */
-    { 
-      MenuItemInMenu *pmiim = PmiimFromPointerLocation(dpy,NULL);
-      scwm_msg(DBG,__FUNCTION__,"MotionNotify event %ld", (unsigned long) pmiim);
-      if (!pmiim || (pmiim && pmiim->mis != MIS_Selected)) {
-	if (fHoverActionInvoked) {
-	  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
-	  /* invoke the un-hover action */
-	  if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
-	    call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
-	  } else {
-	    scwm_msg(DBG,__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
-	  }
-	  fHoverActionInvoked = False;
+    { /* scope */
+      if (pmiim == NULL) {
+	/* not on an item now */
+	if (pmd->fHoverActionInvoked) {
+	  InvokeUnhoverAction(pmd);
+	  pmd->fHoverActionInvoked = False;
 	}
 	UnselectAndRepaintSelectionForPmd(pmd);
-	c10ms_delays = 0;
-      }
-      if (pmiim && pmiim->mis != MIS_Selected) {
-	SelectAndRepaintPmiim(pmiim);
+      } else {
+	/* we're on a menu item */
+	if (pmiim->pmd != pmd) {
+	  /* it's for a different menu than we were on */
+	  if (pmiim->pmd == pmd->pmdNext) {
+	    /* we've moved to the pre-popped menu */
+	    pmd = pmd->pmdNext;
+	  } else if (FPmdInPmdPriorChain(pmiim->pmd,pmd)) {
+	    /* we've moved to a prior menu in the chain */
+	    pmd = pmiim->pmd;
+	    if (pmiim != PmiimSelectedFromPmd(pmd)) {
+	      /* it's not the one that we had selected before,
+		 so we need to pop down everything */
+	      scwm_msg(DBG,__FUNCTION__,"Moved back to different item");
+	      UnselectAndRepaintSelectionForPmd(pmd);
+	    } else {
+	      UnselectAndRepaintSelectionForPmd(pmd->pmdNext);
+	    }
+	  } else {
+	    /* we're on an unrelated menu */
+	    scwm_msg(DBG,__FUNCTION__,"Moved to unrelated menu\n");
+	    UnselectAndRepaintSelectionForPmd(pmd);
+	    pmiim = NULL;
+	  }
+	} else {
+	  /* same menu as we were on */
+	  if (pmiim != PmiimSelectedFromPmd(pmd)) {
+	    /* and it's not the one we've already got selected */
+	    UnselectAndRepaintSelectionForPmd(pmd);
+	  }
+	}
+	if (pmiim && pmiim->mis != MIS_Selected) {
+	  scwm_msg(DBG,__FUNCTION__,"New selection");
+	  SelectAndRepaintPmiim(pmiim);
+	  c10ms_delays = 0;
+	}
+	if (cpixXoffsetInMenu > pmd->pmdi->cpixWidth*3/4) {
+	  /* we're at the right edge of the menu so be sure we popup
+	     the cascade menu if any */
+	  if (pmd->pmdNext == NULL) {
+	    PmdPrepopFromPmiim(pmiim);
+	  }
+	}
       }
       break;
     }
@@ -566,7 +902,7 @@ MenuInteraction(DynamicMenu *pmd)
       /* grab our expose events, let the rest go through */
       pmdNeedsPainting = PmdFromWindow(dpy,Event.xany.window);
       if (pmdNeedsPainting) {
-	   scwm_msg(DBG,__FUNCTION__,"Trying to paint menu");
+	scwm_msg(DBG,__FUNCTION__,"Trying to paint menu");
 	PaintDynamicMenu(pmdNeedsPainting,&Event);
       }
     }
@@ -597,9 +933,6 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     safemalloc(cmiim * sizeof(MenuDrawingInfo));
   SCM rest = pmd->pmenu->scmMenuItems;
 
-  /* save the array size in the struct */
-  pmd->cmiim = cmiim;
-
   /* Initialize the list of dynamic menu items;
      only the drawing-independent code here */
   while (True) {
@@ -626,10 +959,10 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     pmiim->fOnBottomEdge = False; /* just init: gets set in drawing code */
 
     /* Not sure what rule should determine the show popup arrow flag...
-       could be the setting of a Hover action, but that's not quite right....
        maybe the scheme code should just specify it wants a popup arrow... 
-       --11/23/97 gjb */
-    pmiim->fShowPopupArrow = (!UNSET_SCM(pmiim->pmi->scmHover));
+       --11/23/97 gjb 
+    FIXGJB */
+    pmiim->fShowPopupArrow = (MENU_P(pmiim->pmi->scmAction));
 
     pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
     ipmiim++;
@@ -638,16 +971,20 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     if (SCM_NULLP(rest))
       break;
   }
+  /* save the array size in the struct */
+  pmd->cmiim = ipmiim;
+  pmd->ipmiimSelected = -1;
+
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 
 }
 
-static 
-void
-PopupGrabMenu(Menu *psm, DynamicMenu *pmdPoppedFrom)
+static
+DynamicMenu *
+NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
   DynamicMenu *pmd = safemalloc(sizeof(DynamicMenu));
-  pmd->pmenu = psm;
+  pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
   pmd->pmdPrior = pmdPoppedFrom;
   pmd->pmdi = NULL;
@@ -655,7 +992,6 @@ PopupGrabMenu(Menu *psm, DynamicMenu *pmdPoppedFrom)
 
   InitializeDynamicMenu(pmd);	/* add drawing independent fields */
   ConstructDynamicMenu(pmd);	/* update/create pmd->pmdi */
-
 
   { /* scope */
     /* Get the right events -- don't trust the drawing code to do this */
@@ -667,22 +1003,48 @@ PopupGrabMenu(Menu *psm, DynamicMenu *pmdPoppedFrom)
   /* Connect the window to the dynamic menu, pmd */
   XSaveContext(dpy,pmd->pmdi->w,MenuContext,(caddr_t)pmd);
 
-  { /* scope */
-    int cpixX_startpointer;
-    int cpixY_startpointer;
-    SCM scmAction = SCM_UNDEFINED;
-    XGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+  return pmd;
+}
 
-    SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
-
-    PopupMenu(pmd);
-    GrabEm(CURSOR_MENU);
-    scmAction = MenuInteraction(pmd);
-    UngrabEm();
+static
+void
+PopdownAllPriorMenus(DynamicMenu *pmd)
+{
+  DynamicMenu *pmdPrior = pmd->pmdPrior;
+  while (True) {
+    pmd = pmdPrior;
+    if (!pmd)
+      break;
+    pmdPrior=pmd->pmdPrior;
     PopdownMenu(pmd);
-    if (gh_procedure_p(scmAction)) {
-      call_thunk_with_message_handler(scmAction);
-    }
+    free(pmd);
+  }
+}
+
+static 
+void
+PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
+{
+  DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
+  int cpixX_startpointer;
+  int cpixY_startpointer;
+  SCM scmAction = SCM_UNDEFINED;
+
+  XGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+  
+  SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
+  
+  PopupMenu(pmd);
+  GrabEm(CURSOR_MENU);
+  scmAction = MenuInteraction(pmd);
+  UngrabEm();
+  PopdownMenu(pmd);
+  PopdownAllPriorMenus(pmd);
+  if (gh_procedure_p(scmAction)) {
+    call_thunk_with_message_handler(scmAction);
+  } else if (MENU_P(scmAction)) {
+    /* FIXGJB: is this recursion  bad? */
+    popup_menu(scmAction);
   }
 }
 

@@ -67,11 +67,12 @@ typedef struct DynamicMenu_tag
   struct DynamicMenu_tag *pmdPrior; /* the menu that popped this up */
   MenuDrawingInfo *pmdi;	/* extra info needed by the drawing/hit detection code */
   Bool fPinned;			/* is it not a popup? */
+  Bool fHoverActionInvoked;	/* have we done the hover action */
 } DynamicMenu;
 
 
-#define MENU_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menu)
-#define MENU(X)  ((Menu *)SCM_CDR(X))
+#define MENU_P(X) (SCM_NIMP((X)) && (SCM_CAR((X)) == (SCM)scm_tc16_scwm_menu))
+#define MENU(X)  ((Menu *)SCM_CDR((X)))
 #define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
 
 SCM mark_menu(SCM obj);

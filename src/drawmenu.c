@@ -259,8 +259,8 @@ void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
   Menu *pmenu = pmd->pmenu;
-  XFontStruct *pxfont = FONTP(pmenu->scmFont)? XFONT(pmenu->scmFont)
-    : Scr.StdFont.font;
+  XFontStruct *pxfont_ornull = SAFE_XFONT(pmenu->scmFont);
+  XFontStruct *pxfont = pxfont_ornull? pxfont_ornull : Scr.StdFont.font;
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItem *pmi = pmiim->pmi;
   int label_font_height = pxfont->ascent + pxfont->descent;
@@ -301,7 +301,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   }
 
   /* Only highlight if the item has an action */
-  if (mis == MIS_Selected && gh_procedure_p(pmi->scmAction)) {
+  if (mis == MIS_Selected && !UNSET_SCM(pmi->scmAction)) {
     RelieveRectangle(w, x_offset-MENU_ITEM_RR_SPACE, y_offset,
 		     width+MENU_ITEM_RR_SPACE, item_height,
 		     ReliefGC,ShadowGC);

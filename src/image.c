@@ -493,7 +493,8 @@ make_image_from_pixmap(char *szDescription,
   ci->width = width;
   ci->height = height;
   ci->depth = depth;
-  fprintf(stderr,"Usage %dx%dx%d for %s\n",width,height,depth,szDescription);
+  scwm_msg(DBG,__FUNCTION__,"Usage %dx%dx%d for %s\n",
+	   width,height,depth,szDescription);
   return result;
 }
 

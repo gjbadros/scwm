@@ -127,9 +127,9 @@ int
 IchIgnoreCaseInSz(const char *sz, char ch)
 {
   int ich = 0;
-  while (*sz && tolower(*sz++) != tolower(ch));
-  if (*sz == '\0')
-    ich = -1;
+  ch = tolower(ch);
+  while (*sz && tolower(*sz++) != ch) ich++;
+  if (*sz == '\0') ich = -1;
   return ich;
 }
 

@@ -120,7 +120,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
   iarg++;
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
-  } else if (!gh_procedure_p(action)) {
+  } else if (!gh_procedure_p(action) && !menu_p(action)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,action);
   }
   pmi->scmAction = action;
