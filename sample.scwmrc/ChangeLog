@@ -1,3 +1,13 @@
+2000-01-08  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Removed printing from window-menu. It makes
+	problems and I never used it anyway.
+	More updates to newest scwm.
+	(show-message-briefly): New function.
+	Use it to flash current desktop name on changes.
+	Can now switch desktops with super-1, super-2, etc.
+	The last two features were inspired by WindowMaker behaviour.
+	
 Fri Jan  7 11:27:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Do not put the pager on top, but raise it when
