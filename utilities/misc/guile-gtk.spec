@@ -9,6 +9,7 @@ Version: %ver
 Release: %rel
 Copyright: GPL
 Group: X11/GTK
+BuildRoot: /tmp/%{nam}-%{ver}-build
 Source: ftp://scwm.mit.edu/pub/scwm/%{nam}-%{ver}.tar.gz
 Packager: Greg J. Badros <gjb@cs.washington.edu> and Ariel Rios
 URL: http://scwm.mit.edu
@@ -35,8 +36,8 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT%{prefix} \
      ROOT=$RPM_BUILD_ROOT \
-     sitedir=$RPM_BUILD_ROOT/usr/local/share/guile/site \
-     schemedir=$RPM_BUILD_ROOT/usr/local/share/guile \
+     sitedir=$RPM_BUILD_ROOT%{prefix}/share/guile/site \
+     schemedir=$RPM_BUILD_ROOT%{prefix}/share/guile \
      install 
 
 %clean
