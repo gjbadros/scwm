@@ -2033,8 +2033,6 @@ should not have to worry about this unless you know what it means. */
   ScwmWindow *psw;
   Window w;
 
-  SCM_REDEFER_INTS;
-
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
