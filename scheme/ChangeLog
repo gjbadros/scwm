@@ -1,3 +1,7 @@
+Tue Sep 28 17:47:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* doc.scm: Remove superfluous dependence on flux module.
+
 Tue Sep 28 17:21:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Forgot to use-module face.

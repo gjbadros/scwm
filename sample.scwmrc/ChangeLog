@@ -1,3 +1,9 @@
+Tue Sep 28 18:01:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added `shove-window-prefix', and bind to H-p.
+	Fix restart dev scwm to run src/scwm, not scwm/scwm.  Move face
+	stuff into flux.  Turn on icons by default!
+
 Mon Sep 27 15:31:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Drop ui-constraints stuff unless

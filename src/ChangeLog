@@ -1,3 +1,11 @@
+Tue Sep 28 17:46:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c ("init_modifiers"): Do not warn about no scrollock, no 
+	numlock-- lots of "bug reports" re: this non-bug.
+
+	* add_window.c: Do not display startup messages about correcting
+	for restart_vp_offset;  this works pretty well now.
+
 Tue Sep 28 16:34:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* color.c (color_mult): Fix > to >=.  Thanks E. Jay Berkenbilt!
