@@ -1,3 +1,7 @@
+1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
+
+	* base.scm (menu): add color-stipple and extra arguments
+
 Wed Sep 30 13:57:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm: Make debug-fvwm-module default to #f

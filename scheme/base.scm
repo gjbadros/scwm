@@ -300,7 +300,8 @@ the shortcut key for the menu item."
   (make-menuitem label action extra-label image-above image-left
 		  hover-action unhover-action hotkey-prefs))
 
-
+; FIXJTL: why do we deal with default colors both here and in make-menu?
+; the code in make-menu is good enough, no?
 (define*-public (menu list-of-menuitems #&key
 		      image-side
 		      (image-align 'top)
@@ -308,7 +309,9 @@ the shortcut key for the menu item."
 		      (image-bg #f)
 		      (color-text 'menu-text-color)
 		      (color-bg 'menu-bg-color)
-		      (font 'menu-font))
+		      (color-stipple #f)
+		      (font 'menu-font)
+		      (extra #f))
   "Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
 `make-menuitem' or `menuitem').  IMAGE-SIDE is an image object to be
@@ -317,18 +320,22 @@ whether to align that image to the 'top, 'center or 'bottom of the
 menu.  COLOR-BG-IMAGE-SIDE is the background color for that image
 object.  COLOR-TEXT is a color object or string for the foreground
 text color of menu items.  COLOR-BG is a color object or string for
-the background color for the menu and menu items.  FONT is a font
-object for the font of the menu items."
+the background color for the menu and menu items.  COLOR-STIPPLE is a
+color object for stippled (\"grayed\") menu items.  FONT is a font
+object for the font of the menu items.  EXTRA is an extra argument
+specific to the menu look used for this menu."
   (if (string? image-side)
       (set! image-side (make-image image-side)))
   (if (string? color-bg)
       (set! color-bg (make-color color-bg)))
   (if (string? color-text)
       (set! color-text (make-color color-text)))
+  (if (string? color-stipple)
+      (set! color-stipple (make-color color-stipple)))
   (if (string? color-bg-image-side)
       (set! color-bg-image-side (make-color color-bg-image-side)))
   (make-menu list-of-menuitems image-side image-align color-bg-image-side
-	     color-bg color-text image-bg font))
+	     color-bg color-text color-stipple image-bg font extra))
 
 (define-public (image-property image key)
   "Return the KEY property of IMAGE.
