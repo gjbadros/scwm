@@ -1,3 +1,9 @@
+Wed Oct 14 11:08:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c: Added comment re: removing #include
+	libguile/dynl.h when guile-1.3 is released-- Blandy fixed
+	libguile.h to do the include.
+
 Sun Oct 11 15:19:32 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added overlay-plane subdir
