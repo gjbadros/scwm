@@ -1,3 +1,8 @@
+1999-04-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* events.c (HandlePropertyNotify): Remove unnecessary setting of
+	window-context before calling X-PropertyNotify-hook.
+
 Mon Apr 12 14:41:45 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* colors.c: Couldn't -> could not.
