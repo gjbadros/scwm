@@ -5,7 +5,20 @@ See the end for copying conditions.
 Changes for scwm-0.99.6.2 (not yet released)
 * Bug fixes
 
+* New modules
+** focus-stack
+** where-is
+
+* netscape module enhancements
+** auto-focus on the find-dialog, and use focus-stack module for easier closing
+   and popping of focus back to the main netscape window
+
 * Major cleanup of placement procedures and *-place-window routines
+
+* Changed hooks
+** window-fully-obscured-hook, window-partially-obscured-hook, window-unobscured-hook
+Now each of these takes a `resulting-from-viewport-move?' boolean as second argument.
+This, e.g., lets hooks ignore windows disappearing from a change in the viewport.
 
 ** Removed primitives
 *** `set-smart-placement-is-really-smart!', `smart-placement-is-really-smart?'

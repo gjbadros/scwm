@@ -1,6 +1,6 @@
 after-change-desk-hook (2 args)
 - 
-This hook is invoked whenever the current desktop is changed.\n\
+This hook is invoked just after the current desktop is changed.\n\
 It is called with two argument, both integers.  The first is the\n\
 new desktop number, the second is the old desktop number.  It\n\
 is called after the desk is changed. See also `change-desk-hook'.
@@ -22,6 +22,15 @@ setting the relevant parameters when a new window is created. \n\
 \n\
 See also `before-new-window-hook' and `before-place-new-window-hook'.
 [From src/add_window.c:129]
+
+
+after-viewport-position-change-hook (4 args)
+- 
+This hook is invoked just after the viewport position is changed.\n\
+It is called with four arguments, all integers.  The first two are \n\
+the x and y coordinates of the new viewport position in pixels and\n\
+the second two are the change in x and y from the previous position.
+[From src/virtual.c:63]
 
 
 before-new-window-hook (1 args)
@@ -112,7 +121,7 @@ client-message-hook (4 args)
 This hook is invoked whenever Scwm receives an X/11 client message.\n\
 It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), \n\
 and the vector of data.
-[From src/events.c:218]
+[From src/events.c:219]
 
 
 deiconify-hook (2 args)
@@ -138,7 +147,7 @@ This hook is invoked whenever the mouse pointer enters a screen edge.\n\
 Procedures in the hook are called with one argument, one of the\n\
 symbols 'north, 'south, 'east or 'west indicating which edge was\n\
 entered.
-[From src/virtual.c:63]
+[From src/virtual.c:69]
 
 
 edge-leave-hook (1 args)
@@ -147,14 +156,14 @@ This hook is invoked whenever the mouse pointer leaves a screen edge.\n\
 Procedures in the hook are called with one argument, one of the\n\
 symbols 'north, 'south, 'east or 'west indicating which edge was\n\
 entered.
-[From src/virtual.c:69]
+[From src/virtual.c:75]
 
 
 edge-scroll-hook (0 args)
 - 
 This hook is invoked whenever an edge scroll takes place.\n\
 Procedures in the hook are called with no arguments.
-[From src/virtual.c:75]
+[From src/virtual.c:81]
 
 
 error-hook (1 args)
@@ -382,11 +391,12 @@ that just lost the keyboard focus. See also `window-focus-change-hook'.
 [From src/focus.c:47]
 
 
-window-fully-obscured-hook (1 args)
+window-fully-obscured-hook (2 args)
 - 
 Invoked when window receives a VisibilityFullyObscured event.\n\
-The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully obscured. See also `window-visibility'.
+The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+See also `window-visibility'.
 [From src/events.c:197]
 
 
@@ -398,15 +408,15 @@ of the window just left.
 [From src/events.c:192]
 
 
-window-partially-obscured-hook (1 args)
+window-partially-obscured-hook (2 args)
 - 
 Invoked when window receives a VisibilityPartiallyObscured\n\
-event.  The hook procedures are invoked with one argument, the window\n\
-object of the window that is now partially obscured.  Beware that this\n\
-event happens more often than you might expect and an action procedure\n\
+event.  The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+Beware that this event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events. See also `window-visibility'.
-[From src/events.c:202]
+[From src/events.c:203]
 
 
 window-property-change-hook (4 args)
@@ -418,15 +428,15 @@ the old value.
 [From src/winprop.c:37]
 
 
-window-unobscured-hook (1 args)
+window-unobscured-hook (2 args)
 - 
 Invoked when window receives a VisibilityUnobscured event.\n\
-The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully visible. Beware that this\n\
-event happens more often than you might expect and an action procedure\n\
+The hook procedures are invoked with two arguments: the window object\n\
+of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
+Beware that this event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events. See also `window-visibility'.
-[From src/events.c:210]
+[From src/events.c:211]
 
 
 X-ConfigureRequest-hook (6 args)

@@ -1,3 +1,14 @@
+Sun Feb 20 18:48:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use where-is, focus-stack modules.  Make "scwm"
+	resource windows use at-point-placement.  Added H-w for where-is,
+	use H-h for describe-event (instead of H-w).  Added H-S-e for
+	close-window-pop-focus. H-t for selected-windows-to-register.
+	H-M-. for push-focus-window, H-M-S-. for pop-focus-window.
+
+	* gnome.scwmrc: Drop set-X-server-synchronize! call;  handled by
+	the lambda-startup-logo code, now.
+
 Sun Feb 20 15:09:57 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc, spare-blue.scwmrc, simple.scwmrc, sds.scwmrc,

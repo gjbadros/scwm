@@ -16,7 +16,7 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2371]
+[From src/events.c:2378]
 
 
 cursor-icon
@@ -55,6 +55,20 @@ The cursor to use for set focus actions, defaults to hand2.
 [From src/cursor.c:306]
 
 
+default-placement-proc
+- 
+The default procedure to use to place windows 
+      that do not have a placement proc. 
+[From src/placement.c:746]
+
+
+default-transient-placement-proc
+- 
+The default procedure to use to place transient windows 
+      that do not have a transient placement proc. 
+[From src/placement.c:749]
+
+
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
@@ -64,13 +78,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From src/scwm.c:756]
+[From src/scwm.c:755]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From src/scwm.c:759]
+[From src/scwm.c:758]
 
 
 pie-menu-look
@@ -82,7 +96,7 @@ A menu-look that gives pie menus in a rectangular window
 scroll-region
 - 
 The number of pixels at the edge of the screen within which virtual scrolling will occur. 
-[From src/virtual.c:643]
+[From src/virtual.c:666]
 
 
 scwm-menu-look

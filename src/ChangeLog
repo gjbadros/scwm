@@ -1,3 +1,14 @@
+Sun Feb 20 18:41:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: Make window-*-hook each take two arguments, instead of 
+	one.  New second argument is resulting-from-viewport-move? so that 
+	hooks invocations from those can be ignored if desired.
+
+	* virtual.c: Added after-viewport-position-change-hook, and invoke 
+	it.  Handle VisibilityChange events before leaving
+	MoveViewport_internal so fInMoveViewport_internal is properly set
+	when dispatching those window visibility hooks.
+
 Sun Feb 20 14:22:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Drop fRandomPlace, fSmartPlace fields from struct

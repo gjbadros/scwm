@@ -1,3 +1,67 @@
+Sun Feb 20 18:46:52 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window-configuration.scm: Refine `window-configuration?' test to 
+	differentiate from arbitrary lists that have a car that is a
+	window.
+
+	* register.scm: Added `selected-windows-to-register',
+	`list-of-windows?', `jump-to-register' to support saving and
+	restoring window-selections in registers.
+
+Sun Feb 20 18:29:18 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops-menu.scm: Have `make-menu-focus-options' use the
+	window-context instead of get-window; fix bug that caused a
+	get-window prompting during the display of the root menu when the
+	focus submenu was supposed to pop up.
+
+	* window-selection.scm: Use new `X-server-synchronize' instead of
+	`handle-pending-events'.  Added `flash-selected-windows-on' to
+	help out stylist.scm that manages windows at the flash-window
+	level and messes up the display of the current selection.
+
+	* stylist.scm: Added *style-list-flash-window-color* and make it
+	yellow so that it's different from the color used for selected
+	windows.   Call new `flash-selected-windows-on' after unflashing
+	the news that the stylist affected.
+
+	* reflection.scm: Added `interpret-as-procedure' to simplify
+	handling of default argument to `where-is'
+
+	* prompt-proc.scm: Use gtk-widget-grab-focus on the entry to make
+	sure that the entry gets the focus at startup.  Avoid error if
+	initval of a procedure is not given -- don't call procedure-name
+	on #f.
+
+	* placement.scm: Added auto-focus option;  hack it a bit using
+	add-timer-hook! to run focus-change-warp-pointer after the
+	placement is done.  And use new `focus-stack' module to provide
+	`push-focus-window' that I call before focus-change-warp-pointer.
+	Great effect w/ Netscape "Find" dialogs.
+
+	* netscape.scm: Added #:auto-focus #t to "findDialog_popup"
+	windows.
+
+	* last-mapped-window.scm: Use focus-stack module and make
+	`focus-last-mapped-window' have an optional push-focus? argument
+	that causes the focus-window to be pushed if #t.
+
+	* lambda-startup-logo.scm, flux-gtk.scm, ScwmButtons.scm: Use
+ 	X-server-synchronize instead of in-line expanding that function.
+
+	* group.scm: Added option to select windows by title (in addition
+	to by class, by resource, by single window).
+
+	* base.scm: Added `X-server-synchronize' to do
+	handle-pending-events after ensuring X-server synchronization.
+
+	* animated-iconify.scm: Use a dynamic-wind to protect
+	set-X-server-synchronize! calls.
+
+	* where-is.scm, focus-stack.scm: Added
+
+	* Makefile.am: Updated for above additions.
+
 Sun Feb 20 15:13:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* stylist.scm, style.scm: Drop mention of #:random-placement,

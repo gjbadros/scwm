@@ -1,3 +1,7 @@
+Sun Feb 20 18:46:07 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added README-COOL-EXAMPLES
+
 Sun Feb 20 09:34:47 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.common: Use `basename $< .c` (or .cc) instead of GNU
