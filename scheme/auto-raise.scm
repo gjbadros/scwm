@@ -68,6 +68,23 @@
 ;;;; it is based on the window getting focus, not on the window being
 ;;;; entered. That may change in the future.
 
+
+;; (popup-option-menu '*auto-raise*)
+;; (scwm-option-name '*auto-raise*)
+(define-scwm-option *auto-raise* #f
+  "Whether to auto-raise windows"
+  #:type 'boolean
+  #:group 'focus
+  #:setter (lambda (auto-raise?)
+	     (if auto-raise? (begin 
+			       (use-modules (app scwm auto-raise))
+			       (window-style "*" #:auto-raise #t))
+		 (if (feature? 'scwm-auto-raise)
+		     (begin
+		       (use-modules (app scwm style))
+		       (window-style "*" #:auto-raise #f))))
+	     (set! *auto-raise* auto-raise?)))
+
 (define-scwm-option *default-auto-raise-delay* 300
   "Number of ms to delay before raising the window the mouse pointer entered.
 This can be overridden on a per-window basis using `set-auto-raise-delay!'"
@@ -85,19 +102,21 @@ This can be overridden on a per-window basis using
   #:range '(0 . 10000)
   #:favorites '(0 100 300 500 1000 2000 3000))
 
+(define-scwm-option *default-auto-raise-focus-proc* raise-window
+  "The default procedure to be used for auto-raising a window.
+Can be overriden on a per-window basis using #:auto-raise-focus-proc window style,
+or `set-auto-raise-focus-proc!'."
+  #:type 'proc
+  #:group 'focus)
 
-(define-public default-auto-raise-focus-proc raise-window)
-;;;**VAR
-;;; The default procedure to invoke when raising the window.
-;;; This gets called after the auto-raise delay times out, and 
-;;; can be overwridden on a per-window basis using `set-auto-raise-focus-proc!'
+(define-scwm-option *default-auto-raise-unfocus-proc* noop
+  "The default procedure to be used for un-raising a window.
+Can be overriden on a per-window basis using #:auto-raise-unfocus-proc window style,
+or `set-auto-raise-unfocus-proc!'."
+  #:type 'proc
+  #:group 'focus)
 
-(define-public default-auto-raise-unfocus-proc noop)
-;;;**VAR
-;;; The default procedure to invoke when un-raising the window.
-;;; This gets called after the mouse pointer leaves an auto-raised window, and
-;;; can be overwridden on a per-window basis using `set-auto-raise-unfocus-proc!'
-
+
 (define*-public (set-auto-raise! auto-raise? #&optional (win (get-window)))
   "Turn auto-raise on (#t) or off (#f) for WIN.
 Auto-raise makes a window automatically raise when the mouse pointer
@@ -147,13 +166,13 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 
 (define (make-auto-focus-func win)
   (let ((proc (or (object-property win 'auto-raise-focus-proc)
-		  default-auto-raise-focus-proc)))
+		  (scwm-option-get *default-auto-raise-focus-proc*))))
     (lambda ()
       (proc win))))
 
 (define (make-auto-unfocus-func win)
   (let ((proc (or (object-property win 'auto-raise-unfocus-proc)
-		  default-auto-raise-unfocus-proc)))
+		  (scwm-option-get *default-auto-raise-unfocus-proc*))))
     (lambda ()
       (proc win))))
 

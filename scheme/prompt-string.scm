@@ -84,3 +84,14 @@ See also `prompt-string'."
 	 (entry (caddr answer)))
     (list hbox (lambda () (string-with-colons->path-list (getter))) entry)))
 
+
+(define-public (prompt-proc-hbox prompt initval)
+  "Create and return a procedure-prompting hbox and entry.
+PROMPT is the prompt, and INITVAL is the initial path (a procedure).
+The returned value is a list: (hbox getter entry).
+See also `prompt-string'."
+  (let* ((answer (prompt-string-hbox prompt (symbol->string (procedure-name initval))))
+	 (hbox (car answer))
+	 (getter (cadr answer))
+	 (entry (caddr answer)))
+    (list hbox (lambda () (eval (string->symbol (getter)))) entry)))

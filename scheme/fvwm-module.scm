@@ -23,6 +23,7 @@
   :use-module (app scwm winlist)
   :use-module (app scwm base)
   :use-module (app scwm file)
+  :use-module (app scwm defoption)
   :use-module (app scwm module-types)
   :use-module (app scwm bincomm)
   :use-module (app scwm fvwm-eval)
@@ -91,7 +92,7 @@
 ;; ;; Make sure the right place is in the module path. Note: the
 ;; ;; directory listed here is for example purposes only, it is actually
 ;; ;; in the default module path.
-;; (set! fvwm2-module-path (append fvwm2-module-path '("/usr/lib/X11/fvwm2")))
+;; (set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/lib/X11/fvwm2")))
 ;; ;; Register the module configuration for the pager.
 ;; (register-fvwm2-module-config "FvwmPager"
 ;;  			         "*FvwmPagerBack grey76"
@@ -121,10 +122,19 @@
 ;;
 
 
-(define-public debug-fvwm-module #f)
 ;; Use (set! debug-fvwm-module #t) in your .scwmrc 
 ;; after importing this module if you want to see the debug code
+(define-scwm-option *debug-fvwm-module* #f
+  "Set this if you want debugging output from fvwm2 modules."
+  #:type 'boolean
+  #:group 'fvwm2-module)
 
+
+(define-scwm-option *fvwm2-module-path* '("/usr/lib/X11/fvwm2"
+					"/usr/local/lib/X11/fvwm2")
+  "Set this to the path where your fvwm2 module binaries live."
+  #:type 'path
+  #:group 'fvwm2-module)
 
 
 ;; FIXMS: Maybe scwm should always ignore sigpipes?
@@ -391,9 +401,6 @@
   (hash-remove! fvwm2-module-config-hash module-type))
 
 
-(define-public fvwm2-module-path '("/usr/lib/X11/fvwm2"
-				   "/usr/local/lib/X11/fvwm2"))
-
 ;; GJB:FIXME:MS: Isn't this a primitive procedure?  And that one
 ;; takes an optional second arg, suffix
 (if (not (defined? 'basename))
@@ -419,7 +426,7 @@
                                            (get-fvwm2-module-config
 					    (basename module-name)))))
   (let ((module-file (find-file-in-path module-name
-					fvwm2-module-path)))
+					*fvwm2-module-path*)))
     (if module-file
 	(let* ((from-module-pipe (pipe))
 	       (from-module-read (car from-module-pipe))
@@ -509,7 +516,7 @@
 					   from-module-read))
 				  (window-id (car packet))
 				  (command (caddr packet)))	
-			     (if debug-fvwm-module
+			     (if *debug-fvwm-module*
 				 (begin
 				   (display "packet: ")
 				   (write packet)

@@ -99,6 +99,10 @@
        (prompt-string prompt (lambda (v) (set-proc (string-with-colons->path-list v)))
 		      #:initval (path-list->string-with-colons value)
 		      #:title title))
+      ('proc
+       (prompt-string prompt (lambda (v) (set-proc (eval (string->symbol v))))
+		      #:initval (symbol->string (procedure-name value))
+		      #:title title))
       ('integer 
        (prompt-integer-range prompt range set-proc #:initval value #:title title))
       ('real
@@ -127,6 +131,8 @@
        (prompt-string-hbox prompt value))
       ('path
        (prompt-path-hbox prompt value))
+      ('proc
+       (prompt-proc-hbox prompt value))
       ('integer 
        (prompt-integer-range-hbox prompt range value))
       ('real

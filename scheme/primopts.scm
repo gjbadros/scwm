@@ -90,22 +90,3 @@ See `set-edge-move-threshold!'. "
   #:setter set-edge-move-threshold!
   #:getter edge-move-threshold
   )
-
-
-;; this is not a primitive option,
-;; but I want a boolean test case --this really should be a delay, anyway
-;; (popup-option-menu '*auto-raise*)
-;; (scwm-option-name '*auto-raise*)
-(define-scwm-option *auto-raise* #f
-  "Whether to auto-raise windows"
-  #:type 'boolean
-  #:group 'focus
-  #:setter (lambda (auto-raise?)
-	     (if auto-raise? (begin 
-			       (use-modules (app scwm auto-raise))
-			       (window-style "*" #:auto-raise #t))
-		 (if (feature? 'scwm-auto-raise)
-		     (begin
-		       (use-modules (app scwm style))
-		       (window-style "*" #:auto-raise #f))))
-	     (set! *auto-raise* auto-raise?)))
