@@ -213,6 +213,8 @@
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
 
+(set-hilight-colors! "white" "navyblue")
+
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
@@ -240,7 +242,6 @@
 
 ;;-------------------------------;;
 ;; define some useful menus      ;;
-
 
 (define menu-window-ops
   (make-menu "Window Ops"
@@ -281,10 +282,6 @@
 
 (define (start-xterm)
   (execute (string-append "color-xterm " xterm-user-shell-options)))
-
-(define (start-xterm)
-  (execute (string-append "color-xterm " xterm-user-shell-options))
-  (display "Starting Xterm...\n"))
 
 (define (exec-xlock)
   (execute "xlock -nice -16 -mode blank"))
@@ -546,8 +543,6 @@
 
 (set-click-time! 150)
 
-(set-hilight-colors! "white" "navyblue")
-
 (unbind-mouse 'all "C-S-M-1")
 (unbind-mouse 'all "C-S-M-2")
 
@@ -621,6 +616,7 @@
     (while (< i (length str))
 	   (send-key-press (substring str i (+ 1 i)) w)
 	   (set! i (+ 1 i)))))
+
 
 ;(recapture)
 
