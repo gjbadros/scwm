@@ -87,6 +87,9 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 		   pointerX,pointerY);
     }
     XFlush(dpy);
+    /* handle expose events as we're animating the window move */
+    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+      DispatchEvent();
     sleep_ms(cmsDelay);
 #ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
