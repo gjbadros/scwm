@@ -43,12 +43,13 @@ easier to build source rpms, binary rpms, and debian packages
 
 Scwm-core related
 -----------------
+* Update all copyrights to include 1999
 
 * Have a really polished and useful system.scwmrc that showcases some of
-the nicer features, but remains eminently usable. All of the
+the nicer features, but remains eminently usable. Each of the
 sample.scwmrc-s  is better than the system.scwmrc.  
 
-* A bit of work to ensure destroying guile-gtk windows won't kill the
+HACKED... * A bit of work to ensure destroying guile-gtk windows won't kill the
 window manager.
 
 * Further testing of session manager support
@@ -69,6 +70,8 @@ procedures have silly argument orders or are generally poorly
 designed.  We shouldn't do a lot of this as it'll break stuff
 internally and necessitate lots of testing, but if there are really dumb 
 things we've done we should fix them now.
+
+* GUI options/configuration (Making progress on this...)
 
 
 Post-1.0 features
