@@ -1,0 +1,87 @@
+;;;; $Id$
+;;;; (C) 1999 Greg J. Badros
+;;;;
+;;;; This program is free software; you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published by
+;;;; the Free Software Foundation; either version 2, or (at your option)
+;;;; any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this software; see the file COPYING.  If not, write to
+;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+;;;; Boston, MA 02111-1307 USA
+;;;;
+
+(define-module (app scwm primopts)
+  :use-module (app scwm optargs)
+  :use-module (app scwm base)
+  :use-module (app scwm defoption)
+  :use-module (app scwm style)
+  )
+
+;; (set! scwm-option-variables '())
+;; scwm-option-variables
+;; (map (lambda (v) (scwm-option-name (eval v))) scwm-option-variables)
+
+;; (popup-option-menu *desk-width*)
+(define-scwm-option *desk-width* (car (desk-size))
+  "The virtual desktop width, in units of physical screen size."
+  #:type 'integer
+  #:group 'virtual
+  #:range '(1 . 10)
+  #:favorites '(1 2 3 4 5)
+  #:setter (lambda (x) (set-desk-size! x (cadr (desk-size))))
+  #:getter (lambda () (car (desk-size))))
+
+;; (popup-option-menu *desk-height*)
+(define-scwm-option *desk-height* (cadr (desk-size))
+  "The virtual desktop height, in units of physical screen size."
+  #:type 'integer
+  #:group 'virtual
+  #:range '(1 . 10)
+  #:favorites '(1 2 3 4 5)
+  #:setter (lambda (y) (set-desk-size! (car (desk-size)) y))
+  #:getter (lambda () (cadr (desk-size))))
+
+;; (popup-option-menu *edge-x-scroll*)
+(define-scwm-option *edge-x-scroll* (edge-x-scroll)
+  "The virtual scrolling in the horizontal direction."
+  #:type 'percent
+  #:group 'virtual
+  #:favorites '(100 50 20 5 1 0)  ;; could extend this to have preferred print formats
+  #:setter (lambda (x) (set-edge-x-scroll! (%x x)))
+  #:getter (lambda () (pix->%x (edge-x-scroll)))
+  )
+
+;; (popup-option-menu '*edge-y-scroll*)
+(define-scwm-option *edge-y-scroll* (edge-y-scroll)
+  "The virtual scrolling in the vertical direction."
+  #:type 'percent
+  #:group 'virtual
+  #:favorites '(100 50 20 5 1 0)  ;; could extend this to have preferred print formats
+  #:setter (lambda (y) (set-edge-y-scroll! (%y y)))
+  #:getter (lambda () (pix->%y (edge-y-scroll)))
+  )
+
+;; this is not a primitive option,
+;; but I want a boolean test case --this really should be a delay, anyway
+;; (popup-option-menu '*auto-raise*)
+;; (scwm-option-name '*auto-raise*)
+(define-scwm-option *auto-raise* #f
+  "Whether to auto-raise windows"
+  #:type 'boolean
+  #:group 'focus-behaviour
+  #:setter (lambda (auto-raise?)
+	     (if auto-raise? (begin 
+			       (use-modules (app scwm auto-raise))
+			       (window-style "*" #:auto-raise #t))
+		 (if (feature? 'auto-raise)
+		     (begin
+		       (use-modules (app scwm style))
+		       (window-style "*" #:auto-raise #f))))
+	     (set! *auto-raise* auto-raise?)))
