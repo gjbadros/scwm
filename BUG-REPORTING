@@ -1,30 +1,36 @@
+REPORTING BUGS IN SCWM
+
+Please send bug reports to scwm-discuss@mit.edu.
+
 If you use the scwm-mode for Emacs from utilities/emacs/scwm.el,
-you should send bugs w/ M-x scwm-bug to send a bug report. --08/07/98 gjb
+you should send bugs w/ M-x scwm-bug to send a bug report.
 
-This is the information we need when someone reports a bug.  We should
-have a scheme function which accumulates it and mails it to us, perhaps.
-For now, we should just ask for this information all at once; we should
-also write this up better for normal users.
-
-Greg J. Badros, 11/11/97
+If you have build difficulties, or do not use emacs, use the script
+./scwm-bug-report-information (included with the distribution in the
+top level directory) and mail us that output as well as the below
+information.
 
 
-We want these:
-o guile -v output
-o scwm -v output
-o mention previous successful builds of scwm, if any
+We want this information:
+
+o build troubles? mention previous successful builds of scwm, if any
   (or tell us if it's your first time building scwm)
-o the file: scwm/scwm/changed.c
-o the file: scwm/scwm/scwmpaths.h
-o scheme backtrace
-o backtrace from gdb or another debugger if scwm dumped core
-   (save the core file in case we can't reproduce it) --07/21/98 gjb
 
-And any of these you think might be relevant:
+o specific description of the bug;  keep in mind the first
+  thing we will want to do is reproduce bug, so explicit
+  instructions on how to demonstrate the problem are essential.
+  This may involve including a .scwmrc file -- if so, please try
+  to create a small, self-contained .scwmrc file that isolates
+  the essential nature of the problem --- try to not send us your
+  whole 2000 line .scwmrc! :-)
 
-o 'ldd scwm' output
-o the file: scwm/include/config.h
-o copy of the .scwmrc being used, or portion thereof
-o 'env' output
-o any local changes to the libraries?
-o ls -l of pixmap directories
+o scheme error? be sure to include the scheme backtrace
+
+o core dump? backtrace from gdb or another debugger
+  (save the core file in case we can't reproduce it -- gzip it if
+   you're short on space)
+
+o image (picture) problems? give us an "ls -l" of pixmap directories
+
+
+THANKS!
