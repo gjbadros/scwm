@@ -1,3 +1,10 @@
+Tue Mar 23 14:58:36 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c: Only call XConnectionNumber if
+	gdk_display is non-null. Defensively protect against a gdk_display 
+	that hasn't been set (but still will fail if it's corrupt or
+	unitialized).
+
 Thu Mar 18 09:05:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* overlay-plane/get_color.c: Added include config.h

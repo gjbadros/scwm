@@ -1,3 +1,11 @@
+Tue Mar 23 15:47:05 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux-gtk.scm: Added -- flux procs that require gtk module.
+
+	* flux.scm: Move rename-window-interactively to new flux-gtk so
+ 	that flux doesn't require gtk (in case gtk is broken or
+ 	non-existent for a user).
+
 1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* group.scm: New file, containing window group operations.
