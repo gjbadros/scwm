@@ -1,3 +1,14 @@
+1999-02-28  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* binding.c, binding.h: Allow release procedures with `bind-key'
+	as with `bind-keycode'; provide `*-' prefix to key/mouse specs to
+	indicate AnyModifier; provide some more intutitive aliases for
+	several binding contexts: 'client-window, 'root-window, 'border
+	and 'corners, as well as better names for the buttons,
+	i.e. 'left-button-1, 'right-button-3, etc.
+	* events.c: Make sure synthetic event key and mouse specs don't
+	allow AnyModifier.
+	
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* window.c: Added new primitive icon-size which takes a window and

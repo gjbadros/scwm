@@ -39,6 +39,14 @@ SCWM_SYMBOL(sym_motion,"motion");
 SCWM_SYMBOL(sym_one_and_a_half_clicks,"one-and-a-half-clicks");
 SCWM_SYMBOL(sym_double_click,"double-click");
 
+SCWM_SYMBOL(sym_shift,"shift");
+SCWM_SYMBOL(sym_control,"control");
+SCWM_SYMBOL(sym_meta,"meta");
+SCWM_SYMBOL(sym_alt,"alt");
+SCWM_SYMBOL(sym_hyper,"hyper");
+SCWM_SYMBOL(sym_super,"super");
+SCWM_SYMBOL(sym_any_modifier,"any-modifier");
+
 struct symnum {
   SCM sym;
   int value;
@@ -52,6 +60,22 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, C_ROOT},
   {SCM_UNDEFINED, C_FRAME},
   {SCM_UNDEFINED, C_SIDEBAR},
+  {SCM_UNDEFINED, C_WINDOW},
+  {SCM_UNDEFINED, C_TITLE},
+  {SCM_UNDEFINED, C_ICON},
+  {SCM_UNDEFINED, C_ROOT},
+  {SCM_UNDEFINED, C_FRAME},
+  {SCM_UNDEFINED, C_SIDEBAR},
+  {SCM_UNDEFINED, C_L1},
+  {SCM_UNDEFINED, C_R1},
+  {SCM_UNDEFINED, C_L2},
+  {SCM_UNDEFINED, C_R2},
+  {SCM_UNDEFINED, C_L3},
+  {SCM_UNDEFINED, C_R3},
+  {SCM_UNDEFINED, C_L4},
+  {SCM_UNDEFINED, C_R4},
+  {SCM_UNDEFINED, C_L5},
+  {SCM_UNDEFINED, C_R5},
   {SCM_UNDEFINED, C_L1},
   {SCM_UNDEFINED, C_R1},
   {SCM_UNDEFINED, C_L2},
@@ -81,12 +105,16 @@ static int cMouseButtons = 3;
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
 for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
 can be combined arbitrarily, and in any order, but should precede the
-key name.
+key name. When a key specifier is being used to indicate a binding,
+the additional special modifier *- may be used; it indicates that the
+key should be bound with every possible modifier combination,
+including possibly no modifiers. *- may not be combined with any other
+modifier.
 */
 
 
 static const char *
-PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name)
+PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool allow_any_p)
 {
   int modmask = 0;
   Bool fError = False;
@@ -97,30 +125,53 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name)
     }
     switch (pch[0]) {
     case 'S': /* Shift */
-      modmask |= ShiftMask;
+      if (modmask == AnyModifier) {
+	fError = True;
+      } else {
+	modmask |= ShiftMask;
+      }
       break;
     case 'C': /* Control */
-      modmask |= ControlMask;
+      if (modmask == AnyModifier) {
+	fError = True;
+      } else {	
+	modmask |= ControlMask;
+      }
       break;
     case 'M': /* Meta */
-      if (!MetaMask)
+      if (!MetaMask || modmask == AnyModifier) {
 	fError = True;
-      modmask |= MetaMask;
+      } else {	
+	modmask |= MetaMask;
+      }
       break;
     case 'A': /* Alt */
-      if (!AltMask)
+      if (!AltMask|| modmask == AnyModifier) {
 	fError = True;
-      modmask |= AltMask;
+      } else {	
+	modmask |= AltMask;
+      }
       break;
     case 'H': /* Hyper */
-      if (!HyperMask)
+      if (!HyperMask || modmask == AnyModifier) {
 	fError = True;
-      modmask |= HyperMask;
+      } else {
+	modmask |= HyperMask;
+      }
       break;
-    case 's': /* super modifier [0x40] (emacs uses "s", so we do too) */
-      if (!SuperMask)
+    case 's': /* Super (emacs uses "s", so we do too) */
+      if (!SuperMask || modmask == AnyModifier) {
 	fError = True;
-      modmask |= SuperMask;
+      } else {
+	modmask |= SuperMask;
+      }
+      break;
+    case '*': /* AnyModifier */
+      if (modmask != 0 || !allow_any_p) {
+	fError = True;
+      } else {
+	modmask |= AnyModifier;
+      }
       break;
     case 'P':
       /* FIXGJB this can get pulled out later-- I used 'P' at first to avoid
@@ -147,7 +198,8 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name)
 
 
 Bool 
-FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name)
+FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name, 
+		      Bool allow_any_p)
 {
   Bool fOk = True;
   int len;
@@ -159,7 +211,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name)
   }
 
   keyname = gh_scm2newstr(key,&len);
-  pch = (char *) PchModifiersToModmask(keyname,pmodifier, func_name);
+  pch = (char *) PchModifiersToModmask(keyname,pmodifier, func_name, allow_any_p);
 
   if (pch == 0 || *pmodifier < 0) {
     FREE(keyname);
@@ -204,7 +256,8 @@ BnumFromSz(const char *sz)
 }
 
 Bool
-FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name)
+FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name, 
+		       Bool allow_any_p)
 {
   Bool fOk = True;
   int len;
@@ -225,8 +278,8 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name)
   }
 
   if (NULL!=button_name) {
-    *pbnum = BnumFromSz(PchModifiersToModmask(button_name, pmodifier, func_name));
-
+    *pbnum = BnumFromSz(PchModifiersToModmask(button_name, pmodifier, func_name, 
+					      allow_any_p));
     if (*pbnum < 0) {
       scwm_msg(WARN,func_name,"No button `%s'",button_name);
       fOk=False;
@@ -615,7 +668,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
   int context = 0;
 
   context = compute_contexts(contexts, FUNC_NAME);
-  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask, FUNC_NAME);
+  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask, FUNC_NAME, True);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -648,7 +701,7 @@ KEYSYM-NAME should be a string.  E.g., "Control_L". */
 
   /* GJB:FIXME:: This shouldn't really accept modifiers in front, but
      FKeyToKeysymModifiers does permit them */
-  Bool fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME);
+  Bool fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME, False);
 
   XDisplayKeycodes(dpy, &min, &max);
   for (i = max; i >= min; --i) {
@@ -672,7 +725,7 @@ BUTTON is a string or integer giving the mouse button number */
   int context = 0;
   int fButtonOK = True;
 
-  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);
   context = compute_contexts(contexts, FUNC_NAME);
 
   if (!fButtonOK) {
@@ -687,13 +740,16 @@ BUTTON is a string or integer giving the mouse button number */
 #undef FUNC_NAME
 
 
-SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
-          (SCM contexts, SCM key, SCM proc))
+SCWM_PROC(bind_key, "bind-key", 3, 1, 0,
+          (SCM contexts, SCM key, SCM proc, SCM release_proc))
      /** Bind the given KEY within the CONTEXTS to invoke PROC.
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
-KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-PROC is a procedure that will be invoked (with no arguments) when the 
-specified key is pressed in the specified context. */
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar)) KEY is
+a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
+PROC is a procedure that will be invoked (with no arguments) when the
+specified key is pressed in the specified context. The optional
+argument RELEASE_PROC, if specified, is a procedure that will be
+invoked when the key is release."
+*/
 #define FUNC_NAME s_bind_key
 {
   KeySym keysym;
@@ -708,9 +764,17 @@ specified key is pressed in the specified context. */
     scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
 
+  if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
+    scm_wrong_type_arg(FUNC_NAME, 4, release_proc);
+  }
+
+  if (release_proc == SCM_UNDEFINED) {
+    release_proc = SCM_BOOL_F;
+  }
+
   context = compute_contexts(contexts, FUNC_NAME);
 
-  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME);
+  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME, True);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -731,7 +795,7 @@ specified key is pressed in the specified context. */
   XDisplayKeycodes(dpy, &min, &max);
   for (i = min; i <= max; i++) {
     if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-      add_binding(context, modmask, i, 0, proc, SCM_UNDEFINED, gh_scm2newstr(key,&len));
+      add_binding(context, modmask, i, 0, proc, release_proc, gh_scm2newstr(key,&len));
       fBoundKey = True;
     }
   }
@@ -828,7 +892,7 @@ specified button is pressed in the specified context. */
   }
 
   context = compute_contexts(contexts, FUNC_NAME);
-  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);
 
 
   if ((context != C_ALL) && (context & C_LALL)) {
@@ -1069,6 +1133,12 @@ init_binding(void)
     "root",
     "frame",
     "sidebar",
+    "client-window",
+    "titlebar",
+    "icon",
+    "root-window",
+    "corners",
+    "border",
     "button-1",
     "button-2",
     "button-3",
@@ -1079,6 +1149,16 @@ init_binding(void)
     "button-8",
     "button-9",
     "button-10",
+    "left-button-1",
+    "right-button-1",
+    "left-button-2",
+    "right-button-2",
+    "left-button-3",
+    "right-button-3",
+    "left-button-4",
+    "right-button-4",
+    "left-button-5",
+    "right-button-5",
     "all",
     NULL
   };

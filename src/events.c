@@ -405,7 +405,6 @@ HandleKeyEvent(Bool fPress)
   Event.xkey.keycode =
     XKeysymToKeycode(dpy, XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
 
-
   for (key = Scr.AllBindings; key != NULL; key = key->NextBinding) {
     if ((key->Button_Key == Event.xkey.keycode) &&
 	((key->Modifier == (modifier & (~LockMask))) ||
@@ -419,8 +418,7 @@ HandleKeyEvent(Bool fPress)
         if (!UNSET_SCM(key->Thunk))
           scwm_safe_call0(key->Thunk);
       } else if (!UNSET_SCM(key->ReleaseThunk)) {
-        if (!UNSET_SCM(key->ReleaseThunk))
-          scwm_safe_call0(key->ReleaseThunk);
+	scwm_safe_call0(key->ReleaseThunk);
       }
       
       if (NULL != pswCurrent) {
@@ -1934,7 +1932,7 @@ should not have to worry about this unless you know what it means. */
     fPropagate = gh_scm2bool(propagate_p);
   }
 
-  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME);
+  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME, False);
 
   if (fOkay) {
     if (fPress) {
@@ -2000,7 +1998,7 @@ this unless you know what it means. */
     fPropagate = gh_scm2bool(propagate_p);
   }
 
-  fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME, False);
 
   if (!fButtonOK) {
     scm_wrong_type_arg(FUNC_NAME,1,button);
