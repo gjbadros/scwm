@@ -54,7 +54,7 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
   }
   ScwmWindow *psw = PswFromClvPv(pclv->Pv());
   if (!psw) {
-    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
+    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", pclv->Name().data()));
     return;
   }
   if (!psolver) {
@@ -313,8 +313,8 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
   SCM answer = SCM_EOL;
   set<ScwmWindow *> setpsw;
 
-  ClLinearExpression expr = pcn->expression();
-  const ClLinearExpression::ClVarToCoeffMap &mapclv = expr.terms();
+  ClLinearExpression expr = pcn->Expression();
+  const ClLinearExpression::ClVarToCoeffMap &mapclv = expr.Terms();
 
   ClLinearExpression::ClVarToCoeffMap::const_iterator it = mapclv.begin();
   for ( ; it != mapclv.end(); ++it) {

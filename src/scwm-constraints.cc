@@ -62,34 +62,34 @@ CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)
 
   if (!psolver || !fSolve) {
     // no solver attached or not supposed to solve, so just copy the values over
-    pswci->_frame_x.set_value(psw->frame_x);
-    pswci->_frame_y.set_value(psw->frame_y);
-    pswci->_frame_width.set_value(psw->frame_width);
-    pswci->_frame_height.set_value(psw->frame_height);
+    pswci->_frame_x.SetValue(psw->frame_x);
+    pswci->_frame_y.SetValue(psw->frame_y);
+    pswci->_frame_width.SetValue(psw->frame_width);
+    pswci->_frame_height.SetValue(psw->frame_height);
     MovePswToCurrentPosition(psw);
     return;
   }
     
   vector<double> v;
-  if (psw->frame_x != pswci->_frame_x.intValue()) {
-    psolver->addEditVar(pswci->_frame_x);
+  if (psw->frame_x != pswci->_frame_x.IntValue()) {
+    psolver->AddEditVar(pswci->_frame_x);
     v.push_back(psw->frame_x);
   }
-  if (psw->frame_y != pswci->_frame_x.intValue()) {
-    psolver->addEditVar(pswci->_frame_y);
+  if (psw->frame_y != pswci->_frame_x.IntValue()) {
+    psolver->AddEditVar(pswci->_frame_y);
     v.push_back(psw->frame_y);
   }
-  if (psw->frame_width != pswci->_frame_width.intValue()) {
-    psolver->addEditVar(pswci->_frame_width);
+  if (psw->frame_width != pswci->_frame_width.IntValue()) {
+    psolver->AddEditVar(pswci->_frame_width);
     v.push_back(psw->frame_width);
   }
-  if (psw->frame_height != pswci->_frame_height.intValue()) {
-    psolver->addEditVar(pswci->_frame_height);
+  if (psw->frame_height != pswci->_frame_height.IntValue()) {
+    psolver->AddEditVar(pswci->_frame_height);
     v.push_back(psw->frame_height);
   }
   if (v.size() > 0) {
-    psolver->resolve(v);
-    psolver->endEdit();
+    psolver->Resolve(v);
+    psolver->EndEdit();
   }
 }
 
@@ -102,9 +102,9 @@ CassowaryEditPosition(PScwmWindow psw)
 
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   (*psolver)
-    .addEditVar(pswci->_frame_x)
-    .addEditVar(pswci->_frame_y)
-    .beginEdit();
+    .AddEditVar(pswci->_frame_x)
+    .AddEditVar(pswci->_frame_y)
+    .BeginEdit();
 }
 
 void
@@ -115,11 +115,11 @@ CassowaryEditSize(PScwmWindow psw)
 
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   (*psolver)
-    .addEditVar(pswci->_frame_x)
-    .addEditVar(pswci->_frame_y)
-    .addEditVar(pswci->_frame_width)
-    .addEditVar(pswci->_frame_height)
-    .beginEdit();
+    .AddEditVar(pswci->_frame_x)
+    .AddEditVar(pswci->_frame_y)
+    .AddEditVar(pswci->_frame_width)
+    .AddEditVar(pswci->_frame_height)
+    .BeginEdit();
 }
 
 
@@ -134,14 +134,14 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
   ScwmWindowConstraintInfo *pswci = psw->pswci;
 
   /* do not bother with re-solve if nothing has changed */
-  if (pswci->_frame_x.intValue() == x &&
-      pswci->_frame_y.intValue() == y)
+  if (pswci->_frame_x.IntValue() == x &&
+      pswci->_frame_y.IntValue() == y)
     return;
 
   (*psolver)
-    .suggestValue(pswci->_frame_x,x)
-    .suggestValue(pswci->_frame_y,y)
-    .resolve();
+    .SuggestValue(pswci->_frame_x,x)
+    .SuggestValue(pswci->_frame_y,y)
+    .Resolve();
 }
 
 
@@ -157,23 +157,23 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
   ScwmWindowConstraintInfo *pswci = psw->pswci;
 
   /* do not bother with re-solve if nothing has changed */
-  if (pswci->_frame_x.intValue() == x &&
-      pswci->_frame_y.intValue() == y &&
-      pswci->_frame_width.intValue() == w &&
-      pswci->_frame_height.intValue() == h)
+  if (pswci->_frame_x.IntValue() == x &&
+      pswci->_frame_y.IntValue() == y &&
+      pswci->_frame_width.IntValue() == w &&
+      pswci->_frame_height.IntValue() == h)
     return;
 
   (*psolver)
-    .suggestValue(pswci->_frame_x,x)
-    .suggestValue(pswci->_frame_y,y)
-    .suggestValue(pswci->_frame_width,w)
-    .suggestValue(pswci->_frame_height,h)
-    .resolve();
+    .SuggestValue(pswci->_frame_x,x)
+    .SuggestValue(pswci->_frame_y,y)
+    .SuggestValue(pswci->_frame_width,w)
+    .SuggestValue(pswci->_frame_height,h)
+    .Resolve();
 
   DBUG((DBG,FUNC_NAME,
         "Now clv-width,height are %d x %d",
-        pswci->_frame_width.intValue(),
-        pswci->_frame_height.intValue()));
+        pswci->_frame_width.IntValue(),
+        pswci->_frame_height.IntValue()));
 }
 #undef FUNC_NAME
 
@@ -194,24 +194,24 @@ ChangeVirtualPosition(int vx, int vy, Bool fGrab)
   ScwmScreenConstraintInfo *pssci = Scr.pssci;
 
   /* do not bother with re-solve if nothing has changed */
-  if (pssci->_vx.intValue() == vx &&
-      pssci->_vy.intValue() == vy)
+  if (pssci->_vx.IntValue() == vx &&
+      pssci->_vy.IntValue() == vy)
     return;
 
   /* Separated for debugging purposes */
   (*psolver)
-    .addEditVar(pssci->_vx)
-    .addEditVar(pssci->_vy)
-    .beginEdit();
+    .AddEditVar(pssci->_vx)
+    .AddEditVar(pssci->_vy)
+    .BeginEdit();
 
   (*psolver)
-    .suggestValue(pssci->_vx,vx)
-    .suggestValue(pssci->_vy,vy);
+    .SuggestValue(pssci->_vx,vx)
+    .SuggestValue(pssci->_vy,vy);
 
-  psolver->resolve();
-  psolver->endEdit();
+  psolver->Resolve();
+  psolver->EndEdit();
 
-  MoveViewport_internal(pssci->_vx.intValue(),pssci->_vy.intValue(),fGrab);
+  MoveViewport_internal(pssci->_vx.IntValue(),pssci->_vy.IntValue(),fGrab);
 }
 
 
@@ -224,7 +224,7 @@ CassowaryEndEdit(PScwmWindow psw)
   if (!psolver) {
     return;
   }
-  psolver->endEdit();
+  psolver->EndEdit();
 }
 
 } // extern "C"

@@ -31,14 +31,14 @@ public:
   ScwmScreenConstraintInfo(ScreenInfo *pscreen)
     {
       void *pvScr = PvFromScm(pscreen->schscreen);
-      _vx.setName("vx");
-      _vy.setName("vy");
-      _pointerx.setName("px");
-      _pointery.setName("py");
-      _vx.setPv(pvScr);
-      _vy.setPv(pvScr);
-      _pointerx.setPv(pvScr);
-      _pointery.setPv(pvScr);
+      _vx.SetName("vx");
+      _vy.SetName("vy");
+      _pointerx.SetName("px");
+      _pointery.SetName("py");
+      _vx.SetPv(pvScr);
+      _vy.SetPv(pvScr);
+      _pointerx.SetPv(pvScr);
+      _pointery.SetPv(pvScr);
       gh_defer_ints();
       scm_protect_object(_scmVx = ScmMakeClVariable(&_vx));
       scm_protect_object(_scmVy = ScmMakeClVariable(&_vy));
@@ -59,18 +59,18 @@ public:
   void
   AddStays(ClSimplexSolver *psolver)
     {
-      psolver->addStay(_vx,clsMedium(),1.0);
-      psolver->addStay(_vy,clsMedium(),1.0);
+      psolver->AddStay(_vx,ClsMedium(),1.0);
+      psolver->AddStay(_vy,ClsMedium(),1.0);
       ClLinearInequality *pminX = new ClLinearInequality(_vx,cnGEQ,0);
       ClLinearInequality *pminY = new ClLinearInequality(_vy,cnGEQ,0);
       ClLinearInequality *pmaxX = new ClLinearInequality(_vx,cnLEQ,Scr.VxMax);
       ClLinearInequality *pmaxY = new ClLinearInequality(_vy,cnLEQ,Scr.VyMax);
       (*psolver)
-        .addConstraint(*pminX)
-        .addConstraint(*pminY)
-        .addConstraint(*pmaxX)
-        .addConstraint(*pmaxY);
-      /*     psolver->addPointStay(_pointerx,_pointery); */
+        .AddConstraint(*pminX)
+        .AddConstraint(*pminY)
+        .AddConstraint(*pmaxX)
+        .AddConstraint(*pmaxY);
+      /*     psolver->AddPointStay(_pointerx,_pointery); */
     }
 
   ClVariable _vx;

@@ -58,16 +58,16 @@ public:
         _name = szNm;
         szNm[ich++] = '/';
         szNm[ich+1] = '\0';
-        szNm[ich] = 'x'; _frame_x.setName(szNm);
-        szNm[ich] = 'y'; _frame_y.setName(szNm);
-        szNm[ich] = 'w'; _frame_width.setName(szNm);
-        szNm[ich] = 'h'; _frame_height.setName(szNm);
+        szNm[ich] = 'x'; _frame_x.SetName(szNm);
+        szNm[ich] = 'y'; _frame_y.SetName(szNm);
+        szNm[ich] = 'w'; _frame_width.SetName(szNm);
+        szNm[ich] = 'h'; _frame_height.SetName(szNm);
         free(szNm);
       }
-      _frame_x.setPv(pvWin);
-      _frame_y.setPv(pvWin);
-      _frame_width.setPv(pvWin);
-      _frame_height.setPv(pvWin);
+      _frame_x.SetPv(pvWin);
+      _frame_y.SetPv(pvWin);
+      _frame_width.SetPv(pvWin);
+      _frame_height.SetPv(pvWin);
       gh_defer_ints();
       scm_protect_object(_scmXL = ScmMakeClVariable(&_frame_x));
       scm_protect_object(_scmYT = ScmMakeClVariable(&_frame_y));
@@ -75,11 +75,11 @@ public:
       scm_protect_object(_scmHeight = ScmMakeClVariable(&_frame_height));
 
       ClLinearExpression *pexprXR = new ClLinearExpression(_frame_x);
-      pexprXR->addVariable(_frame_width);
+      pexprXR->AddVariable(_frame_width);
       scm_protect_object(_scmXR = ScmMakeClLinearExpression(pexprXR));
 
       ClLinearExpression *pexprYB = new ClLinearExpression(_frame_y);
-      pexprYB->addVariable(_frame_height);
+      pexprYB->AddVariable(_frame_height);
       scm_protect_object(_scmYB = ScmMakeClLinearExpression(pexprYB));
 
       gh_allow_ints();
@@ -90,11 +90,11 @@ public:
 #define FUNC_NAME "ScwmWindowConstraintInfo::AddStays"
     {
       DBUG((DBG,FUNC_NAME,"Adding stays for window %s: (%d,%d) %d x %d",
-            Psw()->name, _frame_x.intValue(), _frame_y.intValue(),
-            _frame_width.intValue(), _frame_height.intValue()));
+            Psw()->name, _frame_x.IntValue(), _frame_y.IntValue(),
+            _frame_width.IntValue(), _frame_height.IntValue()));
       // FIXGJB: these weights should increase each time this is called
-      psolver->addPointStay(_frame_width,_frame_height,100);
-      psolver->addPointStay(_frame_x,_frame_y,1);
+      psolver->AddPointStay(_frame_width,_frame_height,100);
+      psolver->AddPointStay(_frame_x,_frame_y,1);
     }
 #undef FUNC_NAME
 
@@ -129,10 +129,10 @@ public:
       ClLinearInequality *pineqMinHeight = new ClLinearInequality(_frame_height,cnGEQ,minHeight);
       ClLinearInequality *pineqMaxHeight = new ClLinearInequality(_frame_height,cnLEQ,maxHeight);
       (*psolver)
-        .addConstraint(*pineqMinWidth)
-        .addConstraint(*pineqMaxWidth)
-        .addConstraint(*pineqMinHeight)
-        .addConstraint(*pineqMaxHeight);
+        .AddConstraint(*pineqMinWidth)
+        .AddConstraint(*pineqMaxWidth)
+        .AddConstraint(*pineqMinHeight)
+        .AddConstraint(*pineqMaxHeight);
     }
 
   ScwmWindow *Psw() const
@@ -163,8 +163,8 @@ public:
       *pfResized = false;
 
       { /* scope */
-        int x = _frame_x.intValue();
-        int y = _frame_y.intValue();
+        int x = _frame_x.IntValue();
+        int y = _frame_y.IntValue();
         if (psw->frame_x != x || psw->frame_y != y) {
           psw->frame_x = x;
           psw->frame_y = y;
@@ -172,8 +172,8 @@ public:
         }
       }
       { /* scope */
-        int w = _frame_width.intValue();
-        int h = _frame_height.intValue();
+        int w = _frame_width.IntValue();
+        int h = _frame_height.IntValue();
         if (psw->frame_width != w || psw->frame_height != h) {
           DBUG((DBG,FUNC_NAME,"Resized from (%d x %d) to (%d x %d)",
                 psw->frame_width,psw->frame_height, w,h));
