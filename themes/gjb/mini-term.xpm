@@ -1,16 +1,15 @@
 /* XPM */
 static char *mini-term[] = {
 /* width height num_colors chars_per_pixel */
-"    16    16        6            1",
+"    16    14        6            1",
 /* colors */
 "  c None s None",
 ". c Black",
-"# c #808080", /* gray50 */
+"# c gray50",
 "a c blue",
 "b c White",
-"c c #c0c0c0", /* gray85 */
+"c c gray85",
 /* pixels */
-"                ",
 "     #########  ",
 "    #cccccccc#. ",
 "   #bbbbbbbb##. ",
@@ -24,6 +23,5 @@ static char *mini-term[] = {
 "  ##.#.#.#.#.##.",
 " #c.c.c.c.c.c.. ",
 "#bbbbbbbbbbbc.  ",
-".............   ",
-"                "
+".............   "
 };
