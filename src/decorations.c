@@ -44,7 +44,6 @@
 #include <X11/Xproto.h>
 #include "misc.h"
 #include "screen.h"
-#include "parse.h"
 #include "mwmcom.h"
 
 extern Atom _XA_MwmAtom;
@@ -419,37 +418,36 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
  * This routine is used to decide if we should refuse to perform a function.
  *
  ****************************************************************************/
-int 
-check_allowed_function2(int function, ScwmWindow * t)
+Bool
+check_allowed_function(enum wm_client_functions function, ScwmWindow * t)
 {
 
   if (t->flags & HintOverride)
-    return 1;
-
+    return True;
 
   if ((t) && (!(t->flags & DoesWmDeleteWindow)) && (function == F_DELETE))
-    return 0;
+    return False;
 
   if ((function == F_RESIZE) && (t) &&
       (!(t->functions & MWM_FUNC_RESIZE)))
-    return 0;
+    return False;
 
   if ((function == F_ICONIFY) && (t) &&
       (!(t->flags & ICONIFIED)) &&
       (!(t->functions & MWM_FUNC_MINIMIZE)))
-    return 0;
+    return False;
 
   if ((function == F_MAXIMIZE) && (t) &&
       (!(t->functions & MWM_FUNC_MAXIMIZE)))
-    return 0;
+    return False;
 
   if ((function == F_DELETE) && (t) &&
       (!(t->functions & MWM_FUNC_CLOSE)))
-    return 0;
+    return False;
 
   if ((function == F_DESTROY) && (t) &&
       (!(t->functions & MWM_FUNC_CLOSE)))
-    return 0;
+    return False;
 
   return 1;
 }

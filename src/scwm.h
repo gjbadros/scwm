@@ -148,6 +148,14 @@ typedef struct ColorPair {
 
 struct ScwmDecor;		/* definition in screen.h */
 
+/* the set of functions that scwm perform on top 
+   level windows;  
+   sw->functions is a bit mask of which such actions
+   are respected for a given window */
+enum wm_client_functions {
+  F_RESIZE = 100, F_ICONIFY = 106, F_MAXIMIZE = 109, 
+  F_DELETE = 104, F_DESTROY = 103
+};
 
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
@@ -219,7 +227,7 @@ typedef struct ScwmWindow {
   int xdiff, ydiff;		/* used to restore window position on exit */
   int *mwm_hints;
   int ol_hints;
-  int functions;
+  enum wm_client_functions functions;
   Window *cmap_windows;		/* Colormap windows property */
   int number_cmap_windows;	/* Should generally be 0 */
   Pixel ReliefPixel;

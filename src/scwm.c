@@ -87,19 +87,11 @@ Display *dpy;			/* which display are we talking to */
 
 Window BlackoutWin = None;	/* window to hide window captures */
 
-#ifdef SCWMRC
-char *default_config_command = "Read " SCWMRC;
-
-#else
-char *default_config_command = "Read .scwmrc";
-
-#endif
-#define MAX_CFG_CMDS 10
-char *s_cmd_config;
+char *szCmdConfig;
 int interactive = 0;
 
-static char *s_load_pre = "(load \"";
-static char *s_load_post = "\")";
+static char *szLoad_pre = "(load \"";
+static char *szLoad_post = "\")";
 
 
 char *output_file = NULL;
@@ -200,7 +192,8 @@ scwm_main(int argc, char **argv)
 
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
-     while debugging */
+     while debugging: FIXGJB: make these runtime options -- also,
+     isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
 
@@ -214,9 +207,9 @@ scwm_main(int argc, char **argv)
   init_face();
   init_scwm_procs();
 
-  s_cmd_config = safemalloc(1 * sizeof(char));
+  szCmdConfig = safemalloc(1 * sizeof(char));
 
-  s_cmd_config[0] = '\0';
+  szCmdConfig[0] = '\0';
 
   g_argv = argv;
   g_argc = argc;
@@ -263,15 +256,15 @@ scwm_main(int argc, char **argv)
 	  option_error=True;
 	  break;
 	} else {
-	  s_cmd_config = realloc(s_cmd_config, sizeof(char) * 
-				 (strlen(s_cmd_config) +
-				  strlen(s_load_pre) +
+	  szCmdConfig = realloc(szCmdConfig, sizeof(char) * 
+				 (strlen(szCmdConfig) +
+				  strlen(szLoad_pre) +
 				  strlen(optarg) +
-				  strlen(s_load_post) + 1));
+				  strlen(szLoad_post) + 1));
 	  
-	  s_cmd_config = strcat(s_cmd_config, s_load_pre);
-	  s_cmd_config = strcat(s_cmd_config, optarg);
-	  s_cmd_config = strcat(s_cmd_config, s_load_post);
+	  szCmdConfig = strcat(szCmdConfig, szLoad_pre);
+	  szCmdConfig = strcat(szCmdConfig, optarg);
+	  szCmdConfig = strcat(szCmdConfig, szLoad_post);
 	  break;
 	}
       case 'e':
@@ -279,11 +272,11 @@ scwm_main(int argc, char **argv)
 	  option_error=True;
 	  break;
 	} else {
-	  s_cmd_config=realloc(s_cmd_config, sizeof(char) *
-			       (strlen(s_cmd_config) +
+	  szCmdConfig=realloc(szCmdConfig, sizeof(char) *
+			       (strlen(szCmdConfig) +
 				strlen(optarg) + 1));
 	  
-	  s_cmd_config = strcat(s_cmd_config, optarg);
+	  szCmdConfig = strcat(szCmdConfig, optarg);
 	  break;
 	}
       case 'i':
@@ -340,15 +333,15 @@ scwm_main(int argc, char **argv)
 		 argv[i-1]);
 	option_error=True;
       } else {
-	s_cmd_config=realloc(s_cmd_config, sizeof(char) *
-			     (strlen(s_cmd_config) +
-			      strlen(s_load_pre) +
+	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
+			     (strlen(szCmdConfig) +
+			      strlen(szLoad_pre) +
 			      strlen(argv[i]) +
-			      strlen(s_load_post) + 1));
+			      strlen(szLoad_post) + 1));
 
-	s_cmd_config = strcat(s_cmd_config, s_load_pre);
-	s_cmd_config = strcat(s_cmd_config, argv[i]);
-	s_cmd_config = strcat(s_cmd_config, s_load_post);
+	szCmdConfig = strcat(szCmdConfig, szLoad_pre);
+	szCmdConfig = strcat(szCmdConfig, argv[i]);
+	szCmdConfig = strcat(szCmdConfig, szLoad_post);
       }
     } else if ((strncasecmp(argv[i], "-e", 2) == 0) || 
 	       (strncasecmp(argv[i], "--expression", 12) == 0)) {
@@ -357,9 +350,9 @@ scwm_main(int argc, char **argv)
 		 argv[i-1]);
 	option_error=True;
       } else {
-	s_cmd_config=realloc(s_cmd_config, sizeof(char) *
-			     (strlen(s_cmd_config) + strlen(argv[i]) + 1));
-	s_cmd_config = strcat(s_cmd_config, argv[i]);
+	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
+			     (strlen(szCmdConfig) + strlen(argv[i]) + 1));
+	szCmdConfig = strcat(szCmdConfig, argv[i]);
       }
     } else if ((strncasecmp(argv[i], "-i", 2) == 0) ||
 	       (strncasecmp(argv[i], "--interactive",13) == 0)) {
@@ -526,7 +519,7 @@ scwm_main(int argc, char **argv)
 #define SCWMRC ".scwmrc"
 #endif
 
-  if (strlen(s_cmd_config) == 0) {
+  if (strlen(szCmdConfig) == 0) {
     gh_eval_str("(let ((home-scwmrc"
 	    "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
 		"      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
@@ -535,10 +528,10 @@ scwm_main(int argc, char **argv)
 		"     (if (access? system-scwmrc R_OK)"
 		"         (load system-scwmrc))))");
   } else {
-    gh_eval_str(s_cmd_config);
+    gh_eval_str(szCmdConfig);
   }
 
-  free(s_cmd_config);
+  free(szCmdConfig);
 
   CaptureAllWindows();
 
@@ -1174,9 +1167,6 @@ InitScwmDecor(ScwmDecor * fl)
 
   /*  fl->tag = NULL; */
   fl->next = NULL;
-
-
-
 }
 
 /***********************************************************************
@@ -1463,6 +1453,7 @@ SaveDesktopState()
 void 
 SetMWM_INFO(Window window)
 {
+/* FIXGJB: make this a per-window runtime option */
 #ifdef MODALITY_IS_EVIL
   struct mwminfo {
     long flags;

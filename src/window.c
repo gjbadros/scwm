@@ -19,7 +19,6 @@
 #include "misc.h"
 #include "move.h"
 #include "icons.h"
-#include "parse.h"
 #include "ICCCM.h"
 #include "window.h"
 #include "color.h"
@@ -526,7 +525,7 @@ delete_window(SCM win)
   VALIDATEKILL(win, "delete-window");
 
   tmp_win = SCWMWINDOW(win);
-  if (check_allowed_function2(F_DELETE, tmp_win) == 0) {
+  if (check_allowed_function(F_DELETE, tmp_win) == 0) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -547,7 +546,7 @@ destroy_window(SCM win)
   SCM_REDEFER_INTS;
   VALIDATEKILL(win, "destroy-window");
   tmp_win = SCWMWINDOW(win);
-  if (check_allowed_function2(F_DESTROY, tmp_win) == 0) {
+  if (check_allowed_function(F_DESTROY, tmp_win) == 0) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -653,7 +652,7 @@ iconify(SCM win)
   VALIDATE(win, "iconify");
   tmp_win = SCWMWINDOW(win);
 
-  if (check_allowed_function2(F_ICONIFY, tmp_win) == 0) {
+  if (check_allowed_function(F_ICONIFY, tmp_win) == 0) {
 
     return SCM_BOOL_F;
   }
@@ -1033,7 +1032,7 @@ resize_to(SCM w, SCM h, SCM win)
   VALIDATEN(win, 3, "resize-to");
   tmp_win = SCWMWINDOW(win);
 
-  if (check_allowed_function2(F_RESIZE, tmp_win) == 0
+  if (check_allowed_function(F_RESIZE, tmp_win) == 0
       || SHADED_P(tmp_win)) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
@@ -1094,7 +1093,7 @@ interactive_resize(SCM win)
   tmp_win = SCWMWINDOW(win);
 
 
-  if (check_allowed_function2(F_RESIZE, tmp_win) == 0
+  if (check_allowed_function(F_RESIZE, tmp_win) == 0
       || SHADED_P(tmp_win)) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;

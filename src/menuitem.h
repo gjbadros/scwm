@@ -57,7 +57,7 @@ typedef struct MenuItemInMenu_tag
 {
   MenuItem *pmi;		/* pointer to the menu item this is for */
   struct DynamicMenu_tag *pmd;	/* the dynamic menu it is in */
-  int imiim;			/* the item number in the dynamic menu */
+  int ipmiim;			/* the item number in the dynamic menu */
   int cpixOffsetY;		/* top y offset of the item */
   int cpixItemHeight;		/* height for item */
   menu_item_state mis;		/* current state of item */

@@ -62,8 +62,6 @@
 #include "module-interface.h"
 #include "icons.h"
 
-#undef MS_DELETION_COMMENT
-
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
 static XrmDatabase db;
@@ -794,9 +792,6 @@ UngrabButtonWithModifiers(int button, int modifier,
   }
 }
   
-
-
-
 /***********************************************************************
  *
  *  Procedure:
@@ -917,12 +912,6 @@ GetWindowSizeHints(ScwmWindow * tmp)
     tmp->hints.flags |= PWinGravity;
   }
 }
-
-
-
-
-
-
 
 
 /* Local Variables: */

@@ -1161,10 +1161,6 @@ RelieveWindow(ScwmWindow * t, Window win,
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
-
-
-
-
 /***********************************************************************
  *
  *  Procedure:

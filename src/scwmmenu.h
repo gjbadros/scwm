@@ -62,7 +62,7 @@ typedef struct DynamicMenu_tag
   Menu *pmenu;		/* this menu */
   MenuItemInMenu **rgpmiim;	/* the menu item dynamic information */
   int cmiim;			/* size of above array */
-  int imiimSelected;		/* the index of the selected item */
+  int ipmiimSelected;		/* the index of the selected item */
   struct DynamicMenu_tag *pmdNext; /* the next-popped up menu */
   struct DynamicMenu_tag *pmdPrior; /* the menu that popped this up */
   MenuDrawingInfo *pmdi;	/* extra info needed by the drawing/hit detection code */

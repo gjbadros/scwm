@@ -422,7 +422,7 @@ bind_key(SCM contexts, SCM key, SCM proc)
     SCM_ALLOW_INTS;
     scwm_msg(WARN,__FUNCTION__,"Bad key binding -- no symbol `%s'",keyname);
     free(keyname);
-    return SCM_UNDEFINED;  /* Using SCM_UNDEFINED for an error -- MSFIX: is this ok? */
+    return SCM_BOOL_F;
   }
   /* 
    * One keycode might map to the same keysym -MS

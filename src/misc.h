@@ -185,7 +185,6 @@ void FocusOn(ScwmWindow * t, int DeIconifyOnly);
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
 
-int check_allowed_function2(int function, ScwmWindow * t);
 void MapIt(ScwmWindow * t);
 void do_save(void);
 void checkPanFrames(void);

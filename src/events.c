@@ -460,7 +460,7 @@ SetXPropertySz(Window w, const char *szPropertyName, const char *sz)
 		  property, XA_STRING, 8 /* bits in a byte */ ,
 		  PropModeReplace, sz, len);
   /* FIXGJB: should above be PropModeAppend to avoid race cond'ns
-     hinted at in gwm */
+     hinted at in gwm? */
   XFlush(dpy);
 }
 
@@ -508,12 +508,6 @@ ScwmExecuteProperty()
     char *szResult;
     int len;
     scwm_msg(DBG, __FUNCTION__, "Executing %s", szExecute);
-    /* WHICH OF THESE SHOULD I USE?? --gjb 
-       gh.h:SCM gh_eval_str(char *scheme_code);
-       gh.h:SCM gh_eval_str_with_catch(char *scheme_code, scm_catch_handler_t handler);
-       gh.h:SCM gh_eval_str_with_standard_handler(char *scheme_code);
-       gh.h:SCM gh_eval_str_with_stack_saving_handler(char *scheme_code);
-     */
     /* FIXGJB: scwm_error_handler doesn't get used -- I redefine
        gh_standard_handler above to give better messages */
     retval = gh_eval_str_with_catch(szExecute,scwm_error_handler);
@@ -521,7 +515,7 @@ ScwmExecuteProperty()
        pre-opened interaction results port */
     gh_display(retval);
     gh_newline();
-#ifdef FIXGJBNOW
+#ifdef FIXGJB /* MSFIX: do you know? */
     /* How the hell do you get the printable representation 
        of a SCM object as a char * ??? --gjb 11/13/97 */
     scm = gh_cons(gh_symbol2scm("'write"),retval);
@@ -751,8 +745,6 @@ HandleExpose()
   return;
 }
 
-
-
 /***********************************************************************
  *
  *  Procedure:
@@ -766,8 +758,6 @@ HandleDestroyNotify()
 
   Destroy(swCurrent);
 }
-
-
 
 
 /***********************************************************************
@@ -1158,8 +1148,7 @@ HandleButtonPress()
 	if (NULL != swCurrent) {
 	  unset_window_context();
 	}
-      } else {
-      }
+      } 
       break;
     }
   }
@@ -1709,11 +1698,6 @@ send_key_press(SCM key, SCM win,
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
-
-
-
-
-
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -105,7 +105,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
 {
   SCM list_of_menuitems = pmd->pmenu->scmMenuItems;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
-  int imiim = 0;
+  int ipmiim = 0;
   int cItems = gh_length(list_of_menuitems);
   char *pch = safemalloc(sizeof(char) * (cItems + 1));
   int ich = 0;
@@ -118,7 +118,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
     item = gh_car(rest);
     pmi = SAFE_MENUITEM(item);
     if (!pmi) {
-      scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",imiim);
+      scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",ipmiim);
     }
     if (pmi && pmi->pchHotkeyPreferences) {
       char *pchDesiredChars = pmi->pchHotkeyPreferences;
@@ -126,14 +126,14 @@ NewPchKeysUsed(DynamicMenu *pmd)
       while ((ch = *pchDesiredChars++) != '\0') {
 	if (!strchr(pch,ch)) {
 	  /* Found the char to use */
-	  rgpmiim[imiim]->chShortcut = ch;
+	  rgpmiim[ipmiim]->chShortcut = ch;
 	  pch[ich++] = ch;
-	  rgpmiim[imiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
+	  rgpmiim[ipmiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
 	  break;
 	}
       }
     }
-    imiim++;
+    ipmiim++;
     rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
       break;
@@ -291,11 +291,11 @@ SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
   /* May want to select a different object initially if we popped up
      somewhere near an edge/bottom, depending on what behaviour
      we choose there */
-  pmd->imiimSelected = 0;
+  pmd->ipmiimSelected = 0;
 
   /* mark menu item as selected */
-  if (pmd->imiimSelected >= 0) {
-    pmd->rgpmiim[pmd->imiimSelected]->mis = MIS_Selected;
+  if (pmd->ipmiimSelected >= 0) {
+    pmd->rgpmiim[pmd->ipmiimSelected]->mis = MIS_Selected;
   }
 }
 
@@ -337,9 +337,9 @@ static
 MenuItemInMenu *
 PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 {
-  int imiim;
-  for (imiim = 0; imiim < pmd->cmiim; imiim++) {
-    MenuItemInMenu *pmiim = pmd->rgpmiim[imiim];
+  int ipmiim;
+  for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
+    MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
     int item_y_offset = pmiim->cpixOffsetY;
     if (y > item_y_offset && y < item_y_offset + pmiim->cpixItemHeight) {
       return pmiim;
@@ -400,9 +400,9 @@ static
 MenuItemInMenu *
 PmiimFromPmdShortcutKeypress(DynamicMenu *pmd, char ch)
 {
-  int imiim;
-  for (imiim = 0; imiim < pmd->cmiim; imiim++) {
-    MenuItemInMenu *pmiim = pmd->rgpmiim[imiim];
+  int ipmiim;
+  for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
+    MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
     if (pmiim->chShortcut == ch) {
       return pmiim;
     }
@@ -425,10 +425,10 @@ inline
 MenuItemInMenu *
 PmiimSelectedFromPmd(DynamicMenu *pmd)
 {
-  int imiimSelected = pmd->imiimSelected;
-  if (imiimSelected < 0)
+  int ipmiimSelected = pmd->ipmiimSelected;
+  if (ipmiimSelected < 0)
     return NULL;
-  return pmd->rgpmiim[imiimSelected];
+  return pmd->rgpmiim[ipmiimSelected];
 }
 
 static
@@ -442,7 +442,7 @@ UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
   if (pmiim->mis != MIS_Selected) {
     scwm_msg(DBG,__FUNCTION__,"pmiim->mis != MIS_Selected");
   }
-  pmd->imiimSelected = -1;
+  pmd->ipmiimSelected = -1;
   pmiim->mis = MIS_Enabled;
   RepaintMenuItem(pmiim);
 }
@@ -456,7 +456,7 @@ SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
     return;
   }
   pmiim->mis = MIS_Selected;
-  pmd->imiimSelected = pmiim->imiim;
+  pmd->ipmiimSelected = pmiim->ipmiim;
   RepaintMenuItem(pmiim);
 }
 
@@ -592,7 +592,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
 {
   Menu *pmenu = pmd->pmenu;
   int cmiim = gh_length(pmenu->scmMenuItems);
-  int imiim = 0;
+  int ipmiim = 0;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim =
     safemalloc(cmiim * sizeof(MenuDrawingInfo));
   SCM rest = pmd->pmenu->scmMenuItems;
@@ -607,16 +607,16 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     MenuItem *pmi = SAFE_MENUITEM(item);
     MenuItemInMenu *pmiim = safemalloc(sizeof(MenuItemInMenu));
     if (!pmi) {
-      scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",imiim);
+      scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
       goto NEXT_MENU_ITEM;
     }
-    rgpmiim[imiim] = pmiim;
+    rgpmiim[ipmiim] = pmiim;
 
     /* save some back pointers so we can find a dynamic menu
        just from the menu item */
     pmiim->pmi = pmi;
     pmiim->pmd = pmd;
-    pmiim->imiim = imiim;
+    pmiim->ipmiim = ipmiim;
     pmiim->chShortcut = '\0';
     pmiim->ichShortcutOffset = -1;
 
@@ -632,7 +632,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     pmiim->fShowPopupArrow = (!UNSET_SCM(pmiim->pmi->scmHover));
 
     pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
-    imiim++;
+    ipmiim++;
   NEXT_MENU_ITEM:
     rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
