@@ -64,13 +64,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From src/scwm.c:648]
+[From src/scwm.c:705]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From src/scwm.c:651]
+[From src/scwm.c:708]
 
 
 pie-menu-look
@@ -102,14 +102,14 @@ this-command
 - 
 The current command when executing the `pre-command-hook';  may be mutated to affect 
       what command is run.  See also `this-command-args'. 
-[From src/callbacks.c:1103]
+[From src/callbacks.c:1112]
 
 
 this-command-args
 - 
 The arguments to the current command when executing the `post-command-hook'; may be
       mutated to affect the arguments when the command is run.  See also `this-command'. 
-[From src/callbacks.c:1106]
+[From src/callbacks.c:1115]
 
 
 xpm-shaped-menu-look

@@ -165,7 +165,7 @@ whether a hook, a mouse binding, a key binding, a menu entry, a file
 being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
-[From src/callbacks.c:45]
+[From src/callbacks.c:46]
 
 
 iconify-hook (2 args)
@@ -251,14 +251,14 @@ load-processing-hook (1 args)
 This hook is invoked for every several top-level s-exps in the startup file.
 The hook procedures are invoked with one argument, the count of the
 s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'.
-[From src/callbacks.c:53]
+[From src/callbacks.c:54]
 
 
 post-command-hook (2 args)
 - 
 This hook is invoked with two arguments after every `call-interactively' execution.
 The arguments are the procedure just called, and the list of the arguments passed.
-[From src/callbacks.c:64]
+[From src/callbacks.c:65]
 
 
 pre-command-hook (2 args)
@@ -267,7 +267,7 @@ This hook is invoked with two arguments before every `call-interactively' execut
 The arguments are the procedure to be called, and a list of the arguments passed.
 Global variable `this-command' and `this-command-args' can be modified to change 
 either of these.
-[From src/callbacks.c:58]
+[From src/callbacks.c:59]
 
 
 scwm-test-hook-0 (0 args)
