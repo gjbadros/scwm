@@ -442,7 +442,7 @@
 
 ;; Inherit above style options and specialize
 (define desk-widget-on-top
-  (make-style #:use-style desk-widget #:stays-on-top #t))
+  (make-style #:use-style desk-widget #:kept-on-top #t))
 
 (define desk-widget-on-top-no-titlebar
   (make-style #:use-style desk-widget-on-top #:no-titlebar #t))
