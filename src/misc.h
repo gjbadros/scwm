@@ -89,7 +89,7 @@ enum cursor {
    XChangeGC(dpy,Scr.ScratchGC3,Globalgcm,&Globalgcv); \
 }
 
-#define ICON_HEIGHT (Scr.IconFont.height+6)
+#define ICON_HEIGHT (FONTHEIGHT(Scr.icon_font)+6)
 
 #define NO_HILITE     0x0000
 #define TOP_HILITE    0x0001

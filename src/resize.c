@@ -23,6 +23,7 @@
 #include "screen.h"
 #include "resize.h"
 #include "borders.h"
+#include "font.h"
 
 int dragx;			/* all these variables are used */
 int dragy;			/* in resize operations */
@@ -131,21 +132,21 @@ DisplaySize(ScwmWindow * tmp_win, int width, int height, Bool Init)
 
   (void) sprintf(str, " %4d x %-4d ", dwidth, dheight);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(Scr.StdFont.font, str, strlen(str))) / 2;
+	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
     if (Scr.d_depth >= 2)
       RelieveWindow(tmp_win,
 	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    Scr.StdFont.height + SIZE_VINDENT * 2,
+		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       Scr.StdFont.height, False);
+	       FONTHEIGHT(Scr.menu_font), False);
   }
 
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
-	      offset, Scr.StdFont.font->ascent + SIZE_VINDENT, str, 13);
+	      offset, FONTY(Scr.menu_font) + SIZE_VINDENT, str, 13);
 
 }
 

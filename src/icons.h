@@ -14,6 +14,7 @@ void AutoPlace(ScwmWindow * t);
 void DeIconify(ScwmWindow * tmp_win);
 void Iconify(ScwmWindow * tmp_win, int def_x, int def_y);
 void SetMapStateProp(ScwmWindow * tmp_win, int state);
+void redraw_icon_titles();
 
 #define ICON_P_WIDTH(sw) (sw->icon_image != SCM_BOOL_F? \
 			  IMAGE(sw->icon_image)->width : 0)

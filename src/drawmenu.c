@@ -35,7 +35,7 @@ static
 XFontStruct *
 PxfsFontForMenuItem(SCM scmFont)
 {
-  XFontStruct *pxfont = Scr.StdFont.font;
+  XFontStruct *pxfont = XFONT(Scr.menu_font);
   scwm_font *psfont = DYNAMIC_SAFE_FONT(scmFont);
   if (psfont) {
     pxfont = psfont->xfs;
@@ -424,4 +424,24 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
     }
   }
   XSync(dpy,0);
+}
+
+void
+menu_font_update()
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  Scr.EntryHeight = FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.menu_font),
+					 " +8888 x +8888 ", 15);
+				   
+  gcm = GCFont;
+  gcv.font = XFONT(Scr.menu_font)->fid;
+  /* are all these needed? */
+  /* MSFIX: This stuff should really be handled by other code. */
+  XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuShadowGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
 }

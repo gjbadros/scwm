@@ -1,5 +1,20 @@
 Wed Feb 25 16:55:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* font.c, font.h: Several changes to the font interface. Fonts are
+ 	now directly Scheme objects; no hacky FontWithInfo struct
+ 	needed. There is a font cache similar to the image cache. The
+ 	procedures font-properties and clear-font-cache-entry were added;
+ 	the former is used to get the font's name and height, the latter
+ 	to explictly clear entries in the font cache (shouldn't be needed,
+ 	but you never know). font.c also now uses the SCM_PROC macros and
+ 	such. Also, load-font was renamed make-font for consistency.
+	
+	* borders.c, decor.c, drawmenu.c, drawmenu.h, icons.c, icons.h,
+ 	miscprocs.c, move.c, resize.c, scmprocs.c, scmtypes.c, screen.h,
+ 	scwm.c, scwmmenu.c: modified for the new font interface.
+	
+	* Makefile.in: build font.x
+
 	* scwm.c: Added scwm_gh_launch_pad and scwm_gh_enter to guarantee
  	proper loading of boot-9.scm once and only once across guile
  	versions. This is a hack until a real solution is available.

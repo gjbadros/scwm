@@ -13,6 +13,7 @@
 #include "errors.h"
 #include "util.h"
 #include "decor.h"
+#include "font.h"
 
 SCM 
 set_menu_mwm_style(SCM should)
@@ -117,11 +118,10 @@ set_title_height(SCM height)
   extra_height -= fl->TitleHeight;
 
 
-  fl->WindowFont.y = fl->WindowFont.font->ascent
-    + (th - (fl->WindowFont.font->ascent
-	     + fl->WindowFont.font->descent + 3)) / 2;
-  if (fl->WindowFont.y < fl->WindowFont.font->ascent)
-    fl->WindowFont.y = fl->WindowFont.font->ascent;
+  fl->window_font_y = FONTY(fl->window_font)
+    + (th - (FONTHEIGHT(fl->window_font) + 3)) / 2;
+  if (fl->window_font_y < FONTY(fl->window_font))
+    fl->window_font_y = FONTY(fl->window_font);
 
   redraw_titlebars(fl, extra_height);
 

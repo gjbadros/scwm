@@ -28,6 +28,7 @@
 #include "image.h"
 #include <X11/extensions/shape.h>
 #include "module-interface.h"
+#include "font.h"
 
 extern Window PressedW;
 XGCValues Globalgcv;
@@ -965,7 +966,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   flush_expose(t->title_w);
 
   if (t->name != (char *) NULL) {
-    w = XTextWidth(GetDecor(t, WindowFont.font), t->name, strlen(t->name));
+    w = XTextWidth(XFONT(GetDecor(t, window_font)), t->name, strlen(t->name));
     if (w > t->title_width - 12)
       w = t->title_width - 4;
     if (w < 0)
@@ -984,7 +985,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   } else
     hor_off = (t->title_width - w) / 2;
 
-  NewFontAndColor(GetDecor(t, WindowFont.font->fid), Forecolor, BackColor);
+  NewFontAndColor(XFONT(GetDecor(t, window_font))->fid, Forecolor, BackColor);
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */
   /* we need to check for UseBorderStyle for the titlebar */
@@ -1015,7 +1016,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 	      t->title_height);
     if (t->name != (char *) NULL)
       XDrawString(dpy, t->title_w, Scr.ScratchGC3, hor_off,
-		  GetDecor(t, WindowFont.y) + 1,
+		  GetDecor(t, window_font_y) + 1,
 		  t->name, strlen(t->name));
   } else {
     ButtonFace *bf = GetDecor(t, titlebar.state[title_state]);
@@ -1041,7 +1042,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
     }
     if (t->name != (char *) NULL) {
       XDrawString(dpy, t->title_w, Scr.ScratchGC3, hor_off,
-		  GetDecor(t, WindowFont.y) + 1,
+		  GetDecor(t, window_font_y) + 1,
 		  t->name, strlen(t->name));
     }
   }

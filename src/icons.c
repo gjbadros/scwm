@@ -31,6 +31,7 @@
 #include "borders.h"
 #include "module-interface.h"
 #include "binding.h"
+#include "font.h"
 
 #include <X11/extensions/shape.h>
 
@@ -254,7 +255,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 
   /* figure out the icon window size */
   if (!(sw->flags & NOICON_TITLE) ||  sw->icon_p_height == 0) {
-    sw->icon_t_width = XTextWidth(Scr.IconFont.font,
+    sw->icon_t_width = XTextWidth(XFONT(Scr.icon_font),
 				       sw->icon_name,
 				       strlen(sw->icon_name));
     sw->icon_w_height = ICON_HEIGHT;
@@ -424,7 +425,7 @@ DrawIconWindow(ScwmWindow * sw)
     XSetWindowBackground(dpy, sw->icon_w, BackColor);
 
   /* write the icon label */
-  NewFontAndColor(Scr.IconFont.font->fid, TextColor, BackColor);
+  NewFontAndColor(XFONT(Scr.icon_font)->fid, TextColor, BackColor);
 
   if (sw->icon_pixmap_w != None)
     XMoveWindow(dpy, sw->icon_pixmap_w, sw->icon_x_loc,
@@ -471,8 +472,8 @@ DrawIconWindow(ScwmWindow * sw)
       x = 3;
 
     XDrawString(dpy, sw->icon_w, Scr.ScratchGC3, x,
-		sw->icon_w_height - Scr.IconFont.height +
-		Scr.IconFont.y - 3,
+		sw->icon_w_height - FONTHEIGHT(Scr.icon_font) +
+		FONTY(Scr.icon_font) - 3,
 		sw->icon_name, strlen(sw->icon_name));
     RelieveWindow(sw, sw->icon_w, 0, 0, sw->icon_w_width,
 		  ICON_HEIGHT, Relief, Shadow, FULL_HILITE);
@@ -495,7 +496,7 @@ RedoIconName(ScwmWindow * Tmp_win)
   if (Tmp_win->icon_w == (int) NULL)
     return;
 
-  Tmp_win->icon_t_width = XTextWidth(Scr.IconFont.font, Tmp_win->icon_name,
+  Tmp_win->icon_t_width = XTextWidth(XFONT(Scr.icon_font), Tmp_win->icon_name,
 				     strlen(Tmp_win->icon_name));
   /* clear the icon window, and trigger a re-draw via an expose event */
   if (Tmp_win->flags & ICONIFIED)
@@ -757,7 +758,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
   /* if no pixmap we want icon width to change to text width every iconify */
   if ((tmp_win->icon_w != None) && (tmp_win->icon_pixmap_w == None)) {
     tmp_win->icon_t_width =
-      XTextWidth(Scr.IconFont.font, tmp_win->icon_name,
+      XTextWidth(XFONT(Scr.icon_font), tmp_win->icon_name,
 		 strlen(tmp_win->icon_name));
     tmp_win->icon_w_width = tmp_win->icon_t_width + 6;
   }
@@ -795,6 +796,19 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 }
 
 
+void redraw_icon_titles()
+{
+  ScwmWindow *tmp;
+
+  tmp = Scr.ScwmRoot.next;
+  while (tmp != NULL) {
+    RedoIconName(tmp);
+    if (tmp->flags & ICONIFIED) {
+      DrawIconWindow(tmp);
+    }
+    tmp = tmp->next;
+  }
+}
 
 /****************************************************************************
  *

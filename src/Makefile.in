@@ -94,7 +94,7 @@ OBJS := $(SRCS:.c=.o) init_scheme_string.o
 DEPS := $(SRCS:.c=.d)
 
 
-BUILT_SOURCES = image.x menuitem.x scwmmenu.x  init_scheme_string.c
+BUILT_SOURCES = font.x image.x menuitem.x scwmmenu.x init_scheme_string.c
 
 all: ${PROG}
 

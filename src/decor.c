@@ -25,6 +25,7 @@
 #include "font.h"
 #include "face.h"
 #include "borders.h"
+#include "font.h"
 
 size_t 
 free_decor(SCM obj)
@@ -103,6 +104,9 @@ mark_decor(SCM obj)
     scm_gc_mark(fl->BorderStyle.active->sface);
   }
   
+  /* Mark the window font. */
+  scm_gc_mark(fl->window_font);
+
   return SCM_BOOL_F;
 }
 
@@ -135,7 +139,7 @@ decor2scm(ScwmDecor * fl)
   set_current_decor_x(answer);
   set_hilight_colors(gh_str02scm("black"),
 		     gh_str02scm("grey"));
-  set_window_font(gh_str02scm("fixed"));
+  set_window_font_x(gh_str02scm("fixed"));
   set_current_decor_x(tmpd);
 
   /* initialize buttons */

@@ -51,6 +51,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "Grab.h"
 #include "system.h"
 #include "colors.h"
+#include "font.h"
 
 
 #include <X11/Xproto.h>
@@ -147,6 +148,7 @@ void scwm_main(int, char **);
 
 
 
+typedef void (*main_prog_t) (int argc, char **argv);
 
 /***********************************************************************
  *
@@ -227,6 +229,7 @@ scwm_main(int argc, char **argv)
 
   init_scwm_types();
   init_image();
+  init_font();
   init_miscprocs();
   init_menuitem();
   init_menu();
@@ -594,18 +597,17 @@ scwm_main(int argc, char **argv)
   if (debugging)
     XSynchronize(dpy, True);
 
-  Scr.SizeStringWidth = XTextWidth(Scr.StdFont.font,
-				   " +8888 x +8888 ", 15);
   attributes.border_pixel = Scr.MenuColors.fore;
   attributes.background_pixel = Scr.MenuColors.back;
   attributes.bit_gravity = NorthWestGravity;
   valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
+  /* FIXMS - this is bogus, needs to be redone on font change, etc */
   if (!(Scr.flags & MWMMenus)) {
     Scr.SizeWindow = XCreateWindow(dpy, Scr.Root,
 				   0, 0,
 				   (unsigned int) (Scr.SizeStringWidth +
 						   SIZE_HINDENT * 2),
-				   (unsigned int) (Scr.StdFont.height +
+				   (unsigned int) (FONTHEIGHT(Scr.menu_font) +
 						   SIZE_VINDENT * 2),
 				   (unsigned int) 0, 0,
 				   (unsigned int) CopyFromParent,
@@ -617,11 +619,11 @@ scwm_main(int argc, char **argv)
 				   (Scr.SizeStringWidth +
 				    SIZE_HINDENT * 2) / 2,
 				   Scr.MyDisplayHeight / 2 -
-				   (Scr.StdFont.height +
+				   (FONTHEIGHT(Scr.menu_font) +
 				    SIZE_VINDENT * 2) / 2,
 				   (unsigned int) (Scr.SizeStringWidth +
 						   SIZE_HINDENT * 2),
-				   (unsigned int) (Scr.StdFont.height +
+				   (unsigned int) (FONTHEIGHT(Scr.menu_font) +
 						   SIZE_VINDENT * 2),
 				   (unsigned int) 0, 0,
 				   (unsigned int) CopyFromParent,
@@ -1236,7 +1238,8 @@ InitVariables(void)
   Scr.Focus = NULL;
   Scr.Ungrabbed = NULL;
 
-  Scr.StdFont.font = NULL;
+  Scr.menu_font = SCM_UNDEFINED;
+  Scr.icon_font = SCM_UNDEFINED;
 
 #ifndef NON_VIRTUAL
   Scr.VxMax = 2 * Scr.MyDisplayWidth;

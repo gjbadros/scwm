@@ -32,6 +32,7 @@
 #include "resize.h"
 #include "borders.h"
 #include "colormaps.h"
+#include "font.h"
 
 
 extern XEvent Event;
@@ -346,18 +347,18 @@ DisplayPosition(ScwmWindow * tmp_win, int x, int y, int Init)
     if (Scr.d_depth >= 2)
       RelieveWindow(tmp_win, Scr.SizeWindow, 0, 0,
 		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    Scr.StdFont.height + SIZE_VINDENT * 2,
+		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       Scr.StdFont.height, False);
+	       FONTHEIGHT(Scr.menu_font), False);
   }
 
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(Scr.StdFont.font, str, strlen(str))) / 2;
+	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
 	      offset,
-	      Scr.StdFont.font->ascent + SIZE_VINDENT,
+	      FONTY(Scr.menu_font) + SIZE_VINDENT,
 	      str, strlen(str));
 }
 

@@ -137,13 +137,6 @@ typedef struct {
   ButtonFace *state[MaxButtonState];
 } TitleButton;
 
-typedef struct FontWithInfo {
-  XFontStruct *font;		/* font structure */
-  int height;			/* height of the font */
-  int y;			/* Y coordinate to draw characters */
-} FontWithInfo;
-
-
 typedef struct ColorPair {
   Pixel fore;
   Pixel back;
@@ -157,7 +150,9 @@ typedef struct ScwmDecor {
   GC HiShadowGC;		/* GC for highlighted window shadow */
 
   int TitleHeight;		/* height of the title bar window */
-  FontWithInfo WindowFont;	/* font structure for window titles */
+
+  SCM window_font;              /* Font for drawing the window */
+  int window_font_y;            /* Real y position for the font. */
 
   /* titlebar buttons */
   TitleButton left_buttons[5];
@@ -210,8 +205,8 @@ typedef struct ScreenInfo {
   ColorPair StdColors;		/* standard fore/back colors */
   ColorPair StdRelief;
 
-  FontWithInfo StdFont;		/* font structure */
-  FontWithInfo IconFont;	/* for icon labels */
+  SCM menu_font;		 /* font structure for menus, resize/move gadgets */
+  SCM icon_font;                 /* for icon labels */
 
   GC TransMaskGC;		/* GC for transparency masks */
   GC DrawGC;			/* GC to draw lines for move and resize */

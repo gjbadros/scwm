@@ -32,6 +32,7 @@
 #include "colormaps.h"
 #include "image.h"
 #include "module-interface.h"
+#include "font.h"
 
 size_t 
 free_window(SCM obj)

@@ -51,14 +51,15 @@ mark_menu(SCM obj)
 
   pmenu = MENU(obj);
   SCM_SETGC8MARK(obj);
-  GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
-  GC_MARK_SCM_IF_SET(pmenu->scmImgSide);
-  GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
-  GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
-  GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
-  GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
-  GC_MARK_SCM_IF_SET(pmenu->scmFont);
-  GC_MARK_SCM_IF_SET(pmenu->scmExtraOptions);
+
+  scm_gc_mark(pmenu->scmMenuItems);
+  scm_gc_mark(pmenu->scmImgSide);
+  scm_gc_mark(pmenu->scmSideBGColor);
+  scm_gc_mark(pmenu->scmBGColor);
+  scm_gc_mark(pmenu->scmTextColor);
+  scm_gc_mark(pmenu->scmImgBackground);
+  scm_gc_mark(pmenu->scmFont);
+  scm_gc_mark(pmenu->scmExtraOptions);
 
   return SCM_BOOL_F;
 }
@@ -231,8 +232,8 @@ make_menu(SCM list_of_menuitems,
   /* FIXGJB: order dependency on menu_font being set before making
      the menu -- is there a better default -- maybe we should just
      always have some font object for "fixed" */
-  if (UNSET_SCM(font) && menu_font != SCM_UNDEFINED) {
-    pmenu->scmFont = menu_font;
+  if (UNSET_SCM(font) && Scr.menu_font != SCM_UNDEFINED) {
+    pmenu->scmFont = Scr.menu_font;
   } else if (!FONT_OR_SYMBOL_P(font)) {
     scm_wrong_type_arg(s_make_menu,iarg,font);
   }

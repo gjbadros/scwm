@@ -50,10 +50,6 @@
 void 
 init_scwm_procs(void)
 {
-  gh_new_procedure("load-font", load_font, 1, 0, 0);
-  gh_new_procedure("set-icon-font!", set_icon_font, 1, 0, 0);
-  gh_new_procedure("set-window-font!", set_window_font, 1, 0, 0);
-  gh_new_procedure("set-menu-font!", set_menu_font, 1, 0, 0);
   gh_new_procedure("load-color", load_color, 1, 0, 0);
   gh_new_procedure("set-hilight-colors!", set_hilight_colors, 0, 2, 0);
   gh_new_procedure("set-menu-colors!", set_menu_colors, 0, 3, 0);
