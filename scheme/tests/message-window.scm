@@ -33,12 +33,14 @@
 (define logo (make-image "scwmlogo.xpm"))
 
 (image-properties i)
+(image-properties logo)
 (image-properties root)
 
 (popup-menu (menu (list (menuitem "foo" #:image-above i))))
 
 (define m (make-message-window-clone-default "Testing..."))
 (define m (make-message-window-clone-default ""))
+(define m (make-message-window-with-image (vector-ref logo-image-sequence 1) #t))
 
 (message-window-message m)
 
@@ -46,9 +48,12 @@
 (message-window-set-image! m i2)
 (message-window-set-image! m root)
 (message-window-set-image! m logo)
+(message-window-set-image! m logo (make-color "white") #f #t)
+(message-window-set-image! m (vector-ref logo-image-sequence 2) #f #f #t)
 
 (message-window-show! m)
 (message-window-hide! m)
+(message-window-hide! scwm-logo-msgwin)
 
 (message-window-set-size! m 100 100)
 (message-window-set-size! m 50 50)
