@@ -75,6 +75,8 @@ getopts($getopts_option_letters);
 
 script_usage() if ($opt_h);
 
+#print STDERR "opt_D = $opt_D, ", TRUE, "\n";
+
 $fDebug = TRUE if $opt_D;
 $fQuiet = TRUE if $opt_q || $opt_Q;
 $fReallyQuiet = TRUE if $opt_Q;
@@ -189,7 +191,6 @@ while (<>) {
       if (eof) {
 	close(ARGV);
 	$current_module = "";
-	redo MAINLOOP;
       }
     }
     ProcessSchemeHeader($filename, $current_module, $proc_name, $line, $scheme_header);
@@ -479,6 +480,11 @@ sub ProcessSchemeHeader( $$$$$ ) {
   my $comment = Text::Balanced::extract_delimited($after_formals,'"');
 #  print STDERR "COMMENT: $comment\n";
 #  print STDERR "---------------\n";
+
+  if ($fDebug) {
+    print STDERR "Handing $proc_name from $filename:$line\n";
+  }
+
   if ($match ne $proc_name) {
     print STDERR "$filename:$line:**** $match not same as $proc_name\n";
     $proc_name = $match;
@@ -531,6 +537,11 @@ sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
+
+  if ($fDebug) {
+    print STDERR "Handing $primname from $filename:$line\n";
+  }
+
   if (!defined($cprimname)) {
     print STDERR "$filename:$line:****ERROR:could not parse argument list\n";
     return FALSE;
