@@ -1073,7 +1073,7 @@ Repository Timestamp: %s\n",
 
   MoveViewport_internal(restart_vp_offset_x,restart_vp_offset_y);
 
-  restart_vp_offset_y = restart_vp_offset_y = 0;
+  restart_vp_offset_x = restart_vp_offset_y = 0;
   
   DBUG((DBG,"main", "Done running config_commands"));
 

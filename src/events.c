@@ -705,8 +705,8 @@ HandleScwmExec()
           ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
           
           /* restore output and error ports. */
-          o_port=scm_set_current_output_port(o_port);
-          e_port=scm_set_current_error_port(e_port);
+          scm_set_current_output_port(o_port);
+          scm_set_current_error_port(e_port);
           scm_def_errp = saved_def_e_port;
           
           /* Retrieve output and errors */
