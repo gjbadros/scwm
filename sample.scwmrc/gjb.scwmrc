@@ -1359,12 +1359,9 @@
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-(debug-display " *** `scwmrc' processed.\n")
+(run-dot-xclients-at-startup)
 
-(system 
- ;; use [g] in the regexp so that the grep process doesn't
- ;; get matched, use [ ] so the sh -c process does not get matched
- "ps auxww | grep \"^[g]jb .*[ ]xemacs -f gnus\" || $HOME/.xclients &")
+(debug-display " *** `scwmrc' processed.\n")
 
 ;; Remove the windows that are showing tail -f's on 
 ;; scwm error messages and .Xsession errors
