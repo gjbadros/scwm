@@ -430,8 +430,6 @@ free_window(SCM obj)
 SCM
 mark_window(SCM obj)
 {
-  SCM_SETGC8MARK(obj);
-
   if (VALIDWINP(obj)) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
     if (psw->fl != NULL) {

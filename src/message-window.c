@@ -33,7 +33,6 @@ mark_msgwindow(SCM obj)
 {
   scwm_msgwindow* msg = MSGWINDOW( obj );
 
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(msg->font);
   GC_MARK_SCM_IF_SET(msg->fg_color);
   GC_MARK_SCM_IF_SET(msg->bg_color);

@@ -53,9 +53,6 @@ mark_screen(SCM obj)
   ScreenInfo *psi = SCREEN(obj);
   assert(psi);
 
-  /* Mark the screen object */
-  SCM_SETGC8MARK(obj);
-
   /* Mark the highlight colors and relief colors */
   GC_MARK_SCM_IF_SET(psi->icon_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_font);

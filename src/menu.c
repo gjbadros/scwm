@@ -104,8 +104,6 @@ mark_menu(SCM obj)
 {
   Menu *pmenu;
   pmenu = MENU(obj);
-  SCM_SETGC8MARK(obj);
-
   GC_MARK_SCM_IF_SET(pmenu->scmMenuTitle);
   GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
   GC_MARK_SCM_IF_SET(pmenu->scmImgSide);

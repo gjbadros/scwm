@@ -77,9 +77,7 @@ SCM_SYMBOL (sym_pixel,"pixel");
 SCM
 mark_color(SCM obj)
 {
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(COLORNAME(obj));
-
   return SCM_BOOL_F;
 }
 

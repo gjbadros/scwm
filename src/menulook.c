@@ -25,7 +25,6 @@
 SCM
 mark_menulook(SCM scm)
 {
-  SCM_SETGC8MARK(scm);
   GC_MARK_SCM_IF_SET(MENULOOK(scm)->name);
   GC_MARK_SCM_IF_SET(MENULOOK(scm)->extra);
   return SCM_BOOL_F;

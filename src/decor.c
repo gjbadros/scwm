@@ -104,9 +104,6 @@ mark_decor(SCM obj)
   ScwmDecor *fl;
   int i,j;
   
-  /* Mark the decor */
-  SCM_SETGC8MARK(obj);
-
   fl=SCWMDECOR(obj);
 
   /* also protect all of the face objects attached to this decor. */

@@ -295,8 +295,6 @@ mark_face(SCM obj)
 {
   ButtonFace *bf;
   
-  SCM_SETGC8MARK(obj);
-  
   for (bf=BUTTONFACE(obj); bf != NULL; bf = bf->next) {
     if (((bf->style & ButtonFaceTypeMask) == PixmapButton) || 
 	((bf->style & ButtonFaceTypeMask) == TiledPixmapButton)) {

@@ -39,7 +39,6 @@ mark_menuitem(SCM obj)
   MenuItem *pmi;
   pmi = MENUITEM(obj);
 
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(pmi->scmImgAbove);
   GC_MARK_SCM_IF_SET(pmi->scmImgLeft);
   GC_MARK_SCM_IF_SET(pmi->scmAction);

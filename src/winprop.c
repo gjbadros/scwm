@@ -44,10 +44,8 @@ SCM property_handler_hash_table;
 
 
 SCM
-mark_property_handler(SCM obj)
+mark_property_handler(SCM ARG_IGNORE(obj))
 {
-  SCM_SETGC8MARK(obj);
-
   return SCM_BOOL_F;
 }
 

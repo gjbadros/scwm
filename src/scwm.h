@@ -195,8 +195,8 @@ enum wm_client_functions {
 #define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) \
    do { \
      SCM_NEWCELL((ANSWER)); \
-     SCM_SETCAR((ANSWER),(ID)); \
      SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
+     SCM_SETCAR((ANSWER),(ID)); \
    } while (0)
 
 #define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \

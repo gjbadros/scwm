@@ -63,7 +63,6 @@ SCM_SYMBOL (sym_height,"height");
 SCM
 mark_font(SCM obj)
 {
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(FONT(obj)->name);
   return SCM_BOOL_F;
 }

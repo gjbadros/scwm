@@ -147,7 +147,6 @@ print_image(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 SCM
 mark_image(SCM obj)
 {
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(IMAGE(obj)->full_name);
   return SCM_BOOL_F;
 }
