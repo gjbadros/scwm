@@ -39,7 +39,10 @@
 	     (app scwm doc)
 	     (app scwm flux)
 	     (app scwm fvwm-module)
+	     (app scwm cached-program-exists)
 	     )
+
+(set! debug-fvwm-module #f)
 
 (set! use-scwm-system-proc #t)
 
@@ -669,7 +672,7 @@
 ;;(menu-properties menu-window-ops)
 
 (defmacro menuitem-for-exec (name pixmap . body)
-  (if (program-exists? name)
+  (if (cached-program-exists? name)
       `(list ,name #:action (lambda () (execute ,name) ,@body)
 	     #:left-pixmap ,pixmap)))
 
@@ -1082,6 +1085,12 @@
 (bind-key 'all "C-M-S-f" resize-fullscreen)
 
 
+;; I reserve M-Tab for emacs, but Alt-Tab is fine
+(bind-key 'all "A-Tab"
+	  (lambda ()
+	    (show-window-list-menu #:by-focus #t #:show-last-focus-time #t
+				   #:show-geometry #t #:warp-to-first #t)))
+
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
@@ -1192,6 +1201,15 @@
 ;; Alt-w
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
+;; Handle Gale popup windows--
+;; close them after 1 hour (FIXGJB should only do so if not directed to user)
+;; (add-hook! after-new-window-hook
+;;	   (lambda (w) (if (string=? (window-class w) "Gsubrc")
+;;			   (add-timer-hook! (sec->usec (* 60 60) (thunk (close-window w)))))))
+;; (reset-hook! after-new-window-hook)
+
+
+
 (if want-autoraise
     (begin
       (use-modules (app scwm auto-raise))
@@ -1240,6 +1258,15 @@
 				       desk-widget-on-top-no-titlebar)))
       ))
 
+(use-change-desk-commands
+ #(
+   "xsetroot -solid cyan4" 
+   "xsetroot -solid navyblue" 
+   ;;	  "xv -root -quit /home/satchell/kde_themes/Factory/gears.jpg"
+   ;;	  "xearth -once"
+   ))
+
+
 ;;(kill-fvwm2-module fvwm-winlist)
 ;;(kill-all-fvwm2-modules)
 
@@ -1255,15 +1282,21 @@
 (debug-display " *** `scwmrc' processed.\n")
 
 (system 
- (string-append "ps auxww | grep -q \"^gjb .*xemacs -f gnus\" || " 
-		HOME "/.xclients &"))
+ ;; use [g] in the regexp so that the grep process doesn't
+ ;; get matched
+ "ps auxww | grep -q \"^[g]jb .*xemacs -f gnus\" || $HOME/.xclients &")
 
 ;; Remove the windows that are showing tail -f's on 
 ;; scwm error messages and .Xsession errors
 (system "test -r ${HOME}/.tracepids && { kill `cat ${HOME}/.tracepids`; rm -f ${HOME}/.tracepids }")
+
+;; Be sure we have the users identity (scwm should be started
+;; as 'ssh-agent scwm ...')
+;;(system "ssh-add -l </dev/null | grep -q gjb || ssh-add </dev/null")
 
 ;;(hide-titlebar (current-window-with-pointer))
 ;;(show-titlebar (current-window-with-pointer))
 ;;(load "/scratch/gjb/scwm/scheme/flux.scm")
 ;;(load "/scratch/gjb/scwm/scheme/winops.scm")
 ;;(load "/scratch/gjb/scwm/scheme/style.scm")
+;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
