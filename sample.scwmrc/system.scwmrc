@@ -832,6 +832,21 @@ from other processes.
 
 ;;; now set some mouse and key bindings ;;
 
+
+(define*-public (move-or-shade)
+  "Move the window on a drag, shade on a double-click."
+  (interactive)
+  (case (mouse-event-type)
+    ((double-click) (animated-toggle-window-shade))
+    (else (move-or-raise))))
+
+(define*-public (move-or-deiconify)
+  "Move the icon on a drag, de-iconify on a double click."
+  (interactive)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (animated-deiconify))))
+
 (define* (popup-scwm-root-middle-menu)
   "Popup the root middle-button menu."
   (interactive)
