@@ -301,7 +301,7 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	*)     cas_lib_path="-L${cassolibdir}" ;;
 	esac
 	## Was ${GTL_LIB} below
-	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ -lGTL"
+	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ `cassowary-config --gtllibs || echo ""`"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
     fi
 ])
