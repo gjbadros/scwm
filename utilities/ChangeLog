@@ -1,3 +1,8 @@
+Sat Jun 26 14:15:31 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* run-renamed/run-renamed.c: Added NO_SETENV ccd test-- need to
+	update configure to provide that macro.
+
 Sun May  9 14:50:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xterm-properties.diff: Added.  Patch to

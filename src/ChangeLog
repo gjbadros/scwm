@@ -1,3 +1,28 @@
+Sat Jun 26 13:36:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xrm.c, xproperty.c, window.c, message-window.c, image.c, face.c,
+ 	events.c, decor.c, color.c, callbacks.c, binding.c: Use gh_free,
+ 	instead of FREE, to free gh_scm2newstr allocated memory.
+
+	* virtual.c: New variable `scroll-region'.  Only raise pan frames
+	if they are going to be used (cut down on interactions with x2x
+	keyboard/mouse multiplexer).
+
+	* font.c: Added comment.
+
+	* system.h: Added gh_free macro, DEBUG_C_ALLOC instrumentations.
+
+	* scwm.h: Drop SCROLL_REGION-- use var in virtual.c, now.
+
+	* menu.c: Only free pmd->pmenu->pchUsedShortcutKeys if non-null.
+
+	* events.h, callbacks.h: Use sys/select.h, for AIX (Thanks Jeff Nichols!)
+
+	* constraint-primitives.cc: Use ClSolver *, not ClSimplexSolver *
+	as arg to ScwmClvChanged.
+
+	* callbacks.c: Added `reset-input-hook!'
+	
 Sun May  9 14:37:54 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c: Invoke X-PropertyNotify-hook even when the property is 

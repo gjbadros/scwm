@@ -1,3 +1,11 @@
+Sat Jun 26 13:31:57 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added property-respond, and use it.  Use right_ptr
+	for the cursor-menu.  Esnure that the root menu's window context
+	is empty. Added wavplay, and make the closing of netscape windows
+	play a sound.  Comment out H-w, A-w bindings to display the
+	current window.  Remove binding for H-A-2.
+
 Sun May  9 14:47:38 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added a key-binding for benchmarking 100 straight
