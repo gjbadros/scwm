@@ -1,0 +1,61 @@
+Greg's list of Hungarian notation tags used in scwm
+
+
+Standard tags
+-------------
+sz  = a null-terminated ("C") string
+ch  = a character
+f   = a boolean flag
+
+
+Standard prefixes
+-----------------
+c   = a count
+p   = a pointer
+i   = an index
+rg  = a ReGion (an array)
+d   = a difference
+
+
+Scwm tags
+---------
+scm   = a scheme object
+menu  = a Menu object (the wrapped object, not the wrapping scheme object)
+mi    = a MenuItem object (")
+md    = a DynamicMenu object (a given instance of a menu object)
+mdi   = a MenuDrawingInfo object
+miim  = a MenuItemInMenu object
+cpix  = a bogus tag for count of pixels -- not really good Hungarian
+
+"scm", especially is implied;  unfortunately, there are even places in 
+the code where "menu" is an scmMenu, not a Menu object
+
+Much code does not abide by these rules, beware -- it is a useful
+program understanding tool, but regrettably cannot be relied upon
+because of the legacy code.
+
+
+Examples
+--------
+
+pch is a "char *", as is an sz;
+  pch you might use to iterate through an array of chars (rgch),
+  while using an sz for the same purpose is inappropriate
+
+pmenu is a "Menu *"
+
+rgpmiim is a "MenuItemInMenu *rgpmiim[]" or "MenuItemInMenu **rgpmiim"
+  -- it is an array of pointers to MenuItemInMenu-s
+
+ipmiim is an index into such an array
+
+
+NOTE: A full variable name is prefixes + tag + qualifier -- when there
+is only a single object of a given kind around, the qualifier is often
+dropped. e.g., when iterating rgpmiim, I might use ipmiim, but
+DynamicMenu objects have a ipmiimSelected which tells which
+MenuItemInMenu object is currently selected (if any).
+
+
+Greg J. Badros
+30 Nov 1997

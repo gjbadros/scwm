@@ -1,0 +1,61 @@
+From notes from an email from Maciej to Greg on 11/29/97:
+
+SCM_GC8MARKP() determines wether or not an object has already been
+marked. If it has, and potentially points to other objects that it
+protects from GC, than it is a worthwhile optimization to check this
+and do nothing if the object is aldeady mark.
+
+SCM_SETGC8MARK() marks a single object or cell, but not any objects it
+points to.
+
+scm_gc_mark() marks an object recursively; however, since it does this
+using the registered marker on an object itself from within its marker
+function will cause an infinite loop. Thus, it is usual to use
+SCM_SETGC8MARK or the object itself and scm_gc_mark on any objects it
+points to and should protect from gc.
+
+The return value from a marker function: returning a value from a
+marker function marks the returned value, just as if it had been
+passed to scwm_gc_mark(); it is used conventionally when only one
+object or a list of objects needs to be marked by the parent object.
+
+-------
+
+Greg's proposed standard:
+
+for a foo object, like this in foo.h:
+
+typedef struct foo_tag {
+   SCM scmBar
+   SCM scmBaz
+   char *sz;
+} foo;
+
+
+This is the mark routine in foo.c; it seems like it could
+(should?) be generated automatically  -- what are the
+subtleties here???
+
+SCM
+mark_foo(SCM scmFoo)
+{
+  foo *pfoo;
+  /* done if the object is already marked -- avoid recursion */
+  if (SCM_GC8MARKP (scmFoo)) {
+    return SCM_BOOL_F;
+  }
+  /* FOO(scmFoo) should be defined in foo.h; it returns the foo *
+     that scmFoo wraps */
+  pfoo = FOO(scmFoo);
+
+  /* mark this object */
+  SCM_SETGC8MARK(scmFoo);
+
+  /* and mark the embedded objects */
+  GC_MARK_SCM_IF_SET(pfoo->scmBar);
+  GC_MARK_SCM_IF_SET(pfoo->scmBaz);
+
+  /* need not do anything with the pfoo->sz object */
+
+  return SCM_BOOL_F;
+}
