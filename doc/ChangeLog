@@ -1,3 +1,8 @@
+Thu Mar 25 12:35:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* src/ref-header.sgml: Drop the bookbiblio element as it resulted
+	in the title & authors not being displayed in the html.
+
 Wed Mar 24 19:24:50 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added targets tex, dvi, ps, and pdf to use jadetex

@@ -1,3 +1,8 @@
+Thu Mar 25 17:42:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* overlay-plane/get_color.c, pie-menus/draw-pie-menu.c: Drop some
+ 	unused variables, fix %d -> %ld in a printf.
+
 Tue Mar 23 14:58:36 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c: Only call XConnectionNumber if

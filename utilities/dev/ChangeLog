@@ -1,3 +1,10 @@
+Thu Mar 25 18:19:43 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Drop unsupported '-G' option from help.  Added
+	accumulation of `define-string-matcher' forms, and
+	`add-window-style-option', etc., forms.  Rudimentary support for
+	processing these so that they at least appear in the documentation.
+
 Wed Mar 24 19:09:46 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Shorten the per-procedure information by combining

@@ -1,3 +1,83 @@
+Thu Mar 25 17:57:09 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* NOTE TO DEVS: Consider configuring with newish --enable-warnings
+ 	option.  I fixed lots of problems that this caught for me. (Option 
+	may be gcc-specific)
+	
+	* window.h: Added protos for Decoration{Width,Height}, comment for 
+	psw->buttons field.
+
+	* window.c: Drop Root argument from RedrawOutlineAtNewPosition.
+	Added `force-reset-window-frame!'. Update comment on
+	`set-window-button!' since it's working a bit better, and force it 
+	to redraw, and simplify it a bit.
+
+	* virtual.c, deskpage.c: Drop last arg from MoveViewport_internal,
+ 	MoveViewport; fix some warnings.
+
+	* session-manager.c: Fix warning re: unused var.
+
+	* scwm.h: Added COPY_INTEGER_WITH_DEFAULT_OR_ERROR,
+	COPY_INTEGER_OR_ERROR macros -- should use these more pervasively
+	for error checking.
+
+	* scwm.c: Added --no-backtrace option; rename "nonsense" unused
+	params to "ignored";  drop unused var.
+
+	* scwm-constraints.h, scwm-constraints.cc: Drop last arg (fGrab)
+ 	from ChangeVirtualPosition.
+
+	* resize.h, resize.c: Drop first arg (root) from
+ 	RedrawOutlineAtNewPosition.  Fix some uninit vars. Fix some doc
+	strings. Fix bug: make InteractiveResize actually set its "out" parameters
+	with the final width/height.
+
+	* placement.c: Added missing return.
+
+	* move.c: Use new RedrawOutlineAtNewPosition,
+	RemoveRubberbandOutline with 1 fewer args.
+
+	* menuitem.h, menuitem.c: Added fIsForcedSubmenu field, use it,
+	print it, added submenu_p option to ctr.
+
+	* menu.h, menu.c: Added cmsPopupDelay, cmsHoverDelay fields.
+	Added setters, getters.  Drop some #if 0 code.  Fix bug in
+	popup-delay not getting invoked if hover-delay was less than
+	popup-delay.  Fix bug in initial menuitem not getting selected
+	until a mouse move, even if it was initially under the pointer
+	(thanks to Warwick Harvey for this bug report). Have
+	MenuInteraction return the menu item instead of the action.
+	Honour fIsForcedSubmenu when doing popups, drawing of submenu
+	arrow, etc.  Drop redundant derefs of menu symbols (soon can drop
+	menu symbol stuff altogether, probably).
+
+	* icons.c: drop unused vars, minor code formatting.
+
+	* guile-compat.c: drop unused var.
+
+	* face.c: Added CONCEPT section for "Window Style" -- very brief
+	placeholder for improvements to scwmdoc to extract the window
+	style options.
+
+	* events.c: #include <assert.h>, minor formatting, fix uninit var, 
+	add failure on missed switch.
+
+	* decorations.c: drop unused code, minore formatting.
+
+	* borders.h, borders.c: Added CLeftButtons, CRightButtons (now
+	they just return Scr._nr_left/right_buttons, but they are used
+	semi-appropriately and alternative untested definitions exist --
+	trying to get the button decoration behaviour more reasonable).
+	Do not draw a button (and unmap it) if it is suppressed -- title
+	bar still doesn't cover the hole.
+
+	* binding.c: Drop some unused vars.
+
+	* add_window.c: #include events.h, focus.h for their
+	prototypes. Drop last arg from MoveViewport_internal,
+	ChangeVirtualPosition.  Fix bug in possibly calling XDeleteContext 
+	on None.
+
 Wed Mar 24 19:14:06 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* color.c: Drop some #if 0 code in make-color; we perhaps should

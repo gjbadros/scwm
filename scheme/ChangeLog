@@ -1,3 +1,29 @@
+Thu Mar 25 17:44:09 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Added #:squashed-titlebar, #:no-side-decorations as
+	full-fledged boolean-options.  They're still not laid out ideally, 
+	but now they take effect immediately using new
+	`force-reset-window-frame!' primitive.
+
+	* base.scm: Added #:submenu option to menuitem to force the
+	menu-item to be treated as a sub-menu;  use #:submenu instead of
+	#:action when you've got a submenu -- see gjb.scwmrc's
+	menu-global-theme example.  Fix bug in
+	`scwm-is-constraint-enabled?'  Added #:popup-delay and
+	#:hover-delay options to `menu' constructor (they use new
+	set-menu-popup-delay! and set-menu-hover-delay!)
+
+Thu Mar 25 12:38:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* snap.scm: Added, from Danius Michaelides
+
+	* style.scm: Lame doc for window-style.
+
+	* menus-extras.scm: Make sorted-by-car-string public, since it is
+	used by winlist.scm
+
+	* ScwmButtons.scm: Use #!, !# style comments for some sample code.
+
 1999-03-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* wininfo.scm (wildcard->regexp): Would not treat escaped * and ?
