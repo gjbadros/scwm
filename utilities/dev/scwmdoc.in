@@ -46,8 +46,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N);
+my $getopts_option_letters = 'hqQDo:sCd:V:O:H:N:n';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d $opt_V $opt_O $opt_H $opt_N $opt_n);
 
 my $scwm_version = "post-0.8";
 
@@ -63,6 +63,7 @@ sub script_usage ( ) {
 -o file  Send sgml output to file -- no sgml output unless this is given
 -s       Run ispell on the comments and reports warnings for its responses
 -C       Only output concepts chapters
+-n       No warning for functions without comments
 -d path  Set scwmdir source code base to path (e.g., /usr/local/src/scwm)
 ";
   exit 0;
@@ -73,7 +74,7 @@ my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
 my $fQuiet = FALSE;
 my $fReallyQuiet = FALSE;
-
+my $fWarnIfNoComment = TRUE;
 
 use Getopt::Std;
 getopts($getopts_option_letters);
@@ -85,6 +86,7 @@ script_usage() if ($opt_h);
 $fDebug = TRUE if $opt_D;
 $fQuiet = TRUE if $opt_q || $opt_Q;
 $fReallyQuiet = TRUE if $opt_Q;
+$fWarnIfNoComment = FALSE if $opt_n;
 
 my $scwmdir = $opt_d || $ENV{SCWMDIR};
 
@@ -585,7 +587,9 @@ sub ProcessSchemeHeader( $$$$$ ) {
     print STDERR "$filename:$line:**** $proc_name is not an ordinary define -- returns a lambda?\n";
   }
   if (!defined($comment)) {
-    print STDERR "$filename:$line:**** $proc_name: could not find comment\n";
+    if ($fWarnIfNoComment) {
+      print STDERR "$filename:$line:**** $proc_name: could not find comment\n";
+    }
     $comment = "No documentation supplied.";
   }
 #  my $usage = sprintf "(%s%s%s)", $proc_name, ($#arglist >= 0? " ":""),
