@@ -1,3 +1,19 @@
+- Click to focus bugs
+
+1a. At startup usually a window, which I don't want given focus,
+   gets focus.
+
+1b. The same is true on a restart.  Except sometimes no window gets
+   focus at all, which makes life difficult for `next'.
+
+2. When I quit a X app, the focus is usually given to a window I don't 
+   want to have focus.
+
+Jens	<http://www.kurims.kyoto-u.ac.jp/~petersen/>
+
+- buggy icon handling everywhere -- needs thorough testing
+
+
 gjb gets this on recapture
 [Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
                                     XFreePixmap 
