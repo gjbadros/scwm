@@ -49,25 +49,37 @@ static GC MenuShadowGC;
 static void
 MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
 {
+  static Pixel LastBGColor;
+  static double last_hilight_factor, last_shadow_factor;
   unsigned long gcm;
   XGCValues gcv;
   Pixel Bright, Dim;
 
-  /* Relief.fg */
-  Bright = adjust_pixel_brightness(pmd->pmdi->BGColor, menu_hilight_factor_val);
-  /* Relief.bg */
-  Dim = adjust_pixel_brightness(pmd->pmdi->BGColor, menu_shadow_factor_val);
+  if (pmd->pmdi->BGColor != LastBGColor ||
+      menu_hilight_factor_val != last_hilight_factor ||
+      menu_shadow_factor_val != last_shadow_factor) {
+    /* Relief.fg */
+    Bright = adjust_pixel_brightness(pmd->pmdi->BGColor,
+				     menu_hilight_factor_val);
+    /* Relief.bg */
+    Dim = adjust_pixel_brightness(pmd->pmdi->BGColor,
+				  menu_shadow_factor_val);
 		  
-  gcm = GCForeground | GCBackground;
-  gcv.foreground = Bright;
-  gcv.background = Dim;
-  XChangeGC(dpy, MenuReliefGC, gcm, &gcv);
+    gcm = GCForeground | GCBackground;
+    gcv.foreground = Bright;
+    gcv.background = Dim;
+    XChangeGC(dpy, MenuReliefGC, gcm, &gcv);
 
-  gcm = GCForeground | GCBackground;
-  gcv.foreground = Dim;
-  gcv.background = Bright;
-  XChangeGC(dpy, MenuShadowGC, gcm, &gcv);
+    gcm = GCForeground | GCBackground;
+    gcv.foreground = Dim;
+    gcv.background = Bright;
+    XChangeGC(dpy, MenuShadowGC, gcm, &gcv);
 
+    LastBGColor = pmd->pmdi->BGColor;
+    last_hilight_factor = menu_hilight_factor_val;
+    last_shadow_factor = menu_shadow_factor_val;
+  }
+  
   gcm = GCForeground | GCBackground;
   gcv.foreground = pmd->pmdi->TextColor;
   gcv.background = pmd->pmdi->BGColor;

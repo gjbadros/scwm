@@ -1,5 +1,9 @@
 1998-09-26  Todd Larason  <jtl@teeny.molehill.org>
 
+	* drawmenu.c (MakeGCs): only recompute the relief and shadow
+	colors if the background color or the highlight/shadow factors
+	have changed since the last menu display
+
 	* scwm.c (scwm_main): renamed menu_init_gcs to drawmenu_init_gcs
 
 	* screen.h: remove menu GCs
