@@ -46,7 +46,7 @@ scwm_error_message (SCM message, SCM args)
 }
 
 void
-init_error()
+init_errors()
 {
 #ifndef SCM_MAGIC_SNARFER
 #include "errors.x"

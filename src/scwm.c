@@ -653,9 +653,11 @@ void
 scwm_main(int argc, char **argv)
 {
   static int dumped = 0;
+#ifdef ENABLE_DUMP
   static Bool fShouldDump = False;
   static char *szBinaryPath = NULL;
   static char *szDumpFile = NULL;
+#endif
   int i;
   extern int x_fd;
   int len;
@@ -721,7 +723,7 @@ scwm_main(int argc, char **argv)
   setlinebuf(stdout);
 
   scwm_defer_ints();
-  init_error();
+  init_errors();
   init_font();
   init_decor();
   init_screen();
@@ -834,7 +836,9 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
-      {"dump", 1, NULL, 'm'},
+#ifdef ENABLE_DUMP
+      {"dump", 1, NULL, 'o'},
+#endif
       {"document-formals", 0, NULL, 'F'},
       {"gc-often", 0, NULL, 'g'},
       {"segv-reset-count", 1, NULL, 'p'},
@@ -849,11 +853,13 @@ is probably of no use to you unless you're a session manager or debbuging.
     if(getopt_ret == EOF) break;
     
     switch(getopt_ret) {
-    case 'm':
+#ifdef ENABLE_DUMP
+    case 'o':
       fShouldDump = True;
       szBinaryPath = argv[0];
       szDumpFile = strdup(optarg);
       break;
+#endif
     case 'g':
       scwm_gc_often = True;
       break;
@@ -1700,6 +1706,9 @@ usage(void)
 	  "      [--expression|-e expression]\n"
 	  "      [--file|-f rc_file] [--single-screen|-s]\n"
           "      [--gc-often|-g] [--debug|-D]\n"
+#ifdef ENABLE_DUMP
+          "      [--dump|-o executable_filename]\n"
+#endif
 	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
           "      [--no-document-formals|-N]\n"
 	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"
