@@ -1,3 +1,45 @@
+Thu Apr  1 19:14:14 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added *menu-font*, *menu-text-color*, *menu-bg-color*
+	options. 
+
+	* preferences.scm: Handle 'color, 'font, 'file better.  Reverse
+	order of sorting groups so it is forward alphabetical.
+
+	* message-window.scm: Added *message-window-font* as an option
+
+	* face.scm: Added *window-font* as an option.
+
+	* defoption.scm: Improve re-load behaviour -- do not reset
+	scwm-options list.  Improve docs on define-scwm-option.  Added
+	permit-disable, layout-hint properties.  Require a docstring and a 
+	type.  Make `optget' a synonmym for scwm-option-get.
+
+	* prompt-color.scm, prompt-font.scm, prompt-file.scm: Added, for
+	prompting for the various things using gtk.
+
+Thu Apr  1 10:21:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-string.scm: Added prompt-proc-hbox, for prompting for a
+	procedure name (as a string, for now, though a cool procedure
+	selector/definer dialog would be so totally great that I might
+	have to write it!)
+
+	* auto-raise.scm, primopts.scm: Move *auto-raise* option into the
+ 	auto-raise.scm module (it was here only for testing/demonstration
+ 	of a boolean).  Make default-auto-raise-{focus,unfocus}-proc options.
+
+	* preferences.scm: Handle type 'proc using new prompt-proc-hbox.
+
+	* fvwm-module.scm: Make *fvwm2-module-path*, *debug-fvwm-module*
+	option variables.
+
+Thu Apr  1 08:58:21 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-range.scm: Handle digits properly, make the adjust widget 
+	use better arguments (gnome-desktop-number was coming up with a
+	slider from 1 to 5 only, instead of 1 to 10).
+
 Wed Mar 31 17:27:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* prompt-range.scm: Set size of scale to 300 wide, do not fill or

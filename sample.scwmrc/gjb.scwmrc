@@ -29,6 +29,7 @@
 
 (use-modules (app scwm base)
 	     (app scwm winops)
+	     (app scwm defoption)
 	     (app scwm winlist)
 	     (app scwm wininfo)
              (app scwm style)
@@ -85,7 +86,7 @@
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
 
-(set! *fvwm2-module-path* (append fvwm2-module-path '("/uns/lib/fvwm2")))
+(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/uns/lib/fvwm2")))
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 
@@ -124,14 +125,8 @@
 
 (define font12
   (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
-(define font14 
-  (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
-(define window-font
-  (make-font "*helvetica*bold-r*12*"))
-(define basic-menu-font
-  (make-font "*helvetica*medium-r*12*"))
-(define bold-menu-font
-  (make-font "*helvetica*bold-r*9*"))
+(set-icon-font! font12)
+
 (define icon-font
   (make-font "fixed"))
 
@@ -250,11 +245,11 @@
 ;; (color-properties (make-color "#cc88ff"))
 
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
-	    #:font basic-menu-font)
+	    #:font (optget *menu-font*))
 
 ;; (select-window-interactively "Pick window #1")
 
-(message-window-style default-message-window #:font (make-font "*helvetica*medium-r*18*")
+(message-window-style default-message-window #:font (optget *message-window-font*)
 					    #:fg "black" #:bg "gray80")
 
 ;;(set-click-delay! 150)
@@ -265,9 +260,8 @@
 ;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
 (set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
 
-(title-style #:font font12 #:justify 'left #:relief 'raised)
+(title-style #:font (optget *window-font*) #:justify 'left #:relief 'raised)
 
-(set-icon-font! font12)
 (set-rubber-band-mask! 255)  
 
 (define (popup-small-ops)
@@ -841,7 +835,7 @@ union of all other window managers!
 
 (define (xterm-other-host hostname)
   (exe (string-append xterm-program-name " -name remotexterm -T " hostname " -n " hostname 
-		      " -e sh -c 'ssh " hostname "'")))
+		      " -e sh -c '" *remote-shell-command* hostname "'")))
 
 (define server-hosts 
   '(pahtoo glacier june amaebi bauhaus)

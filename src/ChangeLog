@@ -1,3 +1,25 @@
+Thu Apr  1 19:18:39 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_destroy_window): Do not permit destroy if the window
+ 	leader matches gh_lookup("gdk-leader-window") which gets set in
+	(app scwm gtk) module (once I decide to check that code in--
+	probably not until after guile-gtk-0.16 if that has my patch).
+
+	* session-manager.h, session-manager.c: Remove interning of
+ 	XA_WM_CLIENT_LEADER -- now done in scwm.h
+
+	* scwm.h: Added extern Atom XA_WM_CLIENT_LEADER -- needed for
+	destroy-window to protect gtk windows using their client-leader
+
+	* scwm.c: Intern XA_WM_CLIENT_LEADER atom.  Change fResetOnSegv
+	from a bool to segvs_to_reset, a count of the number of segvs that 
+	will result in a result (permits looping segvs to dump core
+	instead of doing really ugly things).
+
+	* miscprocs.c: set-reset-on-segv! now takes an integer, not a
+	bool.  Added getter `reset-on-segv'.  Added `X-connection-number'.
+	
+
 Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* */*.c: Use SCM_UNSPECIFIED, not SCM_UNDEFINED as the return
