@@ -92,6 +92,19 @@ CassowaryEditPosition(PScwmWindow psw)
     .beginEdit();
 }
 
+void
+CassowaryEditSize(PScwmWindow psw)
+{
+  if (!psolver)
+    return;
+
+  ScwmWindowConstraintInfo *pswci = psw->pswci;
+  (*psolver)
+    .addEditVar(pswci->_frame_width)
+    .addEditVar(pswci->_frame_height)
+    .beginEdit();
+}
+
 
 void 
 SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
@@ -108,7 +121,22 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 }
 
 void 
-CassowaryEndEditPosition(PScwmWindow psw)
+SuggestSizeWindowTo(PScwmWindow psw, int w, int h)
+{
+  if (!psolver) {
+    XResizeWindow(dpy, psw->frame, w, h);
+    return;
+  }
+  ScwmWindowConstraintInfo *pswci = psw->pswci;
+  (*psolver)
+    .suggestValue(pswci->_frame_width,w)
+    .suggestValue(pswci->_frame_height,h)
+    .resolve();
+}
+
+
+void 
+CassowaryEndEdit(PScwmWindow psw)
 {
   if (!psolver)
     return;

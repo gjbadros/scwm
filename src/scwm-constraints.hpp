@@ -48,6 +48,7 @@ public:
       SCM_ALLOW_INTS;
     }
 
+  void
   AddStays(ClSimplexSolver *psolver)
     {
       // FIXGJB: these weights should increase each time this is called

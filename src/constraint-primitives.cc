@@ -25,18 +25,19 @@ extern "C" {
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
 #include <strstream>
+#include <list>
 
 
 ClSimplexSolver *psolver;
 
-static vector<ScwmWindow *> rgpswDirty;
+static list<ScwmWindow *> rgpswDirty;
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
 {
   ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
   if (!psw) {
-    scwm_msg(WARN,__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data());
+    DBUG(__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data());
     return;
   }
   rgpswDirty.push_back(psw);
@@ -46,7 +47,7 @@ static void
 ScwmResolve(ClSimplexSolver *psolver)
 {
   // go through the dirty windows and move them
-  vector<ScwmWindow *>::const_iterator it = rgpswDirty.begin();
+  list<ScwmWindow *>::const_iterator it = rgpswDirty.begin();
   for ( ; it != rgpswDirty.end(); ++it ) {
     const ScwmWindow *psw = *it;
     psw->pswci->CopyStateToPswVars();

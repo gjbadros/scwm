@@ -30,8 +30,9 @@ void CassowaryInitClVarsInPsw(PScwmWindow psw);
 void CassowaryNewWindow(PScwmWindow psw);
 void CassowarySetCValuesAndSolve(PScwmWindow psw, int fSolve);
 void CassowaryEditPosition(PScwmWindow psw);
+void CassowaryEditSize(PScwmWindow psw);
 void SuggestMoveWindowTo(PScwmWindow psw, int x, int y);
-void CassowaryEndEditPosition(PScwmWindow psw);
+void CassowaryEndEdit(PScwmWindow psw);
 
 #ifdef __cplusplus
 }
