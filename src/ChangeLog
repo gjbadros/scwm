@@ -1,3 +1,12 @@
+1998-06-18    Maciej Stachowiak <maciej@roc-ny5-07.ix.netcom.com>
+
+	* shutdown.c: Separate the part of Done() that calls the restart
+	command into run_restart_command(); also fixed it to make restart
+	behave more reasonably. If no argument, or the argument "scwm" is
+	given, it restarts scwm with the exact arguments it was given,
+	plus `-s', otherwise, it executes the exact string given using
+	`/bin/sh'.
+
 Sat Jun 13 02:51:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* guile-compat.c, guile-compat.h: New files; compatability

@@ -14,6 +14,36 @@
 
 SCM shutdown_hook;
 
+static inline void
+run_restart_command(char *command) {
+  if (STREQ(command,"scwm")) {
+      char *my_argv[20];
+      int i, done, j;
+
+      i = 0;
+      j = 0;
+      done = 0;
+      while ((g_argv[j] != NULL) && (i < 18)) {
+	if (!STREQ(g_argv[j], "-s")) {
+	  my_argv[i] = g_argv[j];
+	  i++;
+	  j++;
+	} else
+	  j++;
+      }
+      my_argv[i++] = "-s";
+      
+      while (i < 20)
+	my_argv[i++] = NULL;
+      execvp(command, my_argv);
+  } else {
+    execl("/bin/sh", "/bin/sh", "-c", command, NULL);
+  }
+  scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", command);
+  execvp(g_argv[0], g_argv);	/* that _should_ work */
+  scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", g_argv[0]);
+}
+
 void 
 Done(int restart, char *command)
 {
@@ -39,35 +69,9 @@ Done(int restart, char *command)
     XSync(dpy, 0);
     XCloseDisplay(dpy);
 
-    { /* scope */
-      char *my_argv[10];
-      int i, done, j;
-
-      i = 0;
-      j = 0;
-      done = 0;
-      while ((g_argv[j] != NULL) && (i < 8)) {
-	if (!STREQ(g_argv[j], "-s")) {
-	  my_argv[i] = g_argv[j];
-	  i++;
-	  j++;
-	} else
-	  j++;
-      }
-      if (strstr(command, "scwm") != NULL)
-	my_argv[i++] = "-s";
-      while (i < 10)
-	my_argv[i++] = NULL;
-
-      /* really need to destroy all windows, explicitly,
-       * not sleep, but this is adequate for now */
-      sleep(1);
-      ReapChildren();
-      execvp(command, my_argv);
-    }
-    scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", command);
-    execvp(g_argv[0], g_argv);	/* that _should_ work */
-    scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", g_argv[0]);
+    sleep(1);
+    ReapChildren();
+    run_restart_command(command);
   } else {
     XCloseDisplay(dpy);
     exit(0);
@@ -108,9 +112,9 @@ restart(SCM command)
   char *n;
 
   if (gh_string_p(command)) {
-    n = strdup(g_argv[0]);
-  } else if (command == SCM_UNDEFINED) {
     n = gh_scm2newstr(command, &dummy);
+  } else if (command == SCM_UNDEFINED) {
+    n = "scwm";
   } else {
     scm_wrong_type_arg(s_restart, 1, command);
   }
