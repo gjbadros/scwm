@@ -28,7 +28,7 @@ Sat Oct  2 12:44:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
 Sat Oct  2 00:29:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added `resize-quarterscreen' bound to C-S-M-d
-o
+
 Sat Oct  2 00:12:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added register, window-configuration stuff.  Use
@@ -36,6 +36,11 @@ Sat Oct  2 00:12:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 	changes.  Call push-window-configuration in
 	after-new-window-hook, so popping will restore to the
 	initially-mapped state.
+
+Fri Oct  1 17:06:28 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Only run .xclients if not gnome-sm.  wavplay
+	scwm-startup.wav at end.
 
 Thu Sep 30 10:13:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
 

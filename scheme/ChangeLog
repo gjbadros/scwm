@@ -77,6 +77,11 @@ Fri Oct  1 21:54:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 	* constraints.scm: Do not use bind-four-modifier-key-events here.
 	Leave keybindings to .scwmrc.
 
+Fri Oct  1 17:08:15 1999    <gjb@cs.washington.edu>
+
+	* wavplay.scm: Use defined? not scwm-module-loaded? to see if
+	esound was loaded okay.
+
 1999-10-01  E. Jay Berkenbilt  <ejb@ql.org>
 
 	* xprop-extras.scm (X-cut-buffer-string): changed to use
