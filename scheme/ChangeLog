@@ -1,3 +1,18 @@
+1999-04-30  Jeff W Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Changed the flash and
+	unflash routines (that are very similar to those in 
+	ui-constraints-toggle-menu.scm) to take a window list as 
+	described below.  Also added constraint drawing and erasing 
+	on enter and exit from a menu button.  This makes flashing
+	consistent with the regular toggle menu.
+
+	* ui-constraints-toggle-menu.scm: Changed the 
+	flash-windows-of-constraint and accompanied unflash
+	routine to take a window list rather than a cn.  This ensures
+	that anchor constraints flash even though their cn does not
+	point directly at a window.
+
 1999-04-29  Jeff W Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Added code to support auto-
