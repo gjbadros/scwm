@@ -52,6 +52,11 @@
 	     (ice-9 string-fun)
 	     (ice-9 regex))
 
+;; Gnome & SM
+(enable-gnome-hints)
+(if (not (SM-register))
+    (message (SM-error-message)))
+
 ;; random niceties
 ; defines SYM to DEFAULT, unless it is already bound.
 (defmacro defvar (sym default)
