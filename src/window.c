@@ -557,7 +557,7 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 #ifndef NDEBUG
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
     scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen --\n\
-correcting from %d,%d",
+ %d,%d",
              psw->name,x,y);
 #if 0
     MoveTo((ScwmWindow *)psw,0,0);
