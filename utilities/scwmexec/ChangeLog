@@ -1,3 +1,7 @@
+Sat Jan 22 13:12:02 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmexec.c: Use scwmconfig.h, not config.h.
+
 Tue Jul  6 08:32:27 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmexec.c: Added inclusion of config.h

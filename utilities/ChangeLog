@@ -1,3 +1,7 @@
+Sat Jan 22 13:12:20 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* run-renamed.c: Use scwmconfig.h, not config.h.
+
 Sun Nov 28 14:58:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/debian-scwm_menus: Added -- From Francesco Tapparo.  This

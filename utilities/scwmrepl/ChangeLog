@@ -1,3 +1,7 @@
+Sat Jan 22 13:11:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl.c: Use scwmconfig.h, not config.h.
+
 1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* Makefile.am (INCLUDES): Explicitly mention include dir so that
