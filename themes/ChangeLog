@@ -1,3 +1,8 @@
+1999-08-05  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (DISTCLEANFILES): typo fix-o TAR_SFUFFIX ->
+	TAR_SUFFIX;  Thanks Francesco Tapparo!
+
 Thu Jul  1 09:41:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (DISTCLEANFILES): Added this rule -- thanks

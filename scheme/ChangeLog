@@ -1,3 +1,8 @@
+Tue Aug  3 16:31:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* modifier-key-bindings.scm: Added unbind-* procedures to undo the 
+	multi-key bindings.
+
 1999-08-04  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-composition.scm: Fixed an existing bug which 
