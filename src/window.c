@@ -2765,13 +2765,13 @@ way if not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   psw->fOnTop = False;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SCM_REALLOW_INTS;
+
+  KeepOnTop();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

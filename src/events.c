@@ -223,7 +223,7 @@ HandleEvents(void)
 /* keyboard remapping has occurred */
 void
 HandleMappingNotify()
-#define FUNC_NAME "HandleMAppingNotify"
+#define FUNC_NAME "HandleMappingNotify"
 {
   DBUG((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
@@ -1564,10 +1564,13 @@ HandleShapeNotify(void)
 void 
 HandleVisibilityNotify()
 {
+#if 0
   XVisibilityEvent *vevent = (XVisibilityEvent *) & Event;
+#endif
 
   DBUG((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
+#if 0
   if (pswCurrent) {
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
@@ -1583,6 +1586,7 @@ HandleVisibilityNotify()
       pswCurrent->fRaised = False;
     }
   }
+#endif
 }
 
 /* CoerceEnterNotifyOnCurrentWindow()

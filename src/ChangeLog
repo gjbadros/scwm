@@ -1,3 +1,13 @@
+Sun Dec  6 02:50:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c (un_keep_on_top): Call KeepOnTop after changing the
+ 	flag, in case this window was on top of other kept-on-top windows.
+
+	* events.c (HandleVisibilityNotify): Remove the body of this
+ 	function except the debugging message. Raising kept-on-top windows
+ 	on VisibilityNotify events is not helpful, and it caused an
+ 	annoying problem with menus which was reported by Craig Struble
+
 Sat Dec  5 18:34:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c (FocusOn): Do not attempt to snap to the window's
