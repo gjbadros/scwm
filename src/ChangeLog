@@ -1,3 +1,14 @@
+Sat Sep  5 13:26:05 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Mark new SCM variables, fix the mark code for a bug in 
+	requiring the decor to be set. Clean up set_window_property_x.
+
+	* constraint-primitives.cc: #include callbacks.c inside the extern 
+	"C" block; added scwm-resolve-hook and call it.
+
+	* add_window.c: Defer interrupts while initializing the new window 
+	struct (just in case)
+
 Fri Sep  4 19:01:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* screen.h, scwm.c: Add schscreen field of struct ScreenInfo and

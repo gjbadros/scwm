@@ -1,5 +1,7 @@
 Garbage collection
  - be sure to mark all contained scm objects
+ - any time you add a new SCM variable to a struct,
+   you need to modify that object type's mark function!
 
 Adding a new type?
  - be sure to call init_TYPE from scwm.c -- search for init_

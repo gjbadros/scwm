@@ -1,3 +1,8 @@
+Sat Sep  5 13:22:14 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* doc/dev/: Added X*.ps.gz documentation for ICE and session
+	management, from X11 R6.3 doc tree
+
 Fri Sep  4 11:49:24 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Move the AC_PROG_CXX macro back out of the
