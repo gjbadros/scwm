@@ -1,3 +1,20 @@
+Mon Feb  7 14:22:32 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added binding for H-M-x to `eval-expression-interactively'
+
+Mon Feb  7 10:02:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Bind A-space to new fn:
+	`popup-small-ops-current-window'
+
+	* sds.scwmrc: Update sds's email.
+
+	* gnome.scwmrc: Use menus-extras, ui-constraints-gtk-toggle-menu
+ 	changed to constraints-investigator.
+
+	* spare-blue.scwmrc: 	ui-constraints-gtk-toggle-menu
+ 	changed to constraints-investigator.
+
 Thu Jan 20 12:33:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Make `xmms-send-pause-click' interactive.  Added

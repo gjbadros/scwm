@@ -1,3 +1,22 @@
+Mon Feb  7 14:10:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am, auto-unobscure.scm: Added.  Do cool stuff on
+	window-fully-obscured-hook;  implementation is a bit like
+	auto-raise.scm.
+
+	* flux.scm: Added `eval-expression-interactively',
+	`resize-xdvi-full-page-100%'.
+
+Mon Feb  7 10:00:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops-menu.scm: Switch close and destroy menuitems so close is
+	the bottom-most one (since it is easier to get to using Shift-Down 
+	to select the last item).
+
+	* ui-constraints-composition.scm, ui-constraints-buttons.scm,
+ 	constraint-investigator.scm: ui-constraints-gtk-toggle-menu
+ 	changed to constraints-investigator.
+
 Tue Feb  1 14:17:16 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Drop `deiconify-window' from the start-iconified

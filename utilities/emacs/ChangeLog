@@ -1,3 +1,7 @@
+Mon Feb  7 10:03:50 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Update sds's email
+
 Sat Oct 23 14:15:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Use scwm-use-session instead of a scwm-eval in scwm-bug.
