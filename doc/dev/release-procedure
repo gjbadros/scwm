@@ -24,12 +24,15 @@ the results, then go back to step 4.
 6) Update the version number in configure.in, and make an appropriate
 ChangeLog entry for the release.
 
-7) Tag the repository (I've been using hte convention of using v
-followed by the version number with all periods replaced by dashes,
-e.g. v0-7).
+7) Tag the repository using the convention of using "v" followed by the
+   version number with all periods replaced by dashes, e.g. v0-7).
+
+   cvs -d huis-clos.mit.edu:/usr/local/repository rtag v0-8 scwm
 
 8) Export modules to tar up, creating directories that contain the
 version number (e.g. scwm-0.8/). 
+
+   cvs -d huis-clos.mit.edu:/usr/local/repository export v0-8 scwm
 
 9) Make the tarballs.
 
