@@ -187,7 +187,7 @@ height
 ;; (define w (select-window-interactively))
 
 (add-timer-hook! (sec->usec 1.5) 
-		 (lambda () (X-synthetic-send-string "ls g*" w)))
+		 (lambda () (X-synthetic-send-string "ls -ld g*" w)))
 
 
 ;;;; WINDOW REARRANGEMENTS AND UNDO
