@@ -1,3 +1,22 @@
+Sun Sep  6 15:36:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Clean up init_scwm_load_path, fix /* to /** comments
+	after SCWM_VAR_READ_ONLY macros
+
+Sun Sep  6 14:28:05 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Added SCWM_VAR and SCWM_VAR_READ_ONLY macros
+
+	* scwm.c: Use SCWM_VAR, SCWM_VAR_READ_ONLY
+
+	* menu.c: Use SCWM_VAR
+
+	* image.c: Use SCWM_VAR, rename loc_ prefix to pscm_ prefix as the 
+	macros enforce;  Turn image_not_found_hook into a real hook, and
+	erase ad-hoc InvokeHook1 function.
+
+	* events.c: Remove some obsolete comments re: send_key_press
+
 Sun Sep  6 13:23:15 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Fix source and header targets to not duplicate

@@ -1,3 +1,13 @@
+Sun Sep  6 15:19:26 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Track
+	$last_public_scheme_definition, and handle SCWM_VAR,
+	SCWM_VAR_READ_ONLY, and ;;;**VAR markers.  Fix some bugs in
+	ReadRestOfComment, and generalize to read scheme comments through
+	lines matching ^;;;  Permit pct_ to convert to % in
+	CNameMatchesSchemeName;  fix some bugs in redo-ing when eof hit in 
+	conditional of main loop
+
 Sun Sep  6 13:14:22 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Look for SCWM_HOOK macros, and

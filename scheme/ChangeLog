@@ -1,3 +1,7 @@
+Sun Sep  6 15:37:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Mark variables with ;;;**VAR + comment
+
 Sat Sep  5 15:34:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: fix unbalenced paren.
