@@ -1,7 +1,28 @@
+# $Id$ -*- outline -*-
+
 * Constraint embedding
 ** use cleaner subclassing w/ partial wrap model, instead of C-like void pointers
 ** virtual desktop and sticky interaction with the constraint variables
 ** rubberband-resizing fixes -- generalization of the rubberband
+
+* General cleanup
+** more static function hidden behind modules
+** fewer primitives that do work themselves
+instead they should just process arguments and call C functions that do
+the real work -- those C functions would then be the core of a WM library
+** better naming conventions for these C-level functions
+specifically, I'd like the non-primitive C-level functions to all start
+with capital letters.  Obviously I prefer Hungarian!
+** fewer global variables, fewer function static variables
+** separation of of initialization work
+separate init_MODULE which registers the SMOB, and
+init_MODULE_LATER_WORK which needs to be called after all SMOB types
+exist and the X11 connection and screen information have been
+initialized.  (init_MODULE functions should ideally not have an order
+dependence as they do now -- especially if it's not documented, as it
+isn't now).
+
+* Primitive for XGetCommand, XrmParseCommand, XrmGetResource (see AddWindow())
 
 * Add checks about redefining keystrokes, if not already done
 
@@ -10,6 +31,7 @@
 * accelerated mouse movements w/ keyboard shortcuts
 
 * StayOnBottom style
+
 
 * administrative b.s.
 ** cvsweb
@@ -128,3 +150,9 @@ modules should be punted.]
 - Synthetic key presses
 
 - Animated window shades --gjb 11/9/97 
+
+
+;;; Local Variables:
+;;; eval: (require 'filladapt)
+;;; eval: (hide-sublevels 1)
+;;; End:
