@@ -1,3 +1,9 @@
+1999-02-12  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added -lstdc++ to list for link line for
+	--with-cassowary since it seems to be getting linked with gcc
+	instead of g++ sometimes.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* HACKING: Bumped reccomended tool versions to Autoconf 2.13,
