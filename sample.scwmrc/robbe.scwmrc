@@ -185,21 +185,26 @@
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decroate-transient #f
 	      #:PPosition-hint #f
-	      #:lenience #t
-	      #:border-width 0
-	      #:no-titlebar #t
-	      )
+	      #:lenience #t)
 
-(define wm-style 'barebones)
+(define wm-style 'squashed)
 
 (define (set-wm-style! style)
   (set! wm-style style)
   (case style
-    ((barebones) (window-style "*" #:border-width 0 #:no-titlebar #t))
-    ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f))))
+    ((barebones) (window-style "*" #:border-width 0 #:no-titlebar #t
+			       #:squashed-titlebar #t))
+    ((squashed) (window-style "*" #:border-width 0 #:no-titlebar #f
+			      #:squashed-titlebar #t))
+    ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f
+			       #:squashed-titlebar #t))))
+
+; set to default
+(set-wm-style! wm-style)
 
 (define (toggle-wm-style)
-  (set-wm-style! (cadr (memq wm-style '(barebones decorated barebones)))))
+  (set-wm-style! (cadr (memq wm-style
+			     '(barebones squashed decorated barebones)))))
 
 ;; utility functions
 (define (vertical-toggle-maximize)
