@@ -1,3 +1,13 @@
+2000-01-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc (index): New function, returning the index of an
+	element inside a list. I am amazed that this does not belong to
+	standard guile.
+	(desk-number): New function, return the number of a named desk.
+	(Desk): Made a user variable.
+	Make start-on-desk styles dependent on `Desk', i.e. put Gimp
+	windows on desk "Gimp", games on "Games", etc.
+
 2000-01-16  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc (iconified-or-unfocusable): Add shaded windows
