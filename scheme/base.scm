@@ -24,6 +24,16 @@
 (define menu-text-color (make-color "black"))
 (define menu-font (make-font "fixed"))
 
+(define-public use-scwm-system-proc
+;;;**VAR
+;;; If #t, `execute' will use `scwm-system' instead of guile's `system'.
+;;; This works around a problem observed on pre-glibc Linux 2.0.34 i386
+;;; where SIGINT on the controlling tty (i.e., the one that started
+;;; scwm) propagates to the child processes.  The end result of the
+;;; possible bug is that xterms started by scwm are terminated if the
+;;; scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
+  #f)
+
 
 
 (define-module (app scwm base)
@@ -66,10 +76,6 @@
 (define*-public (w%y y #&optional (w (get-window)))
   "Return a pixel height Y percent of the height of window W."
   (inexact->exact (truncate (/ (* y (cadr (window-frame-size w))) 100))))
-
-(define-public (execute command)
-  "Execute COMMAND in the background."
-  (system (string-append "exec " command " &")))
 
 (define-public (program-exists? program-name)
   "Return #t if PROGRAM-NAME is found as an executable in the current $PATH.
@@ -401,3 +407,29 @@ Currently, this means in the-root-module."
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
   (bound? scwm-set-master-solver))
+
+;; FIXGJB: guile/linux should be fixed
+(define-public (scwm-system cmd)
+  "Run CMD using /bin/sh -c CMD and return the exit status.
+The CMD is run synchronously, and Bourne-shell meta characters
+are interpreted by /bin/sh.  E.g., to start CMD in the background,
+use a trailing \"&\" character.  See also guile's `system', but note
+that it may permit signals to propagate to the child processes
+possibly incorrectly.  This may be a bug, or perhaps just an unfortunate
+system-specific behaviour on some Linux systems (observed with libc.so.5.3.12
+on an i386 Linux 2.0.34 machine)."
+  (let ((child-pid (primitive-fork)))
+    (cond
+     ((< child-pid 0) (error "bad fork"))
+     ((> child-pid 0) ;; parent
+      (begin
+	(cdr (waitpid child-pid))))
+     (else ;; child
+      (begin
+	(setpgid 0 0)
+	(apply execlp (list "/bin/sh" "sh" "-c" cmd)))
+      ))))
+
+(define-public (execute command)
+  "Execute COMMAND in the background."
+  ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
