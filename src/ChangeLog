@@ -1,3 +1,9 @@
+Wed Apr 21 19:22:56 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* color.c (ClosestColor): Added this new function, and use it in
+ 	ScmMakeColor.  Just does full search with a closeness metric, only
+ 	operates for 8 bit (or fewer) display (I cannot test elsewhere now).
+
 Wed Apr 21 18:00:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Only mark set scheme objects (could've extended the

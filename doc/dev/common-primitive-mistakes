@@ -28,3 +28,5 @@ Rogue pointer warning?
   - are you marking something that is not an SCM?
     -> scm_gc_mark will not complain if passed an integer type
        because 'typedef long SCM' still
+
+Never return SCM_UNDEFINED -- either return SCM_BOOL_F, or SCM_UNSPECIFIED
