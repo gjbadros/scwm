@@ -1,3 +1,22 @@
+1998-07-08  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.c, *.h: Rename swCurrent to pswCurrent, use psw for locat
+	ScwmWindow * variables.
+
+	* window.c: fix a couple of bugs noticed by Dale Smith -- wasn't
+	assigning to psw before testing for return value in
+	frame_id_to_window and id_to_window.
+
+	* drawmenu.c: Added a tiny multibyte patch from ITANI Eiichiro.
+
+	* events.c: Use DBUG not WARN for the hook-call messages
+
+	* menuitem.c (menuitem_properties): use SCM_EOL, not SCM_UNDEFINED 
+	to end a list.  Added documentation for the primitives.
+	
+	* *.c: Added #include <config.h> to files that were missing it
+	
+
 1998-07-07  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.c, *.h: Rename to SCWM_DEFINE_HOOK, instead of DEFINE_HOOK
