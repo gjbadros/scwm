@@ -1,3 +1,8 @@
+Mon Mar 29 15:31:17 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Permit X_\S+_hook ids to match the C identifier w/o
+	regard to case -- eliminates false positive warnings for those hooks.
+
 Thu Mar 25 18:19:43 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Drop unsupported '-G' option from help.  Added

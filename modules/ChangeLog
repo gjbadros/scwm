@@ -1,7 +1,11 @@
+Mon Mar 29 20:47:52 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Update to use new arg validation macros.
+
 Mon Mar 29 08:17:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (s_animated_move_window): Fix default
-	to FALSE for 4th param to animated_move_window.
+ 	to FALSE for 4th param to animated_move_window.
 
 Sun Mar 28 18:18:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 

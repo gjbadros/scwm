@@ -1,3 +1,22 @@
+Mon Mar 29 20:38:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.h: Define and use VALIDATE_WIN_USE_CONTEXT,
+	VALIDATE_ARG_WIN_USE_CONTEXT, VALIDATE_ARG_WIN macros (replacing
+	VALIDATE, VALIDATEN, and nothing, respectively, with arg order
+	reversed), all using implicit FUNC_NAME macro as function name.
+
+	* scwm.h: Added SCWM_WRONG_TYPE_ARG macro using implicit FUNC_NAME 
+	macro as function name.
+
+	* color.h: Define and use VALIDATE_ARG_COLOR to replace
+	VALIDATE_COLOR (arg order is reversed, FUNC_NAME is implicit).
+	Drop unused, unneed VALIDATE_COLOR_OR_UNDEFINED,
+	VALIDATE_COLOR_OR_NONE.
+
+	* *.c: Update to use macros as above.  Fix several bugs, make WIN
+ 	parameter optional where it wasn't and update docs to reflect WIN
+ 	defaults to the window context in the usual way if not specified.
+
 Mon Mar 29 14:33:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Doc fix to get-window-highlight-colors.

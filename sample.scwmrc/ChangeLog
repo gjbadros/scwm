@@ -1,3 +1,8 @@
+Mon Mar 29 15:36:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use time-convert module.  Fix old use of
+	#:left-pixmap keyword
+
 Sun Mar 28 16:19:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* mstachow.scwmrc: Use *theme-path*, not theme-path

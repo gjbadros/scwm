@@ -1,3 +1,8 @@
+Mon Mar 29 15:26:17 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Drop the -G option -- I removed it from scwmdoc.in
+	a while ago.
+
 Thu Mar 25 12:35:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* src/ref-header.sgml: Drop the bookbiblio element as it resulted
