@@ -1,3 +1,15 @@
+Tue Mar 16 16:38:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.cc, scwm-constraints.cc,
+	scwm-constraints.h, scwm-constraints.hpp, scwm-screen-ci.hpp:
+	Renamed cassowary calls to match revised identifier names for
+	cassowary/qoca API merge.
+
+Mon Mar 15 16:59:43 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (SigResetLoop): Added a scwm_msg for when a reset-signal
+	is received.
+
 Fri Mar 12 14:44:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added DecorationWidth, DecorationHeight,
