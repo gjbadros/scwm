@@ -32,7 +32,12 @@ MODULEPATH=/usr/X11/lib/X11/fvwm2:$HOME/lib/fvwm2/modules/$UNAME:/uns/lib/fvwm2;
 
 if [ x"$DISPLAY" = x ]; then
     # we need to start an Xserver
-    xinit $0 "$@"
+    mcookie=`mcookie`
+    serverargs="-auth $HOME/.Xauthority"
+    display=:0
+    xauth add $display . $mcookie
+    xauth add `hostname -f`$display . $mcookie
+    exec xinit $0 "$@" -- $serverargs
 fi
 
 # Now we know an X server is running and DISPLAY is set.
