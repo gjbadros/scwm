@@ -10,7 +10,7 @@ An alist mapping filename patterns to applicable menu entries.
 Whenever the car (a regexp) matches a filename, the cdr is used to
 build a menuitem which is then added to the context menu.
 
-[From scheme/std-menus.scm:99]
+[From scheme/std-menus.scm:100]
 
 
 debug-gnome-hints
@@ -64,10 +64,10 @@ using `set-hover-focus-delay!'.
 
 
 default-menu-max-fold-lines
-- (app scwm base)
+- (app scwm menus-extras)
 The default number of items that menus are split into by `fold-menu-list'.
 
-[From scheme/base.scm:415]
+[From scheme/menus-extras.scm:44]
 
 
 gnome-desktop-number
@@ -94,13 +94,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:532]
+[From scwm/scwm.c:557]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:535]
+[From scwm/scwm.c:560]
 
 
 move-opaquely?
@@ -114,7 +114,7 @@ netscape-new-window
 - (app scwm flux)
 If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
 
-[From scheme/flux.scm:634]
+[From scheme/flux.scm:635]
 
 
 opaque-move-percent
@@ -144,7 +144,7 @@ It should take a first (non-option) argument of
 the hostname to connect to.  "ssh" "rsh" and "telnet"
 are each reasonable choices.
 
-[From scheme/base.scm:446]
+[From scheme/base.scm:423]
 
 
 resize-opaquely?
@@ -182,7 +182,7 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
 xpm-shaped-menu-look
 - 
 The shaped XPM menu look. 
-[From modules/xpm-menus/draw-xpm-menu.c:1002]
+[From modules/xpm-menus/draw-xpm-menu.c:1000]
 
 
 xterm-command
@@ -191,6 +191,6 @@ The command to run when a new xterm window is requested.
 The string given should refer to a binary or script in the
 path and should take a "-e" argument of what to run.
 
-[From scheme/base.scm:439]
+[From scheme/base.scm:416]
 
 

@@ -68,8 +68,25 @@ Event Contexts
 -
 
 
+There are various event contexts that are used as arguments
+to the binding procedures.  Among these are:
+
+  'window
+  'titlebar (or 'title)
+  'icon
+  'root
+  'frame-corners (or 'frame)
+  'frame-sides (or 'sidebar)
+  'client-window
+  'root-window
+  'left-button-N  (N=1-5)
+  'right-button-N (N=1-5)
+  'button-N (N=1-10) [deprecated]
+
+GJB:FIXME:: This should be a definition list or a table, and give real
+explanations of what these contexts mean!
  
-[From scwm/binding.c:601]
+[From scwm/binding.c:646]
 
 
 Face Flags
@@ -224,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3215]
+[From scwm/window.c:3267]
 
 
 Fonts
@@ -306,7 +323,7 @@ key should be bound with every possible modifier combination,
 including possibly no modifiers. *- may not be combined with any other
 modifier.
 
-[From scwm/binding.c:103]
+[From scwm/binding.c:148]
 
 
 Menu Looks
@@ -362,7 +379,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:595]
+[From scwm/scwm.c:620]
 
 
 SCWMEXEC Protocol
@@ -422,7 +439,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:1996]
+[From scwm/window.c:2047]
 
 
 The Window Context
@@ -439,7 +456,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:814]
+[From scwm/window.c:860]
 
 
 Themes
@@ -488,7 +505,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:387]
+[From scwm/window.c:391]
 
 
 X atoms
