@@ -1,3 +1,21 @@
+Thu Sep 23 00:09:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* netscape.scm: Added `cgi-escapify-space'; this (and
+ 	uri-escapify-comma) should be remove in favor of using some guile
+ 	module with this support.  Added google stuff from system.scwmrc.
+
+	* fvwm-compat.scm: Added note re: display-depth being same as
+	(list-ref X display-info 2) when setting PLANES.
+
+	* flux.scm: Added lots of procs from system.scwmrc that didn't
+	belong there.
+
+	* flash-window.scm: Added `raise-and-stop-flashing' from system.scwmrc.
+
+	* image-path-suggestor.scm: Added
+
+	* Makefile.am: Added above.
+
 Tue Sep 21 22:02:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Make window-center-position return the frame size,

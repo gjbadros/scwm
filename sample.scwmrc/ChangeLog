@@ -1,3 +1,9 @@
+Thu Sep 23 00:12:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use new image-path-suggestor, remove a lot of
+	procs (moved into flux.scm, mostly).  Remove lots of junk code
+	into scheme/tests. Fix about message. Other assorted cleanup.
+
 Tue Sep 21 22:42:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Drop gjb.scwmrc
