@@ -1,3 +1,7 @@
+Sat Mar 30 22:43:38 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* shove-window.scm: Added a comment to 'menu-window-shove'.
+
 Sat Mar 30 22:19:55 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* placement.scm: Doc fix to 'interactive-placement'.

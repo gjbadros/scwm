@@ -37,6 +37,9 @@
 	   (proc))))))
      
 
+;;;A menu which can be used for shoving a window to edges.
+;;;Can be used for shoving a window to any edge, corner, or center of
+;;;current viewport."
 (define-public menu-window-shove
   (menu
    (list
