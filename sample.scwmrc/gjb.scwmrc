@@ -35,6 +35,8 @@
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
+		  modifier-key-bindings window-selection
+		  group
 ;;		  string-ops send-string
 		  )
 
@@ -59,10 +61,17 @@
 (define mail-spool-dir (getenv "MAIL"))
 
 
-;; (set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
-(set! doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
-  (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
-	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
+(set! doc-files
+  (list (string-append (getenv "SCWMDIR") "/doc/scwm-procedures.txt")
+	(string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt")))
+
+(set! doc-files
+      (append doc-files
+	      (list (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-procedures.txt")
+		    (string-append (scwm-path-prefix) 
+				   "/share/scwm/cassowary_scm-procedures.txt"))))
+
 
 (set! *theme-path*
       (append (list (string-append (getenv "SCWMDIR") "/themes")) *theme-path*))
@@ -928,8 +937,6 @@ union of all other window managers!
 	     (menuitem "&Eject" #:image-left "mini-wm-eject.xpm"
 		       #:action (lambda () (tell-workman "eject")))))))
 
-
-
 (define menu-root-start
   ;;  (menu "RootStart" "Start %mini-exp.xpm%"
   (menu
@@ -988,7 +995,6 @@ union of all other window managers!
 	(use-scwm-modules constraints)
 	(start-constraints))
       (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
-
 
 (define (popup-menu-root-start)
   (with-window 
@@ -1379,6 +1385,38 @@ union of all other window managers!
    ;;	  "xearth -once"
    ))
 
+(define* (unflash-window-if-not-selected #&optional (win (window-context)))
+  (if (and win (not (window-is-selected? win)))
+      (unflash-window win)))
+
+(define* (start-highlighting-current-window #&optional (win (window-context)))
+  (and win (flash-window-on win))
+  (add-hook! window-enter-hook flash-window-on)
+  (add-hook! window-leave-hook unflash-window-if-not-selected))
+
+;; window-leave-hook  window-enter-hook
+
+(define* (end-highlighting-current-window #&optional (win (window-context)))
+  (and win (unflash-window-if-not-selected win))
+  (remove-hook! window-enter-hook flash-window-on)
+  (remove-hook! window-leave-hook unflash-window-if-not-selected))
+
+(bind-two-modifier-key-events
+ XKM_HYPER_L XKM_SHIFT_L
+ start-highlighting-current-window
+ end-highlighting-current-window)
+
+(bind-mouse 'all "H-S-1" (thunk select-window-add-selection))
+(bind-mouse 'all "H-A-1" (thunk select-window-add-selection))
+(bind-mouse 'all "H-S-2" (lambda () 
+			   (interactive-move-group (selected-windows-list))
+			   (end-highlighting-current-window)
+			   (unselect-all-windows)))
+(bind-mouse 'all "H-A-2" (lambda () 
+			   (interactive-move-group (selected-windows-list))
+			   (unselect-all-windows)))
+
+;; (unselect-all-windows)
 
 ;;(kill-fvwm2-module fvwm-winlist)
 ;;(kill-all-fvwm2-modules)
