@@ -2,7 +2,8 @@
 
 (use-modules (app scwm defoption)
 	     (app scwm primopts)
-	     (app scwm preferences))
+	     (app scwm preferences)
+	     (app scwm themes))
 
 
 (popup-menu (scwm-options-menu) #t)
