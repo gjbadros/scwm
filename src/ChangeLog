@@ -1,3 +1,21 @@
+Wed Aug 12 14:59:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added resize-frame-to which does what resize-to used
+	  to do, and made resize-to's size talk about the client window
+	  size;  also added window-frame-size with old behaviour and make
+	  window-size return four values, instead of just two  -- 3rd and
+	  4th are size in resize increments.
+
+	* resize.c: Rewrite makemult as a function, and make it round,
+	  instead of truncate
+
+	* placement.c: Do not call SetupFrame from PlaceWindow -- let it
+	  get called later in HandleMapNotify.
+
+	* add_window.c: Be sure to initialize psw->xboundary_width and
+	  psw->bw properly before calling ConstrainSize.  Add psw->bw into 
+	  psw->initial size estimates for the frame
+
 Wed Aug 12 09:22:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* color.c: Invert gh_number_p tests in various type checking to
