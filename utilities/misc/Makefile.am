@@ -8,4 +8,4 @@ pkgdata_DATA = gnome-session-Scwm Xsession.patch
 
 scwm_examples_DATA = Xresources-cpp Xmodmap-win95keyboard Xsession
 
-EXTRA_DIST = $(bin_SCRIPTS) $(pkgdata_DATA) $(examples_DATA)
+EXTRA_DIST = $(bin_SCRIPTS) $(pkgdata_DATA) $(scwm_examples_DATA)
