@@ -13,7 +13,7 @@
 (define (merge l1 l2 compare)
   (cond ((null? l1) l2)
 	((null? l2) l1)
-	((not (compare (car l1) (car l2)))
+	((not (compare (car l2) (car l1)))
 	 (cons (car l1)
 	       (merge (cdr l1) l2 compare)))
 	(else
@@ -26,7 +26,7 @@
    ((null? (cdr ls)) (list ls))
    (else (let ((a (car ls))
 	       (gp (make-groups (cdr ls) compare)))
-	   (if (compare a (cadr ls))
+	   (if (compare (cadr ls) a)
 	       (cons (list a) gp)
 	       (cons (cons a (car gp)) (cdr gp)))))))
 
@@ -38,15 +38,17 @@
 	       (pair-merge (cddr sublists) compare)))))
 
 ;; natural merge sort
-(define*-public (sort ls #&optional (compare >))
+(define*-public (sort ls #&optional (compare <))
   "Returned LS sorted according to COMPARE (defaults to ascending numerical order)."
   (if (null? ls)
       '()
       (letrec ((sortrec (lambda (gps compare)
-		       (if (null? (cdr gps))
-			   (car gps)
-			   (sortrec (pair-merge gps compare) compare)))))
+			  (if (null? (cdr gps))
+			      (car gps)
+			      (sortrec (pair-merge gps compare) compare)))))
 	(sortrec (make-groups ls compare) compare))))
 
-;; (sort '(4 5 1 3 4 5 7) <)
 ;; (sort '(4 5 1 3 4 5 7) >)
+;; (psort '(4 5 1 3 4 5 7) >)
+;; (sort '(4 5 1 3 4 5 7) <)
+;; (psort '(4 5 1 3 4 5 7) <)

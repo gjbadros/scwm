@@ -142,6 +142,20 @@ These options are cumulative for repeated calls to
   #:setter (lambda (font) (message-window-set-font! default-message-window font))
   #:getter (lambda () (message-window-font default-message-window)))
 
+(define-scwm-option *message-window-fg-color* (make-color "black")
+  "The default message-window foreground color."
+  #:type 'color
+  #:group 'message-window
+  #:setter (lambda (color) (message-window-set-colors! default-message-window color #f))
+  #:getter (lambda () (car (message-window-colors default-message-window))))
+
+(define-scwm-option *message-window-bg-color* (make-color "grey75")
+  "The default message-window background color."
+  #:type 'color
+  #:group 'message-window
+  #:setter (lambda (color) (message-window-set-colors! default-message-window #f color))
+  #:getter (lambda () (cadr (message-window-colors default-message-window))))
+
 
 ;;; hooks for the usual resize and move message windows
 

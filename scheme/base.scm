@@ -69,16 +69,16 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   "The default menu text color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "white" "grey20" "grey50" "grey70" "black" "blue" "red" "green" "purple" "yellow" "orange")
-  #:setter (lambda (color) (set! menu-text-color color))
+  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-text-color (if (color? color) color (make-color color))))
   #:getter (lambda () menu-text-color))
 
 (define-scwm-option *menu-bg-color* (make-color "grey75")
   "The default menu text color."
   #:type 'color
   #:group 'menu
-  #:favorites (list "white" "grey20" "grey50" "grey70" "black" "blue" "red" "green" "purple" "yellow" "orange")
-  #:setter (lambda (color) (set! menu-bg-color color))
+  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-bg-color (if (color? color) color (make-color color))))
   #:getter (lambda () menu-bg-color))
 
 
@@ -593,7 +593,7 @@ This may be a bug (not meeting POSIX.2 specifications)."
 ;; GJB:FIXME:: switch to this after testing it
 ;; From Jim Blandy -- his [better] version of 
 ;; my scwm-system, above --09/26/98 gjb
-(define (background-system command)
+(define-public (background-system command)
   "Run CMD using /bin/sh -c CMD and return the exit status.
 The CMD is run synchronously, and Bourne-shell meta characters
 are interpreted by /bin/sh.  E.g., to start CMD in the background,

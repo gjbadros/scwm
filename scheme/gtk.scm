@@ -25,6 +25,7 @@
 
 (define-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (app scwm optargs) ;; for bound?
   :use-module (gtk gdk)
   :use-module (app scwm scwmgtkhelper))
 

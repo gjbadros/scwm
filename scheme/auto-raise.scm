@@ -69,22 +69,6 @@
 ;;;; entered. That may change in the future.
 
 
-;; (popup-option-menu '*auto-raise*)
-;; (scwm-option-name '*auto-raise*)
-(define-scwm-option *auto-raise* #f
-  "Whether to auto-raise windows"
-  #:type 'boolean
-  #:group 'focus
-  #:setter (lambda (auto-raise?)
-	     (if auto-raise? (begin 
-			       (use-modules (app scwm auto-raise))
-			       (window-style "*" #:auto-raise #t))
-		 (if (feature? 'scwm-auto-raise)
-		     (begin
-		       (use-modules (app scwm style))
-		       (window-style "*" #:auto-raise #f))))
-	     (set! *auto-raise* auto-raise?)))
-
 (define-scwm-option *default-auto-raise-delay* 300
   "Number of ms to delay before raising the window the mouse pointer entered.
 This can be overridden on a per-window basis using `set-auto-raise-delay!'"
@@ -216,3 +200,18 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 	  
 
 (add-hook! window-focus-change-hook auto-raise-hook-proc)
+
+;; (popup-option-menu '*auto-raise*)
+;; (scwm-option-name '*auto-raise*)
+(define-scwm-option *auto-raise* #f
+  "Whether to auto-raise windows"
+  #:type 'boolean
+  #:group 'focus
+  #:setter (lambda (auto-raise?)
+	     (if auto-raise? (window-style "*" #:auto-raise #t)
+		 (if (feature? 'scwm-auto-raise)
+		     (begin
+		       (use-modules (app scwm style))
+		       (window-style "*" #:auto-raise #f))))
+	     (set! *auto-raise* auto-raise?)))
+

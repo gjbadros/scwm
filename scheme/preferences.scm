@@ -33,6 +33,7 @@
   :use-module (app scwm prompt-font)
   :use-module (app scwm prompt-file)
   :use-module (app scwm prompt-color)
+  :use-module (app scwm prompt-proc)
   )
 
 ;; (use-modules (gtk gtk))
@@ -106,9 +107,7 @@
 		      #:initval (path-list->string-with-colons value)
 		      #:title title))
       ('proc
-       (prompt-string prompt (lambda (v) (set-proc (eval (string->symbol v))))
-		      #:initval (symbol->string (procedure-name value))
-		      #:title title))
+       (prompt-proc prompt set-proc #:initval value #:title title))
       ('integer 
        (prompt-integer-range prompt range set-proc #:initval value #:title title))
       ('color 
@@ -288,6 +287,7 @@ NOTE: Not quite functional, but I'm outta time!
 GJB:FIXME::."
   (let* ((label (gtk-label-new title))
 	 (vbox (gtk-vbox-new #f 10))
+	 (tooltip (gtk-tooltips-new))
 	 (hbox (gtk-hbox-new #t 50))
 	 (widgets-and-applyers
 	  (map (lambda (s) 
@@ -306,15 +306,19 @@ GJB:FIXME::."
 							 (lambda () 
 							   (toggle-docs-for sym)))
 				     (gtk-widget-show helpbut)
+				     (gtk-tooltips-set-tip tooltip hbox 
+							   (scwm-option-short-documentation sym)
+							   "")
 				     (gtk-box-pack-start hbox helpbut #f #f 20)
 				     hbox)) widgets-and-applyers))
 	 (applyers (map cadr widgets-and-applyers))
 	 (apply-action (lambda ()
-		  (for-each (lambda (a) (a)) applyers)))
+			 (for-each (lambda (a) (a)) applyers)))
 	 (applybut (gtk-button-new-with-label "Apply"))
 ;;	 (okbut (gtk-button-new-with-label "Ok"))
 ;;	 (cancelbut (gtk-button-new-with-label "Cancel"))
 	 )
+    (gtk-tooltips-enable tooltip)
     (map (lambda (w) (gtk-box-pack-start vbox w #t #f) (gtk-widget-show w))
 	 widgets)
     (map (lambda (w) (gtk-box-pack-start hbox w #t #t) (gtk-widget-show w))

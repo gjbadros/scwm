@@ -32,7 +32,7 @@
 (define*-public (prompt-color prompt proc #&key
 			      (initval #f)
 			      (title #f)
-			      (favorites #f)
+			      (favorites #f))
   "Prompt using PROMPT for a color and call PROC with value if Ok is clicked.
 INITVAL is a default initial color as a color object or string.
 TITLE is a window title."
@@ -88,17 +88,17 @@ See also `prompt-color'."
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))
 	 (initvalcolor (cond
-		       ((color? initval) initval)
-		       ((string? initval) (make-color initval))
-		       (else 
-			(make-color "fixed"))))
+			((color? initval) initval)
+			((string? initval) (make-color initval))
+			(else 
+			 (make-color "black"))))
 	 (selbut (gtk-button-new-with-label "Pick..."))
 	 (entry-init (color-property initvalcolor 'name))
 	 (label (gtk-label-new prompt)))
-    (gtk-entry-set-text entry entry-init)
     (if cb
 	(gtk-combo-set-popdown-strings cb
 				       (list->vector favorites)))
+    (gtk-entry-set-text entry entry-init)
     (gtk-box-pack-start hbox label #f #f 10)
     (gtk-box-pack-start hbox (or cb entry) #t #t)
     (gtk-box-pack-start hbox selbut #f #f 10)

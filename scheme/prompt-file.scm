@@ -76,10 +76,10 @@ See also `prompt-file'."
 	 (selbut (gtk-button-new-with-label "Choose..."))
 	 (entry-init (or initval ""))
 	 (label (gtk-label-new prompt)))
-    (gtk-entry-set-text entry entry-init)
     (if cb
 	(gtk-combo-set-popdown-strings cb
 				       (list->vector favorites)))
+    (gtk-entry-set-text entry entry-init)
     (gtk-box-pack-start hbox label #f #f 10)
     (gtk-box-pack-start hbox (or cb entry) #t #t)
     (gtk-box-pack-start hbox selbut #f #f 10)
