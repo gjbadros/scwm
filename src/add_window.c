@@ -180,6 +180,7 @@ static XrmOptionDescRec table[] =
   {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
 
+extern int restart_vp_offset_x, restart_vp_offset_y;
 
 /*
  * AddWindow - add a new window to the scwm list
@@ -422,6 +423,19 @@ AddWindow(Window w)
   } else {
     attributes.background_pixel = SAFE_COLOR(psw->BackColor);
     valuemask |= CWBackPixel;
+  }
+
+  if (!psw->fSticky) {
+#if 0    
+    scwm_msg(WARN,FUNC_NAME,"Moving %s by %d,%d to to correct for restart_vp_offset",
+             psw->name,restart_vp_offset_x,restart_vp_offset_y);
+#endif
+    psw->attr.x += restart_vp_offset_x;
+    psw->attr.y += restart_vp_offset_y;
+#if 0
+    scwm_msg(WARN,FUNC_NAME,"Now %s is set to be at %d,%d",
+             psw->name,psw->attr.x,psw->attr.y);
+#endif
   }
 
   attributes.border_pixel = SAFE_COLOR(psw->ShadowColor);

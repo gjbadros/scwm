@@ -20,6 +20,7 @@
 #include "window.h"
 #include "screen.h"
 #include "image.h"
+#include "xproperty.h"
 
 
 Window JunkChild, JunkRoot;
@@ -115,6 +116,21 @@ FXIsWindowMapped(Display *dpy, Window w)
   }
   return False;
 }
+
+int
+NFromXPropertyCardinal(Window w, Atom a, Bool fDel, int def)
+{
+  char *prop_data;
+  int aformat;
+  unsigned long nitems;
+  Atom atype;
+  prop_data = GetXProperty(w, a, fDel, &atype, &aformat, &nitems);
+  if (XA_CARDINAL == atype) def = *((int *)prop_data);
+  XFree(prop_data);
+  return def;
+}
+  
+
 
 /* Note: gc is only used for bitmaps! */
 void

@@ -184,6 +184,8 @@ Bool XTestSupported = False;
 long isIconicState = 0;
 extern XEvent Event;
 Bool Restarting = False;
+int restart_vp_offset_x = 0, restart_vp_offset_y = 0;
+
 int fd_width, x_fd;
 char *display_name = NULL;
 
@@ -1055,7 +1057,17 @@ Repository Timestamp: %s\n",
   
   FREEC(szCmdConfig);
   
+  restart_vp_offset_x = 
+    NFromXPropertyCardinal(Scr.Root, XA_SCWM_VIEWPORT_OFFSET_X, 
+                           False,0);
+  restart_vp_offset_y = 
+    NFromXPropertyCardinal(Scr.Root, XA_SCWM_VIEWPORT_OFFSET_Y, 
+                           False,0);
   CaptureAllWindows();
+
+  MoveViewport_internal(restart_vp_offset_x,restart_vp_offset_y);
+
+  restart_vp_offset_y = restart_vp_offset_y = 0;
   
   DBUG((DBG,"main", "Done running config_commands"));
 
@@ -1154,7 +1166,6 @@ MappedNotOverride(Window w)
  * AddWindow gets called by X11
  * when the windows make their request to be mapped
  */
- 
 void 
 CaptureAllWindows(void)
 {

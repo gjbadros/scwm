@@ -10,6 +10,7 @@
 #include <config.h>
 #endif
 
+#include <X11/X.h>
 #include <X11/Xlib.h>
 
 #include "image.h"
@@ -53,6 +54,8 @@ char *SzExtractTextPropValue(const XTextProperty *pxtp);
 int ComputeXTextWidth(XFONT_TYPE pxfs, const char *sz, int cch);
 XColor XColorFromPixel(Pixel p);
 Pixmap Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg);
+int NFromXPropertyCardinal(Window w, Atom a, Bool fDel, int def);
+
 
 #endif /* XMISC_H__ */
 
@@ -62,4 +65,3 @@ Pixmap Pixmap1DeepFromPixmap(Pixmap p, Pixel fg, Pixel bg);
 /* End: */
 /* vim:ts=8:sw=2:sta 
  */
-

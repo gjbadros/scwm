@@ -669,16 +669,20 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 {
 #define FUNC_NAME "MovePswToCurrentPosition"
   int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
-#ifndef NDEBUG
+  /* GJB:FIXME:: do we want to ensure sticky windows stay in t;he viewport? */
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
-    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen --\n\
- %d,%d",
-             psw->name,x,y);
-#if 0
-    MoveTo((ScwmWindow *)psw,0,0);
-#endif
+    int width = FRAME_WIDTH(psw), height = FRAME_HEIGHT(psw);
+    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen -- %d,%d\n\
+moving %s to 0,0.",
+             psw->name,x,y,psw->name);
+    if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x + width > Scr.DisplayWidth)
+      x = Scr.DisplayWidth - width;
+    if (y + height > Scr.DisplayHeight)
+      y = Scr.DisplayHeight - height;
+    MoveTo((ScwmWindow *)psw,x,y);
   }
-#endif
 
   XMoveWindow(dpy, psw->frame, x, y);
   SendClientConfigureNotify(psw);
