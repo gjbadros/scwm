@@ -354,7 +354,7 @@ will be returned."
 	      (set! cwin-selected (- cwin-selected 1)))
 	    (begin
 	      (set! wlist (cons w wlist))
-	      (flash-window w (make-color "red") #f)
+	      (flash-window w #:unflash-delay #f)
 	      (set! cwin-selected (+ cwin-selected 1))))
 	(set! done #t))))
 ;; (define wg (select-window-group))
@@ -363,7 +363,7 @@ will be returned."
     
 (define-public (select-window-interactively-and-highlight)
   (let ((w (select-window-interactively)))
-    (flash-window w (make-color "red") #f)
+    (flash-window w #:unflash-delay #f)
     w))
 ;; (unflash-window (select-window-interactively))
 
@@ -393,11 +393,17 @@ The list is in the reverse order from the way by which they were selected."
   "Permit selecting a window from a window list.
 Return the selected window object, or #f if none was selected"
   (show-window-list-menu #:only only #:except except 
+			 #:flash-window-proc 
+			 (lambda (w) (flash-window w #:unflash-delay #f))
+			 #:unflash-window-proc
+			 (lambda (w) (unflash-window w))
 			 #:ignore-winlist-skip ignore-winlist-skip #:proc (lambda (w) w)))
 
 ;; e.g.
 ;; (let ((w (select-window-from-window-list #:only iconified?)))
 ;;  (deiconify w) (move-to 0 0 w))
+;; (select-window-from-window-list)
+;; (unflash-window (get-window))
 
 (define-public (color->string color)
   "Convert scwm color object COLOR into an X11 name of that color.
@@ -443,7 +449,7 @@ This positions the popup menu appropriately."
 
 ;; We need accessors for window background information,
 ;; and window-hilight background information
-(define*-public (flash-window win #&optional
+(define*-public (flash-window #&optional (win (get-window)) #&key
 			      (color (make-color "red"))
 			      (unflash-delay .5))
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
