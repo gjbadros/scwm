@@ -62,7 +62,8 @@ void SendClientConfigureNotify(const ScwmWindow *psw);
    The positions given are viewport positions (not virtual) */
 void 
 AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
-                     int startX, int startY, int endX, int endY,
+                     int startX, int startY, int endX, int endY, 
+                     Bool fSetEndX, Bool fSetEndY,
 		     Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
 {
   int currentW, currentH;
@@ -72,7 +73,8 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
   int pointerX, pointerY;
   int currentX, currentY;
   int lastX, lastY;
-  int deltaX, deltaY;
+  int deltaX = endX - startX;
+  int deltaY = endY - startY;
   int grav_dx, grav_dy;
 
   /* set our defaults */
@@ -91,9 +93,12 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
   lastH = startH;
 
   ComputeDeltaForResize(psw,&grav_dx,&grav_dy,endW,endH);
-
-  deltaX = endX - startX + grav_dx;
-  deltaY = endY - startY + grav_dy;
+  if (fSetEndX) {
+    deltaX += grav_dx;
+  }
+  if (fSetEndY) {
+    deltaY += grav_dy;
+  }
   lastX = startX;
   lastY = startY;
 
@@ -391,6 +396,7 @@ way if not specified. */
                          startY - WIN_VP_OFFSET_Y(psw),
                          destX - WIN_VP_OFFSET_X(psw),
                          destY - WIN_VP_OFFSET_Y(psw),
+                         !UNSET_SCM(x),!UNSET_SCM(y),
                          fMovePointer,cmsDelay,NULL);
   } /* scope */
 
@@ -459,6 +465,7 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
                          startY - WIN_VP_OFFSET_Y(psw),
                          destX - WIN_VP_OFFSET_X(psw),
                          destY - WIN_VP_OFFSET_Y(psw),
+                         !UNSET_SCM(x), !UNSET_SCM(y),
 			 fWarpPointerToo,cmsDelay,NULL);
   } /* scope */
 
