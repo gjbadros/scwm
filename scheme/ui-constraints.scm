@@ -45,19 +45,24 @@
 ;; specify a UI for creating the constraint.
 ;;
 ;; The format for an UI-CONSTRAINT-CLASS object is:
-;; (obid-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC)
+;; (obid-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME MENUNAME-PROC)
 
 ;; make-ui-constraint-class
 
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME)
+(define-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
   "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
-UI-CTR should return the arguments (as a list) for CTR to build the constraint with."
-  (let* ((lst (list NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME))
-         (obj (cons obid-ui-constraint-class lst)))
+UI-CTR should return the arguments (as a list) for CTR to build the constraint with.  UI-CTR should
+return #f if the user cancels the construction or fails to follow the interface correctly.  PIXMAP-NAME
+is the name of the pixmap to associate with this constraint-class in the user interface.
+MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the name that should be used
+for the constraint in the toggle menu.
+This routine returns a new constraint class object based on the parameters.
+SIDE-EFFECT: addes new class obj to the global class list."
+  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     obj))
 
@@ -67,8 +72,10 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; Removes the UI-CONSTRAINT-CLASS permanently
 ;; SIDE-EFFECT: removes class object from the global list
 
-(define-public (delete-ui-constraint-class! UI-CONSTRAINT-CLASS)
-  (set! global-constraint-class-list (delq UI-CONSTRAINT-CLASS global-constraint-class-list)))
+(define-public (delete-ui-constraint-class! ui-constraint-class)
+  "Removes UI-CONSTRAINT-CLASS from the global class list.
+SIDE-EFFECT: removes class object from the global class list."
+  (set! global-constraint-class-list (delq ui-constraint-class global-constraint-class-list)))
 
 
 (define-public (reset-ui-constraint-classes!)
@@ -80,8 +87,10 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; returns a boolean; true if the object is a constraint class and
 ;; false otherwise
 
-(define-public (ui-constraint-class? UI-CONSTRAINT-CLASS)
-  (and (pair? UI-CONSTRAINT-CLASS) (eq? (car UI-CONSTRAINT-CLASS) obid-ui-constraint-class)))
+(define-public (ui-constraint-class? ui-constraint-class)
+  "Returns a boolean: true if UI-CONSTRAINT-CLASS is a vector and starts with the
+correct obid.  False otherwise."
+  (and (vector? ui-constraint-class) (eq? (vector-ref ui-constraint-class 0) obid-ui-constraint-class)))
 
 
 ;; ui-constraint-class-name
@@ -89,9 +98,11 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; returns the name of the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-name UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadr UI-CONSTRAINT-CLASS)
+(define-public (ui-constraint-class-name ui-constraint-class)
+  "Returns the name of the constraint class.  errors if UI-CONSTRAINT-CLASS
+is not a ui-constraint-class."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 1)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -101,9 +112,11 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;;   the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-num-windows UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (caddr UI-CONSTRAINT-CLASS)
+(define-public (ui-constraint-class-num-windows ui-constraint-class)
+  "Returns the number of windows constrainable by instances of the constraint 
+class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 2)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -112,9 +125,11 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; returns the constructor for instances of the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-ctr UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadddr UI-CONSTRAINT-CLASS)
+(define-public (ui-constraint-class-ctr ui-constraint-class)
+  "Returns the constructor for instance of the constraint class.  errors
+if UI-CONSTRAINT-CLASS is not a ui-constraint-class."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 3)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -123,9 +138,11 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; returns the UI constructor for instances of the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadddr (cdr UI-CONSTRAINT-CLASS))
+(define-public (ui-constraint-class-ui-ctr ui-constraint-class)
+  "Returns the UI constructor for instances of the constraint class.
+errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 4)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -134,9 +151,11 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;; returns the drawing procedure for instances of the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-draw-proc UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadddr (cddr UI-CONSTRAINT-CLASS))
+(define-public (ui-constraint-class-draw-proc ui-constraint-class)
+  "returns the drawing procedure for instances of the constraint class.
+errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 5)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 ;; ui-constraint-class-satisfied
@@ -145,16 +164,29 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 ;;   the constraint class.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-satisfied-proc UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadddr (cdddr UI-CONSTRAINT-CLASS))
+(define-public (ui-constraint-class-satisfied-proc ui-constraint-class)
+  "Returns the satisfaction checking procedure for instances of the
+constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class"
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 6)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
-(define-public (ui-constraint-class-pixmap-name UI-CONSTRAINT-CLASS)
+;; ui-constraint-class-pixmap-name
+
+(define-public (ui-constraint-class-pixmap-name ui-constraint-class)
   "Return the pixmap-name of UI-CONSTRAINT-CLASS.
 Errors if object is not a ui-constraint-class object."
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (cadddr (cdr (cdddr UI-CONSTRAINT-CLASS)))
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 7)
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
+
+;; ui-constraint-class-menuname-proc
+
+(define-public (ui-constraint-class-menuname-proc ui-constraint-class)
+  "Return the proc for determining the name for the constraint in
+the toggle menu.  Errors if object is not a ui-constraint-class object."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 8)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -172,16 +204,27 @@ Errors if object is not a ui-constraint-class object."
 ;; make-ui-constraint
 
 ;; UI-CONSTRAINT-CLASS specifies the type of constraint to be created.
-;; WIN-LIST specifies the windows to constraint
+;; WIN-LIST specifies the windows to constrain
 ;; returns a new constraint instance objects that is NOT enabled.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 ;; SIDE-EFFECT: adds new instance object to the global list
-;; Returned objects are (obid-ui-constraint . (CLASS CN ENABLED?))
+;; Returned objects are (obid-ui-constraint . (CLASS CN ENABLED? LIST-OF-WINDOWS OPTS))
 
-(define-public (make-ui-constraint UI-CONSTRAINT-CLASS WIN-LIST)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (let* ((cn (apply (ui-constraint-class-ctr UI-CONSTRAINT-CLASS) WIN-LIST))
-	     (uc (cons obid-ui-constraint (list UI-CONSTRAINT-CLASS cn #f))))
+(define-public (make-ui-constraint ui-constraint-class win-list)
+  "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
+WIN-LIST specifies the windows to be constrained.  Returns a new constraint
+object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
+Returned objects are #(obid-ui-constraint CLASS CN ENABLED? LIST-OF-WINDOWS OPTS)
+The OPTS param is a spot for optional data to be specified by the ui-constraint-class 
+constructor.  If data returns from that constructor in list form, the first element of
+the list is assumed to be the CN and the cdr is stuck in OPTS.
+SIDE-EFFECT: adds new instance object to the global list."
+  (if (ui-constraint-class? ui-constraint-class)
+      (let* ((vars (apply (ui-constraint-class-ctr ui-constraint-class) win-list))
+	     (flag (pair? vars))
+	     (cn (if flag (car vars) vars))
+	     (opts (if flag (cdr vars) #f))
+	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts)))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	uc)
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
@@ -195,10 +238,14 @@ Errors if object is not a ui-constraint-class object."
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 ;; SIDE-EFFECT: adds new instance object to the global list
 
-(define-public (make-ui-constraint-interactively UI-CONSTRAINT-CLASS)
-  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (let ((ui-ctr (ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)))
-	(make-ui-constraint UI-CONSTRAINT-CLASS (ui-ctr)))
+(define-public (make-ui-constraint-interactively ui-constraint-class)
+  "Uses the UI constructor of the constraint class to prompt the user to
+specify options for the constraint.  errors if UI-CONSTRAINT-CLASS is 
+not a ui-constraint-class.  Calls make-ui-constraint (see above)."
+  (if (ui-constraint-class? ui-constraint-class)
+      (let* ((ui-ctr (ui-constraint-class-ui-ctr ui-constraint-class))
+	     (win-list (ui-ctr)))
+	(if win-list (make-ui-constraint ui-constraint-class win-list)))
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -207,8 +254,10 @@ Errors if object is not a ui-constraint-class object."
 ;; Removes the UI-CONSTRAINT permanently
 ;; SIDE-EFFECT: removes instance object from the global list
 
-(define-public (delete-ui-constraint! UI-CONSTRAINT)
-  (set! global-constraint-instance-list (delq UI-CONSTRAINT global-constraint-instance-list)))
+(define-public (delete-ui-constraint! ui-constraint)
+  "Removes the UI-CONSTRAINT permanently.
+SIDE-EFFECT: removes instance object from the global list"
+  (set! global-constraint-instance-list (delq ui-constraint global-constraint-instance-list)))
 
 
 ;; ui-constraint?
@@ -216,18 +265,22 @@ Errors if object is not a ui-constraint-class object."
 ;; returns #t if UI-CONSTRAINT is a ui-constraint
 ;; returns #f otherwise
 
-(define-public (ui-constraint? UI-CONSTRAINT)
-  (and (pair? UI-CONSTRAINT) (eq? (car UI-CONSTRAINT) obid-ui-constraint)))
+(define-public (ui-constraint? ui-constraint)
+  "returns #t if UI-CONSTRAINT is a ui-constraint.
+returns #f otherwise."
+  (and (vector? ui-constraint) (eq? (vector-ref ui-constraint 0) obid-ui-constraint)))
 
 
 ;; ui-constraint-cn
 
 ;; returns the CN from the ui-constraint object UI-CONSTRAINT
-;; returns #f if UI-CONSTRAINT is not an ui-constraint
+;; errors if UI-CONSTRAINT is not an ui-constraint
 
-(define-public (ui-constraint-cn UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (caddr UI-CONSTRAINT)
+(define-public (ui-constraint-cn ui-constraint)
+  "Returns the CN from the ui-constraint object UI-CONSTRAINT.
+errors if UI-CONSTRAINT is not a ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 2)
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -236,9 +289,11 @@ Errors if object is not a ui-constraint-class object."
 ;; returns the ENABLE from the ui-constraint object UI-CONSTRAINT
 ;; errors if UI-CONSTRAINT is not an ui-constraint
 
-(define-public (ui-constraint-enabled? UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (cadddr UI-CONSTRAINT)
+(define-public (ui-constraint-enabled? ui-constraint)
+  "Returns the ENABLE from the ui-constraint object UI-CONSTRAINT.
+errors if UI-CONSTRAINT is not an ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 3)
       (error "Argument must be a UI-CONSTRAINT object")))
 
 ;; ui-constraint-class
@@ -246,9 +301,11 @@ Errors if object is not a ui-constraint-class object."
 ;; returns the UI-CONSTRAINT-CLASS from the ui-constraint object UI-CONSTRAINT
 ;; errors if UI-CONSTRAINT is not an ui-constraint
 
-(define-public (ui-constraint-class UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (cadr UI-CONSTRAINT)
+(define-public (ui-constraint-class ui-constraint)
+  "Returns the UI-CONSTRAINT-CLASS from the ui-constraint object UI-CONSTRAINT.
+errors if UI-CONSTRAINT is not an ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 1)
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -257,11 +314,24 @@ Errors if object is not a ui-constraint-class object."
 ;; returns the LIST-OF-WINDOWS from the ui-constraint object UI-CONSTRAINT
 ;; errors if UI-CONSTRAINT is not an ui-constraint
 
-(define-public (ui-constraint-windows UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (cl-windows-of-constraint (ui-constraint-cn UI-CONSTRAINT))
+(define-public (ui-constraint-windows ui-constraint)
+  "Returns the LIST-OF-WINDOWS from the ui-constraint object UI-CONSTRAINT.
+errors if UI-CONSTRAINT is not an ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 4)
       (error "Argument must be a UI-CONSTRAINT object")))
 
+;; ui-constraint-opts
+
+;; returns the optional data list that may be added by the constraint class
+;; returns #f if no such data exists
+
+(define-public (ui-constraint-opts ui-constraint)
+  "Returns the list of optional data that may be added by the constraint class.
+Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 5)
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 ;; set-enable!
 
@@ -270,9 +340,9 @@ Errors if object is not a ui-constraint-class object."
 ;; Invariant: UI-CONSTRAINT *must* be a ui-constraint object
 ;; (test must be performed by caller)
 
-(define (set-enable! UI-CONSTRAINT BOOL)
-  (set-car! (cdddr UI-CONSTRAINT) BOOL)
-  UI-CONSTRAINT)
+(define (set-enable! ui-constraint bool)
+  (vector-set! ui-constraint 3 bool)
+  ui-constraint)
 
 
 ;; enable-ui-constraint
@@ -281,11 +351,14 @@ Errors if object is not a ui-constraint-class object."
 ;; errors if UI-CONSTRAINT is not a ui-constraint
 ;; returns the constraint otherwise
 
-(define-public (enable-ui-constraint UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
+(define-public (enable-ui-constraint ui-constraint)
+  "Enables the constraint in the constraint solver.
+errors if UI-CONSTRAINT is not a ui-constraint.
+returns the constraint."
+  (if (ui-constraint? ui-constraint)
+      (let ((cn (ui-constraint-cn ui-constraint)))
 	(cl-add-constraint (scwm-master-solver) cn)
-	(set-enable! UI-CONSTRAINT #t))
+	(set-enable! ui-constraint #t))
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -295,11 +368,14 @@ Errors if object is not a ui-constraint-class object."
 ;; errors if UI-CONSTRAINT is not a ui-constraint
 ;; returns the constraint otherwise
 
-(define-public (disable-ui-constraint UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
+(define-public (disable-ui-constraint ui-constraint)
+  "Disables the constraint in the constraint solver
+errors if UI-CONSTRAINT is not a ui-constraint
+returns the constraint"
+  (if (ui-constraint? ui-constraint)
+      (let ((cn (ui-constraint-cn ui-constraint)))
 	(cl-remove-constraint (scwm-master-solver) cn)
-	(set-enable! UI-CONSTRAINT #f))
+	(set-enable! ui-constraint #f))
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -308,11 +384,13 @@ Errors if object is not a ui-constraint-class object."
 ;; Returns the status of whether a UI-CONSTRAINT is satisfied.
 ;; errors if UI-CONSTRAINT is not a ui-constraint
 
-(define-public (constraint-satisfied? UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (let* ((class (ui-constraint-class UI-CONSTRAINT))
+(define-public (constraint-satisfied? ui-constraint)
+  "Returns the status of whether a UI-CONSTRAINT is satisfied.
+errors if UI-CONSTRAINT is not an ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (let* ((class (ui-constraint-class ui-constraint))
 	     (satisfied? (ui-constraint-class-satisfied class)))
-	(satisfied? UI-CONSTRAINT))
+	(satisfied? ui-constraint))
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -328,66 +406,68 @@ Errors if object is not a ui-constraint-class object."
 	  #t
 	  (window-in-list-in-focus? (cdr win-list)))))
 
-(define-public (constrained-window-in-focus? UI-CONSTRAINT)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (window-in-list-in-focus? (ui-constraint-windows UI-CONSTRAINT))
+(define-public (constrained-window-in-focus? ui-constraint)
+  "Returns #t if one of the windows in the constraint is in focus.
+Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint."
+  (if (ui-constraint? ui-constraint)
+      (window-in-list-in-focus? (ui-constraint-windows ui-constraint))
       (error "Argument must be a UI-CONSTRAINT object")))
-
-
-;; draw variables
-
-(define-public ui-constraint-enabled-color "blue")
-(define-public ui-constraint-disabled-color "red")
-
-(define-public ui-constraint-in-focus-width 4)
-(define-public ui-constraint-no-focus-width 2)
 
 
 ;; do-draw-constraint
 
+;; PRIVATE
 ;; Calls the draw function of the UI-CONSTRAINT's class.
 ;; MODE indicates whether constraints should be drawn or erased
 ;; returns nothing
 ;; SIDE-EFFECT: draws the constraint representation to the screen
 
-(define (do-draw-constraint UI-CONSTRAINT MODE)
-  (if (ui-constraint? UI-CONSTRAINT)
-      (let ((color (if (ui-constraint-enabled? UI-CONSTRAINT) 
-		       ui-constraint-enabled-color ui-constraint-disabled-color))
-	    (width (if (constrained-window-in-focus? UI-CONSTRAINT) 
-		       ui-constraint-in-focus-width ui-constraint-no-focus-width))
-	    (drawme (ui-constraint-class-draw-proc (ui-constraint-class UI-CONSTRAINT))))
-	(drawme UI-CONSTRAINT color width MODE))
-      #f))
+(define (do-draw-constraint ui-constraint mode)
+  (if (ui-constraint? ui-constraint)
+      (let ((enable (ui-constraint-enabled? ui-constraint)) 
+	    (focus (constrained-window-in-focus? ui-constraint))
+	    (drawme (ui-constraint-class-draw-proc (ui-constraint-class ui-constraint))))
+	(drawme ui-constraint enable focus mode))
+      (error "Argument must be a UI-CONSTRAINT object")))
 
 
 ;; draw-constraint
 
-(define-public (draw-constraint UI-CONSTRAINT)
-  (do-draw-constraint UI-CONSTRAINT #t))
+(define-public (draw-constraint ui-constraint)
+  "Draw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
+an ui-constraint."
+  (do-draw-constraint ui-constraint #t))
 
 
 ;; undraw-constraint
 
-(define-public (undraw-constraint UI-CONSTRAINT)
-  (do-draw-constraint UI-CONSTRAINT #f))
+(define-public (undraw-constraint ui-constraint)
+  "Undraw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
+an ui-constraint."
+  (do-draw-constraint ui-constraint #f))
 
 
 ;; draw-all-constraints
 
 (define-public (draw-all-constraints)
+  "Draw all constraints in the global instance list."
   (map draw-constraint global-constraint-instance-list))
 
 
 ;; undraw-all-constraints
 
 (define-public (undraw-all-constraints)
+  "Undraw all constraints in the global instance list."
   (map undraw-constraint global-constraint-instance-list))
 
+;; disable-all-constraints
 
 (define-public (disable-all-constraints)
+  "Disable all constraints in the global instance list."
   (map disable-ui-constraint global-constraint-instance-list))
 
+;; enable-all-constraints
 
 (define-public (enable-all-constraints)
+  "Enable all constraints in the global instance list."
   (map enable-ui-constraint global-constraint-instance-list))

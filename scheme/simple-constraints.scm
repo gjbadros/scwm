@@ -57,25 +57,25 @@
       (and enable? (cl-add-constraint solver cn))
       cn)))
 
-(define*-public (keep-top-at-v w1 #&optional (enable? #f))
-  "Keep W1's top at cl-variable `v's pixel value.
-Use `cl-set-solver-var' to change `v'."
+(define*-public (keep-top-at-v w1 v #&optional (enable? #f))
+  "Keep W1's top at cl-variable V's pixel value.
+Use `cl-set-solver-var' to change V."
   (let ((w1-y (window-clv-yt w1)))
     (let ((cn (make-cl-constraint w1-y = v)))
       (and enable? (cl-add-constraint solver cn))
       cn)))
 
-(define*-public (keep-left-at-v w1 #&optional (enable? #f))
-  "Keep W1's left at cl-variable `v's pixel value.
-Use `cl-set-solver-var' to change `v'."
+(define*-public (keep-left-at-v w1 v #&optional (enable? #f))
+  "Keep W1's left at cl-variable V's pixel value.
+Use `cl-set-solver-var' to change V."
   (let ((w1-x (window-clv-xl w1)))
     (let ((cn (make-cl-constraint w1-x = v)))
       (and enable? (cl-add-constraint solver cn))
       cn)))
 
-(define*-public (keep-right-at-v w1 #&optional (enable? #f))
-  "Keep W1's right at cl-variable `v's pixel value.
-Use `cl-set-solver-var' to change `v'."
+(define*-public (keep-right-at-v w1 v #&optional (enable? #f))
+  "Keep W1's right at cl-variable Vs pixel value.
+Use `cl-set-solver-var' to change V."
   (let ((w1-x (window-clv-xr w1)))
     (let ((cn (make-cl-constraint w1-x = v)))
       (and enable? (cl-add-constraint solver cn))

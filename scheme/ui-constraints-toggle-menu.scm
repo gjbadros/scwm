@@ -37,7 +37,7 @@
      menu-separator)
     (map (lambda (x)
 	   (let* ((class (ui-constraint-class x))
-		  (name (ui-constraint-class-name class))
+		  (name ((ui-constraint-class-menuname-proc class) x))
 		  (cn (ui-constraint-cn x))
 ;;		  (strength (cl-constraint-strength cn))
 		  (pixmap (ui-constraint-class-pixmap-name class))

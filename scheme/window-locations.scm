@@ -1,14 +1,24 @@
 ;; $Id$
 ;; (C) 1999 Greg J. Badros
 
-(define-module (app scwm window-locations))
+(define-module (app scwm window-locations)
+  :use-module (app scwm base))
 
 (define (half n)
   (truncate (/ n 2)))
 
+(define-public (pair-virtual->viewport pt)
+  "A version of virtual->viewport that works on the pair points used by this
+module."
+  (let* ((x (car pt))
+	 (y (cdr pt))
+	 (newpt (virtual->viewport x y)))
+    (cons (car newpt) (cadr newpt))))
+
 (define-public (window-center-top win)
-  "Return a pair (X . Y) that is the pixel position of the center, top of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the center, top of WIN
+relative to current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -16,8 +26,9 @@
     (cons (+ xl (half w)) yt)))
 
 (define-public (window-center-bottom win)
-  "Return a pair (X . Y) that is the pixel position of the center, bottom of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the center, bottom of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -26,8 +37,9 @@
     (cons (+ xl (half w)) (+ yt h))))
 
 (define-public (window-left-middle win)
-  "Return a pair (X . Y) that is the pixel position of the left, middle of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the left, middle of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -35,8 +47,9 @@
     (cons xl (+ yt (half h)))))
 
 (define-public (window-right-middle win)
-  "Return a pair (X . Y) that is the pixel position of the right, middle of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the right, middle of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -45,12 +58,14 @@
     (cons (+ xl w) (+ yt (half h)))))
 
 (define-public (window-left-top win)
-  "Return a pair (X . Y) that is the pixel position of the left, top of WIN."
-  (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the left, top of WIN
+relative to the current viewport."
+  (window-viewport-position win))
 
 (define-public (window-left-bottom win)
-  "Return a pair (X . Y) that is the pixel position of the left, bottom of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the left, bottom of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -58,8 +73,9 @@
     (cons xl (+ yt h))))
 
 (define-public (window-right-top win)
-  "Return a pair (X . Y) that is the pixel position of the right, top of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the right, top of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
@@ -67,8 +83,9 @@
     (cons (+ xl w) yt)))
 
 (define-public (window-right-bottom win)
-  "Return a pair (X . Y) that is the pixel position of the right, bottom of WIN."
-  (let* ((pos (window-position win))
+  "Return a pair (X . Y) that is the pixel position of the right, bottom of WIN
+relative to the current viewport."
+  (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
