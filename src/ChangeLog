@@ -1,3 +1,8 @@
+Wed Jan 26 16:50:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Comment out bin_SCRIPTS = scwm-doc-snarf, but leave 
+	note about possibly putting this back in later.
+
 Mon Jan 24 14:27:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (ensure_valid): Added return SCM_BOOL_F to be safe in

@@ -1,3 +1,10 @@
+Wed Jan 26 16:51:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Use @examplesdir@ for those files installed
+	there. 
+
+	* configure.in: Added --with-examplesdir option.
+
 Thu Jan 20 12:24:43 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Fix typo, rename include/config.h.in to
