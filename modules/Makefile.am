@@ -19,6 +19,12 @@ else
 PROPLIST_SUBDIRS =
 endif
 
+if HAVE_XTEST
+XTEST_SUBDIRS = xtest
+else
+XTEST_SUBDIRS =
+endif
+
 SUBDIRS = background \
 	c-animation \
 	overlay-plane \
@@ -27,6 +33,7 @@ SUBDIRS = background \
 	xpm-menus \
 	$(ESD_SUBDIRS) \
 	$(PROPLIST_SUBDIRS) \
+	$(XTEST_SUBDIRS) \
 	$(GTK_SUBDIRS)
 
 DIST_SUBDIRS = $(SUBDIRS)
