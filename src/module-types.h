@@ -38,7 +38,7 @@ Later, hand edited the script to get the alist mapping numbers to names
 #define M_END_WINDOWLIST     (1<<14)
 #define M_ICON_LOCATION      (1<<15)
 #define M_MAP                (1<<16)
-#define M_ERROR              (1<<17)
+#define M_FVWM_ERROR         (1<<17)
 #define M_CONFIG_INFO        (1<<18)
 #define M_END_CONFIG_INFO    (1<<19)
 #define M_ICON_FILE          (1<<20)

@@ -27,6 +27,7 @@
 #endif
 
 #include <sys/wait.h>
+#include <unistd.h>
 
 #ifdef HAVE_WAITPID
 #define ReapChildren()  while ((waitpid(-1, NULL, WNOHANG)) > 0)

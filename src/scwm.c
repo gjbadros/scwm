@@ -1319,7 +1319,7 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
     vsprintf(tmp + strlen(tmp), msg, args);
     tmp[strlen(tmp) + 1] = '\0';
     tmp[strlen(tmp)] = '\n';
-    BroadcastName(M_ERROR, 0, 0, 0, tmp);
+    BroadcastName(M_FVWM_ERROR, 0, 0, 0, tmp);
   }
   va_end(args);
 }				/* Scwm_msg */

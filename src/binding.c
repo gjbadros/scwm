@@ -208,7 +208,6 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name)
   Bool fOk = True;
   int len;
   char *button_name = NULL;
-  char *pch;
 
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
@@ -712,9 +711,6 @@ BUTTON is a string or integer giving the mouse button number
 PROC is a procedure (possibly a thunk) that should be invoked */
 #define FUNC_NAME s_bind_mouse
 {
-  Binding *temp;
-  char *szButton = 0;
-  int cchButton;
   int bnum = 0;
   int j = 0;
   int k = 0;
