@@ -171,7 +171,8 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
     SendClientConfigureNotify(psw);
 
     
-    SetupFrame(psw, psw->frame_x, psw->frame_y, currentW, currentH, WAS_MOVED, WAS_RESIZED);
+    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), currentW, currentH, 
+               WAS_MOVED, WAS_RESIZED);
 
 
     XFlush(dpy);

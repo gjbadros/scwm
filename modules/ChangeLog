@@ -1,5 +1,9 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* c-animation/c-animation.c (AnimatedResizeWindow): Use viewport
+	coordinates when resizing so things work OK in viewports other
+	than (0 0).
+
 	* c-animation/c-animation.c: Corrected `animated-window-shade' and
 	`animated-window-unshade' primitives to send a
 	`window-property-change-hook' notification. Added
