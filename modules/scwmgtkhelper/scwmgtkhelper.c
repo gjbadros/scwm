@@ -81,8 +81,10 @@ after the (gtk gtk) module. */
   /* BEWARE:
      this code is coupled with the code that does the same 
      thing in scwm.c */
-#ifdef SCWM_CATCH_SIGINT
+#ifdef SCWM_RESET_ON_SIGINT
   newhandler_doreset(SIGINT);
+#else
+  newhandler(SIGINT);
 #endif
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
