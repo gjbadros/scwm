@@ -98,105 +98,36 @@ SCM get_window(SCM kill_p)
 }
 
 
-int ModDeferExecution(int cursor, int FinishEvent)
-{
-  int done;
-  int finished = 0;
-  Window dummy;
-  Window original_w;
-  XEvent event;
-  Window w;
-  ScwmWindow *tw;
-  ScwmWindow *t;
-
-  tw=(ScwmWindow *)calloc(1,sizeof(ScwmWindow));
-  if(!GrabEm(cursor))
-  {
-    XBell(dpy,Scr.screen);
-    return SCM_BOOL_F;
-  }
-  
-  while (!finished)
-  {
-    done = 0;
-    /* block until there is an event */
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-               ExposureMask |KeyPressMask | VisibilityChangeMask |
-               ButtonMotionMask| PointerMotionMask/* | EnterWindowMask | 
-                                                     LeaveWindowMask*/, &event);
-    StashEventTime(&event);
-
-    if(event.type == KeyPress)
-      Keyboard_shortcuts(&event,FinishEvent);	
-    if(event.type == FinishEvent)
-      finished = 1;
-    if(event.type == ButtonPress)
-    {
-      XAllowEvents(dpy,ReplayPointer,CurrentTime);
-      done = 1;
-    }
-    if(event.type == ButtonRelease)
-      done = 1;
-    if(event.type == KeyPress)
-      done = 1;
-    if(!done)
-    {
-      DispatchEvent();
-    }
-
-  }
-
-  
-  w = event.xany.window;
-  if(((w == Scr.Root)||(w == Scr.NoFocusWin))
-     && (event.xbutton.subwindow != (Window)0))
-  {
-    w = event.xbutton.subwindow;
-    event.xany.window = w;
-  }
-  if (w == Scr.Root)
-  {
-    XBell(dpy,Scr.screen);
-    UngrabEm();
-    return SCM_BOOL_F;
-  }
-  if (XFindContext (dpy, w, ScwmContext, (caddr_t *)tw) == XCNOENT)
-  {
-    XBell(dpy,Scr.screen);
-    UngrabEm();
-    return SCM_BOOL_F;
-  }
-  
-  if(w == tw->Parent) {
-    w = tw->w;
-  }
-  
-  UngrabEm();
-
-  printf("%d\n",w);
-  for (t=Scr.ScwmRoot.next; NULL!=t; t=t->next) {
-    if (t->w==w) {
-      puts("returning something real from select-window.");
-      return(t->schwin);
-    }
-  }
-  puts("Didn't find anything.");
-
-  return SCM_BOOL_F;
-
-}
-
-
-/* XXX implement this, probably in terms of DeferExecution */
 SCM select_window(SCM kill_p) 
 {
+  XEvent ev;
+  Window w;
+  ScwmWindow *tmp_win;
+  unsigned long context;
+
+  w=Scr.Root;
+  context=C_ROOT;
+
+  tmp_win=&Scr.ScwmRoot;
+
   if (kill_p==SCM_UNDEFINED) {
     kill_p=SCM_BOOL_F;
   } else if (!gh_boolean_p(kill_p)) {
     scm_wrong_type_arg("select-window",1,kill_p);
   }
-  return(ModDeferExecution((kill_p != SCM_BOOL_F ? DESTROY : SELECT)
-			   ,ButtonRelease));
+  if(DeferExecution(&ev,
+		    &w,
+		    &tmp_win,
+		    &context,
+		    (kill_p != SCM_BOOL_F ? DESTROY : SELECT)
+		    ,ButtonRelease)) {
+    puts("reeturned TRUE");
+  }
+  if (tmp_win->schwin!=NULL) {
+    return (tmp_win->schwin);
+  } else {
+    return SCM_BOOL_F;
+  }
 }
 
 
