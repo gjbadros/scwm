@@ -178,17 +178,17 @@ drawn.  POINT is of the form (X . Y)."
 ;; translates a nonant vector into a string for display
 (define (dirvector->string vec)
   (string-append 
-   (if (eqv? (vector-ref vec 0) 1) "N" "")
-   (if (eqv? (vector-ref vec 3) 1) "S" "")
-   (if (eqv? (vector-ref vec 1) 1) "W" "")
-   (if (eqv? (vector-ref vec 2) 1) "E" "")))
+   (if (vector-ref vec 0) "N" "")
+   (if (vector-ref vec 3) "S" "")
+   (if (vector-ref vec 1) "W" "")
+   (if (vector-ref vec 2) "E" "")))
 
 ;; the anchor constraint stores the clv in the first element of OPTS and 
 ;; constraint nonant in the second element
 (define (menuname-anchor ui-constraint)
   (let* ((opts (ui-constraint-opts ui-constraint))
 	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
-	 (nonant  (car opts))
+	 (nonant (car opts))
 	 (val (dirvector->string nonant)))
     (string-append name ": " val)))
 
@@ -231,7 +231,7 @@ drawn.  POINT is of the form (X . Y)."
 	  (message-window-set-message! msgwin "Window nonant to anchor?")
 	  (with-message-window-shown 
 	   msgwin
-	   (let* ((win (get-window-nonant-interactively))
+	   (let* ((win (get-window-with-nonant-interactively))
 		  (nonant (object-property win 'nonant)))
 	     (list win (nonant->dirvector nonant))))))))
 

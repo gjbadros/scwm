@@ -109,23 +109,25 @@ the construction of a composition."
 	(prompt-string 
 	 "Enter name: " 
 	 (lambda (name) 
-	   (make-ui-constraint-class 
-	    name (string-append name " (User-recorded)") (length winlist) composition-ctr 
-	    (lambda () 
-	      (if (eqv? (length (selected-windows-list)) (length winlist))
-		  (list (selected-windows-list) classlist)
-		  (let ((winlst '())
-			(win #t))
-		    (if (do ((i 1 (+ i 1)))
-			    ((or (> i (length winlist)) (not win)) win)
-			  (set! win (select-window-interactively (string-append "Select window #" (number->string i) ": ") msgwin))
-			  (set! winlst (cons win winlst)))
-			(list winlst classlist)
-			#f))))
-	    composition-draw-proc
-	    cl-is-constraint-satisfied?
-	    #f #f ;;"composition.xpm"
-	    composition-menuname))))))
+	   (if (and name (> (string-length name) 0))
+	       (begin
+		 (make-ui-constraint-class 
+		  name (string-append name " (User-recorded)") (length winlist) composition-ctr 
+		  (lambda () 
+		    (if (eqv? (length (selected-windows-list)) (length winlist))
+			(list (selected-windows-list) classlist)
+			(let ((winlst '())
+			      (win #t))
+			  (if (do ((i 1 (+ i 1)))
+				  ((or (> i (length winlist)) (not win)) win)
+				(set! win (select-window-interactively (string-append "Select window #" (number->string i) ": ") msgwin))
+				(set! winlst (cons win winlst)))
+			      (list winlst classlist)
+			      #f))))
+		  composition-draw-proc
+		  cl-is-constraint-satisfied?
+		  "composition.xpm" #f  ;; 
+		  composition-menuname))))))))
     
 ;; (use-scwm-modules constraints ui-constraints ui-constraints-composition ui-constraints-buttons ui-constraints-gtk-toggle-menu ui-constraints-classes)
 ;; (start-constraints)
