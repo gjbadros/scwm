@@ -118,7 +118,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p)
       return SCM_BOOL_F;
     }
   }
-  if (!WINDOWP(win)) {
+  if (!(SCM_NIMP(win) WINDOWP(win))) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(subr, n, win);
   }
