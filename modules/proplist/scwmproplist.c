@@ -134,9 +134,7 @@ ScmProplist(proplist_t pl) {
   SCM result;
   spt=NEW(scwm_proplist_t);
   spt->value=pl;
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(result,scm_tc16_scwm_proplist_t,spt);
-  gh_allow_ints();
   return result;
 }
 

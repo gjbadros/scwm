@@ -87,10 +87,10 @@ scwm_scheme_evaluator_corba_gtk_init(int argc, char *argv[])
   
   ior = CORBA_ORB_object_to_string(orb, evaluator_object , &ev);
 
-  gh_defer_ints();
+  scwm_defer_ints();
   scmIOR = gh_str02scm(ior);
   scm_permanent_object(scmIOR);
-  gh_allow_ints();
+  scwm_allow_ints();
     
   ORBit_custom_run_setup(orb, &ev);
 }
