@@ -56,7 +56,7 @@ PARENT is a parent window to use for the clock."
     (letrec ((handle #f)
 	     (update-string-and-add-timer 
 	      (lambda ()
-		(gtk-label-set label (date-string time-format))
+		(gtk-label-set-text label (date-string time-format))
 		(set! handle (add-timer-hook! update-msec
 					      update-string-and-add-timer))))
 	     (remove-hook (lambda () 
