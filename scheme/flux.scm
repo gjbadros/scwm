@@ -17,6 +17,10 @@
 
 
 
+(define-public HOME (getenv "HOME"))
+(define-public USER (getenv "USER"))
+(define-public user-init-file (string-append HOME "/.scwmrc"))
+
 (define-public (interactive-move-window-with-focus)
   (let ((w (current-window-with-focus))) (and w (interactive-move w))))
 
