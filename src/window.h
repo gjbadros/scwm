@@ -68,8 +68,8 @@ SCM stick(SCM win);
 SCM unstick(SCM win);
 SCM sticky_p(SCM win);
 
-SCM window_shade(SCM win);
-SCM un_window_shade(SCM win);
+SCM window_shade(SCM win, SCM animated_p);
+SCM un_window_shade(SCM win, SCM animated_p);
 SCM window_shaded_p(SCM win);
 
 

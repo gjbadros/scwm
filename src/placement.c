@@ -18,6 +18,7 @@
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
+#include "move.h"
 #include "screen.h"
 #include "Grab.h"
 #include "icons.h"

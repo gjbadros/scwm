@@ -165,7 +165,7 @@ DestroyPicture(Display * dpy, Picture * p)
 
 
 /* Scheme Object Interface to Picture-s */
-
+/* FIXGJB: add a dimensions, depth accessor function */
 
 size_t 
 free_picture(SCM obj)

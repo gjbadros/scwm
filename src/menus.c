@@ -30,6 +30,7 @@
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
+#include "move.h"
 #include "parse.h"
 #include "screen.h"
 #include "menu.h"

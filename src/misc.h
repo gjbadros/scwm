@@ -122,7 +122,6 @@ unsigned long LookInList(name_list *, char *, XClassHint *,
 void MoveOutline(Window, int, int, int, int);
 void DoResize(int, int, ScwmWindow *);
 void DisplaySize(ScwmWindow *, int, int, Bool);
-void DisplayPosition(ScwmWindow *, int, int, Bool);
 void SetupFrame(ScwmWindow *, int, int, int, int, Bool);
 void CreateGCs(void);
 void InstallWindowColormaps(ScwmWindow *);
@@ -169,13 +168,6 @@ void GetWindowSizeHints(ScwmWindow *);
 void SwitchPages(Bool, Bool);
 void NextPage(void);
 void PrevPage(void);
-void moveLoop(ScwmWindow *, int, int, int, int, int *, int *, Bool, Bool);
-void AnimatedMoveWindow(Window w,int startX,int startY,
-			       int endX, int endY,
-			       Bool fWarpPointerToo, int cmsDelay, 
-			       float *ppctMovement );
-
-void Keyboard_shortcuts(XEvent *, int);
 
 inline void RelieveWindow(ScwmWindow *, Window,
 				 int, int, int, int, GC, GC, int);
@@ -239,8 +231,6 @@ void raisePanFrames(void);
 void initPanFrames(void);
 Bool StashEventTime(XEvent * ev);
 int XNextEvent_orTimeout(Display * dpy, XEvent * event);
-void InteractiveMove(Window * w, ScwmWindow * tmp_win, int *FinalX, int *FinalY,
-		     XEvent * eventp);
 
 void changeDesks(int val1, int val2);
 

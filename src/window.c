@@ -17,6 +17,7 @@
 #include "scwm.h"
 #include "screen.h"
 #include "misc.h"
+#include "move.h"
 #include "icons.h"
 #include "parse.h"
 #include "ICCCM.h"
@@ -632,49 +633,81 @@ sticky_p(SCM win)
  *  WindowShade -- shades or unshades a window (veliaa@rpi.edu)
  ***********************************************************************/
 
-/* Modified for scwm by mstachow@mit.edu */
+/* Modified for scwm by mstachow@mit.edu, 
+   animation added by gjb@cs.washington.edu */
 
 SCM 
-window_shade(SCM win)
+window_shade(SCM win, SCM animated_p)
 {
-  ScwmWindow *tmp_win;
+  ScwmWindow *sw;
+  Bool fAnimated = False;
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "window-shade");
-  tmp_win = SCWMWINDOW(win);
+  sw = SCWMWINDOW(win);
 
-  if (!(tmp_win->flags & TITLE) || (tmp_win->flags & MAXIMIZED)) {
+  if (!(sw->flags & TITLE) || (sw->flags & MAXIMIZED)) {
     return SCM_BOOL_F;
   }
-  tmp_win->buttons |= WSHADE;
-  SetupFrame(tmp_win,
-	     tmp_win->frame_x,
-	     tmp_win->frame_y,
-	     tmp_win->frame_width,
-	     tmp_win->title_height + tmp_win->boundary_width,
-	     False);
+#ifdef GJB_BE_ANAL_ABOUT_BOOLS
+  /* FIXGJB: I took this code out so I can say:
+     (window-shade (get-window) 'animated)
+     Is there a better way? */
+  if (!gh_boolean_p(animated_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("window-shade", 2, animated_p);
+  }
+#endif
+  if (animated_p == SCM_UNDEFINED) {
+    /* FIXGJB: make an option for allowing the default to be animated */
+    animated_p = SCM_BOOL_F;
+  }
+  fAnimated = gh_scm2bool(animated_p);
+
+  sw->buttons |= WSHADE;
+  
+  if (fAnimated) {
+    AnimatedShadeWindow(sw,True /* roll up */, -1, NULL);
+  }
+  SetupFrame(sw, sw->frame_x, sw->frame_y, sw->frame_width,
+	     sw->title_height + sw->boundary_width, False);
   Broadcast(M_WINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
 SCM 
-un_window_shade(SCM win)
+un_window_shade(SCM win, SCM animated_p)
 {
-  ScwmWindow *tmp_win;
+  ScwmWindow *sw;
+  Bool fAnimated = False;
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "un-window-shade");
-  tmp_win = SCWMWINDOW(win);
+  sw = SCWMWINDOW(win);
 
-  tmp_win->buttons &= ~WSHADE;
-  SetupFrame(tmp_win,
-	     tmp_win->frame_x,
-	     tmp_win->frame_y,
-	     tmp_win->orig_wd,
-	     tmp_win->orig_ht,
-	     True);
-  Broadcast(M_DEWINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
+#ifdef GJB_BE_ANAL_ABOUT_BOOLS
+  /* FIXGJB: I took this code out so I can say:
+     (window-shade (get-window) 'animated)
+     Is there a better way? */
+  if (!gh_boolean_p(animated_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("un-window-shade", 2, animated_p);
+  }
+#endif
+  if (animated_p == SCM_UNDEFINED) {
+    /* FIXGJB: make an option for allowing the default to be animated */
+    animated_p = SCM_BOOL_F;
+  }
+  fAnimated = gh_scm2bool(animated_p);
+
+  sw->buttons &= ~WSHADE;
+  if (fAnimated) {
+    AnimatedShadeWindow(sw,False /* !roll up */, -1, NULL);
+  } 
+  SetupFrame(sw, sw->frame_x, sw->frame_y, 
+	     sw->orig_wd, sw->orig_ht, True);
+  Broadcast(M_DEWINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }

@@ -25,6 +25,7 @@
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
+#include "move.h"
 #include "screen.h"
 #include "Grab.h"
 #include "icons.h"
@@ -43,8 +44,9 @@ int cmsDelayDefault = 10; /* milliseconds */
 
 /* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
    somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry */
-void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
-			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
+void 
+AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
+		   Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
 {
   int pointerX, pointerY;
   int currentX, currentY;
@@ -82,7 +84,7 @@ void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     }
     XFlush(dpy);
     sleep_ms(cmsDelay);
-#ifdef GJB_ALLOW_ABORTING_ANIMATED_MOVES
+#ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
        we warn the user when they use > .5 seconds as a between-frame delay
        time */
@@ -103,6 +105,51 @@ void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
  
 }
 
+
+/* AnimatedShadeWindow handles animating of window shades
+   note that the first argument to this is a ScwmWindow *, since
+   the frame needs to be manipulated; the last two args are like
+   AnimatedMoveWindow, above --11/09/97 gjb */
+void 
+AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp, 
+		    int cmsDelay, float *ppctMovement)
+{
+  Window w = sw->w;
+  Window wFrame = sw->frame;
+  int width = sw->frame_width;
+  int shaded_height = sw->title_height + sw->boundary_width;
+  /* FIXGJB: using orig_ht doesn't seem right -- does it interact
+     correctly w/ maximization? */
+/*  Bool shaded = sw->buttons & WSHADE; FIXGJB: unused for now
+    int normal_height = shaded? sw->orig_ht : sw->frame_height; */
+  int normal_height = sw->orig_ht;
+  int client_height = normal_height - shaded_height - sw->boundary_width;
+  int deltaY = normal_height - shaded_height;
+  /* set our defaults */
+  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
+  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
+  
+  if (fRollUp) {
+    XLowerWindow(dpy,w);
+    do {
+      /* while (height > end_height)  */
+      XMoveWindow(dpy, w, 0, -deltaY * (*ppctMovement));
+      XResizeWindow(dpy, wFrame, width, 
+		    shaded_height + client_height * (1 - *ppctMovement));
+      XFlush(dpy);
+      sleep_ms(cmsDelay);
+    } while (*ppctMovement != 1.0 && ppctMovement++);
+  } else {  /* roll down the window shade */
+    do {
+      XResizeWindow(dpy, wFrame, width, 
+		    shaded_height + client_height * (*ppctMovement));
+      XMoveWindow(dpy, w, 0, -deltaY * (1-*ppctMovement));
+      XFlush(dpy);
+      sleep_ms(cmsDelay);
+    } while (*ppctMovement != 1.0 && ppctMovement++);
+  }
+  XMoveWindow(dpy,w,0,0);
+}
 
 /****************************************************************************
  *
@@ -388,7 +435,8 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 
 
 void 
-InteractiveMove(Window * win, ScwmWindow * tmp_win, int *FinalX, int *FinalY, XEvent * eventp)
+InteractiveMove(Window * win, ScwmWindow * tmp_win, 
+		int *FinalX, int *FinalY, XEvent * eventp)
 {
   extern int Stashed_X, Stashed_Y;
   int origDragX, origDragY, DragX, DragY, DragWidth, DragHeight;

@@ -52,7 +52,9 @@ redraw_titlebars(ScwmDecor * fl, int extra_height)
 void
 redraw_borders(ScwmDecor *fl) 
 {
-  int x, w, y, h;
+#ifdef FIXGJB_UNUSED
+  int x, w, y, h;        /* FIXGJB: all unused... why? */
+#endif
   ScwmWindow *tmp, *hi;
 
   tmp = Scr.ScwmRoot.next;

@@ -1216,13 +1216,11 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   Bool Resized = False, Moved = False;
   int xwidth, ywidth, left, right;
 
-  int shaded = tmp_win->buttons & WSHADE;
+  Bool shaded = tmp_win->buttons & WSHADE;
 
 
   /* if windows is not being maximized, save size in case of maximization */
-  if (!(tmp_win->flags & MAXIMIZED)
-      && !shaded
-    ) {
+  if (!(tmp_win->flags & MAXIMIZED) && !shaded) {
     tmp_win->orig_x = x;
     tmp_win->orig_y = y;
     tmp_win->orig_wd = w;
@@ -1314,9 +1312,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 
       if (w < 2 * tmp_win->corner_width)
 	tmp_win->corner_width = w / 3;
-      if ((h < 2 * tmp_win->corner_width)
-	  && !shaded
-	)
+      if ((h < 2 * tmp_win->corner_width) && !shaded)
 	tmp_win->corner_width = h / 3;
       xwidth = w - 2 * tmp_win->corner_width + tmp_win->bw;
       ywidth = h - 2 * tmp_win->corner_width;
@@ -1404,9 +1400,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
     }
   }
   XSync(dpy, 0);
-  if (sendEvent
-      && !shaded
-    ) {
+  if (sendEvent && !shaded) {
     client_event.type = ConfigureNotify;
     client_event.xconfigure.display = dpy;
     client_event.xconfigure.event = tmp_win->w;

@@ -87,8 +87,8 @@ init_scwm_procs(void)
   gh_new_procedure("stick", stick, 0, 1, 0);
   gh_new_procedure("unstick", unstick, 0, 1, 0);
   gh_new_procedure("sticky?", sticky_p, 0, 1, 0);
-  gh_new_procedure("window-shade", window_shade, 0, 1, 0);
-  gh_new_procedure("un-window-shade", un_window_shade, 0, 1, 0);
+  gh_new_procedure("window-shade", window_shade, 0, 2, 0);
+  gh_new_procedure("un-window-shade", un_window_shade, 0, 2, 0);
   gh_new_procedure("window-shaded?", window_shaded_p, 0, 1, 0);
   gh_new_procedure("move-to", move_to, 2, 3, 0);
   gh_new_procedure("interactive-move", interactive_move, 0, 1, 0);
