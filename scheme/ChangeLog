@@ -1,3 +1,11 @@
+Fri Jul 16 17:34:11 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Added optional shaped argument to
+	make-message-window-with-image, pass it along to
+	message-window-set-image!
+
+	* flux.scm: Needed to use `tile' module for tile interactively.
+
 1999-07-15  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-composition.scm: Added a new module to support the
