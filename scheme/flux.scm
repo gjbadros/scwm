@@ -538,7 +538,8 @@ underscores, so that the resulting string can be used as a key for
     (menu ret)
 )))
 
-(define-public rhosts-menu (make-rhosts-menu))
+;; sds: users should call this function themselves
+;;(define-public rhosts-menu (make-rhosts-menu))
 
 (define-public (X-cut-buffer-string)
   "Return the text of the CUT_BUFFER0 property of the root window.
@@ -642,12 +643,18 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
     (get-mozilla-hook)
     #t))
 
-(define-public (netscape-goto-cut-buffer-url)
+(define-public netscape-new-window #f
+  "`netscape-goto-cut-buffer-url' will open the URL in a new window."
+
+(define*-public (netscape-goto-cut-buffer-url
+                #&optional (new netscape-new-window))
   "Make netscape go to the URL in CUT_BUFFER0.
 This permits you to just select a URL and use this function
-to go to that page."
+to go to that page.
+The optional argument specifies whether a new window should be open.
+It defaults to `netscape-new-window'."
   (run-in-netscape
-   (string-append "openURL(" (X-cut-buffer-string) ")")
+   (string-append "openURL(" (X-cut-buffer-string) (if new ",new-window)" ")"))
    display-message-briefly (netscape-win)))
 
 ;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
