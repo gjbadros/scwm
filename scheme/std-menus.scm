@@ -35,6 +35,9 @@
 
 ;; Returns a list of mode names queried from the given XLOCK program.
 ;; Special modes "random", "bomb", and "blank" are not included in this list.
+;; Use xlock-query-program to specify what program's output we should
+;; read to compute the list of modes, e.g.,
+;; (define xlock-query-program "xlock-stdout")
 (define (xlock-query-modes xlock)
   (let ((pipe (open-input-pipe (string-append xlock " -help"))))
     (do ((line (read-line pipe) (read-line pipe))
@@ -48,7 +51,10 @@
       (set! match (regexp-exec mode-re line))
       (if match (set! ml (cons (match:substring match 1) ml))))))
 
-(define-public screensaver-modes (xlock-query-modes "xlock"))
+(define-public screensaver-modes 
+  (xlock-query-modes 
+   (or (and (defined? 'xlock-query-program) xlock-query-program)
+       "xlock")))
 
 (define-public xlock-options
   "-nice -19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
