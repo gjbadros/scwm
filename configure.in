@@ -36,7 +36,7 @@ AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
 
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.9.1-snap)
+AM_INIT_AUTOMAKE(scwm, 0.99.1)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
