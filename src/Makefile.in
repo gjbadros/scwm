@@ -95,11 +95,11 @@ SRCS = \
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
 DEPS := $(SRCS:.c=.d)
 
-BUILT_SOURCES = image.x
+BUILT_SOURCES = image.x init_scheme_string.c
 
 all: ${PROG}
 
-tags: $(SRCS) $(BUILT_SRCS) $(HEADERS)
+tags: $(SRCS) $(BUILT_SOURCES) $(HEADERS)
 	etags $^
 
 depend:
