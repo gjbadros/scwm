@@ -1,3 +1,20 @@
+Mon Sep 13 12:58:39 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winprop.c, module-interface.c, events.c: Use scwm_run_hook, not
+ 	apply_hooks.
+
+	* callbacks.h: Drop apply_hooks{,_message_only}, add
+	scwm_run_hook{,_message_only}
+
+	* callbacks.c: Move scwm_handle_error to later in the file, after
+	defn of scwm_run_hook_message_only.  Move WarnBadHook to earlier,
+	and only ifndef HAVE_SCM_MAKE_HOOK
+
+Mon Sep 13 11:57:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added -N/--no-document-formals option to avoid the
+	undefined quote (and save a bit of extra memory if user desires).
+
 Wed Sep  8 18:11:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Renamed `window-class' to `window-class-hint' and
