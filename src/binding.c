@@ -145,6 +145,7 @@ PchModifiersToModmask(const char *pch, int *pmodifier, const char *func_name, Bo
   /* C-S-M-Left and CSM-Left should both be okay */
   char *pchLastDash = strrchr(pch,'-');
 
+  /* SRL:FIXME:: Does not handle cases like "C-*-k" correctly. */
   while (True) {
     /* do not look at the keysym -- if there was no last dash
        then leave right away, too. */
@@ -256,6 +257,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func
     return False;
   }
 
+  /* SRL:FIXME::Won't this cause a segfault if pch is "" ? */
   if (pch[1] == '\0' && isgraph(pch[0])) {  /* single character, so use tolower */
     pch[0] = tolower(pch[0]);
   }
@@ -294,12 +296,12 @@ SzNewModifierStringForModMask(int modmask)
   /* 6 modifiers, each M-, + NULL byte */
   char *sz = NEWC(6*2+1,char);
   *sz = 0;
-  if (modmask & ShiftMask) strcat(sz,"S-");
+  if (modmask & ShiftMask  ) strcat(sz,"S-");
   if (modmask & ControlMask) strcat(sz,"C-");
-  if (modmask & MetaMask) strcat(sz,"M-");
-  if (modmask & AltMask) strcat(sz,"A-");
-  if (modmask & HyperMask) strcat(sz,"H-");
-  if (modmask & SuperMask) strcat(sz,"s-");
+  if (modmask & MetaMask   ) strcat(sz,"M-");
+  if (modmask & AltMask    ) strcat(sz,"A-");
+  if (modmask & HyperMask  ) strcat(sz,"H-");
+  if (modmask & SuperMask  ) strcat(sz,"s-");
   return sz;
 }
 
@@ -338,7 +340,7 @@ static
 int
 BnumFromSz(const char *sz)
 {
-  if (sz == 0)
+  if (sz == NULL)
     return -1;
 
   if (tolower(*sz) == 'a'  && (strcasecmp(sz,"any") == 0 ||
@@ -389,6 +391,7 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, const char *func_
       fOk=False;
     }
     if (*pmodifier < 0) {
+      /* SRL:FIXME:: Mention that the modifier is messed up. */
       scwm_msg(WARN,func_name,"Ignoring mouse bind/unbind request for %s",
 	       button_name);
       fOk=False;
@@ -557,6 +560,7 @@ UngrabKeysForPsw(ScwmWindow *psw)
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
     if (pbnd->IsMouse) continue; /* skip mouse bindings */
     if (pbnd->Context == C_ALL) {
+      /* SRL:FIXME:: Huh? Why commented out? Shouldn't the C_WINDOW case get executed? */
       /* UngrabKeyWithModifiersWin(pbnd->Button_Key,pbnd->Modifier,Scr.Root); */
     } else if (pbnd->Context & C_WINDOW) {
       UngrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
@@ -644,7 +648,7 @@ static void
 ungrab_button_all_windows(int button, int modifier, int context)
 {
   if (context == C_ALL) {
-    GrabButtonWithModifiersWin(button,modifier,Scr.Root);
+    UngrabButtonWithModifiersWin(button,modifier,Scr.Root);
   } else {
     ScwmWindow *psw;
     for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
@@ -684,12 +688,15 @@ remove_binding_from_list(int context, unsigned int mods, int bnum_or_keycode,
     }
     if (pbnd)
       prev = pbnd;
+    /* SRL:FIXME:: Can't we stop after we found it? */
     pbnd = pbndNext;
   }
 }
 
 /* to remove a binding from the global list (probably needs more processing
    for mouse binding lines though, like when context is a title bar button).
+   Don't need to worry about other mouse binding contexts since we own the
+   windows and get the events that way.
 */
 void 
 remove_binding(int context, unsigned int mods, int bnum_or_keycode,
@@ -813,6 +820,7 @@ compute_contexts(SCM contexts, const char *func_name)
   if (gh_list_p(contexts)) {
     for (tmp = 0, retval = 0; contexts != SCM_EOL; contexts = gh_cdr(contexts)) {
       if ((tmp = lookup_context(gh_car(contexts))) < 0) {
+        /* SRL:FIXME:: No error? Looks suspicious. */
 	return tmp;
       } else {
 	retval |= tmp;
@@ -840,6 +848,7 @@ compute_contexts(SCM contexts, const char *func_name)
 }
 
 /* Return NULL if no binding is applicable */
+/* SRL:FIXME::Does not obey ignore dubious modifiers flag, just always ignores. */
 Binding *
 PBndFromKey(KeyCode keycode,
             unsigned int modifier, int context)
@@ -862,6 +871,7 @@ PBndFromKey(KeyCode keycode,
 }
 
 /* Return NULL if no binding is applicable */
+/* SRL:FIXME::Does not obey ignore dubious modifiers flag, just always ignores. */
 Binding *
 PBndFromMouse(int button,
               unsigned int modifier, int context)
@@ -964,7 +974,7 @@ The return value is #t if the binding was removed successfully, #f \n\
 otherwise. \n\
 IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are\n\
 ignored;  they permit the identical arguments to be used\n\
-as for `bind-mouse'.")
+as for `bind-key'.")
 #define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
@@ -1624,9 +1634,10 @@ This procedure considers the state of `ignore-dubious-modifiers?'")
 
 SCM_DEFINE(undo_passive_grab, "undo-passive-grab", 2, 1, 0,
           (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
-"Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
+"BROKEN: Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
-a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
+a grab of a mouse binding.  Otherwise remove a keyboard passive grab.\n
+Broken for passive grabs specified via the context 'all.")
 #define FUNC_NAME s_undo_passive_grab
 {
   unsigned int mask;
@@ -1645,9 +1656,10 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
 
 SCM_DEFINE(redo_passive_grab, "redo-passive-grab", 2, 1, 0,
           (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
-"Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
+"BROKEN: Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
-a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
+a grab of a mouse binding.  Otherwise remove a keyboard passive grab.\n\
+Broken for redoing a passive grab originally done via the context 'all.")
 #define FUNC_NAME s_redo_passive_grab
 {
   unsigned int mask;

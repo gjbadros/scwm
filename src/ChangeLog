@@ -1,3 +1,12 @@
+Sat Apr 20 22:26:41 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* binding.c: Added FIXMEs for bugs noticed in passing.
+	Doc fix for 'unbind-key'.
+	Added BROKEN docs for 'undo-passive-grab' and 'redo-passive-grab'.
+	Fixed 'ungrab_button_all_windows' so that it ungrabs the button for
+	  the 'all context rather than regrabbing it!
+	Code formatting improvements.
+
 Tue Apr  9 22:10:59 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* window.c: Added FIXME for border override in 'set-hint-override!'.

@@ -1,3 +1,23 @@
+Sat Apr 20 22:16:25 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* quote.scm:
+	'quote-key-event', 'quote-mouse-event' added test to
+	see if we even have a passive grab on this event before ungrabbing
+	and regrabbing which caused it to be grabbed in the end when it
+	wasn't before.  Added BROKEN doc about quote events which have been
+	grabbed via the context 'all.  The problem is that the C code for
+	'undo-passive-grab' assumes the grab was done on the client window
+	but grabs for context 'all are done on the root window.  This doesn't
+	work so well and then the 'redo-passive-grab' ends up installing a
+	passive grab on the client windows as well, very annoying.  Not enough
+	info available to fix at the scheme level.  Need to fix the API to the
+	C stuff to fix this.
+
+	A few formatting improvements.
+
+	Added docs for 'xtest-fake-modmask', 'xtest-fake-modmask-key', and
+	'xtest-fake-modmask-button'.
+
 Fri Apr 19 00:36:08 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* synth-events.scm: Added commentary to doc noting that the synthetic

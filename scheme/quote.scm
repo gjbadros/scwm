@@ -32,36 +32,46 @@
 ;;; `quote-key-event' and `quote-mouse-event'
 
 (define*-public (quote-key-event)
-  "Quote the next key event and let it pass to the application."
+  "BROKEN: Quote the next key event and let it pass to the application.
+This is broken since it relies on 'undo-passive-grab' which is currently broken
+for keys specified with the context 'all."
   (interactive)
   (let ((k (get-key-event)))
-    (dynamic-wind
-     (lambda () (apply undo-passive-grab (cdr k)))
-     (lambda () (apply xtest-fake-modmask-key (cdr k)))
-     (lambda () (apply redo-passive-grab (cdr k))))))
+    (if (lookup-key 'window (car k))
+        (dynamic-wind
+         (lambda () (apply undo-passive-grab      (cdr k)))
+         (lambda () (apply xtest-fake-modmask-key (cdr k)))
+         (lambda () (apply redo-passive-grab      (cdr k))))
+        (apply xtest-fake-modmask-key (cdr k)))))
 
 (define*-public (quote-mouse-event)
-  "Quote the next mouse event and let it pass to the application."
+  "BROKEN: Quote the next mouse event and let it pass to the application.
+Note: Dragging motions are mutliple X events and therefore are not quoted
+correctly by this function.  Broken for mouse events specified via the
+context 'all."
   (interactive)
   (let ((m (get-mouse-event)))
-    (dynamic-wind
-     (lambda () (apply undo-passive-grab (cdr m)))
-     (lambda () (apply xtest-fake-modmask-button (cdr m)))
-     (lambda () (apply redo-passive-grab (cdr m))))))
+    (if (lookup-mouse 'window (car m))
+        (dynamic-wind
+         (lambda () (apply undo-passive-grab         (cdr m)))
+         (lambda () (apply xtest-fake-modmask-button (cdr m)))
+         (lambda () (apply redo-passive-grab         (cdr m))))
+        (apply xtest-fake-modmask-button (cdr m)))))
 
 (define*-public (quote-next-event)
-  "Quote the next mouse or keyboard event and let it pass to the application."
+  "BROKEN: Quote the next mouse or keyboard event and let it pass to the application.
+See 'quote-key-event' and 'quote-mouse-event' for details."
   (interactive)
   (let ((m (get-next-event)))
     (if (is-mouse-event? m)
 	(dynamic-wind
-	 (lambda () (apply undo-passive-grab (cdr m)))
+	 (lambda () (apply undo-passive-grab         (cdr m)))
 	 (lambda () (apply xtest-fake-modmask-button (cdr m)))
-	 (lambda () (apply redo-passive-grab (cdr m))))
+	 (lambda () (apply redo-passive-grab         (cdr m))))
 	(dynamic-wind
-	 (lambda () (apply undo-passive-grab (cdr m)))
+	 (lambda () (apply undo-passive-grab      (cdr m)))
 	 (lambda () (apply xtest-fake-modmask-key (cdr m)))
-	 (lambda () (apply redo-passive-grab (cdr m)))))))
+	 (lambda () (apply redo-passive-grab      (cdr m)))))))
 
 ;; (bind-key 'all "H-q" quote-key-event)
 ;; (quote-key-event)
@@ -77,11 +87,11 @@
   "Return a list of keycodes corresponding to keys that generate the modifiers in MASK."
   (let ((answer '())
 	(table `((,mod-mask-control . "Control_L")
-		 (,mod-mask-alt . "Alt_L")
-		 (,mod-mask-hyper . "Hyper_L")
-		 (,mod-mask-super . "Super_L")
-		 (,mod-mask-shift . "Shift_L")
-		 (,mod-mask-meta . "Meta_L"))))
+		 (,mod-mask-alt     . "Alt_L")
+		 (,mod-mask-hyper   . "Hyper_L")
+		 (,mod-mask-super   . "Super_L")
+		 (,mod-mask-shift   . "Shift_L")
+		 (,mod-mask-meta    . "Meta_L"))))
     (for-each (lambda (item)
 		(let ((modifier-value ((car item)))
 		      (keysym (cdr item)))
@@ -93,12 +103,22 @@
 
 
 (define-public (xtest-fake-modmask mask delay press?)
+  "Send key events for the modifier mask to MASK with DELAY before each key.
+PRESS? indicates whether the keys should be pressed or released.
+In almost all cases, a call with (eq press? #f) should follow one with
+(eq press? #t)."
   (for-each 
    (lambda (keycode)
      (xtest-fake-key-event keycode press? delay))
    (mask->keycodes mask)))
 
 (define*-public (xtest-fake-modmask-key mask keycode #&optional (delay #f))
+  "Send key events to simulate the pressing of KEYCODE with MASK active.
+KEYCODE is the key code of the key to fake pressing.
+MASK is a modifier mask specifying which modifier keys to press before
+pressing KEYCODE and release after pressing it.
+DELAY is a delay to wait before each simulated key press/release.  Default
+is #f for no delay."
   (dynamic-wind
    (lambda () (xtest-fake-modmask mask delay #t))
    (lambda () 
@@ -107,6 +127,12 @@
    (lambda () (xtest-fake-modmask mask delay #f))))
 
 (define*-public (xtest-fake-modmask-button mask button #&optional (delay #f))
+  "Send key/button events to simulate the pressing of BUTTON with MASK active.
+BUTTON is the button number of the button to fake pressing.
+MASK is a modifier mask specifying which modifier keys to press before
+pressing BUTTON and release after pressing it.
+DELAY is a delay to wait before each simulated key/button press/release.  Default
+is #f for no delay."
   (dynamic-wind
    (lambda () (xtest-fake-modmask mask delay #t))
    (lambda () 
