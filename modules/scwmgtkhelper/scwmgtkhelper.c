@@ -78,10 +78,13 @@ after the (gtk gtk) module. */
 #define FUNC_NAME s_restore_scwm_handlers
 {
   extern Bool fHandleSegv;
-  /* this code is coupled with the code that does the same 
+  /* BEWARE:
+     this code is coupled with the code that does the same 
      thing in scwm.c */
-  newhandler_doreset(SIGHUP);
+#ifdef SCWM_CATCH_SIGINT
   newhandler_doreset(SIGINT);
+#endif
+  newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
