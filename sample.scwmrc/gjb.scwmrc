@@ -1,0 +1,304 @@
+;;-------------------------------;;
+;; import the scwm modules       ;;
+
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo)
+             (app scwm style))
+
+(define HOME (getenv "HOME"))
+(define USER (getenv "USER"))
+(define xterm-user-shell-options "-e start-zsh")
+(define xterm-other-host-use-local-xterm #t)
+(define mail-spool-dir (string-append "/var/spool/mail/" USER))
+
+
+(define user-pixmap-path (string-append HOME "/pixmaps"))
+(define user-bitmap-path (string-append HOME "/bitmaps"))
+
+;;-------------------------------;;
+;; set some basic styles info    ;;
+
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
+(define font12
+  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 
+  (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+(define window-font
+  (load-font "*helvetica*bold-r*12*"))
+(define menu-font
+  (load-font "*helvetica*medium-r*12*"))
+(define icon-font
+  (load-font "fixed"))
+
+;;(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue" 
+;;	    #:font font14 #:mwm #f)
+(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" 
+	    #:font menu-font #:mwm #f)
+
+;;(set-click-time! 150)
+;;(set-color-map-focus! 'follows-mouse)
+;;(set-desktop-size! 3 3)
+;;; FIXGJB: should be a function returning whether it should do opaque move
+;;; or an integer for the percent (load might influence whether you want
+;;; to do an opaque move, e.g.)
+;;(set-opaque-move-size! 30) 
+;;(set-edge-resistance! 500 10)
+;;(set-edge-scroll! 100 100)
+
+
+;;; FIXGJB: #:raised true 
+(title-style #:font font12 #:justify 'left)
+
+(set-icon-font! font12)
+(set-hilight-colors! "white" "blueviolet")
+(set-xor-value! 255)  ;; FIXGJB: rename to rubber-band-mask?
+
+;;-------------------------------;;
+;; set some paths                ;;
+;;
+
+(set-icon-path! (string-append user-bitmap-path 
+			       ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+(set-pixmap-path! (string-append user-pixmap-path 
+				 ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+;;-------------------------------;;
+;; set some window styles        ;;
+
+;;; FIXGJB: these should be regexps, not goofy wildcards
+(window-style "*" 
+	      #:fg "black" #:bg "grey76" 
+;	      #:icon "unknown1.xpm" 
+;	      #:icon 'nil
+;	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:border-width 6 
+	      #:focus 'mouse
+;	      #:handle-width 3 ;; FIXGJB use nil for no handles
+;	      #:sticky-icon #t ;; FIXGJB
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:int-override #t #:decorate-transient #t
+	      #:PPosition-hint #f)
+
+;; FIXGJB: make-inherited-style;  any other way to do something like this?
+;;(define desk-widget-on-top
+;;  (make-inherited-style desk-widget #:stays-on-top #t))
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:circulate-skip #t #:focus 'none))
+;;; FIXGJB: this core dumps, seems to w/o the circulate-skip option I added, too
+;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
+;(window-style "*lock" #:use-style desk-widget)
+;(window-style "xload" #:no-title #t #:use-style desk-widget)
+;(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+;(window-style "xbiff" #:no-title #t #:use-style desk-widget)
+;(window-style "xcalc" #:icon "xcalc.xpm")
+;(window-style "xman" #:icon "xman.xpm")
+;(window-style "xmag" #:icon "mag_glass.xpm")
+;(window-style "Emacs" #:icon "gnu-animal.bmp")
+;(window-style "XTerm" #:icon "xterm.xpm")
+
+
+;;-------------------------------;;
+;; define some useful menus      ;;
+
+
+(define menu-window-ops
+  (make-menu "Window Ops"
+	     'title
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "Print" print-window)
+	     (list "(Un)Window-Shade" toggle-window-shade)
+	     (list "(De)Iconify" toggle-iconify)
+	     (list "(Un)Maximize" vertical-toggle-maximize)
+	     (list "(Un)Stick" toggle-stick)
+	     (list "(Un)Keep On Top" toggle-on-top)
+	     'separator
+	     (list "Close" close-window)
+	     (list "Delete" delete-window)
+	     (list "Destroy" destroy-window)
+	     'separator
+	     (list "Refresh Screen" refresh)))
+
+(define (menu-item name pixmap action)
+  (list (string-append name "%mini-" pixmap ".xpm%") action))
+
+(define (start-xterm)
+  (execute "color-xterm"))
+
+(define menu-root-start
+;  (make-menu "RootStart%linux-menu.xpm@^blue^" "Start %mini-exp.xpm%"
+  (make-menu "Start %mini-exp.xpm%"
+	     'title
+	     (menu-item "&New shell" "sh1" (lambda () (start-xterm)))
+	     (menu-item "&Applications" "x2" (lambda () 
+					       (popup menu-applications)))))
+
+(define (popup-ops)
+  (popup menu-window-ops))
+
+(define quit-verify
+  (make-menu "Really quit scwm?"
+	     'title
+	     (list "Yes" quit)
+	     (list "No" noop)
+	     'separator
+	     (list "Restart scwm" (lambda () (restart "scwm")))))
+
+
+(define menu-desk 
+  (make-menu "Desks"
+	     'title
+	     (list "Desk 1" (lambda () (set-current-desk! 0)))
+	     (list "Desk 2" (lambda () (set-current-desk! 1)))
+	     (list "Desk 3" (lambda () (set-current-desk! 2)))
+	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+
+(define menu-util 
+  (make-menu "Utilities"
+	     'title
+	     (list "xterm" (lambda () (execute "xterm")))
+	     (list "rxvt" (lambda () (execute "rxvt")))
+	     (list "emacs" (lambda () (execute "emacs")))
+	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (list "xcalc" (lambda () (execute "xcalc")))
+	     (list "xmag" (lambda () (execute "xmag")))
+	     'separator
+	     (list "Desks" menu-desk)
+	     'separator
+	     (list "Exit scwm" quit-verify)))
+
+(define (popup-util)
+  (popup menu-util))
+
+(define (popup-root-start)
+  (popup menu-root-start))
+
+(define (make-small-window-ops-menu w)
+  (make-menu "Window Ops2"
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "Iconify" iconify)
+	     'separator
+	     (list "More" (make-menu "More"
+			    (list (if (maximized? w)
+				      "Unmaximize"
+				      "Maximize") vertical-toggle-maximize)
+			    (list (if (sticky? w)
+				      "Unstick"
+				      "Stick") toggle-stick)
+			    (list (if (window-shaded? w)
+				      "UnWindow-Shade"
+				      "Window-Shade") toggle-window-shade)
+			    (list (if (kept-on-top? w)
+				      "UnKeep On Top"
+				      "Keep On Top") toggle-on-top)))
+             'separator
+	     (list "Close" close-window)
+	     (list "Destroy" destroy-window)))
+
+(define (popup-small-ops)
+  (popup (make-small-window-ops-menu (get-window))))
+
+
+
+;; now set some mouse and key bindings ;;
+
+;; first our root menus
+(bind-mouse 'root 1 popup-root-start)
+(bind-mouse 'root 2 (lambda () 
+		      (show-window-list-menu #:show-geometry #t)))
+;;(bind-mouse 'root 3 popup-applications)
+(bind-mouse 'root "M-3" (lambda () (popup menu-desk)))
+
+;; window buttons
+(bind-mouse 'button-1 1 popup-small-ops)
+(bind-mouse 'button-2 1 vertical-toggle-maximize)
+(bind-mouse 'button-4 1 iconify)
+
+;; operations on parts of the window
+(bind-mouse '(frame sidebar) 2 popup-small-ops)
+(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse 'sidebar 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 2 lower-window)
+
+
+;; key bindings for the menus
+(bind-key 'all "M-F1" popup-util)
+(bind-key 'all "M-F2" popup-ops)
+
+;; in case of emergency, hit Control-Meta-Q
+(bind-key 'all "C-M-q" quit)
+
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+
+;; move the pointer with the keyboard
+(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
+(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
+(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
+(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; move the viewport with the keyboard
+(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-pointer (%x 100) 0)))
+(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
+(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-Tab"
+	  (lambda ()
+	    (next-window #:only visible? #:except iconified?)))
+
+(bind-key 'all "M-S-Tab" 
+	  (lambda ()
+	    (prev-window #:only visible? #:except iconified?)))
+
+(define (key-mouse-moves modifiers pct-of-screen left down up right)
+  (bind-key 'all (string-append modifiers "-" left) 
+	    (lambda () (move-pointer (%x (- pct-of-screen)) 0)))
+  (bind-key 'all (string-append modifiers "-" down) 
+	    (lambda () (move-pointer 0 (%y pct-of-screen))))
+  (bind-key 'all (string-append modifiers "-" up) 
+	    (lambda () (move-pointer 0 (%y (- pct-of-screen)))))
+  (bind-key 'all (string-append modifiers "-" right) 
+	    (lambda () (move-pointer (%x pct-of-screen) 0))))
+
+(key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
+;; XInside's old X server steal C-M-h for prev virtual console, so use m too
+(key-mouse-moves "C-M-S" 5 "m" "j" "k" "l")
+
+(key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
+
+(bind-key 'all "C-M-S-r" recapture)
+
+
+(bind-key 'all "
+
+(recapture)
