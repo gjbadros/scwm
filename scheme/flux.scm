@@ -563,9 +563,6 @@ that corner fixed."
 ;; (procedure->bindings-description describe-key)
 ;; (procedure->bindings-description popup-root-start)
 
-(define-public (add-ms-timer-hook! ms proc)
-  (add-timer-hook! (ms->usec ms) proc))
-
 ;; contributed by Glenn Trig
 ;; (this is close to basename, but keeps the path intact,
 ;;  whereas basename strips the leading directories, too --03/27/99 gjb)

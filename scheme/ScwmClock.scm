@@ -34,7 +34,7 @@
 			       (update-interval 1) (parent #f))
   (let* ((time-format (string-append (if 24-hour "%T" "%r")
 				     (if show-timezone " %Z" "")))
-	 (update-usec (* 1000000 update-interval))
+	 (update-msec (sec->msec update-interval))
 	 (frame (gtk-frame-new #f))
 	 (label (gtk-label-new (date-string time-format))))
     (if (not parent)
@@ -52,7 +52,7 @@
 	     (update-string-and-add-timer 
 	      (lambda ()
 		(gtk-label-set label (date-string time-format))
-		(set! handle (add-timer-hook! update-usec
+		(set! handle (add-timer-hook! update-msec
 					      update-string-and-add-timer))))
 	     (remove-hook (lambda () 
 			    (if handle (remove-timer-hook! handle)))))

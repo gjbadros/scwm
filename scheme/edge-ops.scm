@@ -83,8 +83,7 @@ If #f, then this never happens.  If #t, then this always happens.  If
       ((and dtime (> dtime 0))
        (set! edge-ops-time-hook
 	     (add-timer-hook!
-	      (* dtime 1000)
-	      (lambda () (edge-ops-scroll-timer dtime dir)))))))))
+	      dtime (lambda () (edge-ops-scroll-timer dtime dir)))))))))
 
 (define (edge-ops-scroll-timer dtime dir)
   (cond
@@ -95,22 +94,19 @@ If #f, then this never happens.  If #t, then this always happens.  If
     (cond
      ((number? edge-ops-scroll-backoff)
       (add-timer-hook!
-       (* edge-ops-scroll-backoff 1000)
-       (lambda () (edge-ops-delay-reset))))))
+       edge-ops-scroll-backoff (lambda () (edge-ops-delay-reset))))))
    (#t
     (set! edge-ops-time-hook
 	  (add-timer-hook!
-	   (* dtime 1000)
-	   (lambda () (edge-ops-scroll-timer dtime dir))))))
+	   dtime (lambda () (edge-ops-scroll-timer dtime dir))))))
   (edge-ops-scroll dir))
 
 (define (edge-ops-delay-reset)
   (let ((how-long (- (current-time) edge-ops-last-scroll)))
     (cond
-     ((< (* how-long 1000) edge-ops-scroll-backoff)
+     ((< how-long edge-ops-scroll-backoff)
       (add-timer-hook!
-       (* edge-ops-scroll-backoff 1000)
-       (lambda () (edge-ops-delay-reset))))
+       edge-ops-scroll-backoff (lambda () (edge-ops-delay-reset))))
      (#t
       (set! current-edge-ops-scroll-delay (scwm-option-get *edge-ops-scroll-delay*))))))
 

@@ -21,22 +21,8 @@
 (define-module (app scwm time-convert))
 
 ;; (use-modules (app scwm time-convert))
-(define-public (sec->usec sec)
-  "Convert SEC seconds into an equivalent number of microseconds.
-Especially useful for add-hook! and other timing related procedures
-that take microseconds."
-  (* 1000000 sec))
-
-(define-public (ms->usec ms)
-  "Convert MS milliseconds into an equivalent number of microseconds.
-Especially useful for add-hook! and other timing related procedures
-that take microseconds."
-  (* 1000 ms))
-
-(define-public (usec->ms usec)
-  "Convert USEC microseconds into an equivalent number of milliseconds."
-  (/ usec 1000))
-
-(define-public (usec->sec usec)
-  "Convert USEC microseconds into an equivalent number of seconds."
-  (/ usec 1000000))
+(define-public (sec->msec sec)
+  "Convert SEC seconds into an equivalent number of milliseconds.
+Especially useful for `add-timer-hook!' and other timing related procedures
+that take milliseconds."
+  (* 1000 sec))

@@ -161,14 +161,12 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 
 
 (define (auto-delay win)
-  (* 1000 
-     (or (object-property win 'auto-raise-delay)
-	 *default-auto-raise-delay*)))
+  (or (object-property win 'auto-raise-delay)
+      *default-auto-raise-delay*))
 
 (define (auto-unfocus-delay win)
-  (* 1000 
-     (or (object-property win 'auto-raise-unfocus-delay)
-	 *default-auto-raise-unfocus-delay*)))
+  (or (object-property win 'auto-raise-unfocus-delay)
+      *default-auto-raise-unfocus-delay*))
   
 (define (auto-raise-hook-proc window)
   (remove-timer-hook! last-focus-handle)

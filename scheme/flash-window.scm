@@ -33,12 +33,12 @@ color.  See `unflash-window'."
 	(set-window-background! color win)
 	(set-window-highlight-background! color win)
 	(if (number? unflash-delay)
-	    (add-timer-hook! (sec->usec unflash-delay)
+	    (add-timer-hook! (sec->msec unflash-delay)
 			     (lambda ()
 			       (unflash-window win)
 			       (if (object-property win 'flashing)
 				   (add-timer-hook! 
-				    (sec->usec unflash-delay)
+				    (sec->msec unflash-delay)
 				    (lambda ()
 				      (flash-window win
 						    #:color color

@@ -144,7 +144,7 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
     (if (and proc-when-selected w)
 	(proc-when-selected w))
     (handle-pending-events) ;; GJB:FIXME:: Race condition...
-    (add-timer-hook! (sec->usec 1) (lambda () (handle-pending-events)))))
+    (add-timer-hook! (sec->msec 1) (lambda () (handle-pending-events)))))
 
 ;;(use-scwm-modules time-convert)
 ;; e.g.

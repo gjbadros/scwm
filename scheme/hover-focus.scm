@@ -121,8 +121,8 @@ the delay before the window gets focus."
   (remove-timer-hook! hover-focus-timer)
   (cond ((window-is-hoverable? window)
         (set! hover-focus-window window)
-        (let ((delay (* 1000 (or (object-property window 'hover-focus-delay)
-                                 *default-hover-focus-delay*))))
+        (let ((delay (or (object-property window 'hover-focus-delay)
+                                 *default-hover-focus-delay*)))
           (set! hover-focus-timer
                 (add-timer-hook! delay (lambda () (focus window))))))))
 

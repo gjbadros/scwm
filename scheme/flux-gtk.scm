@@ -34,7 +34,7 @@ WIN defaults as usual to the current window context."
   "Prompt for a wildcard, and popup a list of matching windows (by title)."
   (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
-		   (add-timer-hook! (ms->usec 200) handle-pending-events)
+		   (add-timer-hook! 200 handle-pending-events)
 		   (show-window-list-menu 1 #f #:only (title-match?? wildcard)))))
 ;; (show-window-list-matching-interactively)
 ;; (use-scwm-modules prompt-string)

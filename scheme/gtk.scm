@@ -53,7 +53,7 @@ to the main event loop"
   (lambda () 
     (scwm-gtk-sync)
     (if scwm-gtk-timer-hook-enabled?
-	(add-timer-hook! 50000 sync-and-add-timer-hook))))
+	(add-timer-hook! 150 sync-and-add-timer-hook))))
 
 ;; (remove-timer-hook! ((@ app scwm gtk) 'sync-and-add-timer-hook))
 

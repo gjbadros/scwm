@@ -64,8 +64,9 @@
 			 (deactivate-proc)))
 		  (set! mail-file-time newtime)
 		  (set! mail-file-size newsize)
-		  (set! handle (add-timer-hook! (* 1000000 check-interval)
-						check-mail-file)))))
+		  (set! handle (add-timer-hook! 
+				(sec->msec check-interval)
+				check-mail-file)))))
 	     (remove-hook (lambda () 
 			    (if handle (remove-timer-hook! handle)))))
       (check-mail-file)

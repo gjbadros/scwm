@@ -274,7 +274,7 @@ Returns a list of the font, fg-color, bg-color of msgwin-source"
 See `display-message' for details about MSG."
   (let ((mwn (make-message-window-clone-default msg)))
     (message-window-show! mwn)
-    (add-timer-hook! (sec->usec sec-timeout)
+    (add-timer-hook! (sec->msec sec-timeout)
 		     (lambda () (message-window-hide! mwn)))))
 
 (define*-public (make-message-window-win-copy #&optional (win 'root-window))
