@@ -2056,6 +2056,7 @@ necessary.  See `add-motion-handler' and `reset-motion-handlers'. */
   answer = scm_remove_hook_x(x_motionnotify_hook,proc);
   if (scm_empty_hook_p(x_motionnotify_hook))
     XSelectInput(dpy, Scr.Root,basic_event_mask);
+  return answer;
 }
 #undef FUNC_NAME
 

@@ -1,7 +1,23 @@
 #!/bin/sh -
+# scwm-snarf
 # (C) 1999 Greg J. Badros
 # Handle snarfs with embedded %/%/ separating the arglist of procedures
 # from the rest.
 # See scwm-snarf.h for what expands SCWM_PROC macros to what we process here.
+# We need to do a couple of regexp search and replaces:
+# s/SCM //g
+# s/,[ \t]*//g
+# s/"(/"'(/g  # add the Scheme quote to the list -- tricky shell quoting below
+# AND we need these to only happen *after* the %/%/ marker on the input lines
+# so we use two sed's to do it.
 guile-snarf "$@" | \
-  awk -F"%/%/" '{ gsub(/SCM /,"",$2); gsub(/,/,"",$2); gsub(/"\(/, "\"'"'"'(", $$2); print $1 $2;}'
+sed -e 's/%\/%\//\
+%%%/' | sed -e '/^%%%/  {
+s/%%%//g
+s/SCM //g
+s/,[ \t]*/ /g
+s/"(/"'"'"'(/
+}' 
+# | sed -e 's/\n[ \t]*"/ "/g'  this last bit would recombine into a single line per input line
+# but does not work on Solaris' vendor sed
+
