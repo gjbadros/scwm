@@ -820,7 +820,11 @@ MenuInteraction(DynamicMenu *pmd)
       if (pmiim) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiim != pmiimSelected) {
+	  /* GJBFIX: this spews a lot if you pop up a menu, don't move
+	     the mouse, and release. Commenting out for now. */
+#if 0
 	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
+#endif
 	} else {
 	  scmAction = pmiim->pmi->scmAction;
 	}
