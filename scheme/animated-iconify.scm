@@ -78,21 +78,23 @@ The rectangle grows outwards from the icon, if there is one."
   "Deiconify WIN with an animation to the same viewport position as it was iconified from."
   (interactive)
   (if (iconified-window? win)
-      (let ((pos (or (window-property win 'last-viewport-position)
-		     (apply virtual->viewport
-			    (window-position-in-viewport
-			     (current-viewport-offset-xx)
-			     (current-viewport-offset-yy)
-			     win)))))
-	(animate-iconify-or-deiconify (icon-viewport-position win)
-				      pos
-				      (icon-size win)
-				      (window-frame-size win)
-				      20 #f 
-				      (lambda () 
-					(apply deiconify-window 
-					       (cons win (apply viewport->virtual pos))))
-				      iconify-animation-offsets))))
+      (if (sticky-window? win)
+	  (animated-deiconify win)
+	  (let ((pos (or (window-property win 'last-viewport-position)
+			 (apply virtual->viewport
+				(window-position-in-viewport
+				 (current-viewport-offset-xx)
+				 (current-viewport-offset-yy)
+				 win)))))
+	    (animate-iconify-or-deiconify (icon-viewport-position win)
+					  pos
+					  (icon-size win)
+					  (window-frame-size win)
+					  20 #f 
+					  (lambda () 
+					    (apply deiconify-window 
+						   (cons win (apply viewport->virtual pos))))
+					  iconify-animation-offsets)))))
 
 
 (define*-public (animated-toggle-iconify #&optional (win (get-window)))
