@@ -40,8 +40,7 @@ EXTERN long scm_tc16_scwm_decor;
 #define DECOR(X)  ((scwm_decor *)gh_cdr(X))
 #define SCWMDECOR(X) (((scwm_decor *)gh_cdr(X))->sd)
 
-/* This is broken if you DECORUNREF something more times than you
-   DECORREF it. These should only be used in two places, though,
+/* These macros should only be used in two places, though,
    setting the current decor that commands are redirected to, and
    setting the default decor. Other than that, the mark/sweep
    algorithm should be sufficient. */
