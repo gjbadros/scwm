@@ -2,23 +2,25 @@ In approximate order of priority:
 
 - Better error handling 
   - get a line number!
+  - Don't crash and burn so often
+  - keep trying on .scwmrc especially!
   - more consistent use, especially abstractions for argument type checking
 
-- Finish implementing (useful) Fvwm functions as Scheme procedures. 
-[this is mostly the style, decor, desk and path stuff,
-modules should be punted.]
+- Use guile-snarf pervasively
 
-- replace ColorPair struct w/ scheme based
+- Respond to scwmsend-s via some reasonable iccm
+
+- replace ColorPair struct w/ scheme-object based
 
 - replace MyFont struct w/ scheme-object based
 
+- font scheme wrappers still use the MyFont garbage; clean this up
+
 - Clean out all of the artifacts of the FVWM function system.
 
-- Write the graphical reconfiguration tools.
+- Write some graphical reconfiguration tools.
 
 - color scheme wrappers need reference counting
-
-- font scheme wrappers still use the MyFont garbage; clean this up
 
 - Change the guts to use LISPier data structures when possible, to
 ease integration with the scheme procedures.
@@ -42,6 +44,10 @@ an xor-value, as an option
 under GPL and reorganize years of layered cruft.
 
 Done:
+
+- Finish implementing (useful) Fvwm functions as Scheme procedures. 
+[this is mostly the style, decor, desk and path stuff,
+modules should be punted.]
 
 - Make scwm work with autoconf.
 
