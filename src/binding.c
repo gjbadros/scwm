@@ -20,7 +20,6 @@
 #include "window.h"
 #include "decor.h"
 #include "errors.h"
-#include "complex.h"
 #include "util.h"
 #include "add_window.h"
 #include "xmisc.h"
