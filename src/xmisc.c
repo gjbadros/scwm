@@ -1,7 +1,7 @@
 /* $Id$
  * xmisc.c
  *
- * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
  *
  * Miscellaneous abstractions of X11 routines for scwm
  */

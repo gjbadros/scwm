@@ -1,7 +1,7 @@
 /* $Id$
  * xrm.h 
  * X Resource manager primitives for scwm
- * (C) 1998 Greg J. Badros and Maciej Stachowiak
+ * Copyright (C) 1998-1999 Greg J. Badros and Maciej Stachowiak
  */
 
 #ifndef XRM_H__

@@ -1,6 +1,6 @@
 //// $Id$
 //// Skeleton to use for creating a new type for GUILE
-//// (C) 1998, By Greg J. Badros -- 18 July 1998
+//// Copyright (C) 1998-1999, By Greg J. Badros
 // SCMTYPE: %[SCMTYPE (e.g., cl_variable -- a C identifier)? %]
 // SCM object name: %[SCM object name (e.g., cl-variable -- a Scheme id)? %]
 // Wrapped type name: %[Wrapped Type Name (e.g., ClVariable)? %]

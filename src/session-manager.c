@@ -1,6 +1,7 @@
 /* $Id$
  * session-manager.c
- * Copyright 1998, Greg J. Badros and Robert Bihlmeyer
+ * Copyright (C) 1998-1999, Greg J. Badros and Robert Bihlmeyer
+ *
  * Scwm Session Manager Support
  * Some code derived from IceWM (C) 1997 by Marko Macek
  *

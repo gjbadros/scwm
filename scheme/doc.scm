@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; doc.scm
-;;; (C) 1998 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
+;;; Copyright (C) 1998-1999 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
 
 (define-module (app scwm doc)
   :use-module (ice-9 regex)

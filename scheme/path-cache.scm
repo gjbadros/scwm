@@ -1,5 +1,5 @@
 ;; $Id$
-;; (C) 1998 Greg J. Badros
+;; Copyright (C) 1998-1999 Greg J. Badros
 ;; 4-October-1998
 
 (define-module (app scwm path-cache))

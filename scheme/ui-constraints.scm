@@ -1,5 +1,5 @@
 ;; $Id$
-;; (C) 1999 Jeffrey W. Nichols and Greg J. Badros
+;; Copyright (C) 1999 Jeffrey W. Nichols and Greg J. Badros
 ;;
 ;; ui-constraints.scm
 ;;

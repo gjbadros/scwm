@@ -1,6 +1,6 @@
 /* $Id$ 
  * menulook.h
- * (C) 1998 Greg Badros and Todd Larason
+ * Copyright (C) 1998 Greg Badros and Todd Larason
  */
 
 #ifndef MENULOOK_H

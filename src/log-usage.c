@@ -1,5 +1,5 @@
 /* $Id$
- * gwm-spy.c
+ * log-usage.c
  * Greg Badros <gjb@cs.washington.edu> 
  * 
  * This code is copied and derived from GWM, the Generic Window Manager

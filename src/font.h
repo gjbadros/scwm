@@ -1,11 +1,12 @@
 /* $Id$
  * font.h
+ * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+ *
  * This module is all original code 
  * by Maciej Stachowiak and Greg J. Badros.
  * It may be used or distributed under either the FVWM license 
  * (see COPYING.FVWM) or the GNU General Public License (see COPYING.GPL and
  * the description below)
- * Copyright 1997, 1998 Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

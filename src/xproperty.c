@@ -1,14 +1,14 @@
 /* $Id$
  * xproperty.c
  *
+ * Copyright (C) 1998-1999, Robert Bihlmeyer and Greg J. Badros
+ *
  * This module is all original code 
- * by Robert Bihlmeyer (additions/modifications by Greg J. Badros)
+ * by Robert Bihlmeyer and Greg J. Badros
  *
  * It may be used or distributed under either the FVWM license 
  * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
  * the description below)
- *
- * Copyright (C) 1998, Robert Bihlmeyer and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

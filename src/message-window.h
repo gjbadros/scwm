@@ -1,6 +1,6 @@
 /* $Id$ 
- * msgwindow.h
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * message-window.h
+ * Copyright (C) 1997, 1999 Maciej Stachowiak, Jeffrey Nichols, and Greg J. Badros
  */
 
 

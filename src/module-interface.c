@@ -1,6 +1,6 @@
 /* $Id$
  * module-interface.c
- * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
  * 
  * Replaces the module stuff from fvwm2 with hooks to call
  * scheme code which can then talk to a module via the old mechanisms

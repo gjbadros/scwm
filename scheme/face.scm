@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
+;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
   :use-module (app scwm optargs))
 
 
-(define-scwm-option *window-font* (make-font "*helvetica*bold-r*12*")
+(define-scwm-option *window-font* (make-font "fixed")
   "The default window titlebar font."
   #:type 'font
   #:group 'face

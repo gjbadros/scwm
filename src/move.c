@@ -1,9 +1,7 @@
 /* $Id$
  * move.c
- * (C) 1998 Maciej Stachowiak and Greg J. Badros
- */
-
-/*
+ * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
+ *
  * This module is derived from all original code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation

@@ -1281,7 +1281,7 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
     ((releaseinfo) "Release pre-0.8")
     ((pubdate) "28 July 1998")
     ((copyright)
-      ((year) "1997&ndash;1998")
+      ((year) "1997&ndash;1999")
       ((holder) "Maciej Stachowiak and Greg J. Badros"))))
 
 

@@ -1,6 +1,6 @@
-;;; $Id$
-;;; flux.scm
-;;; (C) 1999 Greg J. Badros and Maciej Stachowiak
+;;;; $Id$
+;;;; flux.scm
+;;;; Copyright (C) 1999 Greg J. Badros and Maciej Stachowiak
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

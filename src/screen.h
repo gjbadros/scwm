@@ -1,6 +1,6 @@
 /* $Id$
  * screen.h
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  *
  * This module derived from modified by Rob Nation, originally code based on Twm
  */

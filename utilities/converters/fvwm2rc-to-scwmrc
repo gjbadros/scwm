@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
-# (C) 1999 Greg J. Badros, Doug McNaught
-# March-1999
+# Copyright (C) 1999 Greg J. Badros, Doug McNaught
+# 
 # Distributed under the GNU GPL
 # See the PRESCRIPT text below for more
 # details and warnings.
@@ -491,7 +491,7 @@ chop(my $date = `date`);
 print <<"PRESCRIPT"
 ;;; Auto-generated scwmrc created by fvwm2rc-to-scwmrc
 ;;; fvwm2rc-to-scwmrc converter is 
-;;; (C) 1999 Greg J. Badros <gjb\@cs.washington.edu>
+;;; Copyright (C) 1999 Greg J. Badros <gjb\@cs.washington.edu>
 ;;; Use at your own risk!
 ;;; http://vicarious-existence.mit.edu/scwm
 ;;; http://www.cs.washington.edu/homes/gjb

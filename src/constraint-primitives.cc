@@ -1,7 +1,7 @@
 /* $Id$
  * constraint-primitives.cc
  *
- * (C) 1998,1999 Greg J. Badros
+ * Copyright (C) 1998,1999 Greg J. Badros
  */
 
 #ifdef HAVE_CONFIG_H

@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1997-1999 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
+ * Copyright (C) 1997-1999 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
  * 
  */
 

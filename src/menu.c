@@ -1,7 +1,6 @@
 /* $Id$
  * scwmmenu.c
- * By Greg J. Badros -- Nov. 14, 1997
- * (C) 1998, 1997 Greg J. Badros and Maciej Stachowiak
+ * Copyright (C) 1997-1999 Greg J. Badros and Maciej Stachowiak
  */
 
 /* #define SCWM_DEBUG_MSGS */

@@ -1,4 +1,4 @@
-/* $Id
+/* $Id$
  * validate.h
  * Copyright (C) 1997-1999, Greg J. Badros and Maciej Stachowiak
  *

@@ -1,17 +1,17 @@
 #!@PERL@ -w
 # $Id$ -*- perl -*-
-# extract-docs
-# By Greg J. Badros -- 7-July-1998
+# scwmdoc
+# Copyright (C) 1998-1999 Greg J. Badros
 #
-# extract-docs pulls out the SCWM_PROC declarations and comments
+# scwmdoc pulls out the SCWM_PROC declarations and comments
 # from a SCWM .c source file and processes them to create
 # documentation
 #
-# Usage: perl extract-docs <filenames-to-extract-from>
+# Usage: perl scwmdoc <filenames-to-extract-from>
 #
 # e.g.,
 #
-# perl extract-docs *.c
+# perl scwmdoc *.c
 #
 # Purpose:
 # Extract documentation from comments in C source files
@@ -21,14 +21,14 @@
 # Note that this script does lots of important error checking, and
 # produces error and warning messages that look like grep, so emacs'
 # compile-mode (and probably grep-mode) can be used to find problems
-# with the documentation using M-x compile (C-x c) extract-docs *.c >
+# with the documentation using M-x compile (C-x c) scwmdoc *.c >
 # /dev/null then M-x next-error (C-x `)
 #
 # Usage:
 #  from ~lgjb/scwm
-# ./utilities/dev/extract-docs -o doc/scwm scwm/*.c > doc/scwm-procedures.txt
+# ./utilities/dev/scwmdoc -o doc/scwm scwm/*.c > doc/scwm-procedures.txt
 # or from Emacs, for warnings only
-# ./utilities/dev/extract-docs scwm/*.c > /dev/null
+# ./utilities/dev/scwmdoc scwm/*.c > /dev/null
 #
 # See also extract.scm, an implementation in guile-scheme instead of perl
 # written by Harvey Stein

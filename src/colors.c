@@ -1,5 +1,5 @@
-/* $Id
- * (C) 1998 Maciej Stachowiak and Greg J. Badros
+/* $Id$
+ * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
  *
  * This module is derived from code written by Rob Nation 
  * Copyright 1993 Robert Nation. No restrictions are placed on this code,

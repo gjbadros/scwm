@@ -1,6 +1,6 @@
 /* $Id$
  * borders.c
- * (C) 1997, 1998 By Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 By Maciej Stachowiak and Greg J. Badros
  *
  * This module is derived from code 
  * by Rob Nation 

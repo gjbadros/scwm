@@ -1,6 +1,8 @@
 ;; $Id$ -*- scwm -*-
-;; Greg J. Badros's Scwm initialization file
-;; (C) 1997-1998 Greg J. Badros
+;; gjb.scwmrc -- Greg J. Badros's Scwm initialization file
+;;
+;; Copyright (C) 1997-1999 Greg J. Badros
+;;
 ;; Feel free to use and reuse code contained herein
 ;; as permitted by the GNU GPL
 ;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK

@@ -1,7 +1,7 @@
 /* $Id$
  * scwm-constraints.h
  *
- * (C) 1998 Greg J. Badros
+ * Copyright (C) 1998-1999 Greg J. Badros
  */
 
 #ifndef SCWM_CONSTRAINTS_H__

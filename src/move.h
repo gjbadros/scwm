@@ -1,6 +1,6 @@
 /* $Id$
  * move.h
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef MOVE_H

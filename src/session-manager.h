@@ -1,6 +1,6 @@
 /* $Id$
  * session-manager.h 
- * (C) 1998 Greg J. Badros
+ * Copyright (C) 1998-1999 Greg J. Badros and Robert Bihlmeyer
  * Scwm Session Manager Support
  */
 

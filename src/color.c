@@ -1,7 +1,7 @@
 /* $Id$
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  * 
- * This module is derived from codeby Rob Nation 
+ * This module is derived from code by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation

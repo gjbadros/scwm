@@ -1,12 +1,12 @@
 /* $Id$
  * face.c
- * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
  * 
  * This module has been significantly modified by Maciej Stachowiak
  * and Greg J Badros.
- * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, 1998 Maciej Stachowiak and Greg J. Badros
  *
+ * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
+ * Changes Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  *
  * This module based on original code 
  * by Rob Nation 
