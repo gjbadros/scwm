@@ -1,3 +1,8 @@
+Sat Mar 30 20:27:55 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* window-configuration.scm: Added a FIXME about the desk of windows
+	being saved.
+
 Sat Mar 30 18:39:14 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* cascade.scm: Added a couple of missing modules, flash-window and flux.

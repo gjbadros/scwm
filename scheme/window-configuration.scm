@@ -33,6 +33,8 @@
 ;;; in several ways.  The window-configuration needs to have the icon position
 ;;; added to it and probably keep on top status.
 
+;;; SRL:FIXME::Should save which desk the window is on.
+
 (define-module (app scwm window-configuration)
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs)
