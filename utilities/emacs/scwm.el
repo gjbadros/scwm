@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-24 Mon 09:13:05 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-09-02 Wed 17:44:16 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -95,7 +95,8 @@
  (defvar scheme-buffer)         ; defined in cmuscheme.el
  (defvar inferior-scheme-mode-map) ; defined in cmuscheme.el
  (defvar scwm-mode-map)         ; kill warnings
- (defvar scwm-mode-syntax-table) ; kill warnings
+ (defvar scwm-mode-syntax-table)) ; kill warnings
+(eval-when-compile
  ;; cater to the inferior emacs implementations :-)
  (unless (fboundp 'save-current-buffer)
    (defmacro save-current-buffer (&rest body)
@@ -152,15 +153,16 @@ See also `with-temp-buffer'."
 (require 'scheme)
 
 ;;; XEmacs doesn't have thingatpt. Too bad.
-(unless (fboundp 'thing-at-point)
-  ;; pacify the compiler (XEmacs only)
-  (eval-and-compile (autoload 'id-select-symbol "id-select"))
-  (defun thing-at-point (what)
-    "Return the thing at point (crippled: symbols only!)."
-    (unless (eq what 'symbol)
-      (error "crippled `thing-at-point' - symbols only"))
-    (let ((zz (id-select-symbol (point))))
-      (when zz (buffer-substring-no-properties (car zz) (cdr zz))))))
+(eval-when-compile
+ (unless (fboundp 'thing-at-point)
+   ;; pacify the compiler (XEmacs only)
+   (eval-and-compile (autoload 'id-select-symbol "id-select"))
+   (defun thing-at-point (what)
+     "Return the thing at point (crippled: symbols only!)."
+     (unless (eq what 'symbol)
+       (error "crippled `thing-at-point' - symbols only"))
+     (let ((zz (id-select-symbol (point))))
+       (when zz (buffer-substring-no-properties (car zz) (cdr zz)))))))
 
 (defun scwm-symbol-at-point ()
   "Return symbol at point; look back if not found."
