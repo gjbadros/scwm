@@ -1,3 +1,9 @@
+Sun Feb 17 04:55:55 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* easyraise.scm: Fixed bug in set-easyraise-window! which
+	wouldn't update the variable easyraise-windows which would
+	cause the wrong windows to get raised lowered.
+
 Sat Feb 16 02:01:31 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* dir-focus.scm: Improved doc string for dir-focus to mention

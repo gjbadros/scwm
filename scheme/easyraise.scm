@@ -16,7 +16,14 @@
 
 (define*-public (set-easyraise-window! easyraise? #&optional (win (get-window)))
   ""
-  (if win (set-object-property! win 'easyraise easyraise?)))
+  (if win 
+      (begin
+        (set-object-property! win 'easyraise easyraise?)
+        (if easyraise-windows 
+            (if easyraise?
+                (if (not (memq win easyraise-windows))
+                    (set! easyraise-windows (cons win easyraise-windows)))
+                (set! easyraise-windows (delq! win easyraise-windows)))))))
 
 (define*-public (easyraise-window? #&optional (win (get-window)))
   ""
