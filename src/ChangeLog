@@ -1,3 +1,12 @@
+Mon Aug 30 15:57:06 1999    <gjb@cs.washington.edu>
+
+	* binding.c (init_modifiers): Only populate the mask_mod_combos[]
+	with those that are non-zero.  Switch warnings re: missing dubious 
+	modifiers to just INFO messages, and remark on the number of
+	XGrabKey calls for window bindings.  Added
+	`ignore-dubious-modifiers?' getter, and update docs on
+	`undo-all-passive-grabs' and `redo-all-passive-grabs'
+
 Mon Aug 30 12:18:21 1999    <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc (SuggestSizeWindowTo): Return a bool for

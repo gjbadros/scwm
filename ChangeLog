@@ -1,4 +1,6 @@
-Mon Aug 30 12:53:26 1999    <gjb@cs.washington.edu>
+Mon Aug 30 13:07:11 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Drop scwm/pixmaps/* from %files section.
 
 	* configure.in (scwm_image_load_path): Use scwm/pixmaps, not
 	pixmaps/scwm. Always link cassowary w/ -lGTL

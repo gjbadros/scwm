@@ -1,3 +1,8 @@
+Mon Aug 30 16:08:19 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Fix have-kp-{num,}keysyms.  Fix typo in append!
+	to *theme-path*.  Added comment re: set-ignore-dubious-modifiers!
+
 Mon Aug 30 12:32:06 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use locate '*/name.xpm' to find missing

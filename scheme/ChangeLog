@@ -1,3 +1,12 @@
+Mon Aug 30 16:01:27 1999    <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Added `X-set-cut-buffer-string!',
+	`copy-window-title-to-cut-buffer0',
+	`paste-window-title-from-cut-buffer0'
+
+	* flux.scm: Added a "Title" submenu to
+	`make-small-window-ops-menu' that lets you copy and paste window titles.
+
 Mon Aug 30 11:58:24 1999    <gjb@cs.washington.edu>
 
 	* std-menus.scm: Move *xlock-query-program* definition earlier in
