@@ -813,16 +813,27 @@ force_new_input_hooks()
 {
   SCM cur;
 
+  /* GJB:FIXME:: can we really make the
+     assumptions that things below are lists and 
+     remove the error code */
   for (cur = gh_cdr(new_input_hooks);
        cur != SCM_EOL;
        cur = gh_cdr(cur)) {
-    SCM item = gh_car(cur);
-    SCM port = gh_car(item);
-    SCM proc = gh_cdr(item);
-    while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
-	   SCM_OPINFPORTP(port) &&
-	   SCM_BOOL_T==scm_char_ready_p(port)) {
-      scwm_safe_call0(proc);
+    if (gh_list_p(cur)) {
+      SCM item = gh_car(cur);
+      if (gh_list_p(item)) {
+        SCM port = gh_car(item);
+        SCM proc = gh_cdr(item);
+        while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
+               SCM_OPINFPORTP(port) &&
+               SCM_BOOL_T==scm_char_ready_p(port)) {
+          scwm_safe_call0(proc);
+        }
+      } else {
+        scwm_msg(ERR,"force_new_input_hooks","item is not a list");
+      }
+    } else {
+      scwm_msg(ERR,"force_new_input_hooks","cur is not a list");
     }
   }
   gh_set_cdr_x(new_input_hooks, SCM_EOL);
