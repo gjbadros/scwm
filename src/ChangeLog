@@ -1,3 +1,14 @@
+Sun Sep  5 13:20:00 1999    <gjb@cs.washington.edu>
+
+	* menu.c (MenuInteraction): Permit the release of other modifier
+ 	keys to end a menu selection to give support for Alt-Tab switching 
+	with modifiers other than Mod[12]Mask.
+
+Sat Sep  4 14:43:22 1999    <gjb@cs.washington.edu>
+
+	* scwm-constraints.cc: Added a missing value from a return
+	statement (Thanks John MacPhail!).
+
 Sat Sep  4 00:15:39 1999    <gjb@cs.washington.edu>
 
 	* events.c: Added symbols 'press, 'release, 'desk-press,
