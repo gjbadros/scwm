@@ -785,8 +785,6 @@ Repository Timestamp: %s\n",
   Scr.screen = DefaultScreen(dpy);
   Scr.NumberOfScreens = ScreenCount(dpy);
 
-  init_image();
-  
   master_pid = getpid();
 
   if (!single) {
@@ -916,6 +914,7 @@ Repository Timestamp: %s\n",
   init_resize_gcs();
   XrmInitialize();
   init_xrm();
+  init_image();
 
   InitEventHandlerJumpTable();
 

@@ -925,8 +925,10 @@ HandleClientMessage()
         }
       }
     default:
-      /* should never get here */
-      assert(False);
+      /* we should handle things when we get here */
+      scwm_msg(WARN,"HandleClientMessage",
+               "Got client message with format = %d that is not handled.",
+               Event.xclient.format);
       break;
     } /* end switch */
     if (Event.xclient.window == Scr.Root) {

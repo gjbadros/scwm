@@ -3271,7 +3271,9 @@ SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
 
 SCWM_PROC(get_window_highlight_colors, "get-window-highlight-colors", 0, 1, 0,
           (SCM win))
-     /** Return a two-element list, "(fg bg)", the highlight colors for WIN. */
+     /** Return a two-element list, "(fg bg)", the highlight colors for WIN. 
+fg or bg may be #f, which means that the color is inherited from the decor.
+*/
 #define FUNC_NAME s_get_window_highlight_colors
 {
   ScwmWindow *psw;

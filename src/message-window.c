@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * (C) 1997-1999 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
  * 
  */
 
@@ -44,10 +44,13 @@ mark_msgwindow(SCM obj)
   return SCM_BOOL_F;
 }
 
+SCM message_window_hide_x(SCM mwn);
+
 size_t 
 free_msgwindow(SCM obj)
 {
   scwm_msgwindow *msg = MSGWINDOW(obj);
+  message_window_hide_x(obj);
 
   FREE(msg);
 
@@ -138,13 +141,13 @@ DrawWindow( scwm_msgwindow* msg ) {
   FREE(sz);
 }
 
-/* ResizeWindow
+/* ResizeMessageWindow
 
    Resizes the scwm_msgwindow pointed at by msg and calls
 DrawWindow to redraw it.
  */
 void
-ResizeWindow( scwm_msgwindow* msg ) {
+ResizeMessageWindow( scwm_msgwindow* msg ) {
 
   char *const sz = gh_scm2newstr(msg->message,NULL);
   int textwidth = ComputeXTextWidth(XFONT(msg->font),sz, -1);
@@ -173,7 +176,7 @@ void
 OnExposeEvent( Window w ) {
   scwm_msgwindow* msg;
   if ( XFindContext(dpy, w, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL )
-    ResizeWindow( msg );
+    ResizeMessageWindow( msg );
 }
 
 
@@ -283,6 +286,30 @@ Uses defaults from the ScreenInfo struct for the other values. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(id_to_message_window, "id->message-window", 1, 0, 0,
+          (SCM winid))
+     /** Return the message-window of an X/11 window id (a long integer).
+Returns #f if WINID does not correspond to a message-window.
+You can use the xwininfo program to get the window id of an arbitrary
+window on your X/11 display. */
+#define FUNC_NAME s_id_to_message_window
+{
+  Window w;
+  scwm_msgwindow* msg = NULL;
+  SCM answer = SCM_BOOL_F;
+
+  if (!gh_number_p(winid)) {
+    scm_wrong_type_arg(FUNC_NAME,1,winid);
+  }
+  w = (Window) gh_scm2ulong(winid);
+  
+  if ( XFindContext(dpy, w, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL ) {
+    SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
+  }
+  return answer;
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
           (SCM mwn, SCM message))
@@ -302,7 +329,7 @@ The message will be MESSAGE.*/
 
   msg->message = message;
 
-  ResizeWindow( msg );
+  ResizeMessageWindow( msg );
 
   return SCM_UNDEFINED;
 }
@@ -330,7 +357,7 @@ The font will be FNT.*/
   }
   msg->font=fnt;
 
-  ResizeWindow( msg );
+  ResizeMessageWindow( msg );
 
   return SCM_UNDEFINED;
 }
@@ -426,7 +453,7 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 
   SCM_REALLOW_INTS;
 
-  ResizeWindow(msg);
+  ResizeMessageWindow(msg);
 
   return SCM_UNDEFINED;
 }
@@ -475,7 +502,7 @@ the window will not ever disappear). */
   scm_protect_object(mwn);
 
   MapMessageWindow(MSGWINDOW(mwn));
-  ResizeWindow( MSGWINDOW(mwn) );
+  ResizeMessageWindow( MSGWINDOW(mwn) );
 
   return SCM_UNDEFINED;
 }

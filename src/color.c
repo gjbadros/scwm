@@ -149,9 +149,9 @@ ScmMakeColor(const char *cn, int *perror_status)
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
     if (perror_status)
       *perror_status = 2; /* cannot alloc */
-    return SCM_BOOL_F;
+    scwm_msg(WARN,"ScmMakeColor","Cannot allocate color: %s -- using black",cn);
+    return BLACK_COLOR;
   }
-
 
   sc = NEW(scwm_color);
   sc->pixel = color.pixel;
@@ -197,8 +197,8 @@ allocated, an error results. */
     scm_misc_error(FUNC_NAME,"Cannot parse color!",SCM_EOL);
     break;
   case 2:
-    scwm_msg(WARN,FUNC_NAME,"Cannot allocate color: %s -- using black",cn);
-    answer = BLACK_COLOR;
+    /* answer is now BLACK_COLOR, but we could do something
+       smarter, perhaps */;
     break;
   }
   FREE(cn);
