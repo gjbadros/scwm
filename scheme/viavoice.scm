@@ -96,7 +96,7 @@
 (define-public (vv-initialize)
   "Use this to start ViaVoice recognition."
   (vv-initialize-environment)
-  (vv-connect (lambda (status) (vv-use-grammar "/home/gjb/scwm/modules/viavoice/scwmgrammar.fsg")))
+  (vv-connect (lambda (status) (vv-use-grammar (string-append (scwm-path-prefix) "/share/scwm/ViaVoice/scwmgrammar.fsg"))))
   (vv-turn-microphone-on)
   (vv-setup-recognition-hook)
   )
@@ -115,18 +115,20 @@
 		   (y (cadr pos))
 		   (do-animation #f)
 		   (amount (or (and (> (vector-length annotations) 3) (array-ref annotations 3)) 100)))
+	      ;;; WARNING: be sure that the longer strings come first.
+	      ;;; Should just do this more logically, anyway
 	      (cond
+	       ((matches-command? "north west") (animated-move-to-nw win))
+	       ((matches-command? "north east") (animated-move-to-ne win))
+	       ((matches-command? "south west") (animated-move-to-sw win))
+	       ((matches-command? "south east") (animated-move-to-se win))
 	       ((matches-command? "right") (set! x (+ x amount)) (set! do-animation #t))
 	       ((matches-command? "left") (set! x (- x amount)) (set! do-animation #t))
 	       ((matches-command? "down") (set! y (+ y amount)) (set! do-animation #t))
 	       ((matches-command? "up") (set! y (- y amount)) (set! do-animation #t))
 	       ((matches-command? "north") (animated-move-to-n win))
-	       ((matches-command? "north west") (animated-move-to-nw win))
-	       ((matches-command? "north east") (animated-move-to-ne win))
 	       ((matches-command? "west") (animated-move-to-w win))
 	       ((matches-command? "east") (animated-move-to-e win))
-	       ((matches-command? "south west") (animated-move-to-sw win))
-	       ((matches-command? "south east") (animated-move-to-se win))
 	       ((matches-command? "south") (animated-move-to-s win))
 	       ((matches-command? "cotton") (animated-window-shade win))
 	       ((matches-command? "close") (close-window win))
