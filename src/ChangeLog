@@ -1,3 +1,8 @@
+Thu Sep  3 09:51:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (focus, warp-to-window): Improve documentation to
+	mention that the target window is not raised
+
 Wed Sep  2 17:10:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added Hi{Relief,Shadow,Text,Back}Color members of

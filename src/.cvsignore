@@ -9,6 +9,7 @@ scm_init_funcs.h
 scwm
 scwm-stable
 scwm-stable-no-cassowary
+scwm-stable-with-cassowary
 scwm-works
 scwm_cl
 scwm_cl_works
