@@ -17,6 +17,7 @@
 #include "../version.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
+extern Bool Restarting;
 
 SCM 
 set_menu_mwm_style(SCM should)
@@ -128,7 +129,11 @@ set_title_height(SCM height)
 }
 
 
-
+SCM
+restarted_p()
+{
+  return (Restarting==True) ? SCM_BOOL_T : SCM_BOOL_F;
+}
 
 
 SCM sym_focus;

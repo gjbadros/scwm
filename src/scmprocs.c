@@ -175,6 +175,7 @@ init_scwm_procs(void)
 		   set_click_to_focus_raises_x, 1, 0, 0);
   gh_new_procedure("set-mouse-focus-click-raises!", 
 		   set_mouse_focus_click_raises_x, 1, 0, 0);
+  gh_new_procedure("restarted?", restarted_p, 0, 0, 0);
   gh_new_procedure("make-face",make_face,2,0,0);
   gh_new_procedure("set-title-face!", set_title_face_x, 1 , 2, 0);
   gh_new_procedure("set-button-face!", set_button_face_x, 2, 2, 0);
