@@ -17,6 +17,14 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
+
+
+
+(define-module (app scwm base)
+  :use-module (app scwm optargs))
+
+
+
 (define menu-bg-color (make-color "gray80"))
 (define menu-text-color (make-color "black"))
 (define menu-stipple-color (make-color "grey60"))
@@ -36,14 +44,6 @@
 ;;; possible bug is that xterms started by scwm are terminated if the
 ;;; scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
   #f)
-
-
-
-(define-module (app scwm base)
-  :use-module (app scwm optargs))
-
-
-
 
 (define-public display-width (car (display-size)))
 (define-public display-height (cadr (display-size)))

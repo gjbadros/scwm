@@ -5,12 +5,6 @@
 
 
 
-;; FIXGJB: hack to put doc-files in root module
-(define-public doc-files
-  (map (lambda (st) (string-append (scwm-path-prefix) "/share/scwm/" st))
-       '("scwm-procedures.txt" "scwm-variables.txt"
-         "cassowary_scm-procedures.txt")))
-
 (define-module (app scwm doc)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
@@ -18,6 +12,13 @@
   :use-module (app scwm optargs))
 
 
+
+;; FIXGJB: hack to put doc-files in root module
+(define-public doc-files
+  (map (lambda (st) (string-append (scwm-path-prefix) "/share/scwm/" st))
+       '("scwm-procedures.txt" "scwm-variables.txt"
+         "cassowary_scm-procedures.txt")))
+
 
 (define-public documentation-debug #t)
 
