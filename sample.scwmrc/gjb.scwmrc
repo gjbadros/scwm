@@ -394,8 +394,6 @@
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
 
-(window-style "tooltip" #:use-style desk-widget-on-top-no-titlebar #:border-width 0
-	      #:placement-proc place-near-pointer)
 ;; (window-style "xterm" #:use-theme (load-theme "gjb"))
 ;; (window-style "*" #:show-icon #t)
 ;; (window-style "*" #:show-icon #f)
@@ -684,6 +682,8 @@
 ;; after #:icon and #:mini-icon
 ;; MSFIX: important! window-style's argument 
 
+(window-style "tooltip" #:use-style desk-widget-on-top-no-titlebar #:border-width 0
+	      #:placement-proc place-near-pointer)
 (window-style (resource-match?? "ScwmUIConstraintsButtons") 
 	      #:use-style desk-widget-on-top-no-titlebar)
 (window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
