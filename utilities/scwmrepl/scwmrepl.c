@@ -136,7 +136,7 @@ int appending_fgets(char **sofar)
 #else
   char buffer [512];
 
-  printf("scwm> ");
+  puts("scwm> ");
   do {
     fgets(buffer, 512, stdin);
     if (strlen(buffer)==0) {
@@ -308,10 +308,11 @@ main(int argc, char **argv)
 
   if (argc != 1)
     die("Usage: scwmrepl\n");
+
   if (!init_display())
     die("Could not connect to server. Check your DISPLAY environment variable.\n");
 
-  w=scwmexec_init(display);
+  w = scwmexec_init(display);
 
 #ifdef HAVE_READLINE
   init_readline();
@@ -321,31 +322,25 @@ main(int argc, char **argv)
     die ("Unable to establish scwmexec connection.\n");
 
   while (!done) {
-    if ((splitpoint=check_balance(gather))) {
+    if ((splitpoint = check_balance(gather))) {
       unsigned char *result, *error, *output;
-      expr=split_at(&gather,splitpoint);
-      result=scwmexec_exec_full(display,w,expr,&output,&error);
+      expr = split_at(&gather,splitpoint);
+      result = scwmexec_exec_full(display,w,expr,&output,&error);
 
       fputs (output, stdout);
       if (strlen(error)!=0) {
-	fputs (error, stderr);
+	fputs(error, stderr);
       } else {
-	fputs (result, stdout);
+	fputs(result, stdout);
       }
       putchar('\n');
 
-      if (result!=NULL) {
-	XFree(result);
-      }
-      if (output!=NULL) {
-	XFree(output);
-      }
-      if (error!=NULL) {
-	XFree(error);
-      }
+      if (result) XFree(result);
+      if (output) XFree(output);
+      if (error) XFree(error);
       free(expr);
     } else {
-      done = !appending_fgets (&gather);
+      done = !appending_fgets(&gather);
     }
   }
 

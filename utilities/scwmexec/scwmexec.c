@@ -54,14 +54,15 @@ main(int argc, char **argv)
   w=scwmexec_init(display);
 
   if (w==None)
-    die ("Unable to establish scwmexec connection.\n");
+    die("Unable to establish scwmexec connection.\n");
 
-  result=scwmexec_exec_full(display,w,argv[1],&output,&error);
-  fputs (output, stdout);
+  result = scwmexec_exec_full(display,w,argv[1],&output,&error);
+
+  fputs(output, stdout);
   if (strlen(error)!=0) {
-    fputs (error, stderr);
+    fputs(error, stderr);
   } else {
-    fputs (result, stdout);
+    fputs(result, stdout);
   }
 
   if (result) XFree(result);
