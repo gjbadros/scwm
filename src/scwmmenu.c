@@ -614,7 +614,8 @@ PmiimStepItems(MenuItemInMenu *pmiim, int n, int direction)
 
 static
 MenuItemInMenu *
-PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status)
+PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status, 
+		   Bool *pfHotkeyUsed)
 {
   int fControlKey = Event->xkey.state & ControlMask? True : False;
   int fShiftedKey = Event->xkey.state & ShiftMask? True: False;
@@ -623,6 +624,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   MenuItemInMenu *pmiimNewItem = NULL;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
+  *pfHotkeyUsed = False;
   *pmenu_status = MENUSTATUS_NOP;
   /* Is it okay to treat keysym-s as Ascii? */
 
@@ -636,6 +638,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     for (; ipmiim < pmd->cmiim; ipmiim ++ ) {
       if (keysym == tolower(rgpmiim[ipmiim]->chShortcut)) {
 	*pmenu_status = MENUSTATUS_NEWITEM;
+	*pfHotkeyUsed = True;
 	return rgpmiim[ipmiim];
       }
     }
@@ -751,6 +754,25 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
 
 static
 void
+XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
+{
+  XKeyEvent ev;
+  DBUG(__FUNCTION__,"entered");
+  ev.type = KeyPress;
+  ev.send_event = False;
+  ev.display = dpy;
+  ev.window = w;
+  ev.root = Scr.Root;
+  ev.state = 0;
+  ev.keycode = XKeysymToKeycode(dpy, keysym);
+  ev.same_screen = True;
+}
+
+  
+
+
+static
+void
 WarpPointerToPmiim(MenuItemInMenu *pmiim)
 {
   DynamicMenu *pmd; 
@@ -778,6 +800,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   MenuItemInMenu *pmiim = NULL;
   int cpixXoffsetInMenu = 0;
   Bool fGotMouseMove = False;
+  Bool fHotkeyUsed = False;
 
   /* Warp the pointer to the first menu item
      (perhaps selected if the keyboard was used to pop up this menu) */
@@ -831,11 +854,9 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
       if (pmiim) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiim != pmiimSelected) {
-	  /* GJBFIX: this spews a lot if you pop up a menu, don't move
+	  /* FIXGJB: this spews a lot if you pop up a menu, don't move
 	     the mouse, and release. Commenting out for now. */
-#if 0
-	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- weird!");
-#endif
+	  DBUG(__FUNCTION__,"Pointer not in selected item -- weird!");
 	} else {
 	  scmAction = pmiim->pmi->scmAction;
 	}
@@ -852,7 +873,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     {
       enum menu_status ms = MENUSTATUS_NOP;
       /* Handle a key press events to allow mouseless operation */
-      pmiim = PmiimMenuShortcuts(pmd,&Event,&ms);
+      pmiim = PmiimMenuShortcuts(pmd,&Event,&ms,&fHotkeyUsed);
       if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
       } else if (ms == MENUSTATUS_ITEM_SELECTED) {
@@ -875,7 +896,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	    pmdNew = pmiim->pmd->pmdNext;
 	  }
 	  if (pmdNew) {
-	    pmiim=pmdNew->rgpmiim[0];
+	    pmiim = PmiimStepItems(pmdNew->rgpmiim[0],0,+1);
 	  } else {
 	    /* couldn't prepop, so we're done -- don't change menu item */
 	    break;
@@ -939,11 +960,12 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	  SelectAndRepaintPmiim(pmiim);
 	  c10ms_delays = 0;
 	}
-	if (cpixXoffsetInMenu > pmd->pmdi->cpixWidth*3/4) {
+	if (cpixXoffsetInMenu > pmd->pmdi->cpixWidth*3/4 || fHotkeyUsed) {
 	  /* we're at the right edge of the menu so be sure we popup
 	     the cascade menu if any */
 	  if (pmd->pmdNext == NULL) {
 	    PmdPrepopFromPmiim(pmiim);
+            XPutBackKeystrokeEvent(dpy,pmd->pmdi->w,XK_Right);
 	  }
 	}
       }
@@ -964,7 +986,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     continue;
     
     default:
-	  /* FIXGJB: do other event handling */
+      /* FIXGJB: do other event handling */
       DispatchEvent();
       break;
     } /* switch */
@@ -1140,7 +1162,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
     call_thunk_with_message_handler(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
-    popup_menu(scmAction, fWarpToFirst?SCM_BOOL_T:SCM_BOOL_F);
+    popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst));
   }
 }
 
