@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-27 Fri 14:22:07 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-30 Mon 13:38:29 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -102,37 +102,39 @@ Current desk size is " (size->str (desk-size)) ".")))))
   ;; this is a list of lists of: ("title" "help" set-fn get-fn)
   ;; load this file, add to this variable whatever you want,
   ;; then call (menu-prefs)
-  '(("Shadow Factor" "Shadow Factor -\\n\
+  (list
+   (list "Shadow Factor" "Shadow Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
 the relief \"shadow\" color for the regular and hilight background."
-     set-shadow-factor! shadow-factor))
-    ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
+	 set-shadow-factor! shadow-factor)
+    (list "Menu Shadow Factor" "Menu Shadow Factor -\\n\
 the factor that is used by menus to generate\\n\
 the relief \"hilight\" color for the regular and hilight background."
-     set-menu-shadow-factor! menu-shadow-factor)
-    ("Highlight Factor" "Highlight Factor -\\n\
+	  set-menu-shadow-factor! menu-shadow-factor)
+    (list "Highlight Factor" "Highlight Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
 the relief \"shadow\" color for the regular and hilight background."
-     set-hilight-factor! hilight-factor)
-    ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
+	  set-hilight-factor! hilight-factor)
+    (list "Menu Highlight Factor" "Menu Highlight Factor -\\n\
 the factor that is used by menus to generate\\n\
 the relief \"shadow\" color for the regular and h ilight background."
-     set-menu-hilihght-factor! menu-hilite-factor)
-    ("XTerm Command" "The command used for starting XTerm,\\n\
+	  set-menu-hilight-factor! menu-hilight-factor)
+    (list "XTerm Command" "The command used for starting XTerm,\\n\
 \(like `xterm' or `rxvt')."
-     (lambda () xterm-command) (lambda (z) (set! xterm-command z)))
-    ("Icon Font" "The font for icons" set-icon-font! icon-font)
-    ("Animation Delay" "??" (lambda () animation-ms-delay)
-     (lambda (z) (set! animation-ms-delay z))))
+	  (lambda (z) (set! xterm-command z)) (lambda () xterm-command))
+    ;; (list "Icon Font" "The font for icons" set-icon-font! icon-font)
+    (list "Animation Delay" "??" (lambda (z) (set! animation-ms-delay z))
+	  (lambda () animation-ms-delay))))
 
 (define (settable-object-menuitem title help set-fn get-fn)
-  (let ((cur (to-string (apply set-fn ())))
+  (let ((cur (to-string (apply get-fn ()))))
     (menuitem title #:action
 	      (menu (list (menuitem "Set" #:action
-				    (ask-string
-				     (string-append "New value for "
-						    title " (" cur "):")
-				     set-fn))
+				    (lambda ()
+				      (ask-string
+				       (string-append "New value for "
+						      title " (" cur "):")
+				       set-fn)))
 			  menu-separator
 			  (menuitem
 			   "Help" #:action
