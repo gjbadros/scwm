@@ -1,16 +1,15 @@
 /* $Id$
  * xproperty.h
- */
-
-/*
+ *
  * This module is all original code 
  * by Robert Bihlmeyer.
+ *
  * It may be used or distributed under either the FVWM license 
  * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
  * the description below)
  *
  *      Copyright (C) 1998, Robert Bihlmeyer
-
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)

@@ -22,6 +22,9 @@
 #include "binding.h"
 #include "xmisc.h"
 #include "syscompat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 struct symnum {
   SCM sym;

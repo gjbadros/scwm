@@ -1,7 +1,7 @@
 /* $Id$
  * scwmmenu.c
  * By Greg J. Badros -- Nov. 14, 1997
- *
+ * (C) 1998, 1997 Greg J. Badros and Maciej Stachowiak
  */
 
 
@@ -37,6 +37,9 @@
 #include "string_token.h"
 #include "guile-compat.h"
 #include "syscompat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);

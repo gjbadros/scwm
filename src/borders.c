@@ -34,6 +34,9 @@
 #include <X11/extensions/shape.h>
 #include "module-interface.h"
 #include "font.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 extern Window PressedW;
 XGCValues Globalgcv;

@@ -29,6 +29,9 @@
 #include "scwm.h"
 #include "callbacks.h"
 #include "guile-compat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 SCM timer_hooks;
 SCM error_hook;

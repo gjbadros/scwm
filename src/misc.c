@@ -1,3 +1,7 @@
+/* $Id$
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ */
+
 /****************************************************************************
  * This module is all original code 
  * by Rob Nation 
@@ -32,6 +36,9 @@
 #include "image.h"
 #include "focus.h"
 #include "syscompat.c"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 

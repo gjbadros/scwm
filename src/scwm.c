@@ -1,22 +1,24 @@
 /* $Id$
  * scwm.c
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 /****************************************************************************
- * This module has been significantly modified by Maciej Stachowiak.
+ * This module has been significantly modified from fvwm2
  * It may be used under the terms indicated by the copyright below.
- * Changes Copyright 1997, Maciej stachowiak
+ * Changes Copyright 1997, 1998, Maciej Stachowiak and Greg J. Badros
  ****************************************************************************/
-/****************************************************************************
- * This module is all original code 
- * by Rob Nation 
+
+/*
+ * This module is derived from all original code by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
- ****************************************************************************/
+ */
+
 /***********************************************************************
  * scwm - "Scheme Configurable Window Manager"
- * based largely on fvwm2 with Guile Scheme added as the configuration 
+ * based on fvwm2 with Guile Scheme used as the configuration 
  * language.
  ***********************************************************************/
 

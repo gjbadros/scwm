@@ -1,6 +1,5 @@
 /* $Id$
-
-/*
+ *
  *      Copyright (C) 1997-1998, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,6 +24,7 @@
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
+
 #include <guile/gh.h>
 #include <config.h>
 
@@ -37,6 +37,9 @@
 #include "deskpage.h"
 #include "module-interface.h"
 #include "virtual.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 
 SCM_PROC(s_set_current_desk_x, "set-current-desk!", 1, 0, 0,  set_current_desk_x);

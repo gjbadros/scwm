@@ -1,8 +1,9 @@
-/* $Id$ */
+/* $Id$
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ */ 
 
 /****************************************************************************
- * This module is all original code 
- * by Rob Nation 
+ * This module is derived from code by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation

@@ -1,6 +1,10 @@
+/* $Id$
+ * placement.c
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ */
+ 
 /****************************************************************************
- * This module is all new
- * by Rob Nation 
+ * This module is derived from code by by Rob Nation 
  *
  * This code does smart-placement initial window placement stuff
  *

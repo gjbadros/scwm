@@ -1,6 +1,7 @@
-/*
- * $Id$
+/* $Id$
  * module-interface.c
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * 
  * Replaces the module stuff from fvwm2 with hooks to call
  * scheme code which can then talk to a module via the old mechanisms
  */
@@ -11,6 +12,9 @@
 #include "scwm.h"
 #include "misc.h"
 #include "callbacks.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 
 SCM broadcast_hook;

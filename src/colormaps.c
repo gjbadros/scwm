@@ -1,16 +1,11 @@
-
-
-
-/****************************************************************************
- * This module is all new
- * by Rob Nation 
- *
- * This code handles colormaps for scwm.
+/* $Id$
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * Modified from code by Rob Nation
  *
  * Copyright 1994 Robert Nation. No restrictions are placed on this code,
  * as long as the copyright notice is preserved . No guarantees or
  * warrantees of any sort whatsoever are given or implied or anything.
- ****************************************************************************/
+ */
 
 #include <config.h>
 
@@ -22,6 +17,9 @@
 #include "screen.h"
 #include "window.h"
 #include "colormaps.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 ScwmWindow *colormap_win;
 Colormap last_cmap = None;

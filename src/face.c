@@ -1,10 +1,13 @@
-/****************************************************************************
+/* $Id$
+ * face.c
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * 
  * This module has been significantly modified by Maciej Stachowiak
  * and Greg J Badros.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, Maciej Stachowiak and Greg J. Badros
- ****************************************************************************/
-/****************************************************************************
+ * Changes Copyright 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ *
  * This module based on original code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
@@ -24,6 +27,9 @@
 #include "util.h"
 #include "image.h"
 #include "guile-compat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 long scm_tc16_scwm_face;
 

@@ -1,11 +1,10 @@
 /* $Id$
  * events.c
- */
-
-/****************************************************************************
- * This module is derived from code
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * 
+ * This module is derived from code based on fvwm which was
  * based on Twm, and was siginificantly modified by Rob Nation 
- ****************************************************************************/
+ */
 
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/
@@ -35,11 +34,9 @@
 /*****************************************************************************/
 
 
-/***********************************************************************
- *
- * scwm event handling
- *
- ***********************************************************************/
+/*
+ * SCWM event handling
+ */
 
 #include <config.h>
 
@@ -84,6 +81,9 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "xmisc.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 #ifndef WithdrawnState
 #define WithdrawnState 0

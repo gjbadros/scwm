@@ -1,6 +1,6 @@
-/* $Id$ */
-/*
- *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+/* $Id$
+ *
+ * Copyright (C) 1997, 1998, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,12 @@
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
+#include <assert.h>
 
 #include <config.h>
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 /***********************************************************************
  *
@@ -43,8 +47,7 @@ safemalloc(int length)
 {
   void *ptr;
 
-  if (length <= 0)
-    length = 1;
+  assert(length >= 1);
 
   ptr = malloc(length);
   if (ptr == NULL) {

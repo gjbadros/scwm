@@ -1,4 +1,6 @@
-/* $Id$ */
+/* $Id$ 
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ */
 
 #include <unistd.h>
 #include <signal.h>
@@ -12,6 +14,10 @@
 #include "callbacks.h"
 #include "shutdown.h"
 #include "syscompat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
 
 SCM shutdown_hook;
 

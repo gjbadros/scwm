@@ -26,6 +26,9 @@
 #include "scwmmenu.h"
 #include "menuitem.h"
 #include "guile-compat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 SCM 
 mark_menuitem(SCM obj)

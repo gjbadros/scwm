@@ -1,7 +1,6 @@
 /* $Id$
  * focus.c
- * Copyright 1997, 1998
- * Maciej Stachowiak and Greg J. Badros
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 /****************************************************************************
@@ -28,6 +27,9 @@
 #include "ICCCM.h"
 #include "misc.h"
 #include "screen.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 /********************************************************************
  *

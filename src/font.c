@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,9 @@
 #include "decor.h"
 #include "drawmenu.h"
 #include "guile-compat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 #define FONT_HASH_SIZE 7
 

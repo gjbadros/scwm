@@ -14,6 +14,9 @@
 #include "font.h"
 #include <guile/gh.h>
 #include "xmisc.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 /* FIXGJB: comment these! */
 #define MENU_EDGE_VERT_SPACING 2

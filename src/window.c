@@ -1,17 +1,18 @@
 /* $Id$
  * window.c
  *
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * This module has been significantly modified by Maciej Stachowiak.
+ * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
+ * Changes Copyright 1997, 1998 Maciej stachowiak
+ *
  */
 
 /* #define SCWM_DEBUG_MSGS */
 
 #define WINDOW_IMPLEMENTATION
 
-/****************************************************************************
- * This module has been significantly modified by Maciej Stachowiak.
- * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, Maciej stachowiak
- ****************************************************************************/
 #include <stdio.h>
 #include <guile/gh.h>
 #include <X11/keysym.h>

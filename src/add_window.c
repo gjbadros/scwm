@@ -70,6 +70,9 @@
 #include "icons.h"
 #include "placement.h"
 #include "callbacks.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 
 SCM before_new_window_hook;

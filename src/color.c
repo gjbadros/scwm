@@ -36,6 +36,9 @@
 #include "system.h"
 #include "guile-compat.h"
 #include "scwm-snarf.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 #define COLOR_HASH_SIZE 20
 

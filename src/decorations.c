@@ -1,8 +1,8 @@
-
-/****************************************************************************
- * 
- * This is all original code by Robert Nation 
- * which reads motif mwm window manager
+/* $Id$
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ * Modified from code by Robert Nation
+ *
+ * This code reads motif mwm window manager
  * hints from a window, and makes necessary adjustments for scwm. 
  *
  * Definitions of the hint structure and the constants are courtesy of
@@ -32,7 +32,7 @@
  *> Eli.
  *
  *
- ****************************************************************************/
+ */
 
 /* #define SCWM_DEBUG_MSGS */
 
@@ -47,6 +47,9 @@
 #include "misc.h"
 #include "screen.h"
 #include "mwmcom.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 extern Atom _XA_MwmAtom;
 

@@ -1,7 +1,9 @@
 /* $Id$
  * xmisc.c
- * Miscellaneous abstractions of X11 routines
- * for scwm
+ *
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * Miscellaneous abstractions of X11 routines for scwm
  */
 
 #include <X11/X.h>

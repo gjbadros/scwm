@@ -27,6 +27,10 @@
 #include "borders.h"
 #include "font.h"
 #include "guile-compat.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
+
 
 size_t 
 free_decor(SCM obj)

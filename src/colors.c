@@ -27,6 +27,9 @@
 #include "misc.h"
 #include "screen.h"
 #include "colors.h"
+#ifdef USE_DMALLOC
+#include "dmalloc.h"
+#endif
 
 
 static void 

@@ -1,14 +1,15 @@
 /* $Id$
  * icons.c 
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 /****************************************************************************
- * This module is derived from mostly all new code written
- * by Rob Nation 
+ * This module is derived from mostly all code written by Rob Nation 
  * A little of it is borrowed from ctwm.
  * Copyright 1993 Robert Nation. No restrictions are placed on this code,
  * as long as the copyright notice is preserved
  ****************************************************************************/
+
 /***********************************************************************
  *
  * scwm icon code
