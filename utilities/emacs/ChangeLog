@@ -1,3 +1,8 @@
+Fri Mar 12 14:43:35 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added note about using C-u C-c C-l <RETURN> to reload
+	the current file.
+
 Wed Mar 10 20:02:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Rewrite "SCWM" as "Scwm" throughout (less bothersome to

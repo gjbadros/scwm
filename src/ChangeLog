@@ -1,3 +1,37 @@
+Fri Mar 12 14:44:33 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added DecorationWidth, DecorationHeight,
+	DecorationXOffset, DecorationYOffset, ClientWidth, ClientHeight
+	functions, and use them instead of inline math.  Also introduce
+	use of __inline__ (expands to nothing #ifndef __GNUCC__).  Improve
+	docs on window-size, window-frame-size to refer to each other.
+
+	* shutdown.c: Use new XA_SCWM_RESTARTING, and set that property to 
+	"scwm-restart" before restarting scwm (done before
+	run_restart_command because we must do it before the X connection
+	is closed).  Also replaced a use of inline with __inline__ since
+	the former is a GNU CCism.
+
+	* scwm.h: Added #define of __inline__ to nothing if needed.  Added 
+	XA_SCWM_RESTARTING, update other extern Atom decls.
+
+	* scwm.c: Added XA_SCWM_RESTARTING, removed extern XA_WM_PROTOCOLS 
+	(already done in scwm.h).  Added SetRestartingGlobal() to check
+	XA_SCWM_RESTARTING property (set just before run_restart_command).  My
+	WM_DESKTOP property is set on the root window even when Scwm is
+	not restarting itself, but this reliably works for me. 
+
+	* resize.c:  Convert dragWidth, dragHeight to application (client) 
+	window size before coverting to client units.  Improve docs of
+	interactive_resize_new_size_hook.
+
+	* move.c: Doc update to interactive_move_new_position_hook
+
+	* ICCCM.c: Drop an Intern that's guaranteed to already be done.
+
+	* callbacks.c: Replace inline with __inline__ to remove dependence 
+	on GCC.
+
 Wed Mar 10 20:15:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* binding.c (s_bind_key): Replace RELEASE_PROC in documentation

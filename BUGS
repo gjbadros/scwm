@@ -3,6 +3,9 @@ tried finding some quick fixes but they cause segfaults, thus this is
 something to fix by reconsidering all this code and implementing true
 layers functionality.
 -------------
+make-color can return #f, we should have make-closest-color that is
+guaranteed to work and return the closest color to the requested one.
+-------------
 Graeme.Cross@sci.monash.edu.au reports problems using ApplixWare's windows
 and Scwm (perhaps related to bitmaps that Applixware puts on the windows)
 -------------

@@ -1,3 +1,22 @@
+Fri Mar 12 17:12:05 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* menus-extras.scm: Added -- moved fold-menu-list and split-list
+	out from base.scm, added fold-menu-list-by-group and
+	split-by-resource.
+
+	* winlist.scm: Added by-resource option to show-window-list-menu,
+	and rework that proc a lot.  Instead of using fold-menu-list, use
+	split-by-resource if the menu would be too tall (as checked by new 
+	menu-max-fold-lines proc.  Use the menus-extras module to get at
+	the new functionality
+
+	* std-menus.scm: Use menus-extras module to get at fold-menu-list
+
+	* flux.scm: Run .xclients in the background (added "&")
+
+	* base.scm: Move fold-menu-list and split-list out into
+	menus-extras module.
+
 Wed Mar 10 20:20:08 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `run-dot-xclients-at-startup', `run-dot-xclients-script'
