@@ -1,0 +1,11 @@
+--- libtool.orig	Thu Apr 15 20:00:47 1999
++++ libtool	Thu Apr 15 20:00:53 1999
+@@ -122,7 +122,7 @@
+ old_archive_from_new_cmds=""
+ 
+ # Commands used to build and install a shared archive.
+-archive_cmds="\$CC -shared \${wl}-soname \$wl\$soname -o \$lib\$libobjs"
++archive_cmds="\$CC -shared \${wl}-soname \$wl\$soname -o \$lib\$libobjs \$deplibs"
+ postinstall_cmds=""
+ postuninstall_cmds=""
+ 
