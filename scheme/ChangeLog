@@ -73,6 +73,21 @@ Fri Sep 24 09:26:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* wavplay.scm: Use (getenv "SCWMDIR") instead of scwmdir.
 
+Fri Sep 24 09:11:01 1999    <gjb@cs.washington.edu>
+
+	* simplebiff.scm, message-window.scm, window-selection.scm,
+ 	hover-focus.scm, gtk.scm, flux-gtk.scm, flash-window.scm,
+ 	edge-ops.scm, auto-raise.scm, ScwmClock.scm: Use msec for
+ 	timer-hooks.
+
+	* gtk.scm: Reduce frequency of gratuitous gtk event handles from
+	every 50ms to every 150ms.
+
+	* time-convert.scm: Drop usec fns since timer-hooks now use msec.
+
+	* flux.scm: Drop add-ms-timer-hook! since timer-hooks are in ms
+	now, anyway.
+
 1999-09-23  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Added nonant support to 
