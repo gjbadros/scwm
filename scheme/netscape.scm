@@ -145,14 +145,6 @@ not open a new netscape frame."
   (interactive)
   (netscape-goto-url (X-cut-buffer-string) display-message-briefly new))
 
-;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
-;; instead of just placement-proc, even though I've explicitly
-;; named the window
-(window-style "findDialog_popup" #:transient-placement-proc 
-	      (near-window-placement netscape-win
-				     #:proportional-offset '(-1 0)
-				     #:relative-to 'northeast))
-
 (define-public (netscape-download-closed-action win)
   "Execute the closed action for WIN, a netscape download window.
 This plays `*netscape-download-closed-wav*' iff WIN has been
@@ -166,11 +158,22 @@ up from at least `*netscape-download-closed-threshold-seconds*'."
 	   (string=? (window-resource win) "Download"))
       (netscape-download-closed-action win)))
 
+(define-public (enable-autosave-netscape-dialog)
+  "Enable the netscape autosaving \"Save as...\" dialog."
+  (window-style '("Netscape" "fileSelector_popup") #:transient-placement-proc 
+		(auto-accept-dialog-placement)))
+
+(define-public (disable-autosave-netscape-dialog)
+  "Disable the netscape autosaving \"Save as...\" dialog."
+  (window-style '("Netscape" "fileSelector_popup") #:transient-placement-proc 
+		(near-window-placement netscape-win)))
+
 (define-public (enable-dynamic-netscape-actions)
   "Enable the netscape download-closed action.
 See `netscape-download-closed-action'."
-  (window-style "findDialog_popup" #:transient-placement-proc 
+  (window-style '("Netscape" "findDialog_popup") #:transient-placement-proc 
 		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+  (disable-autosave-netscape-dialog)
   (add-hook! window-close-hook call-netscape-download-closed-action))
 
 (define-public url-google "http://www.google.com/search?q=")

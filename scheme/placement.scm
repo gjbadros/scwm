@@ -138,7 +138,12 @@ a window at the pointer position."
    (lambda (win)
      (place-at-point-internal win offset proportional-offset))))
 
-
+(define*-public (auto-accept-dialog-placement #&optional (delay 500))
+  "Return a procedure that auto-accepts a dialog box window.
+DELAY is the number of msec to delay before sending the \"Return\"
+keystroke to accept the dialog."
+  (lambda (win)
+    (add-timer-hook! delay (lambda () (send-key "Return" win)))))
 
 (define*-public (near-window-placement window-getter #&key (offset '(0 0))
 				       (proportional-offset '(-0.5 -0.5))

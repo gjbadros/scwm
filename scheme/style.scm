@@ -41,7 +41,12 @@
 (define-public (window-style condition . args) 
   "Specify various properties for windows matching CONDITION.
 See the `Face Specification Flags' and `Window Style' sections
-for details."
+for details.  CONDITION can be a string in which case
+`default-style-condition-handler' is used, or it can be a list
+of two elements in which case the first is the X class name to match
+and the second is the X resource name to match (both must match).
+CONDITION can also be an arbitrary predicate that takes a window
+and returns #t iff that window is to be considered a match."
   (let ((new-style (apply make-conditional-style condition args)))
     (for-each (lambda (w) (apply-style new-style w)) (list-all-windows))
     (set! global-conditional-style
@@ -112,6 +117,7 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
     always?)
    ((eq? #f condition) never?)
    ((string? condition) (default-style-condition-handler condition))
+   ((pair? condition) (win-and?? (class-match?? (car condition)) (resource-match?? (cadr condition))))
    ((procedure? condition) condition)
    (else (error "Bad window specifier for window-style."))))
 
