@@ -3,32 +3,47 @@
 ;; GJB:FIXME:: need to add unbind-N-modifer-key-events procedures
 ;; Should do it nicely w/o duplicating all code
 
-(define-module (app scwm modifier-key-bindings))
+(define-module (app scwm modifier-key-bindings)
+  :use-module (app scwm optargs))
 
-(define-public (bind-two-modifier-key-events 
-		modkey1 modkey2 
-		proc-press proc-release)
-  "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
-MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
-will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
+(define* (unbind-keycode-ignore-procs contexts keycode modmask ignore1 #&optional ignore2)
+  (unbind-keycode contexts keycode modmask))
+
+(define (do-two-modifier-key-events proc
+				    modkey1 modkey2 
+				    proc-press proc-release)
   (let ((keycode1 (car modkey1))
 	(mod1 (cdr modkey1))
 	(keycode2 (car modkey2))
 	(mod2 (cdr modkey2)))
     ;; first handle keycode1 last 
-    (bind-keycode 'all keycode1 mod2 proc-press #f)
-    (bind-keycode 'all keycode1 (+ mod2 mod1) #f proc-release)
+    (proc 'all keycode1 mod2 proc-press #f)
+    (proc 'all keycode1 (+ mod2 mod1) #f proc-release)
     ;; now handle keycode2 last
-    (bind-keycode 'all keycode2 mod1 proc-press #f)
-    (bind-keycode 'all keycode2 (+ mod1 mod2) #f proc-release)))
+    (proc 'all keycode2 mod1 proc-press #f)
+    (proc 'all keycode2 (+ mod1 mod2) #f proc-release)))
 
-
-(define-public (bind-three-modifier-key-events 
-		modkey1 modkey2 modkey3
+(define-public (bind-two-modifier-key-events
+		modkey1 modkey2 
 		proc-press proc-release)
   "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
-MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
+MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
+  (do-two-modifier-key-events bind-keycode modkey1 modkey2 
+			      proc-press proc-release))
+
+
+(define-public (unbind-two-modifier-key-events
+		modkey1 modkey2)
+  "Unbind events attached to a multi-modifier key event."
+  (do-two-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 
+			      #f #f))
+
+
+
+(define (do-three-modifier-key-events proc
+				      modkey1 modkey2 modkey3
+				      proc-press proc-release)
   (let ((keycode1 (car modkey1))
 	(mod1 (cdr modkey1))
 	(keycode2 (car modkey2))
@@ -37,22 +52,35 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 	(mod3 (cdr modkey3)))
     (let ((all-mods (+ mod1 mod2 mod3)))
       ;; first handle keycode1 last
-      (bind-keycode 'all keycode1 (+ mod2 mod3) proc-press #f)
-      (bind-keycode 'all keycode1 all-mods #f proc-release)
+      (proc 'all keycode1 (+ mod2 mod3) proc-press #f)
+      (proc 'all keycode1 all-mods #f proc-release)
       ;; now handle keycode2 last
-      (bind-keycode 'all keycode2 (+ mod1 mod3) proc-press #f)
-      (bind-keycode 'all keycode2 all-mods #f proc-release)
+      (proc 'all keycode2 (+ mod1 mod3) proc-press #f)
+      (proc 'all keycode2 all-mods #f proc-release)
       ;; now handle keycode 3 last
-      (bind-keycode 'all keycode3 (+ mod1 mod2) proc-press #f)
-      (bind-keycode 'all keycode3 all-mods #f proc-release)
+      (proc 'all keycode3 (+ mod1 mod2) proc-press #f)
+      (proc 'all keycode3 all-mods #f proc-release)
       )))
 
-(define-public (bind-four-modifier-key-events 
-		modkey1 modkey2 modkey3 modkey4
+(define-public (bind-three-modifier-key-events 
+		modkey1 modkey2 modkey3
 		proc-press proc-release)
   "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
-MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that, when pressed at the same time,
+MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
+  (do-three-modifier-key-events bind-keycode modkey1 modkey2 modkey3
+				proc-press proc-release))
+
+(define-public (unbind-three-modifier-key-events
+		modkey1 modkey2 modkey3)
+  "Unbind events attached to a multi-modifier key event."
+  (do-three-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 modkey3
+				#f #f))
+
+
+(define (do-four-modifier-key-events proc
+				     modkey1 modkey2 modkey3 modkey4
+				     proc-press proc-release)
   (let ((keycode1 (car modkey1))
 	(mod1 (cdr modkey1))
 	(keycode2 (car modkey2))
@@ -63,18 +91,34 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 	(mod4 (cdr modkey4)))
     (let ((all-mods (+ mod1 mod2 mod3 mod4)))
       ;; first handle keycode1 last
-      (bind-keycode 'all keycode1 (+ mod2 mod3 mod4) proc-press #f)
-      (bind-keycode 'all keycode1 all-mods #f proc-release)
+      (proc 'all keycode1 (+ mod2 mod3 mod4) proc-press #f)
+      (proc 'all keycode1 all-mods #f proc-release)
       ;; now handle keycode2 last
-      (bind-keycode 'all keycode2 (+ mod1 mod3 mod4) proc-press #f)
-      (bind-keycode 'all keycode2 all-mods #f proc-release)
+      (proc 'all keycode2 (+ mod1 mod3 mod4) proc-press #f)
+      (proc 'all keycode2 all-mods #f proc-release)
       ;; now handle keycode 3 last
-      (bind-keycode 'all keycode3 (+ mod1 mod2 mod4) proc-press #f)
-      (bind-keycode 'all keycode3 all-mods #f proc-release)
+      (proc 'all keycode3 (+ mod1 mod2 mod4) proc-press #f)
+      (proc 'all keycode3 all-mods #f proc-release)
       ;; now handle keycode 4 last
-      (bind-keycode 'all keycode4 (+ mod1 mod2 mod3) proc-press #f)
-      (bind-keycode 'all keycode4 all-mods #f proc-release)
+      (proc 'all keycode4 (+ mod1 mod2 mod3) proc-press #f)
+      (proc 'all keycode4 all-mods #f proc-release)
       )))
+
+(define-public (bind-four-modifier-key-events 
+		modkey1 modkey2 modkey3 modkey4
+		proc-press proc-release)
+  "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that, when pressed at the same time,
+will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
+  (do-four-modifier-key-events bind-keycode modkey1 modkey2 modkey3 modkey4
+			       proc-press proc-release))
+
+(define-public (unbind-four-modifier-key-events
+		modkey1 modkey2 modkey3 modkey4)
+  "Unbind events attached to a multi-modifier key event."
+  (do-four-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 modkey3 modkey4
+			       #f #f))
+
 
 
 (define (car-or-255 l)
