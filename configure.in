@@ -93,7 +93,7 @@ fi
 
 
 if test "no" != "$GUILE_CONFIG"; then
-  AC_MSG_CHECKING(whether build-guile works)
+  AC_MSG_CHECKING(whether guile-config or build-guile works)
   if (${GUILE_CONFIG} link) >/dev/null 2>&1; then
     GUILE_CONFIG_works=yes
   else
@@ -361,6 +361,8 @@ AC_CHECK_LIB(guile, scm_internal_cwdr, AC_DEFINE(HAVE_SCM_INTERNAL_CWDR), ,$GUIL
 AC_CHECK_LIB(guile, scm_internal_stack_catch, AC_DEFINE(HAVE_SCM_INTERNAL_STACK_CATCH), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_internal_parse_path, AC_DEFINE(HAVE_SCM_INTERNAL_PARSE_PATH), ,$GUILE_LIBS)
+
+AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILES), ,$GUILE_LIBS)
 
 dnl check for scm_the_last_fluid in place of scm_the_last_stack_var
 
