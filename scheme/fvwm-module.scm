@@ -21,6 +21,7 @@
 
 (define-module (app scwm fvwm-module)
   :use-module (app scwm winlist)
+  :use-module (app scwm wininfo)
   :use-module (app scwm base)
   :use-module (app scwm file)
   :use-module (app scwm defoption)
@@ -589,8 +590,21 @@
 
 
 (define-public (fvwm2-pager-window)
-  (let ((wl (list-windows #:only (title-match?? "Fvwm Pager"))))
-    (and wl (car wl))))
+  "Return a fvwm2 pager window, or #f if there is none."
+  (let ((pagers
+	 (list-windows #:only (win-and?? (class-match?? "FvwmModule") 
+					  (resource-match?? "FvwmPager")))))
+    (and (pair? pagers) (car pagers))))
+
+(define-public (raise-fvwm2-pager)
+  "Raise a fvwm2 pager window in the stacking order."
+  (let ((w (fvwm2-pager-window)))
+    (and w (raise-window w))))
+
+(define (lower-fvwm2-pager)
+  "Lower a fvwm2 pager window in the stacking order."
+  (let ((w (fvwm2-pager-window)))
+    (and w (lower-window w))))
 
 ;; (deiconify-window (fvwm2-pager-window))
 ;; (iconify-window (fvwm2-pager-window))
