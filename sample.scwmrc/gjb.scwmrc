@@ -58,7 +58,7 @@
 
 (set! debug-fvwm-module #f)
 
-(set! use-scwm-system-proc #t)
+(set! *use-scwm-system-proc* #t)
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
@@ -785,7 +785,7 @@ union of all other window managers!
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart "scwm")))
     (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "/home/gjb/scwm/scwm/scwm")))
+	       #:action (lambda () (restart "$SCWMDIR/scwm/scwm")))
     menu-separator
     (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
@@ -1172,7 +1172,12 @@ union of all other window managers!
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
-(key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right")
+
+;; avoid lots of warnings.... test for this first...
+(define have-kp-keysyms (and (keysym->keycode "KP_Left") #t))
+
+(if have-kp-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
 
 (bind-key 'all "C-M-S-Home" (lambda () (set-current-desk! 0)))
 (bind-key 'all "C-M-S-End" (lambda () (set-current-desk! 1)))
@@ -1252,41 +1257,49 @@ union of all other window managers!
 
 (let ((p (lambda () (animated-move-to 0 0))))
   (bind-key 'all "C-M-KP_7" p)
-  (bind-key 'all "C-M-KP_Home" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Home" p)))
 
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) 0)))))
   (bind-key 'all "C-M-KP_9" p)
-  (bind-key 'all "C-M-KP_Prior" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Prior" p)))
 
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to 0 (y- (w%y 100)))))))
   (bind-key 'all "C-M-KP_1" p)
-  (bind-key 'all "C-M-KP_End" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_End" p)))
 
 (let ((p (lambda () (with-window 
 		     (get-window)
 		     (animated-move-to (x- (w%x 100)) (y- (w%y 100)))))))
   (bind-key 'all "C-M-KP_3" p)
-  (bind-key 'all "C-M-KP_Next" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Next" p)))
 
 (let ((p (lambda () (animated-move-to #f 0))))
   (bind-key 'all "C-M-KP_8" p)
-  (bind-key 'all "C-M-KP_Up" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Up" p)))
 
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) #f)))))
   (bind-key 'all "C-M-KP_6" p)
-  (bind-key 'all "C-M-KP_Right" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Right" p)))
 
 (let ((p (lambda () (with-window (get-window) 
 				 (animated-move-to #f (y- (w%y 100)))))))
   (bind-key 'all "C-M-KP_2" p)
-  (bind-key 'all "C-M-KP_Down" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Down" p)))
 
 (let ((p (lambda () (animated-move-to 0 #f))))
   (bind-key 'all "C-M-KP_4" p)
-  (bind-key 'all "C-M-KP_Left" p))
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Left" p)))
 
 
 ;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
