@@ -1,3 +1,14 @@
+Wed Aug 12 15:31:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Use resize-frame-to and window-frame-size for
+	  maxmize function
+
+	* wininfo.scm: Use window-frame-size, except for
+	  window-geometry-string which now uses the size in resize-inc
+	  units
+
+	* flux.scm, base.scm: Use window-frame-size for w%x, w%y, etc.
+
 Fri Aug  7 17:57:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* stacking.scm: Add this new module with list-windows-above,
