@@ -1,3 +1,11 @@
+1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* group.scm: New file, containing window group operations.
+	* test/group.scm: New file, tests for the above.
+	* flux.scm: Removed `group-leader-id' and `group->windows', since
+	group.scm provides them.
+	* Makefile.am: group.scm added.
+
 Mon Mar 22 18:58:16 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Move reset-hook! to be in the root module.

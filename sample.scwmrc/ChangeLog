@@ -1,3 +1,12 @@
+1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc (separate-fields-discarding-char): Removed.
+	Adapted to current message-window interface.
+	Root menu additions.
+	Make small window ops into a pie menu.
+	Bind new `iconify-group', and use `deiconify-group-or-window'.
+	Some style changes.
+
 Mon Mar 22 16:20:10 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* sds.scwmrc: Clean up some FIXGJB comments inherited from my old
