@@ -1,3 +1,7 @@
+1999-02-14  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* mstachow.scwmrc: Make sure to toggle maximize on H-m.
+
 1999-02-13  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* mstachow.scwmrc: Added my personal scwmrc which has a number of

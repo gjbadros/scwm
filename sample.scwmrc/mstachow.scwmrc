@@ -708,7 +708,7 @@
 (bind-key 'all "H-t" toggle-stick-and-on-top)
 
 (bind-key 'all "H-i" animated-toggle-iconify)
-(bind-key 'all "H-m" both-maximize)
+(bind-key 'all "H-m" both-toggle-maximize)
 (bind-key 'all "H-v" vertical-maximize)
 (bind-key 'all "H-h" horizontal-maximize)
 
