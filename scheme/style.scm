@@ -30,11 +30,11 @@
 ;; Also, this may be better placed somewhere else
 ;; Make make-pixmap and make-bitmap aliases for make-picture;
 ;; Prefer and encourage make-picture, though!
-(define (make-pixmap arg)
-  (make-picture arg))
+;; GJBFIX-- You can just use define, I assume make-picture
+;; going to be changing dynamically. Also, these should be exported.
+(define-public make-pixmap make-picture)
 
-(define (make-bitmap arg)
-  (make-picture arg))
+(define-public make-bitmap make-picture)
 
 ;; MSFIX: should use X Class name, or X Instance name first,
 ;; not wildcard matcher!  My xterm-s track the running program
@@ -42,6 +42,12 @@
 ;; from an XTERM does not mean I want that xterm, whose title
 ;; may be something like "<hostname> xbiff", to have an xbiff-like
 ;; window style! --11/08/97 gjb
+;; FIXMS: OK, I guess you should be able to choose which of {title,
+;; resource name, resource class} you would like to be matched, currently
+;; all three are matched unconditionally. Note, however, that
+;; a window titled "<hostname> xbiff" willl not match an "xbiff" wildcard,
+;; although it _will_ match "*xbiff".
+
 (define-public (window-style condition . args)
   (let ((predicate (cond
 		    ((or (eq? #t condition) 
@@ -150,32 +156,40 @@
 (add-window-style-option #:mwm-border set-mwm-border!)
 
 ;; MSFIX: did I do this right?
-(define (set-icon-maybe-name! arg w)
-  (set-icon!
-   (if (string? arg)
-       (make-picture arg)
-       arg)
-   w))
-  
-(define (set-mini-icon-maybe-name! arg w)
-  (set-mini-icon! 
-   (if (string? arg)
-       (make-picture arg)
-       arg)
-   w))
+;; MS: would rather do this in the primitives at least for now.
 
-(define (set-mini-icon-pixmap-name! arg w)
-  (and (string? arg)
-       (set-mini-icon! (string-append "mini-" arg ".xpm") w))
-  (display "Set it!\n"))
+;(define (set-icon-maybe-name! arg w)
+;  (set-icon!
+;   (if (string? arg)
+;       (make-picture arg)
+;       arg)
+;   w))
+  
+;(define (set-mini-icon-maybe-name! arg w)
+;  (set-mini-icon! 
+;   (if (string? arg)
+;       (make-picture arg)
+;       arg)
+;   w))
+
+;(define (set-mini-icon-pixmap-name! arg w)
+;  (and (string? arg)
+;       (set-mini-icon! (string-append "mini-" arg ".xpm") w))
+;  (display "Set it!\n"))
    
 
 ;; Use the sugared versions from above
-(add-window-style-option #:icon set-icon-maybe-name!)
-(add-window-style-option #:mini-icon set-mini-icon-maybe-name!)
+;; MS: the primitive versions now handle strings, IMO this is more
+;; consistent with other interfaces.
+(add-window-style-option #:icon set-icon!)
+(add-window-style-option #:mini-icon set-mini-icon!)
 
 ;; MSFIX: how do I add a new keword argument like this, to use
 ;; the above function?
+;; GJBFIX: what you have here should be right, but I am deeply
+;; supspicious of this; I think specifying the whole filename
+;; for the mini-icon is much cleaner, and stuff like this in
+;; scwmrc files will be confusing.
 ;;(add-window-style-option #:minipix set-mini-icon-pixmap-name!)
 
 (add-window-hint-option #:random-placement set-random-placement!)
@@ -203,4 +217,5 @@
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
+
 
