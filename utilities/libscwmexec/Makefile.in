@@ -26,7 +26,7 @@ LDFLAGS=@LDFLAGS@
 X_LIBRARY=-lX11 @LIBS@
 XEXT_LIBRARY=-lXext
 XPM_LIBRARY=-lXpm
-LIBS=-L../libscwmexec ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS} -lscwmexec
+LIBS=-L../libscwmexec -lscwmexec ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
 
 
 AR=@AR@
