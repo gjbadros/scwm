@@ -117,8 +117,8 @@ SOUND must be an object returned by `sound-load'. */
 
 SCWM_PROC(esd_reconnect, "esd-reconnect", 0, 1, 0,
 	  (SCM host))
-     /** Connect to ESD on HOST.
-If HOST is not set, the ESPEAKER environmental variable will be used. If this
+     /** Connect to the ESound daemon on the machine named HOST.
+If HOST is not set, the $ESPEAKER environmental variable will be used. If this
 is unset too, localhost is contacted.
 The esdsound module normally connects at startup. This function is useful
 if the connection was lost, esd was not running at startup, or its location
