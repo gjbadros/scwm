@@ -84,6 +84,9 @@ ScwmWindow *Tmp_win;		/* the current scwm window */
 int last_event_type=0;
 Window last_event_window=0;
 
+extern int interactive;
+int repl_fd;
+
 #ifdef SHAPE
 extern int ShapeEventBase;
 void HandleShapeNotify(void);
@@ -172,18 +175,60 @@ void DispatchEvent()
  ************************************************************************/
 void HandleEvents()
 {
+  SCM repl_th;
+
+  repl_th=SCM_UNDEFINED;
+
   DBUG("HandleEvents","Routine Entered");
+
+  if (interactive) {
+    repl_fd=SCM_INUM(scm_fileno(scm_current_input_port()));
+
+    repl_th=gh_eval_str(
+"(letrec "
+"    ((wrap-port-continuing-read "
+"      (lambda (port cont) "
+"	(make-soft-port (vector #f #f #f "
+"				(lambda () "
+"				  (let* ((pcont "
+"					  (call-with-current-continuation "
+"					   (lambda (c) c))) "
+"					 (escape-to-read "
+"					  (lambda () (pcont pcont)))) "
+"				    (if (char-ready? port) "
+"					(read-char port) "
+"					(cont escape-to-read)))) #f) \"r\")))"
+"     (continuing-top-repl "
+"      (lambda () "
+"	(call-with-current-continuation "
+"	 (lambda (cont) "
+"	   (let ((wrapped-input "
+"		  (wrap-port-continuing-read (current-input-port) cont))) "
+"		 (with-input-from-port wrapped-input "
+"		   (lambda () "
+"		     (catch #t "
+"			    (lambda () (top-repl)) "
+"			    (lambda args args)))) "
+"	     (close-port wrapped-input))))))) "
+"  (set-repl-prompt! \"scwm> \")"
+"  (continuing-top-repl)) ");
+    if (!gh_procedure_p(repl_th)) {
+      interactive=0;
+    }
+  }
+
   while (TRUE)
     {
       last_event_type = 0;
-      if(My_XNextEvent(dpy, &Event))
-	{
-	  SCM_DEFER_INTS;
-	  DispatchEvent ();
-	  SCM_ALLOW_INTS;
-	} else {
-	  scm_yield();
-	}
+      switch (My_XNextEvent(dpy, &Event)) {
+      case 0:
+	DispatchEvent ();
+	break;
+      case 1:
+	gh_call0(repl_th);
+      case 2:
+	break;
+      }
     }
 }
 
@@ -668,7 +713,7 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
 {
   extern long isIconicState;
   extern Bool PPosOverride;
-  
+
   Event.xany.window = Event.xmaprequest.window;
   
   if(XFindContext(dpy, Event.xany.window, ScwmContext, 
@@ -677,12 +722,15 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
   
   if(!PPosOverride)
     XFlush(dpy);
-  
+ 
   /* If the window has never been mapped before ... */
   if(!Tmp_win)
     {
       /* Add decorations. */
       Tmp_win = AddWindow(Event.xany.window);
+      if (Tmp_win->flags & ICONIFIED) {
+	Tmp_win->flags |= STARTICONIC;
+      }
       if (Tmp_win == NULL)
 	return;
     }
@@ -690,7 +738,7 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
   if(KeepRaised != None)
     XRaiseWindow(dpy,KeepRaised);
   /* If it's not merely iconified, and we have hints, use them. */
-  if (!(Tmp_win->flags & ICONIFIED))
+  if (!(Tmp_win->flags & ICONIFIED) || (Tmp_win->flags & STARTICONIC))
     {
       int state;
       
@@ -719,6 +767,7 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
 	      Tmp_win->flags |= MAP_PENDING;
 	      SetMapStateProp(Tmp_win, NormalState);
 	      if((Tmp_win->flags & ClickToFocus)&&
+		 /*		 !(Tmp_win->flags & SloppyFocus) && */
 		 ((!Scr.Focus)||(Scr.Focus->flags & ClickToFocus)))
 		{
 		  SetFocus(Tmp_win->w,Tmp_win,1);
@@ -742,6 +791,7 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
 	    }
 	  break;
 	}
+      Tmp_win->flags &= ~STARTICONIC;
       if(!PPosOverride)
 	XSync(dpy,0);
       MyXUngrabServer(dpy);
@@ -981,7 +1031,9 @@ void HandleButtonPress()
   DBUG("HandleButtonPress","Routine Entered");
 
   /* click to focus stuff goes here */
-  if((Tmp_win)&&(Tmp_win->flags & ClickToFocus)&&(Tmp_win != Scr.Ungrabbed)&&
+  if((Tmp_win)&&(Tmp_win->flags & ClickToFocus)
+     && !(Tmp_win->flags & SloppyFocus)
+     &&(Tmp_win != Scr.Ungrabbed)&&
      ((Event.xbutton.state&
        (ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask)) == 0))
   {
@@ -1402,6 +1454,7 @@ int My_XNextEvent(Display *dpy, XEvent *event)
   Window targetWindow;
   int i,count;
   int retval;
+  struct timeval timeout;
 
   DBUG("My_XNextEvent","Routine Entered");
 
@@ -1414,7 +1467,7 @@ int My_XNextEvent(Display *dpy, XEvent *event)
       DBUG("My_XNextEvent","taking care of queued up events & returning");
       XNextEvent(dpy,event);
       StashEventTime(event);
-      return 1;
+      return 0;
     }
 
   DBUG("My_XNextEvent","no X events waiting - about to reap children");
@@ -1425,7 +1478,12 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 
   FD_ZERO(&in_fdset);
   FD_SET(x_fd,&in_fdset);
+  if(interactive) {
+    FD_SET(repl_fd,&in_fdset);
+  }
   FD_ZERO(&out_fdset);
+
+  /*
   for(i=0; i<npipes; i++)
     {
       if(readPipes[i]>=0)
@@ -1441,15 +1499,22 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 	  FD_SET(writePipes[i], &out_fdset);
 	}
     }
+    */
 
   DBUG("My_XNextEvent","waiting for module input/output");
   XFlush(dpy);
+  timerclear(&timeout);
 #ifdef __hpux
   retval=select(fd_width,(int *)&in_fdset, (int *)&out_fdset,0, NULL);
 #else
   retval=select(fd_width,&in_fdset, &out_fdset, 0, NULL);
 #endif
   
+  if (interactive && FD_ISSET(repl_fd,&in_fdset)) {
+    return 1;
+  }
+
+#if 0
   /* Check for module input. */
   for(i=0;i<npipes;i++)
     {
@@ -1479,7 +1544,10 @@ int My_XNextEvent(Display *dpy, XEvent *event)
 	    }
 	}
     }
+#endif
   DBUG("My_XNextEvent","leaving My_XNextEvent");
-  return 0;
+  return 2;
 }
+
+
 
