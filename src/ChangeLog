@@ -1,3 +1,15 @@
+Mon Nov 10 05:17:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* errors.c, errors.h, window.c: Signal an error when the image
+ 	can't be loaded in set-icon!
+	
+	* scmprocs.c: Renamed make-picture to make-image and
+ 	set-picture-path! to set-image-path! (externally only for now,
+ 	will change all references in C code soon).
+
+	* miscprocs.c, miscprocs.h, scmprocs.c : Renamed set-xor-value! to
+ 	set-rubber-band-mask!
+
 Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* move.c: wrote AnimatedShadeWindow(), similar to
@@ -15,10 +27,7 @@ Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	automatically removing the #ifdef-s
 
 	* events.c: removed unused macros MAX_NAME_LEN, MAX_ICON_NAME_LEN
-	
-	* gjb.scwmrc: Use animated shading for double clicks on title bar
- 	by default
-	
+		
 Sun Nov  9 14:11:47 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Picture.c, window.c: Handle memory management of strings passed
@@ -33,6 +42,12 @@ Sun Nov  9 14:11:47 1997  Greg Badros  <gjb@cs.washington.edu>
 	* system.c: Added note about char * return value in findFile --
  	that needs to be freed, too.
 
+Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Make set-icon! and set-mini-icon! able to take strings
+ 	as well as pictures to be consistent with the handling of colors
+ 	and fonts by other functions.
+	
 Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* face.c: Restore the calls to redraw_borders, since it is now
@@ -232,7 +247,6 @@ Mon Oct 27 06:53:54 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	set-click-to-focus-passes-click!, set-click-to-focus-raises! and
  	set-mouse-focus-click-raises!. These are obscure, but being able
  	to have click-to-focus without raising the window is nice.
-
 
 	* events.c: When not raising on click-to-focus, don't raise
  	regardless of where the click comes from.
