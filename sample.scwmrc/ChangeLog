@@ -1,3 +1,12 @@
+Mon Sep 13 13:28:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use xterm-program-name more throughout.  Use
+	session management via `SM-register'.
+
+Mon Sep 13 11:47:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Test guile-version before doing the setvbuf.
+
 Tue Sep  7 16:39:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Clean up setting of doc-files, *theme-path*.  Set 

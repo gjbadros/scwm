@@ -1,3 +1,15 @@
+Mon Sep 13 13:31:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* README: Call it a beta, not pre-stable, release
+
+Mon Sep 13 13:31:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* README-Gnome: Mark that Scwm *is* session-managed.
+
+Mon Sep 13 13:30:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to pre11.
+
 Wed Sep  8 21:01:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: bump to pre10.

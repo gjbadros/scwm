@@ -1,3 +1,7 @@
+Mon Sep 13 13:27:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added --no-document-formals option to usage message.
+
 Mon Sep 13 12:58:39 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winprop.c, module-interface.c, events.c: Use scwm_run_hook, not
