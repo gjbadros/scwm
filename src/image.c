@@ -650,8 +650,7 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT. */
 
 SCWM_PROC (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
            (SCM image, SCM width, SCM height))
-     /** Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.
-      */
+     /** Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. */
 #define FUNC_NAME s_clone_scaled_image
 {
   int w, h;
