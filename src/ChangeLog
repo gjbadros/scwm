@@ -1,3 +1,22 @@
+Mon Jan 18 20:13:54 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ICCCM.c (s_send_client_message): Added send-client-message
+	primitive to permit KWM-like (and probably gnome-like) client
+	messages to be sent from the scheme level.  Added init_ICCCM()
+	since this is the first primitive ICCCM exports
+
+	* events.c (HandleClientMessage):  Add and invoked
+	client_message_hook-s
+
+	* callbacks.h, callbacks.c: Added FEmptyHook() predicate for use
+	when the preparation of args for the hook is expensive
+	
+	* Makefile.am, scwm.c: Added ICCCM.x, call init_ICCCM() from
+	initialization code.
+	
+	* xproperty.c (X-get-property, X-set-property!): permit atoms
+	(longs) to be used for the name, instead of only allowing strings.
+
 Mon Jan 18 13:05:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, message-window.c, menu.c, constraint-primitives.cc,
