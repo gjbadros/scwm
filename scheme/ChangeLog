@@ -1,3 +1,8 @@
+Thu Apr 22 20:39:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ScwmClock.scm, ScwmButtons.scm, ScwmBiff.scm: New versions from
+ 	Glenn Trigg.
+
 Thu Apr 22 17:00:10 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xprop-extras.scm: Addes some sample code in comments

@@ -124,6 +124,15 @@ number of rows & columns, not the original size in pixels?  If I
 recall correctly, that's what fvwm does.
    hstein - 7/16/98
 -------------
+Build bugs --04/23/99 gjb
+
+-lXpm was not on my link line when I linked on Hydra.cs.mu.oz.au -- why?
+gcc didn't find -lstdc++ on hydra, either, and I needed to add
+-L/usr/lib/gcc-lib/i486-linux/egcs-2.91.60 to get it.  (Are these debian issues?)
+-------------
+Test with bad image path-- lots of things could be done better
+when images are missing.
+-------------
 Visual bugs in boundaries of windows with some configurations of options.
 -------------
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
