@@ -1044,7 +1044,7 @@
     ((double-click) (deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 default-winlist-proc) ;; was deiconify
 
 (bind-mouse 'all "C-S-M-1" toggle-raise)
 
