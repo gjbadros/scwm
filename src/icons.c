@@ -289,15 +289,15 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 
   final_x = def_x;
   final_y = def_y;
-  if (final_x < Scr.Vx)
-    final_x = Scr.Vx;
-  if (final_y < Scr.Vy)
-    final_y = Scr.Vy;
+  if (final_x < ICON_VP_OFFSET_X(psw))
+    final_x = ICON_VP_OFFSET_X(psw);
+  if (final_y < ICON_VP_OFFSET_Y(psw))
+    final_y = ICON_VP_OFFSET_Y(psw);
 
-  if (final_x + psw->icon_w_width >= Scr.Vx + Scr.DisplayWidth)
-    final_x = Scr.Vx + Scr.DisplayWidth - psw->icon_w_width - 1;
-  if (final_y + psw->icon_w_height >= Scr.Vy + Scr.DisplayHeight)
-    final_y = Scr.Vy + Scr.DisplayHeight - psw->icon_w_height - 1;
+  if (final_x + psw->icon_w_width >= ICON_VP_OFFSET_X(psw) + Scr.DisplayWidth)
+    final_x = ICON_VP_OFFSET_X(psw) + Scr.DisplayWidth - psw->icon_w_width - 1;
+  if (final_y + psw->icon_w_height >= ICON_VP_OFFSET_Y(psw) + Scr.DisplayHeight)
+    final_y = ICON_VP_OFFSET_Y(psw) + Scr.DisplayHeight - psw->icon_w_height - 1;
 
   psw->icon_x_loc = final_x;
   psw->icon_xl_loc = final_x;
@@ -544,18 +544,18 @@ AutoPlace(ScwmWindow *psw)
     move_finalize(psw->icon_w, psw, new_x, new_y);
     psw->Desk = Scr.CurrentDesk;
   } else {
-    base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *
-      Scr.DisplayWidth - Scr.Vx;
-    base_y = ((FRAME_Y(psw) + Scr.Vy + (FRAME_HEIGHT(psw) >> 1)) / Scr.DisplayHeight) *
-      Scr.DisplayHeight - Scr.Vy;
+    base_x = ((FRAME_X(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *
+      Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);
+    base_y = ((FRAME_Y(psw) + ICON_VP_OFFSET_Y(psw) + (FRAME_HEIGHT(psw) >> 1)) / Scr.DisplayHeight) *
+      Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
   }
   if (psw->fIconMoved) {
     /* just make sure the icon is on this screen */
     psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
     psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
-    if (psw->icon_x_loc < Scr.Vx)
+    if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
       psw->icon_x_loc += Scr.DisplayWidth;
-    if (psw->icon_y_loc < Scr.Vy)
+    if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
       psw->icon_y_loc += Scr.DisplayHeight;
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;

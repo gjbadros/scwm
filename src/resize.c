@@ -544,7 +544,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                  x, y, &xmotion, &ymotion, 
                                  &dragx, &dragy, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,Scr.Vx + dragx, Scr.Vy + dragy,
+      SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw) + dragx, WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
             
       DisplaySize(psw, dragWidth, dragHeight, True);
@@ -578,7 +578,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       /* limit ourselves to legitimate sizes */
       ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,Scr.Vx+dragx,Scr.Vy+dragy,
+      SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                           dragWidth,dragHeight, fOpaque);
     }
   }
@@ -590,7 +590,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   /* pop down the size window */
   UnmapMessageWindow();
 
-  SuggestSizeWindowTo(psw,Scr.Vx+dragx,Scr.Vy+dragy,
+  SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
 

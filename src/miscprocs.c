@@ -178,8 +178,8 @@ placed at all. */
 
 SCWM_PROC(refresh, "refresh", 0, 0, 0,
           ())
-     /** Make sure all decorations for all windows are up to date. In theory,
-this should not be needed. */
+     /** Make sure all windows and their decorations are up to date.
+This forces a redraw of the entire current viewport. */
 #define FUNC_NAME s_refresh
 {
   refresh_common(Scr.Root);

@@ -295,7 +295,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     RedrawOutlineAtNewPosition(Scr.Root, xl, yt, OutlineWidth, OutlineHeight);
   }
 
-  DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
+  DisplayPosition(psw, 
+                  xl + WIN_VP_OFFSET_X(psw), yt + WIN_VP_OFFSET_Y(psw), 
+                  True);
 
   if (!psw->fIconified) {
     CassowaryEditPosition(psw);
@@ -379,9 +381,13 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
         } else {
           /* the solver's resolve does the move window */
           /* if not using Cassowary, this just does an XMoveWindow */
-          SuggestMoveWindowTo(psw,Scr.Vx+xl,Scr.Vy+yt,opaque_move);
+          SuggestMoveWindowTo(psw,
+                              WIN_VP_OFFSET_X(psw)+xl,
+                              WIN_VP_OFFSET_Y(psw)+yt,opaque_move);
         }
-	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
+	DisplayPosition(psw,
+                        xl + WIN_VP_OFFSET_X(psw),
+                        yt + WIN_VP_OFFSET_Y(psw), True);
 
         /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
@@ -415,7 +421,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
 		    psw->bw, Scr.MoveResistance);
   if (!psw->fIconified) {
-    SuggestMoveWindowTo(psw,Scr.Vx+xl,Scr.Vy+yt,True);
+    SuggestMoveWindowTo(psw,WIN_VP_OFFSET_X(psw)+xl,WIN_VP_OFFSET_Y(psw)+yt,True);
     CassowaryEndEdit(psw);
   } else {
     /* we're moving an icon */
@@ -425,8 +431,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     }
   }
     
-  *FinalX = Scr.Vx + xl;
-  *FinalY = Scr.Vy + yt;
+  *FinalX = WIN_VP_OFFSET_X(psw) + xl;
+  *FinalY = WIN_VP_OFFSET_Y(psw) + yt;
   UnmapMessageWindow();
 }
 

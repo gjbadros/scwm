@@ -227,6 +227,13 @@ typedef struct ScwmWindow {
 /* FIXGJB: fWindowListSkip, fCirculateSkipIcon, fCirculateSkip are unused */
 
 
+/* Window viewport offsets to correct for the viewport
+   position only if not a sticky window */
+#define WIN_VP_OFFSET_X(psw) ((psw)->fSticky? 0: Scr.Vx)
+#define WIN_VP_OFFSET_Y(psw) ((psw)->fSticky? 0: Scr.Vy)
+#define ICON_VP_OFFSET_X(psw) ((psw)->fStickyIcon? 0: Scr.Vx)
+#define ICON_VP_OFFSET_Y(psw) ((psw)->fStickyIcon? 0: Scr.Vy)
+
 void ResetCommonFlags(ScwmWindow *psw);
 void ResetAllFlags(ScwmWindow *psw);
 void CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);

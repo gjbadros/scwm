@@ -1357,10 +1357,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     /* 16 pixels is the amount to force the window onto
        the virtual desktop if it is completely off */
     const int cpixForceOn = 16;
-    if (x >= Scr.DisplayWidth + Scr.VxMax - Scr.Vx - cpixForceOn)
-      x = Scr.DisplayWidth + Scr.VxMax - Scr.Vx - cpixForceOn;
-    if (y >= Scr.DisplayHeight + Scr.VyMax - Scr.Vy - cpixForceOn)
-      y = Scr.DisplayHeight + Scr.VyMax - Scr.Vy - cpixForceOn;
+    if (x >= Scr.DisplayWidth + Scr.VxMax - WIN_VP_OFFSET_X(psw) - cpixForceOn)
+      x = Scr.DisplayWidth + Scr.VxMax - WIN_VP_OFFSET_X(psw) - cpixForceOn;
+    if (y >= Scr.DisplayHeight + Scr.VyMax - WIN_VP_OFFSET_Y(psw) - cpixForceOn)
+      y = Scr.DisplayHeight + Scr.VyMax - WIN_VP_OFFSET_Y(psw) - cpixForceOn;
   }
 
 

@@ -476,8 +476,8 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   client_event.xconfigure.event = psw->w;
   client_event.xconfigure.window = psw->w;
   
-  client_event.xconfigure.x = FRAME_X(psw) + psw->xboundary_width;
-  client_event.xconfigure.y = FRAME_Y(psw) + psw->title_height + psw->boundary_width;
+  client_event.xconfigure.x = FRAME_X_VP(psw) + psw->xboundary_width;
+  client_event.xconfigure.y = FRAME_Y_VP(psw) + psw->title_height + psw->boundary_width;
   client_event.xconfigure.width = FRAME_WIDTH(psw) - 2 * psw->xboundary_width;
   client_event.xconfigure.height = FRAME_HEIGHT(psw) - 2 * psw->boundary_width - psw->title_height;
   
@@ -1835,7 +1835,7 @@ specified. */
 
 SCWM_PROC(stick, "stick", 0, 1, 0,
           (SCM win))
-     /** Cause WIN to become "sticky".
+     /** Make WIN "sticky" so that it stays stationary in viewport.
 A sticky window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop. WIN defaults to the window context in the usual way if not

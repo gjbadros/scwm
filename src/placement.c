@@ -599,10 +599,13 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 
   default_select_desk(psw,Desk);
 
+#ifdef DEBUG_PLACE_WINDOW
+  scwm_msg(DBG,"PlaceWindow","attr = (%d,%d)",psw->attr.x,psw->attr.y);
+#endif
+
   move_finalize(psw->frame,psw, 
 		psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
 		psw->attr.y + GRAV_Y_ADJUSTMENT(psw));
-
 
   win=psw->schwin;
 

@@ -175,11 +175,10 @@ AddWindow(Window w)
 
   psw->cmap_windows = NULL;
 
-  if (!PPosOverride)
-    if (!FXWindowAccessible(dpy,psw->w)) {
-      FREE(psw);
-      return (NULL);
-    }
+  if (!PPosOverride && !FXWindowAccessible(dpy,psw->w)) {
+    FREE(psw);
+    return (NULL);
+  }
 
   psw->name = NoName;
 
