@@ -120,6 +120,10 @@ while (<>) {
     my $filename = $ARGV;
     my $line = $.;
     while (defined($_ = <>) && $_ !~ m/^\s*\{/) {
+      if (eof) {
+	close(ARGV);
+	$current_module = "";
+      }
       $header .= $_;
     }
     $header .= $_;
@@ -134,6 +138,10 @@ while (<>) {
     # Keep reading lines until eof or a paren in leftmost column
     while (defined($_ = <>) && $_ !~ m/^\(/) {
       $scheme_header .= $_;
+      if (eof) {
+	close(ARGV);
+	$current_module = "";
+      }
     }
     ProcessSchemeHeader($filename, $current_module, $proc_name, $line, $scheme_header);
     redo if (defined($_)); # start loop over w/o reading next line
@@ -649,6 +657,10 @@ sub ReadRestOfComment ( $ ) {
   my ($comment) = @_;
   while (defined($_ = <>) && $_ !~ m%\*/%) {
     $comment .= $_;
+    if (eof) {
+      close(ARGV);
+      $current_module = "";
+    }
   }
   $comment .= $_;
   return $comment;
