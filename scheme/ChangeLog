@@ -1,3 +1,40 @@
+Sat Jan 23 14:33:10 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added MESSAGE-WINDOW argument to
+	`select-window-interactively' to permit re-using an existing
+	message window when prompting.
+
+	* window-locations.scm: Have all the procs return point pairs, (X
+	. Y) instead of lists of points.
+
+	* ui-constraints-toggle-menu.scm: Flash the constrainted windows
+	in addition to drawing the constraint representation.  Added
+	"Enable all" and "Disable all" menu options.
+
+	* ui-constraints-classes.scm: Cleaned up a lot -- use
+	ui-constraint-prompter-msgwin and make it more obvious by
+	default.  Use new versions of xlib-* procedures, and use
+	two-window-prompter to factor out some commonality in prompting
+	procedures.
+
+	* ui-constraints-buttons.scm: Try to reduce the amount of extra
+	padding in the button bar.  May illustrate a bug in Scwm's
+	handling of no title bar.
+
+	* ui-constraints.scm: Added `enable-all-constraints'.
+
+	* message-window.scm: Bugfix -- interactive-move's were not
+	displaying the message-window because
+	msgwin-{enabler,disabler}-table had a cut & paste error.
+
+	* gtk.scm: Added comment for scwm-gtk-sync.
+
+	* flux.scm: Added proc-when-selected argument to
+	`select-multiple-windows-interactively'.  Wrote
+	`delete-multiple-windows-interactively'.
+
+	* doc.scm: Make documentation-debug #f by default.
+
 Sat Jan 23 10:49:43 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Use ui-constraints-toggle-menu, and bind it to C-M-S-c

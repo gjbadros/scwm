@@ -1,3 +1,14 @@
+Sat Jan 23 14:23:27 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c (xlib_point_pair_p,
+	xlib_point_pair_get_values): Added these functions.  Use point
+	pairs for the various functions so that we don't need to decompose 
+	point-pairs to use them for drawing.
+
+Sat Jan 23 13:29:10 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: 
+
 Wed Jan 20 13:20:19 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: Use scm_misc_error for out-of-range
