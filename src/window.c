@@ -1320,7 +1320,7 @@ SCM set_mwm_buttons_x(SCM val, SCM win) {
     scm_wrong_type_arg("set-mwm-buttons!",1,val);
   }
 
-  SetBorder(t,(Scr.Hilite==t),True,True,None);
+  /* SetBorder(t,(Scr.Hilite==t),True,True,None); */
   return SCM_BOOL_T;
 }
 
