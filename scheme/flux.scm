@@ -700,3 +700,31 @@ to strftime rules. TEMPLATE defaults to the file \"screenshot%y%m%d%H%M%S.xwd\"
 in the user's home directory."
   (execute (string-append "xwd -root >"
 			  (strftime template (localtime (current-time))))))
+
+
+;;; palm pilot stuff
+;;; requires pilot-link's pilot-clip program
+
+;; (system "ssh-add </dev/null &")
+;;(define pilot-clip-binary "pilot-clip")
+(define pilot-clip-binary "remote-pilot-clip")  ;; this does ssh HOST-WITH-CRADLE pilot-clip "$@"
+
+(define-public (put-string-in-palm-clipboard str)
+  (let ((port (open-output-pipe (string-append pilot-clip-binary " -s &"))))
+    (display str port)
+    (close-port port)))
+
+(define-public (X-cut-buffer->palm-clipboard) 
+  (put-string-in-palm-clipboard (X-cut-buffer-string)))
+
+;;(put-string-in-palm-clipboard "testing\nto\nsee\nif this\nworks")
+;; (X-cut-buffer->palm-clipboard)
+
+;; This is not such a hot idea-- scwm can hang!
+;; (define-public (get-string-from-palm-clipboard)
+;;   (let* ((port (open-input-pipe (string-append pilot-clip-binary " -g")))
+;; 	    (str (read-line port)))
+;;     (close-port port)
+;;     str))
+;; 
+;; (get-string-from-palm-clipboard)
