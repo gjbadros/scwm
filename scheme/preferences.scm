@@ -45,7 +45,6 @@
 (message-window-style mw-curval #:fg "black" #:bg "yellow") ;; old
 (message-window-style mw-docs #:fg "black" #:bg "grey70")
 
-;; with-output-to-string isn't working for me
 (define (printable var)
   (cond ((number? var) (number->string var))
 	((string? var) var)
@@ -341,3 +340,70 @@ GJB:FIXME::."
     (gtk-widget-show label)
     (gtk-notebook-append-page nb vbox label)
     nb))
+
+
+
+(define (read-color c port)
+  (let ((s (read port))
+	(b (read port)))
+    (if (not (string=? b ">"))
+	(error "Error reading color -- missing '>'")
+    (make-color s))))
+
+
+(define (read-font c port)
+  (let ((s (read port))
+	(b (read port)))
+    (if (not (string=? b ">"))
+	(error "Error reading font -- missing '>'")
+    (make-font s))))
+
+(define (last-char s)
+  (let ((l (string-length s)))
+    (substring s (- l 1) l)))
+;; (last-char "bart")
+
+(define (read-proc c port)
+  (let* ((s (read port))
+	 (st (symbol->string s))
+	 (b st))
+    (while (and (not (eof-object? b)) (not (string=? (last-char b) ">")))
+	   (set! b (read port)))
+    (if (or (eof-object? b) (not (string=? (last-char b) ">")))
+	(error "Error reading procedure -- missing '>'"))
+    (if (string=? (last-char st) ">")
+	(set! s (string->symbol (substring st 0 (- (string-length st) 1)))))
+    s))
+
+(read-hash-extend #\< (lambda (c port)
+			(case (read port)
+			  ((color) (read-color c port))
+			  ((font) (read-font c port))
+			  ((primitive-procedure procedure) (read-proc c port))
+			  (else (error "Bad primitive object.")))))
+
+;; #<color "red">  ;; use scwm-eval-region-- scwm-last-sexp
+;; will not do the right thing because there are no parens
+;; (perhaps it should be extended to try to guess better?)
+;;
+;; #<font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*">
+;;
+;; #<primitive-procedure raise-window >
+;; #<primitive-procedure raise-window>
+;; 
+;;
+;; #<procedure icon-viewport-position lambda*:G11>
+
+(define-public (scwm-options-string syms)
+  (apply string-append
+       (map (lambda (s) (string-append "(set! " (symbol->string s) " "
+				       (with-output-to-string 
+					 (lambda ()
+					   (display (scwm-option-symget s))))
+				       ")\n"))
+	    syms)))
+	       
+
+;; (scwm-options-string scwm-options)
+
+;; (eval (scwm-options-string scwm-options))
