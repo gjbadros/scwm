@@ -67,7 +67,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   SCM answer;
 
   /* Create a fresh root continuation.  */
-  {
+  { /* scope */
     SCM new_rootcont;
     SCM_NEWCELL (new_rootcont);
     SCM_REDEFER_INTS;
