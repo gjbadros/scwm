@@ -3479,9 +3479,9 @@ fg or bg may be #f, which means that the color is inherited from the decor.
 
 SCWM_PROC(window_decoration_ids, "window-decoration-ids", 0, 1, 0,
           (SCM win))
-     /** Returns a list of long integer window ids of various decoration windows.
-Returned list is ( frame title_w 
-(side-n side-e side-s side-w) (corner-nw corner-ne corner-se corner-sw) ). */
+     /** Returns a list of long integer window ids of the decoration windows for WIN.
+Returned list is ( frame title_w (side-n side-e side-s side-w)
+(corner-nw corner-ne corner-se corner-sw) ). */
 #define FUNC_NAME s_window_decoration_ids
 {
   ScwmWindow *psw;
@@ -3506,7 +3506,7 @@ Returned list is ( frame title_w
 
 SCWM_PROC(set_window_id_background_x, "set-window-id-background!", 1, 1, 0,
           (SCM bg, SCM winid))
-     /** Set the background color of X11 window with id WINID. 
+     /** Set the background color of X11 window with id WINID to BG. 
 This is not necessarily persistent.  In particular, if you set 
 the background color of a window decoration, that decoration
 will revert to its usual color.  See also `window-decoration-ids'. */
