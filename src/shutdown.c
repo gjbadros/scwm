@@ -96,6 +96,8 @@ Done(int restart_or_dump, char *command)
     }
 
     /* Really make sure that the connection is closed and cleared! */
+    XUngrabServer(dpy);
+    XDefineCursor(dpy, Scr.Root, None);
     XSelectInput(dpy, Scr.Root, 0);
     XSync(dpy, 0);
     XCloseDisplay(dpy);

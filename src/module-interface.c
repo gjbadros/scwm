@@ -106,7 +106,9 @@ module packet for WIN as a Scheme string. */
   unsigned long info[24];
   int i;
 
-  VALIDATE(win, FUNC_NAME);
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME,1,win);
+  }
   psw = PSWFROMSCMWIN(win);
 
   info[i=0] = psw->w;
@@ -149,7 +151,9 @@ module packet for WIN as a Scheme string. */
   ScwmWindow *psw;
   unsigned long info[8];
 
-  VALIDATE(win, s_marshal_fvwm2_iconify_info);
+  if (!WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME,1,win);
+  }
   psw = PSWFROMSCMWIN(win);
 
   info[0] = 7;

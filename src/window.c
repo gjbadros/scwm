@@ -3899,7 +3899,7 @@ MAKE_SMOBFUNS(window);
 SCM 
 ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
 {
-  if (win == SCM_UNDEFINED) {
+  if (UNSET_SCM(win)) {
     win = get_window(kill_p, SCM_BOOL_T, release_p);
     if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;
