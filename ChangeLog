@@ -1,3 +1,7 @@
+Sun Oct  5 23:28:04 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* version.h: Bumped to version 0.2.
+
 Sun Sep 21 05:14:35 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* BUGS: Removed entries relating to select-window being broken,
