@@ -113,9 +113,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
-#if 0 /* I think this is wrong, now. --07/29/98 gjb */
   RemoveRubberbandOutline(Scr.Root);
-#endif
 
   /* Move the viewport */
   /* and/or move the cursor back to the approximate correct location */
