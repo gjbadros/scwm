@@ -1,3 +1,4 @@
+
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
@@ -16,47 +17,53 @@ struct symnum {
   int value;
 };
 
-struct symnum binding_contexts[] = 
+struct symnum binding_contexts[] =
 {
-  {SCM_UNDEFINED,C_WINDOW},
-  {SCM_UNDEFINED,C_TITLE},
-  {SCM_UNDEFINED,C_ICON},
-  {SCM_UNDEFINED,C_ROOT},
-  {SCM_UNDEFINED,C_FRAME},
-  {SCM_UNDEFINED,C_SIDEBAR},
-  {SCM_UNDEFINED,C_L1},
-  {SCM_UNDEFINED,C_R1},
-  {SCM_UNDEFINED,C_L2},
-  {SCM_UNDEFINED,C_R2},
-  {SCM_UNDEFINED,C_L3},
-  {SCM_UNDEFINED,C_R3},
-  {SCM_UNDEFINED,C_L4},
-  {SCM_UNDEFINED,C_R4},
-  {SCM_UNDEFINED,C_L5},
-  {SCM_UNDEFINED,C_R5},
-  {SCM_UNDEFINED,C_ALL},
-  {SCM_UNDEFINED,0}
+  {SCM_UNDEFINED, C_WINDOW},
+  {SCM_UNDEFINED, C_TITLE},
+  {SCM_UNDEFINED, C_ICON},
+  {SCM_UNDEFINED, C_ROOT},
+  {SCM_UNDEFINED, C_FRAME},
+  {SCM_UNDEFINED, C_SIDEBAR},
+  {SCM_UNDEFINED, C_L1},
+  {SCM_UNDEFINED, C_R1},
+  {SCM_UNDEFINED, C_L2},
+  {SCM_UNDEFINED, C_R2},
+  {SCM_UNDEFINED, C_L3},
+  {SCM_UNDEFINED, C_R3},
+  {SCM_UNDEFINED, C_L4},
+  {SCM_UNDEFINED, C_R4},
+  {SCM_UNDEFINED, C_L5},
+  {SCM_UNDEFINED, C_R5},
+  {SCM_UNDEFINED, C_ALL},
+  {SCM_UNDEFINED, 0}
 };
 
 
-int lookup_context(SCM context) {
-  int i,dummy;
-  if(!gh_symbol_p(context)) {
+int 
+lookup_context(SCM context)
+{
+  int i, dummy;
+
+  if (!gh_symbol_p(context)) {
     return -2;
   }
-  for(i=0; binding_contexts[i].value!=0; i++) {
-    if (gh_eq_p(binding_contexts[i].sym,context)) {
-      return(binding_contexts[i].value);
+  for (i = 0; binding_contexts[i].value != 0; i++) {
+    if (gh_eq_p(binding_contexts[i].sym, context)) {
+      return (binding_contexts[i].value);
     }
   }
   return -1;
 }
 
-int compute_contexts(SCM contexts) {
-  int tmp,retval;
-  if(gh_list_p(contexts)) {
-    for (tmp=0,retval=0;contexts!=SCM_EOL;contexts=gh_cdr(contexts)) {
-      if ((tmp=lookup_context(gh_car(contexts)))<0) {
+int 
+compute_contexts(SCM contexts)
+{
+  int tmp, retval;
+
+  if (gh_list_p(contexts)) {
+    for (tmp = 0, retval = 0; contexts != SCM_EOL; contexts = gh_cdr(contexts)) {
+      if ((tmp = lookup_context(gh_car(contexts))) < 0) {
 	return tmp;
       } else {
 	retval |= tmp;
@@ -64,63 +71,63 @@ int compute_contexts(SCM contexts) {
     }
     return retval;
   } else {
-    return lookup_context(contexts); 
+    return lookup_context(contexts);
   }
 }
 
-SCM bind_key(SCM contexts, SCM key, SCM proc) 
+SCM 
+bind_key(SCM contexts, SCM key, SCM proc)
 {
   Binding *temp;
   KeySym keysym;
-  char *keyname,*okey;
-  int len,i,min,max;
+  char *keyname, *okey;
+  int len, i, min, max;
   int modmask = 0;
   int context = 0;
   int l = 0;
 
   SCM_REDEFER_INTS;
-  if(!gh_string_p(key)) {
+  if (!gh_string_p(key)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key",2,key);
+    scm_wrong_type_arg("bind-key", 2, key);
   }
-  if(!gh_procedure_p(proc)) {
+  if (!gh_procedure_p(proc)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key",3,proc);
+    scm_wrong_type_arg("bind-key", 3, proc);
   }
-
-  context=compute_contexts(contexts);
+  context = compute_contexts(contexts);
 
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
-    scwm_error("bind-key",8);
+    scwm_error("bind-key", 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
-    scwm_error("bind-key",9);
+    scwm_error("bind-key", 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key",1,contexts);
+    scm_wrong_type_arg("bind-key", 1, contexts);
     break;
   default:
   }
 
-  okey=(keyname=gh_scm2newstr(key,&len));
+  okey = (keyname = gh_scm2newstr(key, &len));
   do {
-    l=0;
-    if(!strncmp("C-",keyname,2)) {
+    l = 0;
+    if (!strncmp("C-", keyname, 2)) {
       modmask |= ControlMask;
-      keyname+=2;
-      l=1;
-    } else if(!strncmp("M-",keyname,2)) {
+      keyname += 2;
+      l = 1;
+    } else if (!strncmp("M-", keyname, 2)) {
       modmask |= Mod1Mask;
-      keyname+=2;
-      l=1;
-    } else if(!strncmp("S-",keyname,2)) {
+      keyname += 2;
+      l = 1;
+    } else if (!strncmp("S-", keyname, 2)) {
       modmask |= ShiftMask;
-      keyname+=2;
-      l=1;
+      keyname += 2;
+      l = 1;
     }
   } while (l);
 
@@ -133,22 +140,20 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
     free(okey);
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_error("bind",4);
+    scwm_error("bind", 4);
   }
-
   /*
-  ** why wasn't XKeysymToKeycode used instead of this for loop?
-  */
+     ** why wasn't XKeysymToKeycode used instead of this for loop?
+   */
   /* 
    * Because more than one keycode might map to the same keysym -MS
    */
 
   XDisplayKeycodes(dpy, &min, &max);
-  for (i=min; i<=max; i++)
-    if (XKeycodeToKeysym(dpy, i, 0) == keysym)
-    {
+  for (i = min; i <= max; i++)
+    if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
       temp = Scr.AllBindings;
-      Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
+      Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
       Scr.AllBindings->IsMouse = 0;
       Scr.AllBindings->Button_Key = i;
       Scr.AllBindings->key_name = strdup(keyname);
@@ -165,109 +170,99 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
 }
 
 
-SCM bind_mouse(SCM contexts, SCM button, SCM proc)
+SCM 
+bind_mouse(SCM contexts, SCM button, SCM proc)
 {
-  
+
   Binding *temp;
   KeySym keysym;
-  char *keyname,*okey;
-  int bnum,bset=0;
-  int len,i,min,max,j,k;
+  char *keyname, *okey;
+  int bnum, bset = 0;
+  int len, i, min, max, j, k;
   int modmask = 0;
   int context = 0;
 
   SCM_REDEFER_INTS;
-  
-  if(!gh_string_p(button)) {
-    if (gh_number_p(button)) 
-      {
-	bnum=gh_scm2int(button);
-	bset=1;
-      } else {
-	SCM_ALLOW_INTS;
-	scm_wrong_type_arg("bind-mouse",2,button);
-      }
-  }
-  if(!gh_procedure_p(proc)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-mouse",3,proc);
-  }
 
-  context=compute_contexts(contexts);
+  if (!gh_string_p(button)) {
+    if (gh_number_p(button)) {
+      bnum = gh_scm2int(button);
+      bset = 1;
+    } else {
+      SCM_ALLOW_INTS;
+      scm_wrong_type_arg("bind-mouse", 2, button);
+    }
+  }
+  if (!gh_procedure_p(proc)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("bind-mouse", 3, proc);
+  }
+  context = compute_contexts(contexts);
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
-    scwm_error("bind-mouse",8);
+    scwm_error("bind-mouse", 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
-    scwm_error("bind-mouse",9);
+    scwm_error("bind-mouse", 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-mouse",1,contexts);
+    scm_wrong_type_arg("bind-mouse", 1, contexts);
     break;
   default:
   }
 
   if (!bset) {
-    okey=(keyname=gh_scm2newstr(button,&len));
+    okey = (keyname = gh_scm2newstr(button, &len));
     do {
-      if(!strncmp("C-",keyname,2)) {
+      if (!strncmp("C-", keyname, 2)) {
 	modmask |= ControlMask;
-	keyname+=2;
+	keyname += 2;
 	continue;
-      } else if(!strncmp("M-",keyname,2)) {
-	  modmask |= Mod1Mask;
-	  keyname+=2;
-	  continue;
-      } else if(!strncmp("S-",keyname,2)) {
+      } else if (!strncmp("M-", keyname, 2)) {
+	modmask |= Mod1Mask;
+	keyname += 2;
+	continue;
+      } else if (!strncmp("S-", keyname, 2)) {
 	modmask |= ShiftMask;
-	keyname+=2;
+	keyname += 2;
 	continue;
       }
     } while (0);
-    bnum=strtol(keyname,NULL,10);
+    bnum = strtol(keyname, NULL, 10);
   }
-
-
-  if((context != C_ALL) && (context & C_LALL))
-  {
+  if ((context != C_ALL) && (context & C_LALL)) {
     /* check for nr_left_buttons */
-    k=0;
-    j=(context &C_LALL)/C_L1;
-    while(j>0)
-    {
+    k = 0;
+    j = (context & C_LALL) / C_L1;
+    while (j > 0) {
       k++;
-      j=j>>1;
+      j = j >> 1;
     }
-    if(Scr.nr_left_buttons <k)
+    if (Scr.nr_left_buttons < k)
       Scr.nr_left_buttons = k;
   }
-
-  if((context != C_ALL) && (context & C_RALL))
-  {
+  if ((context != C_ALL) && (context & C_RALL)) {
     /* check for nr_right_buttons */
-    k=0;
-    j=(context&C_RALL)/C_R1;
-    while(j>0)
-    {
+    k = 0;
+    j = (context & C_RALL) / C_R1;
+    while (j > 0) {
       k++;
-      j=j>>1;
+      j = j >> 1;
     }
-    if(Scr.nr_right_buttons <k)
+    if (Scr.nr_right_buttons < k)
       Scr.nr_right_buttons = k;
   }
-
   /* XXX - we should redraw the titlebars if necessary to reflect the new
      buttons, prehaps? */
 
-  if((contexts & C_WINDOW)&&(((modmask==0)||modmask == AnyModifier))) {
-    Scr.buttons2grab &= ~(1<<(bnum-1));
+  if ((contexts & C_WINDOW) && (((modmask == 0) || modmask == AnyModifier))) {
+    Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
-
   temp = Scr.AllBindings;
-  Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
+  Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
   Scr.AllBindings->IsMouse = 1;
   Scr.AllBindings->Button_Key = bnum;
   Scr.AllBindings->key_name = NULL;
@@ -291,30 +286,31 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
 
 /* to distringuish click, double-click, move */
 
-SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
+SCM sym_motion, sym_click, sym_one_and_a_half_clicks, sym_double_click;
 
 SCM mouse_ev_type = SCM_BOOL_F;
 
-int have_orig_position=0;
-int orig_x,orig_y;
+int have_orig_position = 0;
+int orig_x, orig_y;
 
-void find_mouse_event_type()
+void 
+find_mouse_event_type()
 {
   XEvent d;
-  int x,y;
+  int x, y;
 
   gh_defer_ints();
-  XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&orig_x,&orig_y,&JunkX, &JunkY, &JunkMask);
-  have_orig_position=1;
+  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+		&orig_x, &orig_y, &JunkX, &JunkY, &JunkMask);
+  have_orig_position = 1;
 
-  mouse_ev_type=sym_motion;
-  if(IsClick(orig_x,orig_y,ButtonReleaseMask,&d)) {
+  mouse_ev_type = sym_motion;
+  if (IsClick(orig_x, orig_y, ButtonReleaseMask, &d)) {
     mouse_ev_type = sym_click;
     /* If it was a click, wait to see if its a double click */
-    if(IsClick(orig_x,orig_y,ButtonPressMask, &d)) {
+    if (IsClick(orig_x, orig_y, ButtonPressMask, &d)) {
       mouse_ev_type = sym_one_and_a_half_clicks;
-      if(IsClick(orig_x,orig_y,ButtonReleaseMask, &d)) {
+      if (IsClick(orig_x, orig_y, ButtonReleaseMask, &d)) {
 	mouse_ev_type = sym_double_click;
       }
     }
@@ -322,50 +318,51 @@ void find_mouse_event_type()
   gh_allow_ints();
 }
 
-void clear_mouse_event_type()
+void 
+clear_mouse_event_type()
 {
-  have_orig_position=0;
-  mouse_ev_type=SCM_BOOL_F;
+  have_orig_position = 0;
+  mouse_ev_type = SCM_BOOL_F;
 }
 
-SCM mouse_event_type()
+SCM 
+mouse_event_type()
 {
   return mouse_ev_type;
 }
 
 
-SCM sym_new_window,
-  sym_new_window_hint
-/*,sym_enter_window.sym_leave_window,sym_edge_hook */;
+SCM sym_new_window, sym_new_window_hint
+/*,sym_enter_window.sym_leave_window,sym_edge_hook */ ;
 
 
-static SCM new_window_hook=SCM_BOOL_F;
-static SCM new_window_hint_hook=SCM_BOOL_F;
+static SCM new_window_hook = SCM_BOOL_F;
+static SCM new_window_hint_hook = SCM_BOOL_F;
 
 /* static SCM window_enter_hook=SCM_UNDEFINED;
    static SCM window_leave_hook=SCM_UNDEFINED;
    static SCM edge_hook=SCM_UNDEFINED;
-   */
+ */
 
-SCM bind_event(SCM ev_sym,SCM proc)
+SCM 
+bind_event(SCM ev_sym, SCM proc)
 {
   SCM old_handler;
+
   if (!gh_symbol_p(ev_sym)) {
-    scm_wrong_type_arg("bind-event",1,ev_sym);
+    scm_wrong_type_arg("bind-event", 1, ev_sym);
   }
-
   if (!gh_procedure_p(proc) && (proc != SCM_BOOL_F)) {
-    scm_wrong_type_arg("bind-event",2,proc);
+    scm_wrong_type_arg("bind-event", 2, proc);
   }
-
-  if (gh_eq_p(ev_sym,sym_new_window)) {
-    old_handler=new_window_hook;
-    new_window_hook=proc;
-  } else if (gh_eq_p(ev_sym,sym_new_window_hint)) {
-    old_handler=new_window_hint_hook;
-    new_window_hint_hook=proc;
+  if (gh_eq_p(ev_sym, sym_new_window)) {
+    old_handler = new_window_hook;
+    new_window_hook = proc;
+  } else if (gh_eq_p(ev_sym, sym_new_window_hint)) {
+    old_handler = new_window_hint_hook;
+    new_window_hint_hook = proc;
   } else {
-    scwm_error("bind-event",12);
+    scwm_error("bind-event", 12);
   }
   scm_unprotect_object(old_handler);
   scm_protect_object(proc);
@@ -373,9 +370,10 @@ SCM bind_event(SCM ev_sym,SCM proc)
 }
 
 
-void run_new_window_hook(SCM w)
+void 
+run_new_window_hook(SCM w)
 {
-  if (new_window_hook!=SCM_BOOL_F) {
+  if (new_window_hook != SCM_BOOL_F) {
     set_window_context(w);
     call_thunk_with_message_handler(new_window_hook);
     unset_window_context();
@@ -383,9 +381,10 @@ void run_new_window_hook(SCM w)
 }
 
 
-void run_new_window_hint_hook(SCM w)
+void 
+run_new_window_hint_hook(SCM w)
 {
-  if (new_window_hint_hook!=SCM_BOOL_F) {
+  if (new_window_hint_hook != SCM_BOOL_F) {
     set_window_context(w);
     call_thunk_with_message_handler(new_window_hint_hook);
     unset_window_context();
@@ -394,10 +393,12 @@ void run_new_window_hint_hook(SCM w)
 
 
 
-void init_binding(void) 
+void 
+init_binding(void)
 {
   int i;
-  static char *context_strings[] = {
+  static char *context_strings[] =
+  {
     "window",
     "title",
     "icon",
@@ -417,36 +418,32 @@ void init_binding(void)
     "all",
     NULL
   };
-  for (i=0;context_strings[i]!=NULL;i++) {
-    binding_contexts[i].sym=gh_symbol2scm(context_strings[i]);
+
+  for (i = 0; context_strings[i] != NULL; i++) {
+    binding_contexts[i].sym = gh_symbol2scm(context_strings[i]);
     scm_protect_object(binding_contexts[i].sym);
   }
-  sym_motion=gh_symbol2scm("motion");
+  sym_motion = gh_symbol2scm("motion");
   scm_protect_object(sym_motion);
-  sym_click= gh_symbol2scm("click");
+  sym_click = gh_symbol2scm("click");
   scm_protect_object(sym_click);
-  sym_one_and_a_half_clicks=gh_symbol2scm("one-and-a-half-clicks");
+  sym_one_and_a_half_clicks = gh_symbol2scm("one-and-a-half-clicks");
   scm_protect_object(sym_one_and_a_half_clicks);
-  sym_double_click=gh_symbol2scm("double-click");
+  sym_double_click = gh_symbol2scm("double-click");
   scm_protect_object(sym_double_click);
 
-  sym_new_window=gh_symbol2scm("new-window");
+  sym_new_window = gh_symbol2scm("new-window");
   scm_protect_object(sym_new_window);
 
-  sym_new_window_hint=gh_symbol2scm("new-window-hint");
+  sym_new_window_hint = gh_symbol2scm("new-window-hint");
   scm_protect_object(sym_new_window_hint);
 
   /*
-  sym_new_window=gh_symbol2scm("enter-window");
-  scm_protect_object(sym_enter_window);
-  sym_new_window=gh_symbol2scm("leave-window");
-  scm_protect_object(sym_leave_window);
-  sym_new_window=gh_symbol2scm("edge");
-  scm_protect_object(sym_edge);
-  */
+     sym_new_window=gh_symbol2scm("enter-window");
+     scm_protect_object(sym_enter_window);
+     sym_new_window=gh_symbol2scm("leave-window");
+     scm_protect_object(sym_leave_window);
+     sym_new_window=gh_symbol2scm("edge");
+     scm_protect_object(sym_edge);
+   */
 }
-
-
-
-
-

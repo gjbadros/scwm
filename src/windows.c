@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /****************************************************************************
  * This module is all new
  * by Rob Nation 
@@ -51,199 +57,183 @@
  * specifier to each item in the list.  This means allocating the
  * memory for each item (& freeing it) rather than just using the window
  * title directly.  */
-void do_windowList(XEvent *eventp,Window w,ScwmWindow *tmp_win,
-		unsigned long context, char *action,int *Module)
+void 
+do_windowList(XEvent * eventp, Window w, ScwmWindow * tmp_win,
+	      unsigned long context, char *action, int *Module)
 {
   MenuRoot *mr;
   ScwmWindow *t;
-  char *tname=NULL;
-  char loc[40],*name=NULL;
-  int dwidth,dheight;
-  char tlabel[50]="";
+  char *tname = NULL;
+  char loc[40], *name = NULL;
+  int dwidth, dheight;
+  char tlabel[50] = "";
   int last_desk_done = INT_MIN;
   int next_desk;
-  char *t_hot=NULL;		/* Menu label with hotkey added */
+  char *t_hot = NULL;		/* Menu label with hotkey added */
   char scut = '0';		/* Current short cut key */
-  char *line=NULL,*tok=NULL;
+  char *line = NULL, *tok = NULL;
   int desk = Scr.CurrentDesk;
   int flags = SHOW_EVERYTHING;
-  char *func=NULL;
+  char *func = NULL;
 
-  if (action && *action)
-  {
-    line = strdup(action); /* local copy */
+  if (action && *action) {
+    line = strdup(action);	/* local copy */
     /* parse args */
-    while (line && *line)
-    {
+    while (line && *line) {
       tok = GetToken(&line);
 
-      if (StrEquals(tok,"Function"))
-        func = GetToken(&line);
-      else if (StrEquals(tok,"Desk"))
-      {
-        desk = atoi(GetToken(&line));
-        flags &= ~SHOW_ALLDESKS;
-      }
-      else if (StrEquals(tok,"CurrentDesk"))
-      {
-        desk = Scr.CurrentDesk;
-        flags &= ~SHOW_ALLDESKS;
-      }
-      else if (StrEquals(tok,"Unsorted"))
-        flags |= DONT_SORT;
-      else if (StrEquals(tok,"UseIconName"))
-        flags |= SHOW_ICONNAME;
-      else if (StrEquals(tok,"NoGeometry"))
-        flags &= ~SHOW_GEOMETRY;
-      else if (StrEquals(tok,"Geometry"))
-        flags |= SHOW_GEOMETRY;
-      else if (StrEquals(tok,"NoIcons"))
-        flags &= ~SHOW_ICONIC;
-      else if (StrEquals(tok,"Icons"))
-        flags |= SHOW_ICONIC;
-      else if (StrEquals(tok,"OnlyIcons"))
-        flags = SHOW_ICONIC;
-      else if (StrEquals(tok,"NoNormal"))
-        flags &= ~SHOW_NORMAL;
-      else if (StrEquals(tok,"Normal"))
-        flags |= SHOW_NORMAL;
-      else if (StrEquals(tok,"OnlyNormal"))
-        flags = SHOW_NORMAL;
-      else if (StrEquals(tok,"NoSticky"))
-        flags &= ~SHOW_STICKY;
-      else if (StrEquals(tok,"Sticky"))
-        flags |= SHOW_STICKY;
-      else if (StrEquals(tok,"OnlySticky"))
-        flags = SHOW_STICKY;
-      else if (StrEquals(tok,"NoOnTop"))
-        flags &= ~SHOW_ONTOP;
-      else if (StrEquals(tok,"OnTop"))
-        flags |= SHOW_ONTOP;
-      else if (StrEquals(tok,"OnlyOnTop"))
-        flags = SHOW_ONTOP;
-      else
-      {
-        scwm_msg(ERR,"WindowList","Unknown option '%s'",tok);
+      if (StrEquals(tok, "Function"))
+	func = GetToken(&line);
+      else if (StrEquals(tok, "Desk")) {
+	desk = atoi(GetToken(&line));
+	flags &= ~SHOW_ALLDESKS;
+      } else if (StrEquals(tok, "CurrentDesk")) {
+	desk = Scr.CurrentDesk;
+	flags &= ~SHOW_ALLDESKS;
+      } else if (StrEquals(tok, "Unsorted"))
+	flags |= DONT_SORT;
+      else if (StrEquals(tok, "UseIconName"))
+	flags |= SHOW_ICONNAME;
+      else if (StrEquals(tok, "NoGeometry"))
+	flags &= ~SHOW_GEOMETRY;
+      else if (StrEquals(tok, "Geometry"))
+	flags |= SHOW_GEOMETRY;
+      else if (StrEquals(tok, "NoIcons"))
+	flags &= ~SHOW_ICONIC;
+      else if (StrEquals(tok, "Icons"))
+	flags |= SHOW_ICONIC;
+      else if (StrEquals(tok, "OnlyIcons"))
+	flags = SHOW_ICONIC;
+      else if (StrEquals(tok, "NoNormal"))
+	flags &= ~SHOW_NORMAL;
+      else if (StrEquals(tok, "Normal"))
+	flags |= SHOW_NORMAL;
+      else if (StrEquals(tok, "OnlyNormal"))
+	flags = SHOW_NORMAL;
+      else if (StrEquals(tok, "NoSticky"))
+	flags &= ~SHOW_STICKY;
+      else if (StrEquals(tok, "Sticky"))
+	flags |= SHOW_STICKY;
+      else if (StrEquals(tok, "OnlySticky"))
+	flags = SHOW_STICKY;
+      else if (StrEquals(tok, "NoOnTop"))
+	flags &= ~SHOW_ONTOP;
+      else if (StrEquals(tok, "OnTop"))
+	flags |= SHOW_ONTOP;
+      else if (StrEquals(tok, "OnlyOnTop"))
+	flags = SHOW_ONTOP;
+      else {
+	scwm_msg(ERR, "WindowList", "Unknown option '%s'", tok);
       }
     }
   }
-
-  if (flags & SHOW_GEOMETRY)
-  {
-    sprintf(tlabel,"Desk: %d\tGeometry",desk);
+  if (flags & SHOW_GEOMETRY) {
+    sprintf(tlabel, "Desk: %d\tGeometry", desk);
+  } else {
+    sprintf(tlabel, "Desk: %d", desk);
   }
-  else
-  {
-    sprintf(tlabel,"Desk: %d",desk);
-  }
-  mr=NewMenuRoot(tlabel,0);
-  AddToMenu(mr, tlabel, "TITLE");      
+  mr = NewMenuRoot(tlabel, 0);
+  AddToMenu(mr, tlabel, "TITLE");
 
   next_desk = 0;
-  while(next_desk != INT_MAX)
-  {
+  while (next_desk != INT_MAX) {
     /* Sort window list by desktop number */
-    if((flags & SHOW_ALLDESKS) && !(flags & DONT_SORT))
-    {
+    if ((flags & SHOW_ALLDESKS) && !(flags & DONT_SORT)) {
       next_desk = INT_MAX;
-      for (t = Scr.ScwmRoot.next; t != NULL; t = t->next)
-      {
-        if((t->Desk >last_desk_done)&&(t->Desk < next_desk))
-          next_desk = t->Desk;
+      for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+	if ((t->Desk > last_desk_done) && (t->Desk < next_desk))
+	  next_desk = t->Desk;
       }
     }
-    if(!(flags & SHOW_ALLDESKS))
-    {
-      if(last_desk_done  == INT_MIN)
-        next_desk = desk;
+    if (!(flags & SHOW_ALLDESKS)) {
+      if (last_desk_done == INT_MIN)
+	next_desk = desk;
       else
-        next_desk = INT_MAX;
+	next_desk = INT_MAX;
     }
     last_desk_done = next_desk;
-    for (t = Scr.ScwmRoot.next; t != NULL; t = t->next)
-    {
-      if((t->Desk == next_desk)&&
-         (!(t->flags & WINDOWLISTSKIP)))
-      {
-        if (!(flags & SHOW_ICONIC) && (t->flags & ICONIFIED))
-          continue; /* don't want icons - skip */
-        if (!(flags & SHOW_STICKY) && (t->flags & STICKY))
-          continue; /* don't want sticky ones - skip */
-        if (!(flags & SHOW_ONTOP) && (t->flags & ONTOP))
-          continue; /* don't want ontop ones - skip */
-        if (!(flags & SHOW_NORMAL) &&
-            !((t->flags & ICONIFIED) ||
-              (t->flags & STICKY) ||
-              (t->flags & ONTOP)))
-          continue; /* don't want "normal" ones - skip */
-        
-        if (++scut == ('9' + 1)) scut = 'A';	/* Next shortcut key */
-        if(flags & SHOW_ICONNAME)
-          name = t->icon_name;
-        else
-          name = t->name;
-        t_hot = safemalloc(strlen(name) + 48);
-        sprintf(t_hot, "&%c.  %s", scut, name); /* Generate label */
+    for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+      if ((t->Desk == next_desk) &&
+	  (!(t->flags & WINDOWLISTSKIP))) {
+	if (!(flags & SHOW_ICONIC) && (t->flags & ICONIFIED))
+	  continue;		/* don't want icons - skip */
+	if (!(flags & SHOW_STICKY) && (t->flags & STICKY))
+	  continue;		/* don't want sticky ones - skip */
+	if (!(flags & SHOW_ONTOP) && (t->flags & ONTOP))
+	  continue;		/* don't want ontop ones - skip */
+	if (!(flags & SHOW_NORMAL) &&
+	    !((t->flags & ICONIFIED) ||
+	      (t->flags & STICKY) ||
+	      (t->flags & ONTOP)))
+	  continue;		/* don't want "normal" ones - skip */
 
-        if (flags & SHOW_GEOMETRY)
-        {
-          tname = safemalloc(80);
-          tname[0]=0;
-          if(t->flags & ICONIFIED)
-            strcpy(tname, "(");
-          sprintf(loc,"%d:",t->Desk);
-          strcat(tname,loc);
-          if(t->frame_x >=0)
-            sprintf(loc,"+%d",t->frame_x);
-          else
-            sprintf(loc,"%d",t->frame_x);
-          strcat(tname, loc);
-          if(t->frame_y >=0)
-            sprintf(loc,"+%d",t->frame_y);
-          else
-            sprintf(loc,"%d",t->frame_y);
-          strcat(tname, loc);
-          dheight = t->frame_height - t->title_height - 2*t->boundary_width;
-          dwidth = t->frame_width - 2*t->boundary_width;
-	  
-          dwidth -= t->hints.base_width;
-          dheight -= t->hints.base_height;
-          
-          dwidth /= t->hints.width_inc;
-          dheight /= t->hints.height_inc;
-          
-          sprintf(loc,"x%d",dwidth);
-          strcat(tname, loc);
-          sprintf(loc,"x%d",dheight);
-          strcat(tname, loc);
-          if (t->flags & STICKY)
-            strcat(tname, " S");
-          if (t->flags & ONTOP)
-            strcat(tname, " T");
-          if (t->flags & ICONIFIED)
-            strcat(tname, ")");
-          strcat(t_hot,"\t");
-          strcat(t_hot,tname);
-        }
-        if (func)
-          sprintf(tlabel,"%s %ld",func,t->w);
-        else
-          sprintf(tlabel,"WindowListFunc %ld",t->w);
-        AddToMenu(mr, t_hot, tlabel);
+	if (++scut == ('9' + 1))
+	  scut = 'A';		/* Next shortcut key */
+	if (flags & SHOW_ICONNAME)
+	  name = t->icon_name;
+	else
+	  name = t->name;
+	t_hot = safemalloc(strlen(name) + 48);
+	sprintf(t_hot, "&%c.  %s", scut, name);		/* Generate label */
+
+	if (flags & SHOW_GEOMETRY) {
+	  tname = safemalloc(80);
+	  tname[0] = 0;
+	  if (t->flags & ICONIFIED)
+	    strcpy(tname, "(");
+	  sprintf(loc, "%d:", t->Desk);
+	  strcat(tname, loc);
+	  if (t->frame_x >= 0)
+	    sprintf(loc, "+%d", t->frame_x);
+	  else
+	    sprintf(loc, "%d", t->frame_x);
+	  strcat(tname, loc);
+	  if (t->frame_y >= 0)
+	    sprintf(loc, "+%d", t->frame_y);
+	  else
+	    sprintf(loc, "%d", t->frame_y);
+	  strcat(tname, loc);
+	  dheight = t->frame_height - t->title_height - 2 * t->boundary_width;
+	  dwidth = t->frame_width - 2 * t->boundary_width;
+
+	  dwidth -= t->hints.base_width;
+	  dheight -= t->hints.base_height;
+
+	  dwidth /= t->hints.width_inc;
+	  dheight /= t->hints.height_inc;
+
+	  sprintf(loc, "x%d", dwidth);
+	  strcat(tname, loc);
+	  sprintf(loc, "x%d", dheight);
+	  strcat(tname, loc);
+	  if (t->flags & STICKY)
+	    strcat(tname, " S");
+	  if (t->flags & ONTOP)
+	    strcat(tname, " T");
+	  if (t->flags & ICONIFIED)
+	    strcat(tname, ")");
+	  strcat(t_hot, "\t");
+	  strcat(t_hot, tname);
+	}
+	if (func)
+	  sprintf(tlabel, "%s %ld", func, t->w);
+	else
+	  sprintf(tlabel, "WindowListFunc %ld", t->w);
+	AddToMenu(mr, t_hot, tlabel);
 #ifdef MINI_ICONS
-        /* Add the title pixmap */
-        if (t->mini_icon) {
-          mr->last->lpicture = t->mini_icon;
-          t->mini_icon->count++; /* increase the cache count!!
-                                    otherwise the pixmap will be
-                                    eventually removed from the 
-                                    cache by DestroyMenu */
-        }
+	/* Add the title pixmap */
+	if (t->mini_icon) {
+	  mr->last->lpicture = t->mini_icon;
+	  t->mini_icon->count++;	/* increase the cache count!!
+					   otherwise the pixmap will be
+					   eventually removed from the 
+					   cache by DestroyMenu */
+	}
 #endif
-        if (t_hot)
-          free(t_hot);
-        if (tname)
-          free(tname);
+	if (t_hot)
+	  free(t_hot);
+	if (tname)
+	  free(tname);
       }
     }
   }
@@ -254,7 +244,7 @@ void do_windowList(XEvent *eventp,Window w,ScwmWindow *tmp_win,
      as a result of a keypress or something, so we shouldn't expect
      a button release event. Fixes problem with keyboard short cuts not
      working if window list is popped up by keyboard.
-         and1000@cam.ac.uk, 27/6/96 */
+     and1000@cam.ac.uk, 27/6/96 */
   do_menu(mr, eventp->type == ButtonPress);
 
   DestroyMenu(mr);
@@ -262,4 +252,3 @@ void do_windowList(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 
 
 #endif /* MS_DELELTION_COMMENT */
-

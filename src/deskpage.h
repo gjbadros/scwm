@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 #ifndef DESKPAGE_H
 #define DESKPAGE_H
 
@@ -13,7 +20,4 @@ SCM desk_size();
 SCM viewport_position();
 SCM current_desk();
 
-#endif DESKPAGE_H
-
-
-
+#endif	/* DESKPAGE_H */

@@ -1,8 +1,7 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-struct queue_buff_struct
-{
+struct queue_buff_struct {
   struct queue_buff_struct *next;
   unsigned long *data;
   int size;
@@ -51,6 +50,3 @@ extern struct queue_buff_struct **pipeQueue;
 
 
 #endif /* MODULE_H */
-
-
-

@@ -1,3 +1,6 @@
+
+
+
 #ifndef WINDOW_H
 #define WINDOW_H
 
@@ -22,18 +25,18 @@ extern SCM window_context;
 #define set_window_context(X) window_context=X;
 #define unset_window_context() window_context=SCM_UNDEFINED;
 
-size_t free_window (SCM obj);
-SCM mark_window (SCM obj);
-int print_window (SCM obj, SCM port, scm_print_state *pstate);
+size_t free_window(SCM obj);
+SCM mark_window(SCM obj);
+int print_window(SCM obj, SCM port, scm_print_state * pstate);
 
 void init_window();
 
-SCM make_window(ScwmWindow *win);
+SCM make_window(ScwmWindow * win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 
 SCM get_window(SCM kill_p, SCM select_p);
-SCM select_window(SCM kill_p); 
+SCM select_window(SCM kill_p);
 SCM delete_window(SCM win);
 SCM destroy_window(SCM win);
 SCM window_deletable_p(SCM win);
@@ -53,6 +56,7 @@ SCM sticky_p(SCM win);
 SCM window_shade(SCM win);
 SCM un_window_shade(SCM win);
 SCM window_shaded_p(SCM win);
+
 #endif /* WINDOWSHADE */
 
 SCM move_to(SCM x, SCM y, SCM win);
@@ -114,9 +118,3 @@ SCM set_skip_mapping_x(SCM val, SCM w);
 SCM set_lenience_x(SCM val, SCM win);
 
 #endif /* WINDOW_H */
-
-
-
-
-
-

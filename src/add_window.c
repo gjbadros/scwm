@@ -55,20 +55,23 @@
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
 static XrmDatabase db;
-static XrmOptionDescRec table [] = {
+static XrmOptionDescRec table[] =
+{
   /* Want to accept "-workspace N" or -xrm "scwm*desk:N" as options
    * to specify the desktop. I have to include dummy options that
    * are meaningless since Xrm seems to allow -w to match -workspace
    * if there would be no ambiguity. */
-    {"-workspacf",      "*junk",        XrmoptionSepArg, (caddr_t) NULL}, 
-    {"-workspace",	"*desk",	XrmoptionSepArg, (caddr_t) NULL},
-    {"-xrn",		NULL,		XrmoptionResArg, (caddr_t) NULL},
-    {"-xrm",		NULL,		XrmoptionResArg, (caddr_t) NULL},
+  {"-workspacf", "*junk", XrmoptionSepArg, (caddr_t) NULL},
+  {"-workspace", "*desk", XrmoptionSepArg, (caddr_t) NULL},
+  {"-xrn", NULL, XrmoptionResArg, (caddr_t) NULL},
+  {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
 
 extern char *IconPath;
+
 #ifdef XPM
 extern char *PixmapPath;
+
 #endif
 
 /***********************************************************************
@@ -84,25 +87,31 @@ extern char *PixmapPath;
  *	iconm	- flag to tell if this is an icon manager window
  *
  ***********************************************************************/
-ScwmWindow *AddWindow(Window w)
+ScwmWindow *
+AddWindow(Window w)
 {
-  ScwmWindow *tmp_win;		        /* new scwm window structure */
-  unsigned long valuemask;		/* mask for create windows */
+  ScwmWindow *tmp_win;		/* new scwm window structure */
+  unsigned long valuemask;	/* mask for create windows */
+
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
   Pixmap TexturePixmap = None, TexturePixmapSave = None;
   unsigned long valuemask_save = 0;
+
 #endif
   XSetWindowAttributes attributes;	/* attributes for create windows */
-  int i,width,height;
-  int a,b;
+  int i, width, height;
+  int a, b;
   char *value;
+
 #ifdef MINI_ICONS
   char *mini_value;
+
 #endif
 #ifdef USEDECOR
   char *decor = NULL;
+
 #endif
-  unsigned long tflag,saved_flags;
+  unsigned long tflag, saved_flags;
   int Desk, border_width, resize_width;
   extern Bool NeedToResizeToo;
   extern ScwmWindow *colormap_win;
@@ -116,29 +125,27 @@ ScwmWindow *AddWindow(Window w)
 
   NeedToResizeToo = False;
   /* allocate space for the scwm window */
-  tmp_win = (ScwmWindow *)calloc(1, sizeof(ScwmWindow));
-  if (tmp_win == (ScwmWindow *)0)
-    {
-      return NULL;
-    }
+  tmp_win = (ScwmWindow *) calloc(1, sizeof(ScwmWindow));
+  if (tmp_win == (ScwmWindow *) 0) {
+    return NULL;
+  }
   tmp_win->flags = 0;
   tmp_win->w = w;
 
-  tmp_win->cmap_windows = (Window *)NULL;
+  tmp_win->cmap_windows = (Window *) NULL;
 #ifdef MINI_ICONS
   tmp_win->mini_pixmap_file = NULL;
   tmp_win->mini_icon = NULL;
 #endif
 
-  if(!PPosOverride)
+  if (!PPosOverride)
     if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
-		     &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0)
-      {
-	free((char *)tmp_win);
-	return(NULL);
-      }
-  if ( XGetWMName(dpy, tmp_win->w, &text_prop) != 0 ) 
-    tmp_win->name = (char *)text_prop.value ;
+		     &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0) {
+      free((char *) tmp_win);
+      return (NULL);
+    }
+  if (XGetWMName(dpy, tmp_win->w, &text_prop) != 0)
+    tmp_win->name = (char *) text_prop.value;
   else
     tmp_win->name = NoName;
 
@@ -157,14 +164,14 @@ ScwmWindow *AddWindow(Window w)
     tmp_win->class.res_class = NoClass;
 #endif /* 1 */
 
-  FetchWmProtocols (tmp_win);
-  FetchWmColormapWindows (tmp_win);
-  if(!(XGetWindowAttributes(dpy,tmp_win->w,&(tmp_win->attr))))
+  FetchWmProtocols(tmp_win);
+  FetchWmColormapWindows(tmp_win);
+  if (!(XGetWindowAttributes(dpy, tmp_win->w, &(tmp_win->attr))))
     tmp_win->attr.colormap = Scr.ScwmRoot.attr.colormap;
 
   tmp_win->wmhints = XGetWMHints(dpy, tmp_win->w);
 
-  if(XGetTransientForHint(dpy, tmp_win->w,  &tmp_win->transientfor))
+  if (XGetTransientForHint(dpy, tmp_win->w, &tmp_win->transientfor))
     tmp_win->flags |= TRANSIENT;
   else
     tmp_win->flags &= ~TRANSIENT;
@@ -172,16 +179,15 @@ ScwmWindow *AddWindow(Window w)
   tmp_win->old_bw = tmp_win->attr.border_width;
 
 #ifdef SHAPE
-  if (ShapesSupported)
-  {
+  if (ShapesSupported) {
     int xws, yws, xbs, ybs;
     unsigned wws, hws, wbs, hbs;
     int boundingShaped, clipShaped;
-    
-    XShapeSelectInput (dpy, tmp_win->w, ShapeNotifyMask);
-    XShapeQueryExtents (dpy, tmp_win->w,
-			&boundingShaped, &xws, &yws, &wws, &hws,
-			&clipShaped, &xbs, &ybs, &wbs, &hbs);
+
+    XShapeSelectInput(dpy, tmp_win->w, ShapeNotifyMask);
+    XShapeQueryExtents(dpy, tmp_win->w,
+		       &boundingShaped, &xws, &yws, &wws, &hws,
+		       &clipShaped, &xbs, &ybs, &wbs, &hbs);
     tmp_win->wShaped = boundingShaped;
   }
 #endif /* SHAPE */
@@ -196,17 +202,17 @@ ScwmWindow *AddWindow(Window w)
   tmp_win->flags |= BORDER;
   tmp_win->flags |= TITLE;
 
-  tflag = LookInList(Scr.TheList,tmp_win->name,&tmp_win->class, &value,
+  tflag = LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &value,
 #ifdef MINI_ICONS
-                     &mini_value,
+		     &mini_value,
 #endif
 #ifdef USEDECOR
 		     &decor,
 #endif
-                     &Desk,
+		     &Desk,
 		     &border_width, &resize_width,
-                     &forecolor,&backcolor,&tmp_win->buttons, 
-		     tmp_win->IconBox,&(tmp_win->BoxFillMethod));
+		     &forecolor, &backcolor, &tmp_win->buttons,
+		     tmp_win->IconBox, &(tmp_win->BoxFillMethod));
 
 
   /* XXX - bletcherous... we process the hint properties separately,
@@ -217,89 +223,82 @@ ScwmWindow *AddWindow(Window w)
 
   saved_flags = tmp_win->flags;
   tmp_win->flags = tflag;
-  tmp_win->schwin=make_window(tmp_win);
+  tmp_win->schwin = make_window(tmp_win);
 
   run_new_window_hint_hook(tmp_win->schwin);
-  tflag=tmp_win->flags;
+  tflag = tmp_win->flags;
 
   tmp_win->flags = saved_flags;
-  
+
   if (tflag & STARTSONDESK_FLAG) {
     Desk = tmp_win->StartDesk;
   }
-
 #ifdef USEDECOR
   /* search for a UseDecor tag in the Style */
   tmp_win->fl = NULL;
   if (decor != NULL) {
-      ScwmDecor *fl = &Scr.DefaultDecor;
-      for (; fl; fl = fl->next)
-	  if (mystrcasecmp(decor,fl->tag)==0) {
-	      tmp_win->fl = fl;
-	      break;
-	  }
+    ScwmDecor *fl = &Scr.DefaultDecor;
+
+    for (; fl; fl = fl->next)
+      if (mystrcasecmp(decor, fl->tag) == 0) {
+	tmp_win->fl = fl;
+	break;
+      }
   }
   if (tmp_win->fl == NULL)
-      tmp_win->fl = &Scr.DefaultDecor;
+    tmp_win->fl = &Scr.DefaultDecor;
 #endif
 
-  tmp_win->title_height = GetDecor(tmp_win,TitleHeight) + tmp_win->bw;
+  tmp_win->title_height = GetDecor(tmp_win, TitleHeight) + tmp_win->bw;
 
   GetMwmHints(tmp_win);
   GetOlHints(tmp_win);
 
-  SelectDecor(tmp_win,tflag,border_width,resize_width); 
+  SelectDecor(tmp_win, tflag, border_width, resize_width);
 
   tmp_win->flags |= tflag & ALL_COMMON_FLAGS;
   /* find a suitable icon pixmap */
-  if(tflag & ICON_FLAG)
-    {
-      /* an icon was specified */
-      tmp_win->icon_bitmap_file = value;
-    }
-  else if((tmp_win->wmhints)
-	  &&(tmp_win->wmhints->flags & (IconWindowHint|IconPixmapHint)))
-    {
-      /* window has its own icon */
-      tmp_win->icon_bitmap_file = NULL;
-    }
-  else
-    {
-      /* use default icon */
-      tmp_win->icon_bitmap_file = Scr.DefaultIcon;
-    }
+  if (tflag & ICON_FLAG) {
+    /* an icon was specified */
+    tmp_win->icon_bitmap_file = value;
+  } else if ((tmp_win->wmhints)
+	 && (tmp_win->wmhints->flags & (IconWindowHint | IconPixmapHint))) {
+    /* window has its own icon */
+    tmp_win->icon_bitmap_file = NULL;
+  } else {
+    /* use default icon */
+    tmp_win->icon_bitmap_file = Scr.DefaultIcon;
+  }
 
 #ifdef MINI_ICONS
   if (tflag & MINIICON_FLAG) {
     tmp_win->mini_pixmap_file = mini_value;
-  }
-  else {
+  } else {
     tmp_win->mini_pixmap_file = NULL;
   }
 #endif
 
-  GetWindowSizeHints (tmp_win);
+  GetWindowSizeHints(tmp_win);
 
   /* Tentative size estimate */
-  tmp_win->frame_width = tmp_win->attr.width+2*tmp_win->boundary_width;
-  tmp_win->frame_height = tmp_win->attr.height + tmp_win->title_height+
-    2*tmp_win->boundary_width;
+  tmp_win->frame_width = tmp_win->attr.width + 2 * tmp_win->boundary_width;
+  tmp_win->frame_height = tmp_win->attr.height + tmp_win->title_height +
+    2 * tmp_win->boundary_width;
 
   ConstrainSize(tmp_win, &tmp_win->frame_width, &tmp_win->frame_height);
 
   /* Find out if the client requested a specific desk on the command line. */
-  if (XGetCommand (dpy, tmp_win->w, &client_argv, &client_argc)) {
-      XrmParseCommand (&db, table, 4, "scwm", &client_argc, client_argv);
-      status = XrmGetResource (db, "scwm.desk", "Scwm.Desk", &str_type, &rm_value);
-      if ((status == True) && (rm_value.size != 0)) {
-          Desk = atoi(rm_value.addr);
-	  tflag |= STARTSONDESK_FLAG;
-      }
-      XrmDestroyDatabase (db);
-      db = NULL;
+  if (XGetCommand(dpy, tmp_win->w, &client_argv, &client_argc)) {
+    XrmParseCommand(&db, table, 4, "scwm", &client_argc, client_argv);
+    status = XrmGetResource(db, "scwm.desk", "Scwm.Desk", &str_type, &rm_value);
+    if ((status == True) && (rm_value.size != 0)) {
+      Desk = atoi(rm_value.addr);
+      tflag |= STARTSONDESK_FLAG;
+    }
+    XrmDestroyDatabase(db);
+    db = NULL;
   }
-
-  if(!PlaceWindow(tmp_win, tflag, Desk))
+  if (!PlaceWindow(tmp_win, tflag, Desk))
     return NULL;
 
   /*
@@ -310,19 +309,17 @@ ScwmWindow *AddWindow(Window w)
    * gotten one for anything up to here, however.
    */
   MyXGrabServer(dpy);
-  if(XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
-		  &JunkWidth, &JunkHeight,
-		  &JunkBW,  &JunkDepth) == 0)
-    {
-      free((char *)tmp_win);
-      MyXUngrabServer(dpy);
-      return(NULL);
-    }
-
-  XSetWindowBorderWidth (dpy, tmp_win->w,0);
-  XGetWMIconName (dpy, tmp_win->w, &text_prop);
+  if (XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
+		   &JunkWidth, &JunkHeight,
+		   &JunkBW, &JunkDepth) == 0) {
+    free((char *) tmp_win);
+    MyXUngrabServer(dpy);
+    return (NULL);
+  }
+  XSetWindowBorderWidth(dpy, tmp_win->w, 0);
+  XGetWMIconName(dpy, tmp_win->w, &text_prop);
   tmp_win->icon_name = (char *) text_prop.value;
-  if(tmp_win->icon_name==(char *)NULL)
+  if (tmp_win->icon_name == (char *) NULL)
     tmp_win->icon_name = tmp_win->name;
 
   tmp_win->flags &= ~ICONIFIED;
@@ -335,94 +332,84 @@ ScwmWindow *AddWindow(Window w)
   tmp_win->ShadowPixel = Scr.MenuRelief.back;
   tmp_win->BackPixel = Scr.MenuColors.back;
 
-  if(forecolor != NULL)
-    {
-      XColor color;
+  if (forecolor != NULL) {
+    XColor color;
 
-      if((XParseColor (dpy, Scr.ScwmRoot.attr.colormap, forecolor, &color))
-	 &&(XAllocColor (dpy, Scr.ScwmRoot.attr.colormap, &color)))
-	{
-	  tmp_win->TextPixel = color.pixel; 
-	}
+    if ((XParseColor(dpy, Scr.ScwmRoot.attr.colormap, forecolor, &color))
+	&& (XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color))) {
+      tmp_win->TextPixel = color.pixel;
     }
-  if(backcolor != NULL)
-    {
-      XColor color;
+  }
+  if (backcolor != NULL) {
+    XColor color;
 
-      if((XParseColor (dpy, Scr.ScwmRoot.attr.colormap,backcolor, &color))
-	 &&(XAllocColor (dpy, Scr.ScwmRoot.attr.colormap, &color)))
-
-	{
-	  tmp_win->BackPixel = color.pixel; 
-	}
-      tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
-      tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
+    if ((XParseColor(dpy, Scr.ScwmRoot.attr.colormap, backcolor, &color))
+	&& (XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color))) {
+      tmp_win->BackPixel = color.pixel;
     }
-
-
+    tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
+    tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
+  }
   /* add the window into the scwm list */
   tmp_win->next = Scr.ScwmRoot.next;
   if (Scr.ScwmRoot.next != NULL)
     Scr.ScwmRoot.next->prev = tmp_win;
   tmp_win->prev = &Scr.ScwmRoot;
   Scr.ScwmRoot.next = tmp_win;
-  
+
   /* create windows */
   tmp_win->frame_x = tmp_win->attr.x + tmp_win->old_bw - tmp_win->bw;
   tmp_win->frame_y = tmp_win->attr.y + tmp_win->old_bw - tmp_win->bw;
 
-  tmp_win->frame_width = tmp_win->attr.width+2*tmp_win->boundary_width;
-  tmp_win->frame_height = tmp_win->attr.height + tmp_win->title_height+
-    2*tmp_win->boundary_width;
+  tmp_win->frame_width = tmp_win->attr.width + 2 * tmp_win->boundary_width;
+  tmp_win->frame_height = tmp_win->attr.height + tmp_win->title_height +
+    2 * tmp_win->boundary_width;
   ConstrainSize(tmp_win, &tmp_win->frame_width, &tmp_win->frame_height);
 
-  valuemask = CWBorderPixel | CWCursor | CWEventMask; 
-  if(Scr.d_depth < 2)
-    {
-      attributes.background_pixmap = Scr.light_gray_pixmap ;
-      if(tmp_win->flags & STICKY)
-	attributes.background_pixmap = Scr.sticky_gray_pixmap;
-      valuemask |= CWBackPixmap;
-    }
-  else
-    {
-      attributes.background_pixel = tmp_win->BackPixel;
-      valuemask |= CWBackPixel;
-    }
+  valuemask = CWBorderPixel | CWCursor | CWEventMask;
+  if (Scr.d_depth < 2) {
+    attributes.background_pixmap = Scr.light_gray_pixmap;
+    if (tmp_win->flags & STICKY)
+      attributes.background_pixmap = Scr.sticky_gray_pixmap;
+    valuemask |= CWBackPixmap;
+  } else {
+    attributes.background_pixel = tmp_win->BackPixel;
+    valuemask |= CWBackPixel;
+  }
 
   attributes.border_pixel = tmp_win->ShadowPixel;
 
   attributes.cursor = Scr.ScwmCursors[DEFAULT];
-  attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask | 
-			   ButtonReleaseMask |EnterWindowMask | 
-			   LeaveWindowMask |ExposureMask);
+  attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |
+			   ButtonReleaseMask | EnterWindowMask |
+			   LeaveWindowMask | ExposureMask);
 
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-  if ((GetDecor(tmp_win,BorderStyle.inactive.style) & ButtonFaceTypeMask) 
+  if ((GetDecor(tmp_win, BorderStyle.inactive.style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
-      TexturePixmap = GetDecor(tmp_win,BorderStyle.inactive.u.p->picture);
+    TexturePixmap = GetDecor(tmp_win, BorderStyle.inactive.u.p->picture);
 
   if (TexturePixmap) {
-      TexturePixmapSave = attributes.background_pixmap;
-      attributes.background_pixmap = TexturePixmap;
-      valuemask_save = valuemask;
-      valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
+    TexturePixmapSave = attributes.background_pixmap;
+    attributes.background_pixmap = TexturePixmap;
+    valuemask_save = valuemask;
+    valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
 #endif
 
   /* What the heck, we'll always reparent everything from now on! */
-  tmp_win->frame = 
-    XCreateWindow (dpy, Scr.Root, tmp_win->frame_x,tmp_win->frame_y, 
-		   tmp_win->frame_width, tmp_win->frame_height,
-		   tmp_win->bw,CopyFromParent, InputOutput,
-		   CopyFromParent, 
-		   valuemask,
-		   &attributes);
+  tmp_win->frame =
+    XCreateWindow(dpy, Scr.Root, tmp_win->frame_x, tmp_win->frame_y,
+		  tmp_win->frame_width, tmp_win->frame_height,
+		  tmp_win->bw, CopyFromParent, InputOutput,
+		  CopyFromParent,
+		  valuemask,
+		  &attributes);
 
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
   if (TexturePixmap) {
-      attributes.background_pixmap = TexturePixmapSave;
-      valuemask = valuemask_save;
+    attributes.background_pixmap = TexturePixmapSave;
+    valuemask = valuemask_save;
   }
 #endif
 
@@ -430,192 +417,178 @@ ScwmWindow *AddWindow(Window w)
 
   /* Thats not all, we'll double-reparent the window ! */
   attributes.cursor = Scr.ScwmCursors[DEFAULT];
-  tmp_win->Parent = 
-    XCreateWindow (dpy, tmp_win->frame,
-		   tmp_win->boundary_width, 
-		   tmp_win->boundary_width+tmp_win->title_height,
-		   (tmp_win->frame_width - 2*tmp_win->boundary_width),
-		   (tmp_win->frame_height - 2*tmp_win->boundary_width - 
-		    tmp_win->title_height),tmp_win->bw, CopyFromParent,
-		   InputOutput,CopyFromParent, valuemask,&attributes);  
+  tmp_win->Parent =
+    XCreateWindow(dpy, tmp_win->frame,
+		  tmp_win->boundary_width,
+		  tmp_win->boundary_width + tmp_win->title_height,
+		  (tmp_win->frame_width - 2 * tmp_win->boundary_width),
+		  (tmp_win->frame_height - 2 * tmp_win->boundary_width -
+		   tmp_win->title_height), tmp_win->bw, CopyFromParent,
+		  InputOutput, CopyFromParent, valuemask, &attributes);
 
-  attributes.event_mask = (ButtonPressMask|ButtonReleaseMask|ExposureMask|
-			   EnterWindowMask|LeaveWindowMask);
+  attributes.event_mask = (ButtonPressMask | ButtonReleaseMask | ExposureMask |
+			   EnterWindowMask | LeaveWindowMask);
   tmp_win->title_x = tmp_win->title_y = 0;
   tmp_win->title_w = 0;
-  tmp_win->title_width = tmp_win->frame_width - 2*tmp_win->corner_width
+  tmp_win->title_width = tmp_win->frame_width - 2 * tmp_win->corner_width
     - 3 + tmp_win->bw;
-  if(tmp_win->title_width < 1)
+  if (tmp_win->title_width < 1)
     tmp_win->title_width = 1;
-  if(tmp_win->flags & BORDER)
-    {
+  if (tmp_win->flags & BORDER) {
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-      if (TexturePixmap) {
+    if (TexturePixmap) {
+      TexturePixmapSave = attributes.background_pixmap;
+      attributes.background_pixmap = TexturePixmap;
+      valuemask_save = valuemask;
+      valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
+    }
+#endif
+    /* Just dump the windows any old place and left SetupFrame take
+     * care of the mess */
+    for (i = 0; i < 4; i++) {
+      attributes.cursor = Scr.ScwmCursors[TOP_LEFT + i];
+      tmp_win->corners[i] =
+	XCreateWindow(dpy, tmp_win->frame, 0, 0,
+		      tmp_win->corner_width, tmp_win->corner_width,
+		      0, CopyFromParent, InputOutput,
+		      CopyFromParent,
+		      valuemask,
+		      &attributes);
+    }
+#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
+    if (TexturePixmap) {
+      attributes.background_pixmap = TexturePixmapSave;
+      valuemask = valuemask_save;
+    }
+#endif
+  }
+  if (tmp_win->flags & TITLE) {
+    tmp_win->title_x = tmp_win->boundary_width + tmp_win->title_height + 1;
+    tmp_win->title_y = tmp_win->boundary_width;
+    attributes.cursor = Scr.ScwmCursors[TITLE_CURSOR];
+    tmp_win->title_w =
+      XCreateWindow(dpy, tmp_win->frame, tmp_win->title_x, tmp_win->title_y,
+		    tmp_win->title_width, tmp_win->title_height, 0,
+		    CopyFromParent, InputOutput, CopyFromParent,
+		    valuemask, &attributes);
+    attributes.cursor = Scr.ScwmCursors[SYS];
+    for (i = 4; i >= 0; i--) {
+      if ((i < Scr.nr_left_buttons) && (tmp_win->left_w[i] > 0)) {
+#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
+	if (TexturePixmap
+	    && GetDecor(tmp_win, left_buttons[i].flags) & UseBorderStyle) {
 	  TexturePixmapSave = attributes.background_pixmap;
 	  attributes.background_pixmap = TexturePixmap;
 	  valuemask_save = valuemask;
 	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
-      }
-#endif
-      /* Just dump the windows any old place and left SetupFrame take
-       * care of the mess */
-      for(i=0;i<4;i++)
-	{
-	  attributes.cursor = Scr.ScwmCursors[TOP_LEFT+i];	  
-	  tmp_win->corners[i] = 
-	    XCreateWindow (dpy, tmp_win->frame, 0,0,
-			   tmp_win->corner_width, tmp_win->corner_width,
-			   0, CopyFromParent,InputOutput,
-			   CopyFromParent,
-			   valuemask,
-			   &attributes);
 	}
+#endif
+	tmp_win->left_w[i] =
+	  XCreateWindow(dpy, tmp_win->frame, tmp_win->title_height * i, 0,
+			tmp_win->title_height, tmp_win->title_height, 0,
+			CopyFromParent, InputOutput,
+			CopyFromParent,
+			valuemask,
+			&attributes);
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-      if (TexturePixmap) {
+	if (TexturePixmap
+	    && GetDecor(tmp_win, left_buttons[i].flags) & UseBorderStyle) {
 	  attributes.background_pixmap = TexturePixmapSave;
 	  valuemask = valuemask_save;
-      }
+	}
 #endif
+      } else
+	tmp_win->left_w[i] = None;
+
+      if ((i < Scr.nr_right_buttons) && (tmp_win->right_w[i] > 0)) {
+#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
+	if (TexturePixmap
+	    && GetDecor(tmp_win, right_buttons[i].flags) & UseBorderStyle) {
+	  TexturePixmapSave = attributes.background_pixmap;
+	  attributes.background_pixmap = TexturePixmap;
+	  valuemask_save = valuemask;
+	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
+	}
+#endif
+	tmp_win->right_w[i] =
+	  XCreateWindow(dpy, tmp_win->frame,
+			tmp_win->title_width -
+			tmp_win->title_height * (i + 1),
+			0, tmp_win->title_height,
+			tmp_win->title_height,
+			0, CopyFromParent, InputOutput,
+			CopyFromParent,
+			valuemask,
+			&attributes);
+#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
+	if (TexturePixmap
+	    && GetDecor(tmp_win, right_buttons[i].flags) & UseBorderStyle) {
+	  attributes.background_pixmap = TexturePixmapSave;
+	  valuemask = valuemask_save;
+	}
+#endif
+      } else
+	tmp_win->right_w[i] = None;
     }
 
-  if (tmp_win->flags & TITLE)
-    {
-      tmp_win->title_x = tmp_win->boundary_width +tmp_win->title_height+1; 
-      tmp_win->title_y = tmp_win->boundary_width;
-      attributes.cursor = Scr.ScwmCursors[TITLE_CURSOR];
-      tmp_win->title_w = 
-	XCreateWindow (dpy, tmp_win->frame, tmp_win->title_x, tmp_win->title_y,
-		       tmp_win->title_width, tmp_win->title_height,0,
-		       CopyFromParent, InputOutput, CopyFromParent,
-		       valuemask,&attributes);
-      attributes.cursor = Scr.ScwmCursors[SYS];
-      for(i=4;i>=0;i--)
-	{
-	  if((i<Scr.nr_left_buttons)&&(tmp_win->left_w[i] > 0))
-	    {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-	      if (TexturePixmap
-		  && GetDecor(tmp_win,left_buttons[i].flags) & UseBorderStyle) {
-		  TexturePixmapSave = attributes.background_pixmap;
-		  attributes.background_pixmap = TexturePixmap;
-		  valuemask_save = valuemask;
-		  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
-	      }
-#endif
-	      tmp_win->left_w[i] =
-		XCreateWindow (dpy, tmp_win->frame, tmp_win->title_height*i, 0,
-			       tmp_win->title_height, tmp_win->title_height, 0,
-			       CopyFromParent, InputOutput,
-			       CopyFromParent, 
-			       valuemask,
-			       &attributes);
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-	      if (TexturePixmap
-		  && GetDecor(tmp_win,left_buttons[i].flags) & UseBorderStyle) {
-		  attributes.background_pixmap = TexturePixmapSave;
-		  valuemask = valuemask_save;
-	      }
-#endif
-	    }
-	  else
-	    tmp_win->left_w[i] = None;
-
-	  if((i<Scr.nr_right_buttons)&&(tmp_win->right_w[i] >0))
-	    {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-	      if (TexturePixmap
-		  && GetDecor(tmp_win,right_buttons[i].flags) & UseBorderStyle) {
-		  TexturePixmapSave = attributes.background_pixmap;
-		  attributes.background_pixmap = TexturePixmap;
-		  valuemask_save = valuemask;
-		  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
-	      }
-#endif
-	      tmp_win->right_w[i] =
-		XCreateWindow (dpy, tmp_win->frame, 
-			       tmp_win->title_width-
-			       tmp_win->title_height*(i+1),
-			       0, tmp_win->title_height,
-			       tmp_win->title_height, 
-			       0, CopyFromParent, InputOutput,
-			       CopyFromParent,
-			       valuemask,
-			       &attributes);
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-	      if (TexturePixmap
-		  && GetDecor(tmp_win,right_buttons[i].flags) & UseBorderStyle) {
-		  attributes.background_pixmap = TexturePixmapSave;
-		  valuemask = valuemask_save;
-	      }
-#endif
-	    }
-	  else
-	    tmp_win->right_w[i] = None;
-	}
-      
 #ifdef MINI_ICONS
-      if (tmp_win->mini_pixmap_file) {
-	tmp_win->mini_icon = CachePicture (dpy, Scr.Root, 
-					   IconPath,
+    if (tmp_win->mini_pixmap_file) {
+      tmp_win->mini_icon = CachePicture(dpy, Scr.Root,
+					IconPath,
 #ifdef XPM
-					   PixmapPath,
+					PixmapPath,
 #else
-					   NULL,
+					NULL,
 #endif
-					   tmp_win->mini_pixmap_file);
-      }
-      else {
-	tmp_win->mini_icon = NULL;
-      }
-#endif
+					tmp_win->mini_pixmap_file);
+    } else {
+      tmp_win->mini_icon = NULL;
     }
-
-  if(tmp_win->flags & BORDER)
-    {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-      if (TexturePixmap) {
-	  TexturePixmapSave = attributes.background_pixmap;
-	  attributes.background_pixmap = TexturePixmap;
-	  valuemask_save = valuemask;
-	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
-      }
 #endif
-      for(i=0;i<4;i++)
-	{
-	  attributes.cursor = Scr.ScwmCursors[TOP+i];
-	  tmp_win->sides[i] = 
-	    XCreateWindow (dpy, tmp_win->frame, 0, 0, tmp_win->boundary_width,
-			   tmp_win->boundary_width, 0, CopyFromParent,
-			   InputOutput, CopyFromParent,
-			   valuemask,
-			   &attributes);
-	}
+  }
+  if (tmp_win->flags & BORDER) {
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-      if (TexturePixmap) {
-	  attributes.background_pixmap = TexturePixmapSave;
-	  valuemask = valuemask_save;
-      }
-#endif
+    if (TexturePixmap) {
+      TexturePixmapSave = attributes.background_pixmap;
+      attributes.background_pixmap = TexturePixmap;
+      valuemask_save = valuemask;
+      valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
     }
-
-  XMapSubwindows (dpy, tmp_win->frame);
-  XRaiseWindow(dpy,tmp_win->Parent);
-  XReparentWindow(dpy, tmp_win->w, tmp_win->Parent,0,0);
+#endif
+    for (i = 0; i < 4; i++) {
+      attributes.cursor = Scr.ScwmCursors[TOP + i];
+      tmp_win->sides[i] =
+	XCreateWindow(dpy, tmp_win->frame, 0, 0, tmp_win->boundary_width,
+		      tmp_win->boundary_width, 0, CopyFromParent,
+		      InputOutput, CopyFromParent,
+		      valuemask,
+		      &attributes);
+    }
+#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
+    if (TexturePixmap) {
+      attributes.background_pixmap = TexturePixmapSave;
+      valuemask = valuemask_save;
+    }
+#endif
+  }
+  XMapSubwindows(dpy, tmp_win->frame);
+  XRaiseWindow(dpy, tmp_win->Parent);
+  XReparentWindow(dpy, tmp_win->w, tmp_win->Parent, 0, 0);
 
   valuemask = (CWEventMask | CWDontPropagate);
-  attributes.event_mask = (StructureNotifyMask | PropertyChangeMask | 
-			   VisibilityChangeMask |  EnterWindowMask | 
-			   LeaveWindowMask | 
+  attributes.event_mask = (StructureNotifyMask | PropertyChangeMask |
+			   VisibilityChangeMask | EnterWindowMask |
+			   LeaveWindowMask |
 			   ColormapChangeMask | FocusChangeMask);
 
   attributes.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
 
-  XChangeWindowAttributes (dpy, tmp_win->w, valuemask, &attributes);
-  if ( XGetWMName(dpy, tmp_win->w, &text_prop) != 0 ) 
-    tmp_win->name = (char *)text_prop.value ;
+  XChangeWindowAttributes(dpy, tmp_win->w, valuemask, &attributes);
+  if (XGetWMName(dpy, tmp_win->w, &text_prop) != 0)
+    tmp_win->name = (char *) text_prop.value;
   else
     tmp_win->name = NoName;
-  
+
   XAddToSaveSet(dpy, tmp_win->w);
 
   /*
@@ -625,11 +598,11 @@ ScwmWindow *AddWindow(Window w)
    * again in HandleMapNotify.
    */
   tmp_win->flags &= ~MAPPED;
-  width =  tmp_win->frame_width;
+  width = tmp_win->frame_width;
   tmp_win->frame_width = 0;
   height = tmp_win->frame_height;
   tmp_win->frame_height = 0;
-  SetupFrame (tmp_win, tmp_win->frame_x, tmp_win->frame_y,width,height, True);
+  SetupFrame(tmp_win, tmp_win->frame_x, tmp_win->frame_y, width, height, True);
 
 
   /* wait until the window is iconified and the icon window is mapped
@@ -639,103 +612,97 @@ ScwmWindow *AddWindow(Window w)
   GrabButtons(tmp_win);
   GrabKeys(tmp_win);
 
-  XSaveContext(dpy, tmp_win->w, ScwmContext, (caddr_t) tmp_win);  
+  XSaveContext(dpy, tmp_win->w, ScwmContext, (caddr_t) tmp_win);
   XSaveContext(dpy, tmp_win->frame, ScwmContext, (caddr_t) tmp_win);
   XSaveContext(dpy, tmp_win->Parent, ScwmContext, (caddr_t) tmp_win);
-  if (tmp_win->flags & TITLE)
-    {
-      XSaveContext(dpy, tmp_win->title_w, ScwmContext, (caddr_t) tmp_win);
-      for(i=0;i<Scr.nr_left_buttons;i++)
-	XSaveContext(dpy, tmp_win->left_w[i], ScwmContext, (caddr_t) tmp_win);
-      for(i=0;i<Scr.nr_right_buttons;i++)
-	if(tmp_win->right_w[i] != None)
-	  XSaveContext(dpy, tmp_win->right_w[i], ScwmContext, 
-		       (caddr_t) tmp_win);
+  if (tmp_win->flags & TITLE) {
+    XSaveContext(dpy, tmp_win->title_w, ScwmContext, (caddr_t) tmp_win);
+    for (i = 0; i < Scr.nr_left_buttons; i++)
+      XSaveContext(dpy, tmp_win->left_w[i], ScwmContext, (caddr_t) tmp_win);
+    for (i = 0; i < Scr.nr_right_buttons; i++)
+      if (tmp_win->right_w[i] != None)
+	XSaveContext(dpy, tmp_win->right_w[i], ScwmContext,
+		     (caddr_t) tmp_win);
+  }
+  if (tmp_win->flags & BORDER) {
+    for (i = 0; i < 4; i++) {
+      XSaveContext(dpy, tmp_win->sides[i], ScwmContext, (caddr_t) tmp_win);
+      XSaveContext(dpy, tmp_win->corners[i], ScwmContext, (caddr_t) tmp_win);
     }
-  if (tmp_win->flags & BORDER)
-    {
-      for(i=0;i<4;i++)
-	{
-	  XSaveContext(dpy, tmp_win->sides[i], ScwmContext, (caddr_t) tmp_win);
-	  XSaveContext(dpy,tmp_win->corners[i],ScwmContext, (caddr_t) tmp_win);
-	}
-    }
+  }
   RaiseWindow(tmp_win);
   KeepOnTop();
   MyXUngrabServer(dpy);
 
   XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
-		   &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
-  XTranslateCoordinates(dpy,tmp_win->frame,Scr.Root,JunkX,JunkY,
-			&a,&b,&JunkChild);
+	       &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+  XTranslateCoordinates(dpy, tmp_win->frame, Scr.Root, JunkX, JunkY,
+			&a, &b, &JunkChild);
   tmp_win->xdiff -= a;
   tmp_win->ydiff -= b;
 #ifndef CLICKTORAISE
-  if(tmp_win->flags & ClickToFocus)
-    {
+  if (tmp_win->flags & ClickToFocus) {
 #endif
-     /* need to grab all buttons for window that we are about to
+    /* need to grab all buttons for window that we are about to
        * unhighlight */
-      for(i=0;i<3;i++)
-	if(Scr.buttons2grab & (1<<i))
-	  {
-	    XGrabButton(dpy,(i+1),0,tmp_win->frame,True,
-			ButtonPressMask, GrabModeSync,GrabModeAsync,None,
-			Scr.ScwmCursors[SYS]);
-	    XGrabButton(dpy,(i+1),LockMask,tmp_win->frame,True,
-			ButtonPressMask, GrabModeSync,GrabModeAsync,None,
-			Scr.ScwmCursors[SYS]);
-	  }
+    for (i = 0; i < 3; i++)
+      if (Scr.buttons2grab & (1 << i)) {
+	XGrabButton(dpy, (i + 1), 0, tmp_win->frame, True,
+		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
+		    Scr.ScwmCursors[SYS]);
+	XGrabButton(dpy, (i + 1), LockMask, tmp_win->frame, True,
+		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
+		    Scr.ScwmCursors[SYS]);
+      }
 #ifndef CLICKTORAISE
-    }
+  }
 #endif
 
-  BroadcastConfig(M_ADD_WINDOW,tmp_win);
+  BroadcastConfig(M_ADD_WINDOW, tmp_win);
 
-  BroadcastName(M_WINDOW_NAME,tmp_win->w,tmp_win->frame,
-		(unsigned long)tmp_win,tmp_win->name);
-  BroadcastName(M_ICON_NAME,tmp_win->w,tmp_win->frame,
-		(unsigned long)tmp_win,tmp_win->icon_name);
-   if (tmp_win->icon_bitmap_file != NULL &&
-       tmp_win->icon_bitmap_file != Scr.DefaultIcon)
-     BroadcastName(M_ICON_FILE,tmp_win->w,tmp_win->frame,
-		   (unsigned long)tmp_win,tmp_win->icon_bitmap_file);
-  BroadcastName(M_RES_CLASS,tmp_win->w,tmp_win->frame,
-		(unsigned long)tmp_win,tmp_win->class.res_class);
-  BroadcastName(M_RES_NAME,tmp_win->w,tmp_win->frame,
-		(unsigned long)tmp_win,tmp_win->class.res_name);
+  BroadcastName(M_WINDOW_NAME, tmp_win->w, tmp_win->frame,
+		(unsigned long) tmp_win, tmp_win->name);
+  BroadcastName(M_ICON_NAME, tmp_win->w, tmp_win->frame,
+		(unsigned long) tmp_win, tmp_win->icon_name);
+  if (tmp_win->icon_bitmap_file != NULL &&
+      tmp_win->icon_bitmap_file != Scr.DefaultIcon)
+    BroadcastName(M_ICON_FILE, tmp_win->w, tmp_win->frame,
+		  (unsigned long) tmp_win, tmp_win->icon_bitmap_file);
+  BroadcastName(M_RES_CLASS, tmp_win->w, tmp_win->frame,
+		(unsigned long) tmp_win, tmp_win->class.res_class);
+  BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
+		(unsigned long) tmp_win, tmp_win->class.res_name);
 #ifdef MINI_ICONS
   if (tmp_win->mini_icon != NULL)
     Broadcast(M_MINI_ICON, 6,
-              tmp_win->w, /* Watch Out ! : I reduced the set of infos... */
-              tmp_win->mini_icon->picture,
-              tmp_win->mini_icon->mask,
-              tmp_win->mini_icon->width,
-              tmp_win->mini_icon->height,
-              tmp_win->mini_icon->depth, 0);
+	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */
+	      tmp_win->mini_icon->picture,
+	      tmp_win->mini_icon->mask,
+	      tmp_win->mini_icon->width,
+	      tmp_win->mini_icon->height,
+	      tmp_win->mini_icon->depth, 0);
 #endif
 
-  FetchWmProtocols (tmp_win);
-  FetchWmColormapWindows (tmp_win);
-  if(!(XGetWindowAttributes(dpy,tmp_win->w,&(tmp_win->attr))))
+  FetchWmProtocols(tmp_win);
+  FetchWmColormapWindows(tmp_win);
+  if (!(XGetWindowAttributes(dpy, tmp_win->w, &(tmp_win->attr))))
     tmp_win->attr.colormap = Scr.ScwmRoot.attr.colormap;
 
-  if(NeedToResizeToo)
-    {
-      XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth, 
-		   Scr.MyDisplayHeight, 
-		   tmp_win->frame_x + (tmp_win->frame_width>>1), 
-		   tmp_win->frame_y + (tmp_win->frame_height>>1));
-      Event.xany.type = ButtonPress;
-      Event.xbutton.button = 1;
-      Event.xbutton.x_root = tmp_win->frame_x + (tmp_win->frame_width>>1);
-      Event.xbutton.y_root = tmp_win->frame_y + (tmp_win->frame_height>>1);
-      Event.xbutton.x = (tmp_win->frame_width>>1);
-      Event.xbutton.y = (tmp_win->frame_height>>1);
-      Event.xbutton.subwindow = None;
-      Event.xany.window = tmp_win->w;
-      interactive_resize(tmp_win->schwin);
-    }
+  if (NeedToResizeToo) {
+    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
+		 Scr.MyDisplayHeight,
+		 tmp_win->frame_x + (tmp_win->frame_width >> 1),
+		 tmp_win->frame_y + (tmp_win->frame_height >> 1));
+    Event.xany.type = ButtonPress;
+    Event.xbutton.button = 1;
+    Event.xbutton.x_root = tmp_win->frame_x + (tmp_win->frame_width >> 1);
+    Event.xbutton.y_root = tmp_win->frame_y + (tmp_win->frame_height >> 1);
+    Event.xbutton.x = (tmp_win->frame_width >> 1);
+    Event.xbutton.y = (tmp_win->frame_height >> 1);
+    Event.xbutton.subwindow = None;
+    Event.xany.window = tmp_win->w;
+    interactive_resize(tmp_win->schwin);
+  }
   InstallWindowColormaps(colormap_win);
   /* XXX - Not sure if this is the right place to do this, 
      but oh well.... */
@@ -754,75 +721,69 @@ ScwmWindow *AddWindow(Window w)
  *	tmp_win - the scwm window structure to use
  *
  ***********************************************************************/
-void GrabButtons(ScwmWindow *tmp_win)
+void 
+GrabButtons(ScwmWindow * tmp_win)
 {
   Binding *MouseEntry;
 
   MouseEntry = Scr.AllBindings;
-  while(MouseEntry != (Binding *)0)
-    {
-      if((MouseEntry->Action != NULL)&&(MouseEntry->Context & C_WINDOW)
-	 &&(MouseEntry->IsMouse == 1))
-	{
-	  if(MouseEntry->Button_Key >0)
-	    {
-	      XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, 
-			  tmp_win->w, 
-			  True, ButtonPressMask | ButtonReleaseMask,
-			  GrabModeAsync, GrabModeAsync, None, 
-			  Scr.ScwmCursors[DEFAULT]);
-	      if(MouseEntry->Modifier != AnyModifier)
-		{
-		  XGrabButton(dpy, MouseEntry->Button_Key, 
-			      (MouseEntry->Modifier | LockMask),
-			      tmp_win->w, 
-			      True, ButtonPressMask | ButtonReleaseMask,
-			      GrabModeAsync, GrabModeAsync, None, 
-			      Scr.ScwmCursors[DEFAULT]);
-		}
-	    }
-	  else
-	    {
-	      XGrabButton(dpy, 1, MouseEntry->Modifier, 
-			  tmp_win->w, 
-			  True, ButtonPressMask | ButtonReleaseMask,
-			  GrabModeAsync, GrabModeAsync, None, 
-			  Scr.ScwmCursors[DEFAULT]);
-	      XGrabButton(dpy, 2, MouseEntry->Modifier, 
-			  tmp_win->w, 
-			  True, ButtonPressMask | ButtonReleaseMask,
-			  GrabModeAsync, GrabModeAsync, None, 
-			  Scr.ScwmCursors[DEFAULT]);
-	      XGrabButton(dpy, 3, MouseEntry->Modifier, 
-			  tmp_win->w, 
-			  True, ButtonPressMask | ButtonReleaseMask,
-			  GrabModeAsync, GrabModeAsync, None, 
-			  Scr.ScwmCursors[DEFAULT]);
-	      if(MouseEntry->Modifier != AnyModifier)
-		{
-		  XGrabButton(dpy, 1,
-			      (MouseEntry->Modifier | LockMask),
-			      tmp_win->w, 
-			      True, ButtonPressMask | ButtonReleaseMask,
-			      GrabModeAsync, GrabModeAsync, None, 
-			      Scr.ScwmCursors[DEFAULT]);
-		  XGrabButton(dpy, 2,
-			      (MouseEntry->Modifier | LockMask),
-			      tmp_win->w, 
-			      True, ButtonPressMask | ButtonReleaseMask,
-			      GrabModeAsync, GrabModeAsync, None, 
-			      Scr.ScwmCursors[DEFAULT]);
-		  XGrabButton(dpy, 3,
-			      (MouseEntry->Modifier | LockMask),
-			      tmp_win->w, 
-			      True, ButtonPressMask | ButtonReleaseMask,
-			      GrabModeAsync, GrabModeAsync, None, 
-			      Scr.ScwmCursors[DEFAULT]);
-		}
-	    }
+  while (MouseEntry != (Binding *) 0) {
+    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_WINDOW)
+	&& (MouseEntry->IsMouse == 1)) {
+      if (MouseEntry->Button_Key > 0) {
+	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, MouseEntry->Button_Key,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
 	}
-      MouseEntry = MouseEntry->NextBinding;
+      } else {
+	XGrabButton(dpy, 1, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	XGrabButton(dpy, 2, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	XGrabButton(dpy, 3, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, 1,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	  XGrabButton(dpy, 2,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	  XGrabButton(dpy, 3,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	}
+      }
     }
+    MouseEntry = MouseEntry->NextBinding;
+  }
   return;
 }
 
@@ -835,24 +796,23 @@ void GrabButtons(ScwmWindow *tmp_win)
  *	tmp_win - the scwm window structure to use
  *
  ***********************************************************************/
-void GrabKeys(ScwmWindow *tmp_win)
+void 
+GrabKeys(ScwmWindow * tmp_win)
 {
   Binding *tmp;
-  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding)
-    {
-      if((tmp->Context & (C_WINDOW|C_TITLE|C_RALL|C_LALL|C_SIDEBAR))&&
-	 (tmp->IsMouse == 0))
-	{
-	  XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, tmp_win->frame, True,
-		   GrabModeAsync, GrabModeAsync);
-	  if(tmp->Modifier != AnyModifier)
-	    {
-	      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier|LockMask, 
-		       tmp_win->frame, True,
-		       GrabModeAsync, GrabModeAsync);	      
-	    }
-	}
+
+  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
+    if ((tmp->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+	(tmp->IsMouse == 0)) {
+      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, tmp_win->frame, True,
+	       GrabModeAsync, GrabModeAsync);
+      if (tmp->Modifier != AnyModifier) {
+	XGrabKey(dpy, tmp->Button_Key, tmp->Modifier | LockMask,
+		 tmp_win->frame, True,
+		 GrabModeAsync, GrabModeAsync);
+      }
     }
+  }
   return;
 }
 
@@ -865,44 +825,46 @@ void GrabKeys(ScwmWindow *tmp_win)
  *	tmp - the scwm window structure to use
  *
  ***********************************************************************/
-void FetchWmProtocols (ScwmWindow *tmp)
+void 
+FetchWmProtocols(ScwmWindow * tmp)
 {
   unsigned long flags = 0L;
   Atom *protocols = NULL, *ap;
   int i, n;
   Atom atype;
   int aformat;
-  unsigned long bytes_remain,nitems;
+  unsigned long bytes_remain, nitems;
 
-  if(tmp == NULL) return;
+  if (tmp == NULL)
+    return;
   /* First, try the Xlib function to read the protocols.
    * This is what Twm uses. */
-  if (XGetWMProtocols (dpy, tmp->w, &protocols, &n)) 
-    {
-      for (i = 0, ap = protocols; i < n; i++, ap++) 
-	{
-	  if (*ap == (Atom)_XA_WM_TAKE_FOCUS) flags |= DoesWmTakeFocus;
-	  if (*ap == (Atom)_XA_WM_DELETE_WINDOW) flags |= DoesWmDeleteWindow;
-	}
-      if (protocols) XFree ((char *) protocols);
+  if (XGetWMProtocols(dpy, tmp->w, &protocols, &n)) {
+    for (i = 0, ap = protocols; i < n; i++, ap++) {
+      if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
+	flags |= DoesWmTakeFocus;
+      if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
+	flags |= DoesWmDeleteWindow;
     }
-  else
-    {
-      /* Next, read it the hard way. mosaic from Coreldraw needs to 
-       * be read in this way. */
-      if ((XGetWindowProperty(dpy, tmp->w, _XA_WM_PROTOCOLS, 0L, 10L, False,
-			      _XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
-			      &bytes_remain,
-			      (unsigned char **)&protocols))==Success)
-	{
-	  for (i = 0, ap = protocols; i < nitems; i++, ap++) 
-	    {
-	      if (*ap == (Atom)_XA_WM_TAKE_FOCUS) flags |= DoesWmTakeFocus;
-	      if (*ap == (Atom)_XA_WM_DELETE_WINDOW) flags |= DoesWmDeleteWindow;
-	    }
-	  if (protocols) XFree ((char *) protocols);
-	}
+    if (protocols)
+      XFree((char *) protocols);
+  } else {
+    /* Next, read it the hard way. mosaic from Coreldraw needs to 
+     * be read in this way. */
+    if ((XGetWindowProperty(dpy, tmp->w, _XA_WM_PROTOCOLS, 0L, 10L, False,
+			    _XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
+			    &bytes_remain,
+			    (unsigned char **) &protocols)) == Success) {
+      for (i = 0, ap = protocols; i < nitems; i++, ap++) {
+	if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
+	  flags |= DoesWmTakeFocus;
+	if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
+	  flags |= DoesWmDeleteWindow;
+      }
+      if (protocols)
+	XFree((char *) protocols);
     }
+  }
   tmp->flags |= flags;
   return;
 }
@@ -916,70 +878,63 @@ void FetchWmProtocols (ScwmWindow *tmp)
  *	tmp - the scwm window structure to use
  *
  ***********************************************************************/
-void GetWindowSizeHints(ScwmWindow *tmp)
+void 
+GetWindowSizeHints(ScwmWindow * tmp)
 {
   long supplied = 0;
 
-  if (!XGetWMNormalHints (dpy, tmp->w, &tmp->hints, &supplied))
+  if (!XGetWMNormalHints(dpy, tmp->w, &tmp->hints, &supplied))
     tmp->hints.flags = 0;
 
   /* Beat up our copy of the hints, so that all important field are
    * filled in! */
-  if (tmp->hints.flags & PResizeInc) 
-    {
-      if (tmp->hints.width_inc == 0) tmp->hints.width_inc = 1;
-      if (tmp->hints.height_inc == 0) tmp->hints.height_inc = 1;
-    }
-  else
-    {
+  if (tmp->hints.flags & PResizeInc) {
+    if (tmp->hints.width_inc == 0)
       tmp->hints.width_inc = 1;
+    if (tmp->hints.height_inc == 0)
       tmp->hints.height_inc = 1;
-    }
-  
+  } else {
+    tmp->hints.width_inc = 1;
+    tmp->hints.height_inc = 1;
+  }
+
   /*
    * ICCCM says that PMinSize is the default if no PBaseSize is given,
    * and vice-versa.
    */
 
-  if(!(tmp->hints.flags & PBaseSize))
-    {
-      if(tmp->hints.flags & PMinSize)
-	{
-	  tmp->hints.base_width = tmp->hints.min_width;
-	  tmp->hints.base_height = tmp->hints.min_height;      
-	}
-      else
-	{
-	  tmp->hints.base_width = 0;
-	  tmp->hints.base_height = 0;
-	}
+  if (!(tmp->hints.flags & PBaseSize)) {
+    if (tmp->hints.flags & PMinSize) {
+      tmp->hints.base_width = tmp->hints.min_width;
+      tmp->hints.base_height = tmp->hints.min_height;
+    } else {
+      tmp->hints.base_width = 0;
+      tmp->hints.base_height = 0;
     }
-  if(!(tmp->hints.flags & PMinSize))
-    {
-      tmp->hints.min_width = tmp->hints.base_width;
-      tmp->hints.min_height = tmp->hints.base_height;            
-    }
-  if(!(tmp->hints.flags & PMaxSize))
-    {
-      tmp->hints.max_width = MAX_WINDOW_WIDTH;
-      tmp->hints.max_height = MAX_WINDOW_HEIGHT;
-    }
-  if(tmp->hints.max_width < tmp->hints.min_width)
-    tmp->hints.max_width = MAX_WINDOW_WIDTH;    
-  if(tmp->hints.max_height < tmp->hints.min_height)
-    tmp->hints.max_height = MAX_WINDOW_HEIGHT;    
+  }
+  if (!(tmp->hints.flags & PMinSize)) {
+    tmp->hints.min_width = tmp->hints.base_width;
+    tmp->hints.min_height = tmp->hints.base_height;
+  }
+  if (!(tmp->hints.flags & PMaxSize)) {
+    tmp->hints.max_width = MAX_WINDOW_WIDTH;
+    tmp->hints.max_height = MAX_WINDOW_HEIGHT;
+  }
+  if (tmp->hints.max_width < tmp->hints.min_width)
+    tmp->hints.max_width = MAX_WINDOW_WIDTH;
+  if (tmp->hints.max_height < tmp->hints.min_height)
+    tmp->hints.max_height = MAX_WINDOW_HEIGHT;
 
   /* Zero width/height windows are bad news! */
-  if(tmp->hints.min_height <= 0)
+  if (tmp->hints.min_height <= 0)
     tmp->hints.min_height = 1;
-  if(tmp->hints.min_width <= 0)
+  if (tmp->hints.min_width <= 0)
     tmp->hints.min_width = 1;
 
-  if(!(tmp->hints.flags & PWinGravity))
-    {
-      tmp->hints.win_gravity = NorthWestGravity;
-      tmp->hints.flags |= PWinGravity;
-    }
+  if (!(tmp->hints.flags & PWinGravity)) {
+    tmp->hints.win_gravity = NorthWestGravity;
+    tmp->hints.flags |= PWinGravity;
+  }
 }
 
 
@@ -998,18 +953,19 @@ void GetWindowSizeHints(ScwmWindow *tmp)
  *	class	- a pointer to the class to look for
  *
  ***********************************************************************/
-unsigned long LookInList(name_list *list, char *name, XClassHint *class, 
-			 char **value,
+unsigned long 
+LookInList(name_list * list, char *name, XClassHint * class,
+	   char **value,
 #ifdef MINI_ICONS
-                         char **mini_value, 
+	   char **mini_value,
 #endif
 #ifdef USEDECOR
-			 char **decor,
+	   char **decor,
 #endif
-                         int *Desk, int *border_width,
-			 int *resize_width, char **forecolor, char **backcolor,
-                         unsigned long * buttons, int *IconBox,
-                         int *BoxFillMethod)
+	   int *Desk, int *border_width,
+	   int *resize_width, char **forecolor, char **backcolor,
+	   unsigned long *buttons, int *IconBox,
+	   int *BoxFillMethod)
 {
   name_list *nptr;
   unsigned long retval = 0;
@@ -1034,118 +990,114 @@ unsigned long LookInList(name_list *list, char *name, XClassHint *class,
   IconBox[3] = Scr.MyDisplayHeight;
 
   /* look for the name first */
-  for (nptr = list; nptr != NULL; nptr = nptr->next)
-    {
-      if (class)
-	{
-	  /* first look for the res_class  (lowest priority) */
-	  if (matchWildcards(nptr->name,class->res_class) == TRUE)
-	    {
-	      if(nptr->value != NULL)*value = nptr->value;
+  for (nptr = list; nptr != NULL; nptr = nptr->next) {
+    if (class) {
+      /* first look for the res_class  (lowest priority) */
+      if (matchWildcards(nptr->name, class->res_class) == TRUE) {
+	if (nptr->value != NULL)
+	  *value = nptr->value;
 #ifdef MINI_ICONS
-              if(nptr->mini_value != NULL) *mini_value = nptr->mini_value;
+	if (nptr->mini_value != NULL)
+	  *mini_value = nptr->mini_value;
 #endif
 #ifdef USEDECOR
-	      if (nptr->Decor != NULL) *decor = nptr->Decor;
+	if (nptr->Decor != NULL)
+	  *decor = nptr->Decor;
 #endif
-	      if(nptr->off_flags & STARTSONDESK_FLAG)
-		*Desk = nptr->Desk;
-	      if(nptr->off_flags & BW_FLAG)
-		*border_width = nptr->border_width;
-	      if(nptr->off_flags & FORE_COLOR_FLAG)
-		*forecolor = nptr->ForeColor;
-	      if(nptr->off_flags & BACK_COLOR_FLAG)
-		*backcolor = nptr->BackColor;
-	      if(nptr->off_flags & NOBW_FLAG)
-		*resize_width = nptr->resize_width;
-	      retval |= nptr->off_flags;
-	      retval &= ~(nptr->on_flags);
-              *buttons |= nptr->off_buttons;
-              *buttons &= ~(nptr->on_buttons);
-	      if(nptr->BoxFillMethod != 0)
-		*BoxFillMethod = nptr->BoxFillMethod;
-	      if(nptr->IconBox[0] >= 0)
-		{
-		  IconBox[0] = nptr->IconBox[0];
-		  IconBox[1] = nptr->IconBox[1];
-		  IconBox[2] = nptr->IconBox[2];
-		  IconBox[3] = nptr->IconBox[3];
-		}
-	    }
-
-	  /* look for the res_name next */
-	  if (matchWildcards(nptr->name,class->res_name) == TRUE)
-	    {
-	      if(nptr->value != NULL)*value = nptr->value;
-#ifdef MINI_ICONS
-              if(nptr->mini_value != NULL) *mini_value = nptr->mini_value;
-#endif
-#ifdef USEDECOR
-	      if (nptr->Decor != NULL) *decor = nptr->Decor;
-#endif
-	      if(nptr->off_flags & STARTSONDESK_FLAG)
-		*Desk = nptr->Desk;
-	      if(nptr->off_flags & FORE_COLOR_FLAG)
-		*forecolor = nptr->ForeColor;
-	      if(nptr->off_flags & BACK_COLOR_FLAG)
-		*backcolor = nptr->BackColor;
-	      if(nptr->off_flags & BW_FLAG)
-		*border_width = nptr->border_width;
-	      if(nptr->off_flags & NOBW_FLAG)
-		*resize_width = nptr->resize_width;
-	      retval |= nptr->off_flags;
-	      retval &= ~(nptr->on_flags);
-              *buttons |= nptr->off_buttons;
-              *buttons &= ~(nptr->on_buttons);
-	      if(nptr->BoxFillMethod != 0)
-		*BoxFillMethod = nptr->BoxFillMethod;
-	      if(nptr->IconBox[0] >= 0)
-		{
-		  IconBox[0] = nptr->IconBox[0];
-		  IconBox[1] = nptr->IconBox[1];
-		  IconBox[2] = nptr->IconBox[2];
-		  IconBox[3] = nptr->IconBox[3];
-		}
-	    }
+	if (nptr->off_flags & STARTSONDESK_FLAG)
+	  *Desk = nptr->Desk;
+	if (nptr->off_flags & BW_FLAG)
+	  *border_width = nptr->border_width;
+	if (nptr->off_flags & FORE_COLOR_FLAG)
+	  *forecolor = nptr->ForeColor;
+	if (nptr->off_flags & BACK_COLOR_FLAG)
+	  *backcolor = nptr->BackColor;
+	if (nptr->off_flags & NOBW_FLAG)
+	  *resize_width = nptr->resize_width;
+	retval |= nptr->off_flags;
+	retval &= ~(nptr->on_flags);
+	*buttons |= nptr->off_buttons;
+	*buttons &= ~(nptr->on_buttons);
+	if (nptr->BoxFillMethod != 0)
+	  *BoxFillMethod = nptr->BoxFillMethod;
+	if (nptr->IconBox[0] >= 0) {
+	  IconBox[0] = nptr->IconBox[0];
+	  IconBox[1] = nptr->IconBox[1];
+	  IconBox[2] = nptr->IconBox[2];
+	  IconBox[3] = nptr->IconBox[3];
 	}
-      /* finally, look for name matches */
-      if (matchWildcards(nptr->name,name) == TRUE)
-	{
-	  if(nptr->value != NULL)*value = nptr->value;
+      }
+      /* look for the res_name next */
+      if (matchWildcards(nptr->name, class->res_name) == TRUE) {
+	if (nptr->value != NULL)
+	  *value = nptr->value;
 #ifdef MINI_ICONS
-          if(nptr->mini_value != NULL) *mini_value = nptr->mini_value;
+	if (nptr->mini_value != NULL)
+	  *mini_value = nptr->mini_value;
 #endif
 #ifdef USEDECOR
-	  if (nptr->Decor != NULL) *decor = nptr->Decor;
+	if (nptr->Decor != NULL)
+	  *decor = nptr->Decor;
 #endif
-	  if(nptr->off_flags & STARTSONDESK_FLAG)	   
-	    *Desk = nptr->Desk;
-	  if(nptr->off_flags & FORE_COLOR_FLAG)
-	    *forecolor = nptr->ForeColor;
-	  if(nptr->off_flags & BACK_COLOR_FLAG)
-	    *backcolor = nptr->BackColor;
-	  if(nptr->off_flags & BW_FLAG)
-	    *border_width = nptr->border_width;
-	  if(nptr->off_flags & NOBW_FLAG)
-	    *resize_width = nptr->resize_width;
-	  retval |= nptr->off_flags;
-	  retval &= ~(nptr->on_flags);
-          *buttons |= nptr->off_buttons;
-          *buttons &= ~(nptr->on_buttons);
-	  if(nptr->BoxFillMethod != 0)
-	    *BoxFillMethod = nptr->BoxFillMethod;
-	  if(nptr->IconBox[0] >= 0)
-	    {
-	      IconBox[0] = nptr->IconBox[0];
-	      IconBox[1] = nptr->IconBox[1];
-	      IconBox[2] = nptr->IconBox[2];
-	      IconBox[3] = nptr->IconBox[3];
-	    }
+	if (nptr->off_flags & STARTSONDESK_FLAG)
+	  *Desk = nptr->Desk;
+	if (nptr->off_flags & FORE_COLOR_FLAG)
+	  *forecolor = nptr->ForeColor;
+	if (nptr->off_flags & BACK_COLOR_FLAG)
+	  *backcolor = nptr->BackColor;
+	if (nptr->off_flags & BW_FLAG)
+	  *border_width = nptr->border_width;
+	if (nptr->off_flags & NOBW_FLAG)
+	  *resize_width = nptr->resize_width;
+	retval |= nptr->off_flags;
+	retval &= ~(nptr->on_flags);
+	*buttons |= nptr->off_buttons;
+	*buttons &= ~(nptr->on_buttons);
+	if (nptr->BoxFillMethod != 0)
+	  *BoxFillMethod = nptr->BoxFillMethod;
+	if (nptr->IconBox[0] >= 0) {
+	  IconBox[0] = nptr->IconBox[0];
+	  IconBox[1] = nptr->IconBox[1];
+	  IconBox[2] = nptr->IconBox[2];
+	  IconBox[3] = nptr->IconBox[3];
 	}
+      }
     }
+    /* finally, look for name matches */
+    if (matchWildcards(nptr->name, name) == TRUE) {
+      if (nptr->value != NULL)
+	*value = nptr->value;
+#ifdef MINI_ICONS
+      if (nptr->mini_value != NULL)
+	*mini_value = nptr->mini_value;
+#endif
+#ifdef USEDECOR
+      if (nptr->Decor != NULL)
+	*decor = nptr->Decor;
+#endif
+      if (nptr->off_flags & STARTSONDESK_FLAG)
+	*Desk = nptr->Desk;
+      if (nptr->off_flags & FORE_COLOR_FLAG)
+	*forecolor = nptr->ForeColor;
+      if (nptr->off_flags & BACK_COLOR_FLAG)
+	*backcolor = nptr->BackColor;
+      if (nptr->off_flags & BW_FLAG)
+	*border_width = nptr->border_width;
+      if (nptr->off_flags & NOBW_FLAG)
+	*resize_width = nptr->resize_width;
+      retval |= nptr->off_flags;
+      retval &= ~(nptr->on_flags);
+      *buttons |= nptr->off_buttons;
+      *buttons &= ~(nptr->on_buttons);
+      if (nptr->BoxFillMethod != 0)
+	*BoxFillMethod = nptr->BoxFillMethod;
+      if (nptr->IconBox[0] >= 0) {
+	IconBox[0] = nptr->IconBox[0];
+	IconBox[1] = nptr->IconBox[1];
+	IconBox[2] = nptr->IconBox[2];
+	IconBox[3] = nptr->IconBox[3];
+      }
+    }
+  }
   return retval;
 }
-
-
-
-

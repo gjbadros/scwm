@@ -25,7 +25,7 @@
 #define F_RESTART               3
 #define F_REFRESH		4
 #define F_TITLE			5
-#define F_SCROLL                6      /* scroll the virtual desktop */
+#define F_SCROLL                6	/* scroll the virtual desktop */
 #define F_CIRCULATE_UP          7
 #define F_CIRCULATE_DOWN        8
 #define F_TOGGLE_PAGE           9
@@ -66,7 +66,7 @@
 #define F_NEXT                  46
 #define F_PREV                  47
 #define F_NONE                  48
-#define F_STAYSUP	        49 /* string */
+#define F_STAYSUP	        49	/* string */
 #define F_RECAPTURE             50
 #define F_CONFIG_LIST	        51
 #define F_DESTROY_MENU	        52
@@ -111,4 +111,3 @@
 #define F_RAISE_IT              2000
 
 #endif /* _PARSE_ */
-

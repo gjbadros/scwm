@@ -23,4 +23,4 @@ SCM wait_for_window(SCM name);
 
 SCM beep();
 
-#endif MISCPROCS_H
+#endif	/* MISCPROCS_H */

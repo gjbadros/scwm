@@ -53,12 +53,12 @@
    should go, and second there are a lot and I don't
    feel like commenting them all. */
 
-#define Broadcast(a,b,c,d,e,f,g,h,i) 
+#define Broadcast(a,b,c,d,e,f,g,h,i)
 #define BroadcastConfig(a,b)
 #define BroadcastName(a,b,c,d,e)
 
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
-it should not be an option, once it works right. HEDU 2/2/94 */
+   it should not be an option, once it works right. HEDU 2/2/94 */
 #define PAN_FRAME_THICKNESS 2	/* or just 1 ? */
 
 /* the maximum number of mouse buttons scwm knows about */
@@ -77,17 +77,17 @@ it should not be an option, once it works right. HEDU 2/2/94 */
 #endif
 
 #define BW 1			/* border width */
-#define BOUNDARY_WIDTH 7    	/* border width */
-#define CORNER_WIDTH 16    	/* border width */
+#define BOUNDARY_WIDTH 7	/* border width */
+#define CORNER_WIDTH 16		/* border width */
 
 # define HEIGHT_EXTRA 4		/* Extra height for texts in popus */
 # define HEIGHT_EXTRA_TITLE 4	/* Extra height for underlining title */
 # define HEIGHT_SEPARATOR 4	/* Height of separator lines */
 
-#define SCROLL_REGION 2         /* region around screen edge that */
-                                /* triggers scrolling */
+#define SCROLL_REGION 2		/* region around screen edge that */
+				/* triggers scrolling */
 
-#ifndef TRUE                    
+#ifndef TRUE
 #define TRUE	1
 #define FALSE	0
 #endif
@@ -117,15 +117,13 @@ it should not be an option, once it works right. HEDU 2/2/94 */
 #define C_ALL   (C_WINDOW|C_TITLE|C_ICON|C_ROOT|C_FRAME|C_SIDEBAR|\
                  C_L1|C_L2|C_L3|C_L4|C_L5|C_R1|C_R2|C_R3|C_R4|C_R5)
 
-typedef struct MyFont
-{
+typedef struct MyFont {
   XFontStruct *font;		/* font structure */
   int height;			/* height of the font */
   int y;			/* Y coordinate to draw characters */
 } MyFont;
 
-typedef struct ColorPair
-{
+typedef struct ColorPair {
   Pixel fore;
   Pixel back;
 } ColorPair;
@@ -136,98 +134,98 @@ typedef struct ColorPair
 
 #ifdef USEDECOR
 struct ScwmDecor;		/* definition in screen.h */
+
 #endif
 
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
  */
-typedef struct ScwmWindow
-{
-    struct ScwmWindow *next;	/* next scwm window */
-    struct ScwmWindow *prev;	/* prev scwm window */
-    Window w;			/* the child window */
-    int old_bw;			/* border width before reparenting */
-    Window frame;		/* the frame window */
-    Window Parent;              /* Ugly Ugly Ugly - it looks like you
+typedef struct ScwmWindow {
+  struct ScwmWindow *next;	/* next scwm window */
+  struct ScwmWindow *prev;	/* prev scwm window */
+  Window w;			/* the child window */
+  int old_bw;			/* border width before reparenting */
+  Window frame;			/* the frame window */
+  Window Parent;		/* Ugly Ugly Ugly - it looks like you
 				 * HAVE to reparent the app window into
 				 * a window whose size = app window,
 				 * or else you can't keep xv and matlab
 				 * happy at the same time! */
-    Window title_w;		/* the title bar window */
-    Window sides[4];
-    Window corners[4];          /* Corner pieces */
-    int nr_left_buttons;
-    int nr_right_buttons;
-    Window left_w[5];
-    Window right_w[5];
+  Window title_w;		/* the title bar window */
+  Window sides[4];
+  Window corners[4];		/* Corner pieces */
+  int nr_left_buttons;
+  int nr_right_buttons;
+  Window left_w[5];
+  Window right_w[5];
 #ifdef USEDECOR
-    struct ScwmDecor *fl;
+  struct ScwmDecor *fl;
 #endif
-    Window icon_w;		/* the icon window */
-    Window icon_pixmap_w;	/* the icon window */
+  Window icon_w;		/* the icon window */
+  Window icon_pixmap_w;		/* the icon window */
 #ifdef SHAPE
-    int wShaped;               /* is this a shaped window */
+  int wShaped;			/* is this a shaped window */
 #endif
-    int frame_x;		/* x position of frame */
-    int frame_y;		/* y position of frame */
-    int frame_width;		/* width of frame */
-    int frame_height;		/* height of frame */
-    int boundary_width;
-    int corner_width;
-    int bw;
-    int title_x;
-    int title_y;
-    int title_height;		/* height of the title bar */
-    int title_width;		/* width of the title bar */
-    int icon_x_loc;		/* icon window x coordinate */
-    int icon_xl_loc;		/* icon label window x coordinate */
-    int icon_y_loc;		/* icon window y coordiante */
-    int icon_w_width;		/* width of the icon window */
-    int icon_w_height;		/* height of the icon window */
-    int icon_t_width;		/* width of the icon title window */
-    int icon_p_width;		/* width of the icon pixmap window */
-    int icon_p_height;		/* height of the icon pixmap window */
-    Pixmap iconPixmap;		/* pixmap for the icon */
-    int iconDepth;		/* Drawable depth for the icon */
-    Pixmap icon_maskPixmap;	/* pixmap for the icon mask */
-    char *name;			/* name of the window */
-    char *icon_name;		/* name of the icon */
-    XWindowAttributes attr;	/* the child window attributes */
-    XSizeHints hints;		/* normal hints */
-    XWMHints *wmhints;		/* WM hints */
-    XClassHint class;
-    int Desk;                   /* Tells which desktop this window is on */
-    int StartDesk;              /* Tells which desktop this window is on */
-    int FocusDesk;		/* Where (if at all) was it focussed */
-    int DeIconifyDesk;          /* Desk to deiconify to, for StubbornIcons */
-    Window transientfor;
+  int frame_x;			/* x position of frame */
+  int frame_y;			/* y position of frame */
+  int frame_width;		/* width of frame */
+  int frame_height;		/* height of frame */
+  int boundary_width;
+  int corner_width;
+  int bw;
+  int title_x;
+  int title_y;
+  int title_height;		/* height of the title bar */
+  int title_width;		/* width of the title bar */
+  int icon_x_loc;		/* icon window x coordinate */
+  int icon_xl_loc;		/* icon label window x coordinate */
+  int icon_y_loc;		/* icon window y coordiante */
+  int icon_w_width;		/* width of the icon window */
+  int icon_w_height;		/* height of the icon window */
+  int icon_t_width;		/* width of the icon title window */
+  int icon_p_width;		/* width of the icon pixmap window */
+  int icon_p_height;		/* height of the icon pixmap window */
+  Pixmap iconPixmap;		/* pixmap for the icon */
+  int iconDepth;		/* Drawable depth for the icon */
+  Pixmap icon_maskPixmap;	/* pixmap for the icon mask */
+  char *name;			/* name of the window */
+  char *icon_name;		/* name of the icon */
+  XWindowAttributes attr;	/* the child window attributes */
+  XSizeHints hints;		/* normal hints */
+  XWMHints *wmhints;		/* WM hints */
+  XClassHint class;
+  int Desk;			/* Tells which desktop this window is on */
+  int StartDesk;		/* Tells which desktop this window is on */
+  int FocusDesk;		/* Where (if at all) was it focussed */
+  int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
+  Window transientfor;
 
-    unsigned long flags;
+  unsigned long flags;
 #ifdef MINI_ICONS
-    char *mini_pixmap_file;
-    Picture *mini_icon;
+  char *mini_pixmap_file;
+  Picture *mini_icon;
 #endif
-    char *icon_bitmap_file;
+  char *icon_bitmap_file;
 
-    int orig_x;                 /* unmaximized x coordinate */
-    int orig_y;                 /* unmaximized y coordinate */
-    int orig_wd;                /* unmaximized window width */
-    int orig_ht;                /* unmaximized window height */
+  int orig_x;			/* unmaximized x coordinate */
+  int orig_y;			/* unmaximized y coordinate */
+  int orig_wd;			/* unmaximized window width */
+  int orig_ht;			/* unmaximized window height */
 
-    int xdiff,ydiff;            /* used to restore window position on exit*/
-    int *mwm_hints;
-    int ol_hints;
-    int functions;
-    Window *cmap_windows;       /* Colormap windows property */
-    int number_cmap_windows;    /* Should generally be 0 */
-    Pixel ReliefPixel;
-    Pixel ShadowPixel;
-    Pixel TextPixel;
-    Pixel BackPixel;
-    unsigned long buttons;
-    int IconBox[4];
-    int BoxFillMethod;
-    SCM schwin;
+  int xdiff, ydiff;		/* used to restore window position on exit */
+  int *mwm_hints;
+  int ol_hints;
+  int functions;
+  Window *cmap_windows;		/* Colormap windows property */
+  int number_cmap_windows;	/* Should generally be 0 */
+  Pixel ReliefPixel;
+  Pixel ShadowPixel;
+  Pixel TextPixel;
+  Pixel BackPixel;
+  unsigned long buttons;
+  int IconBox[4];
+  int BoxFillMethod;
+  SCM schwin;
 } ScwmWindow;
 
 /***************************************************************************
@@ -236,8 +234,8 @@ typedef struct ScwmWindow
 /* The first 13 items are mapped directly from the style structure's
  * flag value, so they MUST correspond to the first 13 entries in misc.h */
 #define STARTICONIC             (1<<0)
-#define ONTOP                   (1<<1) /* does window stay on top */
-#define STICKY                  (1<<2) /* Does window stick to glass? */
+#define ONTOP                   (1<<1)	/* does window stay on top */
+#define STICKY                  (1<<2)	/* Does window stick to glass? */
 #define WINDOWLISTSKIP          (1<<3)
 #define SUPPRESSICON            (1<<4)
 #define NOICON_TITLE            (1<<5)
@@ -247,31 +245,31 @@ typedef struct ScwmWindow
 #define CirculateSkip           (1<<9)
 #define ClickToFocus            (1<<10)
 #define SloppyFocus             (1<<11)
-#define SHOW_ON_MAP    (1<<12) /* switch to desk when it gets mapped? */
+#define SHOW_ON_MAP    (1<<12)	/* switch to desk when it gets mapped? */
 #define ALL_COMMON_FLAGS (STARTICONIC|ONTOP|STICKY|WINDOWLISTSKIP| \
 			  SUPPRESSICON|NOICON_TITLE|Lenience|StickyIcon| \
 			  CirculateSkipIcon|CirculateSkip|ClickToFocus| \
-			  SloppyFocus|SHOW_ON_MAP) 
+			  SloppyFocus|SHOW_ON_MAP)
 
-#define BORDER         (1<<13) /* Is this decorated with border*/
-#define TITLE          (1<<14) /* Is this decorated with title */
-#define MAPPED         (1<<15) /* is it mapped? */
-#define ICONIFIED      (1<<16) /* is it an icon now? */
-#define TRANSIENT      (1<<17) /* is it a transient window? */
-#define RAISED         (1<<18) /* if its a sticky window, needs raising? */
-#define VISIBLE        (1<<19) /* is the window fully visible */
-#define ICON_OURS      (1<<20) /* is the icon window supplied by the app? */
-#define PIXMAP_OURS    (1<<21)/* is the icon pixmap ours to free? */
-#define SHAPED_ICON    (1<<22)/* is the icon shaped? */
-#define MAXIMIZED      (1<<23)/* is the window maximized? */
+#define BORDER         (1<<13)	/* Is this decorated with border */
+#define TITLE          (1<<14)	/* Is this decorated with title */
+#define MAPPED         (1<<15)	/* is it mapped? */
+#define ICONIFIED      (1<<16)	/* is it an icon now? */
+#define TRANSIENT      (1<<17)	/* is it a transient window? */
+#define RAISED         (1<<18)	/* if its a sticky window, needs raising? */
+#define VISIBLE        (1<<19)	/* is the window fully visible */
+#define ICON_OURS      (1<<20)	/* is the icon window supplied by the app? */
+#define PIXMAP_OURS    (1<<21)	/* is the icon pixmap ours to free? */
+#define SHAPED_ICON    (1<<22)	/* is the icon shaped? */
+#define MAXIMIZED      (1<<23)	/* is the window maximized? */
 #define DoesWmTakeFocus		(1<<24)
 #define DoesWmDeleteWindow	(1<<25)
 /* has the icon been moved by the user? */
 #define ICON_MOVED              (1<<26)
 /* was the icon unmapped, even though the window is still iconified
  * (Transients) */
-#define ICON_UNMAPPED           (1<<27) 
-/* Sent an XMapWindow, but didn't receive a MapNotify yet.*/
+#define ICON_UNMAPPED           (1<<27)
+/* Sent an XMapWindow, but didn't receive a MapNotify yet. */
 #define MAP_PENDING             (1<<28)
 #define HintOverride            (1<<29)
 #define MWMButtons              (1<<30)
@@ -321,6 +319,7 @@ extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 #ifdef PAN_FRAMES
 extern void checkPanFrames();
 extern void raisePanFrames();
+
 #endif
 
 extern Atom _XA_MIT_PRIORITY_COLORS;
@@ -351,20 +350,17 @@ extern Atom XA_SCWM_EXECUTE;
 
 
 /*
-** if you would like to see lots of debug messages from scwm, for debugging
-** purposes, uncomment the next line
-*/
+   ** if you would like to see lots of debug messages from scwm, for debugging
+   ** purposes, uncomment the next line
+ */
 /* #define SCWM_DEBUG_MSGS */
 #ifdef SCWM_DEBUG_MSGS
 #define DBUG(x,y) scwm_msg(DBG,x,y)
 #else
-#define DBUG(x,y) /* no messages */
+#define DBUG(x,y)		/* no messages */
 #endif
 
 /* end of configure.h */
 
 
 #endif /* _SCWM_ */
-
-
-

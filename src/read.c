@@ -30,8 +30,7 @@ extern Boolean debugging;
 
 char *scwm_file = NULL;
 
-struct moduleInfoList
-{
+struct moduleInfoList {
   char *data;
   struct moduleInfoList *next;
 };
@@ -40,12 +39,14 @@ struct moduleInfoList *modlistroot = NULL;
 
 int numfilesread = 0;
 
-static int last_read_failed=0;
+static int last_read_failed = 0;
 
-#ifdef SCWMRC /* SCWMRC should be .scwm2rc or .scwmrc */
-static const char *read_system_rc_cmd="Read system"SCWMRC;
+#ifdef SCWMRC			/* SCWMRC should be .scwm2rc or .scwmrc */
+static const char *read_system_rc_cmd = "Read system" SCWMRC;
+
 #else
-static const char *read_system_rc_cmd="Read system.scwm2rc";
+static const char *read_system_rc_cmd = "Read system.scwm2rc";
+
 #endif
 
 void AddToModList(char *tline);
@@ -53,14 +54,15 @@ void AddToModList(char *tline);
 extern void StartupStuff(void);
 
 /*
-** func to do actual read/piperead work
-*/
-static void ReadSubFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
-                        unsigned long context, char *action,int* Module,
-                        int piperead)
+   ** func to do actual read/piperead work
+ */
+static void 
+ReadSubFunc(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
+	    unsigned long context, char *action, int *Module,
+	    int piperead)
 {
-  char *filename= NULL,*Home, *home_file, *ofilename = NULL;
-  char *rest,*tline,line[1000];
+  char *filename = NULL, *Home, *home_file, *ofilename = NULL;
+  char *rest, *tline, line[1000];
   int HomeLen;
   FILE *fd;
   int thisfileno;
@@ -72,101 +74,91 @@ static void ReadSubFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 
 /*  scwm_msg(INFO,piperead?"PipeRead":"Read","action == '%s'",action); */
 
-  rest = GetNextToken(action,&ofilename);
-  if(ofilename == NULL)
-  {
-    scwm_msg(ERR,piperead?"PipeRead":"Read","missing parameter");
+  rest = GetNextToken(action, &ofilename);
+  if (ofilename == NULL) {
+    scwm_msg(ERR, piperead ? "PipeRead" : "Read", "missing parameter");
     last_read_failed = 1;
     return;
   }
-
   filename = ofilename;
 /*  scwm_msg(INFO,piperead?"PipeRead":"Read","trying '%s'",filename); */
 
   if (piperead)
-    fd = popen(filename,"r");
+    fd = popen(filename, "r");
   else
-    fd = fopen(filename,"r");
+    fd = fopen(filename, "r");
 
-  if (!piperead)
-  {
-    if((fd == NULL)&&(ofilename[0] != '/'))
-    {
+  if (!piperead) {
+    if ((fd == NULL) && (ofilename[0] != '/')) {
       /* find the home directory to look in */
       Home = getenv("HOME");
       if (Home == NULL)
-        Home = "./";
+	Home = "./";
       HomeLen = strlen(Home);
-      home_file = safemalloc(HomeLen + strlen(ofilename)+3);
-      strcpy(home_file,Home);
-      strcat(home_file,"/");
-      strcat(home_file,ofilename);
+      home_file = safemalloc(HomeLen + strlen(ofilename) + 3);
+      strcpy(home_file, Home);
+      strcat(home_file, "/");
+      strcat(home_file, ofilename);
       filename = home_file;
-      fd = fopen(filename,"r");      
+      fd = fopen(filename, "r");
     }
-    if((fd == NULL)&&(ofilename[0] != '/'))
-    {
-      if((filename != NULL)&&(filename!= ofilename))
-        free(filename);
+    if ((fd == NULL) && (ofilename[0] != '/')) {
+      if ((filename != NULL) && (filename != ofilename))
+	free(filename);
       /* find the home directory to look in */
       Home = SCWMDIR;
       HomeLen = strlen(Home);
-      home_file = safemalloc(HomeLen + strlen(ofilename)+3);
-      strcpy(home_file,Home);
-      strcat(home_file,"/");
-      strcat(home_file,ofilename);
+      home_file = safemalloc(HomeLen + strlen(ofilename) + 3);
+      strcpy(home_file, Home);
+      strcat(home_file, "/");
+      strcat(home_file, ofilename);
       filename = home_file;
-      fd = fopen(filename,"r");      
+      fd = fopen(filename, "r");
     }
   }
-
-  if(fd == NULL)
-  {
+  if (fd == NULL) {
     scwm_msg(ERR,
-             piperead?"PipeRead":"Read",
-             piperead?"command '%s' not run":"file '%s' not found in $HOME or "SCWMDIR,
-             ofilename);
-    if((ofilename != filename)&&(filename != NULL))
-    {
+	     piperead ? "PipeRead" : "Read",
+	     piperead ? "command '%s' not run" : "file '%s' not found in $HOME or " SCWMDIR,
+	     ofilename);
+    if ((ofilename != filename) && (filename != NULL)) {
       free(filename);
       filename = NULL;
     }
-    if(ofilename != NULL)
-    {
+    if (ofilename != NULL) {
       free(ofilename);
       ofilename = NULL;
     }
     last_read_failed = 1;
     return;
   }
-  if((ofilename != NULL)&&(filename!= ofilename))
+  if ((ofilename != NULL) && (filename != ofilename))
     free(ofilename);
   fcntl(fileno(fd), F_SETFD, 1);
-  if(scwm_file != NULL)
+  if (scwm_file != NULL)
     free(scwm_file);
   scwm_file = filename;
 
-  tline = fgets(line,(sizeof line)-1,fd);
-  while(tline != (char *)0)
-  {
+  tline = fgets(line, (sizeof line) - 1, fd);
+  while (tline != (char *) 0) {
     int l;
-    while(tline && (l=strlen(line))<sizeof(line) &&
-          line[l-1]=='\n' && line[l-2]=='\\')
-    {
-      tline = fgets(line+l-2,sizeof(line)-l,fd);
+
+    while (tline && (l = strlen(line)) < sizeof(line) &&
+	   line[l - 1] == '\n' && line[l - 2] == '\\') {
+      tline = fgets(line + l - 2, sizeof(line) - l, fd);
     }
-    tline=line;
-    while(isspace(*tline))tline++;
-    if (debugging)
-    {
-      scwm_msg(DBG,"ReadSubFunc","about to exec: '%s'",tline);
+    tline = line;
+    while (isspace(*tline))
+      tline++;
+    if (debugging) {
+      scwm_msg(DBG, "ReadSubFunc", "about to exec: '%s'", tline);
     }
     /* should these next checks be moved into ExecuteFunction? */
-    if((strlen(&tline[0])>1)&&(tline[0]!='#')&&(tline[0]!='*'))
-      ExecuteFunction(tline,tmp_win,eventp,context,*Module);
-    if(tline[0] == '*')
+    if ((strlen(&tline[0]) > 1) && (tline[0] != '#') && (tline[0] != '*'))
+      ExecuteFunction(tline, tmp_win, eventp, context, *Module);
+    if (tline[0] == '*')
       AddToModList(tline);
-    tline = fgets(line,(sizeof line)-1,fd);
+    tline = fgets(line, (sizeof line) - 1, fd);
   }
 
   if (piperead)
@@ -177,58 +169,48 @@ static void ReadSubFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 }
 
 
-void ReadFile(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
-              unsigned long context, char *action,int* Module)
+void 
+ReadFile(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
+	 unsigned long context, char *action, int *Module)
 {
   int this_read = numfilesread;
 
-  if (debugging)
-  {
-    scwm_msg(DBG,"ReadFile","about to attempt '%s'",action);
+  if (debugging) {
+    scwm_msg(DBG, "ReadFile", "about to attempt '%s'", action);
   }
+  ReadSubFunc(eventp, junk, tmp_win, context, action, Module, 0);
 
-  ReadSubFunc(eventp,junk,tmp_win,context,action,Module,0);
-
-  if (last_read_failed && this_read == 0)
-  {
-    scwm_msg(INFO,"Read","trying to read system rc file");
-    ExecuteFunction(read_system_rc_cmd,NULL,&Event,C_ROOT,-1);
+  if (last_read_failed && this_read == 0) {
+    scwm_msg(INFO, "Read", "trying to read system rc file");
+    ExecuteFunction(read_system_rc_cmd, NULL, &Event, C_ROOT, -1);
   }
-
-  if (this_read == 0)
-  {
-    if (debugging)
-    {
-      scwm_msg(DBG,"ReadFile","about to call startup functions");
+  if (this_read == 0) {
+    if (debugging) {
+      scwm_msg(DBG, "ReadFile", "about to call startup functions");
     }
     StartupStuff();
   }
 }
 
 
-void PipeRead(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
-              unsigned long context, char *action,int* Module)
+void 
+PipeRead(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
+	 unsigned long context, char *action, int *Module)
 {
   int this_read = numfilesread;
 
-  if (debugging)
-  {
-    scwm_msg(DBG,"PipeRead","about to attempt '%s'",action);
+  if (debugging) {
+    scwm_msg(DBG, "PipeRead", "about to attempt '%s'", action);
   }
+  ReadSubFunc(eventp, junk, tmp_win, context, action, Module, 1);
 
-  ReadSubFunc(eventp,junk,tmp_win,context,action,Module,1);
-
-  if (last_read_failed && this_read == 0)
-  {
-    scwm_msg(INFO,"PipeRead","trying to read system rc file");
-    ExecuteFunction(read_system_rc_cmd,NULL,&Event,C_ROOT,-1);
+  if (last_read_failed && this_read == 0) {
+    scwm_msg(INFO, "PipeRead", "trying to read system rc file");
+    ExecuteFunction(read_system_rc_cmd, NULL, &Event, C_ROOT, -1);
   }
-
-  if (this_read == 0)
-  {
-    if (debugging)
-    {
-      scwm_msg(DBG,"PipeRead","about to call startup functions");
+  if (this_read == 0) {
+    if (debugging) {
+      scwm_msg(DBG, "PipeRead", "about to call startup functions");
     }
     StartupStuff();
   }
@@ -236,7 +218,8 @@ void PipeRead(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 
 
 
-void AddToModList(char *tline)
+void 
+AddToModList(char *tline)
 {
   struct moduleInfoList *t, *prev, *this;
 
@@ -244,105 +227,94 @@ void AddToModList(char *tline)
   t = modlistroot;
   prev = NULL;
 
-  while(t != NULL)
-  {
+  while (t != NULL) {
     prev = t;
     t = t->next;
   }
-  
-  this = (struct moduleInfoList *)safemalloc(sizeof(struct moduleInfoList));
-  this->data = (char *)safemalloc(strlen(tline)+1);
+
+  this = (struct moduleInfoList *) safemalloc(sizeof(struct moduleInfoList));
+
+  this->data = (char *) safemalloc(strlen(tline) + 1);
   this->next = NULL;
-  strcpy(this->data, tline);  
-  if(prev == NULL)
-  {
+  strcpy(this->data, tline);
+  if (prev == NULL) {
     modlistroot = this;
-  }
-  else
+  } else
     prev->next = this;
 }
-      
+
 /* interface function for AddToModList */
-void AddModConfig(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
-                  unsigned long context, char *action,int* Module)
+void 
+AddModConfig(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
+	     unsigned long context, char *action, int *Module)
 {
-  AddToModList( action );
+  AddToModList(action);
 }
 
 /**************************************************************/
 /* delete from module configuration                           */
 /**************************************************************/
-void DestroyModConfig(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
-                      unsigned long context, char *action,int* Module)
+void 
+DestroyModConfig(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
+		 unsigned long context, char *action, int *Module)
 {
   struct moduleInfoList *this, *that, *prev;
-  char *info;   /* info to be deleted - may contain wildcards */
+  char *info;			/* info to be deleted - may contain wildcards */
   char *mi;
 
-  action = GetNextToken(action,&info); 
-  if( info == NULL )
-  {
+  action = GetNextToken(action, &info);
+  if (info == NULL) {
     return;
   }
-
   this = modlistroot;
   prev = NULL;
 
-  while(this != NULL)
-  {
-    GetNextToken( this->data, &mi);
+  while (this != NULL) {
+    GetNextToken(this->data, &mi);
     that = this->next;
-    if( matchWildcards(info, mi+1) )
-    {
+    if (matchWildcards(info, mi + 1)) {
       free(this->data);
       free(this);
-      if( prev )
-      {
-        prev->next = that;
+      if (prev) {
+	prev->next = that;
+      } else {
+	modlistroot = that;
       }
-      else
-      {
-        modlistroot = that;
-      }
-    }
-    else
-    {
+    } else {
       prev = this;
     }
     this = that;
   }
 }
 
-void SendDataToModule(XEvent *eventp,Window w,ScwmWindow *tmp_win,
-	      unsigned long context, char *action, int *Module)
+void 
+SendDataToModule(XEvent * eventp, Window w, ScwmWindow * tmp_win,
+		 unsigned long context, char *action, int *Module)
 {
   struct moduleInfoList *t;
   char message[256];
   extern char *IconPath;
+
 #ifdef XPM
   extern char *PixmapPath;
+
 #endif
 
-  sprintf(message,"IconPath %s\n",IconPath);
-  SendName(*Module,M_CONFIG_INFO,0,0,0,message);
+  sprintf(message, "IconPath %s\n", IconPath);
+  SendName(*Module, M_CONFIG_INFO, 0, 0, 0, message);
 #ifdef XPM
-  sprintf(message,"PixmapPath %s\n",PixmapPath);
-  SendName(*Module,M_CONFIG_INFO,0,0,0,message);
+  sprintf(message, "PixmapPath %s\n", PixmapPath);
+  SendName(*Module, M_CONFIG_INFO, 0, 0, 0, message);
 #endif
-  sprintf(message,"ClickTime %d\n",Scr.ClickTime);
-  SendName(*Module,M_CONFIG_INFO,0,0,0,message);
+  sprintf(message, "ClickTime %d\n", Scr.ClickTime);
+  SendName(*Module, M_CONFIG_INFO, 0, 0, 0, message);
 
   t = modlistroot;
-  while(t != NULL)
-  {
-    SendName(*Module,M_CONFIG_INFO,0,0,0,t->data);
+  while (t != NULL) {
+    SendName(*Module, M_CONFIG_INFO, 0, 0, 0, t->data);
     t = t->next;
-  }  
-  SendPacket(*Module,M_END_CONFIG_INFO,0,0,0,0,0,0,0,0);
+  }
+  SendPacket(*Module, M_END_CONFIG_INFO, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 #endif /* MS_DELETION_COMMENT */
-
-
-
-

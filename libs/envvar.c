@@ -1,3 +1,4 @@
+
 /**************************************************************************
  *
  *  FILE            envvar.c
@@ -51,20 +52,21 @@
  *                characters back.
  *
  */
-static void strDel(char *s, int idx, int n)
+static void 
+strDel(char *s, int idx, int n)
 {
-    int  l;
-    char *p;
+  int l;
+  char *p;
 
-    if (idx >= (l = strlen(s)))
-	return;
-    if (idx + n > l)
-	n = l - idx;
-    s += idx;
-    p = s + n;
-    do {
-	*s++ = *p;
-    } while (*p++);
+  if (idx >= (l = strlen(s)))
+    return;
+  if (idx + n > l)
+    n = l - idx;
+  s += idx;
+  p = s + n;
+  do {
+    *s++ = *p;
+  } while (*p++);
 }
 
 
@@ -87,30 +89,31 @@ static void strDel(char *s, int idx, int n)
  *                The string is always '\0'-terminated.
  *
  */
-static void strIns(char *s, const char *ins, int idx, int maxstrlen)
+static void 
+strIns(char *s, const char *ins, int idx, int maxstrlen)
 {
-    int  l, li, move;
-    char *p1, *p2;
+  int l, li, move;
+  char *p1, *p2;
 
-    if (idx > (l = strlen(s)))
-	idx = l;
-    li = strlen(ins);
-    move = l - idx + 2; /* include '\0' in move */
-    p1 = s + l;
-    p2 = p1 + li;
-    while (p2 >= s + maxstrlen) {
-	--p1;
-	--p2;
-	--move;
-    }
-    while (move-- > 0)
-	*p2-- = *p1--;
-    p1 = s + idx;
-    if (idx + li >= maxstrlen)
-	li = maxstrlen - idx - 1;
-    while (li--)
-	*p1++ = *ins++;
-    s[maxstrlen - 1] = '\0';
+  if (idx > (l = strlen(s)))
+    idx = l;
+  li = strlen(ins);
+  move = l - idx + 2;		/* include '\0' in move */
+  p1 = s + l;
+  p2 = p1 + li;
+  while (p2 >= s + maxstrlen) {
+    --p1;
+    --p2;
+    --move;
+  }
+  while (move-- > 0)
+    *p2-- = *p1--;
+  p1 = s + idx;
+  if (idx + li >= maxstrlen)
+    li = maxstrlen - idx - 1;
+  while (li--)
+    *p1++ = *ins++;
+  s[maxstrlen - 1] = '\0';
 }
 
 
@@ -138,37 +141,38 @@ static void strIns(char *s, const char *ins, int idx, int maxstrlen)
  *                occurrences are skipped.
  *
  */
-static char *findEnvVar(const char *s, int *len)
+static char *
+findEnvVar(const char *s, int *len)
 {
-    int   brace = 0;
-    char  *ret = NULL;
-    const char *next;
+  int brace = 0;
+  char *ret = NULL;
+  const char *next;
 
-    if (!s)
-	return NULL;
-    while (*s) {
-	next = s + 1;
-	if (*s == '$' && (isalpha(*next) || *next == '_' || *next == '{')) {
-	    ret = (char *) s++;
-	    if (*s == '{') {
-		brace = 1;
-		++s;
-	    }
-	    while (*s && (isalnum(*s) || *s == '_'))
-		++s;
-	    *len = s - ret;
-	    if (brace) {
-		if (*s == '}') {
-		    ++*len;
-		    break;
-		}
-		ret = NULL;
-	    } else
-		break;
-	}
+  if (!s)
+    return NULL;
+  while (*s) {
+    next = s + 1;
+    if (*s == '$' && (isalpha(*next) || *next == '_' || *next == '{')) {
+      ret = (char *) s++;
+      if (*s == '{') {
+	brace = 1;
 	++s;
+      }
+      while (*s && (isalnum(*s) || *s == '_'))
+	++s;
+      *len = s - ret;
+      if (brace) {
+	if (*s == '}') {
+	  ++*len;
+	  break;
+	}
+	ret = NULL;
+      } else
+	break;
     }
-    return ret;
+    ++s;
+  }
+  return ret;
 }
 
 
@@ -185,25 +189,26 @@ static char *findEnvVar(const char *s, int *len)
  *  RETURNS       The variable contents, or "" if not found.
  *
  */
-static const char *getEnv(const char *name)
+static const char *
+getEnv(const char *name)
 {
-    static char *empty = "";
-    char   *ret, *tmp, *p, *p2;
+  static char *empty = "";
+  char *ret, *tmp, *p, *p2;
 
-    if ((tmp = strdup(name)) == NULL)
-	return empty;  /* better than no test at all. */
-    p = tmp;
-    if (*p == '$')
-	++p;
-    if (*p == '{') {
-	++p;
-	if ((p2 = strchr(p, '}')) != NULL)
-	    *p2 = '\0';
-    }
-    if ((ret = getenv(p)) == NULL)
-	ret = empty;
-    free(tmp);
-    return ret;
+  if ((tmp = strdup(name)) == NULL)
+    return empty;		/* better than no test at all. */
+  p = tmp;
+  if (*p == '$')
+    ++p;
+  if (*p == '{') {
+    ++p;
+    if ((p2 = strchr(p, '}')) != NULL)
+      *p2 = '\0';
+  }
+  if ((ret = getenv(p)) == NULL)
+    ret = empty;
+  free(tmp);
+  return ret;
 }
 
 
@@ -234,24 +239,25 @@ static const char *getEnv(const char *name)
  *                string.
  *
  */
-int envExpand(char *s, int maxstrlen)
+int 
+envExpand(char *s, int maxstrlen)
 {
-    char  *var, *s2, save;
-    const char *env;
-    int   len, ret = 0;
+  char *var, *s2, save;
+  const char *env;
+  int len, ret = 0;
 
-    s2 = s;
-    while ((var = findEnvVar(s2, &len)) != NULL) {
-	++ret;
-	save = var[len];
-	var[len] = '\0';
-	env = getEnv(var);
-	var[len] = save;
-	strDel(s, var - s, len);
-	strIns(s, env, var - s, maxstrlen);
-	s2 = var + strlen(env);
-    }
-    return ret;
+  s2 = s;
+  while ((var = findEnvVar(s2, &len)) != NULL) {
+    ++ret;
+    save = var[len];
+    var[len] = '\0';
+    env = getEnv(var);
+    var[len] = save;
+    strDel(s, var - s, len);
+    strIns(s, env, var - s, maxstrlen);
+    s2 = var + strlen(env);
+  }
+  return ret;
 }
 
 
@@ -280,39 +286,40 @@ int envExpand(char *s, int maxstrlen)
  *                string.
  *
  */
-char *envDupExpand(const char *s, int extra)
+char *
+envDupExpand(const char *s, int extra)
 {
-    char  *var, *ret, save;
-    const char *env, *s2;
-    int   len, slen, elen, bufflen;
+  char *var, *ret, save;
+  const char *env, *s2;
+  int len, slen, elen, bufflen;
 
-    /*
-     *  calculate length needed.
-     */
-    s2 = s;
-    slen = strlen(s);
-    bufflen = slen + 1 + extra;
-    while ((var = findEnvVar(s2, &len)) != NULL) {
-	save = var[len];
-	var[len] = '\0';
-	env = getEnv(var);
-	var[len] = save;
-	elen = strlen(env);
-	/* need to make a buffer the maximum possible size, else we
-	 * may get trouble while expanding. */
-	bufflen += len > elen ? len : elen;
-	s2 = var + len;
-    }
-    if (bufflen < slen + 1)
-	bufflen = slen + 1;
+  /*
+   *  calculate length needed.
+   */
+  s2 = s;
+  slen = strlen(s);
+  bufflen = slen + 1 + extra;
+  while ((var = findEnvVar(s2, &len)) != NULL) {
+    save = var[len];
+    var[len] = '\0';
+    env = getEnv(var);
+    var[len] = save;
+    elen = strlen(env);
+    /* need to make a buffer the maximum possible size, else we
+     * may get trouble while expanding. */
+    bufflen += len > elen ? len : elen;
+    s2 = var + len;
+  }
+  if (bufflen < slen + 1)
+    bufflen = slen + 1;
 
-    ret = safemalloc(bufflen);
+  ret = safemalloc(bufflen);
 
-    /*
-     *  now do the real expansion.
-     */
-    strcpy(ret, s);
-    envExpand(ret, bufflen - extra);
+  /*
+   *  now do the real expansion.
+   */
+  strcpy(ret, s);
+  envExpand(ret, bufflen - extra);
 
-    return ret;
+  return ret;
 }

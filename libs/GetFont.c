@@ -10,23 +10,21 @@
 #include <scwm/scwmlib.h>
 
 /*
-** loads font or "fixed" on failure
-*/
-XFontStruct *GetFontOrFixed(Display *disp, char *fontname)
+   ** loads font or "fixed" on failure
+ */
+XFontStruct *
+GetFontOrFixed(Display * disp, char *fontname)
 {
   XFontStruct *fnt;
 
-  if ((fnt = XLoadQueryFont(disp,fontname))==NULL)
-  {
+  if ((fnt = XLoadQueryFont(disp, fontname)) == NULL) {
     fprintf(stderr,
-            "[GetFontOrFixed]: WARNING -- can't get font %s, trying 'fixed'",
-            fontname);
+	    "[GetFontOrFixed]: WARNING -- can't get font %s, trying 'fixed'",
+	    fontname);
     /* fixed should always be avail, so try that */
-    if ((fnt = XLoadQueryFont(disp,"fixed"))==NULL) 
-    {
-      fprintf(stderr,"[GetFontOrFixed]: ERROR -- can't get font 'fixed'");
+    if ((fnt = XLoadQueryFont(disp, "fixed")) == NULL) {
+      fprintf(stderr, "[GetFontOrFixed]: ERROR -- can't get font 'fixed'");
     }
   }
   return fnt;
 }
-

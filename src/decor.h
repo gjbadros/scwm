@@ -22,19 +22,18 @@ extern long scm_tc16_scwm_decor;
    setting the default decor. Other than that, the mark/sweep
    algorithm should be sufficient. */
 
-#define DECORREF(X) {if (!DECOR(X)->refcnt++) {scm_protect_object(X);}} 
-#define DECORUNREF(X) {if (DECOR(X)->refcnt--) {scm_unprotect_object(X);}} 
+#define DECORREF(X) {if (!DECOR(X)->refcnt++) {scm_protect_object(X);}}
+#define DECORUNREF(X) {if (DECOR(X)->refcnt--) {scm_unprotect_object(X);}}
 
 
-size_t free_decor (SCM obj);
-int print_decor (SCM obj, SCM port, scm_print_state *pstate);
+size_t free_decor(SCM obj);
+int print_decor(SCM obj, SCM port, scm_print_state * pstate);
 
-SCM decor2scm(ScwmDecor *fl);
-SCM make_decor (SCM name);
-SCM default_decor ();
-SCM set_current_decor_x (SCM decor);
+SCM decor2scm(ScwmDecor * fl);
+SCM make_decor(SCM name);
+SCM default_decor();
+SCM set_current_decor_x(SCM decor);
 SCM current_decor();
-SCM set_window_decor_x (SCM decor, SCM win);
+SCM set_window_decor_x(SCM decor, SCM win);
 
 #endif /* DECOR_H */
-

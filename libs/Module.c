@@ -1,6 +1,7 @@
+
 /*
-** Module.c: code for modules to communicate with scwm
-*/
+   ** Module.c: code for modules to communicate with scwm
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -26,39 +27,34 @@
  *   body is a malloc'ed space which needs to be freed 
  *
  **************************************************************************/
-int ReadScwmPacket(int fd, unsigned long *header, unsigned long **body)
+int 
+ReadScwmPacket(int fd, unsigned long *header, unsigned long **body)
 {
-  int count,total,count2,body_length;
+  int count, total, count2, body_length;
   char *cbody;
   extern void DeadPipe(int);
 
-  if((count = read(fd,header,HEADER_SIZE*sizeof(unsigned long))) >0)
-  {
-    if(header[0] == START_FLAG)
-    {
-      body_length = header[2]-HEADER_SIZE;
+  if ((count = read(fd, header, HEADER_SIZE * sizeof(unsigned long))) > 0) {
+    if (header[0] == START_FLAG) {
+      body_length = header[2] - HEADER_SIZE;
       *body = (unsigned long *)
-        safemalloc(body_length * sizeof(unsigned long));
-      cbody = (char *)(*body);
+	safemalloc(body_length * sizeof(unsigned long));
+
+      cbody = (char *) (*body);
       total = 0;
-      while(total < body_length*sizeof(unsigned long))
-      {
-        if((count2=
-            read(fd,&cbody[total],
-                 body_length*sizeof(unsigned long)-total)) >0)
-        {
-          total += count2;
-        }
-        else if(count2 < 0)
-        {
-          DeadPipe(1);
-        }
+      while (total < body_length * sizeof(unsigned long)) {
+	if ((count2 =
+	     read(fd, &cbody[total],
+		  body_length * sizeof(unsigned long) - total)) > 0) {
+	  total += count2;
+	} else if (count2 < 0) {
+	  DeadPipe(1);
+	}
       }
-    }
-    else
+    } else
       count = 0;
   }
-  if(count <= 0)
+  if (count <= 0)
     DeadPipe(1);
   return count;
 }
@@ -68,21 +64,22 @@ int ReadScwmPacket(int fd, unsigned long *header, unsigned long **body)
  * SendText - Sends arbitrary text/command back to scwm
  *
  ***********************************************************************/
-void SendText(int *fd,char *message,unsigned long window)
+void 
+SendText(int *fd, char *message, unsigned long window)
 {
   int w;
-  
-  if(message != NULL)
-  {
-    write(fd[0],&window, sizeof(unsigned long));
 
-    w=strlen(message);
-    write(fd[0],&w,sizeof(int));
-    write(fd[0],message,w);
+  if (message != NULL) {
+    write(fd[0], &window, sizeof(unsigned long));
+
+    w = strlen(message);
+    write(fd[0], &w, sizeof(int));
+
+    write(fd[0], message, w);
 
     /* keep going */
     w = 1;
-    write(fd[0],&w,sizeof(int));
+    write(fd[0], &w, sizeof(int));
   }
 }
 
@@ -91,12 +88,13 @@ void SendText(int *fd,char *message,unsigned long window)
  * Sets the which-message-types-do-I-want mask for modules 
  *
  **************************************************************************/
-void SetMessageMask(int *fd, unsigned long mask)
+void 
+SetMessageMask(int *fd, unsigned long mask)
 {
   char set_mask_mesg[50];
 
-  sprintf(set_mask_mesg,"SET_MASK %lu\n",mask);
-  SendText(fd,set_mask_mesg,0);
+  sprintf(set_mask_mesg, "SET_MASK %lu\n", mask);
+  SendText(fd, set_mask_mesg, 0);
 }
 
 /***************************************************************************
@@ -105,42 +103,39 @@ void SetMessageMask(int *fd, unsigned long mask)
  * no more lines to be had. "line" is a pointer to a char *.
  *
  **************************************************************************/
-void *GetConfigLine(int *fd, char **tline)
+void *
+GetConfigLine(int *fd, char **tline)
 {
   static int first_pass = 1;
-  int count,done = 0;
+  int count, done = 0;
   static char *line = NULL;
   unsigned long header[HEADER_SIZE];
 
-  if(line != NULL)
+  if (line != NULL)
     free(line);
 
-  if(first_pass)
-  {
-    SendInfo(fd,"Send_ConfigInfo",0);
+  if (first_pass) {
+    SendInfo(fd, "Send_ConfigInfo", 0);
     first_pass = 0;
   }
+  while (!done) {
+    count = ReadScwmPacket(fd[1], header, (unsigned long **) &line);
+    if (count > 0)
+      *tline = &line[3 * sizeof(long)];
 
-  while(!done)
-  {
-    count = ReadScwmPacket(fd[1],header,(unsigned long **)&line);
-    if(count > 0)
-      *tline = &line[3*sizeof(long)];
-    else 
+    else
       *tline = NULL;
-    if(*tline != NULL)
-    {
-      while(isspace(**tline))(*tline)++;
+    if (*tline != NULL) {
+      while (isspace(**tline))
+	(*tline)++;
     }
-
-/*   fprintf(stderr,"%x %x\n",header[1],M_END_CONFIG_INFO);*/
-    if(header[1] == M_CONFIG_INFO)
+/*   fprintf(stderr,"%x %x\n",header[1],M_END_CONFIG_INFO); */
+    if (header[1] == M_CONFIG_INFO)
       done = 1;
-    else if(header[1] == M_END_CONFIG_INFO)
-    {
+    else if (header[1] == M_END_CONFIG_INFO) {
       done = 1;
-      if(line != NULL)
-        free(line);
+      if (line != NULL)
+	free(line);
       line = NULL;
       *tline = NULL;
     }

@@ -1,3 +1,8 @@
+
+
+
+
+
 #ifndef BINDING_H
 #define BINDING_H
 
@@ -10,7 +15,7 @@ void clear_mouse_event_type();
 
 SCM mouse_event_type();
 
-SCM bind_event(SCM ev_sym,SCM proc);
+SCM bind_event(SCM ev_sym, SCM proc);
 void run_new_window_hook(SCM w);
 
 

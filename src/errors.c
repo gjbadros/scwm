@@ -1,3 +1,6 @@
+
+
+
 /****************************************************************************
  * This module is all original code 
  * by Maciej Stachowiak.
@@ -6,8 +9,8 @@
  * the description below)
  * Copyright 1997, Maciej Stachowiak
  ****************************************************************************/
-/*	Copyright (C) 1997, Maciej Stachowiak
- * 
+/*      Copyright (C) 1997, Maciej Stachowiak
+
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -31,7 +34,8 @@
 #include <guile/gh.h>
 #include "errors.h"
 
-static char *scwm_errors[] = {
+static char *scwm_errors[] =
+{
   "",
   "Unable to load 'fixed' font.",
   "Unable to parse color.",
@@ -49,10 +53,10 @@ static char *scwm_errors[] = {
 };
 
 
-void scwm_error(char *subr,int err) {
-    scm_error(gh_symbol2scm("scwm-error"),subr,"%s",
-	      gh_list(gh_str02scm(scwm_errors[err]),SCM_UNDEFINED),
-	      gh_list(gh_int2scm(err),SCM_UNDEFINED));
+void 
+scwm_error(char *subr, int err)
+{
+  scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
+	    gh_list(gh_str02scm(scwm_errors[err]), SCM_UNDEFINED),
+	    gh_list(gh_int2scm(err), SCM_UNDEFINED));
 }
-
-

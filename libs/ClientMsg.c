@@ -17,7 +17,8 @@
 
 Atom _XA_WM_PROTOCOLS = None;
 
-void send_clientmessage (Display *disp, Window w, Atom a, Time timestamp)
+void 
+send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
 {
   XClientMessageEvent ev;
 
@@ -30,5 +31,5 @@ void send_clientmessage (Display *disp, Window w, Atom a, Time timestamp)
   ev.format = 32;
   ev.data.l[0] = a;
   ev.data.l[1] = timestamp;
-  XSendEvent (disp, w, False, 0L, (XEvent *) &ev);
+  XSendEvent(disp, w, False, 0L, (XEvent *) & ev);
 }
