@@ -263,7 +263,7 @@ honour synthetic key events as they are a security hole."
   (let ((i 0))
     (while (< i (string-length str))
 	   (send-key-press
-	    (printable-char->keysym-string (string-ref str i)) w)
+	    (printable-char->keysym-string (string-ref str i)) win)
 	   (set! i (+ 1 i)))))
 
 ;; from Harvey Stein
