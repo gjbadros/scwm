@@ -7,6 +7,7 @@ Scwm, The Scheme Configurable Window Manager.
 Web site: http://huis-clos.mit.edu/scwm/
 Ftp directory: ftp://huis-clos.mit.edu/pub/scwm/
 
+(See additional specialty documentation in the sub-directory "doc/")
 
 Scwm is a dynamic and extensible window manager and X11 scripting
 facility based on Guile Scheme.  It descends loosely from fvwm2 and
