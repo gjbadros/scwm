@@ -261,7 +261,7 @@
 (define applications-available-program-information
   `(
     ("&Netscape" "nscape" "netscape_3d" "netscape")
-    ("GNU &Emacs" "edit" "emacs_3d" "xemacs")
+    ("GNU X&Emacs" "edit" "emacs_3d" "xemacs")
     ("Email (&Gnus)" #f #f "emailuw")
 ;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
     ("&Ical" "clock" "calendar.next" "ical")
