@@ -1,4 +1,4 @@
-;; $Id$
+;; $Id$ -*- scwm -*-
 ;; As of Mar 4, 1998, I've not updated this file much at all in the
 ;; last several months;  I highly recommend using one of the other
 ;; better-maintained .scwmrc-s until I have time to make my configuration
@@ -26,6 +26,7 @@
 	     (app scwm optargs)
 	     (app scwm std-menus)
 	     (app scwm prefs-menu)
+	     (app scwm doc)
 	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     )
@@ -42,14 +43,17 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
+;;(define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
+;;  (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
+;;	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
+
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
-(define fvwm-pager-path "/uns/lib/fvwm2/FvwmPager")
-(define want-fvwm-pager-module #f)
+(define fvwm2-pager-path "/uns/lib/fvwm2/FvwmPager")
+(define want-fvwm2-pager-module #f)
 
-(define fvwm-winlist-path "/uns/lib/fvwm2/FvwmWinList")
-(define want-fvwm-winlist-module #f)
+(define fvwm2-winlist-path "/uns/lib/fvwm2/FvwmWinList")
+(define want-fvwm2-winlist-module #f)
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -210,11 +214,6 @@
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
 
-;;; FIXGJB: should be a function returning whether it should do opaque
-;;; move or an integer for the percent (server/net/cpu load might
-;;; influence whether you want to do an opaque move, e.g.)
-(set-opaque-move-size! 100)
-
 (set-edge-resistance! 500 10)
 (set-edge-scroll! (%x 100) (%y 100))
 
@@ -307,11 +306,45 @@
   (let* ((posn (pointer-position))
 	 (x (car posn))
 	 (y (cadr posn)))
-    (display "placing at pointer...")
-    (display x) (display ",") (display y) (display "\n")
+    (set! x (- x 60))
+    (set! y (- y 45))
+;;    (display "x = ") (display x)
+;;    (display ", y = ") (display y) (newline)
     (move-to x y w)))
 
-;;(window-style "Netscape: Find" #:other-proc place-near-pointer)
+(define (place-interactively win)
+  (let* ((posn (pointer-position))
+	 (size (window-size win))
+	 (w (car size))
+	 (h (cadr size))
+	 (x (- (car posn) (/ w 2)))
+	 (y (- (cadr posn) (/ h 2))))
+    (move-to x y win)
+    ;; don't use an opaque move, since window is
+    ;; not mapped before the placement-proc gets called
+    (interactive-move win #f)))
+
+(define (netscape-win)
+  (car 
+   (list-windows #:only 
+		 (lambda (w) 
+		   (and (string=? (window-class w) "Netscape")
+			(string=? (window-resource w) "Navigator"))))))
+
+(define (move-next-to-netscape-win w)
+  (let* ((ns-pos (window-position (netscape-win)))
+	 (x (+ (car ns-pos) 300))
+	 (y (- (cadr ns-pos) 30)))
+    (move-to x y w #f #f)
+    (move-pointer-to (+ x 30) (+ y 55))))
+
+;;(window-title (select-window-interactively))
+;;(move-next-to-netscape-win (select-window-interactively))
+
+;;(window-style "Netscape: Find" #:other-proc (thunk move-next-to-netscape-win))
+(window-style "Netscape: Find" #:placement-proc (thunk move-next-to-netscape-win))
+;;(window-style "findDialog_popup" #:placement-proc (thunk move-next-to-netscape-win))
+;; (move-next-to-netscape-win (select-window-interactively))
 
 
 ;; FIXGJB: make-face's style of argument passing
@@ -508,9 +541,9 @@
    (list
     (menuitem "Window Ops" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
-	       #:action 'interactive-move)
+	       #:action opaque-interactive-move)
     (menuitem "&Resize" #:image-left "mini-resize.xpm" 
-	       #:action 'interactive-resize)
+	       #:action opaque-interactive-resize)
     (menuitem "R&aise" #:image-left "mini-raise.xpm" 
 	       #:action 'raise-window)
     (menuitem "&Lower" #:image-left "mini-lower.xpm" 
@@ -855,9 +888,9 @@
    (list
     (menuitem "Window Ops Small" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
-	       #:action interactive-move)
+	       #:action opaque-interactive-move)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 
-	       #:action interactive-resize)
+	       #:action opaque-interactive-resize)
     (menuitem (if (iconified? w)
 		   "Unmi&nimize"
 		   "Mi&nimize") #:image-left "mini-iconify.xpm" 
@@ -923,36 +956,17 @@
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((motion) (interactive-move))
+    ((motion) (opaque-interactive-move))
     ((double-click) (deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
 
 (bind-mouse 'all "C-S-M-1" toggle-raise)
-(bind-mouse 'all "C-S-M-2" interactive-move)
-(bind-mouse 'all "C-S-M-3" interactive-resize)
-
-;; Just for test bind, unbind-mouse
-;;(unbind-mouse 'all "C-S-Mouse1")
-;;(unbind-mouse 'all "C-S-M-2")
-;;(bind-mouse 'all "C-S-Mouse-1" show-icon-list-menu)
-
-(define (interactive-move-window-with-focus)
-  (let ((w (current-window-with-focus)))
-    (and w (interactive-move w))))
-
-(define (interactive-resize-window-with-focus)
-  (let ((w (current-window-with-focus)))
-    (and w (interactive-resize w))))
-
-(define (interactive-move-window-with-pointer)
-  (let ((w (current-window-with-pointer)))
-    (and w (interactive-move w))))
-
-(define (interactive-resize-window-with-pointer)
-  (let ((w (current-window-with-pointer)))
-    (and w (interactive-resize w))))
+(bind-mouse 'all "C-S-M-2" opaque-interactive-move)
+(bind-mouse 'all "C-S-M-3" opaque-interactive-resize)
+(bind-mouse 'all "H-2" interactive-move)
+(bind-mouse 'all "H-3" interactive-resize)
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
@@ -1081,30 +1095,31 @@
 		     (let ((window (id->window a1)))
 		       (if window (raise-window window)))))))
 
-(if want-fvwm-pager-module
-    (define fvwm-pager (run-fvwm-module  
-			;; path to the module
-			fvwm-pager-path
-			;; your .fvwm2rc (does not need to exist for most modules)
-			"~/.fvwm2rc"
-			;; list of configuration lines
-			'("*FvwmPagerBack grey76"
-			  "*FvwmPagerFore black"
-			  "*FvwmPagerHilight navyblue"
-			  "*FvwmPagerDeskTopScale 50"
-			  "*FvwmPagerLabel 0 Top"
-			  "*FvwmPagerLabel 1 Bottom"
-			  "*FvwmPagerSmallFont 5x8")
-			'("0" "1"))))
-
+(if want-fvwm2-pager-module
+    (begin
+      (register-fvwm2-module-config "FvwmPager"
+				    "*FvwmPagerBack grey76"
+				    "*FvwmPagerFore black"
+				    "*FvwmPagerHilight navyblue"
+				    "*FvwmPagerFont none"
+				    "*FvwmPagerDeskTopScale 50"
+				    "*FvwmPagerLabel 0 Top"
+				    "*FvwmPagerLabel 1 Bottom"
+				    "*FvwmPagerSmallFont 5x8")
+      ;; Actually run the pager. Make it manage desktops 0-2. Save the
+      ;; module object in a variable so we can kill this specific pager
+      ;; later.
+      (define fvwm2-pager (run-fvwm2-module fvwm2-pager-path
+					    '("0" "1")))))
+    
 ;;; This does not work for me -- I get:
 ;;; Xlib: unexpected async reply (sequence 0x13e0)!
 ;;; 
-(if want-fvwm-winlist-module
-    (define fvwm-winlist 
-      (run-fvwm-module
+(if want-fvwm2-winlist-module
+    (define fvwm2-winlist 
+      (run-fvwm2-module
        ;; path to the module
-       fvwm-winlist-path
+       fvwm2-winlist-path
        ;; your .fvwm2rc (does not need to exist for most modules)
        "~/.fvwm2rc"
        ;; list of configuration lines
@@ -1117,8 +1132,8 @@
 	 "*FvwmWinListUseSkipList"
 	 "*FvwmWinListGeometry +0-1"))))
 
-;; To later shut down the module, use kill-fvwm-module:
-;; (kill-fvwm-module fvwm-pager)
+;; To later shut down the module, use kill-fvwm2-module:
+;; (kill-fvwm2-module fvwm2-pager)
 
 ;;; Dynamically loaded pie menus (just big regular menus now)
 ;;; 
@@ -1134,8 +1149,3 @@
 (system 
  (string-append "ps auxww | grep -q \"^gjb .*xemacs -f gnus\" || " 
 		HOME "/.xclients &"))
-
-
-;;; Local Variables:
-;;; eval: (progn (load "scwm") (scwm-mode))
-;;; End:
