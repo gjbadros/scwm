@@ -193,7 +193,9 @@ arguments as given previously. */
   }
 
   Done(1, sz);  /* 1 == restart */
-  FREE(sz); /* Done shouldn't return, but you never know... */
+  /* Done shouldn't return, so let sz leak;
+     if we really want to free it, we can do sz = strdup("scwm")
+     above and then FREE(sz) here, but won't matter */
   return SCM_UNSPECIFIED;	
 }
 #undef FUNC_NAME
