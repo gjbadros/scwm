@@ -1,11 +1,20 @@
+gjb gets this on recapture
+[Scwm][ScwmErrorHandler]: <<ERROR>> Request 54, Error 4, EventType: 2
+                                    XFreePixmap 
+This could be due to the recapture code losing track of the pixmap due
+to some change I made in the pixmap code --11/08/97 gjb
+
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
 
-should initially focus/hilight some window (also a bug in fvwm2).
+callbacks should run from a new dynamic root. [ huh? --11/08/97 gjb ]
 
-callbacks should run from a new dynamic root.
-
+----------------------------------------------------------------------
 RESOLVED:
+----------------------------------------------------------------------
+
+should initially focus/hilight some window (also a bug in fvwm2)
+  -- Fixed by adding CoerceEnterNotifyOnCurrentWindow()
 
 Memory allocation errors can occur if guile was built with Rx support;
 autoconf sets this option if it finds a librx.{a,so} in the paths it
