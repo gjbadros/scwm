@@ -32,60 +32,50 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#else 
-#include "getopt.h"
-#endif /* END HAVE_GETOPT_H */
+
 #include "scwm.h"
-#include "scwmmenu.h"
+#include <stdarg.h>
+#include <guile/gh.h>
+#include "guile-compat.h"
+#include "syscompat.h"
+#include "scwmpaths.h"
+#include "scm_init_funcs.h"
+#ifdef USE_CASSOWARY
+void init_cassowary_scm();           /* from the cassowary distribution */
+#endif
+
 #include "screen.h"
 #include "window.h"
-#include "Grab.h"
-#include "colors.h"
+#include "decor.h"
+#include "image.h"
+#include "menu.h"
 #include "events.h"
-#include "virtual.h"
-#include "miscprocs.h"
+#include "callbacks.h"
 #include "font.h"
-#include "deskpage.h"
-#include "module-interface.h"
-#include "syscompat.h"
-#include "xproperty.h"
+#include "virtual.h"
+#include "Grab.h"
+#include "shutdown.h"
 #include "xmisc.h"
-#include "placement.h"
+#include "colormaps.h"
+#include "module-interface.h"
 
+#include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 /* need to get prototype for XrmUniqueQuark for XUniqueContext call */
 #include <X11/Xresource.h>
 #include <X11/extensions/shape.h>
 
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#else 
+#include "getopt.h"
+#endif /* END HAVE_GETOPT_H */
+
 #if defined (sparc) && defined (SVR4)
 /* Solaris has sysinfo instead of gethostname.  */
 #include <sys/systeminfo.h>
 #endif
-
-#include <stdarg.h>
-#include <guile/gh.h>
-#include "miscprocs.h"
-#include "binding.h"
-#include "decor.h"
-#include "face.h"
-#include "colormaps.h"
-#include "image.h"
-#include "callbacks.h"
-#include "add_window.h"
-#include "shutdown.h"
-#include "scwmpaths.h"
-#include "guile-compat.h"
-#include "syscompat.h"
-#include "scwm-constraints.h"
-
-#ifdef USE_CASSOWARY
-void init_cassowary_scm();           /* from the cassowary distribution */
-void init_constraint_primitives();   /* from the scwm distribution */
-#endif
-
 
 #ifdef I18N
 #include <locale.h>
@@ -124,6 +114,7 @@ void StartupStuff(void);
 void usage(void);
 
 XContext ScwmContext;		/* context for scwm windows */
+XContext MenuContext;           /* context for menus */
 
 Window JunkRoot, JunkChild;	/* junk window */
 int JunkX = 0, JunkY = 0;
@@ -240,6 +231,31 @@ InternUsefulAtoms(void)
   return;
 }
 
+
+/*
+ * CreateGCs - create all the needed GC's.  done only once during startup
+ */
+void 
+CreateGCs(void)
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  /* create scratch GC's */
+  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth;
+  gcv.line_width = 0;
+  gcv.function = GXcopy;
+  gcv.plane_mask = AllPlanes;
+  gcv.graphics_exposures = False;
+
+  Scr.ScratchGC1 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  Scr.ScratchGC2 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  Scr.ScratchGC3 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+
+  Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+}
+
+
 /*
  * InitVariables - initialize scwm variables
  */
@@ -277,9 +293,9 @@ InitVariables(void)
 
   Scr.menu_font = SCM_UNDEFINED;
   Scr.icon_font = SCM_UNDEFINED;
+  Scr.size_window_font = make_font(str_fixed);
   Scr.MenuColors.bg = SCM_UNDEFINED;
   Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
-
 
 #ifndef NON_VIRTUAL
   Scr.VxMax = 2 * Scr.MyDisplayWidth;
@@ -325,7 +341,6 @@ InitVariables(void)
   Scr.buttons2grab = 7;
 
   decor2scm(&Scr.DefaultDecor);
-  /* MSFIX: why does decor2scm not do the DECORREF? */
   DECORREF(Scr.DefaultDecor.scmdecor);
 
   Scr.DefaultDecor.tag = "default";
@@ -383,8 +398,6 @@ main(int argc, char **argv)
 void 
 scwm_main(int argc, char **argv)
 {
-  unsigned long valuemask;	/* mask for create windows */
-  XSetWindowAttributes attributes;	/* attributes for create windows */
   int i;
   extern int x_fd;
   int len;
@@ -442,6 +455,7 @@ scwm_main(int argc, char **argv)
   init_menu();
   init_binding();
   init_window();
+  init_resize();
   init_face();
   init_shutdown();
   init_xproperty();
@@ -687,8 +701,13 @@ scwm_main(int argc, char **argv)
   BlackoutScreen();           /* if they want to hide the capture/startup */
   
   CreateCursors();
-
   InitVariables();
+
+  /* must come after variables are init'd */
+  Scr.SizeWindow = CreateSizeDisplayWindow( BlackPixel(dpy,Scr.screen), 
+                                            WhitePixel(dpy,Scr.screen), 
+                                            Scr.flags & MWMMenus);
+
 
   InitEventHandlerJumpTable();
 
@@ -766,57 +785,27 @@ scwm_main(int argc, char **argv)
 				  XCOLOR(Scr.MenuColors.bg),
 				  Scr.d_depth);
   }
-  /* create a window which will accept the keyboard focus when no other 
-     windows have it */
-  attributes.event_mask = KeyPressMask | FocusChangeMask;
-  attributes.override_redirect = True;
-  Scr.NoFocusWin = XCreateWindow(dpy, Scr.Root, -10, -10, 10, 10, 0, 0,
-				 InputOnly, CopyFromParent,
-				 CWEventMask | CWOverrideRedirect,
-				 &attributes);
-  XMapWindow(dpy, Scr.NoFocusWin);
+  { /* scope */
+    /* create a window which will accept the keyboard focus when no other 
+       windows have it */
+    XSetWindowAttributes attributes;	/* attributes for create windows */
+    attributes.event_mask = KeyPressMask | FocusChangeMask;
+    attributes.override_redirect = True;
+    Scr.NoFocusWin = XCreateWindow(dpy, Scr.Root, -10, -10, 10, 10, 0, 0,
+                                   InputOnly, CopyFromParent,
+                                   CWEventMask | CWOverrideRedirect,
+                                   &attributes);
+    XMapWindow(dpy, Scr.NoFocusWin);
   
-  SetMWM_INFO(Scr.NoFocusWin);
+    SetMWM_INFO(Scr.NoFocusWin);
   
-  XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
+    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
+  } /* end scope */
   
   XSync(dpy, False);
   if (debugging)
     XSynchronize(dpy, True);
-  
-  attributes.border_pixel = XCOLOR(Scr.MenuColors.fg);
-  attributes.background_pixel = XCOLOR(Scr.MenuColors.bg);
-  attributes.bit_gravity = NorthWestGravity;
-  valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
-  /* FIXMS - this is bogus, needs to be redone on font change, etc */
-  if (!(Scr.flags & MWMMenus)) {
-    Scr.SizeWindow = XCreateWindow(dpy, Scr.Root,
-				   0, 0,
-				   (unsigned int) (Scr.SizeStringWidth +
-						   SIZE_HINDENT * 2),
-				   (unsigned int) (FONTHEIGHT(Scr.menu_font) +
-						   SIZE_VINDENT * 2),
-				   (unsigned int) 0, 0,
-				   (unsigned int) CopyFromParent,
-				   (Visual *) CopyFromParent,
-				   valuemask, &attributes);
-  } else {
-    Scr.SizeWindow = XCreateWindow(dpy, Scr.Root,
-				   Scr.MyDisplayWidth / 2 -
-				   (Scr.SizeStringWidth +
-				    SIZE_HINDENT * 2) / 2,
-				   Scr.MyDisplayHeight / 2 -
-				   (FONTHEIGHT(Scr.menu_font) +
-				    SIZE_VINDENT * 2) / 2,
-				   (unsigned int) (Scr.SizeStringWidth +
-						   SIZE_HINDENT * 2),
-				   (unsigned int) (FONTHEIGHT(Scr.menu_font) +
-						   SIZE_VINDENT * 2),
-				   (unsigned int) 0, 0,
-				   (unsigned int) CopyFromParent,
-				   (Visual *) CopyFromParent,
-				   valuemask, &attributes);
-  }
+
 #ifndef NON_VIRTUAL
   initPanFrames();
 #endif
