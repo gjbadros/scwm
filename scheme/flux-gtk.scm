@@ -19,6 +19,7 @@
   :use-module (app scwm winlist-menu)
   :use-module (app scwm time-convert)
   :use-module (app scwm prompt-string)
+  :use-module (app scwm gtk-table-display)
   :use-module (app scwm winops)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
@@ -45,3 +46,16 @@ WIN defaults as usual to the current window context."
 ;; (show-window-list-matching-interactively)
 ;; (use-scwm-modules prompt-string)
 ;; (use-scwm-modules time-convert)
+
+(define-public (chop-string str)
+  (make-shared-substring str 0 (1- (string-length str))))
+
+(define*-public (netscape-bookmark-search)
+  "Prompt for a string, and popup a list of matching netscape bookmarks."
+  (interactive)
+  (prompt-string "Bookmark substring? "
+		 (lambda (string)
+		   (add-timer-hook! 200 handle-pending-events)
+		   (let ((str (output-of-system-cmd (string-append "bookmark-grep " string))))
+		     (gtk-table-from-string (chop-string str)
+					    (lambda (vals) (netscape-goto-url (car vals))))))))

@@ -35,7 +35,7 @@ winlist.scm winlist-menu.scm winops.scm winops-menu.scm \
 wmconfig-menu.scm xlock-menus.scm xprop-extras.scm
 
 scwm_gtk_scheme = \
-gtk.scm gtk-about.scm gtk-menu.scm gtk-message.scm \
+gtk.scm gtk-about.scm gtk-menu.scm gtk-message.scm gtk-table-display.scm \
 ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
 prompting-shell.scm prompt-binding.scm \
 prompt-bool.scm prompt-color.scm prompt-enum.scm prompt-file.scm prompt-font.scm \

@@ -32,34 +32,6 @@
 
 
 
-;;; Some GTK+ helper stuff
-
-(define-public (gtk-clist-get-row-values clist row col)
-  "Return a list of the COL columns of row ROW of CLIST."
-  (let ((text (make-vector 1))
-	(answer '()))
-    (vector-set! text 0 "")
-    (do ()
-	((< col 0) answer)
-      (gtk-clist-get-text clist row col text)
-      (set! answer (cons (vector-ref text 0) answer))
-      (set! col (- col 1)))))
-
-(define-public (gtk-text-replace textwidget text)
-  "Replace all the text in TEXTWIDGET with TEXT."
-  (gtk-text-set-point textwidget 0)
-  (gtk-text-forward-delete textwidget (gtk-text-get-length textwidget))
-  (gtk-text-insert textwidget #f #f #f text (string-length text))
-  (gtk-text-set-point textwidget 0))
-
-(define-public (gtk-scrolled-window-set-vadjustment-value sw float)
-  "Set the vadjustment for SW, a scrolled window, to FLOAT."
-  (gtk-adjustment-set-value (gtk-scrolled-window-get-vadjustment sw) float))
-
-(define-public (gtk-scrolled-window-set-hadjustment-value sw float)
-  "Set the hadjustment for SW, a scrolled window, to FLOAT."
-  (gtk-adjustment-set-value (gtk-scrolled-window-get-hadjustment sw) float))
-
 (define ui-box-spacing 4)
 (define ui-box-border 5)
 
