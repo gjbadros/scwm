@@ -1,3 +1,12 @@
+Sun Mar 31 19:52:25 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* winops-menu.scm: Fixed Unminimize option in
+	'make-small-window-ops-menu' so that it does the right thing.
+
+	In 'menu-window-ops' "Change theme" and "Swtich to..." are still
+	broken but this is due to errors in other files that haven't been
+	tested yet.
+
 Sun Mar 31 18:24:13 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* shutdown-opts.scm: Added mention of the default value to

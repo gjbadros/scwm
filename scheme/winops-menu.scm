@@ -47,8 +47,12 @@ stick, shove, set the style, group, etc."
 	      #:action interactive-resize)
     (menuitem (if (iconified-window? w)
 		  "Unmi&nimize"
-		  "Mi&nimize") #:image-left "mini-iconify.xpm" 
-		  #:action animated-iconify)
+		  "Mi&nimize")
+              #:image-left "mini-iconify.xpm" 
+              #:action
+              (if (iconified-window? w)
+                  animated-deiconify
+                  animated-iconify))
     (menuitem (if (maximized? w) 
 		  "Unma&ximize" 
 		  "Ma&ximize") #:action toggle-maximize-both)
