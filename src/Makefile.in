@@ -202,7 +202,7 @@ all: Makefile $(PROGRAMS)
 $(srcdir)/Makefile.in: @MAINT@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu scwm/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -401,7 +401,11 @@ clean-generic maintainer-clean-generic clean mostlyclean distclean \
 maintainer-clean
 
 %.x: %.c
+ifeq ($(CC),g++)
+	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -D__cplusplus $< > $@
+else
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
+endif
 
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo "char *init_scheme_string = \"\\" ; \
