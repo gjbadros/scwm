@@ -1,3 +1,8 @@
+Wed Nov 24 12:42:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Fix menu-title to permit extra #:args.  Thanks to bug
+	report from Michael Schmitz.
+
 Wed Nov 24 07:38:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Move move-or-shade, move-or-deiconify into
