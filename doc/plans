@@ -1,0 +1,132 @@
+
+Future Plans/Pipe Dreams for SCWM
+
+
+
+Here are the things I would like to see happen with scwm, in
+approximate order:
+
+- After the 0.2 release, a lot of cleanup needs to happen. This
+entails several things. 
+
+   - Zeroth, imake should be ditched in favor of autoconf (possibly
+   also automake). This should hopefully already be done by the 0.2
+   release, but I list it here anyway because it is very important.
+
+   - First, the dead code from fvwm should be removed. 
+
+   - Second, internal fvwm data structures should be reorganized to be
+   more "Lispy" when possible. This will probably cut code size a good
+   deal, as translating back and forth between the C and Scheme layers
+   will be reduced.
+
+- More configurability of style - make every window decoration option
+that is settable at all be settable per window. 
+
+- More configurability of behavior - hooks for entering and leaving
+windows, hitting the screen edge, maybe entering & leaving icons. also
+timer support. See how much this allows us to write in Scheme instead
+of C. It should be able to handle at least click to focus/mouse
+focus/no focus/sloppy focus and scrolling on the screen edge. We could
+also do other neat tricks, for example, put the icon box of the right
+edge of the screen, and when you move the cursor to the right edge,
+the screen scrolls to reveal the icon box. This is just an example of
+the kind of stuff that could be done. Basically, whenever fvwm has
+some specific way of reacting to a user action, scwm would let you
+fully specify the behavior. I would like to move as much operating
+functionality from C to Scheme as is reasonable, while maintaining
+adequate performance and a good programming interface.
+
+- Steal good features from other window managers. For example, gwm and
+nawm have nice support for synthetic events. Twm lets you customize
+the cursors used by the window manager. There are lots of fvwm
+variants out there (fvwm95, afterstep, &c) that it would be really
+easy to lift code from for many neat things.
+
+- A GUI configuration module, written in Scheme and probably using
+guile-gtk. Most common setup options would be available here. Of
+course, it just won't be possible to anticipate all user customization
+needs, so sometimes for really weird things you'll still want to have
+the .scwmrc.
+
+- Support for different window decorations - I would like to have
+multiple sets of functions for decorating windows and put them in
+separate dynamically loadable libraries. scwm would only load the
+decoration functions that were needed. Menu drawing would be handled
+similarly. The interface for this is not totally clear yet; I will
+probably need to work with someone who knows more than I about X11 to
+work out the design for this. Available as decoration styles I'd like
+to have at least the following:
+
+  - null decorations that draw nothing (and use no memory)
+  - a new native look based on gtk, to go with gnome apps
+  - an fvwm-like look.
+  - an mwm-like look.
+  - a win95-like look.
+  - an AfterStep-like look.
+  - a Mac-like look.
+  - a [[t]v]twm-like look.
+  - the ability to do squeeze-titles with some or all of the above.
+  - the ability to have the title-bar on the side of the window
+    with some or all of the above.
+  - a wm2/wmx-like look.
+  - a look that would let you have arbitrary shaped, scaled pixmaps
+    for any part of the window decorations, a la Enlightenment.
+
+This is, of course, a very ambitious undertaking. I hope to have help
+from volunteers to come up with some of these sets of decoration
+functions. I'll try to make it as easy as possible for others to write
+those parts, and I will accept any other cool look that anyone else
+wants to contribute. Some people may ask why any of the others are
+necessary, since the Enlightenment-like look could emulate them all
+decently. The problem is that I think that way of doing things
+intrinsically uses a _lot_ of memory, and many of the decoration
+styles can be drawn much more simply. People who want or are willing
+to settle for a plainer look should not have to pay that extra memory
+cost. It may also be worth it to implement a decoration module that
+lets the user create totally custom decorations. At the very least, it
+would be useful for prototyping new looks.
+
+- At some point, a total rewrite will probably be necessary to get all
+this stuff working cleanly together and to cut down on memory-hogging
+fat that may have been missed.
+
+
+
+
+Here are the window managers that I see scwm as "competing with" in
+some sense, and the reasons why. By competition, I don't mean that I
+want to see these projects fail. Rather, I mean that I have seen some
+really great ideas in all of these window managers, and I would like
+to copy as many of their features as possible, and put them in one
+useful package.
+
+ - fvwm (and its descendants): Fvwm is an incredibly featureful and
+popular window manaer, so it must be doing something right. I'd like
+to have a programming interface for scwm that lets you do things at
+least as easily as you can do them with fvwm modulo a couple of extra
+parentheses). I'd also like to generalize fvwm interfaces a bit where
+possible while maintaining most of the original ease of use.
+
+ - gwm: gwm gives the user of the window manager a lot of
+programmability and power. I would like a lot of this power to be
+available in scwm in some form. However, I think that gwm tries to do
+too much of the work in Lisp, and has a possibly inefficient and
+somewhat obscure Lisp dialect. I think Guile will help with both the
+speed and increase the likeliness that users will be familiar with the
+language, But I would also like to provide a lot of the
+
+ - Enlightenment: Enlightenment gives you more control over look than
+any other window manager. While I am somewhat more interested in
+customizing and programming feel and behavior, I'd like to achieve a
+similar level of look customizability without the mandatory memory hit
+you get with Enlightenment.
+
+
+No offense is intended to the authors and users of these window
+managers. I think they are all great in their own way, and this the
+reason why I take them as the benchmarks to measure scwm's progress
+against.
+
+
+
