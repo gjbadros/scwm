@@ -1,5 +1,8 @@
 Sun Mar 29 18:19:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* fvwm-module.scm: Define and export kill-all-fvwm-modules which
+ 	kills all active fvwm modules; add it to the shutdown hook.
+
 	* style.scm: Use new-style new-window hooks.
 
 	* minimal.scm: Remove reliance on old-style new-window hooks;
