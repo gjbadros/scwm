@@ -205,16 +205,17 @@ load_xbm (SCM full_path)
   xbm_return=XReadBitmapFile(dpy, Scr.Root, c_path, 
 		      &ci->width, &ci->height, &ci->image, 
 		      &ignore, &ignore);
-  free(c_path);
   if (xbm_return == BitmapSuccess) {
     ci->depth = 0;
     ci->mask = None;
-    return result;
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    return SCM_BOOL_F;
+    scwm_msg(WARN,__FUNCTION__,"Could not load bitmap `%s'",c_path);
+    result = SCM_BOOL_F;
   }
+  free(c_path);
+  return result;
 }
 
 
@@ -250,7 +251,6 @@ load_xpm (SCM full_path)
   xpm_return = XpmReadFileToPixmap(dpy, Scr.Root, 
 				   c_path, &ci->image, &ci->mask, 
 				   &xpm_attributes);
-  free(c_path);
   if (xpm_return  == XpmSuccess) {
     static Bool fShowedBadDepthAttributeMessageAlready = False;
     ci->width = xpm_attributes.width;
@@ -263,15 +263,17 @@ load_xpm (SCM full_path)
       if (!fShowedBadDepthAttributeMessageAlready) {
 	fShowedBadDepthAttributeMessageAlready = True;
 	scwm_msg(WARN,__FUNCTION__,
-		 "Bad depths are returned from libXpm's XpmReadFileToPixmap -- ignoring");
+		 "Bad depths are returned from libXpm's XpmReadFileToPixmap -- using screen depth\nPlease report your Xpm library version to the scwm authors");
       }
     }
-    return result;
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    return SCM_BOOL_F;
+    scwm_msg(WARN,__FUNCTION__,"Could not load pixmap `%s'",c_path);
+    result = SCM_BOOL_F;
   }
+  free(c_path);
+  return result;
 }
 
 SCM_PROC (s_register_image_loader, "register-image-loader", 2, 0, 0, register_image_loader);
@@ -344,19 +346,22 @@ load_image(SCM name)
     
     /* traverse the path list to compute the max buffer size we will
        need. */
-    for(p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
+    /* MSFIX: FIXGJB: ideally, we'd like to do this only after 
+     *loc_image_load_path changes */
+    for (p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
       SCM elt = SCM_CAR(p);
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
-	return SCM_BOOL_F;
+	scwm_msg(WARN,__FUNCTION__,"Non-string in image-load-path");
+/* 	return SCM_BOOL_F;  Why bail? just skip it--gjb 11/28/97  */
       } else {
 	int l=SCM_ROLENGTH(elt);
 	max_path_len= (l > max_path_len) ? l : max_path_len;
       }
     }
 	  
-    c_fname=(char *) safemalloc(sizeof(char) *(max_path_len + 1 /* '/' */
-					       + length + 1 /* 0 */ ));
+    /* Add 2, one for the '/', one for the final NULL */
+    c_fname = safemalloc(sizeof(char) *(max_path_len + length + 2));
     
     /* Try every possible path */
     for(p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
@@ -534,6 +539,7 @@ void init_image()
   register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
   register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
   register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
+  register_image_loader (gh_str02scm(".xpm.gz"), val_load_xpm);
   register_image_loader (str_default, val_load_xbm);
 
   /* Make the image-load-path Scheme variable easily accessible from C,
