@@ -1094,8 +1094,8 @@ union of all other window managers!
 (bind-mouse 'root 2 (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
-(bind-mouse 'all "H-1" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
-(bind-key 'all "H-r" (lambda () (rename-window-interactively)))
+(bind-mouse 'all "H-1" (lambda () (select-window-and-toggle-highlight)))
+(bind-mouse 'all "H-2" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
 (bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 
 ;;; operations on parts of the window
