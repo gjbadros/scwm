@@ -1,12 +1,6 @@
 *.d
+*.x
 Makefile
-callbacks.x
-color.x
-font.x
-image.x
 init_scheme_string.c
 makefile.depend
-menuitem.x
-module-interface.x
 scwm
-scwmmenu.x
