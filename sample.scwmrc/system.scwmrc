@@ -37,12 +37,9 @@
 (set-rubber-band-mask! 127)
 
 
-(define HOME (getenv "HOME"))
-(define USER (getenv "USER"))
-
 (define user-image-load-path 
-  (list (string-append HOME "/pixmaps")
-	(string-append HOME "/bitmaps")))
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
 
 
 ;;-------------------------------;;

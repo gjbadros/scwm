@@ -56,7 +56,7 @@
 ;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
 ;;(define mail-spool-dir (or (getenv "MAIL")
-;;			   (string-append "/var/spool/mail/" USER)))
+;;			   (string-append "/var/spool/mail/" (user-name))))
 
 ;;; --------------------------
 ;;; set some basic styles info
