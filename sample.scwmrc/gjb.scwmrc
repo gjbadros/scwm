@@ -1263,24 +1263,45 @@ union of all other window managers!
 (define (make-window-group-menu w)
   (let* ((swl (selected-windows-list))
 	 (wla? (pair? swl)) ;; wla? -- winlist-active?
-	 (n (length swl)))
+	 (n (length swl))
+	 (nstr (number->string n)))
     (menu
-     (filter-map 
-      noop
-      (list
-       (menu-title "Window Group") menu-separator
-       (menuitem 
-	(if (window-is-selected? w) "&Unselect" "&Select") 
-	#:action select-window-add-selection)
-       (if wla?	(menuitem "Unselect &all windows" 
-		     #:action unselect-all-windows)
-	   #f)
-       (if (and wla? (> n 1))
+     (append
+      (filter-map 
+       noop
+       (list
+	(menu-title "Window Group") menu-separator
+	(menuitem 
+	 (if (window-is-selected? w) "&Unselect" "&Select")
+	 #:action select-window-add-selection)
+	(if wla? (menuitem "Unselect &all windows" 
+			   #:action unselect-all-windows)
+	    #f)))
+      (if (and wla? (> n 1))
+	  (list
 	   (menuitem (string-append 
-		      "&Tile " (number->string n)
+		      "&Tile " nstr
 		      " windows") #:action tile-windows-interactively)
-	   #f))
-      ))))
+	   (menuitem (string-append "&Close " nstr " windows")
+		     #:action (lambda () (delete-group swl) (unselect-all-windows)))
+	   (menuitem (string-append "&Iconify " nstr " windows")
+		     #:action (lambda () (iconify-group swl)))
+	   (menuitem (string-append "&Shade " nstr " windows")
+		     #:action (lambda () (window-shade-group swl)))
+	   (menuitem (string-append "&Unshade " nstr " windows")
+		     #:action (lambda () (window-unshade-group swl)))
+	   (menuitem (string-append "Stic&k " nstr " windows")
+		     #:action (lambda () (stick-group swl)))
+	   (menuitem (string-append "U&nstick " nstr " windows")
+		     #:action (lambda () (unstick-group swl)))
+	   (menuitem (string-append "Kee&p on top " nstr " windows")
+		     #:action (lambda () (keep-group-on-top swl)))
+	   (menuitem (string-append "Unk&eep on top " nstr " windows")
+		     #:action (lambda () (un-keep-group-on-top swl)))
+	   (menuitem (string-append "Destroy group " nstr " windows")
+		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
+	  ()
+	  )))))
 
 ;;; now set some mouse and key bindings ;;
 
