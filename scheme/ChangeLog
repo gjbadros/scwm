@@ -1,3 +1,11 @@
+Thu Sep 10 14:39:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Fix uses of window-position to use
+	window-viewport-position as appropriate.  Added more
+	documentation.
+
+	* flux.scm: Added scwm-version-date to show-system-info
+
 Thu Sep 10 11:08:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: simply reindented

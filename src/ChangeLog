@@ -1,3 +1,43 @@
+Fri Sep 11 09:39:30 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xrm.c: Merge the X server database, the .Xdefaults* files, and
+ 	the application resource file, as an Intrinsic app would.  Thus,
+	(X-resource-get "Scwm.aSetting") will look up that resource in the
+ 	users' Xdefaults or xrdb-added settings. Keep this "system"
+ 	database separate from the Scwm-controlled database, and permit
+ 	the latter to be written using `X-resource-database-save'. Added
+	IntegrateNewResourceManagerProperty to be called when the root
+	RESOURCE_MANAGER property changes so that the new values are seen
+	right away (not integrated yet, though)
+
+	* xrm.h: Added for IntegrateNewResourceManagerProperty() proto
+
+	* window.h, window.c: Added move_finalize_virt, and have
+	move_finalize call it.  Move-window now calls move_finalize_virt
+	so those windows do not jump around.
+
+	* events.c: Call IntegrateNewResourceManagerProperty() when
+	XA_RESOURCE_MANAGER property changes on the root window (not
+	tested yet)
+
+	* add_window: Clean up the command line resource parsing stuff for 
+	better integration and separation from xrm.c features
+
+Thu Sep 10 15:57:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (FIsPartiallyInViewport): Added this function, and use
+	it.  Remove old debugging code, #ifdef out some questionably no-op 
+	code, and use FRAME_[XY]_VP instead of FRAME_[XY] in some places;
+	also use move_finalize to bring a window into the current
+	viewport, instead of MoveTo (former uses viewport positions)
+
+	* scwm.c: Do init_xrm after XrmInitialize so that it can merge
+	databases
+
+	* scwm-constraints.h: Added ICON_[XY]_VIRT, invert
+	FRAME_[XY]_VIRT's fSticky test -- sticky windows need to have
+	their Scr.V[xy] added
+
 Thu Sep 10 11:02:16 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use FRAME_[XY]_VP in SetupFrame call;  make

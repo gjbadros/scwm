@@ -8,3 +8,5 @@
 (X-resource-get "Foo")
 
 
+
+(X-resource-get "Scwm.Howdy")
