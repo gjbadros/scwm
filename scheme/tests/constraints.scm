@@ -32,7 +32,12 @@
   (define ineq0 (make-cl-inequality e0 >= 1))
   (define ineq1 (make-cl-inequality e3 <= 1))
   (define solver (make-cl-solver))
+  (define cn0 (make-cl-constraint e0 = e2))
   (cl-solver-debug-print solver))
+
+(cl-inequality? cn0)
+(cl-equation? cn0)
+(cl-constraint? cn0)
 
 cls-weak
 cls-strong
