@@ -1,91 +1,110 @@
+(use-modules (app scwm sort))
+
 (define win (get-window))
 
-;; use 1 - 1000 for z values
-(define default-z-value 500)
-(define on-top-z-value 1)
-(define on-bottom-z-value 1000)
+;; (set-window-property! win 'z 4)
+;; (window-property win 'z)
+;; (set-object-property! win 'z 4)
+;; (object-property win 'z)
+;; (window? win)
 
-(define (add-window-clv-z win)
-  (let ((z (make-cl-variable  
-	    (string-append (window-icon-title win) "/z")
-	    default-z-value)))
-    (set-window-property! win 'z z)
-    (set-object-property! z 'window win)
-    (cl-add-stay solver z)))
+(begin
+  ;; use 1 - 1000 for z values
+  (define default-z-value 500)
+  (define on-top-z-value 1)
+  (define on-bottom-z-value 1000)
+  
+  (define (add-window-clv-z win)
+    (let ((z (make-cl-variable  
+	      (string-append (window-icon-title win) "/z")
+	      default-z-value)))
+      (set-window-property! win 'z z)
+      (set-object-property! z
+			    'changed-proc
+			    (lambda () (set! needs-restacking #t)))
+      (set-object-property! z 'window win)
+      (cl-add-stay solver z)
+      z))
+  
+  (define (clv->window var)
+    (object-property var 'window))
+  
+  
+  (define (window-clv-z win)
+    (window-property win 'z))
+  
+  (define (window-z-value win)
+    (let ((clv-z (window-clv-z win)))
+      (if clv-z (cl-value clv-z)
+	  (if (kept-on-top? win)
+	      on-top-z-value
+	      default-z-value))))
+  
+  (define (keep-z-same w1 w2)
+    (let ((w1-z (window-clv-z w1))
+	  (w2-z (window-clv-z w2)))
+      (let ((cn (make-cl-constraint w1-z = w2-z)))
+	(cl-add-constraint solver cn)
+	cn)))
 
-(define (clv->window var)
-  (object-property var 'window))
-
-;; (clv->window (window-clv-z (get-window)))
-
-(define (window-clv-z win)
-  (window-property win 'z))
-
-(define (window-z-value win)
-  (let ((clv-z (window-clv-z win)))
-    (if clv-z (cl-value clv-z)
-	(if (kept-on-top? win)
-	    on-top-z-value
-	    default-z-value))))
+  (define needs-restacking #f)
+  )
 
 (add-window-clv-z (get-window))
-(window-clv-z (get-window))
-(window-z-value (get-window))
+;; (window-clv-z (get-window))
+;; (window-z-value (get-window))
+;; (clv->window (window-clv-z (get-window)))
 
 (define v (make-cl-variable))
+(cl-add-constraint 
+ solver (make-cl-constraint v = (window-clv-xl (get-window))))
 
-(clv-attach! v 'foo)
+;; (cl-remove-constraint solver (car (cl-constraint-list solver)))
 
-(clv-attached-object v)
+;; (set-object-property! v 'changed-proc (lambda () (display "howdy\n")))
+;; (object-property v 'changed-proc)
+;; (cl-set-solver-var solver v 100)
+;; (clv-attach! v 'foo)
+;; (clv-attached-object v)
 
-(define (keep-z-same w1 w2)
-  (let ((w1-z (window-clv-z w1))
-	(w2-z (window-clv-z w2)))
-    (let ((cn (make-cl-constraint w1-z = w2-z)))
-      (cl-add-constraint solver cn)
-      cn)))
+(begin
+  ;; create a list with the windows and their z values
+  (define (winlist-with-z-vals)
+    (map (lambda (w) (cons w (window-z-value w))) (list-stacking-order)))
+  
+  (define (cars-only l)
+    (map car l))
+
+  (define (winlist-sorted)
+    (cars-only (sort (winlist-with-z-vals) 
+		     (lambda (a b) (> (cdr a) (cdr b))))))
+  
+  (define (restack-windows-for-z-value)
+    (restack-windows (winlist-sorted)))
+
+  (define (window-set-z-value win z-value)
+    (let ((clv-z (window-clv-z win)))
+      (if (not clv-z)
+	  (set! clv-z (add-window-clv-z win)))
+      (cl-set-solver-var solver clv-z z-value)))
+  )
 
 (keep-z-same (select-window-interactively "Pick w1")
 	     (select-window-interactively "Pick w2"))
 
-(cl-set-solver-var solver (window-clv-z (get-window)) 100)
+(add-hook! scwm-resolve-hook (lambda (solver)
+			       (restack-windows-for-z-value)
+			       (set! needs-restacking #f)))
 
-;; create a list with the windows and their z values
-(define (winlist-with-z-vals)
-  (map (lambda (w) (cons w (window-z-value w))) (list-stacking-order)))
+;; (cl-set-solver-var solver (window-clv-z (get-window)) 100)
+;; (cl-set-solver-var solver (window-clv-z (get-window)) 101)
+;; (cl-set-solver-var solver (window-clv-z (get-window)) 600)
+;; (cl-set-solver-var solver (window-clv-z (get-window)) 601)
 
-;; proc is like > -- takes two elements a & b
-;; and returns #t iff a > b
-;; (FIXGJB: not stable -- need a stable sort!)
-(define (quicksort l proc)
-  (if (< (length l) 2)
-      l
-      (let* ((first (car l))
-	     (rest (cdr l))
-	     (le-gt (partition first rest proc))
-	     (le (car le-gt))
-	     (gt (cadr le-gt)))
-	(append (quicksort le proc) (list first) (quicksort gt proc)))))
+(window-set-z-value (get-window) 400)
+(window-set-z-value (get-window) 600)
+(window-z-value (get-window))
 
-(define (partition e l proc)
-  (let ((le '())
-	(gt '()))
-    (for-each (lambda (v) (if (proc v e) 
-			      (set! gt (cons v gt))
-			      (set! le (cons v le)))) l)
-    (list le gt)))
-
-(partition 3 '(4 5 1 3 4 5 7) >)
-
-(quicksort '(4 5 1 3 4 5 7) >)
-
-(define (cars-only l)
-  (map car l))
-
-(define (winlist-sorted)
-  (cars-only (quicksort (winlist-with-z-vals) 
-			(lambda (a b) (> (cdr a) (cdr b))))))
-
-(restack-windows (winlist-sorted))
-
-(cl-set-solver-var solver (window-clv-z (get-window)) 600)
+;; FIXGJB: still need to make the existing raise/lower
+;; procedures manipulate the z values instead of just
+;; calling the X functions
