@@ -30,9 +30,9 @@ The default procedure to invoke when un-raising the window.This gets called afte
 
 
 default-menu-max-fold-lines
-- 
+- (app scwm base)
 The default number of items that menus are split into by `fold-menu-list'.
-[From scheme/base.scm:292]
+[From scheme/base.scm:298]
 
 
 image-load-path
@@ -66,9 +66,9 @@ Percent of display area below which windows are resized opaquely.
 
 
 remote-shell-command
-- 
+- (app scwm base)
 The command to use to start a remote shell.It should take a first (non-option) argument ofthe hostname to connect to.  "ssh" "rsh" and "telnet"are each reasonable choices.
-[From scheme/base.scm:323]
+[From scheme/base.scm:329]
 
 
 shadow-factor
@@ -78,9 +78,15 @@ shadow-factor
 [From scwm/color.c:493]
 
 
-xterm-command
+use-scwm-system-proc
 - 
+If #t, `execute' will use `scwm-system' instead of guile's `system'.This works around a problem observed on pre-glibc Linux 2.0.34 i386where SIGINT on the controlling tty (i.e., the one that startedscwm) propagates to the child processes.  The end result of thepossible bug is that xterms started by scwm are terminated if thescwm that started them is terminated using a Ctrl-C to send it a SIGINT.
+[From scheme/base.scm:28]
+
+
+xterm-command
+- (app scwm base)
 The command to run when a new xterm window is requested.The string given should refer to a binary or script in thepath and should take a "-e" argument of what to run.
-[From scheme/base.scm:316]
+[From scheme/base.scm:322]
 
 

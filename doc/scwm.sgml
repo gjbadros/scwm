@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release post-0.8</releaseinfo>
-    <pubdate>08 September 1998</pubdate>
+    <pubdate>09 September 1998</pubdate>
     <copyright>
       <year>1997&ndash;1998</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -70,7 +70,7 @@
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 38 </para> </refsect1>
+  at line 48 </para> </refsect1>
 </refentry>
 
 <refentry id="pctx-">
@@ -94,7 +94,7 @@
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 54 </para> </refsect1>
+  at line 64 </para> </refsect1>
 </refentry>
 
 <refentry id="pcty">
@@ -118,7 +118,7 @@
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 42 </para> </refsect1>
+  at line 52 </para> </refsect1>
 </refentry>
 
 <refentry id="pcty-">
@@ -142,7 +142,7 @@
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 58 </para> </refsect1>
+  at line 68 </para> </refsect1>
 </refentry>
 
 <refentry id="add-boolean-hint-option">
@@ -376,15 +376,15 @@ a number.
 <refentry id="ask-string">
   <refnamediv>
     <refname>ask-string</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Ask for a string with PROMPT.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(ask-string prompt set-fn)</synopsis>
+    <synopsis>(ask-string prompt)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Ask for a string with PROMPT.
   </para>
   </refsect1>
   <refsect1>
@@ -394,7 +394,7 @@ a number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 107 </para> </refsect1>
+  at line 109 </para> </refsect1>
 </refentry>
 
 <refentry id="beep">
@@ -518,7 +518,7 @@ The value is read from PORT, or the current-input-port.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 644 </para> </refsect1>
+  at line 645 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-mouse">
@@ -545,7 +545,7 @@ The value is read from PORT, or the current-input-port.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 703 </para> </refsect1>
+  at line 704 </para> </refsect1>
 </refentry>
 
 <refentry id="bool-to-str">
@@ -1167,7 +1167,7 @@ See <link linkend="color-properties"><function>color-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 279 </para> </refsect1>
+  at line 285 </para> </refsect1>
 </refentry>
 
 <refentry id="color-p">
@@ -1530,6 +1530,58 @@ defaults to the window context in the usual way if not specified.
   at line 1494 </para> </refsect1>
 </refentry>
 
+<refentry id="display-message">
+  <refnamediv>
+    <refname>display-message</refname>
+    <refpurpose>Show MSG (a string) as a single line in the message window.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(display-message msg)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Show <parameter>msg</parameter> (a string) as a single line in the message window.
+Note that <parameter>msg</parameter> should not contain newline characters as they will
+not be honoured.  See also <link linkend="hide-message"><function>hide-message</function></link>.  These primitives
+may disappear when GTk support is sufficiently mature.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
+  at line 86 </para> </refsect1>
+</refentry>
+
+<refentry id="display-message-briefly">
+  <refnamediv>
+    <refname>display-message-briefly</refname>
+    <refpurpose>Display MSG in the message window for SEC-TIMEOUT seconds.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(display-message-briefly msg #&amp;optional (sec-timeout 3))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Display MSG in the message window for SEC-TIMEOUT seconds.
+See <link linkend="display-message"><function>display-message</function></link> for details about MSG.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 429 </para> </refsect1>
+</refentry>
+
 <refentry id="display-size">
   <refnamediv>
     <refname>display-size</refname>
@@ -1579,7 +1631,7 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/doc.scm"><filename>scheme/doc.scm</filename></ulink>
-  at line 21 </para> </refsect1>
+  at line 24 </para> </refsect1>
 </refentry>
 
 <refentry id="edge-move-threshold">
@@ -1820,7 +1872,7 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 311 </para> </refsect1>
+  at line 317 </para> </refsect1>
 </refentry>
 
 <refentry id="execute">
@@ -1839,12 +1891,12 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para>(app scwm base)</para>
+  <para></para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 70 </para> </refsect1>
+  at line 433 </para> </refsect1>
 </refentry>
 
 <refentry id="find-window-by-name">
@@ -1949,7 +2001,7 @@ defaults to <link linkend="default-menu-max-fold-lines"><function>default-menu-m
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 302 </para> </refsect1>
+  at line 308 </para> </refsect1>
 </refentry>
 
 <refentry id="font-properties">
@@ -2000,7 +2052,7 @@ See <link linkend="font-properties"><function>font-properties</function></link> 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 274 </para> </refsect1>
+  at line 280 </para> </refsect1>
 </refentry>
 
 <refentry id="font-p">
@@ -2348,7 +2400,7 @@ mouse drags.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/doc.scm"><filename>scheme/doc.scm</filename></ulink>
-  at line 49 </para> </refsect1>
+  at line 53 </para> </refsect1>
 </refentry>
 
 <refentry id="help-mesg">
@@ -2372,7 +2424,33 @@ mouse drags.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 63 </para> </refsect1>
+  at line 65 </para> </refsect1>
+</refentry>
+
+<refentry id="hide-message">
+  <refnamediv>
+    <refname>hide-message</refname>
+    <refpurpose>Hide the message window.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(hide-message)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Hide the message window.
+See also <link linkend="display-message"><function>display-message</function></link>.  These primitives may disappear when GTk
+support is sufficiently mature.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
+  at line 109 </para> </refsect1>
 </refentry>
 
 <refentry id="hide-titlebar">
@@ -2680,7 +2758,7 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 269 </para> </refsect1>
+  at line 275 </para> </refsect1>
 </refentry>
 
 <refentry id="image-p">
@@ -2916,7 +2994,7 @@ screen while the non-opaque resize takes place.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 618 </para> </refsect1>
+  at line 669 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-resize-maybe-opaque">
@@ -4032,7 +4110,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 243 </para> </refsect1>
+  at line 249 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-background">
@@ -4134,7 +4212,7 @@ items.  FONT is a font object for the font of the menu items.
 <refentry id="menu-prefs">
   <refnamediv>
     <refname>menu-prefs</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Generate the <link linkend="-references"><function>Preferences</function></link> menu.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(menu-prefs . opts)</synopsis>
@@ -4142,7 +4220,8 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Generate the <link linkend="-references"><function>Preferences</function></link> menu.
+All the arguments are passed directly to the <link linkend="menu"><function>menu</function></link> function.
   </para>
   </refsect1>
   <refsect1>
@@ -4152,7 +4231,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 151 </para> </refsect1>
+  at line 184 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-properties">
@@ -4257,7 +4336,7 @@ creation of individual menus.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 156 </para> </refsect1>
+  at line 162 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-p">
@@ -4321,7 +4400,7 @@ the shortcut key for the menu item.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 208 </para> </refsect1>
+  at line 214 </para> </refsect1>
 </refentry>
 
 <refentry id="menuitem-properties">
@@ -4378,6 +4457,32 @@ primitive
   at line 132 </para> </refsect1>
 </refentry>
 
+<refentry id="message-window-mapped-p">
+  <refnamediv>
+    <refname>message-window-mapped?</refname>
+    <refpurpose>Return <literal>#t</literal> if the message window is mapped, <literal>#f</literal> otherwise.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(message-window-mapped?)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return <literal>#t</literal> if the message window is mapped, <literal>#f</literal> otherwise.
+See also <link linkend="display-message"><function>display-message</function></link>, <link linkend="hide-message"><function>hide-message</function></link>.  These primitives may disappear when GTk
+support is sufficiently mature.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
+  at line 122 </para> </refsect1>
+</refentry>
+
 <refentry id="mod-desk-size-x">
   <refnamediv>
     <refname>mod-desk-size!</refname>
@@ -4399,7 +4504,7 @@ primitive
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 58 </para> </refsect1>
+  at line 60 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-alt">
@@ -4425,7 +4530,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 841 </para> </refsect1>
+  at line 842 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-hyper">
@@ -4451,7 +4556,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 849 </para> </refsect1>
+  at line 850 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-meta">
@@ -4477,7 +4582,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 833 </para> </refsect1>
+  at line 834 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-super">
@@ -4503,7 +4608,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 858 </para> </refsect1>
+  at line 859 </para> </refsect1>
 </refentry>
 
 <refentry id="module-event-name-from-number">
@@ -4554,7 +4659,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 820 </para> </refsect1>
+  at line 821 </para> </refsect1>
 </refentry>
 
 <refentry id="mouse-focus-click-raises-p">
@@ -4654,7 +4759,7 @@ If X is negative, moves to the left.  If Y is negative moves up.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 110 </para> </refsect1>
+  at line 116 </para> </refsect1>
 </refentry>
 
 <refentry id="move-pointer-to">
@@ -4710,7 +4815,7 @@ See <link linkend="move-window"><function>move-window</function></link> if you w
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 118 </para> </refsect1>
+  at line 124 </para> </refsect1>
 </refentry>
 
 <refentry id="move-viewport">
@@ -4736,7 +4841,7 @@ negative, and Y pixels vertically, down if positive, up if negative.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 149 </para> </refsect1>
+  at line 155 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window">
@@ -5279,7 +5384,7 @@ Returns <literal>#f</literal> otherwise.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 74 </para> </refsect1>
+  at line 80 </para> </refsect1>
 </refentry>
 
 <refentry id="quotify-single-quotes">
@@ -5833,7 +5938,7 @@ arguments as given previously.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
-  at line 130 </para> </refsect1>
+  at line 146 </para> </refsect1>
 </refentry>
 
 <refentry id="restarted-p">
@@ -5913,7 +6018,7 @@ The rest of the arguments are passed as options to the xterm command.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 330 </para> </refsect1>
+  at line 336 </para> </refsect1>
 </refentry>
 
 <refentry id="safe-load">
@@ -5965,7 +6070,7 @@ errors.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 37 </para> </refsect1>
+  at line 39 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-is-constraint-enabled-p">
@@ -5984,12 +6089,12 @@ errors.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 401 </para> </refsect1>
+  at line 407 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-path-exec-prefix">
@@ -6062,7 +6167,38 @@ scwm. <parameter>args</parameter> is ignored.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
-  at line 156 </para> </refsect1>
+  at line 172 </para> </refsect1>
+</refentry>
+
+<refentry id="scwm-system">
+  <refnamediv>
+    <refname>scwm-system</refname>
+    <refpurpose>Run CMD using /bin/sh -c CMD and return the exit status.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(scwm-system cmd)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Run CMD using /bin/sh -c CMD and return the exit status.
+The CMD is run synchronously, and Bourne-shell meta characters
+are interpreted by /bin/sh.  E.g., to start CMD in the background,
+use a trailing \"&amp;\" character.  See also guile's <link linkend="system"><function>system</function></link>, but note
+that it may permit signals to propagate to the child processes
+possibly incorrectly.  This may be a bug, or perhaps just an unfortunate
+system-specific behaviour on some Linux systems (observed with libc.so.5.3.12
+on an i386 Linux 2.0.34 machine).
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
+  at line 412 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-version">
@@ -6274,7 +6410,7 @@ this unless you know what it means.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1804 </para> </refsect1>
+  at line 1824 </para> </refsect1>
 </refentry>
 
 <refentry id="send-key-press">
@@ -6305,7 +6441,7 @@ should not have to worry about this unless you know what it means.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1742 </para> </refsect1>
+  at line 1762 </para> </refsect1>
 </refentry>
 
 <refentry id="set-animation-x">
@@ -6846,7 +6982,7 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 372 </para> </refsect1>
+  at line 378 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -6874,7 +7010,7 @@ dimension to a number of pixels.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 386 </para> </refsect1>
+  at line 392 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-delay-x">
@@ -6929,7 +7065,7 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 378 </para> </refsect1>
+  at line 384 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-x-scroll-x">
@@ -7498,7 +7634,7 @@ being moved or resized interactively.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 56 </para> </refsect1>
+  at line 57 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mini-icon-x">
@@ -7765,7 +7901,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 333 </para> </refsect1>
+  at line 384 </para> </refsect1>
 </refentry>
 
 <refentry id="set-shadow-factor-x">
@@ -8134,7 +8270,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 104 </para> </refsect1>
+  at line 110 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-decor-x">
@@ -8598,7 +8734,7 @@ JUSTIFY is a legal argument to <link linkend="set-title-justify-x"><function>set
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 173 </para> </refsect1>
+  at line 179 </para> </refsect1>
 </refentry>
 
 <refentry id="size-to-str">
@@ -9337,7 +9473,7 @@ pulling down a window shade on a window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 585 </para> </refsect1>
+  at line 586 </para> </refsect1>
 </refentry>
 
 <refentry id="unbind-mouse">
@@ -9363,7 +9499,7 @@ pulling down a window shade on a window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 617 </para> </refsect1>
+  at line 618 </para> </refsect1>
 </refentry>
 
 <refentry id="unfocus">
@@ -9494,6 +9630,30 @@ not specified.
   at line 2979 </para> </refsect1>
 </refentry>
 
+<refentry id="user-option-menuitem">
+  <refnamediv>
+    <refname>user-option-menuitem</refname>
+    <refpurpose>Create a menuitem for the option.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(user-option-menuitem symbol)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Create a menuitem for the option.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
+  at line 180 </para> </refsect1>
+</refentry>
+
 <refentry id="viewport-position">
   <refnamediv>
     <refname>viewport-position</refname>
@@ -9564,7 +9724,7 @@ The returned value is a list of the x and y positions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 62 </para> </refsect1>
+  at line 72 </para> </refsect1>
 </refentry>
 
 <refentry id="wpcty">
@@ -9588,7 +9748,7 @@ The returned value is a list of the x and y positions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 66 </para> </refsect1>
+  at line 76 </para> </refsect1>
 </refentry>
 
 <refentry id="wait-for-window">
@@ -10546,7 +10706,7 @@ way if not specified.  See also <link linkend="window-position"><function>window
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 137 </para> </refsect1>
+  at line 143 </para> </refsect1>
 </refentry>
 
 <refentry id="window-p">
@@ -10716,7 +10876,7 @@ This sets the 'winlist-skip property of WIN.  See also <link linkend="winlist-hi
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 46 </para> </refsect1>
+  at line 56 </para> </refsect1>
 </refentry>
 
 <refentry id="X-atom-to-string">
@@ -10761,7 +10921,7 @@ This is the cut text selected by X clients.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -10827,7 +10987,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 867 </para> </refsect1>
+  at line 868 </para> </refsect1>
 </refentry>
 
 <refentry id="X-property-get">
@@ -11047,7 +11207,7 @@ revision, the X server vendor, and the vendor release number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 50 </para> </refsect1>
+  at line 60 </para> </refsect1>
 </refentry>
 
   </chapter>
@@ -11069,7 +11229,6 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="pcty-"><function>%y-</function></link> &mdash; Return the pixel coordinate Y percent of the height away from the bottom edge.</para></listitem>
       <listitem><para><link linkend="wpctx"><function>w%x</function></link> &mdash; Return a pixel width X percent of the width of window W.</para></listitem>
       <listitem><para><link linkend="wpcty"><function>w%y</function></link> &mdash; Return a pixel height Y percent of the height of window W.</para></listitem>
-      <listitem><para><link linkend="execute"><function>execute</function></link> &mdash; Execute COMMAND in the background.</para></listitem>
       <listitem><para><link linkend="program-exists-p"><function>program-exists?</function></link> &mdash; Return <literal>#t</literal> if PROGRAM-NAME is found as an executable in the current $PATH.</para></listitem>
       <listitem><para><link linkend="set-window-colors-x"><function>set-window-colors!</function></link> &mdash; Set WIN's background color to BG, foreground color to FG.</para></listitem>
       <listitem><para><link linkend="move-pointer"><function>move-pointer</function></link> &mdash; Move the X11 pointer X pixels to the right, and Y pixels down.</para></listitem>
@@ -11090,6 +11249,8 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="set-edge-wrap-x"><function>set-edge-wrap!</function></link> &mdash; Set the edge x and y wrap values to X and Y, respectively.</para></listitem>
       <listitem><para><link linkend="set-edge-scroll-x"><function>set-edge-scroll!</function></link> &mdash; Set the edge scroll values to X and Y, respectively.</para></listitem>
       <listitem><para><link linkend="scwm-is-constraint-enabled-p"><function>scwm-is-constraint-enabled?</function></link> &mdash; Return <literal>#t</literal> if scwm has the constraint solver primitives, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="scwm-system"><function>scwm-system</function></link> &mdash; Run CMD using /bin/sh -c CMD and return the exit status.</para></listitem>
+      <listitem><para><link linkend="execute"><function>execute</function></link> &mdash; Execute COMMAND in the background.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/bincomm.scm</title> <itemizedlist>
       <listitem><para><link linkend="binary-write"><function>binary-write</function></link> &mdash; Writes STR as binary data to PORT.</para></listitem>
@@ -11153,6 +11314,7 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-string-usable-for-resource-key"><function>make-string-usable-for-resource-key</function></link> &mdash; Return a converted string from STRING that can be used as an X resource key.</para></listitem>
       <listitem><para><link linkend="X-cut-buffer-string"><function>X-cut-buffer-string</function></link> &mdash; Return the text of the CUT_BUFFER0 property of the root window.</para></listitem>
+      <listitem><para><link linkend="display-message-briefly"><function>display-message-briefly</function></link> &mdash; Display MSG in the message window for SEC-TIMEOUT seconds.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -11190,8 +11352,9 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="save-settings"><function>save-settings</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="mod-desk-size-x"><function>mod-desk-size!</function></link> &mdash; Modify the current desktop size by the given parameter.</para></listitem>
       <listitem><para><link linkend="help-mesg"><function>help-mesg</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="ask-string"><function>ask-string</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="menu-prefs"><function>menu-prefs</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="ask-string"><function>ask-string</function></link> &mdash; Ask for a string with PROMPT.</para></listitem>
+      <listitem><para><link linkend="user-option-menuitem"><function>user-option-menuitem</function></link> &mdash; Create a menuitem for the option.</para></listitem>
+      <listitem><para><link linkend="menu-prefs"><function>menu-prefs</function></link> &mdash; Generate the <link linkend="-references"><function>Preferences</function></link> menu.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/sort.scm</title> <itemizedlist>
       <listitem><para><link linkend="sort"><function>sort</function></link> &mdash; Returned LS sorted according to COMPARE (defaults to ascending numerical order).</para></listitem>
@@ -11446,6 +11609,9 @@ revision, the X server vendor, and the vendor release number.
     </itemizedlist> </sect1>
     <sect1><title>scwm/resize.c</title> <itemizedlist>
       <listitem><para><link linkend="set-message-window-attributes-x"><function>set-message-window-attributes!</function></link> &mdash; Set the attributes to be used for the message window.</para></listitem>
+      <listitem><para><link linkend="display-message"><function>display-message</function></link> &mdash; Show MSG (a string) as a single line in the message window.</para></listitem>
+      <listitem><para><link linkend="hide-message"><function>hide-message</function></link> &mdash; Hide the message window.</para></listitem>
+      <listitem><para><link linkend="message-window-mapped-p"><function>message-window-mapped?</function></link> &mdash; Return <literal>#t</literal> if the message window is mapped, <literal>#f</literal> otherwise.</para></listitem>
       <listitem><para><link linkend="set-rubber-band-mask-x"><function>set-rubber-band-mask!</function></link> &mdash; Set the rubber band mask used when dragging or resizing.</para></listitem>
       <listitem><para><link linkend="interactive-resize"><function>interactive-resize</function></link> &mdash; Resize WIN interactively.</para></listitem>
     </itemizedlist> </sect1>
@@ -11700,6 +11866,9 @@ The command to use to start a remote shell.It should take a first (non-option) a
     <sect1 id="shadow-factor"><title>shadow-factor</title><para>
    The numeric factor used in generating shadow colors in the current decor.
 
+    </para></sect1>
+    <sect1 id="use-scwm-system-proc"><title>use-scwm-system-proc</title><para>
+If <literal>#t</literal>, <link linkend="execute"><function>execute</function></link> will use <link linkend="scwm-system"><function>scwm-system</function></link> instead of guile's <link linkend="system"><function>system</function></link>.This works around a problem observed on pre-glibc Linux 2.0.34 i386where SIGINT on the controlling tty (i.e., the one that startedscwm) propagates to the child processes.  The end result of thepossible bug is that xterms started by scwm are terminated if thescwm that started them is terminated using a Ctrl-C to send it a SIGINT.
     </para></sect1>
     <sect1 id="xterm-command"><title>xterm-command</title><para>
 The command to run when a new xterm window is requested.The string given should refer to a binary or script in thepath and should take a "-e" argument of what to run.
