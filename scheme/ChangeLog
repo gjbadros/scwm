@@ -1,3 +1,19 @@
+Mon Feb 21 18:12:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* tile.scm: Call `insert-undo-global' before tiling in
+	`tile-windows-interactively'
+
+	* register.scm: Ensure that the register is not empty before
+	`jump-to-register' acts on register value and use
+	`focus-change-warp-pointer' instead of focus-window when jumping
+	to a focus.
+
+	* group.scm: Added cascade windows to the group operations menu.
+
+	* cascade.scm: Added `cascade-windows-interactively'; now needs
+	window-selection and undo modules (since I call insert-undo-global
+	before cascading)
+
 Sun Feb 20 18:46:52 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window-configuration.scm: Refine `window-configuration?' test to 

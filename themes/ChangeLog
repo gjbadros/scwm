@@ -1,3 +1,8 @@
+Mon Feb 21 18:11:44 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */theme.scm: Drop #:random-placement, #:smart-placement;  those
+	options no longer exist.
+
 1999-08-05  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (DISTCLEANFILES): typo fix-o TAR_SFUFFIX ->
