@@ -1191,6 +1191,9 @@ AddToMenu(MenuRoot * menu, char *item, char *action)
   if (!strcmp(tmp->action, "SchemeMenu")) {
     tmp->func_type = F_POPUP;
   }
+  if (!strcmp(tmp->action, "Nop")) {
+    tmp->func_type = F_NOP;
+  }
   tmp->item_num = menu->items++;
 }
 
