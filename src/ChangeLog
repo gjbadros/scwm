@@ -1,3 +1,15 @@
+1998-10-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* scwm.h (CLIENT_ID_STRING): Split into two versions:
+	CLIENT_ID_STRING (without dashes), CLIENT_ID_OPT_STRING (prefixed
+	with two dashes).
+
+	* session-manager.c (setSMProperties): Don't copy old client-id
+	options from g_argv into RestartCommand/CloneCommand. Added a
+	RestartStyleHint. Program property now contains only the basename.
+	Use CLIENT_ID_OPT_STRING where appropriate. SmcSetProperties used
+	"&props" which was plain wrong - use "props" instead.
+
 1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
 
 	* menu.c (s_make_menu): validate image items with

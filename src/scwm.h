@@ -148,7 +148,9 @@ static scm_smobfuns T ## _smobfuns = { \
 
 
 /* The option that handles client id for session management */
-#define CLIENT_ID_STRING	"--client-id"
+#define CLIENT_ID_STRING	"client-id"
+#define CLIENT_ID_OPT_STRING	("--" CLIENT_ID_STRING)
+
 /* long options that are not equivalent to short ones */
 enum long_option_codes {
   CLIENT_ID = 256

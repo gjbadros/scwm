@@ -1,6 +1,6 @@
 /* $Id$
  * session-manager.c
- * (C) 1998 Greg J. Badros
+ * Copyright 1998, Greg J. Badros and Robert Bihlmeyer
  * Scwm Session Manager Support
  * Largely borrowed from IceWM's icewm.cc (C) 1997 by Marko Macek
  */
@@ -65,45 +65,47 @@ void dieProc(SmcConn conn, SmPointer client_data) {
 }
 
 static void setSMProperties() {
+  CARD8 restartStyle = SmRestartImmediately;
   SmPropValue programVal = { 0, NULL };
   SmPropValue userIDVal = { 0, NULL };
-  SmPropValue *restartVal;
-  SmProp programProp = { (char *)SmProgram, 
-                         (char *)SmLISTofARRAY8, 
-                         1, &programVal };
-  SmProp userIDProp = { (char *)SmUserID, 
-                        (char *)SmARRAY8, 
-                        1, &userIDVal };
-  SmProp restartProp = { (char *)SmRestartCommand,
-                         (char *)SmLISTofARRAY8, 
-                         g_argc+2, restartVal };
-  SmProp cloneProp = { (char *)SmCloneCommand,
-                       (char *)SmLISTofARRAY8, 
-                       g_argc, restartVal };
+  SmPropValue *restartVal = NEWC(g_argc+2, SmPropValue);
+  SmPropValue restartStyleVal = { 1, &restartStyle };
+  SmProp programProp = { SmProgram, SmARRAY8, 1, &programVal };
+  SmProp userIDProp = { SmUserID, SmARRAY8, 1, &userIDVal };
+  SmProp restartProp = { SmRestartCommand, SmLISTofARRAY8, 0, restartVal };
+  SmProp cloneProp = { SmCloneCommand, SmLISTofARRAY8, 0, restartVal };
+  SmProp restartStyleProp = { SmRestartStyleHint, SmCARD8,
+			      1, &restartStyleVal };
   SmProp *props[] = {
     &programProp,
     &userIDProp,
     &restartProp,
-    &cloneProp
+    &cloneProp,
+    &restartStyleProp
   };
-  int i;
+  int i, j;
 
-  programVal.length = strlen(g_argv[0]);
-  programVal.value = g_argv[0];
+  programVal.value = strrchr(g_argv[0], '/');
+  if (!programVal.value)
+    programVal.value = g_argv[0];
+  programVal.length = strlen(programVal.value);
   userIDVal.length = strlen(UserName);
   userIDVal.value = (SmPointer)UserName;
-  restartVal = NEWC(g_argc+2, SmPropValue);
-  for (i=0; i<g_argc; i++) {
-    restartVal[i].length = strlen(g_argv[i]);
-    restartVal[i].value = g_argv[i];
+  for (i=0, j=0; j<g_argc; j++) {
+    if (strcmp(g_argv[i], CLIENT_ID_OPT_STRING)!=0) {
+      restartVal[i].length = strlen(g_argv[j]);
+      restartVal[i++].value = g_argv[j];
+    } else {
+      j++;			/* skip old client-id option and argument */
+    }
   }
-  restartVal[i++].length = strlen(CLIENT_ID_STRING);
-  restartVal[i++].value = CLIENT_ID_STRING;
-  restartVal[i++].length = strlen(SmcId);
+  cloneProp.num_vals=i;
+  restartVal[i].length = strlen(CLIENT_ID_OPT_STRING);
+  restartVal[i++].value = CLIENT_ID_OPT_STRING;
+  restartVal[i].length = strlen(SmcId);
   restartVal[i++].value = SmcId;
-  SmcSetProperties(SMconn,
-                   sizeof(props)/sizeof(props[0]),
-                   (SmProp **)&props);
+  restartProp.num_vals=i;
+  SmcSetProperties(SMconn, sizeof(props)/sizeof(props[0]), props);
   FREE(restartVal);
 }
 
