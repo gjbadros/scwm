@@ -28,4 +28,7 @@
 ;; CORBA server gets initialized by the C module
 ;; GJB:FIXME:: split that out into a primitive
 (define-public (publish-scwm-evaluator-servant)
+  "Publish the scwm-evaluator-servant by putting its IOR as a property on the root window.
+The \"SCWM_EVALUATOR_IOR\" property of the root window will contain a
+printable string for Corba clients to use to access the scwm-scheme-evaluator interface."
   (X-property-set! 'root-window "SCWM_EVALUATOR_IOR" (corba-evaluator-ior)))
