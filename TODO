@@ -6,8 +6,6 @@ modules should be punted.]
 
 - Clean out all of the artifacts of the FVWM function system.
 
-- Make scwm work with autoconf.
-
 - Write the graphical reconfiguration tools.
 
 - Change the guts to use LISPier data structures when possible, to
@@ -19,4 +17,15 @@ under GPL and reorganize years of layered cruft.
 - Steal nice features from other window managers. Put them in modules where
 possible, to have a featureful yet lean wm.
 
+- Interactive move/resize should permit using a real color, not just
+an xor-value, as an option
+
+- Opaque resize
+
+- Animated window shades
+
 - Modular window decoration system.
+
+Done:
+
+- Make scwm work with autoconf.

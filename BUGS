@@ -1,18 +1,20 @@
-raised? (and in general, get-window) fails with scwmsend's property communication mechanism
-
-
-! functions should be renamed to end with _x
+! functions should be renamed to end with _x  -- This looks partially done...
 
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
-
-there needs to be a way to remove mouse bindings; unbind_key added 10/24/97, gjb
 
 should initially focus/hilight some window (also a bug in fvwm2).
 
 callbacks should run from a new dynamic root.
 
 FIXED:
+
+(get-window) acts wierdly when a window needs to be selected, or
+when executed via scwmsend's property mechanism -- was a problem with
+DeferExecution();  not sure if it's completely right now, but seems to
+work in the cases I've tried -- 10/25/97, gjb
+
+there needs to be a way to remove mouse bindings; unbind_key added 10/24/97, gjb
 
 start interactive moves and resizes right, so that initial mouse motion is not
 lost.  ~ 10/15/97, MS
