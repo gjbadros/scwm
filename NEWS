@@ -2,14 +2,20 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
-Changes for scwm-0.99.6.1 (not yet released)
+Changes for scwm-0.99.6.1 (released 29-January-2000)
 * Bug fixes
 ** More robust
 ** Plugged two small but frequent memory leaks -- the leaks are now gone!!!!
 
+* Improved configure option
+** --enable-dump now does static linking of the appropriate libraries so
+   dump files are closer to being useful
+
 * Changed commands
 ** show-window-list-matching-interactively
 Use * on both ends of entered string so the default is a substring search
+
+* Updated copyright dates throughout.
 
 
 Changes for scwm-0.99.6 (released 12-January-2000)
