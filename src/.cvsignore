@@ -12,6 +12,7 @@ scwm-stable
 scwm-stable-no-cassowary
 scwm-stable-with-cassowary
 scwm-works
+scwm.stripped
 scwm_cl
 scwm_cl_works
 scwmpaths.h
