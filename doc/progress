@@ -1,0 +1,254 @@
+fvwm2's functions (as of 2.0.45)
+ 
+
+seekrit undocumented functions:
+
+/* module */
+  {"AddModuleConfig",  AddModConfig, F_ADD_MOD,             FUNC_NO_WINDOW},
+
+/* quit only a single screen */
+  {"QuitScreen",   quit_screen_func, F_QUIT_SCREEN,         FUNC_NO_WINDOW},
+/* focus, deiconfiy and focus by window ID (weird!) */
+  {"Raise_it",     raise_it_func,    F_RAISE_IT,            FUNC_NO_WINDOW},
+
+/* module */
+  {"SendToModule", SendStrToModule,  F_SEND_STRING,         FUNC_NO_WINDOW},
+/* module */
+  {"Send_WindowList",send_list_func, F_SEND_WINDOW_LIST,    FUNC_NO_WINDOW},
+/* module */
+  {"Send_ConfigInfo",SendDataToModule, F_CONFIG_LIST,       FUNC_NO_WINDOW},
+/* module */
+  {"set_mask",     set_mask_function,F_SET_MASK,            FUNC_NO_WINDOW},
+
+
+
+documented functions
+
+
+NAME					STATUS
+
+AddButtonStyle 
+AddTitleStyle 
+AddToDecor 
+AddToMenu
+AddToFunc				define
+Beep					(define (beep) (display ""))
+BorderStyle
+ButtonStyle
+ChangeDecor
+ClickTime 				set-click-time
+Close					delete-window,destroy-window,
+					window-deletable?
+ColormapFocus				set-colormap-focus!
+CursorMove 
+Delete					delete-window
+Desk 
+DeskTopSize 
+Destroy					destroy-window
+DestroyFunc				undefine
+DestroyDecor
+DestroyMenu
+DestroyModuleConfig
+Echo					display
+EdgeResistance
+EdgeScroll
+Exec					(define (execute . command)
+						(system (string-append
+						   "exec " command " &")))
+ExecUseShell 				[is there a point to this?]
+FlipFocus
+Focus					focus
+Function				[useless]
+GlobalOpts 				[left unimplemented for now]
+GotoPage
+HilightColor				set-highlight-colors!
+IconFont				set-icon-font!
+Iconify					iconify,deiconify,iconified?
+IconPath
+Key					bind-key
+KillModule
+Lower					lower-window
+Maximize
+Menu
+MenuStyle				set-menu-font!,set-menu-colors!,
+					set-menu-mwm-style!
+					[eventually set-meny-style! proc to
+					encapsulate these?]
+Module 
+ModulePath
+Mouse 					bind-mouse
+Move					move-to,interactive-move
+Nop					[useless]
+Next
+None
+OpaqueMoveSize				set-opaque-move-size!
+PipeRead				[no need, you can probably do anything
+					you'd want this for in Scheme. May
+					hack one up later for compatability's
+					sake or something]
+PixmapPath
+Popup
+Prev
+Quit					[hmm, will probably need to rebind 
+					(quit)]
+Raise					raise-window
+RaiseLower				raised?,raise-window,lower-window
+Read					load
+Recapture
+Refresh					refresh
+RefreshWindow				refresh-window
+Resize					resize-to,interactive-resize
+Restart
+SendToModule
+Scroll
+Stick					stick,unstick,sticky?
+Style
+Title					[not needed]
+TitleStyle
+UpdateDecor
+WarpToWindow				warp-to-window
+Wait
+WindowsDesk
+WindowFont				set-window-font!
+WindowId				[not needed - there is a window type]
+WindowList
+WindowShade				shade-window, unshade-window, 
+					window-shaded?
+XORvalue				set-xor-value!
+
+75 total
+
+Functions provided by guile or unnecessary with it:
+
+AddToFunc				define
+Beep					(define (beep) (display ""))
+DestroyFunc				undefine
+Exec command				(define (run . args)
+						(if (= 0 (primitive-fork))
+							(apply execlp args)))
+ExecUseShell 				[is there a point to this?]
+Function				[useless]
+Nop					[useless]
+PipeRead				[no need, you can probably do anything
+					you'd want this for in Scheme. May
+					hack one up later for compatability's
+					sake or something]
+Quit					[hmm, will probably need to rebind 
+					(quit)]
+Read					load
+Title					[not needed]
+DestroyMenu				undefine
+
+12 total
+
+
+Functions implemented by scwm :
+
+HilightColor				set-highlight-colors!
+IconFont				set-icon-font!
+MenuStyle				set-menu-font!,set-menu-colors!,
+					set-menu-mwm-style!
+					[meny-style proc in scheme 
+					encapsulates these]
+WindowFont				set-window-font!
+XORValue				set-xor-value!
+Key					bind-key
+Raise					raise-window
+Lower					lower-window
+Close					delete-window,destroy-window,
+					window-deletable?
+Delete					delete-window
+Destroy					destroy-window
+Focus					focus
+Iconify					iconify,deiconify,iconified?
+RaiseLower				raised?,raise-window,lower-window
+Stick					stick,unstick,sticky?
+WarpToWindow				warp-to-window
+WindowShade				shade-window, unshade-window, 
+					window-shaded?
+Mouse					bind-mouse
+Move					move-to,interactive-move
+Resize					resize-to,interactive-resize
+Refresh					refresh
+RefreshWindow				refresh-window
+ClickTime				set-click-time!
+ColormapFocus				set-colormap-focus!
+OpaqueMoveSize				set-opaque-move-size!
+AddToMenu				make-menu
+Menu					popup
+Popup					popup
+
+28 total
+
+Intentionally Omitted:
+GlobalOpts				[these options are really obscure]
+KillModule
+Module 
+ModulePath
+
+4 total
+
+
+
+;; have to figure out this mess...
+WindowsDesk
+(move-window-to-desk [W]) (?)
+
+
+
+
+
+
+
+styles:
+AddButtonStyle 
+AddTitleStyle 
+BorderStyle
+ButtonStyle
+Style
+TitleStyle
+
+decors:
+AddToDecor 
+ChangeDecor
+DestroyDecor
+UpdateDecor
+
+desks and pages:
+Desk 
+DeskTopSize 
+GotoPage
+EdgeResistance
+EdgeScroll
+
+modules:
+DestroyModuleConfig
+KillModule
+Module 
+SendToModule
+
+paths:
+IconPath
+ModulePath
+PixmapPath
+
+window selection:
+Next
+None
+Prev
+WindowList
+
+miscellaneous actions:
+CursorMove 
+Restart
+Recapture
+Scroll
+Wait
+
+window ops:
+WindowsDesk
+FlipFocus
+
+
+
+

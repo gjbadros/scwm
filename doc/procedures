@@ -1,0 +1,342 @@
+
+
+SCWM Scheme function documentation :
+
+The scwm configuration file is a Guile Scheme program. All of the
+usual Guile procedures are available. In addition, the following
+windowmanager-sepcific procedures have been implemented. See the
+sample system.scwmrc file for examples.
+
+Documentation style:
+
+A procedure documented as 
+(foo BAR BAZ [QUUX XYZZY] . ARGS) 
+
+is called foo and has required arguments BAR and BAZ, optional
+arguments QUUX and XYZZY, and accepts any variable number of arguments
+beyond that. All the specifications follow this pattern.
+
+
+FONTS:
+
+(load-font FONTNAME) 
+
+This loads a font specified by the string FONTNAME and returns a font
+object. All proocedures which expect a font can take either a font
+object or a string specifier (in which case they automatically call
+load-font themselves) but it you want to use a font many times is
+more efficient to do something like :
+(define helvetica 
+  (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+
+(font? OBJ)
+Returns #t if OBJ is a font object, else #f.
+
+(set-icon-font! FONT)
+(set-window-font! FONT)
+(set-menu-font! FONT)
+
+These set the icon, titlebar and menu fonts respectively.
+
+
+COLORS:
+
+(load-color COLORNAME)
+
+load-color basically works like load-font, except 
+
+(color? OBJ)
+Returns #t if OBJ is a color object, else #f.
+
+(set-hilight-colors! [FG BG])
+
+Sets the hilight foreground and background colors. If you pass #f for
+either one, it is left unchanged.
+
+(set-menu-colors! [FG BG STIPPLE])
+
+This sets the menu foreground, background and stipple colors. As
+above, #f indicates that the relevant color should not be changed.
+
+
+BINDINGS:
+
+(bind-key CONTEXTS KEY-SPECIFIER PROC)
+
+This establishes a key binding. CONTEXTS specifies the context(s) in
+which it will be in effect. It can be one of the following symbols or
+a list of several:
+
+window, title, icon, root, frame, sidebar, button-1, button-2,
+button-3, button-4, button-5, button-6, button-7, button-8, button-9,
+button-10, all
+
+Using 'all as the context includes all of the others.
+
+The key to bind is specified as a string, sort of emacs-style. Some
+examples: 
+
+"x","F1","C-x","M-space","C-M-a"
+
+Basically, you give a characer or a keysym prefixed by any combination
+of "C-", "M-" and "S-" representing Control, Meta and Shift
+respectively. Other prefixes that emacs understands will be
+implemented as soon as I understand what they do in emacs.
+
+The proc is a Scheme procedure of no arguments. If the key binding is
+invoked from within anywhere but the root window, the current window
+context is set to the window it was invoked from. Window contexts are
+explained in the section on window operations.
+
+
+(bind-mouse CONTEXTS BUTTON-SPECIFIER PROC)
+
+Works much like bind-key above, but binds to a mouse action. In
+addition to possibly setting the window context, it also sets the
+current mouse event type so that the type of mouse event can be
+distiguished from the procedure. This is explained in 
+ Mouse button specifiers are either
+numbers or strings that consist of a number with optional prefixes
+specifying modifier keys. Here are some valid mouse specifiers
+
+
+(mouse-event-type)
+
+If called from code that was invoked by a mouse binding, it returns
+the type of mouse event, one of 'motion 'click 'one-and-a-half-clicks
+or 'double-click. This can be used in conjunction with Scheme's case
+or cond special forms to do different things based on the type of
+event. This functionality may go away in favor of being able to bind
+any kind of mouse event type separately.
+
+
+MISCELLANEOUS SETTINGS:
+
+(set-menu-mwm-style! BOOL)
+
+Determines if menus are MWM style or FVWM style.
+
+(set-xor-value! INT)
+
+Sets the XOR value used for rubber-banding windows.
+
+(set-title-height! INT)
+
+Sets the height of the title-bar.
+
+(set-title-justify! SYM)
+
+Sets the title-bar justification. The symbol must be one of 'left,
+'right or 'center.
+
+(set-click-time! INT)
+
+Sets the maximum time that must elapse after a mouse can be pressed
+and not yet released that will still be interpreted as a click and not
+a motion. The time is given in milliseconds. The default is 150.
+
+(set-colormap-focus! SYM)
+Sets the colormap focus style, either 'focus or 'mouse. In the first
+case, the window with keyboard focus has the colormap focus, in the
+other case, the colormap focus follows the mouse even if the keyboard
+focus doesn't.
+
+(set-opaque-move-size! INT)
+Sets the largest window size that will be moved opaquely rather than
+with rubber-banding, as percentage of screen size. 0 will make all
+windows rubber-band when they move, while 100 will make all windows
+move as solid. The default
+
+
+MISCELLANEOUS OPERATIONS:
+
+(refresh)
+
+Refreshes the whole screen.
+
+
+WINDOWS: 
+
+
+(window? OBJ)
+Returns #t if OBJ is a window object, else #f.
+
+(get-window) 
+
+Retrieves the current window context and returns the window object
+representing it. If no window context is set, it lets the user select
+a window by ccalling select-window. However, select-window is not
+really implemented yet so it will actually return #f in this case.
+
+(select-window) [not fully implemented]
+
+
+WINDOW OPERATIONS:
+
+For all of these, the optional window argument defaults to the current
+window context. This makes it convenient to bind window operations to
+key or mouse events. It also means that in most cases, you won't need
+to use the optional W argument, but sometimes it is needed. 
+
+(focus [W])
+Give W the keyboard focus.
+
+(warp-to-window [W])
+Warp the mouse pointer to the window W.
+
+(delete-window [W])
+Delete W, in other words, close it politely. This may not always work.
+
+(destroy-window [W]) 
+Destroy W, in other words, close it rudely. This always works, but
+will not give the application the chance to do special shutdown
+actions, like asking for confirmation.
+
+(window-deletable? [W])
+Returns #t if delete-window will work on W, else #f.
+
+(lower-window [W])
+Lowers W to the bottom of the window stack.
+
+(raise-window [W])
+Raises W to the top of the window stack.
+
+(raised? [W])
+Returns #t if W is currently raised, else #f.
+
+(iconify [W]) 
+Iconifies window W.
+
+(deiconify [W]) 
+Deiconifies window W.
+
+(iconified? [W])
+Determines if W is iconified.
+
+(stick [W])
+"Sticks" window W. This makes it remain in the same position on the screen
+when desks or pages are switched.
+
+(unstick [W])
+Reverses the effects of "stick."
+
+(sticky? [W])
+Determines if a window is currently "sticky."
+
+(window-shade [W])
+Rolls up the window into just a title bar, like a window shade.
+
+(un-window-shade [W])
+Reverses the effect of window-shade.
+
+(window-shaded? [W])
+Determines if the window is currently shaded.
+
+(move-to X Y [W])
+Moves the window to X,Y on the current screen.
+
+(interactive-move [W]) 
+Begins an interactive move operation. The user can adjust the position
+of the window with the mouse or arrow keys.
+
+(resize-to X Y [W])
+Resizes the window to X by Y. 
+
+(interactive-resize [W]) 
+Begins an interactive resize operation. The user can adjust the
+position of the window with the mosue or arrow keys.
+
+(refresh-window [W])
+Refreshes the window, ensuring that its contents and decorations  are
+up to date and properly displayed.
+
+
+MENUS:
+
+(menu? OBJ)
+Returns #t if OBJ is a menu object, else #f.
+
+(make-menu TITLE [(list NAME PROC-OR-MENU)|'title|'separator] ...)
+
+Creates a menu object. The first argument is a string that is the menu
+title, however, the title is not necessarily displayed unless so
+specified. Arguments are successively one of 'title, 'separator, or a
+list of a string and a either procedure of no arguments or another
+menu object. Respectively, these result in a title, a separator bar,
+or an entry that will call the procedure when selected, or display the
+menu as a submenu. It is reccomended that an actual menu object be
+specified for submenus rather than a procedure which uses popup to
+display the menu, because 
+
+
+(popup MENU [STICK?])
+
+Pops up the menu. If stick is specified, it determines if the menu
+stays up when the mouse is released, assuming it was started in
+response to a mouse click. The default is #f.
+
+
+
+SYNTACTIC SUGAR:
+
+These procedures are written and scheme and are only there to provide
+a friendlier interface to the builtins.
+
+These two are always available because they are defined in the default
+rc code that's built into the binary. They do not accept an optional
+window argument since they are meant to be used with mouse or key
+bindings and depend on the mouse event type.
+
+(resize-or-raise)
+Always raise the window, resize it interactively if the mouse is
+moved, and lower on a double-click.
+
+(move-or-raise)
+Always raise the window, move it interactively if the mouse is
+moved, and lower on a double-click.
+
+
+The rest of these will eventually be available as a module, but right
+now they are just defined in the system.scwmrc. I reccomend copying
+them to the top of your own .scwmrc file until they are a proper module.
+The first bunch are more useful compound window operations:
+
+(close-window [W])
+Delete the window if possible, otherwise destroy it.
+
+(toggle-raise [W])
+Raise the window if it is not already on top. If it is, lower it.
+
+(toggle-iconify [W])
+Iconify the window if it isn't already, else deiconify it.
+
+(toggle-stick [W])
+Stick the window if it isn't already, else unstick it.
+
+(toggle-window-shade [W])
+window-shade the window if it isn't already, else un-window-shade it.
+
+Now some other miscellaneous front ends:
+
+(execute COMMAND) 
+Runs the string specified by COMMAND as a separate process.
+
+(set-menu-foreground! COLOR)
+(set-menu-background! COLOR)
+(set-menu-color! COLOR)
+These set the menu colors one at a time.
+
+(menu-style 
+	[#:fg|#:foreground FOREGROUND]
+	[#:bg|#:background BACKGROUND]
+	[#:stipple STIPPLE-COLOR]
+	[#:font MENU-FONT]
+	[#:mwm|#:mwm-style #t|#f])
+
+I'd like to eventually have more option-style interfaces like this,
+which collect all the different style options for something into one
+convenient procedure. I've also added title-style which takes #:font,
+#:height and #:justify options.
+
+

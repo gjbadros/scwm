@@ -1,0 +1,351 @@
+#include "../configure.h"
+
+#include <guile/gh.h>
+#include "scwm.h"
+#include "menus.h"
+#include "screen.h"
+
+struct symnum {
+  SCM sym;
+  int value;
+};
+
+struct symnum binding_contexts[] = 
+{
+  {SCM_UNDEFINED,C_WINDOW},
+  {SCM_UNDEFINED,C_TITLE},
+  {SCM_UNDEFINED,C_ICON},
+  {SCM_UNDEFINED,C_ROOT},
+  {SCM_UNDEFINED,C_FRAME},
+  {SCM_UNDEFINED,C_SIDEBAR},
+  {SCM_UNDEFINED,C_L1},
+  {SCM_UNDEFINED,C_R1},
+  {SCM_UNDEFINED,C_L2},
+  {SCM_UNDEFINED,C_R2},
+  {SCM_UNDEFINED,C_L3},
+  {SCM_UNDEFINED,C_R3},
+  {SCM_UNDEFINED,C_L4},
+  {SCM_UNDEFINED,C_R4},
+  {SCM_UNDEFINED,C_L5},
+  {SCM_UNDEFINED,C_R5},
+  {SCM_UNDEFINED,C_ALL},
+  {SCM_UNDEFINED,0}
+};
+
+
+int lookup_context(SCM context) {
+  int i,dummy;
+  if(!gh_symbol_p(context)) {
+    return -2;
+  }
+  for(i=0; binding_contexts[i].value!=0; i++) {
+    if (gh_eq_p(binding_contexts[i].sym,context)) {
+      return(binding_contexts[i].value);
+    }
+  }
+  return -1;
+}
+
+int compute_contexts(SCM contexts) {
+  int tmp,retval;
+  if(gh_list_p(contexts)) {
+    for (tmp=0,retval=0;contexts!=SCM_EOL;contexts=gh_cdr(contexts)) {
+      if ((tmp=lookup_context(gh_car(contexts)))<0) {
+	return tmp;
+      } else {
+	retval |= tmp;
+      }
+    }
+    return retval;
+  } else {
+    return lookup_context(contexts); 
+  }
+}
+
+SCM bind_key(SCM contexts, SCM key, SCM proc) 
+{
+  Binding *temp;
+  KeySym keysym;
+  char *keyname,*okey;
+  int len,i,min,max;
+  int modmask = 0;
+  int context = 0;
+  int l = 0;
+
+  if(!gh_string_p(key)) {
+    scm_wrong_type_arg("bind-key",2,key);
+  }
+  if(!gh_procedure_p(proc)) {
+    scm_wrong_type_arg("bind-key",3,proc);
+  }
+
+  context=compute_contexts(contexts);
+
+  switch (context) {
+  case 0:
+    scwm_error("bind-key",8);
+    break;
+  case -1:
+    scwm_error("bind-key",9);
+    break;
+  case -2:
+    scm_wrong_type_arg("bind-key",1,contexts);
+    break;
+  default:
+  }
+
+  okey=(keyname=gh_scm2newstr(key,&len));
+  do {
+    l=0;
+    if(!strncmp("C-",keyname,2)) {
+      modmask |= ControlMask;
+      keyname+=2;
+      l=1;
+    } else if(!strncmp("M-",keyname,2)) {
+      modmask |= Mod1Mask;
+      keyname+=2;
+      l=1;
+    } else if(!strncmp("S-",keyname,2)) {
+      modmask |= ShiftMask;
+      keyname+=2;
+      l=1;
+    }
+  } while (l);
+
+  /*
+   * Don't let a 0 keycode go through, since that means AnyKey to the
+   * XGrabKey call in GrabKeys().
+   */
+  if ((keysym = XStringToKeysym(keyname)) == NoSymbol ||
+      (XKeysymToKeycode(dpy, keysym)) == 0) {
+    gh_defer_ints();
+    free(okey);
+    gh_allow_ints();
+    scwm_error("bind",4);
+  }
+
+  /*
+  ** why wasn't XKeysymToKeycode used instead of this for loop?
+  */
+  /* 
+   * Because more than one keycode might map to the same keysym -MS
+   */
+
+  gh_defer_ints();
+  XDisplayKeycodes(dpy, &min, &max);
+  for (i=min; i<=max; i++)
+    if (XKeycodeToKeysym(dpy, i, 0) == keysym)
+    {
+      temp = Scr.AllBindings;
+      Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
+      Scr.AllBindings->IsMouse = 0;
+      Scr.AllBindings->Button_Key = i;
+      Scr.AllBindings->key_name = strdup(keyname);
+      Scr.AllBindings->Context = context;
+      Scr.AllBindings->Modifier = modmask;
+      Scr.AllBindings->Action = "Scheme";
+      Scr.AllBindings->Thunk = proc;
+      Scr.AllBindings->NextBinding = temp;
+      scm_protect_object(proc);
+    }
+  free(okey);
+  gh_allow_ints();
+  return SCM_UNSPECIFIED;
+}
+
+
+SCM bind_mouse(SCM contexts, SCM button, SCM proc)
+{
+  
+  Binding *temp;
+  KeySym keysym;
+  char *keyname,*okey;
+  int bnum,bset=0;
+  int len,i,min,max;
+  int modmask = 0;
+  int context = 0;
+  
+  if(!gh_string_p(button)) {
+    if (gh_number_p(button)) 
+      {
+	bnum=gh_scm2int(button);
+	bset=1;
+      } else {
+	scm_wrong_type_arg("bind-mouse",2,button);
+      }
+  }
+  if(!gh_procedure_p(proc)) {
+    scm_wrong_type_arg("bind-mouse",3,proc);
+  }
+
+  context=compute_contexts(contexts);
+  switch (context) {
+  case 0:
+    scwm_error("bind-mouse",8);
+    break;
+  case -1:
+    scwm_error("bind-mouse",9);
+    break;
+  case -2:
+    scm_wrong_type_arg("bind-mouse",1,contexts);
+    break;
+  default:
+  }
+
+  if (!bset) {
+    okey=(keyname=gh_scm2newstr(button,&len));
+    do {
+      if(!strncmp("C-",keyname,2)) {
+	modmask |= ControlMask;
+	keyname+=2;
+	continue;
+      } else if(!strncmp("M-",keyname,2)) {
+	  modmask |= Mod1Mask;
+	  keyname+=2;
+	  continue;
+      } else if(!strncmp("S-",keyname,2)) {
+	modmask |= ShiftMask;
+	keyname+=2;
+	continue;
+      }
+    } while (0);
+    bnum=strtol(keyname,NULL,10);
+  }
+
+  gh_defer_ints();
+
+  if((contexts & C_WINDOW)&&(((modmask==0)||modmask == AnyModifier))) {
+    Scr.buttons2grab &= ~(1<<(bnum-1));
+  }
+
+  temp = Scr.AllBindings;
+  Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
+  Scr.AllBindings->IsMouse = 1;
+  Scr.AllBindings->Button_Key = bnum;
+  Scr.AllBindings->key_name = NULL;
+  Scr.AllBindings->Context = context;
+  Scr.AllBindings->Modifier = modmask;
+  Scr.AllBindings->Action = "Scheme";
+  Scr.AllBindings->Thunk = proc;
+  Scr.AllBindings->NextBinding = temp;
+  if (!bset) {
+    free(okey);
+  }
+  gh_allow_ints();
+  return SCM_UNSPECIFIED;
+}
+
+#if 0
+{
+ 
+
+ if((contexts & C_WINDOW)&&(((mods==0)||mods == AnyModifier)))
+  {
+    Scr.buttons2grab &= ~(1<<(button-1));
+  }
+
+  temp = Scr.AllBindings;
+  Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
+  Scr.AllBindings->IsMouse = 1;
+  Scr.AllBindings->Button_Key = button;
+  Scr.AllBindings->key_name = NULL;
+  Scr.AllBindings->Context = context;
+  Scr.AllBindings->Modifier = mods;
+  Scr.AllBindings->Action = "Scheme";
+  Scr.AllBindings->Thunk = proc;
+  Scr.AllBindings->NextBinding = temp;
+  return;
+
+
+}
+#endif
+
+
+
+/* XXX - must implement these to distringuish click, double-click, move */
+
+SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
+
+void init_binding(void) 
+{
+  int i;
+  static char *context_strings[] = {
+    "window",
+    "title",
+    "icon",
+    "root",
+    "frame",
+    "sidebar",
+    "button-1",
+    "button-2",
+    "button-3",
+    "button-4",
+    "button-5",
+    "button-6",
+    "button-7",
+    "button-8",
+    "button-9",
+    "button-10",
+    "all",
+    NULL
+  };
+  for (i=0;context_strings[i]!=NULL;i++) {
+    binding_contexts[i].sym=gh_symbol2scm(context_strings[i]);
+    scm_protect_object(binding_contexts[i].sym);
+  }
+  sym_motion=gh_symbol2scm("motion");
+  scm_protect_object(sym_motion);
+  sym_click= gh_symbol2scm("click");
+  scm_protect_object(sym_click);
+  sym_one_and_a_half_clicks=gh_symbol2scm("one-and-a-half-clicks");
+  scm_protect_object(sym_one_and_a_half_clicks);
+  sym_double_click=gh_symbol2scm("double-click");
+  scm_protect_object(sym_double_click);
+}
+
+
+
+
+
+SCM mouse_ev_type = SCM_BOOL_F;
+
+
+void find_mouse_event_type()
+{
+  XEvent d;
+  int x,y;
+
+  gh_defer_ints();
+  XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
+		&x,&y,&JunkX, &JunkY, &JunkMask);
+
+  mouse_ev_type=sym_motion;
+  if(IsClick(x,y,ButtonReleaseMask,&d)) {
+    mouse_ev_type = sym_click;
+    /* If it was a click, wait to see if its a double click */
+    if(IsClick(x,y,ButtonPressMask, &d)) {
+      mouse_ev_type = sym_one_and_a_half_clicks;
+      if(IsClick(x,y,ButtonReleaseMask, &d)) {
+	mouse_ev_type = sym_double_click;
+      }
+    }
+  }
+  gh_allow_ints();
+}
+
+void clear_mouse_event_type()
+{
+  mouse_ev_type=SCM_BOOL_F;
+}
+
+SCM mouse_event_type()
+{
+  return mouse_ev_type;
+}
+
+
+
+
+
+
+

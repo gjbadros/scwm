@@ -1,0 +1,41 @@
+Window manager resource usages. The binary size is the amount of disk
+space used in bytes. The memory use is the runtime memory usage of the
+window manager itself (and not any external modules that may or may
+not get loaded) in kilobytes, with the default configuration. It is
+probably the best representation of the actual amount of memory used,
+and does not include the amount of shared library mappings that are in
+its virtual memory space, which is listed in the shared column for
+reference. Note that kwm, though it has a relatively small binary, is
+a bit of a memory hog. Note also that none of the "ultra light-weight"
+window managers here use significantly less memory than either version
+of fvwm, and that it is a huge cost in functionality for that 200K or
+300K saved out of 1M of memory usage. Finally, note that enlightenment
+is probaly not a very good base for a wm that wants to be kind to
+small machines. These stats (well, I didn't have them then, but my
+intuitive thoughts along these lines) and the relative programmability
+of each wm are the reason I chose fvwm 2.x as the base for my initial
+work.
+
+
+WindowManager |	Binary Size | Memory Use | Shared
+ctwm: 		  245808	1336	   1048
+fvwm2: 		  144012	1108	    808
+9wm: 		   26924	 816	    672
+kwm: 		   99400	2024	   1476
+fvwm:		  109628	 984	    772
+twm:		  123384	1632	   1132
+afterstep:	  129740	1076	    844
+fvwm95:		  141824	1088	    772
+icewm:		  988681*	1024	    752
+gwm:		  161284	1548	    876
+olvwm:		  289104	1368	   1016
+mwm:		  937481*	1868	   1480
+wmaker:		  160060	1124	    892
+lwm:		   28712	 812	    664
+wm2:		   64972	 928	    732
+wmx:		   84772	1044	    796
+enlightenment:	  127528	5468	    760
+
+
+* These two binaries are so huge probably solely because they were not
+stripped as installed.

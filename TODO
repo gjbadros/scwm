@@ -1,0 +1,22 @@
+In approximate order of priority:
+
+- Finish implementing (useful) Fvwm functions as Scheme procedures. 
+[this is mostly the style, decor, desk and path stuff,
+modules should be punted.]
+
+- Clean out all of the artifacts of the FVWM function system.
+
+- Make scwm work with autoconf.
+
+- Write the graphical reconfiguration tools.
+
+- Change the guts to use LISPier data structures when possible, to
+ease integration with the scheme procedures.
+
+- Eventually, a total rewrite will probably be needed to allow release
+under GPL and reorganize years of layered cruft.
+
+- Steal nice features from other window managers. Put them in modules where
+possible, to have a featureful yet lean wm.
+
+- Modular window decoration system.

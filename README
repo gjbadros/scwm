@@ -1,0 +1,32 @@
+
+This is an alpha release of scwm, the Scheme Configurable Window
+Manager.  It doesn't even implement all the useful fvwm functions
+right now. It's just here as a proof of concept. I've only tried
+compiling it on i386-unknown-linux, but any platform that both fvwm
+and guile will build on should work. You need to have guile installed
+to do the build, and then just 
+
+xmkmf
+make Makefile
+make Makefiles
+make all
+
+
+You could "make install" after that in theory, but I'd reccommend just
+copying the sample.scwmrc/system.scwmrc to your homedir as .scwmrc and
+running it from wherever it gets compiled, rather than have junk on
+your system that it might be annoying to get rid of.
+
+There's various kinds of documentation and random info in the do
+directory, and you can see some examples of what might be done in the
+system.scwmrc.
+
+However, the system.scwmrc is not very interesting right now. If you
+think of neat hacks for it, pass them along to me. When I'm done
+making this release I'm going to work on sticking everything in a CVS,
+so if people even want to work on the windowmanager itself, that's
+cool.
+
+
+- Maciej Stachowiak
+

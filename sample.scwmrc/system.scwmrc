@@ -1,0 +1,168 @@
+;;--------------------------;;
+;; needed Scheme procedures ;;
+
+(define (close-window . args)
+  (let ((w (if (null? args) 
+	       (get-window)
+	       (car args))))
+    (if (window-deletable? w)
+	(delete-window w)
+	(destroy-window w))))
+
+
+(define (toggle-raise . args)
+  (let ((w (if (null? args) 
+	       (get-window)
+	       (car args))))
+    (if (raised? w)
+	(lower-window w)
+      (raise-window w))))
+
+(define (toggle-iconify . args)
+  (let ((w (if (null? args) 
+	       (get-window)
+	       (car args))))
+    (if (iconified? w)
+	(deiconify w)
+	(iconify w))))
+
+(define (toggle-stick . args)
+  (let ((w (if (null? args) 
+	       (get-window)
+	       (car args))))
+    (if (sticky? w)
+	(unstick-window w)
+	(stick-window w))))
+
+(define (toggle-window-shade . args)
+  (let ((w (if (null? args) 
+	       (get-window)
+	       (car args))))
+    (if (window-shaded? w)
+	(un-window-shade w)
+	(window-shade w))))
+
+(define (execute command) 
+  (system (string-append "exec " command " &")))
+
+(define (set-menu-foreground! fg) (set-menu-colors! fg))
+(define (set-menu-background! bg) (set-menu-colors! #f bg))
+(define (set-menu-stipple! st) (set-menu-colors! #f #f st))
+
+(defmacro parse-keywords (args . actions)
+  `(let* ((args ,args)
+	  (get-arg (lambda () (let ((a (car args))) 
+		      (set! args (cdr args)) 
+		      a)))
+	  (peek-arg (lambda () (car args))))
+     (while (and (not (null? args)) (keyword? (peek-arg)))
+	    (let ((key (get-arg)))
+	      (case key
+		,@actions
+		(else (throw 'bad-keyword key args)))))
+     args))
+
+(define (menu-style . args)
+  (parse-keywords args
+		  ((#:fg #:foreground) 
+		   (set-menu-foreground! (get-arg)))
+		  ((#:bg #:background)
+		   (set-menu-background! (get-arg)))
+		  ((#:stipple) 
+		   (set-menu-stipple! (get-arg)))
+		  ((#:font) (set-menu-font! (get-arg)))
+		  ((#:mwm #:mwm-style) (set-menu-mwm-style! (get-arg)))))
+
+(define (title-style . args)
+  (parse-keywords args
+		  ((#:font)
+		   (set-window-font! (get-arg)))
+		  ((#:height) 
+		   (set-title-height! (get-arg)))
+		  ((#:justify)
+		   (set-title-justify! (get-arg)))))
+
+
+;;-------------------------------;;
+;;-------------------------------;;
+;; The actual setup stuff itself ;;
+
+;; set some basic styles
+(define helv12
+  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define helv14 
+  (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+(menu-style #:fg "white" #:bg "navy" #:stipple "purple" #:font helv14 #:mwm #f)
+(title-style #:font helv12 #:justify 'left)
+
+(set-hilight-colors! "white" "navy")
+
+(define util-menu 
+  (make-menu "Utilities"
+	     'title
+	     (list "xterm" (lambda () (execute "xterm")))
+	     (list "rxvt" (lambda () (execute "rxvt")))
+	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (list "xcalc" (lambda () (execute "xcalc")))
+	     (list "xmag" (lambda () (execute "xmag")))
+	     'separator
+	     (list "Exit scwm" quit)))
+(define (popup-util)
+  (popup util-menu))
+
+(define window-ops-menu
+  (make-menu "Window Ops"
+	     'title
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "(De)Iconify" toggle-iconify)
+	     (list "(Un)Stick" toggle-stick)
+	     'separator
+	     (list "Close" close-window)
+	     (list "Delete" delete-window)
+	     (list "Destroy" destroy-window)
+	     'separator
+	     (list "Refresh Screen" refresh)))
+(define (popup-ops)
+  (popup window-ops-menu))
+
+(define small-window-ops-menu
+  (make-menu "Window Ops2"
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "Iconify" iconify)
+	     (list "(Un)Stick" toggle-stick)
+	     'separator
+	     (list "Close" close-window)
+	     (list "Delete" delete-window)
+	     (list "Destroy" destroy-window)))	
+(define (popup-small-ops)	
+  (popup small-window-ops-menu))
+
+;; now set some mouse and key bindings
+(bind-mouse 'root 1 popup-util)
+(bind-mouse 'root 2 popup-ops)
+;;(bind-mouse 'button-1 1 popup-small-ops)
+(bind-mouse '(title frame sidebar) 2 popup-small-ops)
+(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse '(title sidebar) 1 move-or-raise)
+
+(bind-key 'all "M-F1" popup-util)
+(bind-key 'all "M-F2" popup-ops)
+
+;; in case of emergency, hit Control-Shift-F9
+(bind-key 'all "C-S-F9" quit)
+
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)

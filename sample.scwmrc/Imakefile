@@ -1,0 +1,12 @@
+/*
+ * Imakefile for scwm 0.0.0 -- sample.fvwmrc
+ */
+
+SCWM_SRCDIR=..
+#include "../Scwm.tmpl"
+
+NullMake()
+
+#if InstallSample
+InstallNonExecFile(system$(SCWMRC),$(SCWMDIR))
+#endif
