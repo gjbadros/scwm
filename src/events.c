@@ -154,7 +154,8 @@ The WIN is valid during the hook procedures. */
 SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1);
   /** This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
-that now has the focus, or #f if no window now has the focus. */
+that now has the focus, or #f if no window now has the focus. 
+See also `window-focus-lost-hook'. */
 
 SCWM_HOOK(window_enter_hook, "window-enter-hook", 1);
   /** This hook is invoked whenever the mouse pointer enters a top-level window.
@@ -916,7 +917,7 @@ HandlePropertyNotify()
       if ((pswCurrent != NULL) && pswCurrent->fClickToFocus
 	  && (pswCurrent == Scr.Focus)) {
 	Scr.Focus = NULL;
-	SetFocus(pswCurrent->w, pswCurrent, 0);
+	SetFocus(pswCurrent->w, pswCurrent, False);
       }
     }
     break;
@@ -1146,7 +1147,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 	if (pswCurrent->fClickToFocus &&
 	/* GJB:FIXME:: !(pswCurrent->fSloppyFocus) && */
 	    (!Scr.Focus || Scr.Focus->fClickToFocus)) {
-	  SetFocus(pswCurrent->w, pswCurrent, 1);
+	  SetFocus(pswCurrent->w, pswCurrent, True);
 	}
       } else {
 	XMapWindow(dpy, pswCurrent->w);
@@ -1229,7 +1230,7 @@ HandleMapNotify()
 
   if ((pswCurrent->fClickToFocus) && Scr.Focus &&
       ((!Scr.Focus) || Scr.Focus->fClickToFocus)) {
-    SetFocus(pswCurrent->w, pswCurrent, 1);
+    SetFocus(pswCurrent->w, pswCurrent, True);
   }
   /* GJB:FIXME:: what is this all about? */
   if (!(pswCurrent->fBorder || pswCurrent->fTitle)
@@ -1307,10 +1308,10 @@ HandleUnmapNotify()
     if (pswCurrent->next) {
       HandleHardFocus(pswCurrent->next);
     } else
-      SetFocus(Scr.NoFocusWin, NULL, 1);
+      SetFocus(Scr.NoFocusWin, NULL, True);
   }
   if (Scr.Focus == pswCurrent)
-    SetFocus(Scr.NoFocusWin, NULL, 1);
+    SetFocus(Scr.NoFocusWin, NULL, True);
 
   if (pswCurrent == Scr.pushed_window)
     Scr.pushed_window = NULL;
@@ -1395,7 +1396,7 @@ HandleButtonPress()
       && (pswCurrent != Scr.Ungrabbed) &&
       ((Event.xbutton.state &
 	(ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0)) {
-    SetFocus(pswCurrent->w, pswCurrent, 1);
+    SetFocus(pswCurrent->w, pswCurrent, True);
     if (Scr.fClickToFocusRaises) {
       RaiseWindow(pswCurrent);
     } else if ((Event.xany.window != pswCurrent->w) &&
@@ -1535,7 +1536,7 @@ HandleEnterNotify()
   
     if (Scr.Focus && !Scr.Focus->fClickToFocus &&
 	!Scr.Focus->fSloppyFocus) {
-      SetFocus(Scr.NoFocusWin, NULL, 1);
+      SetFocus(Scr.NoFocusWin, NULL, True);
     }
     if (Scr.fColormapFollowsMouse) {
       InstallWindowColormaps(NULL);
@@ -1556,7 +1557,7 @@ HandleEnterNotify()
   }
 
   if (!pswCurrent->fClickToFocus) {
-    SetFocus(pswCurrent->w, pswCurrent, 0);
+    SetFocus(pswCurrent->w, pswCurrent, False);
   }
   if (Scr.fColormapFollowsMouse) {
     if (!pswCurrent->fIconified && (Event.xany.window == pswCurrent->w))
@@ -1586,7 +1587,7 @@ HandleLeaveNotify()
     if (ewp->mode == NotifyNormal) {
       if (ewp->detail != NotifyInferior) {
 	if (Scr.Focus != NULL) {
-	  SetFocus(Scr.NoFocusWin, NULL, 1);
+	  SetFocus(Scr.NoFocusWin, NULL, True);
 	}
 	if (Scr.Hilite != NULL)
 	  SetBorder(Scr.Hilite, False, True, True, None);
@@ -2194,8 +2195,6 @@ this unless you know what it means. */
 void 
 init_events()
 {
-
-
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif

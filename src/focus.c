@@ -31,6 +31,7 @@
 #include "screen.h"
 #include "focus.h"
 #include "cursor.h"
+#include "callbacks.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -42,36 +43,52 @@
  */
 Time lastTimestamp = CurrentTime;	/* until Xlib does this for us */
 
+SCWM_HOOK(window_focus_lost_hook,"window-focus-lost-hook", 1);
+  /** This hook is invoked whenever the focus is lost on a window.
+It is called with one argument, the window object of the window
+that just lost the keyboard focus. See also `window-focus-change-hook'. */
+
+
+/* Invoke the window_focus_lost_hook iff Scr.Focus is a SchemeWindow 
+   and it is not already w; also require Scr.PreviousFocus to be null
+   (since otherwise we are doing a GrabEm)*/
+static __inline__ void
+call_lost_focus_hook(ScwmWindow *psw)
+{
+  if (Scr.Focus && Scr.Focus != psw && NULL == Scr.PreviousFocus) {
+    call1_hooks(window_focus_lost_hook,Scr.Focus->schwin);
+  }
+}
+  
 
 /*
  * Sets the input focus to the indicated window.
  */
-
 void 
-SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
+SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
 {
   int i = 0;
-  if (Fw)
-    Fw->ttLastFocussed = time(NULL);
+  if (psw)
+    psw->ttLastFocussed = time(NULL);
 
   /* ClickToFocus focus queue manipulation - only performed for
    * Focus-by-mouse type focus events */
-  if (FocusByMouse && (Fw && Fw != Scr.Focus && Fw != &Scr.ScwmRoot)) {
+  if (FocusByMouse && (psw && psw != Scr.Focus && psw != &Scr.ScwmRoot)) {
     ScwmWindow *pswPrev, *pswNext;
 
-    pswPrev = Fw->prev;
-    pswNext = Fw->next;
+    pswPrev = psw->prev;
+    pswNext = psw->next;
 
     if (pswPrev)
       pswPrev->next = pswNext;
     if (pswNext)
       pswNext->prev = pswPrev;
 
-    Fw->next = Scr.ScwmRoot.next;
+    psw->next = Scr.ScwmRoot.next;
     if (Scr.ScwmRoot.next)
-      Scr.ScwmRoot.next->prev = Fw;
-    Scr.ScwmRoot.next = Fw;
-    Fw->prev = &Scr.ScwmRoot;
+      Scr.ScwmRoot.next->prev = psw;
+    Scr.ScwmRoot.next = psw;
+    psw->prev = &Scr.ScwmRoot;
   }
   if (Scr.NumberOfScreens > 1) {
     Window wRoot;
@@ -88,6 +105,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
                                             XCURSOR_SET_FOCUS,
                                             GrabModeSync);
 	  }
+        call_lost_focus_hook(NULL);
 	Scr.Focus = NULL;
 	Scr.Ungrabbed = NULL;
 	XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
@@ -95,12 +113,12 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
       return;
     }
   }
-  if ((Fw != NULL) && (Fw->Desk != Scr.CurrentDesk)) {
-    Fw = NULL;
+  if ((psw != NULL) && (psw->Desk != Scr.CurrentDesk)) {
+    psw = NULL;
     w = Scr.NoFocusWin;
   }
   if ((Scr.Ungrabbed != NULL) &&
-      Scr.Ungrabbed->fClickToFocus && (Scr.Ungrabbed != Fw)) {
+      Scr.Ungrabbed->fClickToFocus && (Scr.Ungrabbed != psw)) {
     /* need to grab all buttons for window that we are about to
      * unfocus */
     XSync(dpy, 0);
@@ -116,29 +134,30 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   }
   /* if we do click to focus, remove the grab on mouse events that
    * was made to detect the focus change */
-  if (Fw && Fw->fClickToFocus && !Fw->fSloppyFocus) {
+  if (psw && psw->fClickToFocus && !psw->fSloppyFocus) {
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++) {
       if (Scr.buttons2grab & (1 << i)) {
-        UngrabButtonWithModifiersWin(i+1,0,Fw->frame);
+        UngrabButtonWithModifiersWin(i+1,0,psw->frame);
       }
     }
-    Scr.Ungrabbed = Fw;
+    Scr.Ungrabbed = psw;
   }
-  if (Fw && Fw->fIconified && Fw->icon_w)
-    w = Fw->icon_w;
+  if (psw && psw->fIconified && psw->icon_w)
+    w = psw->icon_w;
 
-  if (Fw && Fw->fClickToFocus && Fw->fSloppyFocus) {
+  if (psw && psw->fClickToFocus && psw->fSloppyFocus) {
+    call_lost_focus_hook(NULL);
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
     Scr.Focus = NULL;
     Scr.UnknownWinFocused = None;
-  } else if ((Fw && Fw->fLenience) ||  /* GJB:FIXME:: split this conditional up */
-	     (!(Fw && 
-		(Fw->wmhints) && (Fw->wmhints->flags & InputHint) &&
-		(Fw->wmhints->input == False)))) {
+  } else if ((psw && psw->fLenience) ||  /* GJB:FIXME:: split this conditional up */
+	     (!(psw && 
+		(psw->wmhints) && (psw->wmhints->flags & InputHint) &&
+		(psw->wmhints->input == False)))) {
     /* Window will accept input focus */
-
+    call_lost_focus_hook(psw);
     XSetInputFocus(dpy, w, RevertToParent, lastTimestamp);
-    Scr.Focus = Fw;
+    Scr.Focus = psw;
     Scr.UnknownWinFocused = None;
   } else if (Scr.Focus && (Scr.Focus->Desk == Scr.CurrentDesk)) {
 
@@ -146,12 +165,13 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
     /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToParent, lastTimestamp); */
 
   } else {
+    call_lost_focus_hook(NULL);
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
     Scr.Focus = NULL;
   }
 
 
-  if (Fw && Fw->fDoesWmTakeFocus) {
+  if (psw && psw->fDoesWmTakeFocus) {
     send_clientmessage(dpy, w, XA_WM_TAKE_FOCUS, lastTimestamp);
   }
   XSync(dpy, 0);
@@ -207,10 +227,19 @@ StashEventTime(XEvent * ev)
   if ((NewTimestamp > lastTimestamp) || ((lastTimestamp - NewTimestamp) > 30000))
     lastTimestamp = NewTimestamp;
   if (FocusOnNextTimeStamp) {
-    SetFocus(FocusOnNextTimeStamp->w, FocusOnNextTimeStamp, 1);
+    SetFocus(FocusOnNextTimeStamp->w, FocusOnNextTimeStamp, True);
     FocusOnNextTimeStamp = NULL;
   }
   return True;
+}
+
+
+void 
+init_focus()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "focus.x"
+#endif
 }
 
 

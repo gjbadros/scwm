@@ -1228,7 +1228,7 @@ GrabEm(Cursor cursor)
    * to the windows */
   if (Scr.PreviousFocus == NULL)
     Scr.PreviousFocus = Scr.Focus;
-  SetFocus(Scr.NoFocusWin, NULL, 0);
+  SetFocus(Scr.NoFocusWin, NULL, False);
   mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
     | EnterWindowMask | LeaveWindowMask;
   /*  GJB:FIXME:: while ((i < 1000) &&  (why must try this hard?) */
@@ -1268,7 +1268,7 @@ UngrabEm()
 
     /* if the window still exists, focus on it */
     if (w) {
-      SetFocus(w, Scr.PreviousFocus, 0);
+      SetFocus(w, Scr.PreviousFocus, False);
     }
     Scr.PreviousFocus = NULL;
   }

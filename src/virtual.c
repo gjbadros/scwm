@@ -621,9 +621,9 @@ changeDesks(int val1, int val2)
   }
 
   if (FocusWin && FocusWin->fClickToFocus) {
-    SetFocus(FocusWin->w, FocusWin, 0);
+    SetFocus(FocusWin->w, FocusWin, False);
   } else {
-    SetFocus(Scr.NoFocusWin, NULL, 1);
+    SetFocus(Scr.NoFocusWin, NULL, True);
   }
 
   /* be sure the correct window gets focus

@@ -827,10 +827,10 @@ DestroyScwmWindow(ScwmWindow *psw)
     if (psw->next) {
       HandleHardFocus(psw->next);
     } else {
-      SetFocus(Scr.NoFocusWin, NULL, 1);
+      SetFocus(Scr.NoFocusWin, NULL, True);
     }
   } else if (Scr.Focus == psw) {
-    SetFocus(Scr.NoFocusWin, NULL, 1);
+    SetFocus(Scr.NoFocusWin, NULL, True);
   }
 
   if (psw == FocusOnNextTimeStamp)

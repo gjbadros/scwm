@@ -621,6 +621,7 @@ scwm_main(int argc, char **argv)
   init_shutdown();
   init_xproperty();
   init_events();
+  init_focus();
   init_deskpage();
   init_placement();
   init_Grab();
@@ -996,9 +997,6 @@ Repository Timestamp: %s\n",
     AnnounceGnomeCompliancy(Scr.NoFocusWin);
 #endif
 
-#if 0 /* GJB:FIXME:NOW: */  
-    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
-#endif
   } /* end scope */
 
   

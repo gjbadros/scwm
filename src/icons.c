@@ -695,7 +695,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
 
   if ((psw == Scr.Hilite) &&
       psw->fClickToFocus && psw->next) {
-    SetFocus(psw->next->w, psw->next, 1);
+    SetFocus(psw->next->w, psw->next, True);
   }
 
   /* iconify transients first */
@@ -770,9 +770,9 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
       if (Scr.PreviousFocus == Scr.Focus)
 	Scr.PreviousFocus = NULL;
       if (psw->fClickToFocus && (psw->next))
-	SetFocus(psw->next->w, psw->next, 1);
+	SetFocus(psw->next->w, psw->next, True);
       else {
-	SetFocus(Scr.NoFocusWin, NULL, 1);
+	SetFocus(Scr.NoFocusWin, NULL, True);
       }
     }
   }
