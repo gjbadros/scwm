@@ -219,6 +219,10 @@ AddWindow(Window w)
 {
   ScwmWindow *psw;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
+#ifdef I18N
+  char **list;
+  int num;
+#endif
 
   SCM schwin; /* To make sure it's on the stack to be marked. */
 
@@ -259,7 +263,25 @@ AddWindow(Window w)
       return (NULL);
     }
   if (XGetWMName(dpy, psw->w, &text_prop) != 0)
-    psw->name = (char *) text_prop.value;
+#ifdef I18N
+    {
+      if (text_prop.value) {
+	text_prop.nitems = strlen(text_prop.value);
+	if (text_prop.encoding == XA_STRING)
+	  psw->name = (char *)text_prop.value;
+	else {
+	  if (XmbTextPropertyToTextList(dpy,&text_prop,&list,&num) >= Success
+	      && num > 0 && *list)
+	    psw->name = *list;
+	  else
+	    psw->name = (char *)text_prop.value;
+	}
+      } else
+	psw->name = NoName;
+    }
+#else
+    psw->name = (char *)text_prop.value ;
+#endif
   else
     psw->name = NoName;
 
@@ -383,8 +405,27 @@ AddWindow(Window w)
     return (NULL);
   }
   XSetWindowBorderWidth(dpy, psw->w, 0);
+#ifdef I18N
+  if ( XGetWMIconName(dpy, psw->w, &text_prop) != 0) {
+    if (text_prop.value) {
+      text_prop.nitems = strlen(text_prop.value);
+      if (text_prop.encoding == XA_STRING)
+	psw->icon_name = (char *)text_prop.value;
+      else {
+	if (XmbTextPropertyToTextList(dpy,&text_prop,&list,&num) >= Success
+	    && num > 0 && *list)
+	  psw->icon_name = *list;
+	else
+	  psw->icon_name = (char *)text_prop.value;
+      }
+    } else
+      psw->icon_name = (char *) NULL;
+  } else
+    psw->icon_name = (char *) NULL;
+#else
   XGetWMIconName(dpy, psw->w, &text_prop);
   psw->icon_name = (char *) text_prop.value;
+#endif
   if (psw->icon_name == (char *) NULL)
     psw->icon_name = psw->name;
 
@@ -615,7 +656,25 @@ AddWindow(Window w)
 
   XChangeWindowAttributes(dpy, psw->w, valuemask, &attributes);
   if (XGetWMName(dpy, psw->w, &text_prop) != 0)
-    psw->name = (char *) text_prop.value;
+#ifdef I18N
+    {
+      if (text_prop.value) {
+	text_prop.nitems = strlen(text_prop.value);
+	if (text_prop.encoding == XA_STRING)
+	  psw->name = (char *)text_prop.value;
+	else {
+	  if (XmbTextPropertyToTextList(dpy,&text_prop,&list,&num) >= Success
+	      && num > 0 && *list)
+	    psw->name = *list;
+	  else
+	    psw->name = (char *)text_prop.value;
+	}
+      } else
+	psw->name = NoName;
+    }
+#else
+    psw->name = (char *)text_prop.value ;
+#endif
   else
     psw->name = NoName;
 
@@ -707,7 +766,7 @@ AddWindow(Window w)
   /*if (psw->szIconFile != NULL &&
       psw->szIconFile != Scr.DefaultIcon)
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
-    (unsigned long) psw, psw->szIconFile); */
+    (unsigned long) psw, psw->szIConfile); */
   BroadcastName(M_RES_CLASS, psw->w, psw->frame,
 		(unsigned long) psw, psw->classhint.res_class);
   BroadcastName(M_RES_NAME, psw->w, psw->frame,

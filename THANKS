@@ -8,6 +8,8 @@ Thanks to:
 
   James LewisMoss - argument handling through getopt_long()
 
+  ITANI Eiichiro - Support for multibyte character sets.
+
 Bug reports and/or fixes have been contributed by:
   Robert Bihlmeyer
   Mikael Djurfeldt 

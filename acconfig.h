@@ -68,7 +68,6 @@
    which should be used instead of scm_parse_path from C.  */
 #undef HAVE_SCM_INTERNAL_PARSE_PATH
 
-
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
@@ -78,6 +77,7 @@
 /* Define this if your system has the usleep function. */
 #undef HAVE_USLEEP
 
-
+/* Define this if you want multibyte support. */
+#undef I18N
 
 

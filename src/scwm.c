@@ -79,6 +79,10 @@
 
 #include <stdarg.h>
 
+#ifdef I18N
+#include <locale.h>
+#endif
+
 #define MAXHOSTNAME 255
 
 static char rcsid[] = "$Id$";
@@ -221,6 +225,26 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = False;
+
+#ifdef I18N
+char *Lang,*territory,*tmp;
+
+  if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
+    scwm_msg(WARN,"main","Can't set specified locale.\n");
+    Lang = "C";
+  }
+  tmp = index(Lang,'.');
+  if (tmp) {
+      territory = safemalloc((tmp-Lang)*sizeof(char));
+      strncpy(territory,Lang,(tmp-Lang));
+      *(territory+(size_t)(tmp-Lang)) = '\0';
+  } else {
+      territory = Lang;
+  }
+  scm_sysintern("locale-fullname",gh_str02scm(Lang));
+  scm_sysintern("locale-language-territory",gh_str02scm(territory));
+#endif
+
   
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
@@ -503,6 +527,24 @@ scwm_main(int argc, char **argv)
 #endif
   
   if (strlen(szCmdConfig) == 0) {
+#ifdef I18N
+      scwm_safe_eval_str(
+           "(let ((home-scwmrc"
+	   "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
+	   "      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
+	   " (if (access? (string-append home-scwmrc \".\" locale-fullname) R_OK)"
+	   "     (safe-load (string-append home-scwmrc \".\" locale-fullname))"
+           "     (if (access? (string-append home-scwmrc \".\" locale-language-territory) R_OK)"
+           "         (safe-load (string-append home-scwmrc \".\" locale-language-territory))"
+	   "         (if (access? home-scwmrc R_OK)"
+	   "             (safe-load home-scwmrc)"
+	   "             (if (access? (string-append system-scwmrc \".\" locale-fullname) R_OK)"
+	   "                 (safe-load (string-append system-scwmrc \".\" locale-fullname))"
+	   "                 (if (access? (string-append system-scwmrc \".\" locale-language-territory) R_OK)"
+	   "                     (safe-load (string-append system-scwmrc \".\" locale-language-territory))"
+	   "                     (if (access? system-scwmrc R_OK)"
+	   "                         (safe-load system-scwmrc))))))))");
+#else
     scwm_safe_eval_str("(let ((home-scwmrc"
 		       "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
 		       "      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
@@ -510,6 +552,7 @@ scwm_main(int argc, char **argv)
 		       "     (safe-load home-scwmrc)"
 		       "     (if (access? system-scwmrc R_OK)"
 		       "         (safe-load system-scwmrc))))");
+#endif
   } else {
     scwm_safe_eval_str(szCmdConfig);
   }

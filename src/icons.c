@@ -216,6 +216,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   int final_x, final_y;
   unsigned long valuemask;	/* mask for create windows */
   XSetWindowAttributes attributes;	/* attributes for create windows */
+  XRectangle dummy,log_ret;
 
   psw->fIconOurs = True;
   psw->fPixmapOurs = False;
@@ -262,9 +263,16 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 
   /* figure out the icon window size */
   if (!psw->fNoIconTitle || psw->icon_p_height == 0) {
+#ifdef I18N
+    XmbTextExtents(XFONT(Scr.icon_font),
+		   psw->icon_name, strlen(psw->icon_name),
+		   &dummy,&log_ret);
+    psw->icon_t_width = log_ret.width;
+#else
     psw->icon_t_width = XTextWidth(XFONT(Scr.icon_font),
 				       psw->icon_name,
 				       strlen(psw->icon_name));
+#endif
     psw->icon_w_height = ICON_HEIGHT;
   } else {
     psw->icon_t_width = 0;
@@ -433,7 +441,12 @@ DrawIconWindow(ScwmWindow * psw)
     XSetWindowBackground(dpy, psw->icon_w, BackColor);
 
   /* write the icon label */
+
+#ifdef I18N
+  NewFontAndColor(FONT(Scr.icon_font)->xfs->fid, TextColor, BackColor);
+#else
   NewFontAndColor(XFONT(Scr.icon_font)->fid, TextColor, BackColor);
+#endif
 
   if (psw->icon_pixmap_w != None)
     XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc,
@@ -479,10 +492,18 @@ DrawIconWindow(ScwmWindow * psw)
     if (x < 3)
       x = 3;
 
+#ifdef I18N
+    XmbDrawString(dpy, psw->icon_w, XFONT(Scr.icon_font),
+		  Scr.ScratchGC3, x,
+		  psw->icon_w_height - FONTHEIGHT(Scr.icon_font) +
+		  FONTY(Scr.icon_font) - 3,
+		  psw->icon_name, strlen(psw->icon_name));
+#else
     XDrawString(dpy, psw->icon_w, Scr.ScratchGC3, x,
 		psw->icon_w_height - FONTHEIGHT(Scr.icon_font) +
 		FONTY(Scr.icon_font) - 3,
 		psw->icon_name, strlen(psw->icon_name));
+#endif
     RelieveWindow(psw, psw->icon_w, 0, 0, psw->icon_w_width,
 		  ICON_HEIGHT, Relief, Shadow, FULL_HILITE);
   }
@@ -497,6 +518,9 @@ DrawIconWindow(ScwmWindow * psw)
 void 
 RedoIconName(ScwmWindow *psw)
 {
+#ifdef I18N
+  XRectangle dummy,log_ret;
+#endif
 
   if (psw->fSuppressIcon)
     return;
@@ -504,8 +528,14 @@ RedoIconName(ScwmWindow *psw)
   if (psw->icon_w == 0)
     return;
 
+#ifdef I18N
+  XmbTextExtents(XFONT(Scr.icon_font), psw->icon_name,
+		 strlen(psw->icon_name),&dummy,&log_ret);
+  psw->icon_t_width = log_ret.width;
+#else
   psw->icon_t_width = XTextWidth(XFONT(Scr.icon_font), psw->icon_name,
 				 strlen(psw->icon_name));
+#endif
   /* clear the icon window, and trigger a re-draw via an expose event */
   if (psw->fIconified) {
     XClearArea(dpy, psw->icon_w, 0, 0, 0, 0, True);
@@ -716,6 +746,9 @@ Iconify(ScwmWindow * psw, int def_x, int def_y)
   ScwmWindow *t;
   XWindowAttributes winattrs;
   unsigned long eventMask;
+#ifdef I18N
+  XRectangle dummy, log_ret;
+#endif
 
   if (!psw)
     return;
@@ -770,9 +803,15 @@ Iconify(ScwmWindow * psw, int def_x, int def_y)
 
   /* if no pixmap we want icon width to change to text width every iconify */
   if ((psw->icon_w != None) && (psw->icon_pixmap_w == None)) {
+#ifdef I18N
+    XmbTextExtents (XFONT(Scr.icon_font), psw->icon_name,
+		 strlen(psw->icon_name), &dummy, &log_ret);
+    psw->icon_t_width = log_ret.width;
+#else
     psw->icon_t_width =
       XTextWidth(XFONT(Scr.icon_font), psw->icon_name,
 		 strlen(psw->icon_name));
+#endif
     psw->icon_w_width = psw->icon_t_width + 6;
   }
   AutoPlace(psw);

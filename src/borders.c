@@ -954,6 +954,9 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   int tb_flags;
   GC ReliefGC, ShadowGC, tGC;
   Pixel Forecolor, BackColor;
+#ifdef I18N
+  XRectangle dummy,log_ret;
+#endif
 
   if (!t)
     return;
@@ -985,7 +988,13 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   flush_expose(t->title_w);
 
   if (t->name != (char *) NULL) {
+#ifdef I18N
+    XmbTextExtents(XFONT(GetDecor(t,window_font)),
+		   t->name, strlen(t->name), &dummy, &log_ret);
+    w = log_ret.width;
+#else
     w = XTextWidth(XFONT(GetDecor(t, window_font)), t->name, strlen(t->name));
+#endif
     if (w > t->title_width - 12)
       w = t->title_width - 4;
     if (w < 0)
@@ -1004,7 +1013,11 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   } else
     hor_off = (t->title_width - w) / 2;
 
+#ifdef I18N
+  NewFontAndColor(FONT(GetDecor(t, window_font))->xfs->fid, Forecolor, BackColor);
+#else
   NewFontAndColor(XFONT(GetDecor(t, window_font))->fid, Forecolor, BackColor);
+#endif
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */
   /* we need to check for UseBorderStyle for the titlebar */
@@ -1033,10 +1046,17 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 
     XDrawLine(dpy, t->title_w, ShadowGC, hor_off + w + 1, 0, hor_off + w + 1,
 	      t->title_height);
-    if (t->name != (char *) NULL)
+    if (t->name != (char *) NULL) 
+#ifdef I18N
+      XmbDrawString(dpy, t->title_w,XFONT(GetDecor(t,window_font)),
+		    Scr.ScratchGC3, hor_off,
+		    GetDecor(t, window_font_y) + 1,
+		    t->name, strlen(t->name));
+#else
       XDrawString(dpy, t->title_w, Scr.ScratchGC3, hor_off,
 		  GetDecor(t, window_font_y) + 1,
 		  t->name, strlen(t->name));
+#endif
   } else {
     ButtonFace *bf = GetDecor(t, titlebar.state[title_state]);
 
@@ -1060,9 +1080,16 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 		      ReliefGC, ShadowGC, BOTTOM_HILITE);
     }
     if (t->name != (char *) NULL) {
+#ifdef I18N
+      XmbDrawString(dpy, t->title_w,XFONT(GetDecor(t,window_font)),
+		    Scr.ScratchGC3, hor_off,
+		    GetDecor(t, window_font_y) + 1,
+		    t->name, strlen(t->name));
+#else
       XDrawString(dpy, t->title_w, Scr.ScratchGC3, hor_off,
 		  GetDecor(t, window_font_y) + 1,
 		  t->name, strlen(t->name));
+#endif
     }
   }
   /* now, draw lines in title bar if it's a sticky window */

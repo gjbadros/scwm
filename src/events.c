@@ -542,6 +542,10 @@ void
 HandlePropertyNotify()
 {
   XTextProperty text_prop;
+#ifdef I18N
+  char **list;
+  int num;
+#endif
 
   DBUG("HandlePropertyNotify", "Routine Entered");
 
@@ -560,7 +564,26 @@ HandlePropertyNotify()
 
     free_window_names(swCurrent, True, False);
 
+#ifdef I18N
+    {
+      if (text_prop.value) {
+	text_prop.nitems = strlen(text_prop.value);
+	if (text_prop.encoding == XA_STRING)
+	  swCurrent->name = (char *)text_prop.value;
+	else {
+	  if (XmbTextPropertyToTextList(dpy,&text_prop,&list,&num) >= Success
+	      && num > 0 && *list)
+	    swCurrent->name = *list;
+	  else
+	    swCurrent->name = (char *)text_prop.value;
+	}
+      } else
+	swCurrent->name = NoName;
+    }
+#else
     swCurrent->name = (char *) text_prop.value;
+#endif
+
     if (swCurrent->name == NULL)
       swCurrent->name = NoName;
     BroadcastName(M_WINDOW_NAME, swCurrent->w, swCurrent->frame,
@@ -683,6 +706,8 @@ HandlePropertyNotify()
     } else if (Event.xproperty.state != PropertyDelete) {
       char *szName = XGetAtomName(dpy,Event.xproperty.atom);
       
+      /* FIXMS: window context shouldn't even be set here. */
+
       if (NULL != swCurrent) {
 	set_window_context(swCurrent->schwin);
       }

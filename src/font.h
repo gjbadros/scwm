@@ -50,10 +50,20 @@
 EXTERN long scm_tc16_scwm_font;
 
 typedef struct {
+#ifdef I18N
+  XFontSet fontset;
+  int ascent;
+  XFontStruct *xfs;		/* Dummy of font structure */
+#else
   XFontStruct *xfs;		/* font structure */
+#endif
   int height;			/* height of the font */
   SCM name;
 } scwm_font;
+
+#ifdef I18N
+#define XFIXEDFONTSET "-*-fixed-*"
+#endif
 
 #define FONT_P(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
 #define FONT(X)  ((scwm_font *)SCM_CDR((X)))
@@ -67,12 +77,17 @@ typedef struct {
 			      SAFE_FONT(scm_symbol_binding(SCM_BOOL_F,(X))) : \
 			      SAFE_FONT((X)))
 
+#ifdef I18N
+#define XFONT(X) (((scwm_font *)SCM_CDR((X)))->fontset)
+#define FONTY(X) (((scwm_font *)SCM_CDR((X)))->ascent)
+#else
 #define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
+#define FONTY(X) ((XFONT(X))->ascent)
+#endif
 #define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)
 #define SAFE_FONTNAME(X) (FONT_P((X))?FONTNAME((X)):NULL)
 #define FONTHEIGHT(X) (((scwm_font *)SCM_CDR(X))->height)
-#define FONTY(X) ((XFONT(X))->ascent)
 
 size_t free_font(SCM obj);
 int print_font(SCM obj, SCM port, scm_print_state * pstate);

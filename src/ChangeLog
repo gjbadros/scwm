@@ -1,9 +1,15 @@
 Mon Jul  6 02:49:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* add_window.c, borders.c, decor.c, drawmenu.c, events.c, font.c,
+ 	font.h, icons.c, misc.h, move.c, resize.c, scwm.c, scwmmenu.h :
+ 	Multibyte character set support from ITANI Eiichiro
+ 	<emu@ceres.dti.ne.jp>. Some of these changes should be reviewed,
+ 	but they build and work both ways.
+	
 	* window.c: Rename window-from-window-id to id->window and make it
  	ensure that we really are looking up by only the window id and not
  	various decoration ids. Also added frame-id->window primitive.
- 
+
 Sun Jul  5 23:13:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c (restack_windows): Added new primitive restack-windows

@@ -35,17 +35,15 @@
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
 
 static
-XFontStruct *
-PxfsFontForMenuItem(SCM scmFont)
+scwm_font *
+PscwmFontForMenuItem(SCM scmFont)
 {
-  XFontStruct *pxfont = XFONT(Scr.menu_font);
-  scwm_font *psfont = DYNAMIC_SAFE_FONT(scmFont);
-  if (psfont) {
-    pxfont = psfont->xfs;
+  scwm_font *scfont = DYNAMIC_SAFE_FONT(scmFont);
+  if (!scfont) {
+    scfont = (scwm_font *)Scr.menu_font;
   }
-  return pxfont;
+  return scfont;
 }
-
 
 static void
 PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
@@ -127,13 +125,22 @@ DrawTrianglePattern(Window w, GC GC1, GC GC2, GC GC3, int l, int u, int r, int b
  * the character...
  *
  */
+
 static
 void
-DrawUnderline(Window w, XFontStruct *pxfont, GC gc, char *sz, int x, int y, int posn) 
+DrawUnderline(Window w, scwm_font *scfont, GC gc, char *sz, int x, int y, int posn) 
 {
-  int cpixStart = XTextWidth(pxfont, sz, posn);
-  int cpixEnd = XTextWidth(pxfont, sz, posn + 1) - 1;
+#ifdef I18N
+  XRectangle dummy,stlog,edlog;
+
+  XmbTextExtents(scfont->fontset,sz,posn,&dummy,&stlog);
+  XmbTextExtents(scfont->fontset,sz,posn+1,&dummy,&edlog);
+  XDrawLine(dpy, w, gc, x + stlog.width , y + 2, x + edlog.width, y + 2);
+#else
+  int cpixStart = XTextWidth(scfont->xfs, sz, posn);
+  int cpixEnd = XTextWidth(scfont->xfs, sz, posn + 1) - 1;
   XDrawLine(dpy, w, gc, x + cpixStart, y + 2, x + cpixEnd, y + 2);
+#endif
 }
 
 static
@@ -142,9 +149,9 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
   /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
-  XFontStruct *pxfont = pmdi->pxfont;
+  scwm_font *scfont = pmdi->scfont;
+  int label_font_height = scfont->height;
   MenuItem *pmi = pmiim->pmi;
-  int label_font_height = pxfont->ascent + pxfont->descent;
   int y_offset = pmiim->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
   int width = pmdi->cpixWidth;
@@ -225,29 +232,46 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
     { /* FIXGJB: clean up this gc garbage --12/12/97 gjb */
       XGCValues gcv;
-      gcv.font = pxfont->fid;
+#ifdef I18N
+      gcv.foreground = pmdi->TextColor;
+      XChangeGC(dpy,currentGC,GCForeground,&gcv);
+#else
+      gcv.font = scfont->xfs->fid;
       gcv.foreground = pmdi->TextColor;
       XChangeGC(dpy,currentGC,GCFont | GCForeground,&gcv);
+#endif
     }
 
     if (pmi->szLabel) {
+#ifdef I18N
+      XmbDrawString(dpy, w, scfont->fontset, currentGC,
+		  x_offset,y_offset + label_font_height, 
+		  pmi->szLabel, pmi->cchLabel);
+#else
       XDrawString(dpy, w, currentGC,
 		  x_offset,y_offset + label_font_height, 
 		  pmi->szLabel, pmi->cchLabel);
+#endif
     }
 
     /* highlight the shortcut key */
     if (pmiim->ichShortcutOffset >= 0) {
-      DrawUnderline(w, pxfont, currentGC, pmi->szLabel,
+      DrawUnderline(w, scfont, currentGC, pmi->szLabel,
 		    x_offset, y_offset+label_font_height, pmiim->ichShortcutOffset);
     }
   
     x_offset += pmdi->cpixTextWidth;
 
     if (pmi->szExtra) {
+#ifdef I18N
+      XmbDrawString(dpy, w, scfont->fontset, currentGC,
+		  x_offset, y_offset + label_font_height,
+		  pmi->szExtra, pmi->cchExtra);
+#else
       XDrawString(dpy, w, currentGC,
 		  x_offset, y_offset + label_font_height,
 		  pmi->szExtra, pmi->cchExtra);
+#endif
     }
 
     x_offset += pmdi->cpixExtraTextWidth;
@@ -301,6 +325,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 void
 ConstructDynamicMenu(DynamicMenu *pmd)
 {
+
   if (pmd->pmdi != NULL)
     return;
   /* remember how to paint this menu */
@@ -310,7 +335,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
     /*    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground);  */
-    XFontStruct *pxfont;
+    scwm_font *scfont;
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
     int cmiim = pmd->cmiim;
@@ -330,10 +355,12 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
     pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
-    pxfont = pmdi->pxfont = PxfsFontForMenuItem(pmenu->scmFont);
+ 
+    scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
+ 
     /* FIXGJB:    MakeGcsForDynamicMenu(pmenu); */
 
-    label_font_height = pxfont->ascent + pxfont->descent;
+    label_font_height = scfont->height;
     
     pmdi->x = 0;		/* just init: gets set elsewhere */
     pmdi->y = 0;		/* just init: gets set elsewhere */
@@ -344,10 +371,18 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       MenuItem *pmi = pmiim->pmi;
       scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
       scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
-      int text_width = XTextWidth(pxfont, pmi->szLabel, pmi->cchLabel);
+      int text_width;
       int extra_text_width = 0;
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
       pmiim->cpixOffsetY = total_height;
+
+#ifdef I18N
+      XmbTextExtents(scfont->fontset,pmi->szLabel, pmi->cchLabel,
+		     &dummy,&log_ret);
+      text_width = log_ret.width;
+#else
+      text_width = XTextWidth(scfont->xfs, pmi->szLabel, pmi->cchLabel);
+#endif
 
       DBUG(__FUNCTION__,"`%s' has width %d (%d chars)\n",
 	   pmi->szLabel,text_width,pmi->cchLabel);
@@ -357,7 +392,14 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       } else {
 	/* szLabel we know is not null, but szExtra can be */
 	if (pmi->szExtra) {
-	  extra_text_width = XTextWidth(pxfont, pmi->szExtra, pmi->cchExtra);
+#ifdef I18N
+	    XmbTextExtents(scfont->fontset,pmi->szExtra, pmi->cchExtra,
+			   &dummy,&log_ret);
+	    extra_text_width = log_ret.width;
+#else
+	    extra_text_width = XTextWidth(scfont->xfs, 
+					  pmi->szExtra, pmi->cchExtra);
+#endif
 	}
       
 	/* These are easy when using only one column */

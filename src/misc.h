@@ -31,6 +31,16 @@ enum cursor {
 };
 
 /* some fancy font handling stuff */
+/*
+#ifdef I18N
+#define NewFontAndColor(newfont,color,backcolor) {\
+   Globalgcv.foreground = color;\
+   Globalgcv.background = backcolor;\
+   Globalgcm = GCFont | GCForeground | GCBackground; \
+   XChangeGC(dpy,Scr.ScratchGC3,Globalgcm,&Globalgcv); \
+}
+#else
+*/
 #define NewFontAndColor(newfont,color,backcolor) {\
    Globalgcv.font = newfont;\
    Globalgcv.foreground = color;\
@@ -38,6 +48,9 @@ enum cursor {
    Globalgcm = GCFont | GCForeground | GCBackground; \
    XChangeGC(dpy,Scr.ScratchGC3,Globalgcm,&Globalgcv); \
 }
+/*
+#endif
+*/
 
 #define ICON_HEIGHT (FONTHEIGHT(Scr.icon_font)+6)
 

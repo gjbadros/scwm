@@ -10,6 +10,7 @@
 #include <guile/gh.h>
 #include "image.h"
 #include "menuitem.h"
+#include "font.h"
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -48,7 +49,7 @@ typedef struct MenuDrawingInfo_tag
   Pixel BGColor;		/* the background color */
   Pixel SideBGColor;		/* the side image bg color */
   Pixel TextColor;		/* the text color */
-  XFontStruct *pxfont;		/* the font for text */
+  scwm_font *scfont;		/* To use scwm_font instead of XFont */
   void *p;			/* extra information needed by the client drawing code */
 } MenuDrawingInfo;
 

@@ -64,7 +64,11 @@ mark_font(SCM obj)
 size_t 
 free_font(SCM obj)
 {
+#ifdef I18N
+  XFreeFontSet(dpy,XFONT(obj));
+#else
   XFreeFont(dpy, XFONT(obj));
+#endif
   free(FONT(obj));
   return (0);
 }
@@ -90,9 +94,18 @@ make_font(SCM fname)
 {
   SCM answer;
   scwm_font *font;
+#ifdef I18N
+  XFontSet fontset;
+  char **list_names;
+  char *defstrreturn;
+  int missings,loadedfonts;
+  int height = 0, ascent = 0;
+  XFontStruct **xfss;
+#else
   XFontStruct *xfs;
+#endif
   char *fn;
-  int len;
+  int len,i;
 
   if (!gh_string_p(fname)) {
     SCM_ALLOW_INTS;
@@ -109,6 +122,42 @@ make_font(SCM fname)
   allocation:
     scm_memory_error(s_make_font);
   }
+#ifdef I18N
+  fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
+  if (NULL == fontset) {
+    scwm_msg(WARN,s_make_font,"Could not load fontset`%s' -- trying `fixed'",fn);
+    free(fn);
+
+    answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
+    if (answer!=SCM_BOOL_F) {
+      return answer;
+    }
+    
+    fn = strdup(XFIXEDFONTSET);
+    if (NULL == fn)
+      goto allocation;
+    fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
+  } 
+  if (NULL == fontset) {
+    free(fn);
+    scwm_error(s_make_font, 1);
+  }
+
+  font = (scwm_font *)safemalloc(sizeof(*font));
+  if (NULL == font) {
+    free(fn);
+    XFreeFontSet(dpy, fontset);
+    goto allocation;
+  }
+  for ( i = 0 ; i < missings ; i++ ) {
+    scwm_msg(WARN,s_make_font,"Missing charset in `%s' for `%s'.",
+	     fn,list_names[i]);
+  }
+
+  if (missings > 0)
+      XFreeStringList(list_names);
+
+#else
   xfs = XLoadQueryFont(dpy, fn);
   if (NULL == xfs) {
     scwm_msg(WARN,s_make_font,"Could not load `%s' -- trying `fixed'",fn);
@@ -135,13 +184,30 @@ make_font(SCM fname)
     XFreeFont(dpy, xfs);
     goto allocation;
   }
+#endif
+
   SCM_REDEFER_INTS;
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_font);
   SCM_SETCDR(answer, (SCM) font);
+#ifdef I18N  
+  XFONT(answer) = fontset;
+  loadedfonts = XFontsOfFontSet (fontset,&xfss,&list_names);
+  for ( i = 0 ; i < loadedfonts ; i++ ) {
+      height = ( height > xfss[i]->ascent + xfss[i]->descent )?
+	  height:(xfss[i]->ascent + xfss[i]->descent);
+      ascent = ( ascent > xfss[i]->ascent )? ascent:( xfss[i]->ascent );
+  }
+  XFONT(answer) = fontset;
+  FONT(answer)->xfs = xfss[0];
+  FONT(answer)->height = height;
+  FONT(answer)->ascent = ascent;
+
+#else
   XFONT(answer) = xfs;
-  FONTNAME(answer) = gh_str02scm(fn);
   FONT(answer)->height = XFONT(answer)->ascent + XFONT(answer)->descent;
+#endif
+  FONTNAME(answer) = gh_str02scm(fn);
   SCM_REALLOW_INTS;
   free(fn);
 
@@ -231,13 +297,24 @@ menu_font_update()
 {
   XGCValues gcv;
   unsigned long gcm;
+#ifdef I18N
+  XRectangle dummy,log_ret;
 
+  XmbTextExtents(XFONT(Scr.menu_font),"WWWWWWWWWWWWWWW", 15,&dummy,&log_ret);
+  Scr.EntryHeight = log_ret.height + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = log_ret.width;
+#else
   Scr.EntryHeight = FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA;
   Scr.SizeStringWidth = XTextWidth(XFONT(Scr.menu_font),
-					 " +8888 x +8888 ", 15);
+					 "WWWWWWWWWWWWWWW", 15);
+#endif
 				   
   gcm = GCFont;
+#ifdef I18N
+  gcv.font = FONT(Scr.menu_font)->xfs->fid;
+#else
   gcv.font = XFONT(Scr.menu_font)->fid;
+#endif
   /* are all these needed? */
   /* MSFIX: This stuff should really be handled by other code. */
   XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
@@ -285,7 +362,11 @@ static scm_smobfuns font_smobfuns =
 
 void init_font() 
 {
+#ifdef I18N
+  str_fixed=gh_str02scm(XFIXEDFONTSET);
+#else
   str_fixed=gh_str02scm("fixed");
+#endif
   scm_protect_object(str_fixed);
   font_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));

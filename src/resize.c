@@ -116,6 +116,9 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 {
   char str[100];
   int dwidth, dheight, offset;
+#ifdef I18N
+  XRectangle dummy,log_ret;
+#endif
 
   if (last_width == width && last_height == height)
     return;
@@ -132,6 +135,24 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
   dheight /= psw->hints.height_inc;
 
   (void) sprintf(str, " %4d x %-4d ", dwidth, dheight);
+#ifdef I18N
+  XmbTextExtents(XFONT(Scr.menu_font),"WWWWWWWWWWWWWWW",15,&dummy,&log_ret);
+  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2 - log_ret.width) / 2;
+  if (Init) {
+    XClearWindow(dpy, Scr.SizeWindow);
+    if (Scr.d_depth >= 2)
+      RelieveWindow(tmp_win,
+	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
+		    log_ret.height + SIZE_VINDENT * 2,
+		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
+  } else {
+    XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
+	       log_ret.height, False);
+  }
+
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.menu_font), Scr.MenuGC,
+	      offset, FONTY(Scr.menu_font) + SIZE_VINDENT, str, 13);
+#else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
 	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
   if (Init) {
@@ -148,6 +169,7 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
 	      offset, FONTY(Scr.menu_font) + SIZE_VINDENT, str, 13);
+#endif
 
 }
 

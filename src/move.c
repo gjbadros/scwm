@@ -349,6 +349,9 @@ DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
 {
   char str[100];
   int offset;
+#ifdef I18N
+  XRectangle dummy,log_ret;
+#endif
 
   (void) sprintf(str, " %+-4d %+-4d ", x, y);
   if (Init) {
@@ -363,12 +366,22 @@ DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
 	       FONTHEIGHT(Scr.menu_font), False);
   }
 
+#ifdef I18N
+  XmbTextExtents(XFONT(Scr.menu_font), str, strlen(str), &dummy, &log_ret);
+  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
+	    - log_ret.width ) / 2;
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.menu_font),Scr.MenuGC,
+	      offset,
+	      FONTY(Scr.menu_font) + SIZE_VINDENT,
+	      str, strlen(str));
+#else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
 	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
 	      offset,
 	      FONTY(Scr.menu_font) + SIZE_VINDENT,
 	      str, strlen(str));
+#endif
 }
 
 
