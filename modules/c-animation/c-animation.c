@@ -578,7 +578,6 @@ static
 void
 init_c_animation()
 {
-
 #ifndef SCM_MAGIC_SNARFER
  #include "c-animation.x"
 #endif
