@@ -217,3 +217,13 @@
 
 (define-public xterm-command "xterm ")
 (define-public (run-in-xterm cmd) (exe (string-append xterm-command cmd)))
+
+(defmacro-public remove-hook! (var proc)
+  `(if (memq ,proc ,var)
+       (set! ,var (delq! proc var))))
+
+(defmacro-public remove-hook! (hook proc)
+  `(if (memq ,proc ,hook)
+       (set! ,hook
+	     (delq! ,proc ,hook))))
+

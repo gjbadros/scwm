@@ -1,3 +1,7 @@
+Fri Mar 27 19:25:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* base.scm: Added remove-hook! to complement guile's add-hook!.
+
 Thu Mar 26 11:32:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-module.scm: Send more information to the module in
