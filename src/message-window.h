@@ -46,6 +46,8 @@ typedef struct {
   SCM font;    /* font object */
   SCM fg_color; /* colors for message window (color object) */
   SCM bg_color;
+  SCM shadow_color; /* relief colors for message window (color object) */
+  SCM hilight_color;
   Bool fRelief;  /* draw with relief? */
   int x, y;        /* current position */
   double x_align, y_align;  /* alignment (e.g., -.5,-.5 is centered*/

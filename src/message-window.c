@@ -37,6 +37,8 @@ mark_msgwindow(SCM obj)
   GC_MARK_SCM_IF_SET(msg->font);
   GC_MARK_SCM_IF_SET(msg->fg_color);
   GC_MARK_SCM_IF_SET(msg->bg_color);
+  GC_MARK_SCM_IF_SET(msg->shadow_color);
+  GC_MARK_SCM_IF_SET(msg->hilight_color);
   GC_MARK_SCM_IF_SET(msg->message);
 
   return SCM_BOOL_F;
@@ -96,20 +98,20 @@ DrawWindow( scwm_msgwindow* msg ) {
   int textheight = FONTHEIGHT(msg->font);
   int winheight = textheight + SIZE_VINDENT*2;
 
-  scmBgRelief = adjust_brightness(msg->bg_color, message_shadow_factor);
-  scmFgRelief = adjust_brightness(msg->bg_color, message_hilight_factor);
-
-  if (scmFgRelief)
-    SetGCFg(gcHilite,XCOLOR(scmFgRelief));
-  else
-    SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
-  
-  if (scmBgRelief)
-    SetGCFg(gcShadow,XCOLOR(scmBgRelief));
-  else
-    SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
+  scmFgRelief = msg->hilight_color; 
+  scmBgRelief = msg->shadow_color; 
 
   if (msg->fRelief) {
+    if (scmFgRelief != SCM_BOOL_F)
+      SetGCFg(gcHilite,XCOLOR(scmFgRelief));
+    else
+      SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
+    
+    if (scmBgRelief != SCM_BOOL_F)
+      SetGCFg(gcShadow,XCOLOR(scmBgRelief));
+    else
+      SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
+
     XClearWindow(dpy, msg->win);
     if (Scr.d_depth >= 2) {
       RelieveRectangle(msg->win, 0, 0, winwidth, winheight,
@@ -262,6 +264,9 @@ GJB:FIXME:: Uses defaults from the ScreenInfo struct for the other values. */
   msg->y_align = Scr.msg_window_y_align;
   msg->fg_color = Scr.msg_window_fg;
   msg->bg_color = Scr.msg_window_bg;
+  msg->shadow_color = SCM_BOOL_F;
+  msg->hilight_color = SCM_BOOL_F;
+
   msg->font = Scr.msg_window_font;
   msg->fRelief = TRUE;
 
@@ -353,7 +358,12 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
   if ( bg_color != SCM_BOOL_F ) {
     VALIDATE_COLOR (bg_color, FUNC_NAME, iarg++);
     msg->bg_color = bg_color;
+    msg->shadow_color = adjust_brightness(msg->bg_color, 
+					  message_shadow_factor);
+    msg->hilight_color = adjust_brightness(msg->bg_color, 
+					   message_hilight_factor);
   }
+
 
   XSetWindowBorder(dpy,msg->win,XCOLOR(msg->fg_color));
   XSetWindowBackground(dpy,msg->win,XCOLOR(msg->bg_color));

@@ -1,5 +1,10 @@
 Sat Dec  5 18:34:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
-
+	
+	* message-window.c, message-window.h: add shadow_color and
+ 	hilight_color fields to the message_window structure, and
+ 	preallocate these when setting the background color, so we don't
+ 	crash on interactive moves if the colors can't be allocated.
+	
 	* message-window.c (init_message_window): #include
  	"message-window.x", not "msgwin.x".
 
