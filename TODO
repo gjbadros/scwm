@@ -53,13 +53,13 @@ guile 1.2 and the latest snap, and try with and without threads.
 Other Stuff
 
 * Documentation stuff
-** documentation strings in scwm scheme modules
 ** denoting user-options variables, and /**VAR markers
 ** extra sections in manual
 *** high-level scwm introduction
-*** command-line arguments
 *** docs on scwmexec/scwmrepl, emacs interface
 *** brief intro to scheme
+*** command-line arguments --done 09/07/98 gjb
+** documentation strings in scwm scheme modules --done August 1998 gjb
 
 * Organize and automate testing of scheme/tests/*.scm files
 ** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
