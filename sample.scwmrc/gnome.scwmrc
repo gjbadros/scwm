@@ -26,12 +26,9 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
-(let ((port (current-error-port)))
-  (define (display-string-newline-to-error-port str)
-    (display str port)
-    (newline port)))
-
 ;; import scwm modules we need for the startup animation
+(set-X-server-synchronize! #t)
+
 (display "using gnome-hints\n")
 (use-scwm-modules gnome-hints)
 (display "done\n")
@@ -67,7 +64,8 @@
 (display "using rest of modules\n")
 (use-scwm-modules base message-window
 		  defoption optargs primopts 
-		  winops winops-menu winlist wininfo 
+		  task-switcher wininfo group
+		  winops winops-menu winlist winlist-menu
 		  listops placement style stylist face doc 
 		  virtual basic-styles titlebar-buttons 
 		  flash-window shove-window themes 
@@ -97,8 +95,6 @@
 
 (append! *theme-path*
 	 (list (string-append scwmdir "/themes")))
-
-(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/X11R6/lib/X11/fvwm2")))
 
 (define want-close-button #f)
 (define want-autoraise #f)
@@ -525,7 +521,11 @@ from other processes.
 
 (use-scwm-modules gtk (gtk gtk))
 
-(add-hook! error-hook display-string-newline-to-error-port)
+(let ((port (current-error-port)))
+  (add-hook! error-hook 
+	     (lambda (str)
+	       (display str port)
+	       (newline port))))
 
 (add-hook! error-hook gtk-show-error)
 

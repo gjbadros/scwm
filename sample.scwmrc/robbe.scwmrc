@@ -37,6 +37,7 @@
 
 (use-scwm-modules base winops winlist wininfo style face flux optargs
 		  std-menus animation message-window pie-menus gnome-hints
+		  xlock-menus
 		  group (ice-9 string-fun) (ice-9 regex))
 
 ;; Gnome & SM
@@ -230,8 +231,7 @@
   (menuitem (string-append "Start " wm) #:action (lambda () (restart wm))))
 
 
-(define xlock-modelist
-  (delete! "random" (delete! "bomb" (delete "blank" screensaver-modes))))
+(define xlock-modelist (xlock-query-modes))
 
 (define screen-rows 35)			; this many menuitems fit on the screen
 
@@ -417,7 +417,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "Re&size" #:extra-label "F6" #:action interactive-resize)
     (menuitem "&Raise" #:action raise-window)
     (menuitem "&Lower" #:action lower-window)
-    (menuitem "&Print" #:action print-window)
+;;    (menuitem "&Print" #:action print-window)
     (menuitem "(Un)&Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)&Iconify" #:extra-label "F4" #:action toggle-iconify)
     (menuitem "(Un)&Maximize" #:extra-label "F8"
@@ -458,9 +458,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		   (menuitem (if (maximized? w) "~^" "^")
 			     #:image-left "maximize.xpm"
 			     #:action toggle-maximize-vertical)
-		   (menuitem (if (sticky? w) "~*" "*")
+		   (menuitem (if (sticky-window? w) "~*" "*")
 			     #:action toggle-stick)
-		   (menuitem (if (window-shaded? w) "~=" "=")
+		   (menuitem (if (shaded-window? w) "~=" "=")
 			     #:action toggle-window-shade)
 		   (menuitem (if (kept-on-top? w) "~T" "T")
 			     #:action toggle-on-top)
@@ -476,7 +476,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
       #:look circle-pie-menu-look))))
 
 (define (popup-winlist)
-  (show-window-list-menu #:show-geometry #t))
+  (show-window-list-menu #f #f #:show-geometry #t))
 
 (define (last-focussed win)
   (if (equal? win (current-window-with-focus))
@@ -485,16 +485,16 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 
 (define (rb:focus win)
   (cond
-   (win (deiconify win)
+   (win (deiconify-window win)
 	(raise-window win)
-	(focus win))))
+	(focus-window win))))
 
 (define (rb:warp win)
   (cond
-   (win (deiconify win)
+   (win (deiconify-window win)
 	(raise-window win)
 	(warp-to-window win)
-	(focus win))))
+	(focus-window win))))
 
 (define (toggle-focus)
   "Focus window that had the focus before the current one."
@@ -607,7 +607,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				     ('click (close-window))
 				     ('double-click (destroy-window)))))
 (bind-mouse 'right-button-3 1 toggle-stick)
-(bind-mouse 'right-button-2 1 iconify)
+(bind-mouse 'right-button-2 1 iconify-window)
 (bind-mouse 'right-button-1 1
 	    (lambda () (case (mouse-event-type)
 			 ('click (toggle-maximize-vertical))

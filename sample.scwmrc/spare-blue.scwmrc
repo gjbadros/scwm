@@ -907,9 +907,9 @@
                                     #:action raise-window)
                           (menuitem "&Lower"
                                     #:action lower-window)
-                          (menuitem (if (sticky? ww) "Un&stick" "&Stick")
+                          (menuitem (if (sticky-window? ww) "Un&stick" "&Stick")
                                     #:action toggle-stick)
-                          (menuitem (if (window-shaded? ww)
+                          (menuitem (if (shaded-window? ww)
                                         "Unwindow-S&hade" "Window-S&hade")
                                     #:action toggle-window-shade)
                           (menuitem (if (kept-on-top? ww)
@@ -1054,7 +1054,7 @@
 ;; context:            second to right-most titlebar button
 ;; mouse button:       number one, which is left mouse button
 ;; procedure invoked:  iconify
-(bind-mouse 'right-button-2 1 iconify)
+(bind-mouse 'right-button-2 1 iconify-window)
 
 ;; context:            right-most titlebar button
 ;; mouse button:       number one, which is left mouse button
@@ -1086,7 +1086,7 @@
 ;; procedure invoked:  show-window-list-menu
 (bind-mouse 'root 3 
             (lambda () 
-              (show-window-list-menu #t 
+              (show-window-list-menu 1 #f
                                      #:by-resource #t
                                      #:show-last-focus-time #t
                                      #:show-geometry #t)))
@@ -1173,9 +1173,9 @@
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (deiconify-window))))
 
-(bind-mouse 'icon 1 deiconify)
+(bind-mouse 'icon 1 deiconify-window)
 (bind-mouse 'icon 2 move-or-deiconify)
 
     ;;;; end mouse button bindings for icons ;;;;
@@ -1187,7 +1187,7 @@
     ;;--------------------------------;;
 
 ;; I find I use this key binding all the time!
-(bind-key 'window "M-z" iconify)
+(bind-key 'window "M-z" iconify-window)
 
     ;;;; end key binding for window context ;;;;
 
@@ -1207,10 +1207,10 @@
 ;; to be efficient.
 
 ;; (bind-key 'all "M-Tab" 
-;;           (lambda () (next-window #:only visible? #:except iconified?)))
+;;           (lambda () (next-window #:only visible? #:except iconified-window?)))
 ;; 
 ;; (bind-key 'all "M-S-Tab" 
-;;           (lambda () (prev-window #:only visible? #:except iconified?)))
+;;           (lambda () (prev-window #:only visible? #:except iconified-window?)))
 
     ;;;; end key binding to move the viewport ;;;;
 

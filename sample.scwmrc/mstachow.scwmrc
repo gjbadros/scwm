@@ -161,7 +161,7 @@
 
 (define (move-viewport-and-pointer-window x y)
   (let ((win (current-window-with-pointer)))
-    (if (not (sticky? win)) 
+    (if (not (sticky-window? win)) 
         (move-window-relative win x y)))
   (move-viewport x y))
 
@@ -186,11 +186,11 @@
 
 (define* (toggle-stick-and-on-top #&optional (win (get-window)))
   (cond
-   ((and (sticky? win) (kept-on-top? win))
-    (unstick win)
+   ((and (sticky-window? win) (kept-on-top? win))
+    (unstick-window win)
     (un-keep-on-top win))
    (else
-    (stick win)
+    (stick-window win)
     (keep-on-top win))))
 
 ;;;;-------------------------------;;;;
@@ -384,12 +384,12 @@
 		(menuitem "Horizontal Maximize" 
 			  #:extra-label "(H-h)"
 			  #:action maximize-horizontal)
-		(menuitem (if (window-shaded? w)
+		(menuitem (if (shaded-window? w)
 			      "Window-Unshade"
 			      "Window-Shade") 
 			  #:extra-label "(H-w)"
 			  #:action animated-toggle-window-shade)
-		(menuitem (if (sticky? w)
+		(menuitem (if (sticky-window? w)
 			      "Unstick"
 			      "Stick") 
 			  #:extra-label "(H-s)"
@@ -413,7 +413,7 @@
 (define (window-stick-menu win)
   (menu 
    (list
-    (menuitem (if (sticky? win)
+    (menuitem (if (sticky-window? win)
 		  "Unstick"
 		  "Stick")
 	      #:extra-label "(H-s)"
@@ -423,7 +423,7 @@
 		  "Keep On Top") 
 	      #:extra-label "(H-o)"
 	      #:action toggle-on-top)
-    (menuitem (if (and (sticky? win) (kept-on-top? win))
+    (menuitem (if (and (sticky-window? win) (kept-on-top? win))
 		  "Unstick and UnKeep On Top"
 		  "Stick and Keep On Top") 
 	      #:extra-label "(H-t)"
@@ -676,8 +676,8 @@
 
 (bind-key 'all "H-i" animated-toggle-iconify)
 (bind-key 'all "H-m" toggle-maximize-both)
-(bind-key 'all "H-v" vertical-maximize)
-(bind-key 'all "H-h" horizontal-maximize)
+(bind-key 'all "H-v" maximize-vertical)
+(bind-key 'all "H-h" maximize-horizontal)
 
 (bind-key 'all "H-M" opaque-move)
 (bind-key 'all "H-S" opaque-resize)
@@ -690,18 +690,21 @@
 
 (bind-key 'all "s-l" 
           (lambda ()
-            (show-window-list-menu #:show-geometry #t #:only 
-                                   on-current-desk?)))
+            (show-window-list-menu #f #f 
+				   #:show-geometry #t 
+				   #:only on-current-desk?)))
 
 (bind-key 'all "s-L" 
           (lambda ()
-            (show-window-list-menu #:show-geometry #t #:only 
-                                   (list iconified-window? on-current-desk?))))
+            (show-window-list-menu #f #f
+				   #:show-geometry #t 
+				   #:only (list iconified-window? on-current-desk?))))
 
 (bind-key 'all "s-i" 
           (lambda ()
-            (show-window-list-menu #:show-geometry #t #:only 
-                                   (list iconified-window? on-current-desk?))))
+            (show-window-list-menu #f #f
+				   #:show-geometry #t 
+				   #:only (list iconified-window? on-current-desk?))))
 
 (bind-key 'all "s-o" popup-ops)
 
@@ -717,7 +720,8 @@
 (bind-mouse 'root 1 popup-util)
 (bind-mouse 'root 2 popup-ops)
 (bind-mouse 'root 3 (lambda () 
-		      (show-window-list-menu #:show-geometry #t 
+		      (show-window-list-menu #f #f
+					     #:show-geometry #t 
                                              #:only on-current-desk?)))
 
 ;; titlebar

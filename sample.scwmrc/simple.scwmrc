@@ -12,7 +12,9 @@
 ;; import the scwm modules       ;;
 
 (use-scwm-modules base winops winlist wininfo 
-		  doc style message-window face)
+		  doc style message-window face
+		  preferences
+		  winlist-menu)
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -105,7 +107,7 @@
     (menuitem "Resize" #:action interactive-resize)
     (menuitem "Raise" #:action raise-window)
     (menuitem "Lower" #:action lower-window)
-    (menuitem "Print" #:action print-window)
+;;    (menuitem "Print" #:action print-window)
     (menuitem "(Un)Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)Iconify" #:action toggle-iconify)
     (menuitem "(Un)Maximize" #:action toggle-maximize-vertical)
@@ -146,6 +148,8 @@
   (menu 
    (list
     (menu-title "Utilities") menu-separator
+    (menuitem "Preferences..." #:action scwm-options-dialog)
+    menu-separator
     (menuitem "xterm" #:action (lambda () (execute "xterm")))
     (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
     (menuitem "emacs" #:action (lambda () (execute "emacs")))
@@ -170,7 +174,7 @@
     (menuitem "Resize" #:action interactive-resize)
     (menuitem "Raise" #:action raise-window)
     (menuitem "Lower" #:action lower-window)
-    (menuitem "Iconify" #:action iconify)
+    (menuitem "Iconify" #:action iconify-window)
     menu-separator
     (menuitem "More..." #:action 
 	      (menu 
@@ -179,10 +183,10 @@
 			      "Unmaximize"
 			      "Maximize") 
 			  #:action toggle-maximize-vertical)
-		(menuitem (if (sticky? w)
+		(menuitem (if (sticky-window? w)
 			      "Unstick"
 			      "Stick") #:action toggle-stick)
-		(menuitem (if (window-shaded? w)
+		(menuitem (if (shaded-window? w)
 			      "UnWindow-Shade"
 			      "Window-Shade") 
 			  #:action toggle-window-shade)
@@ -203,14 +207,14 @@
 (bind-mouse 'root 1 popup-util)
 (bind-mouse 'root 2 popup-ops)
 (bind-mouse 'root 3 (lambda () 
-		      (show-window-list-menu #:show-geometry #t)))
+		      (show-window-list-menu #f #f #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu desk-menu)))
 
 
 ;; window buttons
 (bind-mouse 'left-button-1 1 popup-small-ops)
 (bind-mouse 'right-button-1 1 toggle-maximize-vertical)
-(bind-mouse 'right-button-2 1 iconify)
+(bind-mouse 'right-button-2 1 iconify-window)
 
 ;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
@@ -235,10 +239,10 @@
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (deiconify-window))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 deiconify-window)
 
 
 

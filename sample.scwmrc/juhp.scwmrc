@@ -14,7 +14,7 @@
 ;; import the scwm modules       ;;
 
 (use-scwm-modules base decor doc face flux fvwm-module optargs style
-		  defoption wininfo winlist winops)
+		  defoption wininfo winlist winlist-menu winops)
 
 ;; menu compatibility
 (define (display-menu . rest)
@@ -170,9 +170,9 @@
 	       (menuitem "More" #f)
 	       menu-separator
 	       (menuitem "&Move" #:image-left "mini-move.xpm"
-			 #:action interactive-move-maybe-opaque)
+			 #:action interactive-move)
 	       (menuitem "Re&size" #:image-left "mini-resize.xpm"
-			 #:action interactive-resize-maybe-opaque)
+			 #:action interactive-resize)
 	       (menuitem "&Raise" #:image-left "mini-raise.xpm"
 			 #:action raise-window)
 	       (menuitem "&Lower" #:image-left "mini-lower.xpm"
@@ -183,7 +183,7 @@
 	       (menuitem "(De)Iconify" #:image-left "mini-iconify.xpm"
 			 #:action toggle-iconify)
 	       (menuitem "(Un)&Maximize" #:image-left "mini-maxtall.xpm" 
-			 #:action toggle-max-vert)
+			 #:action toggle-maximize-vertical)
 	       (menuitem "(Un)Stick" #:image-left "mini-stick.xpm"
 			 #:action toggle-stick)
 	       (menuitem "(Un)Keep On Top"
@@ -198,7 +198,7 @@
    menu-separator
    (menuitem "&Switch to..." #:action
 	     (lambda () 
-	       (show-window-list-menu #:show-geometry #t)))
+	       (show-window-list-menu #f #f #:show-geometry #t)))
    (menuitem "Re&fresh Screen" #:action refresh)
    menu-separator
    (menuitem "&Restart scwm" #:action (lambda () (restart "scwm")))
@@ -208,9 +208,9 @@
   (display-menu
    (menu-title "Window") menu-separator
    (menuitem "&Move" #:image-left "mini-move.xpm"
-	     #:action interactive-move-maybe-opaque)
+	     #:action interactive-move)
    (menuitem "Re&size" #:image-left "mini-resize.xpm"
-	     #:action interactive-resize-maybe-opaque)
+	     #:action interactive-resize)
    (menuitem "&Raise" #:image-left "mini-raise.xpm" #:action raise-window)
    (menuitem "&Lower" #:image-left "mini-lower.xpm" #:action lower-window)
    (menuitem "&Info" #:action window-info-menu)
@@ -223,13 +223,13 @@
 		  "Un&maximize"
 		  "&Maximize")
 	     #:image-left "mini-maxtall.xpm"
-	     #:action toggle-max-vert)
-   (menuitem (if (sticky? w)
+	     #:action toggle-maximize-vertical)
+   (menuitem (if (sticky-window? w)
 		  "Unstick"
 		  "Stick")
 	     #:image-left "mini-stick.xpm"
 	     #:action toggle-stick)
-   (menuitem (if (window-shaded? w)
+   (menuitem (if (shaded-window? w)
 		  "UnWindow-Shade"
 		  "Window-Shade") 
 	      #:action toggle-window-shade)
@@ -271,7 +271,7 @@
 
 (define (save-focus window screen)
   (array-set! screen-focus-array
-	      (if (and window (visible? window) (not (sticky? window)))
+	      (if (and window (visible? window) (not (sticky-window? window)))
 		  window
 		  #f)
 	      (car screen) (cadr screen)))
@@ -294,7 +294,7 @@
 		       (not (equal? window old-window))
 		       (visible? window))
 		  (begin
-		    (focus window)
+		    (focus-window window)
 		    (save-focus old-window old-screen))
 		  (next-window #:only visible? #:except iconified-window?))))))))
 
@@ -384,7 +384,7 @@
 (bind-key '(window icon) "A-F2" window-menu)
 
 (bind-mouse 'root 1 root-menu)
-(bind-mouse 'root 2 show-window-list-menu)
+(bind-mouse 'root 2 (lambda () (show-window-list-menu #f #f)))
 
 (define (move-or-shade)
   (case (mouse-event-type)
@@ -398,11 +398,11 @@
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((click) (deiconify))
-    ((motion) (interactive-move-maybe-opaque))))
+    ((click) (deiconify-window))
+    ((motion) (interactive-move))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 deiconify-window)
 (bind-mouse 'icon 3 window-menu)
 
 ;; app bindings

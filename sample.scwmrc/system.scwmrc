@@ -1250,8 +1250,6 @@ from other processes.
 ;; This is a bug binding for demonstrating above
 ;; (bind-key 'all "H-o" (lambda () (function-with-stupid-name)))
 
-(system "xsetroot -solid lightgreen &")
-
 (set! window-list-proc focus-change-warp-pointer)
 
 (wavplay "scwm-startup.wav")

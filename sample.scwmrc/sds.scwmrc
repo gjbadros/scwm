@@ -35,6 +35,7 @@
 
 (use-scwm-modules
  base face decor style winops winlist wininfo doc optargs std-menus
+ titlebar-buttons winlist-menu xlock-menus
  wmconfig-menu flux prefs-menu fvwm-module key-mover netscape stringops
  animation placement virtual shutdown-opts defoption animated-iconify
  message-window gnome-hints)    ; themes
@@ -461,8 +462,8 @@
 ;;; Window menus
 ;;; ------------
 (define (icon-list)
-  (show-window-list-menu #:only iconified-window? #:show-geometry #t))
-(define (winlist) (show-window-list-menu #:show-geometry #t))
+  (show-window-list-menu #f #f #:only iconified-window? #:show-geometry #t))
+(define (winlist) (show-window-list-menu #f #f #:show-geometry #t))
 
 (define menu-window-ops
   (menu (list
@@ -480,14 +481,14 @@
          (menuitem "&Iconify" #:image-left icon-i
                    #:extra-label "(H-m)" #:action animated-toggle-iconify)
          (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
-         (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
-         (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
-         (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
+         (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-maximize-both)
+         (menuitem "&Tall" #:image-left maxt-i #:action toggle-maximize-vertical)
+         (menuitem "&Wide" #:image-left maxw-i #:action toggle-maximize-horizontal)
          (menuitem "S&hade" #:image-left bolt-i #:action
                    animated-toggle-window-shade)
          menu-separator
          (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
-         (menuitem "&Print" #:image-left run-i #:action print-window)
+;;         (menuitem "&Print" #:image-left run-i #:action print-window)
          (menuitem "In&fo" #:image-left quest-i
                    #:extra-label "(H-i)" #:action window-info)
          (menuitem "Decorations" #:image-left decor-i #:action
@@ -522,7 +523,7 @@
                    #:extra-label "(H-m)"
                    #:image-left icon-i #:action animated-toggle-iconify)
          (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
-                   #:image-left max1-i #:action toggle-max-both)
+                   #:image-left max1-i #:action toggle-maximize-both)
          menu-separator
          (menuitem "Info" #:image-left quest-i #:extra-label "(H-i)"
                    #:action (lambda () (window-info ww)))
@@ -532,9 +533,9 @@
                                     #:action raise-window)
                           (menuitem "&Lower" #:extra-label "(H-RET)"
                                     #:action lower-window)
-                          (menuitem (if (sticky? ww) "Un&stick" "&Stick")
+                          (menuitem (if (sticky-window? ww) "Un&stick" "&Stick")
                                     #:action toggle-stick)
-                          (menuitem (if (window-shaded? ww)
+                          (menuitem (if (shaded-window? ww)
                                         "Unwindow-S&hade" "Window-S&hade")
                                     #:action toggle-window-shade)
                           (menuitem (if (kept-on-top? ww)
@@ -824,33 +825,12 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;               (20 35 #f) (20 30 #t) (30 20 #t) (70 20 #t) (80 30 #t)
 ;;               (20 75 #t) (80 75 #t))))))
 
-;; buttons now
-(define button-numbers (cons 1 2)) ; (left . right)
-(define (add-button face hook left) ; in all decors
-  (let ((num (if left (car button-numbers) (cdr button-numbers))))
-    (map (lambda (decor) (with-decor (cdr decor) (set-button-face! num face)))
-         decor-list)
-    (bind-mouse (string->symbol (string-append "button-" (number->string num)))
-                1 hook)
-    (if left (set-car! button-numbers (+ 2 num))
-        (set-cdr! button-numbers (+ 2 num)))))
-
-;; (add-button prog-face
-;;             (lambda ()
-;;               (let ((win (get-window)))
-;;                 (popup-menu-from-decoration
-;;                  (make-small-window-ops-menu win)
-;;                  ;; window to pop-up from
-;;                  win
-;;                  ;; button number to pop-up from
-;;                  (car button-numbers))))
-;;             #t)
-(add-button prog-face popup-small-ops #t)
-(add-button horizontal-bar4-face toggle-stick #t)
-(add-button big-lightning-face animated-toggle-window-shade #t)
-(add-button stylized-X-face close-window #f)
-(add-button up-down-arrow-face toggle-max-vert #f)
-(add-button small-box-face animated-iconify #f)
+(add-left-button prog-face popup-small-ops)
+(add-left-button horizontal-bar4-face toggle-stick)
+(add-left-button big-lightning-face animated-toggle-window-shade)
+(add-right-button stylized-X-face close-window)
+(add-right-button up-down-arrow-face toggle-maximize-vertical)
+(add-right-button small-box-face animated-iconify)
 
 ;; should be after the buttons
 ;(with-decor lizard-d (set-button-face! 1 edit-face)) ; emacs
@@ -901,9 +881,9 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 (bind-key 'all "H-m" animated-toggle-iconify)
 (bind-key 'all "H-Return" toggle-raise)
-(bind-key 'all "H-p" toggle-max-vert-part)
-(bind-key 'all "H-S-Right" toggle-max-horz)
-(bind-key 'all "H-S-Left" toggle-max-both)
+(bind-key 'all "H-p" toggle-maximize-vertical-part)
+(bind-key 'all "H-S-Right" toggle-maximize-horizontal)
+(bind-key 'all "H-S-Left" toggle-maximize-both)
 (bind-key 'all "H-i" (lambda () (window-info (current-window-with-pointer))))
 
 ;(define (message-show-error . args)
@@ -937,9 +917,9 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
  	  (lambda () (with-window (get-window)
 		       (animated-move-to (x- (w%x 100)) 0))))
 
-;;(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
-;;(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
-;;(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
+;;(bind-key 'all "C-M-S-7" (lambda () (send-button 1)))
+;;(bind-key 'all "C-M-S-8" (lambda () (send-button 2)))
+;;(bind-key 'all "C-M-S-9" (lambda () (send-button 3)))
 
 ;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
 ;(bind-key 'all "C-M-S-s" (lambda () (X-synthetic-send-string "hello world")))
@@ -947,7 +927,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; This one is experimental-- sends only the buttonpress event,
 ;; no buttonrelease
 ;(bind-key 'all "C-M-S-0"
-;         (lambda () (send-button-press 2 (get-window) #t #f)))
+;         (lambda () (send-button 2 (get-window) #t #f)))
 
 ;; Hyper-w
 ;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
