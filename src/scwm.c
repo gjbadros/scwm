@@ -30,18 +30,8 @@
 #include <unistd.h>
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
-#else
-#ifdef HAVE_GETOPT_LONG
-struct option {
-    const char *name;
-    int has_flag;
-    int *flag;
-    int val;
-};
-int getopt_long(int argc, char *const argv[], const char *optstring,
-                const struct option *longopts, int *longindex);
-#endif /* ! HAVE_GETOPT_LONG */
-/* do something here to replace getopt.h */
+#else 
+#include "getopt.h"
 #endif /* END HAVE_GETOPT_H */
 #include "scwm.h"
 #include "scwmmenu.h"
@@ -217,13 +207,13 @@ scwm_main(int argc, char **argv)
   int i;
   extern int x_fd;
   int len;
-#ifdef HAVE_GETOPT_LONG  
+
   /* getopt vars */
   int getopt_ret;
   char *getopt_opts;
   extern char *optarg;
   extern int optind, opterr, optopt;
-#endif  
+
   char *display_string;
   char message[255];
   Bool single = False;
@@ -264,7 +254,6 @@ scwm_main(int argc, char **argv)
 
   DBUG("main", "Entered, about to parse args");
   
-#ifdef HAVE_GETOPT_LONG  
   getopt_opts = "Dsd:f:e:hibV";
   
   while(1) {
@@ -350,72 +339,6 @@ scwm_main(int argc, char **argv)
       break;
     }
   }
-#else /* ! HAVE_GETOPT_LONG */
-  /* FIXMS: perhaps it would be cleaner to provide an implementation of
-     getopt_long where not available, that should be a lot easier to 
-     maintain. */
-  for (i = 1; i < argc; i++) {
-    if ((strncasecmp(argv[i], "-D", 2) == 0) ||
-	(strncasecmp(argv[i], "--debug", 7) == 0)) {
-      debugging = True;
-    } else if ((strncasecmp(argv[i], "-s", 2) == 0) ||
-	       (strncasecmp(argv[i], "--single-screen", 15) == 0)){
-      single = True;
-    } else if ((strncasecmp(argv[i], "-d", 2) == 0) ||
-	       (strncasecmp(argv[i], "--display", 9) == 0)) {
-      if (++i >= argc) {
-	scwm_msg(ERR, "main", "Missing option argument: \"%s\"\n",
-		 argv[i-1]);
-	option_error=True;
-      } else {
-	display_name = argv[i];
-      }
-    } else if ((strncasecmp(argv[i], "-f", 2) == 0) ||
-	       (strncasecmp(argv[i], "--file", 6) == 0)) {
-      if (++i >= argc) {
-	scwm_msg(ERR, "main", "Missing option argument: \"%s\"\n",
-		 argv[i-1]);
-	option_error=True;
-      } else {
-	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			    (strlen(szCmdConfig) +
-			     strlen(szLoad_pre) +
-			     strlen(argv[i]) +
-			     strlen(szLoad_post) + 1));
-	
-	szCmdConfig = strcat(szCmdConfig, szLoad_pre);
-	szCmdConfig = strcat(szCmdConfig, argv[i]);
-	szCmdConfig = strcat(szCmdConfig, szLoad_post);
-      }
-    } else if ((strncasecmp(argv[i], "-e", 2) == 0) || 
-	       (strncasecmp(argv[i], "--expression", 12) == 0)) {
-      if (++i >= argc) {
-	scwm_msg(ERR, "main", "Missing option argument: \"%s\"\n",
-		 argv[i-1]);
-	option_error=True;
-      } else {
-	szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			    (strlen(szCmdConfig) + strlen(argv[i]) + 1));
-	szCmdConfig = strcat(szCmdConfig, argv[i]);
-      }
-    } else if ((strncasecmp(argv[i], "-h", 2) == 0) ||
-	       (strncasecmp(argv[i], "--help", 6) == 0)) {
-      usage();
-      exit(0);
-    } else if ((strncasecmp(argv[i], "-b", 8) == 0) ||
-	       (strncasecmp(argv[i], "--blackout", 9) == 0)) {
-      Blackout = True;
-    } else if ((strncasecmp(argv[i], "-V", 8) == 0) ||
-               (strncasecmp(argv[i], "--version", 9) == 0)) {
-      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n",
-	     VERSION, __DATE__, __TIME__, rcsid);
-      exit(0);
-    } else {
-      scwm_msg(ERR, "main", "Unknown option:  `%s'\n", argv[i]);
-      option_error = True;
-    }
-  }
-#endif
   
   if(option_error) {
     usage();

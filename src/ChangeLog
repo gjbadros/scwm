@@ -1,3 +1,30 @@
+1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
+
+	* scwm.c: Always use getopt_long, never use the previous hack to
+	simulate it.
+
+	* getopt.c, getopt1.c, getopt.h: Copied from glibc. rms says the
+	GPL is compatible with fvwm's license, so there should be no
+	problem. This beats maintaining the hack non-getopt_long hack for
+	argument parsing. The files are already nicely set up for
+	conditional inclusion.
+
+	* Makefile.am, Makefile.am: build getopt.c, getopt1.c
+	
+1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
+
+	* callbacks.c, callbacks.h: Move input hooks here. add_input_hook
+	renamed to add_input_hook_x, now returns a hook handle to be used
+	with remove_input_hook_x. remove_input_hook_x
+	added. run_input_hooks no longer removes triggered input hooks;
+	this seems like a more reasonable semantics. Further,
+	add_input_hook_x now accepts an inpput file port rather than a
+	file descriptor, and the input hook system ensures that the hook
+	is invoked until either char-ready? is not true of the port, or
+	the hook has been removed.
+	
+	events.c, scmprocs.c: Input hook stuff removed from here.
+
 1998-06-19  Maciej Stachowiak  <maciej@roc-ny3-25.ix.netcom.com>
 
 	* syscompat.c, syscompat.h: Move functions that may or may not be
