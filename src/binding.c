@@ -104,7 +104,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
 /* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
    be acceptable */
 static
-inline int
+int
 BnumFromSz(char *sz)
 {
   if (tolower(*sz) == 'a'  && (strcasecmp(sz,"any") == 0 ||
