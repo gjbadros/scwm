@@ -1,3 +1,7 @@
+Sat Jul 17 21:59:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Update bug address.
+
 Sat Jul 17 21:24:37 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.el:  Be sure that flux is loaded, for scwm-whereis;  use

@@ -1,3 +1,7 @@
+Sat Jul 17 22:24:33 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Update to scwm.mit.edu.
+
 Fri Jul  2 10:07:07 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Ignore the word "X11" even though it is all caps
