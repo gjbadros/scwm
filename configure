@@ -3781,13 +3781,57 @@ else
 fi
 
 
+echo $ac_n "checking for scm_internal_parse_path in -lguile""... $ac_c" 1>&6
+echo "configure:3786: checking for scm_internal_parse_path in -lguile" >&5
+ac_lib_var=`echo guile'_'scm_internal_parse_path | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lguile $GUILE_LIBS $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 3794 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char scm_internal_parse_path();
+
+int main() {
+scm_internal_parse_path()
+; return 0; }
+EOF
+if { (eval echo configure:3805: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  cat >> confdefs.h <<\EOF
+#define HAVE_SCM_INTERNAL_PARSE_PATH 1
+EOF
+
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+
 
 saved_LIBS="${LIBS}"
 LIBS="${LIBS} ${GUILE_LIBS}"
 echo $ac_n "checking for scm_the_last_stack_fluid in -lguile""... $ac_c" 1>&6
-echo "configure:3789: checking for scm_the_last_stack_fluid in -lguile" >&5
+echo "configure:3833: checking for scm_the_last_stack_fluid in -lguile" >&5
 cat > conftest.$ac_ext <<EOF
-#line 3791 "configure"
+#line 3835 "configure"
 #include "confdefs.h"
 
 #include <guile/gh.h>
@@ -3798,7 +3842,7 @@ return scm_the_last_stack_fluid;
 
 ; return 0; }
 EOF
-if { (eval echo configure:3802: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+if { (eval echo configure:3846: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
   rm -rf conftest*
   
 cat >> confdefs.h <<\EOF
@@ -3821,12 +3865,12 @@ LIBS="${saved_LIBS}"
 
 
 echo $ac_n "checking for working const""... $ac_c" 1>&6
-echo "configure:3825: checking for working const" >&5
+echo "configure:3869: checking for working const" >&5
 if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3830 "configure"
+#line 3874 "configure"
 #include "confdefs.h"
 
 int main() {
@@ -3875,7 +3919,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:3879: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3923: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -3896,21 +3940,21 @@ EOF
 fi
 
 echo $ac_n "checking for inline""... $ac_c" 1>&6
-echo "configure:3900: checking for inline" >&5
+echo "configure:3944: checking for inline" >&5
 if eval "test \"`echo '$''{'ac_cv_c_inline'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_cv_c_inline=no
 for ac_kw in inline __inline__ __inline; do
   cat > conftest.$ac_ext <<EOF
-#line 3907 "configure"
+#line 3951 "configure"
 #include "confdefs.h"
 
 int main() {
 } $ac_kw foo() {
 ; return 0; }
 EOF
-if { (eval echo configure:3914: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3958: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_inline=$ac_kw; break
 else

@@ -90,6 +90,10 @@
 /* Define this if your libguile has scm_internal_stack_catch.  */
 #undef HAVE_SCM_INTERNAL_STACK_CATCH
 
+/* Define this if your libguile has scm_internal_parse_path,
+   which should be used instead of scm_parse_path from C.  */
+#undef HAVE_SCM_INTERNAL_PARSE_PATH
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
