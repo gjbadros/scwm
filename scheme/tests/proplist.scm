@@ -28,7 +28,9 @@
 
 
 (chdir "/home/gjb/scwm/scheme/tests")
-(define p (get-proplist-with-path "WindowMaker"))
+(define p (get-proplist-with-path "/home/gjb/GNUstep/Defaults/WindowMaker"))
+
+(proplist-synchronize p)  ;; do this after saves -- use simplebiff?
 
 (define p-keys (proplist-get-all-dictionary-keys p))
 
@@ -37,6 +39,7 @@
 (proplist-get-array-element p-keys 0)
 
 (proplist-get-dictionary-entry p "NoDithering")
+(proplist-get-dictionary-entry p "WindowPlacement")
 
 (map (lambda (i) (proplist-get-array-element p-keys i))
      (list 0 1 2 3))
