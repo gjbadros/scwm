@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-12-12 Sat 22:55:52 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1999-02-09 Tue 15:28:59 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -188,6 +188,7 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map [(control j)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
 (define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
+(define-key scwm-mode-map [(control c) (control l)] 'scwm-load-file)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
 (define-key scwm-mode-map [(control h) (control f)]
@@ -258,6 +259,12 @@ meaning of the second argument is reversed."
   "Evaluate the region with `scwm-eval-sexp'."
   (interactive "r\nP")
   (scwm-eval-sexp (buffer-substring-no-properties beg end) mb-p))
+
+;;;###autoload
+(defun scwm-load-file (file mp-b)
+  "Load the file."
+  (interactive "fLoad file: \nP")
+  (scwm-eval-sexp (concat "(load \"" file "\")") mp-b))
 
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-last)

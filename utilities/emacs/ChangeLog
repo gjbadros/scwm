@@ -1,3 +1,7 @@
+1999-02-09  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (scwm-load-file): new function, bound to C-c C-l
+
 Tue Jan  5 07:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* auto-insert-tkld.el: Added for use with
