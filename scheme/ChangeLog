@@ -1,3 +1,22 @@
+Wed Sep 15 13:59:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added prompt-enum.scm
+
+	* prompt-enum.scm: Added
+
+	* primopts.scm: Added `*default-focus-style*' option.  (Not
+	perfect because of window-style's behaviour that it overrides
+	settings on all matched windows.
+
+	* preferences.scm: Handle 'enum type
+
+	* defoption.scm: Added prompt-from-symbol and #:name opotion for
+	changing the prompt.
+
+Wed Sep 15 13:47:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-enum.scm: Added
+
 Tue Sep 14 14:29:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gnome-hints.scm: Add _WIN_SUPPORTING_WM_CHECK property to the
