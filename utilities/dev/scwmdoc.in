@@ -67,7 +67,7 @@ sub script_usage ( ) {
 -C       Only output concepts chapters
 -n       No warning for problems with comments
 -d URL  Set scwmdir source code base to path (e.g., file:///usr/local/src/scwm)
--P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
+-P prefix Set package prefix (e.g., -PCL to use CL_* instead of SCWM_*)
 -S       Skip the procedures chapters-- makes it much faster to convert to HTML
 -F       Skip all procedures except those starting with \"F\" for fast check on output
 ";
@@ -153,7 +153,7 @@ while (<>) {
     next;
   }
   my $fScheme = ($ARGV =~ /.scm$/);
-  if (m/^${prefix}_PROC/o) {
+  if (m/^${prefix}_[IW]?PROC/o) {
     my $header = $_;
     my $filename = $ARGV;
     my $line = $.;
@@ -758,7 +758,7 @@ sub ProcessHeader( $$$ ) {
 #  print STDERR "header = $header\n";
 #  print STDERR "filename = $filename\n";
   my ($cprimname, $primname, $req, $opt, $var, $argslist,$space) =
-    $header =~ m%^${prefix}_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*)\)%o;
+    $header =~ m%^${prefix}_[IW]?PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*)\)%o;
 
 #  print STDERR "argslist = $argslist\n";
   if (defined($space)) {
