@@ -79,7 +79,9 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
   int done = 0;
   Window root=DefaultRootWindow(dpy);
   XEvent ev;
- 
+  int got_reply = 0;
+  int got_output = 0; 
+  int got_error = 0;
 
   XChangeProperty(dpy, w, XA_SCWMEXEC_REQUEST, XA_STRING,
 		  8, PropModeReplace, req, strlen(req)+1);
@@ -89,10 +91,20 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 
   /* X event handling - wait for XA_SCWMEXEC_REPLY on w */
   XSelectInput(dpy,w,PropertyChangeMask);
+
+
   do {
     XIfEvent (dpy, &ev, predicate, &w);
-  } while (ev.xproperty.atom == XA_SCWMEXEC_REPLY &&
-	   ev.xproperty.state == PropertyNewValue);
+    if (ev.xproperty.state == PropertyNewValue) {
+      if (ev.xproperty.atom == XA_SCWMEXEC_REPLY) {
+	got_reply = 1;
+      } else if (ev.xproperty.atom == XA_SCWMEXEC_OUTPUT) {
+	got_output = 1;
+      } else if (ev.xproperty.atom == XA_SCWMEXEC_ERROR) {
+	got_error = 1;
+      }
+    }
+  } while (!got_reply || !got_output || !got_error);
 
   *error=NULL;
   *output=NULL;
