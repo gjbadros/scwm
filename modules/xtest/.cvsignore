@@ -1,0 +1,7 @@
+.deps
+.libs
+Makefile
+Makefile.in
+scwmxtest.lo
+scwmxtest.x
+libscwmxtest.la
