@@ -1,3 +1,16 @@
+Sun Mar 31 17:45:49 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* virtual.scm: Various doc fixes/improvements.
+	Added FIXMEs about changing names to be consistent.
+	Added FIXME about strange location choice by move-to-viewport.
+	Added FIXME about dubious assumptions (that currently hold) in
+	  'deiconify-to-current-viewport'.
+	Deprecated 'switch-to-first-desk' and 'switch-to-second-desk'
+	  since they are way to specific and have names longer than the
+	  function calls they replace.
+	Added 'switch-to-home-desk' as reasonably special enough to have
+	  its own function.  This was names 'switch-to-first-desk'.
+
 Sun Mar 31 16:35:12 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* edge-ops.scm: Marked entire file as broken.  This code is
