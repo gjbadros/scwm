@@ -218,6 +218,7 @@
 (if (scwm-is-constraint-enabled?)
     (use-scwm-modules ui-constraints-toggle-menu
 		      ui-constraints
+		      snap-constraints
 		      constraint-investigator))
 
 ;; prefer doc files in scwmdir/doc
@@ -824,13 +825,21 @@
 	      #:action (lambda () 
 			 (cl-set-auto-reset-stay-constants! (scwm-master-solver) #t))))))
 
+(define menu-snapping
+  (menu
+   (list
+    (menuitem "&Yes" #:action snap-initialize)
+    (menuitem "&No" #:action snap-reset))))
+
 (define menu-constraints
   (menu
    (list
     (menuitem "&Constraints"
 	      #:submenu (lambda () (ui-constraints-toggle-menu)))
-    (menuitem "Springy constraints?"
+    (menuitem "&Springy constraints?"
 	      #:submenu menu-springy-constraints)
+    (menuitem "&Augmented Snapping?"
+	      #:submenu menu-snapping)
     (menuitem "Constraint &investigator"
 	      #:action (thunk start-constraint-investigator))
     (menuitem "Turn &on Constraint Solver"
@@ -1214,6 +1223,9 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (bind-key 'all "C-M-S-s" toggle-stick)
 
+;; (reset-undo!)
+
+(bind-key 'all (hyper "M-g") gtk-register-info)
 (bind-key 'all (hyper "g") jump-to-register)
 (bind-key 'all (hyper "f") focus-to-register)
 (bind-key 'all (hyper "c") window-configuration-to-register)
