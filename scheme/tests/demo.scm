@@ -202,7 +202,7 @@
 
 (use-scwm-modules ScwmButtons)
 
-(window-style "ScwmButtons2"
+(window-style "ScwmButtons"
 	      #:use-style desk-widget-on-top-no-titlebar)
 
 (run-ScwmButtons
@@ -213,8 +213,8 @@
   (button-item "mini-xv.xpm" #:action "xv" #:tooltip "Xv")
   (button-item "mini-gv.xpm" #:action "gv" #:tooltip "gv")
   (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
-;;  #:orientation 'vertical
-  )
+ #:auto-orient #t
+ #:orientation 'vertical)
 
 
 ;;;; ALTERNATIVE MULTIPLE WINDOWS INTERFACES

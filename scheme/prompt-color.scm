@@ -87,13 +87,9 @@ See also `prompt-color'."
   (let* ((hbox (gtk-hbox-new #f 0))
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))
-	 (initvalcolor (cond
-			((color? initval) initval)
-			((string? initval) (make-color initval))
-			(else 
-			 (make-color "black"))))
+	 (initvalcolor (maybe-make-color initval))
 	 (selbut (gtk-button-new-with-label "Pick..."))
-	 (entry-init (color-property initvalcolor 'name))
+	 (entry-init (if initvalcolor (color-property initvalcolor 'name) "inherit"))
 	 (label (gtk-label-new prompt)))
     (if cb
 	(gtk-combo-set-popdown-strings cb
@@ -109,14 +105,12 @@ See also `prompt-color'."
     (gtk-widget-show hbox)
     (gtk-signal-connect selbut "pressed"
 			(lambda ()
-			  (let ((dialog (gtk-color-selection-dialog-new
-					 "Color Selection Dialog")))
-			    (gtk-color-selection-set-color
-			     (gtk-color-selection-dialog-colorsel dialog)
-			     (gdk-color-parse (gtk-entry-get-text entry)))
-			    (gtk-color-selection-set-color
-			     (gtk-color-selection-dialog-colorsel dialog)
-			     (gdk-color-parse (gtk-entry-get-text entry)))
+			  (let* ((dialog (gtk-color-selection-dialog-new
+					  "Color Selection Dialog"))
+				 ((c (gdk-color-parse (gtk-entry-get-text entry)))))
+			    (if c
+				(gtk-color-selection-set-color
+				 (gtk-color-selection-dialog-colorsel dialog) c))
 			    (gtk-signal-connect
 			     (gtk-color-selection-dialog-ok-button dialog)
 			     "clicked" (lambda () 
