@@ -14,8 +14,8 @@
 #include "constraint-primitives.h"
 #include "scwm-constraints.h"
 #include "window.h"
-#include "Cl/ClLinearEquation.h"
-#include "Cl/ClSimplexSolver.h"
+#include "ClLinearEquation.h"
+#include "ClSimplexSolver.h"
 
 SCWM_PROC(keep_tops_even, "keep-tops-even", 2, 0, 0,
           (SCM winA, SCM winB))
@@ -39,7 +39,9 @@ WINA and WINB are both window objects */
   solver.addConstraint(eqY);
   /* FIXGJB: need to add hook to remove the constraint if winA or winB
      disappears */
+  return SCM_UNSPECIFIED;
 }
+
 
 
 void
