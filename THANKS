@@ -16,6 +16,7 @@ Thanks to:
 
   Harvey Stein - Guile implementation of the document extractor
 
+  Francesco Tapparo -- maintainer of Debian scwm package
 
 Bug reports and/or fixes and/or code snippets have been contributed by:
 
@@ -35,7 +36,6 @@ Bug reports and/or fixes and/or code snippets have been contributed by:
   Hideki Sakurada
   S. Senda
   Dale Smith
-  Francesco Tappar
   Andrei Tcherepanov
   Oleg Tihnov
   James Troup

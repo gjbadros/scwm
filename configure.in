@@ -47,10 +47,10 @@ AC_ARG_WITH(lispdir,
 [  --with-lispdir=DIR      Install Emacs Lisp files in DIR 
                           [PREFIX/share/site-lisp]],
 [
-	if test -n "$ac_prev"; then
-  		AC_MSG_ERROR(missing argument to --with-lispdir)
+	if test -z "${withval}" -o "${withval}" = "yes" -o "${withval}" = "no"; then
+  		AC_MSG_ERROR(missing pathname argument to --with-lispdir)
 	else
-		AC_MSG_CHECKING(where .elc files should _reallly_ go)
+		AC_MSG_CHECKING(where .elc files should go)
 		lispdir="${withval}"
 		AC_MSG_RESULT("${lispdir}")
 	fi
@@ -62,8 +62,8 @@ CASSOWARY_LIBS=""
 AC_ARG_WITH(cassowary,
 [  --with-cassowary=DIR   Use Cassowary constraint solver from DIR ],
 [
-	if test -n "$ac_prev"; then
-  		AC_MSG_ERROR(missing argument to --with-cassowary)
+	if test -z "${withval}" -o "${withval}" = "yes" -o "${withval}" = "no"; then
+  		AC_MSG_ERROR(missing pathname argument to --with-cassowary)
 	else
 		AC_DEFINE(USE_CASSOWARY)
 		AC_DEFINE(CL_NO_TRACE)
@@ -71,7 +71,6 @@ AC_ARG_WITH(cassowary,
 		CASSOWARY_INCLUDES="-I${withval}"
 		CASSOWARY_LIBS="-L${withval} ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
 		AC_MSG_RESULT("${withval}")
-
 	fi
 ])
 
@@ -179,8 +178,8 @@ fi
 AC_ARG_WITH(guile-prefix,
 [  --with-guile-prefix=DIR Expect guile to be installed in DIR [optional]],
 [
-	if test -n "$ac_prev"; then
-  		AC_MSG_ERROR(missing argument to --with-guile-prefix)
+	if test -z "${withval}" -o "${withval}" = "yes" -o "${withval}" = "no"; then
+  		AC_MSG_ERROR(missing pathname argument to --with-guile-prefix)
 	else
 		AC_MSG_CHECKING(where to expect to find guile)
 		guile_prefix="${withval}"
@@ -197,8 +196,8 @@ AC_ARG_WITH(guile-exec-prefix,
                           Expect guile binaries to be installed in DIR 
                           [optional]],
 [
-	if test -n "$ac_prev"; then
-  		AC_MSG_ERROR(missing argument to --with-guile-prefix)
+	if test -z "${withval}" -o "${withval}" = "yes" -o "${withval}" = "no"; then
+  		AC_MSG_ERROR(missing pathname argument to --with-guile-exec-prefix)
 	else
 		AC_MSG_CHECKING(where to expect to find guile binaries)
 		guile_exec_prefix="${withval}"
@@ -327,7 +326,24 @@ dnl ## Define directories ##
 
 scwm_load_path=${datadir}/${PACKAGE}-modules
 scwm_schemedir=${scwm_load_path}/app/scwm
-scwmrcdir=${libdir}/X11/${PACKAGE}
+
+
+AC_ARG_WITH(scwmrcdir,
+[  --with-scwmrcdir=DIR    Install configuration files in DIR 
+                          [LIBDIR/X11/scwm]],
+[
+	if test -z "${withval}" -o "${withval}" = "yes" -o "${withval}" = "no"; then
+  		AC_MSG_ERROR(missing pathname argument to --with-scwmrcdir)
+	else
+		AC_MSG_CHECKING(where configuration files should go; e.g., system.scwmrc)
+		scwmrcdir="${withval}"
+		AC_MSG_RESULT("${scwmrcdir}")
+	fi
+],
+[
+	scwmrcdir="${libdir}/X11/${PACKAGE}"
+])
+
 scwm_image_load_path="(\\\"${x_includes}/X11/bitmaps\\\" \\\"${x_includes}/X11/pixmaps\\\" \\\"${orig_x_libs}/X11/mini-icons\\\" \\\"${includedir}/X11/pixmaps\\\" \\\"${includedir}/X11/bitmaps\\\" \\\"${libdir}/X11/mini-icons\\\")"
 
 AC_SUBST(scwm_load_path)

@@ -8,7 +8,8 @@ To build Scwm on unix, there are two basic steps:
         2. Type "make", to build the package.
 
 Generic instructions for configuring and compiling GNU distributions
-are included below.
+are included below.  Use "./configure --help" to see configuration
+options specific to Scwm.
 
 
 What You Get ==============================================================
