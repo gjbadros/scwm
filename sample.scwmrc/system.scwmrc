@@ -814,11 +814,23 @@
 (define menu-screensaver
   (make-xlock-menu #f))
 
+(define menu-springy-constraints
+  (menu
+   (list
+    (menuitem "&Yes (no auto-reset stay constants)"
+	      #:action (lambda () 
+			 (cl-set-auto-reset-stay-constants! (scwm-master-solver) #f)))
+    (menuitem "&No (auto-reset stay constants on re-solves)"
+	      #:action (lambda () 
+			 (cl-set-auto-reset-stay-constants! (scwm-master-solver) #t))))))
+
 (define menu-constraints
   (menu
    (list
     (menuitem "&Constraints"
 	      #:submenu (lambda () (ui-constraints-toggle-menu)))
+    (menuitem "Springy constraints?"
+	      #:submenu menu-springy-constraints)
     (menuitem "Constraint &investigator"
 	      #:action (thunk start-constraint-investigator))
     (menuitem "Turn &on Constraint Solver"
@@ -828,7 +840,8 @@
   (if (scwm-is-constraint-enabled?)
       (begin
 	(use-scwm-modules constraints)
-	(start-constraints))
+	(start-constraints)
+	(cl-set-auto-reset-stay-constants! (scwm-master-solver) #f))
       (error "Scwm is not built to support constraints\n\
 Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
 
@@ -836,7 +849,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; (start-xterm)
 (define menu-root-start
   (menu
-   (list 
+   (filter-list 
     (menu-title "Start" #:image-left "mini-exp.xpm")
     menu-separator
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
@@ -849,8 +862,10 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 	      #:submenu menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
 	      #:submenu menu-games)
-    (menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
-	      #:submenu menu-constraints)
+    (if (scwm-is-constraint-enabled?)
+	(menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
+		  #:submenu menu-constraints)
+	#f)
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-term.xpm" 
 	      #:submenu menu-hosts-servers)
