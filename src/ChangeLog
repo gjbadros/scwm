@@ -1,3 +1,20 @@
+Tue Jun 29 16:25:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* session-manager.c: #ifdef out all code if HAVE_LIBSM_LIBICE is
+	not defined.  (Thanks Stephen Tell!)
+
+Tue Jun 29 15:56:23 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.c (free_msgwindow): Print better debug message if 
+	a window is visible when it is freed;  it shouldn't be as shown
+	windows are protect-ed from GC, and unprotect-ed from GC only
+	after they are hidden.  Also, only do the checks #ifndef NDEBUG,
+	and call UnmapMessageWindow instead of the higher-level
+	message_window_hide_x procedure.
+
+	* syscompat.c (setenv): Added, for platforms w/o setenv-- uses
+	putenv (and hence #includes <stdlib.h>)
+
 Tue Jun 29 15:14:08 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (AnnounceGnomeCompliancy): Added GNOME_SUPPORT_IN_C

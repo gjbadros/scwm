@@ -1,3 +1,8 @@
+Sat Jun 26 16:56:53 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* prefs-menu.scm: Added note about obsolescence-- do not want to
+	remove it yet, though.
+
 Sat Jun 26 13:30:47 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* tests/demo.scm: Added some extra sample code.

@@ -1,3 +1,7 @@
+Sat Jun 26 16:58:54 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Drop prefs-menu stuff.
+
 Sat Jun 26 13:31:57 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added property-respond, and use it.  Use right_ptr
