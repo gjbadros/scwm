@@ -462,3 +462,25 @@ Use `add-hook!' to attach this to `X-ConfigureRequest-hook'."
   (if (cached-program-exists? name)
       `(list ,name #:action (lambda () (execute ,name) ,@body)
 	     #:image-left ,pixmap)))
+
+;; (resize-xdvi-full-page-100%)
+(define*-public (resize-xdvi-full-page-100% #&optional (win (get-window)))
+  "Resize an Xdvi window to be full-page, 100%.
+Then you must use various mouse bindings to pan the page around."
+  (interactive)
+  (if (string-match "^Xdvi" (window-title win))
+      (resize-window 5180 6625 win)
+      (display-message-briefly "Not an Xdvi window")))
+
+(define*-public (eval-expression-interactively)
+  "Prompt for an expression and evaluate it interactively."
+  (interactive)
+  (prompt-string
+   "Expression:"
+   (lambda (val)
+     (let ((answer (eval-string val)))
+       (display-message-briefly
+	(string-append 
+	 "Answer: "
+	 (with-output-to-string 
+	   (lambda () (write answer)))))))))
