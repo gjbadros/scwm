@@ -315,8 +315,8 @@
 		 (sans-leading-whitespace args)
 		 (lambda a a)))
 	)
-    (set-hilight-foreground! (car s-args))
-    (set-hilight-background! (cadr s-args))))
+    (set-highlight-foreground! (car s-args))
+    (set-highlight-background! (cadr s-args))))
 
 (define-fvwm-command "Recapture"
  ;;; running this seems to screw my display up

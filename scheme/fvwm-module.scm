@@ -262,10 +262,10 @@
       ;; Fvwm always uses the default decor to send this; perhaps we should
       ;; use the window's decor instead?
       (with-decor (default-decor)
-		  (color-property (hilight-foreground) 
+		  (color-property (highlight-foreground) 
 				  'pixel))
       (with-decor (default-decor)		   
-		  (color-property (hilight-background) 
+		  (color-property (highlight-background) 
 				  'pixel)))
      port))
   

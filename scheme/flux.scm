@@ -456,7 +456,7 @@ notion of what the command line was used to run the application."
     (and (list? prop) (car prop))))
 
 ;; We need accessors for window background information,
-;; and window-hilight background information
+;; and window-highlight background information
 (define*-public (flash-window #&optional (win (get-window)) #&key
 			      (color (make-color "red"))
 			      (unflash-delay .5))

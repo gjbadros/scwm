@@ -20,8 +20,8 @@
 (set-not-menu-background! "gray")
 
 
-(set-hilight-foreground! "black")
-(set-hilight-background! "gray")
+(set-highlight-foreground! "black")
+(set-highlight-background! "gray")
 (set-icon-font! FIXED-FONT)
 (set-title-font! FIXED-FONT)
 (set-title-justify! 'center)
