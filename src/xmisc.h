@@ -22,6 +22,7 @@ extern XEvent Event;
 Window WXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
 Window WXGetPointerOffsets(Window w, int *pxRoot, int *pyRoot, int *pxReturn, int *pyReturn);
 Window WXGetPointerChild(Window wParent);
+Window WXGetWindowParent(Window wChild);
 Bool FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
 Bool FXGetWindowSize(Window w, int *pwidthReturn, int *pheightReturn);
 Bool FXWindowAccessible(Display *dpy, Window w);

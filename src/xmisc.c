@@ -67,6 +67,20 @@ WXGetPointerChild(Window wParent)
     return None;
 }
 
+Window
+WXGetWindowParent(Window wChild)
+{
+  Window parent;
+  unsigned int nchildren;
+  Window *children;
+  if (XQueryTree(dpy,wChild,&JunkRoot,&parent,&children, &nchildren)) {
+    /* success */
+    return parent;
+  } else {
+    return None;
+  }
+}
+
 Bool
 FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn)
 {

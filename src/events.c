@@ -152,12 +152,12 @@ It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. */
 
 SCWM_HOOK(window_enter_hook, "window-enter-hook", 1);
-  /** This hook is invoked whenever the mouse pointer enters a window.
+  /** This hook is invoked whenever the mouse pointer enters a top-level window.
 It is called with one argument, the window object of the window just
 entered. */
 
 SCWM_HOOK(window_leave_hook, "window-leave-hook", 1);
-  /** This hook is invoked whenever the mouse pointer leaves a window.
+  /** This hook is invoked whenever the mouse pointer leaves a top-level window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. */
 
@@ -249,7 +249,7 @@ DispatchEvent()
 
   StashEventTime(&Event);
 
-  pswCurrent = PswFromWindow(dpy,w);
+  pswCurrent = PswFromAnyWindow(dpy,w);
   last_event_type = Event.type;
   last_event_window = w;
 
@@ -1424,12 +1424,12 @@ HandleButtonPress()
 }
 #undef FUNC_NAME
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleEnterNotify - EnterNotify event handler
- *
- ************************************************************************/
+
+static SCM g_lastwin_entered;
+
+/*
+ * HandleEnterNotify - EnterNotify event handler
+ */
 void 
 HandleEnterNotify()
 {
@@ -1442,8 +1442,10 @@ HandleEnterNotify()
   if (XCheckTypedWindowEvent(dpy, ewp->window, LeaveNotify, &d)) {
     StashEventTime(&d);
     if ((d.xcrossing.mode == NotifyNormal) &&
-	(d.xcrossing.detail != NotifyInferior))
+	(d.xcrossing.detail != NotifyInferior)) {
+      /* GJB:FIXME:: should we call both hooks here? */
       return;
+    }
   }
 /* an EnterEvent in one of the PanFrameWindows activates the Paging */
 #ifndef NON_VIRTUAL
@@ -1463,6 +1465,11 @@ HandleEnterNotify()
 #endif /* NON_VIRTUAL */
 
   if (Event.xany.window == Scr.Root) {
+    if (SCM_BOOL_F != g_lastwin_entered) {
+      call1_hooks(window_leave_hook, g_lastwin_entered);
+      g_lastwin_entered = SCM_BOOL_F;
+    }
+  
     if (Scr.Focus && !Scr.Focus->fClickToFocus &&
 	!Scr.Focus->fSloppyFocus) {
       SetFocus(Scr.NoFocusWin, NULL, 1);
@@ -1478,7 +1485,12 @@ HandleEnterNotify()
   if (!pswCurrent)
     return;
 
-  call1_hooks(window_enter_hook, pswCurrent->schwin);
+  if (pswCurrent->schwin != g_lastwin_entered) {
+    if (SCM_BOOL_F != g_lastwin_entered)
+      call1_hooks(window_leave_hook, g_lastwin_entered);
+    g_lastwin_entered = pswCurrent->schwin;
+    call1_hooks(window_enter_hook, g_lastwin_entered);
+  }
 
   if (!pswCurrent->fClickToFocus) {
     SetFocus(pswCurrent->w, pswCurrent, 0);
@@ -1493,27 +1505,20 @@ HandleEnterNotify()
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleLeaveNotify - LeaveNotify event handler
- *
- ************************************************************************/
+/*
+ * HandleLeaveNotify - LeaveNotify event handler
+ */
 void 
 HandleLeaveNotify()
 {
   XEnterWindowEvent *ewp = &Event.xcrossing;
+  ScwmWindow *pswOldCurrent = pswCurrent;
 
   DBUG((DBG,"HandleLeaveNotify", "Routine Entered"));
-
   /* If we leave the root window, then we're really moving
    * another screen on a multiple screen display, and we
    * need to de-focus and unhighlight to make sure that we
    * don't end up with more than one highlighted window at a time */
-
-  if (pswCurrent) {
-    call1_hooks(window_leave_hook, pswCurrent->schwin);
-  } 
 
   if (ewp->window == Scr.Root) {
     if (ewp->mode == NotifyNormal) {
@@ -1530,7 +1535,7 @@ HandleLeaveNotify()
              ewp->window == Scr.PanFrameRight.win ||
              ewp->window == Scr.PanFrameBottom.win) {
     GenerateEdgeEvents();
-  } 
+  }
 }
 
 

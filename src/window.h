@@ -343,6 +343,7 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 #define unset_window_context() do { scm_window_context = SCM_UNDEFINED; } while (0)
 
 ScwmWindow *PswFromWindow(Display *dpy, Window w);
+ScwmWindow *PswFromAnyWindow(Display *dpy, Window w);
 ScwmWindow *PswFromPointerLocation(Display *dpy);
 ScwmWindow *PswSelectInteractively(Display *dpy);
 

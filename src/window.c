@@ -64,6 +64,22 @@ SCWM_GLOBAL_HOOK(cannot_grab_hook,"cannot-grab-hook",0);
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  */
 
+SCWM_HOOK(select_window_enter_hook,"select-window-enter-hook",1);
+  /** This hook is invoked when a window is entered during window selection.
+The hook procedures are called with a single argument, the window just entered. 
+This hook is invoked once `select-window-interactively-no-message' is 
+called if the pointer is already in a window.  (But the
+leave hook is not invoked similarly when the selection completes).
+*/
+
+SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1);
+  /** This hook is invoked when a window is left during window selection.
+The hook procedures are called with a single argument, the window just left. 
+This hook is not invoked upon selection completion (unlike 
+`select-window-enter-hook' that is called initially upon calling
+`select-window-interactively-no-message').
+*/
+
 
 /* also used by miscproc.c's set-colormap-focus! */
 SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
@@ -1221,6 +1237,10 @@ UngrabEm()
 }
 
 
+/* PswFromWindow only checks w, not its parents,
+   it may often be better to use PswFromAnyWindow
+   which traverses up the window hierarchy until 
+   it finds a window with the ScwmContext before failing */
 ScwmWindow *
 PswFromWindow(Display *dpy, Window w)
 {
@@ -1229,6 +1249,23 @@ PswFromWindow(Display *dpy, Window w)
     return NULL;
   }
   return psw;
+}
+
+/* PswFromAnyWindow checks w and all its parents
+   for a ScwmContext context.
+   This is the right function to use to map from 
+   a window event to the top-level ScwmWindow in
+   which that event happened (e.g., window-enter/leave-hook) */
+ScwmWindow *
+PswFromAnyWindow(Display *dpy, Window w)
+{
+  ScwmWindow *psw;
+  while (w != None) {
+    if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &psw) != XCNOENT)
+      return psw;
+    w = WXGetWindowParent(w);
+  }
+  return NULL;
 }
 
 ScwmWindow *
@@ -1280,6 +1317,9 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   Bool fDone = False;
   Bool fFinished = False;
   Window original_w;
+  SCM lastwin_entered = SCM_BOOL_F;
+  ScwmWindow *pswInitialWin = PswFromPointerLocation(dpy);
+  XEvent event_junk;
 
   original_w = *w;
 
@@ -1288,14 +1328,29 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
     return True;
   }
 
+  /* The grab from above generates an EnterNotify on the root window
+     that we need to throw away, otherwise the window that has
+     the pointer initially will get the select_window_leave_hook called
+     for it right away when it appears that the root window has been
+     entered */
+  if (XCheckMaskEvent(dpy, EnterWindowMask, &event_junk))
+    scwm_msg(DBG,"DeferExecution","Removed EnterNotify event");
+
+  if (pswInitialWin) {
+    lastwin_entered = pswInitialWin->schwin;
+    call1_hooks(select_window_enter_hook, lastwin_entered);
+  }
+
   while (!fFinished) {
     fDone = False;
     while (XCheckMaskEvent(dpy,
                            ButtonPressMask | ButtonReleaseMask |
                            ExposureMask | KeyPressMask | VisibilityChangeMask |
-                           ButtonMotionMask | PointerMotionMask, 
+                           ButtonMotionMask | PointerMotionMask | 
+                           EnterWindowMask,
                            eventp) == False)
       NoEventsScwmUpdate();
+
     /* fallen through, so we got an event we're interested in */
     StashEventTime(eventp);
     
@@ -1313,6 +1368,24 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
       fDone = True;
     }
+    if (eventp->type == EnterNotify) {
+      ScwmWindow *psw = PswFromAnyWindow(dpy,eventp->xany.window);
+      if (Scr.Root == eventp->xany.window && SCM_BOOL_F != lastwin_entered) {
+        /* See note above about spurious EnterNotify event on the
+           root window that we throw away when first entering this function */
+        call1_hooks(select_window_leave_hook, lastwin_entered);
+        lastwin_entered = SCM_BOOL_F;
+      } else if (psw && psw->schwin && VALIDWINP(psw->schwin)) {
+        SCM win = psw->schwin;
+        if (win != lastwin_entered) {
+          if (SCM_BOOL_F != lastwin_entered)
+            call1_hooks(select_window_leave_hook, lastwin_entered);
+          lastwin_entered = win;
+          call1_hooks(select_window_enter_hook, lastwin_entered);
+        }
+      }
+    }
+
     if (!fDone) {
       /* copy the event to the global current event structure so the
 	 right event is dispatched on. */

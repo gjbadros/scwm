@@ -1007,9 +1007,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
       NoEventsScwmUpdate();
-      ms_sleep(10);
-      ++c10ms_delays;
-
+      /* check using equality so we only invoke the operation once */
       if (c10ms_delays == pmd->pmenu->cmsPopupDelay/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmd->pmdNext == NULL) {
@@ -1028,6 +1026,9 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	  }
 	}
       }
+
+      ms_sleep(10);
+      ++c10ms_delays;
     }
     if (Event.type == MotionNotify) {
       /* discard any extra motion events before a release */
