@@ -80,6 +80,11 @@ EXTERN long scm_tc16_scwm_menulook;
 
 SCM make_menulook(char * szName, SCM extra, MenuDrawingVtable * pmdvt);
 
+#define VALIDATE_ARG_MENULOOK_OR_SYM(pos,scm) \
+  do { \
+  if (!MENULOOK_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
 #endif
 
 /* Local Variables: */

@@ -62,7 +62,7 @@ SCM_VCELL_INIT(menu_side_image, "menu-side-image", SCM_BOOL_F);
 SCM_VCELL_INIT(menu_side_bg_color, "menu-side-bg-color", make_color(gh_str02scm("gray80")));
 SCM_VCELL_INIT(menu_side_bg_color_set, "menu-side-bg-color-set", SCM_BOOL_F);
 SCM_VCELL_INIT(menu_bg_image, "menu-bg-image", SCM_BOOL_F);
-SCM_VCELL_INIT(menu_look, "menu-look", drawmenu_menu_look);
+SCM_VCELL_INIT(menu_look, "menu-look", drawmenu_look);
 #endif
 
 
@@ -227,10 +227,8 @@ text-color stipple-color
 image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
 #define FUNC_NAME s_menu_properties
 {
-  Menu *pmenu = SAFE_MENU(menu);
-  if (!pmenu) {
-    SCWM_WRONG_TYPE_ARG(1,menu);
-  }
+  Menu *pmenu;
+  VALIDATE_ARG_MENU_COPY(1,menu,pmenu);
   return gh_list(pmenu->scmMenuTitle,
 		 pmenu->scmMenuItems,
 		 pmenu->scmImgSide,
@@ -292,36 +290,23 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->scmMenuItems = list_of_menuitems;
 
   /* BG-COLOR: Required */
-  if (!COLOR_OR_SYMBOL_P(bg_color)) { /* why not DYNAMIC_COLOR_P? */
-    SCWM_WRONG_TYPE_ARG(2,bg_color);
-  }
+  VALIDATE_ARG_COLOR_OR_SYM(2,bg_color);
   pmenu->scmBGColor = bg_color;
 
   /* TEXT-COLOR: Required */
-  if (!COLOR_OR_SYMBOL_P(text_color)) { /* again */
-    SCWM_WRONG_TYPE_ARG(3,text_color);
-  }
+  VALIDATE_ARG_COLOR_OR_SYM(3,text_color);
   pmenu->scmTextColor = text_color;
 
   /* STIPPLE-COLOR: Required */
-  if (!COLOR_OR_SYMBOL_P(stipple_color)) { /* And again */
-    SCWM_WRONG_TYPE_ARG(4,stipple_color);
-  }
+  VALIDATE_ARG_COLOR_OR_SYM(4,stipple_color);
   pmenu->scmStippleColor = stipple_color;
 
   /* FONT: Required */
-  if (!FONT_OR_SYMBOL_P(font)) { /* DYNAMIC_FONT_P ? */
-    SCWM_WRONG_TYPE_ARG(5,font);
-  }
+  VALIDATE_ARG_FONT_OR_SYM(5,font);
   pmenu->scmFont = font;
 
-
   /* PICTURE-SIDE: Optional */
-  if (UNSET_SCM(picture_side)) {
-    picture_side = SCM_BOOL_F;
-  } else if (!IMAGE_OR_SYMBOL_P(picture_side)) {
-    SCWM_WRONG_TYPE_ARG(6,picture_side);
-  } 
+  VALIDATE_ARG_IMAGE_OR_SYM_USE_F(6,picture_side);
   pmenu->scmImgSide = picture_side;
 
   /* SIDE-PICTURE-ALIGN: Optional */
@@ -337,19 +322,11 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->scmSideAlign = side_picture_align;
 
   /* SIDE-BG-COLOR: Optional */
-  if (UNSET_SCM(side_bg_color)) {
-    side_bg_color = WHITE_COLOR;
-  } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
-    SCWM_WRONG_TYPE_ARG(8,side_bg_color);
-  }
+  VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(8,side_bg_color);
   pmenu->scmSideBGColor = side_bg_color;
 
   /* PICTURE-BG: Optional */
-  if (UNSET_SCM(picture_bg)) {
-    picture_bg = SCM_BOOL_F;
-  } else if (!IMAGE_OR_SYMBOL_P(picture_bg)) {
-    SCWM_WRONG_TYPE_ARG(9,picture_bg);
-  } 
+  VALIDATE_ARG_IMAGE_OR_SYM_USE_F(9,picture_bg);
   pmenu->scmImgBackground = picture_bg;
 
   /* EXTRA-OPTIONS: Optional */
@@ -359,8 +336,6 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->scmMenuLook = SCM_BOOL_F;
 
   pmenu->pchUsedShortcutKeys = NULL;
-
-  
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
   return answer;
@@ -373,7 +348,7 @@ SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
 POPUP-DELAY is the number of ms to wait before popping up submenus. */
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
-  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
+  VALIDATE_ARG_MENU(1,menu);
   VALIDATE_ARG_INT_COPY(2,popup_delay,MENU(menu)->cmsPopupDelay);
   return SCM_UNSPECIFIED;
 }
@@ -386,7 +361,7 @@ SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
 See `set-menu-popup-delay!'. */
 #define FUNC_NAME s_menu_popup_delay
 {
-  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
+  VALIDATE_ARG_MENU(1,menu);
   return gh_int2scm(MENU(menu)->cmsPopupDelay);
 }
 #undef FUNC_NAME
@@ -399,7 +374,7 @@ SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
 HOVER-DELAY is the number of ms to wait before invoking the hover action. */
 #define FUNC_NAME s_set_menu_hover_delay_x
 {
-  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
+  VALIDATE_ARG_MENU(1,menu);
   VALIDATE_ARG_INT_COPY(2,hover_delay,MENU(menu)->cmsHoverDelay);
   return SCM_UNSPECIFIED;
 }
@@ -411,27 +386,19 @@ SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
 See `set-menu-hover-delay!'. */
 #define FUNC_NAME s_menu_hover_delay
 {
-  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
+  VALIDATE_ARG_MENU(1,menu);
   return gh_int2scm(MENU(menu)->cmsPopupDelay);
 }
 #undef FUNC_NAME
 
 
-/* FIXJTL: this is a very unfortunate naming system; maybe all the
-   set-menu-* funcs should be set-default-menu-*?  Or something like
-   the window (with-style (set-menu-look! ...)) system? */
-SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
+SCWM_PROC(set_menu_look_x, "set-menu-look!", 2, 0, 0,
            (SCM menu, SCM menu_look))
 /** Use MENU-LOOK as the menu-look for MENU. */
-#define FUNC_NAME s_set_menu_menu_look_x
+#define FUNC_NAME s_set_menu_look_x
 {
-  if (!MENU_P(menu)) {
-    SCWM_WRONG_TYPE_ARG(1,menu);
-  }
-
-  if (!MENULOOK_OR_SYMBOL_P(menu_look)) {
-    SCWM_WRONG_TYPE_ARG(2,menu_look);
-  }
+  VALIDATE_ARG_MENU(1,menu);
+  VALIDATE_ARG_MENULOOK_OR_SYM(2,menu_look);
 
   MENU(menu)->scmMenuLook = menu_look;
   
@@ -439,24 +406,124 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
+SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
            (SCM menu, SCM menu_title))
 /** Use MENU-TITLE as the title for MENU. */
-#define FUNC_NAME s_set_menu_menu_title_x
+#define FUNC_NAME s_set_menu_title_x
 {
-  if (!MENU_P(menu)) {
-    SCWM_WRONG_TYPE_ARG(1,menu);
-  }
-
-  if (!MENUITEM_P(menu_title)) {
-    SCWM_WRONG_TYPE_ARG(2,menu_title);
-  }
+  VALIDATE_ARG_MENU(1,menu);
+  VALIDATE_ARG_MENUITEM(2,menu_title);
 
   MENU(menu)->scmMenuTitle = menu_title;
   
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
+
+SCWM_PROC(set_menu_colors_x, "set-menu-colors!", 3, 1, 0,
+           (SCM menu, SCM text_color, SCM bg_color, SCM stipple_color))
+     /** Use TEXT-COLOR and BG-COLOR as the colors for MENU.
+STIPPLE-COLOR is optional, and if given will be used for the
+stipple color for the MENU. */
+#define FUNC_NAME s_set_menu_colors_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  if (!UNSET_SCM(text_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM(2,text_color);
+    pm->scmTextColor = text_color;
+  }
+  if (!UNSET_SCM(bg_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM(3,bg_color);
+    pm->scmBGColor = bg_color;
+  }
+  if (!UNSET_SCM(stipple_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM(4,stipple_color);
+    pm->scmStippleColor = stipple_color;
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
+           (SCM menu, SCM font))
+/** Use FONT as the font for MENU. */
+#define FUNC_NAME s_set_menu_font_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  VALIDATE_ARG_FONT_OR_SYM(2,font);
+
+  pm->scmFont = font;
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_menu_side_picture_x, "set-menu-side-picture!", 2, 2, 0,
+           (SCM menu, SCM picture, SCM align, SCM bg_color))
+/** Use PICTURE as the side picture for MENU.
+Set its alignment to ALIGN, and its background
+color to BG-COLOR. */
+#define FUNC_NAME s_set_menu_side_picture_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+
+  VALIDATE_ARG_IMAGE_OR_SYM(2,picture);
+  pm->scmImgSide = picture;
+
+  if (!UNSET_SCM(align)) {
+    if (!gh_symbol_p(align) ||
+        (align != sym_top &&
+         align != sym_center &&
+         align != sym_bottom)) {
+      scm_misc_error(FUNC_NAME,"ALIGN must be 'top, 'center or 'bottom'",
+                     SCM_EOL);
+    }
+    pm->scmSideAlign = align;
+  }
+
+  if (!UNSET_SCM(bg_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(4,bg_color);
+    pm->scmSideBGColor = bg_color;
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0,
+           (SCM menu, SCM picture))
+/** Use PICTURE as the background image for MENU. */
+#define FUNC_NAME s_set_menu_background_picture_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  VALIDATE_ARG_IMAGE_OR_SYM(2,picture);
+  
+  pm->scmImgBackground  = picture;
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_menu_extra_options_x, "set-menu-extra-options!", 2, 0, 0,
+          (SCM menu, SCM options))
+     /** Set MENU's extra options to OPTIONS. */
+#define FUNC_NAME s_set_menu_extra_options_x
+{
+  VALIDATE_ARG_MENU(1,menu);
+  MENU(menu)->scmExtraOptions = options;
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 
 /*
  * GetPreferredPopupPosition
@@ -1191,7 +1258,9 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
             DBUG((DBG,FUNC_NAME,"Same item, %d", c10ms_delays));
           }
 	}
-	if (pmiim && pmiim->mis != MIS_Selected && pmiim->mis != MIS_Grayed) {
+        if (!pmiim)
+          continue;
+	if (pmiim->mis != MIS_Selected && pmiim->mis != MIS_Grayed) {
 	  DBUG((DBG,FUNC_NAME,"New selection, %d", c10ms_delays));
 	  SelectAndRepaintPmiim(pmiim);
 	  c10ms_delays = 0;
@@ -1502,21 +1571,11 @@ right justified against X-POS. */
   int x = -1, y = -1;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
-  if (!MENU_P(menu)) {
-    SCWM_WRONG_TYPE_ARG(1, menu);
-  }
+  VALIDATE_ARG_MENU(1,menu);
   VALIDATE_ARG_BOOL_COPY_USE_F(2,warp_to_first_p,fWarpToFirst);
 
-  if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
-    SCWM_WRONG_TYPE_ARG(3, x_pos);
-
-  if (!UNSET_SCM(y_pos) && !gh_number_p(y_pos)) 
-    SCWM_WRONG_TYPE_ARG(4, y_pos);
-
-  if (gh_number_p(x_pos)) x = gh_scm2int(x_pos);
-
-  if (gh_number_p(y_pos)) y = gh_scm2int(y_pos);
-
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,x_pos,x,-1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,y_pos,y,-1);
   VALIDATE_ARG_BOOL_COPY_USE_T(5,left_side_p,fLeftSide);
 
   return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,

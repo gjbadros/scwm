@@ -76,6 +76,18 @@ typedef struct MenuItemInMenu_tag
 #define MENUITEM(X)  ((MenuItem *)gh_cdr(X))
 #define SAFE_MENUITEM(X)  (MENUITEM_P((X))? MENUITEM((X)) : NULL)
 
+#define VALIDATE_ARG_MENUITEM(pos,scm) \
+  do { \
+  if (!MENUITEM_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_MENUITEM_COPY(pos,scm,cvar) \
+  do { \
+  if (!MENUITEM_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = MENUITEM(scm); \
+  } while (0)
+
+
 #endif
 
 /* Local Variables: */

@@ -39,6 +39,35 @@
     if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
   } while (0)
 
+#define VALIDATE_ARG_COLOR_OR_SYM(pos,X)                     \
+  do {                                                       \
+    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
+  } while (0)
+
+#define VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(pos,X)           \
+  do {                                                       \
+    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (UNSET_SCM(X)) { X = WHITE_COLOR; }                   \
+    else if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
+  } while (0)
+
+#define VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(pos,X)           \
+  do {                                                       \
+    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (UNSET_SCM(X)) { X = BLACK_COLOR; }                   \
+    else if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
+  } while (0)
+
+#define VALIDATE_ARG_COLOR_COPY_USE_WHITE(pos,X,xcolor)       \
+  do {                                                        \
+    if (UNSET_SCM(X)) { X = WHITE_COLOR; }                    \
+    if (gh_string_p(X)) { X = make_color(X); }                \
+    if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X); } \
+    xcolor = XCOLOR(X);                                       \
+  } while (0)
+
+
 #define VALIDATE_ARG_COLOR_COPY_USE_BLACK(pos,X,xcolor)       \
   do {                                                        \
     if (UNSET_SCM(X)) { X = BLACK_COLOR; }                    \

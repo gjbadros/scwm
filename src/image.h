@@ -84,6 +84,25 @@ SCM make_image(SCM name);
 
 void init_image_colormap();
 
+/* we use UNSET_SCM instead of just testing for == SCM_UNDEFINED
+   so SCM_BOOL_F is okay -- this does do an extra assignment, though */
+#define VALIDATE_ARG_IMAGE_USE_F(pos,scm) \
+  do { \
+  if (UNSET_SCM(scm)) scm = SCM_BOOL_F; \
+  else if (!IMAGE_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_IMAGE_OR_SYM_USE_F(pos,scm) \
+  do { \
+  if (UNSET_SCM(scm)) scm = SCM_BOOL_F; \
+  else if (!IMAGE_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_IMAGE_OR_SYM(pos,scm) \
+  do { \
+  if (!IMAGE_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
 #endif /* IMAGE_H */
 
 /* Local Variables: */

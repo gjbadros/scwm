@@ -116,6 +116,19 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+/* we use UNSET_SCM instead of just testing for == SCM_UNDEFINED
+   so SCM_BOOL_F is okay -- this does do an extra assignment, though */
+#define VALIDATE_ARG_PROC_USE_F(pos,scm) \
+  do { \
+  if (UNSET_SCM(scm) scm = SCM_BOOL_F; \
+  else if (!gh_procedure_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_PROC_OR_SYM_USE_F(pos,scm) \
+  do { \
+  if (UNSET_SCM(scm)) scm = SCM_BOOL_F; \
+  else if (!PROCEDURE_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
 
 #endif
-

@@ -4018,7 +4018,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 /*SCWM_VALIDATE: win, flag */
 static void
 set_squashed_titlebar_x(SCM win, SCM flag)
-#define FUNC_NAME "set_squashed_titlebar_x!"
+#define FUNC_NAME "set_squashed_titlebar_x"
 {
   ScwmWindow *psw;
   SCM oldval;

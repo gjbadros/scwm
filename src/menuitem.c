@@ -104,10 +104,8 @@ Note that this is the same as the arguments to the `make-menuitem'
 primitive. */
 #define FUNC_NAME s_menuitem_properties
 {
-  MenuItem *pmi = SAFE_MENUITEM(menu_item);
-  if (!pmi) {
-    SCWM_WRONG_TYPE_ARG(1,menu_item);
-  }
+  MenuItem *pmi;
+  VALIDATE_ARG_MENUITEM_COPY(1,menu_item,pmi);
   return gh_list(gh_str02scm(pmi->szLabel),
 		 pmi->scmAction,
 		 gh_str02scm(pmi->szExtra),
@@ -147,10 +145,7 @@ For a higher-level interface to this function, see `menuitem'. */
 {
   MenuItem *pmi = NEW(MenuItem);
   SCM answer;
-  if (!gh_string_p(label)) {
-    SCWM_WRONG_TYPE_ARG(1,label);
-  }
-  pmi->szLabel = gh_scm2newstr(label,&pmi->cchLabel);
+  VALIDATE_ARG_STR_NEWCOPY_LEN(1,label,pmi->szLabel,pmi->cchLabel);
 
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
@@ -162,58 +157,34 @@ For a higher-level interface to this function, see `menuitem'. */
   if (UNSET_SCM(extra_label)) {
     pmi->szExtra = NULL;
     pmi->cchExtra = 0;
-  } else if (!gh_string_p(extra_label)) {
-    SCWM_WRONG_TYPE_ARG(3,extra_label);
   } else {
-    pmi->szExtra = gh_scm2newstr(extra_label,&pmi->cchExtra);
+    VALIDATE_ARG_STR_NEWCOPY_LEN(3,extra_label,pmi->szExtra,pmi->cchExtra);
   }
 
-  if (UNSET_SCM(picture_above)) {
-    picture_above = SCM_BOOL_F;
-  } else if (!IMAGE_P(picture_above)) {
-    SCWM_WRONG_TYPE_ARG(4,picture_above);
-  }
+  VALIDATE_ARG_IMAGE_USE_F(4,picture_above);
   pmi->scmImgAbove = picture_above;
 
-  if (UNSET_SCM(picture_left)) {
-    picture_left = SCM_BOOL_F;
-  } else if (!IMAGE_P(picture_left)) {
-    SCWM_WRONG_TYPE_ARG(5,picture_left);
-  } 
+  VALIDATE_ARG_IMAGE_USE_F(5,picture_left);
   pmi->scmImgLeft = picture_left;
 
-  if (UNSET_SCM(hover_action)) {
-    pmi->scmHover = SCM_BOOL_F;
-  } else if (!PROCEDURE_OR_SYMBOL_P(hover_action)) {
-    SCWM_WRONG_TYPE_ARG(6,hover_action);
-  }
+  VALIDATE_ARG_PROC_OR_SYM_USE_F(6,hover_action);
   pmi->scmHover = hover_action;
 
-  if (UNSET_SCM(unhover_action)) {
-    pmi->scmUnhover = SCM_BOOL_F;
-  } else if (!PROCEDURE_OR_SYMBOL_P(unhover_action)) {
-    SCWM_WRONG_TYPE_ARG(7,unhover_action);
-  }
-  pmi->scmUnhover = unhover_action;
+  VALIDATE_ARG_PROC_OR_SYM_USE_F(7,unhover_action);
+  pmi->scmHover = unhover_action;
 
   if (UNSET_SCM(hotkey_prefs)) {
     pmi->pchHotkeyPreferences = NULL;
     pmi->cchHotkeyPreferences = 0;
-  } else if (!gh_string_p(hotkey_prefs)) {
-    SCWM_WRONG_TYPE_ARG(8,hotkey_prefs);
   } else {
-    pmi->pchHotkeyPreferences = 
-      gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
+    VALIDATE_ARG_STR_NEWCOPY_LEN(8,hotkey_prefs,pmi->pchHotkeyPreferences,pmi->cchHotkeyPreferences);
   }
 
   VALIDATE_ARG_BOOL_COPY_USE_F(9,submenu_p,pmi->fIsForcedSubmenu);
 
-  if (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
-      picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F) {
-    pmi->fIsSeparator = True;
-  } else {
-    pmi->fIsSeparator = False;
-  }
+  pmi->fIsSeparator =
+    (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
+     picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F);
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menuitem,pmi);
   return answer;

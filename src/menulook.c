@@ -49,10 +49,10 @@ print_menulook(SCM scm, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 
-SCWM_PROC (menulook_p, "menulook?", 1, 0, 0,
+SCWM_PROC (menu_look_p, "menu-look?", 1, 0, 0,
            (SCM obj))
      /** Return #t if OBJ is a menulook object, #f otherwise. */
-#define FUNC_NAME s_menulook_p
+#define FUNC_NAME s_menu_look_p
 {
   return SCM_BOOL_FromBool(MENULOOK_P(obj));
 }
@@ -79,7 +79,11 @@ make_menulook_internal(SCM name, SCM extra, MenuDrawingVtable * mdvt)
 /**CONCEPT: Menu Looks
 
   Menus have an associated menu look, which determines how the menus
-are drawn.
+are drawn.  Menu look objects are created by dynamically-loaded
+C modules.  For example, the xpm-menus module creates a variable
+`xpm-shaped-menu-look' that specifies that the menu should be drawn
+using that code.  `copy-menu-look' can be used to copy a menu
+look and change some of its properties.
 */
 
 SCM
