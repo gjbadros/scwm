@@ -61,7 +61,7 @@
 Returns #f if OBJ is not a color object or a string."
   (cond
    ((color? obj) obj)
-   ((string? obj) (make-color obj))
+   ((string? obj) (if (or (string=? "inherit" obj) (string=? "#f" obj)) #f (make-color obj)))
    (else #f)))
 
 (define-scwm-option *use-scwm-system-proc* #f

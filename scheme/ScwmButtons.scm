@@ -35,16 +35,20 @@
 ;;;;  The above will produce a horizontal bar, the below a vertical bar.
 ;;;
 #!
-(run-ScwmButtons
- (list
-  (button-item "mini-term.xpm" #:action "xterm" #:tooltip "XTerm")
-  (button-item "mini-calc.xpm" #:action "xcalc" #:tooltip "XCalc")
-  (button-item "mini-xmcd.xpm" #:action "xmcd" #:tooltip "Xmcd")
-  (button-item "mini-xv.xpm" #:action "xv" #:tooltip "Xv")
-  (button-item "mini-gv.xpm" #:action "gv" #:tooltip "gv")
-  (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape")
-  #:orientation 'vertical
-  ))
+(define btns
+  (run-ScwmButtons
+   (list
+    (button-item "mini-term.xpm" #:action "xterm" #:tooltip "XTerm")
+    (button-item "mini-calc.xpm" #:action "xcalc" #:tooltip "XCalc")
+    (button-item "mini-xmcd.xpm" #:action "xmcd" #:tooltip "Xmcd")
+    (button-item "mini-xv.xpm" #:action "xv" #:tooltip "Xv")
+    (button-item "mini-gv.xpm" #:action "gv" #:tooltip "gv")
+    (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
+    #:orientation 'vertical #:name "MiniButtons"
+   ))
+(btns 'orientation 'horizontal)
+(btns 'orientation 'vertical)
+(btns 'quit)
 !#
 ;;;
 ;;;; Also the name of the buttonbar can be specified for setting specific
@@ -70,15 +74,18 @@
 
 (define*-public
   (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
-		   (name "ScwmButtons2"))
+		   (name "ScwmButtons") (auto-orient #t)
+		   (auto-orient-margin 100))
   (let* ((toplevel (gtk-window-new 'toplevel))
 	 (toolbar (case orientation
 		((horizontal) (gtk-toolbar-new 'horizontal 'icons))
 		((vertical) (gtk-toolbar-new 'vertical 'icons))))
+	 (current-orientation orientation)
 	 )
     (gtk-window-set-title toplevel name)
+    (gtk-window-set-policy toplevel #t #t #t)
     (gtk-widget-set-name toolbar name)
-    (gtk-window-set-wmclass toplevel name "Scwm")
+    (gtk-window-set-wmclass toplevel "ScwmButtons" "Scwm")
     (for-each (lambda (f)
 		(let* ((button (gtk-button-new))
 		       (imagepath (find-file-in-path (car f) image-load-path))
@@ -99,23 +106,67 @@
     (gtk-toolbar-set-tooltips toolbar #t)
     (gtk-widget-show toolbar)
     (gtk-widget-show toplevel)
-    (lambda (action . args)
-      (case action
-	((quit)
-	 (if (not (gtk-object-destroyed toplevel))
-	     (gtk-widget-unmap toplevel)
-	     (gtk-widget-destroy toplevel)))
-	((orientation)
-	 (gtk-toolbar-set-orientation toolbar (car args)))
-	((tooltips)
-	 (gtk-toolbar-set-tooltips toolbar (car args)))
-	((add-child)
-	 (gtk-toolbar-append-widget
-	  toolbar
-	  (car args) (if (string? (cadr args)) (cadr args) ("")) ""))
-	((add-space)
-	 (gtk-toolbar-append-space toolbar))
-      ))))
+
+    (define (imnph win x y)
+      (define xclose (min (abs (- x (car (display-size)))) (abs x)))
+      (define yclose (min (abs (- y (cadr (display-size)))) (abs y)))
+;;      (display xclose) (display ", ") (display yclose) (newline)
+      (if (or (< xclose auto-orient-margin) (< yclose auto-orient-margin))
+	  (if (< xclose yclose)
+	      (if (equal? current-orientation 'horizontal)
+		  (begin
+		    (gtk-toolbar-set-orientation toolbar 'vertical)
+		    (set! current-orientation 'vertical)
+		    (gdk-flush)
+		    (handle-pending-events)))
+	      (if (equal? current-orientation 'vertical)
+		  (begin
+		    (gtk-toolbar-set-orientation toolbar 'horizontal)
+		    (set! current-orientation 'horizontal)
+		    (gdk-flush)
+		    (handle-pending-events)))))
+      (handle-pending-events))
+
+    (define (imfh win)
+      (if (string=? (window-resource win) "ScwmButtons")
+	  (begin
+	    (remove-hook! interactive-move-new-position-hook imnph))))
+
+    (define* (imsh win)
+      (if (string=? (window-resource win) "ScwmButtons")
+	  (begin
+	    (add-hook! interactive-move-new-position-hook imnph))))
+
+    (define handle
+      (lambda (action . args)
+	(case action
+	  ((quit)
+	   (if (not (gtk-object-destroyed toplevel))
+	       (begin
+		 (gtk-widget-unmap toplevel)
+		 (gtk-widget-destroy toplevel)
+		 (if auto-orient
+		     (begin
+		       (remove-hook! interactive-move-start-hook imsh)
+		       (remove-hook! interactive-move-finish-hook imfh)))
+		 )))
+	  ((orientation)
+	   (gtk-toolbar-set-orientation toolbar (car args)))
+	  ((tooltips)
+	   (gtk-toolbar-set-tooltips toolbar (car args)))
+	  ((add-child)
+	   (gtk-toolbar-append-widget
+	    toolbar
+	    (car args) (if (string? (cadr args)) (cadr args) ("")) ""))
+	  ((add-space)
+	   (gtk-toolbar-append-space toolbar))
+	  )))
+    (if auto-orient
+	(begin
+	  (add-hook! interactive-move-start-hook imsh)
+	  (add-hook! interactive-move-finish-hook imfh)))
+    handle
+    ))
 
 (define-public (close-ScwmButtons sb)
   (sb 'quit))
