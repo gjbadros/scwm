@@ -25,6 +25,8 @@
 ERRORSFILE=$HOME/.SCWM-errors; export ERRORSFILE
 : ${SCWMDIR:=$HOME/scwm-source}
 MODULEPATH=/usr/X11/lib/X11/fvwm2:$HOME/lib/fvwm2/modules/$UNAME:/uns/lib/fvwm2; export MODULEPATH
+: ${XTERM_PROGRAM_NAME:=xterm}; export XTERM_PROGRAM_NAME
+
 
 #test -r /etc/profile && . /etc/profile
 
@@ -126,8 +128,6 @@ XSESNPID="$$"; export XSESNPID
 echo $DISPLAY | grep -q \:.\.. || DISPLAY=$DISPLAY.0
 if [ "$DISPLAY"x = ""x ]; then DISPLAY=:0.0; echo "Warning DISPLAY was empty!! Set to :0.0"; fi
 
-XTERM=xterm; export XTERM
-
 xmodmap -pke > $HOME/.xmodmap-pke-${DISPLAY}
 
 env > $HOME/.Xrootenv-${DISPLAY}
@@ -135,7 +135,7 @@ env > $HOME/.Xrootenv-${DISPLAY}
 # This window will get iconified when gjb.scwmrc starts up
 # Uses the title of the window, so be sure to change gjb.scwmrc
 # if the title here changes.
-$XTERM -geometry 100x40 -name "scwmmessages" -T "SCWM Messages...." -e /bin/sh -c "echo 'SCWM MESSAGES: (Also writing to $ERRORSFILE)' &&\
+$XTERM_PROGRAM_NAME -geometry 100x40 -name "scwmmessages" -T "SCWM Messages...." -e /bin/sh -c "echo 'SCWM MESSAGES: (Also writing to $ERRORSFILE)' &&\
  tail -f $ERRORSFILE" &
 PID_TAIL_STARTSCWM=$!
 
@@ -163,7 +163,7 @@ for f in $sysmodmap $usermodmap $usersysmodmap; do
 done
 
 # May want to run a different wm here.
-$XTERM -geometry +0-0 -e bash -c "trap bash SIGINT; echo \"Press CTRL-C to \
+$XTERM_PROGRAM_NAME -geometry +0-0 -e bash -c "trap bash SIGINT; echo \"Press CTRL-C to \
 allow commands before starting wm\"; sleep 3"
 
 echo $PID_TAIL_STARTSCWM > $HOME/.tracepids
@@ -176,7 +176,7 @@ $WMEXEC --segv-reset-count 0 2>&1 >>$ERRORSFILE
 # want an xterm below if scwm returns non-zero exit (in case something
 # bad happened, we don't want all of our X-clients to die.
 if [ 0 -ne "$?" ]; then
-  $XTERM -geometry -0-0
+  $XTERM_PROGRAM_NAME -geometry -0-0
 else
   exit
 fi
