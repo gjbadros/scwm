@@ -251,6 +251,7 @@ AddWindow(Window w)
   /* allocate space for the scwm window */
 
   psw = NEWCPP(ScwmWindow);
+
   if (!psw) {
     return NULL;
   }
@@ -264,9 +265,12 @@ AddWindow(Window w)
       FREECPP(psw);
       return (NULL);
     }
+
+  psw->name = NoName;
+
   if (XGetWMName(dpy, psw->w, &text_prop) != 0)
-#ifdef I18N
     {
+#ifdef I18N
       if (text_prop.value) {
 	text_prop.nitems = strlen(text_prop.value);
 	if (text_prop.encoding == XA_STRING)
@@ -278,14 +282,25 @@ AddWindow(Window w)
 	  else
 	    psw->name = (char *)text_prop.value;
 	}
-      } else
-	psw->name = NoName;
-    }
+      }
 #else
-    psw->name = (char *)text_prop.value ;
+      psw->name = (char *)text_prop.value ;
 #endif
-  else
-    psw->name = NoName;
+    }
+
+#ifdef USE_CASSOWARY
+  if (psw->name != NoName) {
+    int ich = strlen(psw->name);
+    char *szNm = NEWC(ich+3,char);
+    strcpy(szNm, psw->name);
+    szNm[ich++] = '-';
+    szNm[ich+1] = '\0';
+    szNm[ich] = 'x'; psw->frame_x.setName(szNm);
+    szNm[ich] = 'y'; psw->frame_y.setName(szNm);
+    szNm[ich] = 'w'; psw->frame_width.setName(szNm);
+    szNm[ich] = 'h'; psw->frame_height.setName(szNm);
+  }
+#endif
 
   /* removing NoClass change for now... */
   psw->classhint.res_name = NoResource;
