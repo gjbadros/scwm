@@ -190,3 +190,7 @@
 ;; command.
 (define-public (exe command) 
   (lambda () (execute command)))
+
+(define-public xterm-command "xterm ")
+(define-public (run-in-xterm cmd) (exe (string-append xterm-command cmd)))
+
