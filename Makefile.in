@@ -85,7 +85,7 @@ x_includes = @x_includes@
 x_ldflags = @x_ldflags@
 x_libs = @x_libs@
 
-SUBDIRS = scwm utilities scheme sample.scwmrc app
+SUBDIRS = scwm utilities scheme sample.scwmrc app doc
 EXTRA_DIST = BUGS BUG-REPORTING COPYING.FVWM COPYING.GPL include/config.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

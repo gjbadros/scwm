@@ -4038,7 +4038,8 @@ trap 'rm -fr `echo "Makefile \
           utilities/scwmexec/Makefile \
           utilities/scwmrepl/Makefile \
           utilities/dev/Makefile \
-          utilities/emacs/Makefile include/config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+          utilities/emacs/Makefile \
+          doc/Makefile include/config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -4162,7 +4163,8 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile \
           utilities/scwmexec/Makefile \
           utilities/scwmrepl/Makefile \
           utilities/dev/Makefile \
-          utilities/emacs/Makefile"}
+          utilities/emacs/Makefile \
+          doc/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

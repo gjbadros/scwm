@@ -1,3 +1,8 @@
+1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
+
+	* configure.in, configure, Makefile.am, Makefile.in: build the new
+	scwm manual in the doc directory.
+
 1998-06-18  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
 
 	* configure.in, acconfig.h: Detect scm_internal_cwdr and

@@ -216,7 +216,8 @@ AC_OUTPUT(Makefile \
           utilities/scwmexec/Makefile \
           utilities/scwmrepl/Makefile \
           utilities/dev/Makefile \
-          utilities/emacs/Makefile)
+          utilities/emacs/Makefile \
+          doc/Makefile)
 
 
 

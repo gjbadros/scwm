@@ -1,0 +1,11 @@
+1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
+
+	* scwm.texi, texinfo.tex, scwm.info: Info and texinfo
+	documentation. For now, contains only a texinfoization of the
+	procedure documentation, contributed by Dale Smith
+	<dale.smith@bellhow.com>. It is out of date, incomplete, and in
+	some cases plain false, but it is a start; hopefully people can
+	extend this.
+
+	* Makefile.am, Makefile.in: new files; build and install scwm.info.
+
