@@ -1,4 +1,4 @@
-Thu Nov 27 23:37:33 1997  unknown  <gjb@cs.washington.edu>
+Thu Nov 27 23:37:33 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Augment all OBJECT_P-s with SCM_NIMP(X) test to make sure they
 	are safe and remove a ton of duplicated code throughout the whole
