@@ -58,3 +58,23 @@
 (message-window-set-size! m 500 500)
 
 (message-window-set-position! m 20 20)
+
+
+(define i (window->image 'root-window))
+(define m (make-message-window ""))
+
+(message-window-set-image! m i)
+(image-properties i)
+
+(use-scwm-modules message-window)
+
+(begin
+  (message-window-set-size! m 1280 1024)
+  (message-window-set-position! m 0 0 0 0)
+  (message-window-set-relief! m #f)
+  (message-window-show! m)
+  (add-timer-hook! (sec->usec 3) (lambda () (message-window-hide! m))))
+
+(with-frozen-root-window
+ (lambda ()
+   (sleep 2)))
