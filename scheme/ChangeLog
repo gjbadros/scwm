@@ -1,3 +1,17 @@
+Sat Sep 25 11:17:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* reflection.scm, flux.scm: Move procedure->string to reflection,
+ 	from flux.
+
+	* prompt-proc.scm: Some cleanup.
+
+	* prompt-binding.scm: Added
+
+Fri Sep 24 20:45:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* reflection.scm: Make `procedure-is-interactive?' only check for
+	required args == 0.
+
 Fri Sep 24 15:19:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gtk-menu.scm: Honour #:extra-label, make it right-justified in

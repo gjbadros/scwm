@@ -1,3 +1,18 @@
+Sat Sep 25 11:11:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* validate.h: Permit a value other than a symbol to escape a
+	VALIDATE_ARG_SYM_USE_DEF so that the default can, e.g., be #f
+	instead of a symbol (for later testing).
+
+	* binding.c: Make `lookup-procedure-bindings' take a second
+	argument, CONTEXT, to filter the list of bindings that are
+	returned.
+
+Fri Sep 24 20:39:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu.c (s_popup_menu): Use 0 as the default for warp_to_index,
+	since -1 now means "last menu item"; gratuitous commented example changes.
+
 Fri Sep 24 14:58:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.c (PmiimMenuShortcuts): Let Shift-Tab go backwards in
