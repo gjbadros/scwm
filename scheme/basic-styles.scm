@@ -17,16 +17,10 @@
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
 (define-public desk-widget-on-top
-  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
-	      #:border-width 3 #:circulate-skip #t #:focus 'none
-	      #:kept-on-top #t))
+  (make-style #:use-style desk-widget #:kept-on-top #t))
 
 (define-public desk-widget-on-top-no-titlebar
-  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
-	      #:border-width 3 #:circulate-skip #t #:focus 'none
-	      #:kept-on-top #t #:no-titlebar #t))
+  (make-style #:use-style desk-widget-on-top #:no-titlebar #t))
 
 (define-public desk-widget-no-titlebar
-  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
-	      #:border-width 3 #:circulate-skip #t #:focus 'none
-	      #:no-titlebar #t))
+  (make-style #:use-style desk-widget #:no-titlebar #t))
