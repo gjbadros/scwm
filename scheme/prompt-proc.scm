@@ -60,6 +60,7 @@ TITLE is a window title."
     (gtk-container-add toplevel hbox)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
+    (gtk-widget-grab-focus entry)
     (gtk-widget-show-all toplevel)
     (gtk-signal-connect okbut "clicked" 
 			(lambda () 
@@ -85,10 +86,10 @@ See also `prompt-proc'."
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))
 	 (selbut (gtk-button-new-with-label "Choose..."))
-	 (procname (procedure-name initval))
+	 (procname (and (procedure? initval) (procedure-name initval)))
 	 (entry-init (if procname
 			 (symbol->string procname)
-			 "#f"))
+			 ""))
 	 (label (gtk-label-new (if (string? prompt) prompt "Proc?"))))
     (if cb
 	(gtk-combo-set-popdown-strings cb

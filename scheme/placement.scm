@@ -22,6 +22,7 @@
 (define-module (app scwm placement)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm focus-stack)
   :use-module (app scwm window-locations)
   :use-module (app scwm winops)
   :use-module (app scwm virtual))
@@ -129,7 +130,8 @@ places a window interactively."
 
 (define*-public (at-point-placement #&key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5))
-			       (switch #t) (return #f))
+			       (switch #t) (return #f)
+			       (auto-focus #f))
   "Return a procedure that places a window at the pointer position.
 If the keyword argument OFFSET is specified, it is interpreted as a
 list of x and y offsets to add to the pointer position. If the keyword
@@ -150,7 +152,12 @@ See also the related `place-at-point' procedure which directly places
 a window at the pointer position."
   (wrap-switch-return switch return
    (lambda (win)
-     (place-at-point-internal win offset proportional-offset))))
+     (place-at-point-internal win offset proportional-offset)
+      (if auto-focus (begin
+		       (push-focus-window)
+		       (add-timer-hook! 100 
+					(lambda ()
+					  (focus-change-warp-pointer win))))))))
 
 (define*-public (auto-accept-dialog-placement #&optional (delay 500))
   "Return a procedure that auto-accepts a dialog box window.
@@ -161,7 +168,8 @@ keystroke to accept the dialog."
 
 (define*-public (near-window-placement window-getter #&key (offset '(0 0))
 				       (proportional-offset '(-0.5 -0.5))
-				       (relative-to 'center))
+				       (relative-to 'center)
+				       (auto-focus #f))
   "Return a procedure that places a window near the window returned by WINDOW-GETTER.
 
 If RELATIVE-TO is specified, it gives a symbolic location in the
@@ -187,7 +195,12 @@ centered at the control point of the existing window."
 		   (+ pp o (inexact->exact (round (* ws po)))))
 		 ns-pos (window-frame-size win)
 		 offset proportional-offset)))
-      (with-window win (apply move-to final-pos)))))
+      (with-window win (apply move-to final-pos))
+      (if auto-focus (begin
+		       (push-focus-window)
+		       (add-timer-hook! 100 
+					(lambda ()
+					  (focus-change-warp-pointer win))))))))
 
 ;; conveniences
 

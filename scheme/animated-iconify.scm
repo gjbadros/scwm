@@ -25,26 +25,28 @@
                                       after-animation-proc pct-sizes)
   (let* ((delta-pos (map - win-pos icon-pos))
          (delta-size (map - win-size icon-size)))
-    (set-X-server-synchronize! #t)
-    (xlib-set-line-attributes! 6 'solid)
-    (and before-animation-proc (before-animation-proc))
-    (with-grabbed-server
+    (dynamic-wind
+     (lambda () (set-X-server-synchronize! #t))
      (lambda ()
-       (for-each (lambda (pct)
-		   (let* ((new-wsize (map + icon-size
-                                          (map round-to-pct delta-size 
-                                               (list pct pct))))
-			  (new-wpos 
-                           (point-list->point-pair
-                            (map + icon-pos
-                                 (map round-to-pct delta-pos 
-                                      (list pct pct))))))
-		     (apply xlib-draw-rectangle! new-wpos new-wsize)
-		     (sleep-ms ms-delay)
-		     (apply xlib-draw-rectangle! new-wpos new-wsize)))
-		 pct-sizes)))
-    (and after-animation-proc (after-animation-proc))
-    (set-X-server-synchronize! #f)))
+       (xlib-set-line-attributes! 6 'solid)
+       (and before-animation-proc (before-animation-proc))
+       (with-grabbed-server
+	(lambda ()
+	  (for-each (lambda (pct)
+		      (let* ((new-wsize (map + icon-size
+					     (map round-to-pct delta-size 
+						  (list pct pct))))
+			     (new-wpos 
+			      (point-list->point-pair
+			       (map + icon-pos
+				    (map round-to-pct delta-pos 
+					 (list pct pct))))))
+			(apply xlib-draw-rectangle! new-wpos new-wsize)
+			(sleep-ms ms-delay)
+			(apply xlib-draw-rectangle! new-wpos new-wsize)))
+		    pct-sizes)))
+       (and after-animation-proc (after-animation-proc)))
+     (lambda () (set-X-server-synchronize! #f)))))
 
 (define*-public (animated-iconify #&optional (win (get-window)))
   "Iconify WIN using a simple animation of a shrinking rectangle.

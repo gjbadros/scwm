@@ -176,7 +176,10 @@ up from at least `*netscape-download-closed-threshold-seconds*'."
 See `netscape-download-closed-action'."
   (window-style '("Netscape" "findDialog_popup") 
 		#:transient-placement-proc 
-		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+		(near-window-placement netscape-win 
+				       #:proportional-offset '(-1 0)
+				       #:relative-to 'northeast
+				       #:auto-focus #t))
   (window-style (class-match?? "Netscape") #:application-menu (netscape-application-menu #f))
   (disable-autosave-netscape-dialog)
   (add-hook! window-close-hook call-netscape-download-closed-action))

@@ -9,7 +9,7 @@ cascade.scm constraints.scm constraint-animation.scm corba.scm cursor.scm \
 debianapps-menu.scm decor.scm defoption.scm describe.scm \
 desk-background.scm dir-focus.scm doc.scm easyraise.scm edge-ops.scm \
 face.scm file.scm flash-window.scm flux.scm \
-focus-titlebar.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
+focus-stack.scm focus-titlebar.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
 highlight-current-window.scm gnome-hints.scm gnome-panel-menus.scm \
 group.scm hooks.scm image-loaders.scm image-path-suggestor.scm key-mover-xtest.scm \
 kde-hints.scm key-mover.scm last-mapped-window.scm lambda-startup-logo.scm \
@@ -30,7 +30,7 @@ ui-constraints-buttons.scm ui-constraints-classes.scm ui-constraints-toggle-menu
 ui-constraints-composition.scm ui-constraints.scm \
 undo.scm viavoice.scm viavoice-smrc.scm virtual.scm \
 visibility-reporter.scm \
-wavplay.scm window-locations.scm window-selection.scm \
+wavplay.scm where-is.scm window-locations.scm window-selection.scm \
 window-configuration.scm wininfo.scm \
 winlist.scm winlist-menu.scm winops.scm winops-menu.scm \
 wmconfig-menu.scm xlock-menus.scm xprop-extras.scm

@@ -898,3 +898,11 @@ write a warning instead."
 			  "scwm-icons package?\n")))
 
 (define-public window-list-proc focus-window)
+
+(define-public (X-server-synchronize)
+  "Handle all pending events."
+  (let ((old #f))
+    (dynamic-wind
+     (lambda () (set-X-server-synchronize! #t))
+     (lambda () (handle-pending-events))
+     (lambda () (set-X-server-synchronize! old)))))

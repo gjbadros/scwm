@@ -99,7 +99,7 @@ stick, shove, set the style, group, etc."
 	      #:action close-window))))
 
 ;;(popup-menu (make-menu-focus-options (get-window)))
-(define*-public (make-menu-focus-options #&optional (win (get-window)))
+(define*-public (make-menu-focus-options win)
   "Create a menu of focus options for WIN."
   (menu
    (list
@@ -126,7 +126,7 @@ stick, shove, set the style, group, etc."
 	       #:action (thunk toggle-iconify))
     (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
 	       #:action (thunk toggle-stick))
-    (menuitem "&Focus" #:submenu (lambda () (make-menu-focus-options)))
+    (menuitem "&Focus" #:submenu (lambda () (make-menu-focus-options (window-context))))
     (menuitem "Ma&ximize/Reset" #:action (thunk toggle-maximize-both))
     (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
 	       #:action (thunk toggle-maximize-vertical))

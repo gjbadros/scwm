@@ -44,7 +44,7 @@ is a substring search."
   (interactive)
   (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
-		   (add-timer-hook! 200 handle-pending-events)
+		   (add-timer-hook! 200 X-server-synchronize)
 		   (show-window-list-menu 1 #f #:only (title-match?? (string-append "*" wildcard "*"))))))
 
 ;; (show-window-list-matching-interactively)
@@ -61,7 +61,7 @@ is a substring search."
   (interactive)
   (prompt-string "Bookmark substring? "
 		 (lambda (string)
-		   (add-timer-hook! 200 handle-pending-events)
+		   (add-timer-hook! 200 X-server-synchronize)
 		   (let ((str (output-of-system-cmd (string-append "bookmark-grep 2>/dev/null " string))))
 		     (if (> (string-length str) 1)
 			 (gtk-table-from-string (chop-string str)

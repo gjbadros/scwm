@@ -29,6 +29,21 @@
       (symbol->string (or (procedure-name proc) '<anonymous-procedure>))
       "<none>"))
 
+;; (interpret-as-procedure "describe-key")
+;; (interpret-as-procedure 'describe-key)
+;; (interpret-as-procedure describe-key)
+;; (interpret-as-procedure #f)
+;; (interpret-as-procedure #\?)
+(define-public (interpret-as-procedure proc-or-string-or-symbol)
+  "Return a procedure given its value, its symbol, or its name.
+Return #f if PROC-OR-STRING-OR-SYMBOL is none of those things."
+  (or (and (procedure? proc-or-string-or-symbol) 
+	   proc-or-string-or-symbol)
+      (and (string? proc-or-string-or-symbol)
+	   (procedure-string->procedure proc-or-string-or-symbol))
+      (and (symbol? proc-or-string-or-symbol)
+	   (eval proc-or-string-or-symbol))))
+
 (define-public (procedure-string->procedure proc-name)
   "Return a procedure given its name."
   (eval (string->symbol proc-name)))

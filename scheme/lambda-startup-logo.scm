@@ -30,11 +30,8 @@ has some cost in perfromance and memory, but is useful
 as startup can be longer than ideal)."
   (set! scwm-logo-msgwin 
 	(make-message-window-with-image scwm-logo #t))
-  (set-X-server-synchronize! #t)
   (message-window-show! scwm-logo-msgwin)
-  (handle-pending-events)
-  (set-X-server-synchronize! #f)
-  
+  (X-server-synchronize)
   (if should-rotate
       (begin
 	(set! logo-image-sequence

@@ -140,14 +140,14 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
       ((or (not w) (>= i max))
        (if w wlist
 	   (cdr wlist)))
-    (handle-pending-events)
+    (X-server-synchronize)
     (set! w (select-window-interactively 
 	     (string-append "select #" (number->string i))
 	     default-message-window))
     (if (and proc-when-selected w)
 	(proc-when-selected w))
-    (handle-pending-events) ;; GJB:FIXME:: Race condition...
-    (add-timer-hook! (sec->msec 1) (lambda () (handle-pending-events)))))
+    (X-server-synchronize) ;; GJB:FIXME:: Race condition...
+    (add-timer-hook! (sec->msec 1) (lambda () (X-server-synchronize)))))
 
 ;;(use-scwm-modules time-convert)
 ;; e.g.
@@ -240,3 +240,12 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
   "Hide nonant markers on window when they are selected."
   (set! show-nonant-flag #f)
   (for-each remove-nonant-marker selected-windows))
+
+(define-public (flash-selected-windows-on)
+  "Make sure that the selected windows are marked as selected."
+  (for-each flash-window (selected-windows-list)))
+
+(define-public (set-selected-windows-list! list-of-windows)
+  "Make LIST be the set of selected windows."
+  (unselect-all-windows)
+  (for-each select-window-add list-of-windows))

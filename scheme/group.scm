@@ -179,6 +179,7 @@ The icon is that of the window GROUP represents.
 	 (nstr (number->string n))
 	 (sel? (window-is-selected? w))
 	 (wop (if sel? "Unselect" "Select"))
+	 (title (if w (window-title w) #f))
 	 (resource (if w (window-resource w) #f))
 	 (class (if w (window-class w) #f)))
     (menu
@@ -190,6 +191,12 @@ The icon is that of the window GROUP represents.
 	(menuitem 
 	 (string-append "&" wop (if w " this" " a") " window")
 	 #:action select-window-toggle)
+	(if title
+	    (menuitem
+	     (string-append wop " windows with &title `" title "'")
+	     #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+				  (title-match?? title))))
+	    #f)
 	(if resource
 	    (menuitem
 	     (string-append wop " windows &named `" resource "'")

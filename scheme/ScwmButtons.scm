@@ -130,16 +130,13 @@ determines how wide the \"edge\" of a viewport is (in pixels)."
 			(if (equal? current-orientation 'horizontal)
 			    (begin
 			      (gtk-toolbar-set-orientation toolbar 'vertical)
-			      (set! current-orientation 'vertical)
-			      (gdk-flush)
-			      (handle-pending-events)))
+			      (set! current-orientation 'vertical)))
 			(if (equal? current-orientation 'vertical)
 			    (begin
 			      (gtk-toolbar-set-orientation toolbar 'horizontal)
-			      (set! current-orientation 'horizontal)
-			      (gdk-flush)
-			      (handle-pending-events)))))
-		(handle-pending-events)))
+			      (set! current-orientation 'horizontal)))))
+		(gdk-flush)
+		(X-server-synchronize)))
 
 	     (imfh
 	      (lambda (win)
