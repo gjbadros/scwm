@@ -30,16 +30,24 @@ extern Bool Restarting, PPosOverride;
 SCWM_SYMBOL(sym_focus, "focus");
 
 /* GJBFIX: Maybe the menus should do something w/ this? */
-SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 0, 1, 0,
+SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 1, 0, 0,
           (SCM flag))
      /** Set the menu mwm style according to the boolean FLAG. 
 This option is currently ignored. */
 #define FUNC_NAME s_set_menu_mwm_style_x
 {
-  SCM_REDEFER_INTS;
   COPY_BOOL_OR_ERROR(Scr.fMWMMenus,flag,1,FUNC_NAME);
-  SCM_ALLOW_INTS;
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menu_mwm_style, "menu-mwm-style", 0, 0, 0,
+          ())
+     /** Return the menu mwm style as set by `set-menu-mwm-style!'. 
+This option is currently ignored. */
+#define FUNC_NAME s_menu_mwm_style
+{
+  return SCM_BOOL_FromBool(Scr.fMWMMenus);
 }
 #undef FUNC_NAME
 
@@ -52,11 +60,7 @@ JUST should be one of 'right, 'left, or 'center. Applies to the
 current decor */
 #define FUNC_NAME s_set_title_justify_x
 {
-  ScwmDecor *fl;
-
-  SCM_REDEFER_INTS;
-
-  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_symbol_p(just)) {
     SCM_ALLOW_INTS;
@@ -79,6 +83,27 @@ current decor */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(title_justify,"title-justify", 0, 0, 0,
+          ())
+     /** Return the current justification for the title, as set by `set-title-justify!'.
+The return value will be one of 'right, 'left, or 'center. Applies to the
+current decor. */
+#define FUNC_NAME s_title_justify
+{
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+
+  if (fl->titlebar.flags & HOffCenter) {
+    if (fl->titlebar.flags & HRight) {
+      return sym_right;
+    } else {
+      return sym_left;
+    }
+  } else {
+    return sym_center;
+  }
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
           (SCM height))
@@ -89,16 +114,13 @@ Applies to the current decor. */
   int th, extra_height;
   ScwmDecor *fl;
 
-  SCM_REDEFER_INTS;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_number_p(height)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, height);
   }
   th = gh_scm2int(height);
   if (th <= 4 || th > 256) {
-    SCM_ALLOW_INTS;
     scwm_error(FUNC_NAME, 7);
   }
   extra_height = th - fl->TitleHeight;
@@ -111,10 +133,24 @@ Applies to the current decor. */
 
   redraw_titlebars(fl, extra_height);
 
-  SCM_REALLOW_INTS;
   return (height);
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(title_height,"title-height", 0, 0, 0,
+          ())
+     /** Return the height of the titlebar in pixels, as set by `set-title-height!'.
+Applies to the current decor. */
+#define FUNC_NAME s_title_height
+{
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+
+  return gh_int2scm(fl->TitleHeight);
+}
+#undef FUNC_NAME
+
+
 
 SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
           ())
@@ -128,7 +164,7 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
           ())
      /** Returns #t when the windows are being captured.
-This happens at two times: both during initial startup, or during a
+This happens at two times: during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
 placed at all. */
@@ -151,38 +187,44 @@ this should not be needed. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
-          (SCM ctime))
+SCWM_PROC(set_click_delay_x, "set-click-delay!", 1, 0, 0,
+          (SCM usec))
      /** Set the delay used in identifying mouse clicks and drags.
-CTIME is specified in microseconds. After CTIME microseconds, a mouse-down
-without a mouse-up is considered a drag.  Also, after CTIME microseconds, a
+USEC is specified in microseconds. After USEC microseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after USEC microseconds, a
 single click is definitively identified as not a double click. */
-#define FUNC_NAME s_set_click_time_x
+#define FUNC_NAME s_set_click_delay_x
 {
-  SCM_REDEFER_INTS;
-  if (!gh_number_p(ctime)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, ctime);
+  if (!gh_number_p(usec)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, usec);
   }
-  Scr.ClickTime = gh_scm2long(ctime);
-  SCM_REALLOW_INTS;
+
+  Scr.ClickTime = gh_scm2long(usec);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
+SCWM_PROC(click_delay, "click-delay", 0, 0, 0,
+          ())
+     /** Retrun the delay used in identifying mouse clicks and drags, in microseconds. 
+See also `set-click-delay!' */
+#define FUNC_NAME s_click_delay
+{
+  return gh_long2scm(Scr.ClickTime);
+}
+#undef FUNC_NAME
 
 SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
           (SCM ftype))
-     /** Set the colormap focus policy to FTYPE. FTYPE can either be
-'mouse, indicating that the window under the mouse pointer should
-always have it's colormap installed, or 'focus to indicate that the
-window with the input focus should also get the colormap focus. This
-makes a difference only when using focus policies other than 'mouse. */
+     /** Set the colormap focus policy to FTYPE. 
+FTYPE can either be 'mouse, indicating that the window under the mouse
+pointer should always have it's colormap installed, or 'focus to
+indicate that the window with the input focus should also get the
+colormap focus. This makes a difference only when using focus policies
+other than 'mouse. */
 #define FUNC_NAME s_set_colormap_focus_x
 {
-  SCM_REDEFER_INTS;
   if (!gh_symbol_p(ftype)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, ftype);
   }
   if (gh_eq_p(ftype, sym_focus)) {
@@ -190,14 +232,25 @@ makes a difference only when using focus policies other than 'mouse. */
   } else if (gh_eq_p(ftype, sym_mouse)) {
     Scr.fColormapFollowsMouse = True;
   } else {
-    SCM_ALLOW_INTS;
     scwm_error(FUNC_NAME, 10);
   }
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
+SCWM_PROC(colormap_focus, "colormap-focus", 0, 0, 0,
+          ())
+     /** Return the colormap focus policy, as set by `set-colormap-focus!'. 
+The value can be either be 'mouse, indicating that the window under
+the mouse pointer will always colormap installed, or 'focus to
+indicate that the window with the input focus should also get the
+colormap focus.  */
+#define FUNC_NAME s_colormap_focus
+{
+  return Scr.fColormapFollowsMouse ? sym_mouse : sym_focus; 
+}
+#undef FUNC_NAME
 
 SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
           ())
@@ -207,9 +260,8 @@ The return value is a two-element list of the x and y coordinates. */
 {
   int x, y;
 
-  SCM_REDEFER_INTS;
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
-  SCM_REALLOW_INTS;
+
   return scm_listify(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -222,21 +274,17 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 {
   int x, y;
 
-  SCM_REDEFER_INTS;
-
   if (!gh_number_p(sx)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, sx);
   }
   if (!gh_number_p(sy)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 2, sy);
   }
   x = gh_scm2int(sx);
   y = gh_scm2int(sy);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight, x, y);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -249,11 +297,10 @@ This destroys all the current frame windows and recreate them from
 scratch. This is hopefully not necessary during normal operation. */
 #define FUNC_NAME s_recapture
 {
-  SCM_REDEFER_INTS;
   BlackoutScreen();		/* if they want to hide the recapture */
   CaptureAllWindows();
   UnBlackoutScreen();
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -261,8 +308,8 @@ scratch. This is hopefully not necessary during normal operation. */
 
 SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
           (SCM predicate))
-     /** Wait until a window appears which satisfies PREDICATE. Given
-the existence of before-new-window-hook, this is of questionable
+     /** Wait until a window appears which satisfies PREDICATE. 
+Given the existence of before-new-window-hook, this is of questionable
 usefulness. */
 #define FUNC_NAME s_wait_for_window
 {
@@ -303,11 +350,10 @@ SCWM_PROC(beep, "beep", 0, 0, 0,
 
 SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
           (SCM flag))
-     /** Determine whether or not clever-place-window will be used.  If
-FLAG is #t, then clever-place-window will be used instead of
-smart-place-window when the default placement procedure is used, and
-the window's smart-placement flag is on, according to the boolean
-value FLAG. */
+     /** Determine whether or not `clever-place-window' will be used when smart-placing.
+If FLAG is #t, then `clever-place-window' will be used instead of
+`smart-place-window' when the default placement procedure is used, and
+the window's smart-placement flag is on. */
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
   COPY_BOOL_OR_ERROR(Scr.fSmartPlacementIsClever,flag,1,FUNC_NAME);
@@ -315,7 +361,23 @@ value FLAG. */
 }
 #undef FUNC_NAME
 
-/* FIXMS - the functionality related to the next three procedures
+/* FIXMS: this returns true or false always, give it a predicate name? */
+
+SCWM_PROC(smart_placement_is_really_smart_p, "smart-placement-is-really-smart?", 0, 0, 0,
+          ())
+     /** Return whether or not `clever-place-window' will be used when smart-placing.
+If the value is #t, then `clever-place-window' will be used instead of
+smart-place-window when the default placement procedure is used, and
+the window's smart-placement flag is on. */
+#define FUNC_NAME s_smart_placement_is_really_smart_p
+{
+  return SCM_BOOL_FromBool(Scr.fSmartPlacementIsClever);
+}
+#undef FUNC_NAME
+
+
+
+/* FIXMS - the functionality related to the next six procedures
    should be implemented by adding new event bindings eventually */
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
@@ -329,6 +391,16 @@ will not pass the event on to the client. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0,
+          ())
+     /** Returns a boolean valude indicating whether a click-to-focus window receives the click. */
+#define FUNC_NAME s_click_to_focus_passes_click_p
+{
+  return SCM_BOOL_FromBool(Scr.fClickToFocusPassesClick);
+}
+#undef FUNC_NAME
+
 
 /* FIXMS: remove this one in particular once window-focus-hook exists. */
 
@@ -344,6 +416,19 @@ window */
 }
 #undef FUNC_NAME
 
+
+/* FIXMS - this seems to be redundant with auto-raise to some degree... */
+
+SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
+          ())
+     /** Returns a boolean valude indicating whether a click-to-focus window gets raised on focus. */
+#define FUNC_NAME s_click_to_focus_raises_p
+{
+  return SCM_BOOL_FromBool(Scr.fClickToFocusRaises);
+}
+#undef FUNC_NAME
+
+
 /* FIXMS - this seems to be a pretty useless idea, or at least there
    must be a better way of implementing it. */
 
@@ -355,13 +440,24 @@ SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0,
           (SCM flag))
      /** Determine whether a mouse-focus-click will raise the window.
 If FLAG is #t it will raise the window. Not sure if this function
-makes sense any more.  FIXDOC. */
+makes sense any more. */
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
   COPY_BOOL_OR_ERROR(Scr.fMouseFocusClickRaises,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;  
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
+          ())
+     /** Returns a boolean valude indicating whether a mouse-focus-click will raise the window.. */
+#define FUNC_NAME s_mouse_focus_click_raises_p
+{
+  return SCM_BOOL_FromBool(Scr.fMouseFocusClickRaises);
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
@@ -384,7 +480,7 @@ SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
 
 SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
           ())
-     /** Return the <envar>$EXECPREFIX</envar> directory path that scwm was installed with. */
+     /** Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with. */
 #define FUNC_NAME s_scwm_path_exec_prefix
 {
   return gh_str02scm(SCWM_PREFIX);
@@ -392,13 +488,13 @@ SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(X_server_set_synchronize_x, "X-server-set-synchronize!", 1, 0, 0,
+SCWM_PROC(set_X_server_synchronize_x, "set-X-server-synchronize!", 1, 0, 0,
           (SCM flag))
      /** Set X server sychronization flag to FLAG.
 If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG 
 is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
 synchronous mode, but can be easier to debug. */
-#define FUNC_NAME s_X_server_set_synchronize_x
+#define FUNC_NAME s_set_X_server_synchronize_x
 {
   Bool fSynch;
   COPY_BOOL_OR_ERROR(fSynch,flag,1,FUNC_NAME);

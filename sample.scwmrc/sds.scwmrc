@@ -66,7 +66,7 @@
 (menu-style #:fg "black" #:bg "grey76" #:stipple "grey35"
 	    #:font menu-font #:mwm #t)
 
-;;(set-click-time! 150)		; msec [150]
+;;(set-click-delay! 150)		; msec [150]
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
 (set-rubber-band-mask! 255)
 (set-edge-scroll-delay! 100)

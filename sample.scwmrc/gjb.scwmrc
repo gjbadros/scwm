@@ -210,7 +210,7 @@
 
 ;; (select-window-interactively "Pick window #1")
 
-;;(set-click-time! 150)
+;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
 
@@ -1059,7 +1059,7 @@
 
 (bind-key 'all "C-S-M-z" (lambda () (popup-menu 'menu-root-start #t)))
 
-(set-click-time! 150)
+(set-click-delay! 150)
 
 ;; Fluid, cartoon-like
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))

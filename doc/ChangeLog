@@ -1,3 +1,7 @@
+1998-08-01  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
+
+	* scwm.sgml: Regenerated.
+
 1998-07-25  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm.sgml scwm-procedures.txt): Build

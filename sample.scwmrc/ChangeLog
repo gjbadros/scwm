@@ -1,3 +1,8 @@
+1998-08-01  Maciej Stachowiak  <maciej@roc-ny4-24.ix.netcom.com>
+
+	* gjb.scwmrc, sds.scwmrc: Use set-click-delay! in place of
+	set-click-time!
+
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny5-12.ix.netcom.com>
 
 	* gjb.scwmrc, sds.scwmrc: No longer attempt to pass a modifier

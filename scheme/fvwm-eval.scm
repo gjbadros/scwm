@@ -303,7 +303,7 @@
 (define-fvwm-command "ClickTime"
   (let ((x (get-one-numeric-arg args)))
     (if x
-	(set-click-time! x))))
+	(set-click-delay! x))))
  
 (define-fvwm-command "HiLightColor"
  ;;; HilightColor textcolour bgcolour

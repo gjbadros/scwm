@@ -1,3 +1,12 @@
+1998-08-01  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
+
+	* miscprocs.c: Rename set-click-time! to set-click-delay! and
+	X-server-set-synchronize! to set-X-server-synchronize!. Added some
+	corresponding getters for setters that did not have them before:
+	menu-mwm-style, title-justify, click-delay, title-height,
+	click-delay, colormap-focus, smart-placement-is-really-smart?,
+	click-to-focus-passes-click?, and click-to-focus-raises?.
+
 Fri Jul 31 20:39:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, resize.c, move.c, resize.h: Added ScwmWindow *,

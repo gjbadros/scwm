@@ -1,3 +1,8 @@
+1998-08-01  Maciej Stachowiak  <maciej@roc-ny4-24.ix.netcom.com>
+
+	* fvwm-eval.scm ("ClickTime"): Replace set-click-time! with
+	set-click-delay!
+
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny5-12.ix.netcom.com>
 
 	* base.scm, face.scm, fvwm-eval.scm, minimal.scm: Replace
