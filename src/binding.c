@@ -609,19 +609,16 @@ ungrab_button_all_windows(int button, int modifier)
   }
 }
 
-
 /* to remove a binding from the global list (probably needs more processing
    for mouse binding lines though, like when context is a title bar button).
 */
 void 
-remove_binding(int context, unsigned int mods, int button, KeySym keysym,
+remove_binding(int context, unsigned int mods, int button, KeyCode keycode,
 	       int mouse_binding)
 {
   Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
-  KeyCode keycode = 0;
 
   if (!mouse_binding) {
-    keycode = XKeysymToKeycode(dpy, keysym);
     ungrab_key_all_windows(keycode, mods);
   } else if (context & C_WINDOW) {
     ungrab_button_all_windows(button,mods);
@@ -654,6 +651,14 @@ remove_binding(int context, unsigned int mods, int button, KeySym keysym,
     pbnd = pbndNext;
   }
 }
+
+void 
+remove_binding_keysym(int context, unsigned int mods, KeySym keysym)
+{
+  KeyCode keycode = XKeysymToKeycode(dpy, keysym);
+  remove_binding(context,mods,0,keycode,False);
+}
+
 
 void 
 add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p, 
@@ -921,7 +926,7 @@ otherwise.  */
     gh_free(keyname);
     return SCM_BOOL_F;
   } else {
-    remove_binding(context,modmask,0,keysym,False);
+    remove_binding_keysym(context,modmask,keysym);
   }
   return SCM_BOOL_T;
 }
@@ -1093,6 +1098,28 @@ nothing should be done on key release.
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(unbind_keycode, "unbind-keycode", 2, 1, 0,
+          (SCM contexts, SCM keycode, SCM modifier_mask))
+     /** Unbind the given KEYCODE within the CONTEXTS.
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
+*/
+#define FUNC_NAME s_bind_keycode
+{
+  int min, max;
+  int context, keycd, modmask;
+
+  XDisplayKeycodes(dpy, &min, &max);
+
+  VALIDATE_ARG_INT_RANGE_COPY(2,keycode,min,max,keycd);
+  VALIDATE_ARG_INT_RANGE_COPY(3,modifier_mask,0,255,modmask);
+
+  context = compute_contexts(contexts, FUNC_NAME);
+  remove_binding(context, modmask, 0, keycd, False);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(bind_mouse, "bind-mouse", 3, 1, 0,
