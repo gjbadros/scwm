@@ -88,14 +88,6 @@ Bool FXWindowAccessible(Display *dpy, Window w);
 Bool XGetGeometryPositionOnly(Display *dpy, Window w, int *x_ret, int *y_ret);
 Bool XGetGeometryCacheIt(Display *dpy, Window w);
 
-/* FIXGJB: shouldn't need these header files */
-#ifdef BROKEN_SUN_HEADERS
-#include "sun_headers.h"
-#endif
-#ifdef NEEDS_ALPHA_HEADER
-#include "alpha_header.h"
-#endif /* NEEDS_ALPHA_HEADER */
-#endif /* _MISC_ */
 
 /* Local Variables: */
 /* tab-width: 8 */
