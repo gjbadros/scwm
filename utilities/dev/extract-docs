@@ -108,6 +108,7 @@ my $pid = open2( \*ISPELL_RESPONSE,
 		 \*ISPELL, "ispell -a -p $dictionary") or die "Could not open \'ispell -a\' pipe: $!";
 ISPELL->autoflush();
 
+MAINLOOP:
 while (<>) {
   if (eof) {
     close(ARGV);
@@ -128,6 +129,26 @@ while (<>) {
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
+  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^")]+)"\s*\)/) {
+    my $c_hookname = $1;
+    my $scheme_hookname = $2;
+    my $filename = $ARGV;
+    my $line = $.;
+    my $body = <>;
+    if (!CNameMatchesSchemeName($c_hookname,$scheme_hookname)) {
+      print STDERR "$ARGV:$.:**** Scheme hook name `$scheme_hookname' does not match `$c_hookname'\n";
+    }
+    if ($body !~ m%/\*\*\s*(.*)%) {
+      $_ = $body;
+      print STDERR "$ARGV:$.:**** Hook $scheme_hookname is missing description comment\n";
+      redo MAINLOOP;
+    }
+    $body = ReadRestOfComment($1);
+    if ($fDebug) {
+      print STDERR "GOT hook $c_hookname,$scheme_hookname at ",
+          " $filename:$line body:\n$body\n";
+    }
+    ProcessHookComment($filename, $line, $scheme_hookname, $body);
   } elsif ($fScheme && m%^\(define-module\s+(\([^\)]*\))%) {
     $current_module = $1;
   } elsif ($fScheme && m%^\(define\*?-public\s+\(([^\s\)]+)%) {
@@ -157,6 +178,7 @@ while (<>) {
       my $filename = $ARGV;
       my $line = $.;
       my $body = ReadRestOfComment("");
+      print STDERR "**** $filename:$line: warning -- old-style HOOK documentation\n";
       ProcessHookComment($filename, $line, $description,$body);
     } elsif (uc($type) eq "CONCEPT") {
       my $filename = $ARGV;
@@ -460,23 +482,13 @@ sub ProcessHeader( $$$ ) {
   $clean_argslist =~ s/_/-/g;
   my @args = split(/,/, $clean_argslist);
 
-  # now convert the c function name into the expected (preferred) primitive name:
-  my $expected_primname = $cprimname;
-  $expected_primname =~ s/_[pP]\b/?/g;
-  $expected_primname =~ s/_[xX]\b/!/g;
-  $expected_primname =~ s/_/-/g;
-  # alternative possibility (ignoring chance of multiple to's in string)
-  my $expected_primname2 = $expected_primname;
-  $expected_primname2 =~ s/-to-/->/g;
-
-  
   # now create a hash of the names for testing words in the comment
   # whether they are referring to formal parameters
   my %argnames = map { uc($_) => 1} @args;
 
-  if ($primname ne $expected_primname && $primname ne $expected_primname2) {
+  if (!CNameMatchesSchemeName($cprimname, $primname)) {
     if (!$fReallyQuiet) {
-      print STDERR "$filename:$line:**** $cprimname: expected scheme primitive named \`$expected_primname\'\n";
+      print STDERR "$filename:$line:**** $cprimname: scheme primitive name `$primname' does not match `$cprimname'\n";
     }
   }
 
@@ -663,6 +675,7 @@ sub ReadRestOfComment ( $ ) {
     }
   }
   $comment .= $_;
+  $comment =~ s%\*/\s*$%%s;
   return $comment;
 }
 
@@ -813,4 +826,20 @@ sub IspellText( $$$ ) {
       }
     }
   }
+}
+
+
+sub CNameMatchesSchemeName( $$ ) {
+  my ($cprimname, $primname) = @_;
+
+  # now convert the c function name into the expected (preferred) primitive name:
+  my $expected_primname = $cprimname;
+  $expected_primname =~ s/_[pP]\b/?/g;
+  $expected_primname =~ s/_[xX]\b/!/g;
+  $expected_primname =~ s/_/-/g;
+  # alternative possibility (ignoring chance of multiple to's in string)
+  my $expected_primname2 = $expected_primname;
+  $expected_primname2 =~ s/-to-/->/g;
+
+  return ($primname eq $expected_primname || $primname eq $expected_primname2);
 }
