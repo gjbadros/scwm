@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 18:10:21 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 19:21:14 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -172,14 +172,14 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 ;;;###autoload
 (defun scwm-eval-print ()
   "Evaluate the last SEXP and insert the result into the current buffer."
-  (interactive) (newline-and-indent)
-  (scwm-eval-last t) (newline))
+  (interactive) (newline-and-indent) (scwm-eval-last t) (newline))
 
 ;;;###autoload
 (defun scwm-eval-to-minibuffer ()
   "Evaluate the last SEXP and show the result in the minibuffer."
   (interactive)
-  ;; this is a workaround for XEmacs' buggy `with-output-to-string'.
+  ;; workaround for XEmacs' buggy `with-output-to-string'.  should be:
+  ;; (message "%s" (with-output-to-string (scwm-eval-last standard-output)))
   (let ((last (buffer-substring-no-properties
 	       (point) (save-excursion (backward-sexp) (point)))))
     (message "%s" (with-output-to-string (scwm-eval last standard-output)))))
@@ -220,8 +220,6 @@ Returns a string."
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
   (interactive)
-  (if (null scwm-obarray)
-      (setq scwm-obarray (scwm-make-obarray)))
   (let* ((end (point)) (beg (save-excursion (backward-sexp) (point)))
 	 (pat (buffer-substring-no-properties beg end))
 	 (comp (try-completion pat (scwm-obarray))))
@@ -258,13 +256,13 @@ Returns a string."
       (princ "SCWM documentation for `") (princ pat) (princ "'")
       (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n ")
       (let ((pos (point)))
-        (princ "procedure-documentation")
+        (princ "documentation")
         (put-text-property pos (point) 'face 'highlight))
       (princ ":\n\n")
       (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
       (princ "\n\n ")
       (let ((pos (point)))
-        (princ "documentation")
+        (princ "procedure-documentation")
         (put-text-property pos (point) 'face 'highlight))
       (princ ":\n\n")
       (scwm-safe-call "procedure-documentation" pat standard-output)
@@ -285,7 +283,7 @@ Returns a string."
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
       (delete-region (point) (progn (beginning-of-line) (point)))
-      (goto-char 1) (forward-line 4)  ;; was 3, but that highlighted a nl for gjb
+      (goto-char 1) (forward-line 4)
       (sort-lines nil (point) (point-max))
       (let ((props '(action scwm-documentation mouse-face highlight
                      face italic)) p0 p1 p2)
