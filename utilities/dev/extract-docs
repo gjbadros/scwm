@@ -302,7 +302,6 @@ START_CONCEPTS_CHAPTER
 # Now output sgml trailer
 if ($opt_o) {
   print MARKUP_OUT <<END_TRAILER
-</chapter>
 </book>
 <!-- Keep this comment at the end of the file
 Local variables:
