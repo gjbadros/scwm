@@ -135,6 +135,7 @@ then highlight the output."
 (defvar scwm-repl "scwmrepl" "*The path to scwmrepl.")
 (defvar scwm-exec "scwmexec" "*The path to scwmexec.")
 (defvar scwm-source-path "/usr/src/scwm/" "*The path to the Scwm sources.")
+(defvar scwm-display (getenv "DISPLAY") "*Display scwm is running on.")
 
 ;; thing-at-point-file-name-chars ==>
 (defvar scwm-file-name-chars "~/A-Za-z0-9---_.${}#%,:"
@@ -160,6 +161,14 @@ then highlight the output."
       (save-excursion (skip-syntax-backward "^w")
                       (unless (bobp) (backward-char 1))
                       (thing-at-point 'symbol)) ""))
+
+(defmacro with-display (display &rest body)
+  "Execute BODY with environment variable DISPLAY set to DISPLAY."
+  `(let ((orig-display (getenv "DISPLAY")))
+     (setenv "DISPLAY" ,display)
+     (prog1
+	 (progn ,@body)
+       (setenv "DISPLAY" orig-display))))
 
 ;; user functions
 ;; ---- ---------
@@ -209,7 +218,9 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
     (let ((ff (symbol-function 'run-scheme)))
       (if (and (consp ff) (eq (car ff) 'autoload)) (load (cadr ff))
 	  (error "no `inferior-scheme-mode' and no place to get it from."))))
-  (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl)))
+  (pop-to-buffer (setq scheme-buffer
+		       (with-display scwm-display
+			 (make-comint "scwm" scwm-repl))))
   (inferior-scheme-mode)
   (define-key inferior-scheme-mode-map [(control h)]
     (lookup-key scwm-mode-map [(control h)]))
@@ -225,7 +236,8 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 All evaluation goes through this procedure."
   (when (string-match "(\\s *\\(define\\|use-\\(scwm-\\)?modules\\|load\\)" sexp)
     (setq scwm-obarray nil))
-  (call-process scwm-exec nil out nil sexp))
+  (with-display scwm-display
+    (call-process scwm-exec nil out nil sexp)))
 
 ;; for GNU Emacs
 (unless (fboundp 'frame-property)
