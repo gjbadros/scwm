@@ -78,25 +78,37 @@
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
 ;	      #:icon "unknown1.xpm" 
-;	      #:icon 'nil
+	      #:icon 'nil
+	      #:icon #f        ;; MS - specify #f to not get an icon.
 ;	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 6 
 	      #:focus 'mouse
 ;	      #:handle-width 3 ;; FIXGJB use nil for no handles
+	                       ;; MS - there is no handle-width option,
+	                       ;; it seemed silly to me to set the width
+	                       ;; a different way depending on wether
+	                       ;; the window has handles or not. To get
+	                       ;; no handles, use #:plain-border #t
 ;	      #:sticky-icon #t ;; FIXGJB
+	                       ;; MS - the #:sticky-icon option works for me,
+	                       ;; does it not work for you?
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #t
 	      #:PPosition-hint #f)
 
-;; FIXGJB: make-inherited-style;  any other way to do something like this?
-;;(define desk-widget-on-top
-;;  (make-inherited-style desk-widget #:stays-on-top #t))
-
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
+
+;; FIXGJB: make-inherited-style;  any other way to do something like this?
+;; MS - this does the right thing, since style options are applied in order.
+(define desk-widget-on-top
+  (make-style #:use-style desk-widget #:stays-on-top #t))
+
+
 ;;; FIXGJB: this core dumps, seems to w/o the circulate-skip option I added, too
+;;; MS - hmmm, it works for me.
 ;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
 ;(window-style "*lock" #:use-style desk-widget)
 ;(window-style "xload" #:no-title #t #:use-style desk-widget)
@@ -189,13 +201,17 @@
 						 (popup menu-otherhosts))))
 	     (menu-item "&System Utilities" "connect" (lambda ()
 							(popup menu-system-utilities)))
-	     (menu-item "&Window Operations" "windows" (lambda ()
-							 (popup menu-window-ops)))
+	     
+	     ;; MS - use the menu object rather than a popup closure when 
+	     ;; possible to get correct submenu semantics
+	     (menu-item "&Window Operations" "windows" menu-window-ops)
 	     (menu-item "&Preferences" "prefs" (lambda ()
 						 (popup menu-preferences)))
 	     'separator
 	     (menu-item "S&creensaver" "display" (lambda ()
 						   (popup menu-screensaver)))
+	     ;; MS - you can just specify exec-xlock rather than 
+	     ;; (lambda () (exec-xlock)), any reason you did it this way?     
 	     (menu-item "&Lock Screen" "lock" (lambda ()
 						(exec-xlock)))
 	     'separator
@@ -378,16 +394,21 @@
 (bind-key 'all "C-S-Down" iconify)
 ;;(bind-key 'all "C-M-Return" raise-window)
 (bind-key 'all "C-M-Return" toggle-raise)
-(bind-key 'all "C-S-Up" (lambda () (apply maximize (percent-display 0 95))))
-(bind-key 'all "C-S-Right" (lambda () (apply maximize (percent-display 100 0))))
-(bind-key 'all "C-S-Left" (lambda () (apply maximize (percent-display 100 95))))
+;; MS - not sure if toggle-maximize is what you want, but try this out.
+;; also, while percent-display is more efficient than using %x and %y,
+;; I think (maximize (%x 0) (%y 95)) is easier to read than 
+;; (apply maximize (percent-display 0 95)), but that's a matter of taste.
+(bind-key 'all "C-S-Up" (lambda () (apply toggle-maximize (percent-display 0 95))))
+(bind-key 'all "C-S-Right" (lambda () (apply toggle-maximize (percent-display 100 0))))
+(bind-key 'all "C-S-Left" (lambda () (apply toggle-maximize (percent-display 100 95))))
 
 ;; FIXGJB: window-list does not exist
-;;(bind-key 'all "C-S-Return" window-list)
-
+;; MS - Are you looking for a window list menu, or a persistent window list?
+;; if the former, this should work. See the binding for mouse button 2
+;; to add geometry strings to this as well.
+(bind-key 'all "C-S-Return" show-window-list-menu)
 
 (bind-key 'all "C-S-M-z" (lambda () (popup menu-root-start)))
-
 
 (set-click-time! 150)
 
