@@ -103,7 +103,7 @@ VALIDATE_...
   if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   cvar = gh_scm2long(scm); \
   if (cvar > high) scm_misc_error(FUNC_NAME,"Argument %S must be less than %S", \
-                                  gh_list(gh_int2scm(pos),gh_int2scm(high))); \
+                                  gh_list(gh_int2scm(pos),gh_int2scm(high),SCM_EOL)); \
   } while (0)
 
 
