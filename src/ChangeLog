@@ -1,3 +1,15 @@
+Sun Oct 11 17:13:58 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (RestoreWithdrawnLocation): If
+ 	scwm-no-move-windows-on-exit is defined and not #f, then don't
+ 	position all windows to be in the current viewport when exiting.
+  	This makes windows stay where they were if you restart scwm right
+ 	away.  To do this better, we could store a "scwm-position"
+ 	property with each window so that we could move all the windows
+ 	onto the viewport when exiting, and if scwm is the window manager
+ 	that restarts, it could know to move them back to where they were
+ 	before the exit.
+
 Sun Oct 11 16:29:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c (DisplayMessage): Fail more gracefully if cannot
