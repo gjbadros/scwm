@@ -14,6 +14,7 @@ x_libraries=@x_libraries@
 scwm_icons=@scwm_icons@
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
+scwm_image_load_path=@scwm_image_load_path@
 scwm_dir=@scwm_dir@
 LDFLAGS=@LDFLAGS@
 #
@@ -30,7 +31,8 @@ LIBS=-L../libs ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFL
 
 PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
                -DSCWMDIR=\"${scwm_dir}\" \
-               -DSCWMRC=\"${scwm_rc}\"
+               -DSCWMRC=\"${scwm_rc}\" \
+               -DSCWM_IMAGE_LOAD_PATH="\"${scwm_image_load_path}\""
 
 # All these compile time options are now gone! --gjb
 #EXTRA_DEFINES=${PATH_DEFINES} -DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
