@@ -1,3 +1,30 @@
+1998-07-05  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Mark SCM_SYMBOL and SCWM_PROC macros for etags.
+
+	* color.c, color.h : Use SCWM_PROC throughout for primitives,
+ 	remove argument from getter functions, e.g., menu_hilight_factor,
+	shadow_factor, etc.
+
+	* scwm.h: Added #define of XSERVER_MAX_BUTTONS instead of
+	MAX_BUTTONS -- use cMouseButtons instead, as that gets initialized 
+	by init_pointer_mapping().
+
+	* scwm.c (scwm_main): Call init_pointer_mapping() at startup.
+
+	* scwm-snarf.h: Added, #defines SCWM_PROC macro that reduces
+	redundancy a bit more than SCM_PROC, using the s_ symbol name
+	prefix that scwm uses by convention
+
+	* events.c (HandleMappingNotify): Call init_pointer_mapping().
+
+	* binding.c (x_pointer_mapping): Added this function, added
+	init_pointer_mapping, and added cMouseButtons and
+	rgmapMouseButtons vars for providing access to the mouse pointer
+	mapping (and number of mouse buttons)
+
+	* binding.h: added proto for above, plus the EXTERN macros
+
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c, placement.c, window.c, window.h: Add and use
