@@ -56,13 +56,11 @@ print_cursor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-/* ========================================================================== */
 typedef struct {
   const char *name;
   unsigned int shape;
 } CursorNameMap;
 
-/* ========================================================================== */
 #define CURS(X)	{ #X, XC_ ## X }
 
 #include <X11/cursorfont.h>
@@ -152,8 +150,6 @@ static CursorNameMap map[] = {
    can we halve the size of the array?  Is it worth it? Maybe not */
 static SCM preloaded_x_cursors[XC_num_glyphs];
 
-/* ========================================================================== */
-
 static
 SCM
 x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName) 
@@ -177,7 +173,6 @@ x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName)
   return result;
 }
 
-/* ========================================================================== */
 SCM
 get_scm_cursor_by_number(int cursor_num) 
 {
@@ -224,7 +219,6 @@ XCursorByNumber(int cursor_num)
 }
 
 
-/* ========================================================================== */
 SCWM_PROC(set_window_cursor_x,"set-window-cursor!",2,0,0,
           (SCM win, SCM cursor))
      /** Set the default cursor for WIN to CURSOR. 
@@ -328,7 +322,6 @@ CreateScmGlobalCursors()
   /** The cursor to use when in a menu, defaults to sb_left_arrow. */
 }
 
-/* ========================================================================== */
 MAKE_SMOBFUNS(cursor);
 
 void
