@@ -27,9 +27,7 @@
 (defmacro-public test-case (TITLE FORM . RESULT)
   #f)
 
-(define kwm-module-windows ())
-;; (define kwm-module-windows (list kwm-kpanel-winid))
-(define kwm-kpanel-winid #f)
+(define-public kwm-module-winids ())
 
 (define WM_PROTOCOLS (string->X-atom "WM_PROTOCOLS"))
 (define WM_DELETE_WINDOW (string->X-atom "WM_DELETE_WINDOW"))
@@ -51,38 +49,62 @@
 (define desktop-names (list "Fun1" "Foo2" "Bar3" "Baz4"))
 (define number-of-desktops (length desktop-names))
 
-(define (kwm-numeric-property-set! prop value)
+(define (kwm-win-numeric-property-set! win prop value)
   (let ((property (string-append "KWM_" prop)))
-    (X-property-set! 'root-window property (vector value) property 32)))
+    (X-property-set! win property (vector value) property 32)))
+
+(define (kwm-numeric-property-set! prop value)
+  (kwm-win-numeric-property-set! 'root-window prop value))
+
+(define (kwm-win-numeric-property-get win prop)
+  (let ((property (string-append "KWM_" prop)))
+    (vector-ref (car (X-property-get win property)) 0)))
 
 (define (kwm-numeric-property-get prop)
+  (kwm-win-numeric-property-get 'root-window prop))
+
+(define (kwm-win-string-property-set! win prop value)
   (let ((property (string-append "KWM_" prop)))
-    (vector-ref (car (X-property-get 'root-window property)) 0)))
+    (X-property-set! win property value "STRING" 8)))
 
 (define (kwm-string-property-set! prop value)
+  (kwm-win-string-property-set! 'root-window prop value))
+
+(define (kwm-win-string-property-get win prop)
   (let ((property (string-append "KWM_" prop)))
-    (X-property-set! 'root-window property value "STRING" 8)))
+    (car (X-property-get win property))))
 
 (define (kwm-string-property-get prop)
-  (let ((property (string-append "KWM_" prop)))
-    (car (X-property-get 'root-window property))))
+  (kwm-win-string-property-get 'root-window prop))
 
-(define (kwm-double-property-set! prop value1 value2)
+(define (kwm-win-double-property-set! win prop value1 value2)
   (let ((property (string-append "KWM_" prop)))
-    (X-property-set! 'root-window property (vector value1 value2) 
+    (X-property-set! win property (vector value1 value2) 
 		     property 32)))
 
-(define (kwm-double-property-get prop)
+(define (kwm-double-property-set! prop value1 value2)
+  (kwm-win-double-property-set! 'root-window prop value1 value2))
+
+(define (kwm-win-double-property-get win prop)
   (let ((property (string-append "KWM_" prop)))
-    (car (X-property-get 'root-window property))))
+    (car (X-property-get win property))))
+
+(define (kwm-double-property-get prop)
+  (kwm-win-double-property-get 'root-window prop))
+
+(define (kwm-win-vector-property-set! win prop vector-value)
+  (let ((property (string-append "KWM_" prop)))
+    (X-property-set! win property vector-value property 32)))
 
 (define (kwm-vector-property-set! prop vector-value)
+  (kwm-win-vector-property-set! 'root-window prop vector-value))
+
+(define (kwm-win-vector-property-get win prop)
   (let ((property (string-append "KWM_" prop)))
-    (X-property-set! 'root-window property vector-value property 32)))
+    (car (X-property-get win property))))
 
 (define (kwm-vector-property-get prop)
-  (let ((property (string-append "KWM_" prop)))
-    (car (X-property-get 'root-window property))))
+  (kwm-win-vector-property-get 'root-window prop))
 
 
 (test-case "kwm-double-property get/set"
@@ -99,7 +121,7 @@
 
 (define (send-kwm-modules-client-message atom data)
   (map (lambda (winid) (send-client-message winid atom data))
-       kwm-module-windows))
+       kwm-module-winids))
 
 (define (kwm-change-desk-handler new old)
   (let ((kwm-desk-number (+ 1 new)))
@@ -120,12 +142,14 @@
 (define (kwm-client-message-handler atom format data)
   (if (eq? atom KWM_MODULE)
       (let ((winid (vector-ref data 0)))
-	(set! kwm-kpanel-winid winid)
-	(set! kwm-module-windows (cons winid kwm-module-windows)))
+	(set! kwm-module-winids (cons winid kwm-module-winids))
+	(kwm-send-window-list-to-winid winid))
       )
   (if (eq? atom KWM_ACTIVATE_WINDOW)
-      (let ((winid (vector-ref data 0)))
-	(focus (id->window winid)))))
+      (let* ((winid (vector-ref data 0))
+	     (win (id->window winid)))
+	(if (iconified? win) (deiconify win))
+	(focus win))))
       
 
 (define (client-message-debug-handler a f d)
@@ -135,11 +159,18 @@
   (display f)
   (write d)
   (display "\n"))
+;; (add-hook! client-message-hook client-message-debug-handler)
 
 (define (kwm-root-property-notify-handler atom deleted?)
   (if (eq? atom KWM_CURRENT_DESKTOP)
       (let ((desknum (kwm-numeric-property-get "CURRENT_DESKTOP")))
 	(set-current-desk! (- desknum 1)))))
+
+(define (kwm-property-notify-handler name win)
+  (cond 
+   ((string=? name "KWM_WIN_ICONIFIED")
+    (let ((f (kwm-win-numeric-property-get win "WIN_ICONIFIED")))
+      (if (= f 1) (iconify win) (deiconify win))))))
 
 (define (property-notify-debug-handler prop-name win)
   (display "Property changed: ")
@@ -150,6 +181,12 @@
   (display (X-atom->string atom)) (display " ") 
   (display deleted?) (display "\n"))
 
+(define (kwm-send-window-list-to-winid winid)
+  (map (lambda (win) 
+	 (send-client-message winid KWM_MODULE_WIN_ADD (window-id win)))
+       (list-all-windows)))
+
+;; public in case we need to resend
 (define-public (kwm-send-window-list)
   (map (lambda (win) 
 	 (send-kwm-modules-client-message KWM_MODULE_WIN_ADD (window-id win)))
@@ -164,17 +201,23 @@
 (define (kwm-remove-window-handler win)
   (send-kwm-modules-client-message KWM_MODULE_WIN_REMOVE (window-id win)))
 
-(define (kwm-iconify-window-handler win)
-  (X-property-set! win "KWM_WIN_ICONIFIED" 1 "KWM_WIN_ICONIFIED")
-  (kwm-change-window-handler win))
+(define (kwm-iconify-window-handler win was-iconified?)
+  (if (not was-iconified?)
+      (begin
+	(kwm-win-numeric-property-set! win "WIN_ICONIFIED" 1)
+	(kwm-change-window-handler win))))
 
-(define (kwm-deiconify-window-handler win)
-  (X-property-set! win "KWM_WIN_ICONIFIED" 1 "KWM_WIN_ICONIFIED")
-  (kwm-change-window-handler win))
+;; (X-property-set! (select-window-interactively) "KWM_WIN_ICONIFIED" 1 "KWM_WIN_ICONIFIED")
+
+(define (kwm-deiconify-window-handler win was-iconified?)
+  (if was-iconified?
+      (begin
+	(kwm-win-numeric-property-set! win "WIN_ICONIFIED" 0)
+	(kwm-change-window-handler win))))
 
 (define-public (kwm-emulation-initialize)
   (kwm-numeric-property-set! "NUMBER_OF_DESKTOPS" number-of-desktops)
-  (kwm-numeric-property-set! "CURRENT_DESKTOP" (current-desk))
+  (kwm-numeric-property-set! "CURRENT_DESKTOP" (+ 1 (current-desk))) ;; KWM uses 1-based desks
   (kwm-set-desktop-names)
 
   ;; (reset-hook! X-UnmapNotify-hook)
@@ -203,6 +246,9 @@
   ;;(add-hook! X-root-PropertyNotify-hook root-property-notify-debug-handler)
   (add-hook! X-root-PropertyNotify-hook kwm-root-property-notify-handler)
 
+  ;; (reset-hook! X-PropertyNotify-hook)
+  (add-hook! X-PropertyNotify-hook kwm-property-notify-handler)
+
   (kwm-numeric-property-set! "RUNNING" 1)
 
   (kwm-send-window-list))
@@ -214,9 +260,9 @@
 
   (remove-hook! after-new-window-hook kwm-after-new-window-handler)
 
-  (remove-hook! iconify-hook kwm-change-window-handler)
+  (remove-hook! iconify-hook kwm-iconify-window-handler)
 
-  (remove-hook! deiconify-hook kwm-change-window-handler)
+  (remove-hook! deiconify-hook kwm-deiconify-window-handler)
 
   (remove-hook! change-desk-hook kwm-change-desk-handler)
 
@@ -224,6 +270,12 @@
   (remove-hook! client-message-hook kwm-client-message-handler)
 
   ;;(remove-hook! X-root-PropertyNotify-hook root-property-notify-debug-handler)
-  (remove-hook! X-root-PropertyNotify-hook kwm-root-property-notify-handler))
+  (remove-hook! X-root-PropertyNotify-hook kwm-root-property-notify-handler)
+
+  (remove-hook! X-PropertyNotify-hook kwm-property-notify-handler)
+
+  )
 
 (kwm-emulation-initialize)
+;; (kwm-emulation-reset)
+
