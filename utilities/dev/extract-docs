@@ -42,8 +42,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:s';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s);
+my $getopts_option_letters = 'hqQDo:sC';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C);
 
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
@@ -52,6 +52,7 @@ sub script_usage ( ) {
 -D       Debugging output on
 -o file  Send sgml output to file -- no sgml output unless this is given
 -s       Run ispell on the comments and reports warnings for its responses
+-C       Only output concepts chapters
 ";
   exit 0;
 }
@@ -212,12 +213,19 @@ if ($opt_o) {
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
     </copyright>
   </bookinfo>
-  <chapter>
-    <title>Primitives in Alphabetical Order</title>
 END_HEADER
   ;
 }
 
+if ($opt_C) {
+  goto CONCEPTS_CHAPTER;
+}
+
+print MARKUP_OUT <<END_CHAP_HEAD
+  <chapter>
+    <title>Primitives in Alphabetical Order</title>
+END_CHAP_HEAD
+  ;
 
 # This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
@@ -303,6 +311,8 @@ START_VARS_CHAPTER
   print MARKUP_OUT "  </chapter>\n";
 }
 
+
+CONCEPTS_CHAPTER:
 
 # Now output concepts chapter
 if ($opt_o) {
