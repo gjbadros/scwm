@@ -1,3 +1,14 @@
+Fri Nov  7 03:26:00 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* base.scm: Renamed title-style to simple-title-style; the real
+ 	title-style is now in face.scm.
+
+	* face.scm: New file face.scm which implements a friendlier
+ 	interface to title, button and border styles than the primitve
+ 	interface. The exported procedures are title-style, border-style
+ 	and button-style; they are somewhat analogous to the fvwm builtins
+ 	with similar names.
+
 Mon Nov  3 01:12:41 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* decor.scm: Add the #:use-decor style option.
