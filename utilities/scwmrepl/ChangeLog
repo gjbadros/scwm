@@ -1,3 +1,8 @@
+1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* Makefile.am (INCLUDES): Explicitly mention include dir so that
+	srcdir != builddir works.
+
 Sat Jul 31 19:32:44 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmrepl.c (main): Use ARG_UNUSED, and #include arg_unused.h

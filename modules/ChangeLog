@@ -1,3 +1,11 @@
+1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* background/Makefile.am, c-animation/Makefile.am,
+ 	esdsound/Makefile.am, overlay-plane/Makefile.am,
+ 	pie-menus/Makefile.am, xlib-drawing/Makefile.am,
+ 	xpm-menus/Makefile.am, xtest/Makefile.am (INCLUDES): Explicitly
+ 	mention include dir so that srcdir != builddir works.
+
 Fri Aug 27 14:33:27 1999    <gjb@cs.washington.edu>
 
 	* xtest/Makefile.am, scwmgtkhelper/Makefile.am,

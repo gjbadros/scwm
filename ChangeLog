@@ -1,3 +1,11 @@
+1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* pixmaps/Makefile.am: Prefix with srcdir so that srcdir !=
+	builddir works.
+
+	* autogen.sh: Permit users to call autogen.sh from their build
+	directory, and still DTRT.
+
 Mon Aug 30 10:17:24 1999    <gjb@cs.washington.edu>
 
 	* configure.in: Use DATADIR/scwm/scwmrc for *.scwmrc files (stick
