@@ -207,3 +207,8 @@ structure as the sole argument.  */
 }
 
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -192,3 +192,8 @@ main (argc, argv)
 }
 
 #endif /* TEST */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

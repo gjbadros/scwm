@@ -87,6 +87,10 @@
 #include "dmalloc.h"
 #endif
 
+#ifdef HAVE_LIBSM_LIBICE
+#include "session-manager.h"
+#endif
+
 #ifndef WithdrawnState
 #define WithdrawnState 0
 #endif
@@ -202,7 +206,7 @@ HandleEvents(void)
 
   while (True) {
     last_event_type = 0;
-    if (!XNextEvent_orTimeout(dpy, &Event)) {
+    if (!NextScwmEvent(dpy, &Event)) {
       DispatchEvent();
     }
   }
@@ -1545,13 +1549,14 @@ CoerceEnterNotifyOnCurrentWindow()
 }
 
 
-/***************************************************************************
- *
- * Waits for next X event, or for an auto-raise timeout.
- *
- ****************************************************************************/
+/*
+ * Waits for next X event, 
+ * or for a timer timeout
+ * or for an ICE message (for session management)
+ * or for input from an input hook (e.g., the fvwm2 module pipe)
+ */
 int 
-XNextEvent_orTimeout(Display * dpy, XEvent * event)
+NextScwmEvent(Display * dpy, XEvent * event)
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
@@ -1559,7 +1564,6 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   struct timeval timeout;
   struct timeval *tp;
   int usec;
-  Bool repeat;
 
   DBUG((DBG,__FUNCTION__, "Entered"));
 
@@ -1599,27 +1603,30 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   
   update_timer_hooks();
   
-  repeat = True;
-
-  while (repeat) {	
+  while (True) {	
     usec = shortest_timer_timeout ();
     
     switch (usec) {
     case -1:
       tp = NULL;
-      repeat = False;
+      goto DONE_TIMER_LOOP;
       break;
     case 0:
       run_timed_out_timers();
-      repeat = True;
       break;
     default:
       timeout.tv_usec = usec;
       tp = &timeout;
-      repeat = False;
+      goto DONE_TIMER_LOOP;
       break;
     }
   }
+ DONE_TIMER_LOOP:
+
+#ifdef HAVE_LIBSM_LIBICE
+  if (IceSMfd != -1)
+    FD_SET(IceSMfd, &in_fdset);
+#endif
 
   retval = scm_internal_select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
 
@@ -1627,7 +1634,21 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
     update_timer_hooks();
     run_timed_out_timers();
   } else {
-    run_input_hooks(&in_fdset);
+#ifdef SM
+    if (IceSMfd != -1 && FD_ISSET(IceSMfd, &read_fds)) {
+      Bool rep;
+      scwm_msg(DBG,"NextScwmEvent","Processing ICE message.");
+      if (IceProcessMessages(IceSMconn, NULL, &rep)
+          == IceProcessMessagesIOError)
+        {
+          SmcCloseConnection(SMconn, 0, NULL);
+          IceSMconn = NULL;
+        }
+    } else 
+#endif
+      { /* scope/else in ifdef above */
+        run_input_hooks(&in_fdset);
+      }
   }
 
   DBUG((DBG,__FUNCTION__, "leaving"));

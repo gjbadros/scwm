@@ -70,7 +70,9 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #ifdef HAVE_LIBXMU
 #include <X11/Xmu/Error.h>
 #endif
-
+#ifdef HAVE_LIBSM_LIBICE
+#include "session-manager.h"
+#endif
 
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
@@ -517,6 +519,9 @@ scwm_main(int argc, char **argv)
   init_placement();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
+#endif
+#ifdef HAVE_LIBSM_LIBICE
+  initSM();
 #endif
   gh_allow_ints();
 

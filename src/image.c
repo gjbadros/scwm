@@ -636,3 +636,8 @@ void init_image()
     (scm_sysintern("image-not-found-hook", SCM_BOOL_F));
 }
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

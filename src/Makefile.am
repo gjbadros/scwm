@@ -39,6 +39,7 @@ scwm_SOURCES =  Grab.c \
                 resize.c \
 		screen.c \
                 scwm.c \
+		session-manager.c \
                 shutdown.c \
                 string_token.c \
                 syscompat.c \

@@ -24,7 +24,7 @@ void DispatchEvent(void);
 
 void InitEventHandlerJumpTable(void);
 
-int XNextEvent_orTimeout(Display * dpy, XEvent * event);
+int NextScwmEvent(Display * dpy, XEvent * event);
 
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);
 

@@ -306,12 +306,13 @@ scratch. This is hopefully not necessary during normal operation. */
 }
 #undef FUNC_NAME
 
+/* FIXGJB: should we dump wait-for-window? */
 
 SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
           (SCM predicate))
      /** Wait until a window appears which satisfies PREDICATE. 
 Given the existence of before-new-window-hook, this is of questionable
-usefulness. */
+usefulness and may be removed. */
 #define FUNC_NAME s_wait_for_window
 {
   Bool done = False;
@@ -322,7 +323,7 @@ usefulness. */
     scm_wrong_type_arg(FUNC_NAME, 1, predicate);
   }
   while (!done) {
-    if (XNextEvent_orTimeout(dpy, &Event)) {
+    if (NextScwmEvent(dpy, &Event)) {
       gh_defer_ints();
       DispatchEvent();
       gh_allow_ints();

@@ -150,3 +150,8 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
   return 0;
 
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -438,3 +438,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 }
 #undef INCREASE_MAYBE
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

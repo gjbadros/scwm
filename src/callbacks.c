@@ -681,3 +681,8 @@ will generally include information about the nature of the error.
 #endif
 }
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */
