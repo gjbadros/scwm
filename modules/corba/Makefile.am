@@ -25,7 +25,6 @@ scwm_corba_exec_SOURCES = \
 	scwm-corba-exec.c \
 	scwm_scheme_evaluator-common.c \
 	scwm_scheme_evaluator-stubs.c
-endif
 
 $(idl_output_source) $(idl_output_headers): scwm_scheme_evaluator.idl
 	orbit-idl $<
@@ -36,6 +35,10 @@ libscwmcorba_la_SOURCES = \
 	scwm_scheme_evaluator-common.c \
 	scwm_scheme_evaluator-skels.c
 
+BUILT_SOURCES = $(libscwmcorba_snarfs) $(idl_output_source)
+
+endif
+
 libscwmcorba_la_LDFLAGS = \
  -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lgnomeui -lart_lgpl -lgdk_imlib \
  -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11  \
@@ -45,7 +48,6 @@ libscwmcorba_la_LDFLAGS = \
 CFLAGS = -Wall -W @GTK_CFLAGS@ @CFLAGS@ `gnome-config --cflags gnome`
 
 INCLUDES = -I$(top_srcdir)/include -I$(SCWM_SRC_DIR) @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
-BUILT_SOURCES = $(libscwmcorba_snarfs) $(idl_output_source)
 
 scwm_corba_exec_LDADD = -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 
