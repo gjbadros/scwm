@@ -36,6 +36,11 @@
 #include "events.h"
 #include "module-interface.h"
 #include "window.h"
+#include "winprop.h"
+
+
+/* From window.c */
+extern SCM sym_shaded;
 
 
 /* TODO: Animated resizes? Animated iconifies of various flavors? 
@@ -123,6 +128,81 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY, /* viewpor
   while (*ppctMovement != 1.0 && ppctMovement++);
 
 }
+
+void SendClientConfigureNotify(const ScwmWindow *psw);
+
+/* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
+   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
+   The positions given are viewport positions (not virtual) */
+void 
+AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+		     int cmsDelay, float *ppctMovement )
+{
+  int currentW, currentH;
+  int lastW, lastH;
+  int deltaW, deltaH;
+
+  /* set our defaults */
+  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
+  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
+
+  if (startW < 0 || startH < 0) {
+    FXGetWindowSize(w, &currentW, &currentH);
+    if (startW < 0) startW = currentW;
+    if (startH < 0) startH = currentH;
+  }
+
+  deltaW = endW - startW;
+  deltaH = endH - startH;
+  lastW = startW;
+  lastH = startH;
+
+  if (deltaW == 0 && deltaH == 0)
+    return;
+
+  do {
+    currentW = (int) (startW + deltaW * (*ppctMovement));
+    currentH = (int) (startH + deltaH * (*ppctMovement));
+    /* XResizeWindow(dpy, w, currentW, currentH); */
+
+    SET_CVALUE(psw,frame_width,currentW);
+    SET_CVALUE(psw,frame_height,currentH);
+
+    SendClientConfigureNotify(psw);
+
+    
+    SetupFrame(psw, psw->frame_x, psw->frame_y, currentW, currentH, WAS_MOVED, WAS_RESIZED);
+
+
+    XFlush(dpy);
+    /* handle expose events as we're animating the window move */
+    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+      {
+	DispatchEvent();
+      }
+
+    ms_sleep(cmsDelay);
+#ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
+    /* this didn't work for me -- maybe no longer necessary since
+       we warn the user when they use > .5 seconds as a between-frame delay
+       time */
+    if (XCheckMaskEvent(dpy, 
+			ButtonPressMask|ButtonReleaseMask|
+			KeyPressMask,
+			&Event)) {
+      /* finish the move immediately */
+      XResizeWindow(dpy,w,endW,endH);
+      XFlush(dpy);
+      return;
+    }
+#endif
+    lastW = currentW;
+    lastH = currentH;
+    }
+  while (*ppctMovement != 1.0 && ppctMovement++);
+
+}
+
 
 
 /* AnimatedShadeWindow handles animating of window shades
@@ -239,9 +319,11 @@ the window context in the usual way if not specified. */
 #define FUNC_NAME s_animated_window_shade
 {
   ScwmWindow *psw;
+  Bool old;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fWindowShaded;
 
   /* MS:FIXME:: Good idea to forbid maximization of shaded windows? */
 
@@ -280,6 +362,9 @@ the window context in the usual way if not specified. */
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
+  signal_window_property_change(win, sym_shaded, SCM_BOOL_T,
+                                SCM_BOOL_FromBool(old));
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -293,9 +378,11 @@ not specified. See also `window-unshade', `animated-window-shade'. */
 #define FUNC_NAME s_animated_window_unshade
 {
   ScwmWindow *psw;
+  Bool old;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fWindowShaded;
 
   SET_UNSHADED(psw);
 
@@ -305,9 +392,14 @@ not specified. See also `window-unshade', `animated-window-shade'. */
 	     NOT_MOVED, WAS_RESIZED);
   
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
+
+  signal_window_property_change(win, sym_shaded, SCM_BOOL_F,
+                                SCM_BOOL_FromBool(old));
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
 
 SCWM_PROC(animated_move_window, "animated-move-window", 2, 2, 0,
           (SCM x, SCM y, SCM win, SCM move_pointer_too_p))
@@ -360,6 +452,80 @@ way if not specified. */
   move_finalize_virt(w, psw, destX, destY);
 
   return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+
+SCM 
+animated_resize_common (SCM w, SCM h, SCM win, const char *func_name, Bool frame_p)
+{
+  ScwmWindow *psw;
+  int width, height;
+
+  VALIDATEN(win, 3, func_name);
+  psw = PSWFROMSCMWIN(win);
+
+  if (check_allowed_function(F_RESIZE, psw) == 0
+      || SHADED_P(psw)) {
+    return SCM_BOOL_F;
+  }
+
+  /* can't resize icons */
+  if (psw->fIconified) {
+    return SCM_BOOL_F;
+  }
+
+  width = gh_scm2int(w);
+  height = gh_scm2int(h);
+
+  if (!frame_p) {
+    width += (2*psw->xboundary_width);
+    height += (psw->title_height + 2*psw->boundary_width);
+  }
+
+  { /* scope */
+    SCM animation_ms_delay = SCM_CDR(animation_delay);
+    int cmsDelay = -1;
+    
+    if (animation_ms_delay != SCM_BOOL_F &&
+	gh_number_p(animation_ms_delay)) {
+      cmsDelay = gh_scm2int(animation_ms_delay);
+    }
+
+    /* use viewport coordinates */
+    AnimatedResizeWindow(psw, psw->frame, 
+			 psw->frame_width, psw->frame_height,
+			 width, height,
+			 cmsDelay,NULL);
+  } /* scope */
+
+  ConstrainSize(psw, 0, 0, &width, &height);
+  ResizeTo(psw,width,height);
+
+  return SCM_UNSPECIFIED;
+}
+
+SCWM_PROC(animated_resize_window, "animated-resize-window", 2, 1, 0,
+          (SCM w, SCM h, SCM win))
+     /** Resize the frame of WIN to size W, H with animation.  
+WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_animated_resize_window
+{
+  return animated_resize_common(w, h, win, FUNC_NAME, False);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(animated_resize_frame, "animated-resize-frame", 2, 1, 0,
+          (SCM w, SCM h, SCM win))
+     /** Resize the frame of WIN to size W, H with animation.  
+WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_animated_resize_frame
+{
+  return animated_resize_common(w, h, win, FUNC_NAME, True);
 }
 #undef FUNC_NAME
 

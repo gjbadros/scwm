@@ -1,3 +1,10 @@
+1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* c-animation/c-animation.c: Corrected `animated-window-shade' and
+	`animated-window-unshade' primitives to send a
+	`window-property-change-hook' notification. Added
+	`animated-resize-window' and `animated-resize-frame' primitives.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* Makefile.am (SUBDIRS): Only build in scwmgtkhelper directory
