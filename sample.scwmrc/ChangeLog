@@ -19,6 +19,7 @@
 	New function `flash-window-start' that starts flashing a window
 	continously with timers.
 	New function `flash-window-stop' that stops the above.
+	Put `set-edge-move-threshold' back in.
 
 Fri Aug 28 16:50:43 1998  Greg Badros  <gjb@cs.washington.edu>
 

@@ -151,6 +151,7 @@
 (set-desk-size! 1 1)			; desktops are good, paging is evil
 (set-colormap-focus! 'focus)
 (set-edge-scroll-delay! #f)
+(set-edge-move-threshold! 5)
 (set-rubber-band-mask! 255)
 (set-animation!
  '#(0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1))
