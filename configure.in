@@ -707,6 +707,7 @@ AC_OUTPUT(Makefile \
 	  modules/Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \
+	  modules/corba/Makefile \
 	  modules/esdsound/Makefile \
 	  modules/overlay-plane/Makefile \
 	  modules/pie-menus/Makefile \

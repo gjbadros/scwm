@@ -6,6 +6,7 @@ EXTRA_DIST=ChangeLog
 SUBDIRS = \
 	background \
 	c-animation \
+	corba \
 	overlay-plane \
 	pie-menus \
 	xlib-drawing \
