@@ -11,45 +11,29 @@
 #include <config.h>
 #endif
 
-#ifdef USE_CASSOWARY
-
-#include "ClVariable.h"
-#include "ClSimplexSolver.h"
-
 struct ScwmWindow;
 typedef struct ScwmWindow *PScwmWindow;
 typedef const struct ScwmWindow *ConstPScwmWindow;
-
-class ScwmClVariable : public ClVariable {
-private: typedef ClVariable super;
-public:
-  ScwmClVariable() : ClVariable(), _psw(NULL) { }
-  virtual void change_value(Number n);
-  set_psw(ConstPScwmWindow psw) { _psw = (PScwmWindow) psw; }
-private:
-  PScwmWindow _psw;
-};
-
-
-#define FRAME_X(psw) ((psw)->frame_x.intValue())
-#define FRAME_Y(psw) ((psw)->frame_y.intValue())
-#define FRAME_WIDTH(psw) ((psw)->frame_width.intValue())
-#define FRAME_HEIGHT(psw) ((psw)->frame_height.intValue())
-
-/* defined in scwm.c for now */
-extern ClSimplexSolver solver;
-
-#else 
-/* !USE_CASSOWARY code */
-
-typedef int ScwmClVariable;
 
 #define FRAME_X(psw) ((psw)->frame_x)
 #define FRAME_Y(psw) ((psw)->frame_y)
 #define FRAME_WIDTH(psw) ((psw)->frame_width)
 #define FRAME_HEIGHT(psw) ((psw)->frame_height)
 
+#define SET_CVALUE(psw, field, value) do { (psw)->field = (value); } while (0)
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
+void CassowaryInitClVarsInPsw(PScwmWindow psw);
+void CassowarySetCValuesAndSolve(PScwmWindow psw);
+void CassowaryEditPosition(PScwmWindow psw);
+void SuggestMoveWindowTo(PScwmWindow psw, int x, int y);
+void CassowaryEndEditPosition(PScwmWindow psw);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SCWM_CONSTRAINTS_H__ */
