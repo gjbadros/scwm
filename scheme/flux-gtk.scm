@@ -1,0 +1,28 @@
+;;; $Id$
+;;; flux.scm
+;;; (C) 1998, 1999 Greg J. Badros and Maciej Stachowiak
+;;;
+;;; This are functions used by various sample .scwmrc, but not necessarily
+;;; stabilized even as well as the other files in scheme/*.scm
+;;; Expect the semantics of these functions to change, and don't
+;;; be surprised if some even completely disappear (as we figure out a better
+;;; way to do things)
+
+
+
+(define-module (app scwm flux-gtk)
+  :use-module (ice-9 regex)
+  :use-module (app scwm base)
+  :use-module (app scwm wininfo)
+  :use-module (app scwm winlist)
+  :use-module (app scwm string-prompt)
+  :use-module (app scwm winops)
+  :use-module (app scwm path-cache)
+  :use-module (app scwm optargs))
+
+(define*-public (rename-window-interactively #&optional (win (get-window)))
+  "Prompt for a new name for WIN and change its title.
+WIN defaults as usual to the current window context."
+  (string-prompt (string-append "Rename \"" (window-title win) "\" to: ") (lambda (new-name)
+				 (set-window-title! win new-name))
+		 "Rename-window"))

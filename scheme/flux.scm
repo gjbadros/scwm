@@ -16,7 +16,6 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm winops)
-  :use-module (app scwm string-prompt)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
@@ -748,14 +747,6 @@ in the user's home directory."
 
 (define-public (run-dot-xclients-at-startup)
   (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))
-
-(define*-public (rename-window-interactively #&optional (win (get-window)))
-  "Prompt for a new name for WIN and change its title.
-WIN defaults as usual to the current window context."
-  (string-prompt (string-append "Rename \"" (window-title win) "\" to: ") (lambda (new-name)
-				 (set-window-title! win new-name))
-		 "Rename-window"))
-
 
 ;; ((help-mesg "move-to"))
 
