@@ -23,6 +23,8 @@ number of rows & columns, not the original size in pixels?  If I
 recall correctly, that's what fvwm does.
    hstein - 7/16/98
 -------------
+Visual bugs in boundaries of windows with some configurations of options.
+-------------
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
