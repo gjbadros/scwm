@@ -21,8 +21,14 @@
 #endif
 
 #include <math.h>
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/shape.h>
 
 #include <guile/gh.h>
+/* FIXGJB13: guile-1.3 will have this already included */
+#include <libguile/dynl.h>
 
 #include "drawmenu.h"
 
@@ -41,9 +47,13 @@
 #define MAX(v1,v2) ((v1)>(v2) ? (v1) : (v2))
 
 static SCM pie_menu_look = SCM_UNDEFINED;
+static SCM circle_pie_menu_look = SCM_UNDEFINED;
 extern SCM sym_top, sym_center, sym_bottom;
 
 /* FIXGJB: comment these! */
+
+/* Angle for center of first slice */
+#define MENU_ANGLE_START (M_PI/2)
 
 /* Relative widths of different kinds of things in menus, in
    arbitrary units */
@@ -79,6 +89,7 @@ static GC MenuGC;
 static GC MenuStippleGC;
 static GC MenuReliefGC;
 static GC MenuShadowGC;
+static GC MaskGC;
 
 struct MenuDrawingInfo_tag
 {
@@ -87,14 +98,16 @@ struct MenuDrawingInfo_tag
   int cpixLabelRadius;		/* distance from center of pie for labels */
   int cpixInactiveRadius;	/* radius of inactive region in center */
   
-  
-/*int cpixLeftPicWidth;		/* how wide is the left image */
-/*int cpixSideImage;		/* how wide is the side image */
+#if 0
+  int cpixLeftPicWidth;		/* how wide is the left image */
+  int cpixSideImage;		/* how wide is the side image */
+  Pixel SideBGColor;		/* the side image bg color */
+#endif
   Pixel BGColor;		/* the background color */
-/*Pixel SideBGColor;		/* the side image bg color */
   Pixel TextColor;		/* the text color */
   Pixel StippleColor;		/* the stipple color */
   scwm_font *scfont;		/* To use scwm_font instead of XFont */
+  SCM menu_look;		/* the exact menu look for this menu */
 };
 
 struct MenuItemDrawingInfo_tag
@@ -118,6 +131,13 @@ InitGCs()
 {
   XGCValues gcv;
   unsigned long gcm;
+  static Bool GCs_initted;
+
+  if (GCs_initted) {
+    return;
+  }
+  
+  GCs_initted = True;
   
   gcm = 0;
 
@@ -149,6 +169,19 @@ InitGCs()
   MenuShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  
+  {
+    Pixmap bitmap;
+
+    bitmap = XCreatePixmap(dpy, Scr.Root, 1, 1, 1);
+    gcm = GCFunction | GCGraphicsExposures | GCFillStyle;
+
+    gcm |= GCPlaneMask;
+    gcv.plane_mask = 1;
+
+    MaskGC = XCreateGC(dpy, bitmap, gcm, &gcv);
+    XFreePixmap(dpy, bitmap);
+  }
 }
 
 static void
@@ -159,12 +192,6 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   unsigned long gcm;
   XGCValues gcv;
   Pixel Bright, Dim;
-  static Bool GCs_initted;
-
-  if (!GCs_initted) {
-    InitGCs();
-    GCs_initted = True;
-  }
 
   if (pmd->pmdi->BGColor	!= LastBGColor ||
       menu_hilight_factor_val	!= last_hilight_factor ||
@@ -529,13 +556,16 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   }
 #endif
 
+#if 0 || SCWM_DEBUG_MSGS
+  /* FIXJTL: I can't decide if this looks good or not */
   XFillArc(dpy, pmd->w, MenuShadowGC,
 	   pmd->pmdi->cpixXCenter - pmd->pmdi->cpixInactiveRadius,
 	   pmd->pmdi->cpixYCenter - pmd->pmdi->cpixInactiveRadius,
 	   2 * pmd->pmdi->cpixInactiveRadius + 1,
 	   2 * pmd->pmdi->cpixInactiveRadius + 1,
 	   0, 360*64);
-
+#endif
+  
 #ifdef SCWM_DEBUG_MSGS
   XDrawArc(dpy, pmd->w, MenuReliefGC,
 	   pmd->pmdi->cpixXCenter - pmd->pmdi->cpixLabelRadius,
@@ -545,10 +575,24 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 	   0, 360*64);
 #endif
 
-  RelieveRectangle(pmd->w, 0, 0,
-		   pmd->cpixWidth, pmd->cpixHeight,
-		   MenuReliefGC, MenuShadowGC);
-  
+  if (pmd->pmdi->menu_look == circle_pie_menu_look) {
+    XDrawArc(dpy, pmd->w, MenuReliefGC, 0, 0,
+	     pmd->cpixWidth, pmd->cpixHeight,
+	     45 * 64, (45 + 180) * 64);
+    XDrawArc(dpy, pmd->w, MenuReliefGC, 1, 1,
+	     pmd->cpixWidth-2, pmd->cpixHeight-2,
+	     45 * 64, (45 + 180) * 64);
+    XDrawArc(dpy, pmd->w, MenuReliefGC, 0, 0,
+	     pmd->cpixWidth, pmd->cpixHeight,
+	     (-135 * 64), 45 * 64);
+    XDrawArc(dpy, pmd->w, MenuReliefGC, 1, 1,
+	     pmd->cpixWidth-2, pmd->cpixHeight-2,
+	     (-135 * 64), 45 * 64);
+  } else {
+    RelieveRectangle(pmd->w, 0, 0,
+		     pmd->cpixWidth, pmd->cpixHeight,
+		     MenuReliefGC, MenuShadowGC);
+  }
   XSync(dpy,0);
 }
 
@@ -843,8 +887,9 @@ repositionLabel(int *pcpixX, int *pcpixY, int cpixWidth, int cpixHeight)
      side images
      certainly other things
   */
+static
 void
-ConstructDynamicPieMenu(DynamicMenu *pmd)
+ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
 {
   Menu *pmenu;
   MenuDrawingInfo *pmdi;
@@ -864,7 +909,10 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
   int total_units;
   int imiim, cmiim;
   int iQuadrant;
+  int cpixOuterRadius;
 
+  InitGCs();
+  
 #if 0
   scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
   scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
@@ -878,7 +926,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
   if (pmd->pmdi != NULL)
     return;
 
-  pmdv = MENULOOK(pie_menu_look)->mdvt;
+  pmdv = MENULOOK(menu_look)->mdvt; /* FIXJTL: find a good way to do this */
   scfont = PscwmFontForMenuItem(pmenu->scmFont);
 
   total_units = 0;
@@ -897,7 +945,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
 
   /* First loop through items - allocate pmidi, fill in everything
      in pmidi except label position and edge line coordinates */
-  rAngle = 0;
+  rAngle = MENU_ANGLE_START;
   for (imiim = 0; imiim < cmiim; imiim++) {
     /* rAngle is angle of leading edge here, or center for first item */
     pmiim = rgpmiim[imiim];
@@ -1046,6 +1094,7 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
   /* Third loop through, set all the label and edge line positions
      relative to center, find width & height to find center*/
   cpixXMin = cpixYMin = cpixXMax = cpixYMax = 0;
+  cpixOuterRadius = 0;
   for (imiim = 0; imiim < cmiim; imiim++) {
     pmiim = rgpmiim[imiim];
     pmidi = pmiim->pmidi;
@@ -1067,23 +1116,38 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
     /* Now all of pmidi is filled in, but
        label & edge line coordinates are relative to center,
        not to window origin */
-    
-    DECREASE_MAYBE(cpixXMin, cpixX);
-    INCREASE_MAYBE(cpixXMax, cpixX + cpixWidth);
-    DECREASE_MAYBE(cpixYMin, cpixY);
-    INCREASE_MAYBE(cpixYMax, cpixY + cpixHeight);
+
+    if (menu_look == circle_pie_menu_look) {
+#define RADIUS_SQ(x,y) (((x) * (x)) + ((y) * (y)))
+      INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX, cpixY));
+      INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX + cpixWidth, cpixY));
+      INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX, cpixY + cpixHeight));
+      INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX + cpixWidth, cpixY + cpixHeight));
+    } else {
+      DECREASE_MAYBE(cpixXMin, cpixX);
+      INCREASE_MAYBE(cpixXMax, cpixX + cpixWidth);
+      DECREASE_MAYBE(cpixYMin, cpixY);
+      INCREASE_MAYBE(cpixYMax, cpixY + cpixHeight);
+    }
   }
-  
+
   /* FIXJTL: title */
 
-  cpixXMin -= MENU_PIE_BORDER;
-  cpixYMin -= MENU_PIE_BORDER;
-  cpixXMax += MENU_PIE_BORDER;
-  cpixYMax += MENU_PIE_BORDER;
+  if (menu_look == circle_pie_menu_look) {
+    cpixOuterRadius = (int) (sqrt(cpixOuterRadius) + .5);
+    cpixOuterRadius += MENU_PIE_BORDER;
+    cpixXCenter = cpixOuterRadius;
+    cpixYCenter = cpixOuterRadius;
+  } else {
+    cpixXMin -= MENU_PIE_BORDER;
+    cpixYMin -= MENU_PIE_BORDER;
+    cpixXMax += MENU_PIE_BORDER;
+    cpixYMax += MENU_PIE_BORDER;
 
-  cpixXCenter = -cpixXMin;
-  cpixYCenter = cpixYMax; /* Y is flipped */
-
+    cpixXCenter = -cpixXMin;
+    cpixYCenter = cpixYMax; /* Y is flipped */
+  }
+  
   /* And ONE MORE TIME, with emphasis - rearrange coordinates, in
      relation to center */
   for (imiim = 0; imiim < cmiim; imiim++) {
@@ -1112,9 +1176,15 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
 
   pmd->pmdv = pmdv;
   pmd->pmdi = pmdi;
-  pmd->cpixWidth = cpixXMax - cpixXMin;
-  pmd->cpixHeight = cpixYMax - cpixYMin;
 
+  if (menu_look == circle_pie_menu_look) {
+    pmd->cpixWidth = 2 * cpixOuterRadius;
+    pmd->cpixHeight = 2 * cpixOuterRadius;
+  } else {
+    pmd->cpixWidth = cpixXMax - cpixXMin;
+    pmd->cpixHeight = cpixYMax - cpixYMin;
+  }
+  
   /* Now create the window */
   { /* scope */
     unsigned long valuemask = (CWBackPixel | CWCursor | CWSaveUnder);
@@ -1126,16 +1196,47 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
     pmd->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmd->cpixWidth,
 			   pmd->cpixHeight, 0, CopyFromParent, InputOutput,
 			   CopyFromParent, valuemask, &attributes);
+#if 0
+    if (psimgBackground) {
+      XSetWindowBackgroundPixmap(dpy, pmd->w, psimgBackground->image);
+    }
+#endif
+  }
 
-//      if (psimgBackground) {
-//	XSetWindowBackgroundPixmap(dpy, pmd->w, psimgBackground->image);
-//      }
+  if (menu_look == circle_pie_menu_look) {
+    Pixmap mask;
+
+    mask = XCreatePixmap(dpy, Scr.Root, pmd->cpixWidth, pmd->cpixHeight, 1);
+
+    XSetForeground(dpy, MaskGC, 0);
+    XFillRectangle(dpy, mask, MaskGC, 0, 0, pmd->cpixWidth, pmd->cpixHeight);
+
+    XSetForeground(dpy, MaskGC, 1);
+    XFillArc(dpy, mask, MaskGC,
+	     0, 0, pmd->cpixWidth, pmd->cpixHeight, 0, 360*64);
+    XShapeCombineMask(dpy, pmd->w, ShapeBounding, 0, 0, mask, ShapeSet);
+    XFreePixmap(dpy, mask);
   }
 }
 #undef INCREASE_MAYBE
 #undef DECREASE_MAYBE
 #undef MIN
 #undef MAX
+
+static
+void
+ConstructDynamicPieMenu(DynamicMenu *pmd)
+{
+  ConstructDynamicPieMenuInternal(pmd, pie_menu_look);
+}
+
+static
+void
+ConstructDynamicPieMenuShapeCircle(DynamicMenu *pmd)
+{
+  ConstructDynamicPieMenuInternal(pmd, circle_pie_menu_look);
+}
+
 void 
 drawpiemenu_init_gcs()
 {
@@ -1177,6 +1278,25 @@ init_draw_pie_menu()
   
   pie_menu_look = make_menulook("pie-menu-look", SCM_BOOL_T, pmdvt);
   SCWM_VAR_READ_ONLY(NULL,"pie-menu-look",pie_menu_look);
+  /** A menu-look that gives pie menus in a rectangular window */
+  pmdvt = NEW(MenuDrawingVtable);
+  memset(pmdvt, 0, sizeof *pmdvt);
+  
+  pmdvt->fnConstructDynamicMenu = ConstructDynamicPieMenuShapeCircle;
+  pmdvt->fnPaintDynamicMenu = PaintDynamicMenu;
+  pmdvt->fnPaintMenuItem = PaintMenuItemLabel;
+  pmdvt->fnSetPopupMenuPositionFromMenuItem = SetPopupMenuPositionFromMenuItem;
+  pmdvt->fnGetChildPopupPosition = GetChildPopupPosition;
+  pmdvt->fnGetPreferredPopupPosition = GetPreferredPopupPosition;
+  pmdvt->fnWarpPointerToPmiim = WarpPointerToPmiim;
+  pmdvt->fnPmiimFromPmdXY = PmiimFromPmdXY;
+  pmdvt->fnInPopupZone = InPopupZone;
+  pmdvt->fnFreePmdi = FreePmdi;
+  pmdvt->fnFreePmidi = FreePmidi;
+  
+  circle_pie_menu_look = make_menulook("circle-pie-menu-look", SCM_BOOL_T, pmdvt);
+  SCWM_VAR_READ_ONLY(NULL,"circle-pie-menu-look",circle_pie_menu_look);
+  /** A menu-look that gives pie menus in a circular window. */
 #ifndef SCM_MAGIC_SNARFER
 #include "draw-pie-menu.x"
 #endif
