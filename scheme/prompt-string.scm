@@ -35,14 +35,14 @@
 (define*-public (prompt-string prompt proc #&key
 			       (initval #f) (title "prompt-string"))
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
-E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
+E.g., (prompt-string \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (hbox-and-getter-and-entry (prompt-string-hbox prompt initval))
 	 (hbox (car hbox-and-getter-and-entry))
 	 (getter (cadr hbox-and-getter-and-entry))
 	 (entry (caddr hbox-and-getter-and-entry)))
     (gtk-window-set-title toplevel title)
-    (gtk-window-set-wmclass toplevel "string-prompt" "Scwm")
+    (gtk-window-set-wmclass toplevel "prompt-string" "Scwm")
     (gtk-container-add toplevel hbox)
     (gtk-signal-connect entry "activate"
 			(lambda () (gtk-widget-destroy toplevel) 

@@ -83,7 +83,7 @@
 	(popup-docs-for var))))
 
 ;;(path-list->string-with-colons (scwm-option-get *theme-path*))
-;; (use-modules (app scwm string-prompt))
+;; (use-modules (app scwm prompt-string))
 ;; (use-modules (gtk gtk))
 ;; (gui-set '*desk-width*)
 (define-public (gui-set sym)

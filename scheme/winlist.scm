@@ -78,7 +78,6 @@ you can do something like:
 			      (by-stacking #f)
 			      (by-focus #f)
 			      (reverse #f))
-
   "Return the list of windows matching ONLY and not matching EXCEPT.
 The windows are returned their stacking order (top first) if
 BY-STACKING is #t.  They are returned sorted by their last focussed
