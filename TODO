@@ -181,6 +181,7 @@ alloc/dealloc to see where the memory is going... guile support for this?
 ** event binding objects?
 
 * Menu functionality
+** placement of side-menus 'top, 'middle, 'bottom (Todd Larason?)
 ** existence testing for menu items
 ** side images should have optional alignment to top, center, or bottom
 ** pie menus

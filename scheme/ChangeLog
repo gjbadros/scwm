@@ -1,3 +1,8 @@
+Sun Sep 13 19:29:10 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Fixed typo bug in X-synthetic-send-string -- use `win' 
+	instead of `w'
+
 Sun Sep 13 13:00:37 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Only use [un]flash-window-proc if not #f
