@@ -889,8 +889,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "M-slash") redo)
 (bind-key 'all (hyper "s") insert-undo-global)
 
-(bind-key 'all (hyper "w") describe-key)
-(bind-key 'all (hyper "comma") describe-mouse)
+(bind-key 'all (hyper "w") describe-event)
 (bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
