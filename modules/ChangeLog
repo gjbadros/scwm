@@ -1,3 +1,8 @@
+Sat Oct  2 11:22:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/scwmviavoice.c: Eliminated all compile-time warnings
+	with egcs-2.91.66 and default flags.
+
 Sat Oct  2 00:25:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (animated_resize_common): Permit w/h
