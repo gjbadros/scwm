@@ -1,3 +1,11 @@
+1999-02-13  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* base.scm (popup-menu-from-decoration): Moved here from
+	flux.scm. Changed to align the menu exactly to the button rather
+	than to the window (which looked kind of weird). Also, always left
+	align.
+	* flux.scm: Removed `popup-menu-from-decoration'.
+
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* animated-iconify.scm: Added missing close paren.

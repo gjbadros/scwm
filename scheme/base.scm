@@ -370,6 +370,25 @@ specific to the menu look used for this menu."
     (set-menu-menu-look! menu look)
     menu))
 
+(define-public (popup-menu-from-decoration menu win button-number)
+  "Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
+This positions the popup menu appropriately."
+  (let* ((pos (window-viewport-position win))
+	 (x-ne (car pos))
+	 (y (+ (cadr pos) (+ (window-frame-border-width win)
+			     (window-title-height win))))
+	 (x (if (odd? button-number) 
+		(+ x-ne 
+		   (window-frame-border-width win)
+		   (* (/ (- button-number 1) 2) 
+			   (window-title-height win)))
+		(- 
+		 (+ x-ne (car (window-frame-size)))
+		 (window-frame-border-width win)
+		 (* (/ button-number 2) 
+		    (window-title-height win))))))
+    (popup-menu menu #f x y #t)))
+
 (define-public (image-property image key)
   "Return the KEY property of IMAGE.
 See `image-properties' for a list of the keys."

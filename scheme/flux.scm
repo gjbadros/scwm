@@ -451,15 +451,6 @@ Especially useful for add-hook! and other timing related procedures
 that take microseconds."
   (* 1000 sec))
 
-(define-public (popup-menu-from-decoration menu win button-number)
-  "Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
-This positions the popup menu appropriately."
-  (let* ((pos (window-viewport-position win))
-	 (x-ne (car pos))
-	 (y (+ (cadr pos) (+ 1 (window-frame-border-width win)
-			     (window-title-height win))))
-	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-frame-size))))))
-    (popup-menu menu #f x y (odd? button-number))))
 
 ;; We need accessors for window background information,
 ;; and window-hilight background information
