@@ -12,7 +12,7 @@
 #include "misc.h"
 
 /* FIXGJB: use call_thunk_with_message_handler, or some 
-   variety thereof to keep bad broadcat handlers
+   variety thereof to keep bad broadcast handlers
    from crashing scwm.  MSFIX: do you know how to do this?
    --gjb 11/27/97 */
 
