@@ -33,7 +33,7 @@
   (let* ((delta-pos (map - win-pos icon-pos))
          (delta-size (map - win-size icon-size)))
     (set-X-server-synchronize! #t)
-    (xlib-set-line-width! 4)
+    (xlib-set-line-attributes! 6 'solid)
     (and before-animation-proc (before-animation-proc))
     (with-grabbed-server
      (lambda ()

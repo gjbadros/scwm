@@ -130,6 +130,7 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
 
 (define-public display-width (car (display-size)))
 (define-public display-height (cadr (display-size)))
+(define-public display-depth (caddr (X-display-information)))
 
 ;; Convenience procedures for specifying positions and sizes.
 (define-public (%x x)
