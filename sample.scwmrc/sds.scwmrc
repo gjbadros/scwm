@@ -1,0 +1,677 @@
+;;; File: <.scwmrc - 1998-01-09 Fri 17:03:50 EST sds@mute.eaglets.com>
+
+;;-------------------------------
+;; import the scwm modules
+
+(use-modules (app scwm base) (app scwm winops) (app scwm winlist)
+	     (app scwm wininfo) (app scwm style) (app scwm face))
+
+;(define HOME (getenv "HOME"))
+;(define USER (getenv "USER"))
+(define xterm-command "xterm")
+;(define mail-spool-dir (or (getenv "MAIL")
+;			   (string-append "/var/spool/mail/" USER)))
+;(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
+
+;;-------------------------------
+;; set some basic styles info
+
+(define (vertical-toggle-maximize) (toggle-maximize 0 (%y 100)))
+(define (horizontal-toggle-maximize) (toggle-maximize (%x 100) 0))
+(define (both-toggle-maximize) (toggle-maximize (%x 100) (%y 100)))
+(define (vertical-toggle-maximize-partial) (toggle-maximize 0 (%y 95)))
+
+(define font12 (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+(define window-font (load-font "*helvetica*bold-r*12*"))
+(define menu-font (load-font "*helvetica*medium-r*10*"))
+(define icon-font (load-font "fixed"))
+
+;(define (menu-item name pixmap action)
+;  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))
+
+;;(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
+;;	    #:font font14 #:mwm #f)
+(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35"
+	    #:font menu-font #:mwm #t)	; sds: was #f
+
+;;(set-click-time! 150)
+;;(set-color-map-focus! 'follows-mouse)
+;;(set-desktop-size! 3 3)
+
+;;; FIXGJB: should be a function returning whether it should do opaque
+;;; move or an integer for the percent (server/net/cpu load might
+;;; influence whether you want to do an opaque move, e.g.)
+
+(set-opaque-move-size! 100000)
+(set-edge-resistance! 500 100)
+(set-edge-scroll! 100 100)
+
+(title-style #:font font12 #:justify 'left #:relief 'raised)
+
+(set-icon-font! font12)
+(set-rubber-band-mask! 255)
+
+;;-------------------------------
+;; set some paths
+
+(set-image-path!
+ ":/usr/local/lib/X11/mini-icons:/usr/local/include/X11/pixmaps:\
+/usr/X11/include/X11/bitmaps:/usr/X11/include/X11/pixmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:/usr/lib/icons:/usr/X11/lib/X11/mini-icons")
+
+(define pic-system-button (make-image "mini-sys3d-full.xpm"))
+(define pic-xterm-mini (make-image "mini-term.xpm"))
+(define pic-unknown (make-image "unknown1.xpm"))
+
+;;-------------------------------
+;; set some window styles
+
+;;; MSFIX: I don't like the ordering dependence on the window-style... I
+;;; think that will go away when using the XClass and/or Instance name
+;;; tests, which I'd prefer anyway...
+(window-style "*" #:fg "black" #:bg "grey76" ; #:icon #f ; no icon
+ 	      #:icon pic-unknown #:sticky-icon #t
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:border-width 3 #:mwm-border #t #:focus 'mouse
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:int-override #t #:decorate-transient #t
+	      #:PPosition-hint #f #:mini-icon pic-xterm-mini)
+
+;; FIXGJB: make-face's style of argument passing
+;; is different from the window-style method; I imagine
+;; MS has a wrapper planned for this (MSFIX)
+
+(border-style #:hidden-handles #f #:no-inset #t)
+
+(set-hilight-colors! "grey" "navyblue") ; white/navyblue;navyblue/IndianRed
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 1 #:circulate-skip #t #:focus 'none))
+
+;; Inherit above style options and specialize
+(define desk-widget-on-top
+  (make-style #:use-style desk-widget #:stays-on-top #t))
+
+;; NOTE: you can use a string or a (make-image "filename.xpm")
+;; after #:icon and #:mini-icon
+;; MSFIX: important! window-style's argument
+(window-style "zwgc" #:use-style desk-widget-on-top)
+(window-style "*lock" #:no-title #t #:use-style desk-widget)
+(window-style "xload" #:no-title #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+(window-style "xbiff" #:no-title #t #:use-style desk-widget-on-top
+	      #:mini-icon "mini-xbiff.xpm")
+(window-style "xcalc" #:icon "xcalc.xpm" #:mini-icon "mini-calc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "XTerm" #:mini-icon pic-xterm-mini #:icon "xterm.xpm")
+(window-style "Emacs" #:mini-icon "mini-edit.xpm" ; TextEditor.xpm
+	              #:icon "/usr/share/emacs/20.2/etc/gnu.xpm"
+		      #:PPosition-hint #t)
+
+;;-------------------------------
+;; define some useful menus
+
+(define menu-window-ops
+  (make-menu "Window Ops" (menu-title) (menu-separator)
+	     (menu-item "&Move" #:left-pixmap "mini-move.xpm"
+			#:action interactive-move)
+	     (menu-item "&Resize" #:left-pixmap "mini-resize.xpm"
+			#:action interactive-resize)
+	     (menu-item "R&aise" #:left-pixmap "mini-raise.xpm"
+			#:action raise-window)
+	     (menu-item "&Lower" #:left-pixmap "mini-lower.xpm"
+			#:action lower-window)
+	     (menu-item "&Iconify/Restore" #:left-pixmap "mini-iconify.xpm"
+			#:action toggle-iconify)
+	     (menu-item "&Stick/Unstick" #:left-pixmap "mini-stick.xpm"
+			#:action toggle-stick)
+	     (menu-item "Ma&ximize/Reset" #:action both-toggle-maximize)
+	     (menu-item "Ma&ximize &Tall/Reset"
+			"maxtall" #:action vertical-toggle-maximize)
+	     (menu-item "Maximize &Wide/Reset"
+			"maxwide" #:action horizontal-toggle-maximize)
+	     (menu-item "S&hade/Reset" #:action toggle-window-shade)
+	     (menu-separator)
+	     (menu-item "Keep-&on-top/Reset" #:action toggle-on-top)
+	     (menu-item "&Print" #:action print-window)
+	     (menu-separator)
+	     (menu-item "&Delete" #:action delete-window)
+	     (menu-item "&Close" #:left-pixmap "mini-cross.xpm"
+			#:action close-window)
+	     (menu-item "&Kill" #:left-pixmap "mini-bomb.xpm"
+			#:action destroy-window)
+	     (menu-separator)
+	     (menu-item "Switch to..." #:action
+			(lambda () (show-window-list-menu #:show-geometry #t)))
+	     (menu-item "Re&fresh Screen" #:left-pixmap "mini-ray.xpm"
+			#:action refresh)))
+
+(define (wiggle-window)
+  (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
+
+;;FIXGJB:
+(define (scwm-help) (display "Need to write scwm-help\n"))
+
+;;FIXGJB:
+(define (scwm-about-message) (display "Need to write scwm-about-message\n"))
+(define (start-xterm) (execute (string-append xterm-command " -e bash")))
+(define (start-mc) (execute "rxvt +scrollBar -color11 coral -e mc"))
+(define (tell-workman command) (execute (string-append "workman -s " command)))
+(define (popup-root-start) (popup menu-root-start))
+(define (popup-ops) (popup menu-window-ops))
+(define (popup-util) (popup menu-util))
+
+(define quit-verify
+  (make-menu "Really quit scwm?" (menu-title) (menu-separator)
+	     (menu-item "Yes" #:action quit)
+	     (menu-item "No" #:action noop)
+	     (menu-separator)
+	     (menu-item "Restart scwm" #:action (lambda () (restart "scwm")))
+	     (menu-item "Start fvwm2" #:action (lambda () (restart "fvwm2")))))
+
+(define menu-desk
+  (make-menu "Desks" (menu-title) (menu-separator)
+	     (menu-item "Desk 1" #:action (lambda () (set-current-desk! 0)))
+	     (menu-item "Desk 2" #:action (lambda () (set-current-desk! 1)))
+	     (menu-item "Desk 3" #:action (lambda () (set-current-desk! 2)))
+	     (menu-item "Desk 4" #:action (lambda () (set-current-desk! 3)))))
+
+(define menu-util
+  (make-menu "Utilities" (menu-title) (menu-separator)
+	     (menu-item "xterm" #:left-pixmap "mini-term.xpm"
+			#:action (lambda () (execute xterm-command)))
+	     (menu-item "rxvt" #:action (lambda () (execute "rxvt")))
+	     (menu-item "emacs" #:left-pixmap "mini-edit.xpm"
+			#:action (lambda () (execute "emacs")))
+	     (menu-item "top" #:action
+			(lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (menu-item "xcalc" #:action (lambda () (execute "xcalc")))
+	     (menu-item "xmag" #:action (lambda () (execute "xmag")))
+	     (menu-separator)
+	     (menu-item "Desks" #:action menu-desk)
+	     (menu-separator)
+	     (menu-item "Exit scwm" #:action quit-verify)))
+
+(define menu-applications
+  (make-menu "Applications" (menu-title) (menu-separator)
+	     (menu-item "Acroread" #:action
+			(lambda ()
+			  (execute"/usr/local/Acrobat3/bin/acroread")))
+	     (menu-item "Netscape" #:action
+			(lambda () (execute "/usr/local/netscape/netscape")))
+	     (menu-item "GhostView" #:action (lambda() (execute "ghostview")))
+	     (menu-item "XV" #:action (lambda() (execute "xv")))))
+
+(define menu-multimedia (make-menu "Multimedia" (menu-title) (menu-separator)))
+(define menu-games (make-menu "Games" (menu-title) (menu-separator)))
+
+(define hosts-list '("phish" "puck" "stormbringer" "server_one"))
+(define menu-hosts
+  (apply make-menu "Hosts" (menu-title) (menu-separator)
+	 (do ((hh hosts-list (cdr hh)) (res ())) ((null? hh) res)
+	   (set! res
+		 (cons (menu-item (car hh) #:action
+				  (lambda()
+				    (execute (string-append
+					      xterm-command " -T telnet:"
+					      (car hh) " -n telnet "
+					      "-e telnet " (car hh)))))
+		       res)))))
+
+(define menu-system-utilities
+  (make-menu "System Utilities" (menu-title) (menu-separator)))
+(define menu-preferences
+    (make-menu "Preferences" (menu-title) (menu-separator)
+	       (menu-item "Reload X resources" #:action
+			  (lambda ()
+			    (execute "xrdb -merge ${HOME}/.Xresources")))))
+
+;; General functionality for splitting long menus
+(define max-lines 30)		; the max number of lines in a menu
+(define (split-list ls max)
+  (let ((le (length ls)) (tt ()) (t1 ()))
+    (cond ((< le max) (list ls))
+	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
+	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
+(define (fold-menu-list ml)	; split the menu list into groups of max-lines
+  (if (<= (length ml) max-lines) ml
+      (map (lambda (lm) (menu-item "more..." #:action
+			      (apply make-menu "more..." lm)))
+	   (split-list ml max-lines))))
+
+;; The screen saver and screen lock menus. Use the above split menu.
+(define screensaver-modes
+  '("ant" "ball" "bat" "blot" "bouboule" "bounce" "braid" "bug"
+    "cartoon" "clock" "crystal" "daisy" "dclock" "demon" "drift" "eyes"
+    "fadeplot" "flag" "flame" "forest" "galaxy" "geometry" "grav" "helix"
+    "hop" "hyper" "ico" "ifs" "image" "julia" "kaleid" "laser" "life"
+    "life1d" "life3d" "lightning" "lisa" "lissie" "loop" "marquee" "maze"
+    "mountain" "munch" "nose" "pacman" "penrose" "petal" "puzzle" "pyro"
+    "qix" "roll" "rotor" "shape" "sierpinski" "slip" "sphere" "spiral"
+    "spline" "star" "strange" "swarm" "swirl" "triangle" "tube" "turtle"
+    "vines" "voters" "wator" "wire" "world" "worm"))
+(define (run-xlock mode lock)	; returns a lambda!
+  (lambda () (execute (string-append "xlock -nice -19 " (if lock "" "-nolock ")
+				     "-mode " mode))))
+(define menu-screensaver
+  (apply make-menu "Screensaver" (menu-title) (menu-separator)
+	 (menu-item "Random!" #:action (run-xlock "random" #f))
+	 (menu-item "Blank" #:action (run-xlock "blank" #f))
+	 (menu-item "Bomb" #:action (run-xlock "bomb" #f))
+	 (fold-menu-list
+	  (map (lambda (str) (menu-item str #:action (run-xlock str #f)))
+	       screensaver-modes))))
+(define menu-xlock
+  (apply make-menu "Lock Screen" (menu-title) (menu-separator)
+	 (menu-item "Random!" #:action (run-xlock "random" #t))
+	 (menu-item "Blank" #:action (run-xlock "blank" #t))
+	 (menu-item "Bomb" #:action (run-xlock "bomb" #t))
+	 (fold-menu-list
+	  (map (lambda (str) (menu-item str #:action (run-xlock str #t)))
+	       screensaver-modes))))
+
+;;; Process the /etc/X11/wmconfig/ directory in SCWM. For RedHat GNU/Linux.
+(define wmconfig-dir "/etc/X11/wmconfig/")
+(define (wmc-process-file fl)		; return (group . menuitem)
+  (let ((fd (open-input-file fl)))
+    (do ((wd (read fd) (read fd)) (mi ()) (gr ()) (nm ()))
+	((eof-object? wd) (close-input-port fd)
+	 (cons gr (apply menu-item nm mi)))
+      (cond ((string=? wd "mini-icon")
+	     (set! mi (append (list #:left-pixmap (string (read fd))) mi)))
+	    ((string=? wd "exec")
+	     (set! mi (append (list #:action (lambda () (execute (read fd))))
+			      mi)))
+	    ((string=? wd "name") (set! nm (read fd)))
+	    ((string=? wd "group") (set! gr (string (read fd))))))))
+
+(define (wmc-process-directory)
+  (display "Processing directory: ") (display wmconfig-dir)
+  (cond ((access? wmconfig-dir R_OK)
+	 (display ": directory readable...") (newline)
+	 (let ((wmcd (opendir wmconfig-dir)) (res ()))
+	   (do ((fl (readdir wmcd) (readdir wmcd)))
+	       ((eof-object? fl) (closedir wmcd) (newline) res)
+	     (display " ") (display fl)
+	     (set! fl (string-append wmconfig-dir fl))
+	     (cond ((access? fl R_OK)
+		    (set! fl (wmc-process-file fl))
+		    (if (eq? (car fl) ()) ()
+			(let ((ff (assoc (car fl) res)))
+			  (cond (ff (set-cdr! ff (cons (cdr fl) (cdr ff))))
+				(#t (set-cdr! fl (list (cdr fl)))
+				    (set! res (cons fl res))))))
+		    (display "+"))
+		   (#t (display "-"))))))
+	(t (display ": directory unreadable!!!"))))
+
+(define (wmc-regroup ls)		; regroup the menu items
+  (let ((main ()) (sub ()))
+    (for-each (lambda (me)
+		(if (string-index (car me) #\/) (set! sub (cons me sub))
+		    (set! main (cons me main)))) ls)
+    (for-each (lambda (me)
+		(let* ((pos (string-index (car me) #\/))
+		       (ww (substring (car me) 0 pos))
+		       (tt (assoc ww main)))
+		  (set-car! me (substring
+				(car me) (+ 1 pos) (length (car me))))
+		  (set! me (menu-item (car me) #:action (apply make-menu me)))
+		  (if tt (set-cdr! tt (cons me (cdr tt)))
+		      (set! main (cons (cons ww (list me)) main)))))
+	      sub)
+    (map (lambda (me) (menu-item (car me) #:action (apply make-menu me)))
+	 main)))
+
+(define menu-wmconfig
+  (apply make-menu "System WM Config" (menu-title) (menu-separator)
+	 (wmc-regroup (wmc-process-directory))))
+
+(define (make-small-window-ops-menu w)
+  (make-menu "Window Ops Small" (menu-title) (menu-separator)
+	     (menu-item "&Move" #:left-pixmap "mini-move.xpm"
+			#:action interactive-move)
+	     (menu-item "Re&size" #:left-pixmap "mini-resize.xpm"
+		#:action interactive-resize)
+	     (menu-item (if (iconified? w) "Unmi&nimize"
+			    "Mi&nimize") #:left-pixmap "mini-iconify.xpm"
+			    #:action iconify)
+	     (menu-item (if (maximized? w) "Unma&ximize"
+			    "Ma&ximize") #:action both-toggle-maximize)
+	     (menu-separator)
+	     (menu-item "More" #:action
+			(make-menu
+			 "More"
+			 (menu-item "&Raise" #:action raise-window)
+			 (menu-item "&Lower" #:action lower-window)
+			 (menu-item (if (sticky? w) "Un&stick" "&Stick")
+				    #:action toggle-stick)
+			 (menu-item (if (window-shaded? w)
+					"Unwindow-S&hade" "Window-S&hade")
+				    #:action toggle-window-shade)
+			 (menu-item (if (kept-on-top? w)
+					"UnKeep On Top" "Keep On Top")
+				    #:action toggle-on-top)))
+             (menu-separator)
+	     (menu-item "Close" #:left-pixmap "mini-cross.xpm"
+			#:action close-window)
+	     (menu-item "Destroy" #:left-pixmap "mini-bomb.xpm"
+			#:action destroy-window)))
+
+(define menu-root-start
+  (make-menu "Start %mini-exp.xpm%" (menu-title) (menu-separator)
+	     (menu-item "&New shell" #:left-pixmap "mini-sh1.xpm"
+			#:action start-xterm)
+	     (menu-item "Midnight &Commander" #:left-pixmap "mini-windows.xpm"
+			#:action start-mc)
+	     (menu-item "&Applications" #:left-pixmap "mini-x2.xpm"
+			#:action menu-applications)
+	     (menu-item "&Utilities" #:left-pixmap "mini-hammer.xpm"
+			#:action menu-util)
+	     (menu-item "&Multimedia" #:left-pixmap "mini-audiovol.xpm"
+			#:action menu-multimedia)
+	     (menu-item "&Games" #:left-pixmap "mini-happy.xpm"
+			#:action menu-games)
+	     (menu-separator)
+	     (menu-item "H&osts" #:left-pixmap "mini-windows.xpm"
+			#:action menu-hosts)
+	     (menu-item "&System Utilities" #:left-pixmap "mini-connect.xpm"
+			#:action menu-system-utilities)
+	     (menu-item "&Window Operations" #:left-pixmap "mini-windows.xpm"
+			#:action menu-window-ops)
+	     (menu-item "&Preferences" #:left-pixmap "mini-prefs.xpm"
+			#:action menu-preferences)
+	     (menu-item "WM Conf&ig" #:left-pixmap "mini-x.xpm"
+			#:action menu-wmconfig)
+	     (menu-separator)
+	     (menu-item "S&creensaver" #:left-pixmap "mini-display.xpm"
+			#:action menu-screensaver)
+	     (menu-item "&Lock Screen" #:left-pixmap "mini-lock.xpm"
+			#:action menu-xlock)
+	     (menu-separator)
+	     (menu-item "A&bout ScwmTNL" #:left-pixmap "mini-exclam.xpm"
+			#:action scwm-about-message)
+	     (menu-item "&Help ScwmTNL" #:left-pixmap "mini-question.xpm"
+			#:action scwm-help)
+	     (menu-item "E&xit Scwm" #:left-pixmap "mini-stop.xpm"
+			#:action quit-verify)))
+
+(define (popup-small-ops)
+  (popup (make-small-window-ops-menu (get-window))))
+
+;; now set some mouse and key bindings
+(define (show-icon-list-menu)
+  (show-window-list-menu #:only iconified?))
+
+;; first our root menus
+(bind-mouse 'root 1 popup-root-start)
+(bind-mouse 'root 2 popup-ops)
+(bind-mouse 'root 3 (lambda () (show-window-list-menu #:show-geometry #t)))
+;;(bind-mouse 'root 3 popup-applications)
+(bind-mouse 'root "M-3" (lambda () (popup menu-desk)))
+
+;; operations on parts of the window
+(bind-mouse '(frame sidebar) 2 popup-small-ops)
+(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse 'sidebar 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade-animated))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 2 lower-window)
+
+;; key bindings for the menus
+(bind-key 'all "M-S-F1" popup-util)
+(bind-key 'all "M-S-F2" popup-ops)
+
+;; in case of emergency, hit Control-Meta-Q
+(bind-key 'all "C-M-S-q" quit)
+
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+
+(bind-mouse 'all "C-S-M-1" toggle-raise)
+(bind-mouse 'all "C-S-M-2" interactive-move)
+(bind-mouse 'all "C-S-M-3" interactive-resize)
+
+;;; Title bar buttons
+(define mini-icon-button-face
+  (make-face '((relief flat)) '((pixmap mini-program-icon))))
+(define sticky-button-face
+  (make-face '((relief flat)) '((pixmap "mini-hbars-full.xpm"))))
+(define sysutils-button-face
+  (make-face '((relief flat)) '((pixmap "mini-lightbolt-full.xpm"))))
+(define close-button-face
+  (make-face '((relief flat)) '((pixmap  "mini-stylized-x-full.xpm"))))
+(define tall-maximize-button-face
+  (make-face '((relief flat)) '((pixmap "mini-exp-windows-full.xpm"))))
+(define iconify-button-face
+  (make-face '((relief flat)) '((pixmap "mini-shrink-windows-full.xpm"))))
+
+(define button-numbers (cons 1 2)) ; (left . right)
+(define (add-button face hook left)
+  (let ((num (if left (car button-numbers) (cdr button-numbers))))
+    (set-button-face! num face)
+    (bind-mouse (string->symbol (string-append "button-" (number->string num)))
+		1 hook)
+    (if left (set-car! button-numbers (+ 2 num))
+	(set-cdr! button-numbers (+ 2 num)))))
+(add-button mini-icon-button-face popup-small-ops #t)
+(add-button sticky-button-face toggle-stick #t)
+(add-button sysutils-button-face (lambda () (display "sysutils")) #t)
+
+(add-button close-button-face close-window #f)
+(add-button tall-maximize-button-face vertical-toggle-maximize #f)
+(add-button iconify-button-face iconify #f)
+
+;; Just for test bind, unbind-mouse
+;;(unbind-mouse 'all "C-S-Mouse1")
+;;(unbind-mouse 'all "C-S-M-2")
+;;(bind-mouse 'all "C-S-Mouse-1" show-icon-list-menu)
+
+(define (interactive-move-window-with-focus)
+  (let ((w (current-window-with-focus)))
+    (and w (interactive-move w))))
+
+(define (interactive-resize-window-with-focus)
+  (let ((w (current-window-with-focus)))
+    (and w (interactive-resize w))))
+
+(define (interactive-move-window-with-pointer)
+  (let ((w (current-window-with-pointer)))
+    (and w (interactive-move w))))
+
+(define (interactive-resize-window-with-pointer)
+  (let ((w (current-window-with-pointer)))
+    (and w (interactive-resize w))))
+
+(bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
+(bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-S-Tab"
+	  (lambda () (next-window #:only visible? #:except iconified?)))
+
+(define (key-mouse-moves modifiers pct-of-screen left down up right)
+  (bind-key 'all (string-append modifiers "-" left)
+	    (lambda () (move-pointer (%x (- pct-of-screen)) 0)))
+  (bind-key 'all (string-append modifiers "-" down)
+	    (lambda () (move-pointer 0 (%y pct-of-screen))))
+  (bind-key 'all (string-append modifiers "-" up)
+	    (lambda () (move-pointer 0 (%y (- pct-of-screen)))))
+  (bind-key 'all (string-append modifiers "-" right)
+	    (lambda () (move-pointer (%x pct-of-screen) 0))))
+
+(define (key-viewport-moves modifiers pct-of-screen left down up right)
+  (bind-key 'all (string-append modifiers "-" left)
+	    (lambda () (move-viewport (%x (- pct-of-screen)) 0)))
+  (bind-key 'all (string-append modifiers "-" down)
+	    (lambda () (move-viewport 0 (%y pct-of-screen))))
+  (bind-key 'all (string-append modifiers "-" up)
+	    (lambda () (move-viewport 0 (%y (- pct-of-screen)))))
+  (bind-key 'all (string-append modifiers "-" right)
+	    (lambda () (move-viewport (%x pct-of-screen) 0))))
+
+(key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
+(key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
+(key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
+
+(bind-key 'all "C-M-S-r" refresh)
+(bind-key 'all "C-M-S-5" recapture)
+(bind-key 'all "C-M-S-x" start-xterm)
+
+(bind-key 'all "C-S-F1" popup-small-ops)
+(bind-key 'all "C-S-F2" show-window-list-menu)
+
+(define (float->integer x) (inexact->exact x))
+
+;; These are useful!
+(define root-size-x (car (display-size)))
+(define root-size-y (cadr (display-size)))
+
+;; FIXGJB: where is setenv?
+;;(setenv "height" (number->string root-size-x))
+(putenv (string-append "height=" (number->string root-size-y)))
+(putenv (string-append "width=" (number->string root-size-x)))
+;; FIXGJB: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
+
+(define (percent-display x y) (list (%x x) (%y y)))
+
+(bind-key 'all "C-S-Down" iconify)
+;;(bind-key 'all "C-M-Return" raise-window)
+(bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)
+(bind-key 'all "C-S-Right" horizontal-toggle-maximize)
+(bind-key 'all "C-S-Left" both-toggle-maximize)
+;; MS thinks (maximize (%x 0) (%y 95)) is easier to read than
+;; (apply maximize (percent-display 0 95)), but that's a matter of taste.
+;(bind-key 'all "C-S-Up"
+;	  (lambda () (apply toggle-maximize (percent-display 0 95))))
+;(bind-key 'all "C-S-Right"
+;	  (lambda () (apply toggle-maximize (percent-display 100 0))))
+;(bind-key 'all "C-S-Left"
+;	  (lambda () (apply toggle-maximize (percent-display 100 95))))
+
+;; See the binding for mouse button 2
+;; to add geometry strings to this as well.
+(bind-key 'all "C-S-Return" show-icon-list-menu)
+(bind-key 'all "C-S-M-z" popup-root-start)
+
+(set-click-time! 150)
+
+(define (animated-move-to x y)
+  (let* ((w (get-window))
+	 (size (window-size w))
+	 (width (car size))
+	 (height (cadr size))
+	 (position (window-position w))
+	 (oldx (car position))
+	 (oldy (cadr position)))
+    ;;; FIXGJB: is there a better way to correct for width, height, etc
+    ;;; MS: perhaps we should make move-to take #f for either coordinate,
+    ;;; which means don't move along that coord?
+    (if (equal? x 'x) (set! x oldx))
+    (if (equal? y 'y) (set! y oldy))
+    ;; MS: see base.scm for x- and y-, which I think are a more genric
+    ;; way to handle negative positions in the traditional X11 way.
+    (if (< x 0) (set! x (- root-size-x (abs x) width)))
+    (if (< y 0) (set! y (- root-size-y (abs y) height)))
+    (raise-window w)
+    (move-to x y w 'animated 'move-pointer-too)))
+
+;; FIXGJB: I don't think this gets used right yet
+(define animation-ms-delay 50)
+
+;; Fluid, cartoon-like
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1
+  +.0))
+
+;; Linear, mechanical
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
+
+;; Fluid, cartoon-like, overshoots target
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1
+  +.01 1.02 1.01 1))
+
+(bind-key 'all "C-M-kp-7" (lambda () (animated-move-to 0 0)))
+(bind-key 'all "C-M-kp-9" (lambda () (animated-move-to -1 0)))
+(bind-key 'all "C-M-kp-1" (lambda () (animated-move-to 0 -1)))
+(bind-key 'all "C-M-kp-3" (lambda () (animated-move-to -1 -1)))
+
+(bind-key 'all "C-M-kp-8" (lambda () (animated-move-to 'x 0)))
+(bind-key 'all "C-M-kp-6" (lambda () (animated-move-to -1 'y)))
+(bind-key 'all "C-M-kp-2" (lambda () (animated-move-to 'x -1)))
+(bind-key 'all "C-M-kp-4" (lambda () (animated-move-to 0 'y)))
+
+;; FIXGJB: modifiers interface could be better... mimic off Emacs?
+;; FIXGJB: keys should be first class
+(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
+(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2 0)))
+(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
+
+;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
+(bind-key 'all "C-M-S-4" (lambda () (send-string "helloworld")))
+
+;; This one is experimental-- sends only the buttonpress event,
+;; no buttonrelease
+(bind-key 'all "C-M-S-0"
+	  (lambda () (send-button-press 2 0 (get-window) #t #f)))
+
+(bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
+
+;; Hyper-w
+(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;; Alt-w
+(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
+
+;; move the pointer with the keyboard
+;(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
+;(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
+;(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
+;(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; move the viewport with the keyboard
+(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-viewport (%x 100) 0)))
+(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
+(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+
+
+(define (sleep-ms ms) (select '() '() '() 0 (* 1000 ms)))
+
+;; Does not work for arbitrary strings since, e.g,. ' ' needs
+;; to be sent as "space"  FIXGJB: Do we have a char->keysym fn?
+(define (send-string str)
+  (let ((w (get-window))
+	(i 0))
+    (while (< i (length str))
+	   (send-key-press (substring str i (+ 1 i)) w)
+	   (set! i (+ 1 i)))))
+
+;;; menu-item test cases
+;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-
+  +image "mini-unkno.xpm") #f #f "sticky"))
+;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-
+  +image "mini-move.xpm") #f #f "move"))
+;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" 
+  +(make-image "mini-resize.xpm") #f #f "resize"))
+;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-me
+  +nu-item)))
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
+
+
+;;; Local Variables:
+;;; eval: (load "scwm-buffer")
+;;; End:
