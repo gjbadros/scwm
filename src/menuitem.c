@@ -25,7 +25,7 @@
 
 #include <guile/gh.h>
 #include "scwm.h"
-#include "scwmmenu.h"
+#include "menu.h"
 #include "menuitem.h"
 #include "guile-compat.h"
 #ifdef USE_DMALLOC

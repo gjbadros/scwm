@@ -12,7 +12,7 @@
 #endif
 
 #include "scwm.h"
-#include "scwmmenu.h"
+#include "menu.h"
 #include "drawmenu.h"
 #include "screen.h"
 #include "font.h"

@@ -10,10 +10,9 @@
 #include <config.h>
 #endif
 
-#include "scwmmenu.h"
+#include "menu.h"
 
 /* This is the function any menu drawing code needs to implement */
-
 void ConstructDynamicMenu(DynamicMenu *pmd);
 
 #endif
