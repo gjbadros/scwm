@@ -1,3 +1,7 @@
+Thu Sep  2 14:18:10 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added a window-style for the GNOME Panel.
+
 Wed Sep  1 15:24:20 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use `make-window-style-menu' (renamed).  Comment
