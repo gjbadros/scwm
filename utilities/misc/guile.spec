@@ -1,12 +1,12 @@
 %define nam      guile
 %define ver      1.3.3
-%define rel      2gjb
+%define rel      3gjb
 %define prefix   /usr
 
 Summary: A GNU implementation of Scheme for application extensibility.
 Name:        %{nam}
 Version:     %{ver}
-Release: 1gjb
+Release:     %{rel}
 Source:      ftp://ftp.gnu.org/pub/gnu/%{nam}-%{ver}.tar.gz
 Copyright:   GPL
 Group: Development/Languages
@@ -83,7 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{prefix}/share/guile/site
 %dir %{prefix}/share/guile/%{PACKAGE_VERSION}
 %{prefix}/share/guile/%{PACKAGE_VERSION}/ice-9
-%{prefix}/share/guile/readline-activator.scm
+#%{prefix}/share/guile/readline-activator.scm
 %{prefix}/share/aclocal/*
 %{prefix}/share/guile/slib
 
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/info/data-rep*
 
 %changelog
+* Wed Sep 15 1999 Greg J. Badros <gjb@cs.washington.edu>
+- Drop readline-activator.scm as it no longer exists
+
 * Wed Sep 1 1999 Greg J. Badros <gjb@cs.washington.edu>
 - Updated for guile-1.3.3, fix readline support of install
 
