@@ -131,6 +131,9 @@ exec guile -l $0 -- --run-from-shell "$@"
 (define (vdocitem:c-name rec)
   (proc:c-name (vdocitem:decl rec)))
 
+(define (vdocitem:args rec)
+  (proc:args (vdocitem:decl rec)))
+
 (define (docitem:line rec)
   (list-ref rec 3))
 
@@ -391,12 +394,14 @@ exec guile -l $0 -- --run-from-shell "$@"
      regexp/icase)))
 
 (define (delimited-regexp s)
-  (let ((ci-name (regexp-quote s)))
-    (make-regexp
-     (string-append "[ \t'`.,:\"]" ci-name "[ \t'`.,:\"]|"
-		    "^" ci-name "[ \t'`.,:\"]|"
-		    "[ \t'`.,:\"]" ci-name "$|"
-		    "^" ci-name "$"))))
+  (unsafe-delimited-regexp (regexp-quote s)))
+
+(define (unsafe-delimited-regexp ci-name)
+  (make-regexp
+   (string-append "[ \t'`.,:\"]" ci-name "[ \t'`.,:\"]|"
+		  "^" ci-name "[ \t'`.,:\"]|"
+		  "[ \t'`.,:\"]" ci-name "$|"
+		  "^" ci-name "$")))
 
 
 ;;; ispell crap
@@ -743,11 +748,37 @@ exec guile -l $0 -- --run-from-shell "$@"
   (with-output-to-string 
     (lambda () (write value))))
 
+(define (regexp-orlist l)
+  (cond ((null? l) "")
+	((null? (cdr l)) (car l))
+	(else (string-append (car l) "|" (regexp-orlist (cdr l))))))
+
+(define (arglist->argregexpstring l)
+  (let ((r (string-append "("
+			  (regexp-orlist
+			   (map (lambda (argspec)
+				  (regexp-quote (string-upcase!
+						 (c-name->scheme-name (cadr argspec)))))
+				l))
+			  ")")))
+     (string-append "([ \t'`.,:\"])" r "([ \t'`.,:\"])|"
+		    "(^)" r "([ \t'`.,:\"])|"
+		    "([ \t'`.,:\"])" r "($)|"
+		    "(^)" r "($)")))
+
+(define (arglist->argregexp l)
+  (make-regexp (arglist->argregexpstring l)))
+
+
+	
+
 (define (proc->primitives-ssgml docitem)
   (let* ((data (docitem:data docitem))
 	 (proc (procdoc:decl data))
-	 (doc (procdoc:doc data)))
-    `((refentry (id ,(stringify (proc:c-name proc))))
+	 (doc (procdoc:doc data))
+	 (arglist (proc:args proc))
+	 (argregexp (arglist->argregexp arglist)))
+    `((refentry (id ,(proc:scheme-name proc)))
       ((refnamediv)
        ((refname) ,(proc:scheme-name proc))
        ((refpurpose) ,(car doc)))
@@ -755,7 +786,9 @@ exec guile -l $0 -- --run-from-shell "$@"
        ((synopsis) ,(function-call-decl proc)))
       ((refsect1)
        ((title) "Description")
-       ((para)  ,@doc))
+       ((para)  ,@(if (not (null? arglist))
+		      (map (lambda (d) (markup-args argregexp d)) doc)
+		      '())))
       ((refsect1)
        ((title) "Implementation Notes")
        ((para) "Defined in "
@@ -763,6 +796,11 @@ exec guile -l $0 -- --run-from-shell "$@"
 		((filename) ,(docitem:file docitem)))
 	       ,(string-append " at line " (stringify (docitem:line docitem))
 			       "."))))))
+
+(define (markup-args argregexp s)
+  (my-regexp-substitute/global #f argregexp s 'pre 1 "<parameter>" 
+			       (lambda (m) (string-downcase! (string-copy (match:good-substring m 2))))
+			       "</parameter>" 3 'post))
 
 (define (proclist->primitives-chapter l)
   (make-chapter "Primitives in Alphabetical Order"
@@ -814,11 +852,21 @@ exec guile -l $0 -- --run-from-shell "$@"
     ((title) ,(docitem:file (car procs-from-file)))
     ((itemizedlist)
      ,@(map (lambda (rec)
-	      `((listitem)
-		((para)
-		 ((link (linkend ,(proc:c-name (procdoc:decl (docitem:data rec)))))
-		  ((function) ,(proc:scheme-name (procdoc:decl (docitem:data rec))))
-		  ,(string-append "&mdash; " (car (procdoc:doc (docitem:data rec))))))))
+	      (let* ((proc (vdocitem:decl rec))
+		     (args (proc:args proc))
+		     (doc (procdoc:doc (docitem:data rec))))
+		`((listitem)
+		  ((para)
+		   ((link (linkend ,(proc:scheme-name proc)))
+		    ((function) ,(proc:scheme-name proc))
+		    ,(string-append "&mdash; " 
+				    (cond ((null? doc)
+					   "")
+					   ((null? args)
+					    (car doc))
+					   (else (markup-args
+						  (arglist->argregexp args)
+						  (car doc))))))))))
 	    procs-from-file))))
 
 
@@ -853,7 +901,7 @@ exec guile -l $0 -- --run-from-shell "$@"
       ,@(emblist->ssgml embdocs))))
 
 
-(define (escape s)
+(define (sgml-escape s)
   (list->string
    (let loop ((s (string->list s)))
      (cond ((null? s) '())
@@ -866,12 +914,56 @@ exec guile -l $0 -- --run-from-shell "$@"
 				  (loop (cdr s))))
 		   (else (cons (car s) (loop (cdr s))))))))))
 
+(define (my-regexp-substitute/global port rx string . items)
+  ;; If `port' is #f, send output to a string.
+  (if (not port)
+      (call-with-output-string
+       (lambda (p)
+	 (apply my-regexp-substitute/global p rx string items)))
+
+      ;; Otherwise, compile the regexp and match it against the
+      ;; string, looping if 'post is encountered in `items'.
+      (let next-match ((str string))
+;;	(displayl "My...: x" str "x\n")
+	(let ((match (regexp-exec rx str)))
+;;	  (displayl "My...: match " match "\n")
+	  (if (not match)
+	      (display str port)
+	      ;; Process all of the items for this match.
+	      (for-each
+	       (lambda (obj)
+		 (cond
+		  ((string? obj)    (display obj port))
+		  ((integer? obj)   (display (match:good-substring match obj) port))
+		  ((procedure? obj) (display (obj match) port))
+		  ((eq? 'pre obj)   (display (match:prefix match) port))
+		  ((eq? 'post obj)  (next-match (match:suffix match)))
+		  (else (error 'wrong-type-arg obj))))
+	       items))))))
+
+
+(define (match:good-substring match n)
+  (do ((i 0 (1+ i)))
+      ((< n 0)
+       (match:substring match (1- i)))
+    (if (not (equal? (vector-ref match (1+ i)) '(-1 . -1)))
+	(set! n (1- n)))))
+
+(define (sgml-markup s)
+  (define proc-regexp (make-regexp "`([^'` \t]*)'"))
+  (my-regexp-substitute/global #f
+			       proc-regexp
+			       s
+			       `pre "<link linkend=\"" 1 "\"><function>" 1 "</function></link>" `post))
+
+
+
 ;;; Convert ssgml to sgml:
 (define (sgml form . depth)
   (if (null? depth) (set! depth '(0)))
   (cond ((string? form)
 	 (display (make-string (car depth) #\space))
-	 (display (escape form))
+	 (display (sgml-markup form))
 	 (newline))
 	((null? form)
 	 '())
