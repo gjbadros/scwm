@@ -1,3 +1,7 @@
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* gjb.scwmrc: Fix to deal with module renaming.
+
 Sun Jan 31 13:14:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Fix the starting of .xclients.
