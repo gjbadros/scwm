@@ -1,0 +1,72 @@
+Things you can do with Scwm that may rock your world.
+By Greg J. Badros, 20-Feb-2000
+
+Flash window on error code
+
+XTerms change title automatically, reflecting a change in appearance due to window-style
+
+Easy font changes C-S-M-Enter, S-M-Enter (actually X-resources do this, but gravity
+makes this integrate nicely w/ Scwm)
+
+Window-style application-menus on a per-application basis
+  -> auto-acceptance of Netscape auto-save dialogs
+
+Programmable placement
+
+Vanishing windows implementation -- autoshrink module
+
+
+netscape-goto-selection-url
+
+netscape-google-search-selection-url, netscape-av-search-selection-url
+
+netscape-bookmark-search
+
+Re-placing windows:
+  (add-hook! window-fully-obscured-hook clever-place-window)
+
+Undo, redo (esp. w/ cascade, tile)
+
+Registers for window configurations
+ -> instead of virtual desktop
+
+Registers for window focus
+
+GUI Preferences system, declarative specification of those options
+
+Integrated documentation, Emacs scwm-mode
+
+show-window-list-matching-interactively
+
+toggle-titlebar
+
+move-resize w/o using window border
+
+constraints
+* toolbar
+-> improve error handling
+* cn investigator
+* visualizations
+* composition recorder
+* springy-positioning or not (-> add to GUI)
+* auto-inference of snap-to (-> add to GUI)
+  -> permit restricting classes of windows connected to
+-> rule-based addition of cns (e.g., find dialog)
+-> constraint tiling
+-> coincident windows (esp. w/ squashed-titlebar for tabbed windows)
+
+
+
+
+Fully-obscured re-place proc
+
+Add where-is dialog box to GUI
+
+Push/pop focus, close-this-window-and-pop-focus (to accompany focus-last-mapped-window)
+
+registers for window groups
+
+register-management UI
+
+Cut buffer handling/selection to save recent selections
+
