@@ -443,7 +443,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */
 	  /* FIXMS give a better error message */
-	  scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+	  scwm_msg(WARN,"add_spec_to_face_x", "Image not found for argument #%d",3);
 	}
       }
       
@@ -467,7 +467,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+      scwm_msg(WARN,"add_spec_to_face_x", "Image not found for argument #%d",3);
     }
   } else {
     /* FIXMS give a better error message */

@@ -379,16 +379,17 @@ path_expand_image_fname(SCM name)
       }
     }
     
-    free(c_name);
-
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
+      scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
+      free(c_name);
       free(c_fname);
       return SCM_BOOL_F;
     }
   }
 
   result = gh_str02scm(c_fname);
+  free(c_name);
   free(c_fname);
   return result;
 }
