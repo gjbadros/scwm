@@ -1,0 +1,454 @@
+/*
+ * $Id$
+ * (C)1996,1997,1998,1999 By Greg J. Badros <gjb@cs.washington.edu>
+ * You may use this file as specified under the GNU
+ * public license (GPL).
+ * I am not responsible for this file's use, misuse, or anything.
+ * Use at your own risk.
+ * 
+ * NOTE: This must be preprocessed w/cpp-sed-nl!
+ *
+ *
+ * Use cc-mode.el for color-highlighting to help reading it.
+ * it's not perfect, but it helps with the macro commands
+ * cpp-* fns may be useful too.
+ *
+ * DEFINE OPTIONS:
+ *   SMALL_SCREEN = force small screen options (automatic for <800 width)
+ *   NO_SMALL_SCREEN = force large screen options (automatic for >=800 width)
+ *   XAW3DCOLOR = default color for the Xaw3d widget scrollbar (gray75 if not set)
+ *   BLACK_BG_XTERMS = Use color settings to make colored text visible on
+ *                     xterms with a black background
+ *
+ * This is especially screwey because of some wierd resource files in
+ * /usr/lib/X11/app-defaults.  Specifically, NXTerm has default resources
+ * which specify nxterm*, which is more specific than NXTerm*, so I have to 
+ * use the former here.  Also, on some platforms, XTerm has app-defaults
+ * specifying things like *VT100*, which is great, but others specify
+ * XTerm*VT100, which means I must enter those data twice, once as nxterm*VT100*,
+ * and once as XTerm*VT100 to work on those platforms.
+ * I don't claim to be an X resources guru, so I'd appreciate any pointers,
+ * and improvements.
+ */
+
+*customization: -color
+
+#define RECOLOR_XPAINT
+#define RECOLOR_GHOSTVIEW
+#define RECOLOR_XDVI
+
+Seyon.modems: /dev/modem
+
+#if WIDTH<800
+#ifndef NO_SMALL_SCREEN
+#define SMALL_SCREEN
+#endif
+#endif
+
+/*  Don't replace a define passed in */
+#ifndef XAW3DCOLOR
+#define XAW3DCOLOR gray75
+#endif
+
+#define WINBACK_COLOR XAW3DCOLOR
+
+/*
+ * Use command line options to get more lines in given xterms.. 1500 is
+ * a good default
+ */
+
+/*
+!XTerm*utmpInhibit:	True
+!NXTerm*utmpInhibit:	True
+*/
+XTerm*saveLines:	2500
+NXTerm*saveLines:	2500
+rxvt*saveLines:	2500
+
+*visualBell:	true
+*scrollTtyOutput:	False
+*scrollKey:	True
+Scrollbar.JumpCursor:	True
+*numeric:	C
+*displayLang:	C
+*basicLocale:	C
+*timeFormat:	C
+*inputLang:	C
+
+XTerm*cursorColor:	blue
+XTerm*scrollBar:	false
+NXTerm*cursorColor:	blue
+NXTerm*scrollBar:	false
+
+/* Uncomment this to allow Underlining, instead of the
+ * color representation 
+ */
+!*VT100*underLine: on
+
+XTerm*VT100*color0: black
+XTerm*VT100*color1: red
+XTerm*VT100*color2: green
+XTerm*VT100*color3: yellow
+XTerm*VT100*color4: blue
+XTerm*VT100*color5: magenta
+XTerm*VT100*color6: cyan
+XTerm*VT100*color7: gray55
+XTerm*VT100*color8: gray30
+XTerm*VT100*color9: red
+XTerm*VT100*color10: green
+XTerm*VT100*color11: yellow
+XTerm*VT100*color12: blue
+XTerm*VT100*color13: magenta
+XTerm*VT100*color14: cyan
+XTerm*VT100*color15: white
+
+
+#ifndef BLACK_BG_XTERMS
+XTerm*background:	white
+XTerm*foreground:	black
+NXTerm*background:	white
+NXTerm*foreground:	black
+
+/* This was white, which is invisible on a white background */
+*VT100*colorBD: black
+/* Underlining shouldn't be yellow for white bg xterms */
+*VT100*colorUL: blue
+#else
+/* These defaults pulled from my /usr/lib/X11/app-defaults/NXTerm
+ * I don't want to rely on the defaults when a define is specifically
+ * set for BLACK_BG_XTERMS
+ */
+*VT100*colorBD: white
+*VT100*colorUL: yellow
+XTerm*background:	black
+XTerm*foreground:	white
+NXTerm*background:	black
+NXTerm*foreground:	white
+#endif
+
+NXTerm*SimpleMenu.background:	WINBACK_COLOR
+NXTerm*SimpleMenu.foreground:	black
+
+XTerm*SimpleMenu.background:	WINBACK_COLOR
+XTerm*SimpleMenu.foreground:	black
+
+/* It'd be really cool if xrdb did a replace of @@ with newline-s
+   like imake does, but until then you can use xrdb -cpp cpp-sed-nl:
+#!/bin/sh -
+cpp -traditional $* | sed -e 's/@@/\
+/'
+   Be sure to put in your path and chmod +x it.
+ */
+#define FontAndLabel(cFont,sz,lbl) \
+XTerm*VT100*font##cFont##: sz##@@\
+XTerm*fontMenu*font##cFont##*Label: lbl (##sz##)@@\
+NXTerm*VT100*font##cFont##: sz##@@\
+NXTerm*fontMenu*font##cFont##*Label: lbl (##sz##)@@
+
+/* Set font lock mode's face for strings -- default is too light
+   on the linen background I use */
+Emacs.font-lock-string-face.attributeBold: true
+Emacs.font-lock-string-face.attributeForeground: gray35
+Emacs.font-lock-type-face.attributeBold: true
+
+#ifndef SMALL_SCREEN
+Emacs*Dialog*Font:		-*-helvetica-bold-r-*-*-*-140-*-*-*-*-iso8859-*
+Emacs.default.attributeFont: -misc-fixed-medium-r-semicondensed--*-120-*-*-*-*-iso8859-*
+/* Emacs.italic.attributeFont: -*-*-*-i-*-sans-*-120-*-*-*-*-*-* */
+Emacs.italic.attributeForeground: blue
+
+/* For GNU Emacs, use below line*/
+emacs*font:		7x13
+emacs.pane.menubar.font: *helvetica*-r-*
+
+*SimpleMenu*font: *helvetica*r*normal*12*
+*MenuButton*font: *helvetica*r*normal*12*
+XDvi*font: *helvetica*r*normal*12*
+FontAndLabel(1,5x7,Micro)
+FontAndLabel(2,5x8,Tiny)
+FontAndLabel(3,6x10,Small)
+FontAndLabel(4,7x13,Medium)
+FontAndLabel(5,9x15,Large)
+FontAndLabel(6,10x20,Very Large)
+FontAndLabel(7,12x24,Huge)
+#else
+Emacs*Dialog*Font:		-*-helvetica-bold-r-*-*-*-120-*-*-*-*-iso8859-*
+Emacs.default.attributeFont: -misc-fixed-medium-r-normal--*-100-*-*-*-*-iso8859-*
+/* Emacs.italic.attributeFont: -*-*-*-i-*-sans-*-100-*-*-*-*-*-**/
+
+Emacs.italic.attributeForeground: blue
+
+*SimpleMenu*font: *helvetica*r*normal*10*
+*MenuButton*font: *helvetica*r*normal*10*
+XDvi*font: *helvetica*r*normal*10*
+FontAndLabel(1,5x7,Micro)
+FontAndLabel(2,5x8,Tiny)
+FontAndLabel(3,6x9,Small)
+FontAndLabel(4,7x13,Medium)
+FontAndLabel(5,9x15,Large)
+FontAndLabel(6,10x20,Huge)
+FontAndLabel(7,8x16,Alternate Large)
+#endif
+
+Emacs*EmacsFrame.background: linen
+Emacs.cursorColor:  blue
+
+Emacs.text-cursor*attributeBackground:	blue
+/* Uncomment below to set mouse pointer color */
+!Emacs.pointer*attributeForeground: red
+! KnobStyle is either "dimple" or "plain"
+! Emacs*XlwScrollBar.KnobStyle: dimple
+! Arrow position is either "same" or "opposite"
+! Emacs*XlwScrollBar.ArrowPosition: same
+
+/* These keybindings work together with my Zsh Line editor bindings
+ * (found in .zshrc-zle) to create a much better xterm environment
+ * maps backspace to delete, Home to CTRL-A, End to CTRL-E, and
+ * CTRL-Left to C-M-P, which .inputrc defines to be backward-word
+ * and CTRL-Right to C-M-N, which .inputrc defines to be next-word
+ */
+
+#define XTERM_DEFAULT_TRANSLATIONS \n\
+    	 !<Key>BackSpace: string("0x7f") \n\
+    	 !Meta<Key>BackSpace: string("[k") \n\
+    	 !Ctrl<Key>BackSpace: string("[m") \n\
+    	~Ctrl<Key>Delete: string("[") \n\
+    	!Ctrl<Key>Delete: string("[d") \n\
+	  Ctrl<Key>Home: string("[") \n\
+	   Ctrl<Key>End: string("[") \n\
+	    <Key>Home: string("") \n\
+	    <Key>End:  string("") \n\
+	Ctrl<Key>Left: string("[8") \n\
+	Ctrl<Key>Right:string("[9") \n\
+	Ctrl Shift<Key>h: string("[h") \n\
+	Ctrl Shift<Key>l: string("[l") \n\
+	     !<Key>Prior: string("[5") \n\
+	     !<Key>Next: string("[6") \n\
+	!Meta<Key>Prior: string("[3") \n\
+	!Meta<Key>Next: string("[4") \n\
+	     !Alt<Key>: string("@a") insert() \n\
+	     !Hyper<Key>: string("@h") insert() \n\
+   Alt Meta Ctrl<Key>r: hard-reset() \n\
+	~Ctrl ~Meta Shift<Key>Prior: scroll-back(1,page) \n\
+	~Ctrl ~Meta Shift<Key>Next: scroll-forw(1,page) \n\
+	Ctrl ~Meta Shift<Key>Prior: scroll-back(5,page) \n\
+	Ctrl ~Meta Shift<Key>Next: scroll-forw(5,page) \n\
+	~Ctrl Meta Shift<Key>Prior: scroll-back(2,line) \n\
+	~Ctrl Meta Shift<Key>Next: scroll-forw(2,line) \n\
+    	Shift Ctrl Meta<Key>Return: set-vt-font(6) \n\
+    	Shift ~Ctrl Meta<Key>Return: set-vt-font(d) \n\
+	!Ctrl Meta<Key>y: insert-selection(PRIMARY) \n\
+	!Ctrl Meta<Key>p: insert-selection(CUT_BUFFER0)
+
+/* These don't work-- for example
+	!Shift Ctrl Meta<Key> : set-altscreen(toggle)
+	!Shift Ctrl Meta<Key> : select-cursor-start() \n\
+        !Ctrl Meta<Key> : select-cursor-end()
+*/
+
+/* I still have to give the translations to both XTerm and NXTerm,
+ * to be more specific than those given in app-defaults--
+ * the macro just lets me change it in only one place
+ */
+XTerm*VT100*Translations: #override XTERM_DEFAULT_TRANSLATIONS
+NXTerm*VT100*Translations: #override XTERM_DEFAULT_TRANSLATIONS
+remotexterm*VT100*Translations: #override XTERM_DEFAULT_TRANSLATIONS
+
+*eightBitInput: true
+
+remotexterm*eightBitInput:	false
+
+/* Make Meta-N = next, Meta-S = step, Meta-D = Display, Meta-p = print */
+gdbxterm.VT100.Translations: #override \n\
+	!Meta<Key>n: string("next\n") \n\
+	!Meta<Key>s: string("step\n") \n\
+	!Meta<Key>d: string("display\n") \n\
+	!Meta<Key>p: string("print\n") \
+	XTERM_DEFAULT_TRANSLATIONS
+
+/* Make home, end, up, down, page up, page down, work
+ * Add emacs-like C-w, C-y, C-@ bindings 
+ */
+
+pinexterm.VT100.Translations:   #override \n\
+    	!<Key>Home: string("") \n\
+	!<Key>End:  string("") \n\
+        !<Key>Next: string("") \n\
+        !<Key>Prior: string("") \n\
+    	!Ctrl<Key>w: string("") \n\
+    	!Ctrl<Key>y: string("") \n\
+    	!Ctrl<Key>@: string("") \n\
+	!<Key>Up: string("") \n\
+	!<Key>Down: string("") \n\
+	XTERM_DEFAULT_TRANSLATIONS
+
+/* And change the background color for a visual reminder
+ * that it's an xterm running pine
+ */
+pinexterm*background: gray90
+pinexterm*cursorColor: blue
+
+
+/* Just demonstration of a simple set of translations */
+gnuplotxterm.VT100.Translations: #override \n\
+	!Meta<Key>r: string("replot\n")
+
+/* No tin translations yet-- add away! */
+!tiNXTerm.VT100.Translations:   #override \n\
+
+/* And change the background color for a visual reminder
+ * that it's an xterm running tin
+ */
+tiNXTerm*background: gray90
+tiNXTerm*foreground: black
+tiNXTerm*cursorColor: blue
+
+emacsxterm*background: linen
+
+/* below line appears to do nothing for me */
+!xterm*ttyModes:	intr  quit  erase  kill  eof 
+
+Mosaic*confirmExit:	false
+Mosaic*homeDocument:	http://localhost/~
+
+plan*menubar*fontList:  -*-helvetica-bold-*-normal-*-14-*
+plan*fontList:          -*-helvetica-*-r-normal-*-14-*
+plan*helpFont:          -*-helvetica-medium-r-normal-*-14-*
+plan*calNumberFont:     -*-helvetica-*-r-*-*-14-*
+plan*calNumberFontSm:   -*-helvetica-*-r-*-*-12-*
+plan*calNoteFont:       -*-lucida sans-medium-r-*-*-9-*-*-*-*-*-*-*
+plan*calBoxWidth:       110
+plan*calBoxHeight:      90
+plan*calBoxMargin:      10
+
+/* Xaw3d resources
+ * Be conservative with setting the backgrounds of widgets
+ * or other apps will begin to be coloured oddly.
+ */
+
+!*Form.background:                       WINBACK_COLOR
+!*TransientShell*Dialog.background:      WINBACK_COLOR
+!*Command.background:            WINBACK_COLOR
+!*Menubutton.background:         WINBACK_COLOR
+NXTerm*Scrollbar*background:          WINBACK_COLOR
+XTerm*Scrollbar*background:          WINBACK_COLOR
+
+!dont waste space on scrollbars on a small resolution screen
+#ifndef SMALL_SCREEN
+*Scrollbar*width:               15
+*Scrollbar*height:              15
+#else
+*Scrollbar*width:               10
+*Scrollbar*height:              10
+#endif
+
+*Scrollbar*shadowWidth:         1
+NXTerm*Scrollbar*cursorName:          top_left_arrow
+XTerm*Scrollbar*cursorName:          top_left_arrow
+*Scrollbar*pushThumb:           false
+*shapeStyle:                    Rectangle
+*beNiceToColormap:              false
+*shadowWidth:                   1
+*SmeBSB*shadowWidth:            1
+*topShadowContrast:             20
+*bottomShadowContrast:          55
+
+#ifdef RECOLOR_XPAINT
+XPaint*background:			WINBACK_COLOR
+XPaint*filebrowser*Toggle.background:	WINBACK_COLOR
+XPaint*filebrowser*name*background:	WINBACK_COLOR
+XPaint*Command.background:		WINBACK_COLOR
+Canvas*filebrowser*Toggle.background:	WINBACK_COLOR
+Canvas*filebrowser*name*background:	WINBACK_COLOR
+Canvas*Command.background:		WINBACK_COLOR
+Canvas*paint*background:		WINBACK_COLOR
+Canvas*background:			WINBACK_COLOR
+#endif
+
+#ifdef RECOLOR_GHOSTVIEW
+Ghostview*background:			WINBACK_COLOR
+Ghostview*popup*background:		WINBACK_COLOR
+Ghostview*pageview*page*background:		white
+selFile*background:			WINBACK_COLOR
+#endif
+
+#ifdef RECOLOR_XDVI
+XDvi*panel*background: WINBACK_COLOR
+#endif
+
+Editres*font: fixed
+
+NXTerm*Cursor: xterm
+
+
+Arena*background: WINBACK_COLOR
+
+Xman*background: WINBACK_COLOR
+Xman*shapeStyle: Rectangle
+
+/* Translations to make the TextField widget behave more like XEmacs */
+Emacs*XmTextField.translations: #override\n\
+	!Meta<Key>d:		delete-next-word()\n\
+	!Ctrl<Key>k:		delete-to-end-of-line()\n\
+	!Ctrl<Key>g:		process-cancel()\n\
+	!Ctrl<Key>b:		backward-character()\n\
+	!<Key>osfLeft:		backward-character()\n\
+	!Ctrl<Key>f:		forward-character()\n\
+	!<Key>osfRight:		forward-character()\n\
+	!Meta<Key>b:		backward-word()\n\
+	!Meta<Key>osfLeft:	backward-word()\n\
+	!Meta<Key>f:		forward-word()\n\
+	!Meta<Key>osfRight:	forward-word()\n\
+	!Ctrl<Key>e:		end-of-line()\n\
+	!Ctrl<Key>a:		beginning-of-line()\n\
+	!Ctrl<Key>w:		cut-clipboard()\n\
+	!Meta<Key>w:		copy-clipboard()\n\
+	<Btn2Up>:		copy-primary()\n
+
+/* With the XEmacs typeahead it's better to not have space be bound to
+ * ArmAndActivate() for buttons that appear in dialog boxes.  This is
+ * not 100% Motif compliant but the benefits far outweight the
+ * compliancy problem.
+ */
+Emacs*dialog*XmPushButton.translations:#override\n\
+    <Btn1Down>:         Arm()\n\
+    <Btn1Down>,<Btn1Up>: Activate() Disarm()\n\
+    <Btn1Down>(2+):     MultiArm()\n\
+    <Btn1Up>(2+):       MultiActivate()\n\
+    <Btn1Up>:           Activate() Disarm()\n\
+    <Key>osfSelect:  	ArmAndActivate()\n\
+    <Key>osfActivate:   ArmAndActivate()\n\
+    <Key>osfHelp:	Help()\n\
+    ~Shift ~Meta ~Alt <Key>Return:	ArmAndActivate()\n\
+    <EnterWindow>:      Enter()\n\
+    <LeaveWindow>:      Leave()\n
+
+
+Xdvi*expert: true
+
+zwgc*style*geometry:    +0+0
+zwgc*style.mail*geometry:       +0+0
+zwgc*style.mail*foreground:     white
+zwgc*style.mail*background:     black
+zwgc*reverseStack:      true
+
+! For openwindows applications (like cm, the calendar manager)
+! to not start iconified
+*Window.Iconic: false
+
+! Bug in frame 5.5 makes this not work on my linux XFree86 display
+! perhaps something less severe would work ... see 
+! tolt.cs:/var/mnt/Frame5.5/fminit/xresources/Maker for other resources
+Maker.colorDocs: False
+!Maker.useWaitCursor: False
+
+! For LiteClue tooltips -- used by Amaya
+! (see http://www.pottsoft.demon.co.uk/pds/pds.html#LiteClue)
+*XcgLiteClue.fontSet: fixed
+
+! This causes a problems for zsh-3.0.5, but it is fixed in zsh-3.0.6
+! the sigwinch interrupts the startup script
+!NXTerm*WaitForMap: false
+
+! Need the below to be sure waitformap happens on debian
+XTerm*WaitForMap: true
