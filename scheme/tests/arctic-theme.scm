@@ -4,6 +4,7 @@
 
 (define theme-dir "/home/jtl/.pixmaps/kde_themes/")  ;; needs trailing slash
 ;;(define theme-dir "/scratch/gjb/themes/")  ;; needs trailing slash
+;;(define theme-dir "/home/gjb/themes/")
 
 (define* (list-of-theme-images prefix #&optional 
 			       (list-of-image-names '("topleft"
@@ -30,8 +31,8 @@
 			'("kv" "v" "dv"
 			  "k"      "d"
 			  "ka" "a" "da")))
-
-(set-menu-look! xpm-shaped-menu-look)
+;; (use-modules (app scwm xpm-menus))
+(set-default-menu-look! xpm-shaped-menu-look)
 
 (define menu-root
   (menu

@@ -1,3 +1,11 @@
+Sat Apr 10 17:16:30 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandlePropertyNotify): Call the X-PropertyNotify-hook
+	on all property changes by pulling that code outside of the
+	default clause of the switch, and out to just after the switch
+	statement.  Wierd setting of the window context before the hook
+	invocation-- what's this all about?  Added GJB:FIXME:MS: comment.
+
 Fri Apr  9 17:05:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* menuitem.h, menuitem.c: added scmBGColor scmFGColor scmFont
