@@ -1338,6 +1338,7 @@ static void
 HandleMotionNotify()
 {
 #define FUNC_NAME "HandleMotionNotify"
+#ifdef HAVE_SCM_MAKE_HOOK
   XMotionEvent *pev = &Event.xmotion;
   SCM x_root = gh_int2scm(pev->x_root);
   SCM y_root = gh_int2scm(pev->y_root);
@@ -1353,6 +1354,7 @@ HandleMotionNotify()
   }
   call6_hooks(x_motionnotify_hook,
               x_root,y_root,state,win,x,y);
+#endif
 }
 #undef FUNC_NAME
 
@@ -2023,9 +2025,9 @@ WindowGettingButtonEvent(Window w, int x, int y)
 }
 #undef FUNC_NAME
 
+
 #ifdef HAVE_SCM_MAKE_HOOK
 
-static int cMotionHandlers = 0;
 extern long basic_event_mask;
 
 /* GJB:FIXME:: Only for newer guiles for now */
@@ -2037,8 +2039,7 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'. */
 #define FUNC_NAME s_add_motion_handler_x
 {
   VALIDATE_ARG_PROC(1,proc);
-  if (cMotionHandlers++ == 0)
-    XSelectInput(dpy, Scr.Root,(basic_event_mask | PointerMotionMask | ButtonMotionMask));
+  XSelectInput(dpy, Scr.Root,(basic_event_mask | PointerMotionMask | ButtonMotionMask));
   return scm_add_hook_x(x_motionnotify_hook,proc,SCM_BOOL_F);
 }
 #undef FUNC_NAME
@@ -2050,10 +2051,11 @@ Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `reset-motion-handlers'. */
 #define FUNC_NAME s_remove_motion_handler_x
 {
+  SCM answer;
   VALIDATE_ARG_PROC(1,proc);
-  if (--cMotionHandlers == 0)
+  answer = scm_remove_hook_x(x_motionnotify_hook,proc);
+  if (scm_empty_hook_p(x_motionnotify_hook))
     XSelectInput(dpy, Scr.Root,basic_event_mask);
-  return scm_remove_hook_x(x_motionnotify_hook,proc);
 }
 #undef FUNC_NAME
 
@@ -2064,14 +2066,10 @@ Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `remove-motion-handler'. */
 #define FUNC_NAME s_reset_motion_handlers_x
 {
-  if (cMotionHandlers) {
-    XSelectInput(dpy, Scr.Root,basic_event_mask);
-    cMotionHandlers = 0;
-  }
+  XSelectInput(dpy, Scr.Root,basic_event_mask);
   return scm_reset_hook_x(x_motionnotify_hook);
 }
 #undef FUNC_NAME
-
 
 #endif
 

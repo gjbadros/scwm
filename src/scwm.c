@@ -1591,9 +1591,16 @@ scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char 
     sym_arglist = scm_permanent_object(((scm_cell *)scm_intern0("arglist"))->car);
   { /* scope */
   SCM p = scm_make_gsubr(name,req,opt,var,fcn);
+#ifdef HAVE_SCM_MAKE_HOOK
+  /* GJB:FIXME:: a hack since only newer versions of guile get this
+     right-- with guile-1.3, I get a 
+ERROR: In expression (quote (vector)):
+ERROR: Unbound variable: quote
+     when loading the c-animation module */
   SCM arglist = gh_eval_str(szArgList);
   scm_permanent_object(arglist);
   scm_set_procedure_property_x(p,sym_arglist,arglist);
+#endif
   return p;
   }
 }

@@ -353,6 +353,12 @@ __inline__ SCM apply_hooks(SCM hook, SCM args)
   return scwm_run_hook(hook,args);
 }
 
+SCM
+scm_empty_hook_p(SCM hook)
+{
+  return gh_bool2scm(!gh_pair_p(gh_cddr(hook)));
+}
+
 #else
 
 SCM call0_hooks (SCM hook)
