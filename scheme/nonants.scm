@@ -23,9 +23,21 @@
 
 (define-module (app scwm nonants)
   :use-module (app scwm base)
+  :use-module (app scwm message-window)
+  :use-module (app scwm window-selection)
+  :use-module (app scwm highlight-current-window)
   :use-module (app scwm optargs))
 
 
+
+
+(defmacro-public with-motion-handler (proc . body)
+;;;Use PROC as a motion handler while evaluating BODY
+  `(let ((mh-proc ,proc))
+     (dynamic-wind
+      (lambda () (add-motion-handler! mh-proc))
+      (lambda () ,@body)
+      (lambda () (remove-motion-handler! mh-proc)))))
 
 ;; selecting nonants from windows
 
@@ -40,34 +52,73 @@ window-selection and constraints modules."
       (begin (set-object-property! window 'nonant nonant) (or window (window-context)))
       (get-window-with-nonant-interactively)))
 
+(define (motion-handler-debug x_root y_root state win dx dy)
+  (for-each (lambda (v) (display v) (display " "))
+	    (list x_root y_root state win dx dy))
+  (if win
+      (display (nonant->string (window-and-offsets->nonant win dx dy))))
+  (newline))
+
+(define interactive-mark-nonant-msgwin (make-message-window-with-image (make-image "anchor.xpm")))
+
+;;(message-window-show! interactive-mark-nonant-msgwin)
+;;(message-window-hide! interactive-mark-nonant-msgwin)
+
+(define (mark-nonant-motion-handler x_root y_root state win dx dy)
+  (if win 
+      (let ((nonant (window-and-offsets->nonant win dx dy)))
+	(if (eqv? 4 nonant) ;; do not display the marker if in center
+	    (message-window-hide! interactive-mark-nonant-msgwin)
+	    (begin
+	      (message-window-show! interactive-mark-nonant-msgwin)
+	      (set-markwin-offset! win nonant interactive-mark-nonant-msgwin))))
+      (message-window-hide! interactive-mark-nonant-msgwin)))
 
 (define-public (get-window-with-nonant-interactively)
   "Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
 for use with the window-selection and constraints modules."
-  (let* ((selinf (select-viewport-position))
-	 (win (car selinf)))
-    (if (window? win)
-	(let ((nonant (get-window-nonant selinf)))
-	  (set-object-property! win 'nonant nonant)
-	  win)
-	#f)))
+  (dynamic-wind
+   (lambda ()
+     (start-highlighting-selected-window)
+     (add-motion-handler! mark-nonant-motion-handler))
+   (lambda ()
+     (let* ((selinf (select-viewport-position))
+	    (win (car selinf)))
+       (if (window? win)
+	   (let ((nonant (get-window-nonant selinf)))
+	     (set-object-property! win 'nonant nonant)
+	     win)
+	   #f)))
+   (lambda ()
+     (end-highlighting-selected-window)
+     (remove-motion-handler! mark-nonant-motion-handler)
+     (message-window-hide! interactive-mark-nonant-msgwin))))
 
 
 ;; determining the nonant from select-viewport-position
 
+(define-public (window-and-offsets->nonant win dx dy)
+  "Return a nonant number in [0,8] from a window position and an offset.
+WIN is the window, DX and DY are positions relative to the top-left of WIN."
+  (let* ((size (window-frame-size win))
+	 (qx (quotient dx (quotient (car size) 3)))
+	 (qy (quotient dy (quotient (cadr size) 3)))
+	 (answer (+ (* 3 qy) qx)))
+    (if (< answer 0) 0 (if (> answer 8) 8 answer))))
+
 (define-public (get-window-nonant select-list)
   "SELECT-LIST is a list of (win x y), returns the nonant selected.
 The nonant is a number in [0,8] referring to which of the tic-tac-toe board
-squares x,y is in of WIN. x,y are viewport positions.
+squares x,y is in of WIN. x,y are root-window relative viewport positions.
 `select-viewport-position' returns lists of the form needed by this procedure."
-  (let* ((pos (window-viewport-position (car select-list)))
-         (size (window-frame-size (car select-list)))
-	 (dx (- (cadr select-list) (car pos)))
-	 (dy (- (caddr select-list) (cadr pos)))
-	 (qx (quotient dx (quotient (car size) 3)))
-	 (qy (quotient dy (quotient (cadr size) 3))))
-    (+ (* 3 qy) qx)))
+  (let* ((win (car select-list))
+	 (x (cadr select-list))
+	 (y (caddr select-list))
+	 (pos (window-viewport-position win))
+	 (dx (- x (car pos)))
+	 (dy (- y (cadr pos))))
+    (window-and-offsets->nonant win dx dy)))
 
 
 ;; nonant naming
@@ -75,7 +126,8 @@ squares x,y is in of WIN. x,y are viewport positions.
 (define nonant-names '("NW" "N" "NE" "W" "C" "E" "SW" "S" "SE"))
 
 (define-public (nonant->string nonant)
-  "Return the string name for NONANT."
+  "Return the brief string name for NONANT, an integer.
+E.g., an argument of 1 returns `N'."
   (list-ref nonant-names nonant))
 
 ;; (nonant->string 4)

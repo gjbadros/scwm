@@ -146,13 +146,13 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
 ;;(restack-windows (select-multiple-windows-interactively 3))
 
 ;; nonant marker procedures
-
-(define (set-markwin-offset! win nonant markwin)
+;; this also gets used in nonants.scm for get-window-with-nonant-interactively
+(define-public (set-markwin-offset! win nonant markwin)
   (let* ((marksize (message-window-size markwin))
 	 (winsize  (window-frame-size win))
 	 (winpos   (window-viewport-position win))
-	 (xoffset  (round (* 0.3 (car winsize))))
-	 (yoffset  (round (* 0.3 (cadr winsize))))
+	 (xoffset  (round (* 0.4 (car winsize))))
+	 (yoffset  (round (* 0.4 (cadr winsize))))
 	 (xnon     (- (remainder nonant 3) 1))
 	 (ynon     (- (quotient nonant 3) 1))
 	 (xpos     (+ (car winpos) (quotient (car winsize) 2)))

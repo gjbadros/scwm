@@ -27,13 +27,26 @@
 
 (define current-highlighted-window #f)
 
+(define (flash-window-on-and-update-current-highlighted win)
+  (set! current-highlighted-window (flash-window-on win)))
+
 (define* (unflash-window-if-not-selected #&optional (win (window-context)))
+  "Unflash WIN as long as it is not selected."
   (if (and win (not (window-is-selected? win)))
       (begin (unflash-window win)
 	     (set! current-highlighted-window #f))))
 
-(define (flash-window-on-and-update-current-highlighted win)
-  (set! current-highlighted-window (flash-window-on win)))
+(define-public (start-highlighting-selected-window)
+  "Highlight the current window during window selections."
+  (add-hook! select-window-enter-hook flash-window-on)
+  (add-hook! select-window-leave-hook unflash-window-if-not-selected)
+  (add-hook! select-window-done-hook unflash-window-if-not-selected))
+
+(define-public (end-highlighting-selected-window)
+  "Stop highlighting the current window during window selections."
+  (remove-hook! select-window-enter-hook flash-window-on)
+  (remove-hook! select-window-leave-hook unflash-window-if-not-selected)
+  (remove-hook! select-window-done-hook unflash-window-if-not-selected))
 
 (define*-public (start-highlighting-current-window #&optional (win (window-context)))
   "Add appropriate hook procedures to make the window with the mouse be highlighted.
