@@ -9,11 +9,19 @@
   (add-stays-on-window w2)
   (add-stays-on-window (current-window-with-focus)))
 
-(add-stays-on-window (get-window))
+(define (scheme-keep-tops-even w1 w2)
+  (let ((w1-y (window-clv-y w1))
+	(w2-y (window-clv-y w2)))
+    (cl-add-constraint solver (make-cl-constraint w1-y = w2-y))))
+    
 
 (keep-tops-even (current-window-with-focus) w2)
 (keep-to-left-of (current-window-with-focus) w2)
-(keep-to-left-of (current-window-with-focus) (get-window))
+(keep-to-left-of (current-window-with-focus) w1)
+
+(window-clv-x (current-window-with-focus))
+
+(add-stays-on-window (get-window))
 (keep-to-left-of (get-window) (get-window))
 
 (begin
