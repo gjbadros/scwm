@@ -26,9 +26,12 @@ automatically generated files as needed, including Makefiles, thus
 largely removing the need to run the various "auto" tools by
 hand. However, it may sometimes be necessary to run them without
 having the Makefile or configure handy. In this case you can run
-autogen.sh, which will call all these programs for you. configure is
-also run - if you want to pass special arguments to configure, just
-give them to autogen.sh. Example: "./autogen.sh --prefix=/local/sw"
+autogen.sh, which will call all these programs for you.
+
+In short, do:
+
+./autogen.sh
+./configure --enable-maintainer-mode ... other flags ...
 
 Most of the time this should be unnecessary; as soon as you have
 configured once with --enable-maintainer-mode, make should rebuild
