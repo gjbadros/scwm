@@ -757,3 +757,4 @@ SCM get_window_list() {
   }
   return result;
 }
+
