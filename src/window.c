@@ -542,7 +542,7 @@ set_animation_x(SCM vector)
       scm_wrong_type_arg(__FUNCTION__,iarg-1,vector);
     }
     /* FIXGJB: also check < 2, perhaps (don't want to
-      check < 1, since we might want to overshoot and then come back */
+      check < 1, since we might want to overshoot and then come back) */
     rgpctMovementDefault[i] = (float) gh_scm2double(val);
   }
   /* Ensure that we end up 100% of the way to our destination */
@@ -1199,16 +1199,20 @@ plain_border(SCM win)
   int i;
 
   SCM_REDEFER_INTS;
+  /* FIXGJB: what the heck does fl get used for?? */
+#ifdef 0
 #ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
   fl = &Scr.DefaultDecor;
+#endif
 #endif
 
   VALIDATE(win, "plain-border");
   tmp_win = SCWMWINDOW(win);
   tmp_win->flags &= ~BORDER;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
+
   for (i = 0; i < 4; i++) {
     XUnmapWindow(dpy, tmp_win->corners[i]);
     XUnmapWindow(dpy, tmp_win->sides[i]);
