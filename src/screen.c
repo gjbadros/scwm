@@ -3,12 +3,11 @@
  *
  */
 
+#define SCREEN_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-#define SCREEN_IMPLEMENTATION
 
 #include <guile/gh.h>
 #include <assert.h>

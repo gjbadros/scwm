@@ -28,9 +28,6 @@ recall correctly, that's what fvwm does.
 -------------
 Visual bugs in boundaries of windows with some configurations of options.
 -------------
-Changing title-height in the decor (e.g., by changing the font) doesn't
-affect new windows using that style
--------------
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
@@ -106,7 +103,9 @@ outside the callback handler - the code would lose big on this -ms]
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
-
+Changing title-height in the decor (e.g., by changing the font) doesn't
+affect new windows using that style
+-------------
 xterm-s started from scwm die when scwm dies.... why?  
 see scwm-system in base.scm -- the terminal process group was getting
 the SIGINT from the controlling tty --09/17/98 gjb

@@ -1,3 +1,12 @@
+1998-09-24  Todd Larason  <jtl@teeny.molehill.org>
+
+	* decor.c: properly add extra height to title bars when a decor is 
+	attached to a window
+
+	* add_window.c, color.c, decor.c, font.c, image.c, menu.c,
+	placement.c, screen.c: Standardize header_IMPLEMENTATION and
+	<config.h> location
+
 1998-09-23  Todd Larason  <jtl@teeny.molehill.org>
 
 	* window.c (s_set_border_width_x): Save old gravity adjustment

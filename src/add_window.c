@@ -34,6 +34,7 @@
 /**    OR PERFORMANCE OF THIS SOFTWARE.                                     **/
 /*****************************************************************************/
 
+#define ADD_WINDOW_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -41,7 +42,6 @@
 
 /* #define SCWM_DEBUG_MSGS */
 
-#define ADD_WINDOW_IMPLEMENTATION
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

@@ -30,16 +30,22 @@ Other files to read:
 --09/16/98 gjb
 
 
-o header order sometimes matters; `EXTERN' isn't always `extern',
-depending on *_IMPLEMENTATION; if adding a #include leads to symbols
-not being defined at link time, see if you need to move a #define
-*_IMPLEMENTATION line up.
+o when creating a new global (only if absolutely necessary, of
+course), use the EXTERN mechanism; declare it only in the appropriate
+.h file, with either EXTERN or EXTERN_SET; this will initialize it in
+the corresponding .c file only.  If the .c/.h pair doesn't currently
+have any globals, #define filename_IMPLEMENTATION at the top of the .c
+file and copy and modify the #undef EXTERN... block from another .h
+file.
 
 o Explore the X tools you may not have used before; xev can show
 events going to a window, xprop can watch property changes,
 xwindowinfo will show all sorts of useful information.
 
 o Xnest isn't perfect, but is usually a better alternative than trying
-to debug the WM running your development environment.
+to debug the WM running your development environment.  Another
+alternative is to run a second X server; on Linux for example, "X :1"
+will start a second server, running on the next available VC.  "scwm
+-d :1" will then start scwm running on it.
 
 --09/23/98 jtl

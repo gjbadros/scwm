@@ -7,16 +7,16 @@
  *     copyright remains in the source code and all documentation
  */
 
-#include <guile/gh.h>
-#include <libguile.h>
-#include <X11/Xproto.h>
-#include <X11/Xatom.h>
-
 #define COLOR_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <guile/gh.h>
+#include <libguile.h>
+#include <X11/Xproto.h>
+#include <X11/Xatom.h>
 
 #include "scwm.h"
 #include "color.h"

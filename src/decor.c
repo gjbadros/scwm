@@ -7,12 +7,11 @@
  *     copyright remains in the source code and all documentation
  */
 
+#define DECOR_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-#define DECOR_IMPLEMENTATION
 
 #include <guile/gh.h>
 #include "scwm.h"
@@ -325,7 +324,7 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
 
   psw->fl = fl;
 
-  extra_height = old_height - psw->fl->TitleHeight;
+  extra_height = psw->fl->TitleHeight - old_height;
 
   set_window_internal_title_height(psw, psw->title_height + extra_height);
   SetBorder(psw, Scr.Hilite == psw, True, True, None);

@@ -18,6 +18,8 @@
  *
  */
 
+#define IMAGE_IMPLEMENTATION
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -43,9 +45,6 @@
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
-
-
-#define IMAGE_IMPLEMENTATION
 
 #include "image.h"
 #include "guile-compat.h"

@@ -4,7 +4,6 @@
  * (C) 1998, 1997 Greg J. Badros and Maciej Stachowiak
  */
 
-
 #define MENU_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
