@@ -75,6 +75,14 @@ WIN."
   (unflash-window win)
   win)
 
+(define*-public (raise-and-stop-flashing #&optional (win (get-window)))
+  "Turn off window flashing of WIN and raise it.
+Also return #f so that this can be used as an bound IMMEDIATE-PROC."
+  (if (window-flashing? win)
+      (stop-flashing-window win))
+  (raise-window win)
+  #f)
+
 ;;; Debugging, testing code.
 ;; (flash-window (get-window) #:unflash-delay #f)
 ;; (unflash-window)

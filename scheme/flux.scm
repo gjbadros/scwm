@@ -770,3 +770,87 @@ that corner fixed."
 	   ""))))
 
 ;; (make-X-geometry #:x-size 50 #:y-size 20 #:x-offset 10 #:y-offset -20)
+
+
+;; From robbe.scwmrc
+(define-public (toggle-focus)
+  "Focus window that had the focus before the current one."
+  (focus-change-warp-pointer 
+   (extreme (lambda (win1 win2) (> (last-focussed win1)
+				   (last-focussed win2)))
+	    (list-all-windows))))
+
+
+;;; there is a race condition with the mouse-focus
+;;; giving focus to the new window... 
+;;; we really need a new hook for this that is
+;;; for focus changing from an external program
+
+;; Was rb:warp in robbe.scwmrc
+(define*-public (focus-change-warp-pointer #&optional (win (get-window)))
+  "Warp to WIN to give it the keyboard focus.
+May deiconify WIN and will raise WIN."
+  (cond
+   (win (deiconify win)
+	(raise-window win)
+	(warp-to-window win)
+	(focus win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
+;; GJB:FIXME:: make above parameters
+
+
+(define*-public (animated-deiconify-to-current-vp-focus #&optional (win (get-window)))
+  "Deiconify WIN to the current viewport, and give it the focus"
+  (cond
+   (win (animated-deiconify-to-current-viewport win)
+	(focus-change-warp-pointer win))))
+
+(define*-public (animated-deiconify-to-last-vp-focus #&optional (win (get-window)))
+  (cond
+   (win (animated-deiconify-to-last-viewport-position win)
+	(focus-change-warp-pointer win))))
+
+(define-public (show-icon-list-menu)
+  "Show a window list of only iconfied programs for animatedly deiconifying and giving them focus."
+  (show-window-list-menu #t
+			 #:only iconified?
+			 #:proc animated-deiconify-to-current-vp-focus))
+
+(define-public (show-xterm-window-list-menu)
+  "Show a window list of only xterms for animatedly deiconifying and giving them focus."
+  (show-window-list-menu #t #:only (lambda (w)
+				     (or 
+				      (string=? (window-class w) "XTerm")
+				      (string=? (window-class w) "NXTerm")))
+			 #:proc animated-deiconify-to-current-vp-focus))
+
+(define-public (move-or-shade)
+  "Move the window on a drag, shade on a double-click."
+  (case (mouse-event-type)
+    ((double-click) (animated-toggle-window-shade))
+    (else (move-or-raise))))
+
+;; some stuff for icons
+(define-public (move-or-deiconify)
+  "Move the icon on a drag, de-iconify on a double click."
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (animated-deiconify))))
+
+(define*-public (interactive-move-rubberband #&optional (win (get-window)))
+  "Move interactively, using the rubberband (unless constraint solver is active."
+  (interactive-move (get-window) #f))
+
+(define*-public (interactive-resize-rubberband #&optional (win (get-window)))
+  "Resize interactively, using the rubberband (unless constraint solver is active."
+  (interactive-resize (get-window) #f))
+
+(define-public (resize-halfscreen)
+  "Resize the current window with the pointer to full height and half the screen size in width."
+  (let ((w (current-window-with-pointer)))
+    (animated-resize-window (%x 49) (%y 90))))
+
+(define-public (resize-fullscreen)
+  "Resize the current window with the pointer to 90% of the full screen size."
+  (let ((w (current-window-with-pointer)))
+    (animated-resize-window (%x 90) (%y 90))))

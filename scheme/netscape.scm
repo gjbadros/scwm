@@ -91,20 +91,34 @@ This is useful since netscape's remote command invocation does a stupid
 syntactic scan of the passed url and treats commas as argument command
 separators, so the url gets chopped off at the first literal comma."
   (regexp-substitute/global #f "," uri 'pre (lambda (match) "%2C") 'post))
-;; (use-modules (ice-9 regex))
-;; (uri-escapify-comma "foo,bar")
+
+(define-public (cgi-escapify-space uri)
+  "Replace commas in URI with the %2C escape code.
+This is useful since netscape's remote command invocation does a stupid
+syntactic scan of the passed url and treats commas as argument command
+separators, so the url gets chopped off at the first literal comma."
+  (regexp-substitute/global #f " " uri 'pre (lambda (match) "+") 'post))
 
 (define*-public (netscape-goto-url url 
                 #&optional
 		(completion #f)
-		(new *netscape-new-window*))
+		(new *netscape-new-window*)
+		#&key (start-netscape-as-needed #f))
   "Make netscape go to the location URL.
 Calls COMPLETION when done.
 The optional argument specifies whether a new window should be opened.
 It defaults to `*netscape-new-window*'."
-  (run-in-netscape
-   (string-append "openURL(" (uri-escapify-comma url) (if new ",new-window)" ")"))
-   completion))
+  (catch #t
+	 (lambda ()
+	   (run-in-netscape
+	    (string-append "openURL(" (uri-escapify-comma url) 
+			   (if new ",new-window)" ")"))
+	    completion))
+	 (lambda args
+	   (if start-netscape-as-needed
+	       (begin
+		 (display "scwm: netscape-goto-url: starting netscape process\n")
+		 (execute (string-append "netscape " (uri-escapify-comma url))))))))
 
 (define*-public (netscape-goto-cut-buffer-url 
 		 #&optional (new *netscape-new-window*))
@@ -133,3 +147,13 @@ not open a new netscape frame."
   (window-style "findDialog_popup" #:transient-placement-proc 
 		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
   (add-hook! window-close-hook call-netscape-download-closed-action))
+
+(define-public url-google "http://www.google.com/search?q=")
+
+;; (netscape-google-search "glade")
+;; (netscape-google-search "gtk")
+(define-public (netscape-google-search word)
+  (netscape-goto-url (string-append (cgi-escapify-space url-google word))))
+
+(define-public (netscape-google-search-cut-buffer)
+  (netscape-google-search (X-cut-buffer-string)))

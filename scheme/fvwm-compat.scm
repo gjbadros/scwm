@@ -106,7 +106,7 @@
 
 (define-public X_RESOLUTION (list-ref X-display-info 0))
 (define-public Y_RESOLUTION (list-ref X-display-info 1))
-(define-public PLANES (list-ref X-display-info 2))
+(define-public PLANES (list-ref X-display-info 2))  ;; also `display-depth'
 (define-public BITS_PER_RGB (list-ref X-display-info 3))
 (define-public CLASS (list-ref X-display-info 4))
 (define-public COLOR (if (list-ref X-display-info 5) "Yes" "No"))
