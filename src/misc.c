@@ -124,6 +124,14 @@ CoerceEnterNotifyOnCurrentWindow()
 }
 
 
+Bool
+FXWindowAccessible(Display *dpy, Window w)
+{
+  /* XGetGeometry returns true if the call was successful */
+  return XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
+		      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+}
+
 /***********************************************************************
  *
  *  Procedure:
