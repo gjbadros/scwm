@@ -8,6 +8,8 @@
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
+(define xlock-query-program "xlock-stdout")
+
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
@@ -543,7 +545,7 @@
     (menuitem "Really quit Scwm?" #f)
     menu-title
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "")))
+	       #:action (lambda () (restart "scwm")))
     menu-separator
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
