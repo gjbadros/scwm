@@ -419,16 +419,6 @@
 (define-public (clear-fvwm2-module-config module-type)
   (hash-remove! fvwm2-module-config-hash module-type))
 
-
-;; GJB:FIXME:MS: Isn't this a primitive procedure?  And that one
-;; takes an optional second arg, suffix
-(if (not (defined? 'basename))
-    (define (basename str)
-      (let ((ix (string-rindex str #\/)))
-	(if ix
-	    (substring str ix)
-	    str))))
-
 (define (aux-config-info)
   (let ((path (path-list->string-with-colons image-load-path)))
     (list
