@@ -13,6 +13,7 @@
 (popup-menu (scwm-options-menu) #t)
 
 (scwm-options-dialog)
+;; (window-style "*" #:smart-placement #f #:random-placement #f)
 
 (scwm-option-range '*window-font*)
 
