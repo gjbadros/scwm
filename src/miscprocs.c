@@ -23,6 +23,7 @@
 #include "font.h"
 #include "xmisc.h"
 #include "scwmpaths.h"
+#include <sys/times.h>
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
@@ -455,6 +456,55 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 #define FUNC_NAME s_mouse_focus_click_raises_p
 {
   return SCM_BOOL_FromBool(Scr.fMouseFocusClickRaises);
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC (x_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
+           (SCM n))
+     /** Rotate the X cut buffers by N positions.
+This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
+and so on.  This cut buffer numbering is global to the display. */
+#define FUNC_NAME s_x_rotate_cut_buffers
+{
+  if (!gh_number_p(n)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, n);
+  }
+  { /* scope */
+    int num_to_rotate = gh_scm2int(n);
+    XRotateBuffers(dpy,num_to_rotate);
+  }
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
+           ())
+     /** Return the elapsed time in milliseconds since O.S. has been up.
+      */
+#define FUNC_NAME s_elapsed_time
+{
+  /* code borrowed from GWM's wool_used_time */
+#ifdef CLK_TCK
+#define TIME_UNIT CLK_TCK
+#else
+#define TIME_UNIT 60
+#endif
+  long time;
+  struct tms buffer;
+
+#ifdef CLK_TCK
+  time = (times(&buffer) * 1000) / TIME_UNIT;
+#else
+  times(&buffer);
+  time = ((buffer.tms_utime + buffer.tms_stime) * 1000 ) / TIME_UNIT;
+#endif
+  
+  return gh_ulong2scm(time);
+#undef TIME_UNIT
 }
 #undef FUNC_NAME
 

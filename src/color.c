@@ -342,7 +342,7 @@ color_mult (unsigned short *red,
 }
 	   
 SCM
-adjust_brightness (SCM color, double factor) {
+adjust_brightness(SCM color, double factor) {
   XColor c;
   char cnamebuf[19];
 
@@ -351,6 +351,22 @@ adjust_brightness (SCM color, double factor) {
   XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
   color_mult(&c.red, &c.green, &c.blue, factor);
   sprintf(cnamebuf, "rgb:%.4hx/%.4hx/%.4hx", c.red, c.green, c.blue);
+  cnamebuf[19]=0;
+
+  return make_color(gh_str02scm(cnamebuf));
+}
+
+
+SCM
+invert_color(SCM color) {
+  XColor c;
+  char cnamebuf[19];
+
+  c.pixel = XCOLOR(color);
+  
+  XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
+  sprintf(cnamebuf, "rgb:%.4hx/%.4hx/%.4hx", 
+          0xffff-c.red, 0xffff-c.green, 0xffff-c.blue);
   cnamebuf[19]=0;
 
   return make_color(gh_str02scm(cnamebuf));
@@ -376,6 +392,18 @@ which is suitable for use as a hilight. */
   }
 
   return adjust_brightness(color, f);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(make_reversed_color, "make-reversed-color", 1, 0, 0,
+           (SCM color))
+     /** Return a new color that is opposite COLOR. */
+#define FUNC_NAME s_make_reversed_color
+{
+  VALIDATE_COLOR (color, FUNC_NAME, 1);
+
+  return invert_color(color);
 }
 #undef FUNC_NAME
 

@@ -2201,6 +2201,7 @@ specified. */
 /* FIXMS: would animated resizes be a good idea? */
 /* FIXGJB: either resize-to or resize-frame-to should be written
    in scheme using the other */
+/* FIXGJB: See resize-window  -- this primitive should be renamed to that */
 
 SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
@@ -3350,7 +3351,7 @@ in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  VALIDATEN(win, 2, "window-icon");
+  VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   return psw->icon_req_image;
@@ -3402,12 +3403,43 @@ in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  VALIDATEN(win, 2, "window-mini-icon");
+  VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   return psw->mini_icon_image;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC (window_shaped_p, "window-shaped?", 0, 1, 0,
+           (SCM win))
+     /** Return #t if WIN is a shaped window, #f otherwise. */
+#define FUNC_NAME s_window_shaped_p
+{
+  ScwmWindow *psw;
+
+  VALIDATEN(win, 2, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return SCM_BOOL_FromBool(psw->fShaped);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (window_icon_shaped_p, "window-icon-shaped?", 0, 1, 0,
+           (SCM win))
+     /** Return #t if WIN has shaped icon, #f otherwise. */
+#define FUNC_NAME s_window_icon_shaped_p
+{
+  ScwmWindow *psw;
+
+  VALIDATEN(win, 2, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return SCM_BOOL_FromBool(psw->fShapedIcon);
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(set_hint_override_x, "set-hint-override!", 1, 1, 0,
