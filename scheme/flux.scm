@@ -29,6 +29,7 @@
   :use-module (app scwm window-locations)
   :use-module (app scwm optargs)
   :use-module (app scwm tile)
+  :use-module (app scwm highlight-current-window)
   :use-module (app scwm xprop-extras))
 
 
@@ -564,4 +565,3 @@ that corner fixed."
 	(interactive-move (get-window))))
   (end-highlighting-current-window)
   (unselect-all-windows))
-
