@@ -324,7 +324,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
   } else if (spec==sym_solid) {
     if (gh_string_p(arg)) {
       arg=load_color(arg);
-    } else if (!COLORP(arg)) {
+    } else if (!COLOR_P(arg)) {
       /* FIXMS give a better error message */
       scm_wrong_type_arg("add_spec_to_face_x",3,arg);
     }

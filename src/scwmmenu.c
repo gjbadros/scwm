@@ -39,6 +39,7 @@
 
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
+static void FreeDynamicMenu(DynamicMenu *pmd);
 
 SCM 
 mark_menu(SCM obj)
@@ -57,6 +58,7 @@ mark_menu(SCM obj)
   GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
   GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
   GC_MARK_SCM_IF_SET(pmenu->scmFont);
+  GC_MARK_SCM_IF_SET(pmenu->scmExtraOptions);
 
   return SCM_BOOL_F;
 }
@@ -90,6 +92,8 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
 
   return 1;
 }
+
+SCM_PROC(s_menu_p,"menu?", 1,0,0, menu_p);
 
 SCM 
 menu_p(SCM obj)
@@ -150,6 +154,7 @@ SCM
 menu_properties(SCM scmMenu)
 {
   Menu *pmenu = SAFE_MENU(scmMenu);
+  SCM rest;
   if (!pmenu) {
     scm_wrong_type_arg(s_menu_properties,1,scmMenu);
   }
@@ -160,22 +165,25 @@ menu_properties(SCM scmMenu)
 		 pmenu->scmTextColor,
 		 pmenu->scmImgBackground,
 		 pmenu->scmFont,
+		 pmenu->scmExtraOptions,
 		 gh_str02scm(pmenu->pchUsedShortcutKeys));
 }
 
 
+SCM_PROC(s_make_menu, "make-menu", 1, 7, 0, make_menu);
+
 SCM 
 make_menu(SCM list_of_menuitems,
-	      SCM picture_side, SCM side_bg_color,
-	      SCM bg_color, SCM text_color,
-	      SCM picture_bg, SCM font)
+	  SCM picture_side, SCM side_bg_color,
+	  SCM bg_color, SCM text_color,
+	  SCM picture_bg, SCM font, SCM extra_options)
 {
   Menu *pmenu = safemalloc(sizeof(Menu));
   SCM answer;
   int iarg = 1;
 
   if (!gh_list_p(list_of_menuitems)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,list_of_menuitems);
+    scm_wrong_type_arg(s_make_menu,iarg,list_of_menuitems);
   }
   pmenu->scmMenuItems = list_of_menuitems;
 
@@ -183,31 +191,31 @@ make_menu(SCM list_of_menuitems,
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_side)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,picture_side);
+    scm_wrong_type_arg(s_make_menu,iarg,picture_side);
   } 
   pmenu->scmImgSide = picture_side;
 
   iarg++;
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = scmWHITE;
-  } else if (!COLORP(side_bg_color)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,side_bg_color);
+  } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
+    scm_wrong_type_arg(s_make_menu,iarg,side_bg_color);
   }
   pmenu->scmSideBGColor = side_bg_color;
 
   iarg++;
   if (UNSET_SCM(bg_color)) {
     bg_color = scmWHITE; /* FIXGJB: Scr.MenuColors.back; */
-  } else if (!COLORP(bg_color)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,bg_color);
+  } else if (!COLOR_OR_SYMBOL_P(bg_color)) {
+    scm_wrong_type_arg(s_make_menu,iarg,bg_color);
   }
   pmenu->scmBGColor = bg_color;
 
   iarg++;
   if (UNSET_SCM(text_color)) {
     text_color =  scmBLACK; /* FIXGJB: Scr.MenuColors.fore ; */
-  } else if (!COLORP(text_color)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,text_color);
+  } else if (!COLOR_OR_SYMBOL_P(text_color)) {
+    scm_wrong_type_arg(s_make_menu,iarg,text_color);
   }
   pmenu->scmTextColor = text_color;
 
@@ -215,7 +223,7 @@ make_menu(SCM list_of_menuitems,
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_bg)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,picture_bg);
+    scm_wrong_type_arg(s_make_menu,iarg,picture_bg);
   } 
   pmenu->scmImgBackground = picture_bg;
 
@@ -225,12 +233,43 @@ make_menu(SCM list_of_menuitems,
      always have some font object for "fixed" */
   if (UNSET_SCM(font) && menu_font != SCM_UNDEFINED) {
     pmenu->scmFont = menu_font;
-  } else if (!FONTP(font)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,font);
+  } else if (!FONT_OR_SYMBOL_P(font)) {
+    scm_wrong_type_arg(s_make_menu,iarg,font);
   }
   pmenu->scmFont = font;
 
+  pmenu->scmExtraOptions = extra_options;
+
   pmenu->pchUsedShortcutKeys = NULL;
+
+#ifdef FIXGJB_SHOULD_WE_TEST_ITEMS_HERE_OR_DEFER_TO_LATER
+  rest = pmenu->scmMenuItems;
+
+  while (True) {
+    item = gh_car(rest);
+    pmi = SAFE_MENUITEM(item);
+    if (!pmi) {
+      scwm_msg(WARN,s_make_menu,"Bad menu item %d",ipmiim);
+    }
+    if (pmi && pmi->pchHotkeyPreferences) {
+      char *pchDesiredChars = pmi->pchHotkeyPreferences;
+      char ch;
+      while ((ch = *pchDesiredChars++) != '\0') {
+	if (!strchr(pch,ch)) {
+	  /* Found the char to use */
+	  rgpmiim[ipmiim]->chShortcut = ch;
+	  pch[ich++] = tolower(ch);
+	  rgpmiim[ipmiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
+	  break;
+	}
+      }
+    }
+    ipmiim++;
+    rest = gh_cdr(rest);
+    if (SCM_NULLP(rest))
+      break;
+  }
+#endif
 
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_menu);
@@ -451,7 +490,7 @@ UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
   RepaintMenuItem(pmiim);
   if (pmd->pmdNext) {
     PopdownMenu(pmd->pmdNext);
-    free(pmd->pmdNext);
+    FreeDynamicMenu(pmd->pmdNext);
     pmd->pmdNext = NULL;
   }
 }
@@ -487,7 +526,7 @@ InvokeUnhoverAction(DynamicMenu *pmd)
   if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
     call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
   } else {
-    scwm_msg(DBG,__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
+    DBUG(__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
   }
 }
 
@@ -512,7 +551,7 @@ PopdownMenu(DynamicMenu *pmd)
 {
   if (pmd->pmdNext) {
     PopdownMenu(pmd->pmdNext);
-    free(pmd->pmdNext);
+    FreeDynamicMenu(pmd->pmdNext);
     pmd->pmdNext = NULL;
   }
   InvokeUnhoverAction(pmd);
@@ -694,7 +733,8 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
   DynamicMenu *pmd;
   DynamicMenu *pmdNew = NULL;
   if (pmiim) {
-    Menu *pmenu = SAFE_MENU(pmiim->pmi->scmAction);
+    SCM scmAction = pmiim->pmi->scmAction;
+    Menu *pmenu = DYNAMIC_SAFE_MENU(scmAction);
     if (pmenu) {
       pmd = pmiim->pmd;
       pmdNew = NewDynamicMenu(pmenu,pmd);
@@ -748,7 +788,7 @@ MenuInteraction(DynamicMenu *pmd)
 	  SCM scmHover = pmiimSelected->pmi->scmHover;
 	  pmd->fHoverActionInvoked = True;
 	  /* invoke the hover action */
-	  if (gh_procedure_p(scmHover)) {
+	  if (DYNAMIC_PROCEDURE_P(scmHover)) {
 	    call_thunk_with_message_handler(scmHover);
 	  }
 	}
@@ -764,8 +804,6 @@ MenuInteraction(DynamicMenu *pmd)
 			     &Event))&&(Event.type != ButtonRelease));
     }
     
-/*    scwm_msg(DBG,__FUNCTION__,"Got an event"); FIXGJB */
-
     /* get the item the pointer is at */
     pmiim = PmiimFromPointerLocation(dpy,&cpixXoffsetInMenu);
 
@@ -796,7 +834,6 @@ MenuInteraction(DynamicMenu *pmd)
     {
       enum menu_status ms = MENUSTATUS_NOP;
       /* Handle a key press events to allow mouseless operation */
-      scwm_msg(DBG,__FUNCTION__,"Got a keypress");
       pmiim = PmiimMenuShortcuts(pmd,&Event,&ms);
       if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
@@ -861,14 +898,14 @@ MenuInteraction(DynamicMenu *pmd)
 	    if (pmiim != PmiimSelectedFromPmd(pmd)) {
 	      /* it's not the one that we had selected before,
 		 so we need to pop down everything */
-	      scwm_msg(DBG,__FUNCTION__,"Moved back to different item");
+	      DBUG(__FUNCTION__,"Moved back to different item");
 	      UnselectAndRepaintSelectionForPmd(pmd);
 	    } else {
 	      UnselectAndRepaintSelectionForPmd(pmd->pmdNext);
 	    }
 	  } else {
 	    /* we're on an unrelated menu */
-	    scwm_msg(DBG,__FUNCTION__,"Moved to unrelated menu\n");
+	    DBUG(__FUNCTION__,"Moved to unrelated menu\n");
 	    UnselectAndRepaintSelectionForPmd(pmd);
 	    pmiim = NULL;
 	  }
@@ -880,7 +917,7 @@ MenuInteraction(DynamicMenu *pmd)
 	  }
 	}
 	if (pmiim && pmiim->mis != MIS_Selected) {
-	  scwm_msg(DBG,__FUNCTION__,"New selection");
+	  DBUG(__FUNCTION__,"New selection");
 	  SelectAndRepaintPmiim(pmiim);
 	  c10ms_delays = 0;
 	}
@@ -898,11 +935,11 @@ MenuInteraction(DynamicMenu *pmd)
     case Expose:
     { /* scope */
       DynamicMenu *pmdNeedsPainting = NULL;
-      scwm_msg(DBG,__FUNCTION__,"Got expose event for menu");
+      DBUG(__FUNCTION__,"Got expose event for menu");
       /* grab our expose events, let the rest go through */
       pmdNeedsPainting = PmdFromWindow(dpy,Event.xany.window);
       if (pmdNeedsPainting) {
-	scwm_msg(DBG,__FUNCTION__,"Trying to paint menu");
+	DBUG(__FUNCTION__,"Trying to paint menu");
 	PaintDynamicMenu(pmdNeedsPainting,&Event);
       }
     }
@@ -921,6 +958,21 @@ MenuInteraction(DynamicMenu *pmd)
  MENU_INTERACTION_RETURN:
   return scmAction;
 }
+
+static
+void
+FreeDynamicMenu(DynamicMenu *pmd)
+{
+  int ipmiim = 0;
+  int cmiim = pmd->cmiim;
+  for ( ; ipmiim < cmiim; ipmiim++) {
+    free(pmd->rgpmiim[ipmiim]);
+  }
+  free(pmd->rgpmiim);
+  free(pmd->pmdi);
+}  
+  
+  
 
 static
 void
@@ -958,11 +1010,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     pmiim->fOnTopEdge = False;	/* just init: gets set in drawing code */
     pmiim->fOnBottomEdge = False; /* just init: gets set in drawing code */
 
-    /* Not sure what rule should determine the show popup arrow flag...
-       maybe the scheme code should just specify it wants a popup arrow... 
-       --11/23/97 gjb 
-    FIXGJB */
-    pmiim->fShowPopupArrow = (MENU_P(pmiim->pmi->scmAction));
+    pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction));
 
     pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
     ipmiim++;
@@ -975,8 +1023,13 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->cmiim = ipmiim;
   pmd->ipmiimSelected = -1;
 
-  pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
-
+  if (!pmd->pmenu->pchUsedShortcutKeys) {
+    /* we might not want this optimization, and instead should 
+       if non-null,
+       free(pmd->pmenu->pchUsedShortcutKeys); 
+       and then reassign as below --12/12/97 gjb */
+    pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
+  }
 }
 
 static
@@ -1017,7 +1070,7 @@ PopdownAllPriorMenus(DynamicMenu *pmd)
       break;
     pmdPrior=pmd->pmdPrior;
     PopdownMenu(pmd);
-    free(pmd);
+    FreeDynamicMenu(pmd);
   }
 }
 
@@ -1040,17 +1093,23 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   UngrabEm();
   PopdownMenu(pmd);
   PopdownAllPriorMenus(pmd);
-  if (gh_procedure_p(scmAction)) {
+  FreeDynamicMenu(pmd);
+  DEREF_IF_SYMBOL(scmAction);
+  if (DYNAMIC_PROCEDURE_P(scmAction)) {
     call_thunk_with_message_handler(scmAction);
-  } else if (MENU_P(scmAction)) {
+  } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
     popup_menu(scmAction);
   }
 }
 
+SCM_PROC(s_popup_menu,"popup-menu", 1,0,0, popup_menu);
+
 SCM 
 popup_menu(SCM menu)
 {
+  /* permit 'menu to be used, and look up dynamically */
+  DEREF_IF_SYMBOL(menu);
   if (!MENU_P(menu)) {
     scm_wrong_type_arg("popup-menu", 1, menu);
   }

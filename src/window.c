@@ -1715,7 +1715,7 @@ set_window_colors_x(SCM fg, SCM bg, SCM win)
     fg = load_color(fg);
   } else if (fg == SCM_UNDEFINED) {
     fg = SCM_BOOL_F;
-  } else if (fg != SCM_BOOL_F && !COLORP(fg)) {
+  } else if (fg != SCM_BOOL_F && !COLOR_P(fg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-colors!", 1, fg);
   }
@@ -1723,7 +1723,7 @@ set_window_colors_x(SCM fg, SCM bg, SCM win)
     bg = load_color(bg);
   } else if (bg == SCM_UNDEFINED) {
     bg = SCM_BOOL_F;
-  } else if (bg != SCM_BOOL_F && !COLORP(bg)) {
+  } else if (bg != SCM_BOOL_F && !COLOR_P(bg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-colors!", 2, bg);
   }

@@ -64,6 +64,7 @@ load_color(SCM cname)
   XColor color;
   char *cn;
   int len;
+  Bool fBad = False;
 
   SCM_REDEFER_INTS;
   if (!gh_string_p(cname)) {
@@ -73,16 +74,17 @@ load_color(SCM cname)
   cn = gh_scm2newstr(cname, &len);
   color.pixel = 0;
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
-    /*    scm_error(gh_symbol2scm("scwm-error"),"load-color","%s",
-       gh_list(gh_str02scm("Unable to parse color."),SCM_UNDEFINED),
-       gh_list(gh_int2scm(1),SCM_UNDEFINED)); */
+    scwm_msg(WARN,__FUNCTION__,"Unable to parse color `%s'",cn);
+    fBad = True;
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
-    /*  scm_error(gh_symbol2scm("scwm-error"),"load-color","%s",
-       gh_list(gh_str02scm("Unable to allocate color."),SCM_UNDEFINED),
-       gh_list(gh_int2scm(1),SCM_UNDEFINED));
-     */
+    scwm_msg(WARN,__FUNCTION__,"Unable to allocate color `%s'",cn);
+    fBad = True;
   }
   free(cn);
+
+  if (fBad) {
+    return SCM_BOOL_F;
+  }
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_color);
   SCM_SETCDR(answer, (SCM) (color.pixel));
@@ -106,7 +108,7 @@ set_hilight_colors(SCM fg, SCM bg)
     fg = load_color(fg);
   } else if (fg == SCM_UNDEFINED) {
     fg = SCM_BOOL_F;
-  } else if (fg != SCM_BOOL_F && !COLORP(fg)) {
+  } else if (fg != SCM_BOOL_F && !COLOR_P(fg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-highlight-colors!", 1, fg);
   }
@@ -114,7 +116,7 @@ set_hilight_colors(SCM fg, SCM bg)
     bg = load_color(bg);
   } else if (bg == SCM_UNDEFINED) {
     bg = SCM_BOOL_F;
-  } else if (bg != SCM_BOOL_F && !COLORP(bg)) {
+  } else if (bg != SCM_BOOL_F && !COLOR_P(bg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-highlight-colors!", 2, bg);
   }
@@ -165,7 +167,7 @@ set_hilight_colors(SCM fg, SCM bg)
 SCM 
 color_p(SCM obj)
 {
-  return (COLORP(obj)? SCM_BOOL_T : SCM_BOOL_F);
+  return (COLOR_P(obj)? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 SCM 
@@ -179,7 +181,7 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
     fg = load_color(fg);
   } else if (fg == SCM_UNDEFINED) {
     fg = SCM_BOOL_F;
-  } else if (fg != SCM_BOOL_F && !COLORP(fg)) {
+  } else if (fg != SCM_BOOL_F && !COLOR_P(fg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-highlight-colors!", 1, fg);
   }
@@ -187,7 +189,7 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
     bg = load_color(bg);
   } else if (bg == SCM_UNDEFINED) {
     bg = SCM_BOOL_F;
-  } else if (bg != SCM_BOOL_F && !COLORP(bg)) {
+  } else if (bg != SCM_BOOL_F && !COLOR_P(bg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-highlight-colors!", 2, bg);
   }
@@ -195,7 +197,7 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
     stipple = load_color(stipple);
   } else if (stipple == SCM_UNDEFINED) {
     stipple = SCM_BOOL_F;
-  } else if (stipple != SCM_BOOL_F && !COLORP(stipple)) {
+  } else if (stipple != SCM_BOOL_F && !COLOR_P(stipple)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-highlight-colors!", 3, stipple);
   }

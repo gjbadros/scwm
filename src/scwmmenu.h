@@ -40,6 +40,8 @@ typedef struct MenuDrawingInfo_tag
   Pixel BGColor;		/* the background color */
   Pixel SideBGColor;		/* the side image bg color */
   Pixel TextColor;		/* the text color */
+  XFontStruct *pxfont;		/* the font for text */
+  void *p;			/* extra information needed by the client drawing code */
 } MenuDrawingInfo;
 
 
@@ -54,6 +56,7 @@ typedef struct Menu_tag
   SCM scmTextColor;		/* text color */
   SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
+  SCM scmExtraOptions;		/* extra list of options for the drawing code */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
 } Menu;
 
@@ -73,7 +76,17 @@ typedef struct DynamicMenu_tag
 
 #define MENU_P(X) (SCM_NIMP((X)) && (SCM_CAR((X)) == (SCM)scm_tc16_scwm_menu))
 #define MENU(X)  ((Menu *)SCM_CDR((X)))
+
+#define MENU_OR_SYMBOL_P(X) (MENU_P((X)) || gh_symbol_p((X)))
+
 #define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
+
+#define DYNAMIC_MENU_P(X)  (gh_symbol_p((X))? \
+			    MENU_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+			    MENU_P((X)))
+#define DYNAMIC_SAFE_MENU(X)  (gh_symbol_p((X))? \
+			       SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+			       SAFE_MENU((X)))
 
 SCM mark_menu(SCM obj);
 
@@ -86,7 +99,7 @@ SCM menu_p(SCM obj);
 SCM make_menu(SCM list_of_menuitems,
 	      SCM picture_side, SCM side_bg_color,
 	      SCM bg_color, SCM text_color,
-	      SCM picture_bg, SCM font);
+	      SCM picture_bg, SCM font, SCM extra_options);
 
 void init_scwm_menu();
 void menu_init_gcs();

@@ -23,6 +23,7 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "system.h"
+#include "scwmmenu.h"
 #include "menuitem.h"
 
 
@@ -84,7 +85,7 @@ menuitem_p(SCM obj)
 }
 
 
-SCM_PROC (s_menuitem_properties, "menuitem-properties", 1, 0, 0, menuitem_properties);
+SCM_PROC(s_menuitem_properties, "menuitem-properties", 1, 0, 0, menuitem_properties);
 SCM
 menuitem_properties(SCM menu_item)
 {
@@ -103,6 +104,9 @@ menuitem_properties(SCM menu_item)
 		 SCM_UNDEFINED);
 }
 
+
+SCM_PROC(s_make_menuitem, "make-menuitem", 2,6,0, make_menuitem);
+
 SCM 
 make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
 	      SCM picture_left, SCM hover_action, SCM unhover_action,
@@ -113,15 +117,15 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
   int iarg = 1;
 
   if (!gh_string_p(label)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,label);
+    scm_wrong_type_arg(s_make_menuitem,iarg,label);
   }
   pmi->szLabel = gh_scm2newstr(label,&pmi->cchLabel);
 
   iarg++;
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
-  } else if (!gh_procedure_p(action) && !menu_p(action)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,action);
+  } else if (!gh_symbol_p(action) && !gh_procedure_p(action) && !MENU_P(action)) {
+    scm_wrong_type_arg(s_make_menuitem,iarg,action);
   }
   pmi->scmAction = action;
 
@@ -130,7 +134,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
     pmi->szExtra = NULL;
     pmi->cchExtra = 0;
   } else if (!gh_string_p(extra_label)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,extra_label);
+    scm_wrong_type_arg(s_make_menuitem,iarg,extra_label);
   } else {
     pmi->szExtra = gh_scm2newstr(extra_label,&pmi->cchExtra);
   }
@@ -139,7 +143,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
   if (UNSET_SCM(picture_above)) {
     picture_above = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_above)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,picture_above);
+    scm_wrong_type_arg(s_make_menuitem,iarg,picture_above);
   }
   pmi->scmImgAbove = picture_above;
 
@@ -147,23 +151,23 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
   if (UNSET_SCM(picture_left)) {
     picture_left = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_left)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,picture_left);
+    scm_wrong_type_arg(s_make_menuitem,iarg,picture_left);
   } 
   pmi->scmImgLeft = picture_left;
 
   iarg++;
   if (UNSET_SCM(hover_action)) {
     pmi->scmHover = SCM_BOOL_F;
-  } else if (!gh_procedure_p(hover_action)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,hover_action);
+  } else if (!PROCEDURE_OR_SYMBOL_P(hover_action)) {
+    scm_wrong_type_arg(s_make_menuitem,iarg,hover_action);
   }
   pmi->scmHover = hover_action;
 
   iarg++;
   if (UNSET_SCM(unhover_action)) {
     pmi->scmUnhover = SCM_BOOL_F;
-  } else if (!gh_procedure_p(unhover_action)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,unhover_action);
+  } else if (!PROCEDURE_OR_SYMBOL_P(unhover_action)) {
+    scm_wrong_type_arg(s_make_menuitem,iarg,unhover_action);
   }
   pmi->scmUnhover = unhover_action;
 
@@ -172,7 +176,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
     pmi->pchHotkeyPreferences = NULL;
     pmi->cchHotkeyPreferences = 0;
   } else if (!gh_string_p(hotkey_prefs)) {
-    scm_wrong_type_arg(__FUNCTION__,iarg,hotkey_prefs);
+    scm_wrong_type_arg(s_make_menuitem,iarg,hotkey_prefs);
   } else {
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);

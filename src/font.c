@@ -81,6 +81,7 @@ load_font(SCM fname)
   }
   xfs = XLoadQueryFont(dpy, fn);
   if (NULL == xfs) {
+    scwm_msg(WARN,__FUNCTION__,"Could not load `%s' -- trying `fixed'",fn);
     free(fn);
     fn = strdup("fixed");
     if (NULL == fn)
@@ -112,7 +113,7 @@ load_font(SCM fname)
 SCM 
 font_p(SCM obj)
 {
-  return (FONTP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (FONT_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 
@@ -126,7 +127,7 @@ set_icon_font(SCM font)
   if (gh_string_p(font)) {
     font = load_font(font);
   }
-  if (!FONTP(font)) {
+  if (!FONT_P(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-icon-font!", 1, font);
   }
@@ -164,7 +165,7 @@ set_window_font(SCM font)
   if (gh_string_p(font)) {
     font = load_font(font);
   }
-  if (!FONTP(font)) {
+  if (!FONT_P(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-font!", 1, font);
   }
@@ -197,7 +198,7 @@ set_menu_font(SCM font)
     SCM_ALLOW_INTS;
     font = load_font(font);
   }
-  if (!FONTP(font)) {
+  if (!FONT_P(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-menu-font!", 1, font);
   }

@@ -371,6 +371,18 @@ extern Atom XA_SCWM_EXECUTE;
 #define gh_length gh_list_length
 #endif /* HAVE_GH_LENGTH */
 
+#define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
+                                   (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \
+                                } } while (0)
+
+#define DYNAMIC_PROCEDURE_P(x) (gh_procedure_p((x)) || \
+				(gh_symbol_p((x)) && \
+				 gh_procedure_p(scm_symbol_binding(SCM_BOOL_F,(x)))))
+
+#define PROCEDURE_OR_SYMBOL_P(x) (gh_procedure_p((x)) || gh_symbol_p((x)))
+
+#define RESTP_SCM 1
+
 
 /*
    ** if you would like to see lots of debug messages from scwm, for debugging

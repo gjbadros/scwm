@@ -387,7 +387,7 @@ bind_key(SCM contexts, SCM key, SCM proc)
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key", 2, key);
   }
-  if (!gh_procedure_p(proc)) {
+  if (!PROCEDURE_OR_SYMBOL_P(proc)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key", 3, proc);
   }
@@ -498,7 +498,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   } else { /* it is a string */
     szButton = gh_scm2newstr(button,&cchButton);
   }
-  if (!gh_procedure_p(proc)) {
+  if (!PROCEDURE_OR_SYMBOL_P(proc)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-mouse", 3, proc);
   }
@@ -664,7 +664,7 @@ bind_event(SCM ev_sym, SCM proc)
   if (!gh_symbol_p(ev_sym)) {
     scm_wrong_type_arg("bind-event", 1, ev_sym);
   }
-  if (!gh_procedure_p(proc) && (proc != SCM_BOOL_F)) {
+  if (!PROCEDURE_OR_SYMBOL_P(proc)) {
     scm_wrong_type_arg("bind-event", 2, proc);
   }
   if (gh_eq_p(ev_sym, sym_new_window)) {

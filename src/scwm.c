@@ -90,7 +90,7 @@ Window BlackoutWin = None;	/* window to hide window captures */
 char *szCmdConfig;
 int interactive = 0;
 
-static char *szLoad_pre = "(load \"";
+static char *szLoad_pre = "(primitive-load \"";
 static char *szLoad_post = "\")";
 
 
@@ -524,9 +524,9 @@ scwm_main(int argc, char **argv)
 	    "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
 		"      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
 		" (if (access? home-scwmrc R_OK)"
-		"     (load home-scwmrc)"
+		"     (primitive-load home-scwmrc)"
 		"     (if (access? system-scwmrc R_OK)"
-		"         (load system-scwmrc))))");
+		"         (primitive-load system-scwmrc))))");
   } else {
     gh_eval_str(szCmdConfig);
   }

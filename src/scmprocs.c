@@ -47,7 +47,6 @@
 #include "decor.h"
 #include "face.h"
 
-#define RESTP 1
 void 
 init_scwm_procs(void)
 {
@@ -105,13 +104,10 @@ init_scwm_procs(void)
   gh_new_procedure("set-click-time!", set_click_time_x, 1, 0, 0);
   gh_new_procedure("set-colormap-focus!", set_colormap_focus_x, 1, 0, 0);
   gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x, 1, 0, 0);
-  gh_new_procedure("make-menuitem", make_menuitem, 2, 6, 0);
-  gh_new_procedure("make-menu", make_menu, 1, 6, 0);
-  gh_new_procedure("popup-menu", popup_menu, 1, 0, 0);
   gh_new_procedure("color?", color_p, 1, 0, 0);
   gh_new_procedure("font?", font_p, 1, 0, 0);
   gh_new_procedure("window?", window_p, 1, 0, 0);
-  gh_new_procedure("scwm-quit", scwm_quit, 0, 0, RESTP);
+  gh_new_procedure("scwm-quit", scwm_quit, 0, 0, RESTP_SCM);
   gh_new_procedure("pointer-position", pointer_position, 0, 0, 0);
   gh_new_procedure("move-pointer-to", move_pointer_to, 2, 0, 0);
   gh_new_procedure("recapture", recapture, 0, 0, 0);
@@ -191,7 +187,6 @@ init_scwm_procs(void)
   gh_new_procedure("set-button-mwm-flag!", set_button_face_x, 2, 0, 0);
   gh_new_procedure("set-border-face!",set_border_face_x, 1, 1, 0); 
 }
-#undef RESTP
 
 
 /* Local Variables: */

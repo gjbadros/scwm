@@ -30,13 +30,22 @@ typedef struct {
   char *name;
 } scwm_font;
 
-#define FONTP(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
+#define FONT_P(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
 #define FONT(X)  ((scwm_font *)SCM_CDR((X)))
-#define SAFE_FONT(X)  (FONTP((X))?FONT((X)):NULL)
+#define SAFE_FONT(X)  (FONT_P((X))?FONT((X)):NULL)
+#define DYNAMIC_FONT_P(X) (gh_symbol_p((X))? \
+			   FONT_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+			   FONT_P((X)))
+#define FONT_OR_SYMBOL_P(x) (FONT_P((x)) || gh_symbol_p((x)))
+
+#define DYNAMIC_SAFE_FONT(X) (gh_symbol_p((X))? \
+			      SAFE_FONT(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+			      SAFE_FONT((X)))
+
 #define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
-#define SAFE_XFONT(X) (FONTP((X))?XFONT((X)):NULL)
+#define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)
-#define SAFE_FONTNAME(X) (FONTP((X))?FONTNAME((X)):NULL)
+#define SAFE_FONTNAME(X) (FONT_P((X))?FONTNAME((X)):NULL)
 
 size_t free_font(SCM obj);
 int print_font(SCM obj, SCM port, scm_print_state * pstate);

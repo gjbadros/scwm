@@ -100,6 +100,7 @@ call_thunk_with_message_handler(SCM thunk)
 {
   struct scm_body_thunk_data thunk_data;
 
+  DEREF_IF_SYMBOL(thunk);
   thunk_data.tag = SCM_BOOL_T;
   thunk_data.body_proc = thunk;
   return scm_internal_catch(SCM_BOOL_T, scm_body_thunk, &thunk_data,
