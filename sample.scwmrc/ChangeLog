@@ -1,3 +1,8 @@
+Thu Jan 20 12:33:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Make `xmms-send-pause-click' interactive.  Added
+	A-b binding for `netscape-bookmark-search'.
+
 2000-01-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc (index): New function, returning the index of an

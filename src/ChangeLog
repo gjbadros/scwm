@@ -1,3 +1,9 @@
+Thu Jan 20 12:30:53 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c, validate.h, message-window.c, face.c, add_window.c:
+	#include only color.h, not colors.h also; those files have been
+	merged.
+
 Thu Jan 20 12:14:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-versiondat.h.in: Added

@@ -1,3 +1,27 @@
+Thu Jan 20 12:27:17 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm: `execute-on-selection', `exe-on-selection' now
+	use `X-handle-selection-string' instead of just using the cut
+	buffer. 
+
+	* netscape.scm: Added `netscape-av-search',
+	`netscape-av-search-selection-url' for AltaVista searches.
+
+	* flux-gtk.scm: Needs file and netscape modules.
+
+Sun Jan 16 16:37:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_gtk_scheme): Added gtk-table-display.scm
+
+	* gtk-table-display.scm: Added, for formatting a text string into
+	rows and columns of a table -- used by netscape-bookmark-search.
+
+	* gtk.scm, prompt-proc.scm: Move some helper functions into (app
+ 	scwm gtk) module from prompt-proc.
+
+	* flux-gtk.scm: Added `chop-string' and
+	`netscape-bookmark-search', use gtk-table-display-module.
+
 Sat Jan 15 15:18:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm, winlist.scm: Move window-list-proc into base.scm from
