@@ -13,6 +13,13 @@ BuildRoot: /tmp/scwm-%ver-build
 Copyright: Copyright (C) 1997,1998,1999 Greg J. Badros, Maciej Stachowiak, et. al.
 Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow@alum.mit.edu>
 URL: http://scwm.mit.edu/
+Requires: guile >= 1.3
+Requires: guile-gtk >= 0.16
+Requires: imlib >= 1.9
+Requires: esound >= 0.2.7
+Requires: cassowary >= 0.51
+
+Docdir: %{prefix}/doc
 
 %description
 
@@ -57,7 +64,7 @@ from other processes
 %setup
 
 %build
-./configure --prefix=/usr --exec-prefix=/usr/X11R6
+./configure --prefix=%{prefix} --enable-fsstd
 make 
 
 %install
@@ -66,17 +73,20 @@ make prefix=$RPM_BUILD_ROOT/usr exec_prefix=$RPM_BUILD_ROOT/usr/X11R6 install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+
+%postun
+
 %files
+%defattr(-, root, root)
+
+%{prefix}/X11R6/bin/*
+%{prefix}/info/*
+%{prefix}/share/emacs/site-lisp/*
+%{prefix}/share/scwm/*
+
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
 %doc INSTALL NEWS README README-constraints THANKS TODO doc
-%doc sample.scwmrc/*.scwmrc sample.scwmrc/*.scm sample.scwmrc/*example* sample.scwmrc/ChangeLog
+%doc sample.scwmrc/*.scwmrc sample.scwmrc/ChangeLog
 
 %config /usr/X11R6/lib/X11/scwm/system.scwmrc
-
-/usr/X11R6/bin
-/usr/X11R6/lib/[^X]*
-/usr/include
-/usr/info
-/usr/man/man1
-/usr/share/emacs/site-lisp
-/usr/share/scwm

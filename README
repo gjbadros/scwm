@@ -4,7 +4,7 @@ This is a pre-stable release of
 
 Scwm, The Scheme Configurable Window Manager.
 
-Web site: http://scwm.mit.edu/scwm/
+Web site: http://scwm.mit.edu/
 Ftp directory: ftp://scwm.mit.edu/pub/scwm/
 Online manual: http://www.cs.washington.edu/homes/gjb/scwm-doc/
 
@@ -66,5 +66,6 @@ files in the scheme directory are under GPL (see scheme/COPYING). The
 files in the doc directory are all under the copyright specified by
 doc/COPYRIGHT.DOC.
 
- - Maciej Stachowiak <mstachow@alum.mit.edu>    and
-   Greg J. Badros <gjb@cs.washington.edu>
+ - Greg J. Badros <gjb@cs.washington.edu> and
+   Maciej Stachowiak <mstachow@alum.mit.edu>
+

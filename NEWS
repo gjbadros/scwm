@@ -1,8 +1,8 @@
 Scwm NEWS --- history of user-visible changes.  -*- text -*-
-Copyright (C) 1997, 1998, 1999 Maciej Stachowiak and Greg J. Badros
+Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
-Changes for scwm-0.99.2 (not yet released)
+Changes for scwm-0.99.2
 
 * Lots of documentation improvements, revamp of Scwm web page, many,
 many bug-fixes (compiles warning free with virtually all warnings turned
