@@ -700,12 +700,12 @@ HandlePropertyNotify()
     break;
 
   default:
-    if (Event.xproperty.atom == _XA_WM_PROTOCOLS)
+    if (Event.xproperty.atom == XA_WM_PROTOCOLS)
       FetchWmProtocols(pswCurrent);
-    else if (Event.xproperty.atom == _XA_WM_COLORMAP_WINDOWS) {
+    else if (Event.xproperty.atom == XA_WM_COLORMAP_WINDOWS) {
       FetchWmColormapWindows(pswCurrent);	/* frees old data */
       ReInstallActiveColormap();
-    } else if (Event.xproperty.atom == _XA_WM_STATE) {
+    } else if (Event.xproperty.atom == XA_WM_STATE) {
       if ((pswCurrent != NULL) && pswCurrent->fClickToFocus
 	  && (pswCurrent == Scr.Focus)) {
 	Scr.Focus = NULL;
@@ -744,7 +744,7 @@ HandleClientMessage()
 
   DBUG("HandleClientMessage", "Routine Entered");
 
-  if ((Event.xclient.message_type == _XA_WM_CHANGE_STATE) &&
+  if ((Event.xclient.message_type == XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       pswCurrent && !pswCurrent->fIconified) {
     FXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));

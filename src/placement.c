@@ -362,8 +362,8 @@ default_select_desk(ScwmWindow *psw, int Desk)
     /* leave it alone. */
   } else if (psw->fStartsOnDesk) {
     psw->Desk = Desk;
-  } else if ((XGetWindowProperty(dpy, psw->w, _XA_WM_DESKTOP, 0L, 1L, True,
-				 _XA_WM_DESKTOP, &atype, &aformat, &nitems,
+  } else if ((XGetWindowProperty(dpy, psw->w, XA_WM_DESKTOP, 0L, 1L, True,
+				 XA_WM_DESKTOP, &atype, &aformat, &nitems,
 				 &bytes_remain, &prop) == Success)
 	     && (NULL != prop)) {
     psw->Desk = *(unsigned long *) prop;

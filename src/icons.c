@@ -878,7 +878,7 @@ SetMapStateProp(ScwmWindow *psw, int state)
   data[1] = (unsigned long) psw->icon_w;
 /*  data[2] = (unsigned long) psw->icon_pixmap_w; */
 
-  XChangeProperty(dpy, psw->w, _XA_WM_STATE, _XA_WM_STATE, 32,
+  XChangeProperty(dpy, psw->w, XA_WM_STATE, XA_WM_STATE, 32,
 		  PropModeReplace, (unsigned char *) data, 2);
   return;
 }

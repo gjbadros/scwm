@@ -444,7 +444,7 @@ there is no current context window. And finally the RELEASE? argument
 (default #t) determines wether or not interactive selection (if any)
 should wait for a mouse release event or just a press. The latter
 behavior is useful if the action being performed on the window is an
-interactive one involving mouse drags. (NOTE: that's probably a bad
+interactive one involving mouse drags. (FIXMS: that's probably a bad
 order for the optional arguments) */
 #define FUNC_NAME s_get_window
 {
@@ -1233,7 +1233,7 @@ the usual way if not specified. */
     return SCM_BOOL_F;
   }
   if (psw->fDoesWmDeleteWindow) {
-    send_clientmessage(dpy, psw->w, _XA_WM_DELETE_WINDOW, CurrentTime);
+    send_clientmessage(dpy, psw->w, XA_WM_DELETE_WINDOW, CurrentTime);
     SCM_REALLOW_INTS;
     return SCM_BOOL_T;
   }
@@ -1383,7 +1383,7 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
           (SCM winlist))
      /** WINLIST is a list of windows. The first element of WINLIST
 will be kept in its current stacking order, the remainder will be
-stacked immediately below it in the order given. (NOTE: This will
+stacked immediately below it in the order given. (Note: This will
 currently confuse the heck out of the pager and possibly other lagacy
 fvwm2 modules). */
 #define FUNC_NAME s_restack_windows
@@ -2351,7 +2351,7 @@ in the usual way if not specified. */
 
 SCWM_PROC(window_id, "window-id", 0, 1, 0,
           (SCM win))
-     /** Return the X window id for WIN, specifically the ID for the
+     /** Return the X window id for WIN, specifically the X id for the
 actual application window. WIN defaults to the window context in the
 usual way if not specified. */
 #define FUNC_NAME s_window_id
@@ -2973,7 +2973,7 @@ SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
           (SCM n, SCM flag, SCM win))
      /** Set the visibility of button number N on window WIN according
 to the boolean value FLAG. WIN defaults to the window context in the
-usual way if not specified. (NOTE: this code may be broken right now.) */
+usual way if not specified. (Note: this code may be broken right now.) */
 #define FUNC_NAME s_set_window_button_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
@@ -2996,7 +2996,7 @@ usual way if not specified. (NOTE: this code may be broken right now.) */
 SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Set the mwm-buttons flag of WIN according to the boolean
-value BOOL. The mwm-buttons flag controls whether any of this window's
+value FLAG. The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_buttons_x
@@ -3025,7 +3025,7 @@ SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
 
      /** Set wether or not the decorations of WIN will be drawn in the
 Mwm style rather than the Fvwm style according to the boolean value
-BOOL. The Mwm style has shallower bevels. WIN defaults to the window
+FLAG. The Mwm style has shallower bevels. WIN defaults to the window
 context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_border_x
 {
@@ -3063,7 +3063,7 @@ force_icon_redraw (ScwmWindow *psw)
 
 SCWM_PROC(set_icon_title_x, "set-icon-title!", 1, 1, 0,
           (SCM flag, SCM win))
-     /** Set the visibility of WIN's icon title according to BOOL. WIN
+     /** Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_icon_title_x
 {
@@ -3222,7 +3222,7 @@ SCWM_PROC(set_hint_override_x, "set-hint-override!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Set wether or not Mwm and Open Look function hints, which
 indicate what operations should be allowed on a window, should be
-ignored, according to the boolean value BOOL. WIN defaults to the
+ignored, according to the boolean value FLAG. WIN defaults to the
 window context in the usual way if not specified. */
 #define FUNC_NAME s_set_hint_override_x
 {
@@ -3243,7 +3243,7 @@ window context in the usual way if not specified. */
 SCWM_PROC(set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to decorate WIN fully if it is a
-transient window according to the boolean value BOOL. Transient
+transient window according to the boolean value FLAG. Transient
 windows that are not fully decorated will be given only a border and
 no titlebar regardless of other settings. WIN defaults to the
 window context in the usual way if not specified. */
@@ -3265,7 +3265,7 @@ window context in the usual way if not specified. */
 SCWM_PROC(set_mwm_decor_hint_x, "set-mwm-decor-hint!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to respect Motif decoration hints for
-WIN according to the boolean value BOOL. WIN defaults to the window
+WIN according to the boolean value FLAG. WIN defaults to the window
 context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_decor_hint_x
 {
@@ -3285,7 +3285,7 @@ context in the usual way if not specified. */
 SCWM_PROC(set_mwm_func_hint_x, "set-mwm-func-hint!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to respect Motif function hints for
-WIN according to the boolean value BOOL. WIN defaults to the window
+WIN according to the boolean value FLAG. WIN defaults to the window
 context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_func_hint_x
 {
@@ -3305,7 +3305,7 @@ context in the usual way if not specified. */
 SCWM_PROC(set_PPosition_hint_x, "set-PPosition-hint!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to respect the program-specified
-position hint for WIN according to the boolean value BOOL. This only
+position hint for WIN according to the boolean value FLAG. This only
 matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
 ignoring it is reccomended. WIN defaults to the window context in the
@@ -3328,7 +3328,7 @@ usual way if not specified. */
 SCWM_PROC(set_OL_decor_hint_x, "set-OL-decor-hint!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to respect Open Look decoration hints
-for WIN according to the boolean value BOOL. WIN defaults to the
+for WIN according to the boolean value FLAG. WIN defaults to the
 window context in the usual way if not specified. */
 #define FUNC_NAME s_set_OL_decor_hint_x
 {
@@ -3372,7 +3372,7 @@ window context in the usual way if not specified. */
 SCWM_PROC(set_skip_mapping_x, "set-skip-mapping!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Determine wether or not to skip changing to WIN's desktop
-when first mapping WIN according to the boolean value BOOL. WIN
+when first mapping WIN according to the boolean value FLAG. WIN
 defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_skip_mapping_x
 {
@@ -3390,21 +3390,21 @@ defaults to the window context in the usual way if not specified. */
 
 
 SCWM_PROC(set_lenience_x, "set-lenience!", 1, 1, 0,
-          (SCM val, SCM win))
+          (SCM flag, SCM win))
      /** Determine wether or not to try to give WIN the input focus
 when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
-BOOL. WIN defaults to the window context in the usual way if not
+FLAG. WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_set_lenience_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (val == SCM_BOOL_T) {
+  if (flag == SCM_BOOL_T) {
     PSWFROMSCMWIN(win)->fLenience = True;
-  } else if (val == SCM_BOOL_F) {
+  } else if (flag == SCM_BOOL_F) {
     PSWFROMSCMWIN(win)->fLenience = False;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, val);
+    scm_wrong_type_arg(FUNC_NAME, 1, flag);
   }
   return SCM_UNSPECIFIED;
 }

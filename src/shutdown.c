@@ -73,7 +73,7 @@ Done(int restart_or_dump, char *command)
 
 
   /* Pretty sure this should be done... */
-  XDeleteProperty(dpy, Scr.Root, _XA_MOTIF_WM);
+  XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
   
   if (restart_or_dump > 0) {
     SaveDesktopState();		/* I wonder why ... */
@@ -108,12 +108,12 @@ SaveDesktopState()
 
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     data[0] = (unsigned long) t->Desk;
-    XChangeProperty(dpy, t->w, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
+    XChangeProperty(dpy, t->w, XA_WM_DESKTOP, XA_WM_DESKTOP, 32,
 		    PropModeReplace, (unsigned char *) data, 1);
   }
 
   data[0] = (unsigned long) Scr.CurrentDesk;
-  XChangeProperty(dpy, Scr.Root, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
+  XChangeProperty(dpy, Scr.Root, XA_WM_DESKTOP, XA_WM_DESKTOP, 32,
 		  PropModeReplace, (unsigned char *) data, 1);
 
   XSync(dpy, 0);

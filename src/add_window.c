@@ -896,9 +896,9 @@ FetchWmProtocols(ScwmWindow *psw)
    * This is what Twm uses. */
   if (XGetWMProtocols(dpy, psw->w, &protocols, &n)) {
     for (i = 0, ap = protocols; i < n; i++, ap++) {
-      if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
+      if (*ap == (Atom) XA_WM_TAKE_FOCUS)
 	psw->fDoesWmTakeFocus = True;
-      if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
+      if (*ap == (Atom) XA_WM_DELETE_WINDOW)
 	psw->fDoesWmDeleteWindow = True;
     }
     if (protocols)
@@ -906,14 +906,14 @@ FetchWmProtocols(ScwmWindow *psw)
   } else {
     /* Next, read it the hard way. mosaic from Coreldraw needs to 
      * be read in this way. */
-    if ((XGetWindowProperty(dpy, psw->w, _XA_WM_PROTOCOLS, 0L, 10L, False,
-			    _XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
+    if ((XGetWindowProperty(dpy, psw->w, XA_WM_PROTOCOLS, 0L, 10L, False,
+			    XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
 			    &bytes_remain,
 			    (unsigned char **) &protocols)) == Success) {
       for (i = 0, ap = protocols; i < nitems; i++, ap++) {
-	if (*ap == (Atom) _XA_WM_TAKE_FOCUS)
+	if (*ap == (Atom) XA_WM_TAKE_FOCUS)
 	  psw->fDoesWmTakeFocus = True;
-	if (*ap == (Atom) _XA_WM_DELETE_WINDOW)
+	if (*ap == (Atom) XA_WM_DELETE_WINDOW)
 	  psw->fDoesWmDeleteWindow = True;
       }
       if (protocols)

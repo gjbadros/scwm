@@ -147,7 +147,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
 
 
   if (Fw && Fw->fDoesWmTakeFocus) {
-    send_clientmessage(dpy, w, _XA_WM_TAKE_FOCUS, lastTimestamp);
+    send_clientmessage(dpy, w, XA_WM_TAKE_FOCUS, lastTimestamp);
   }
 
   XSync(dpy, 0);
