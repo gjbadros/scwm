@@ -1,3 +1,22 @@
+Wed Sep  9 09:35:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* shutdown.c (Done): Use w_for_scwmexec_response and reset the
+	output, error, and reply properties for the scwmexec protocol when 
+	shutting down
+
+	* scwm.c: Initialize w_for_scwmexec_response to None
+
+	* events.h: Added global w_for_scwmexec_response
+
+	* events.c: Set and reset w_for_scwmexec_response so that it's set 
+	during the eval of the requested expression in case Done needs to
+	reply to the requesting window (on `quit' or segfault)
+
+Wed Sep  9 09:29:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added use of @SM_LIB@, now expanded by
+	configure.in, so that -lSM -lICE will get added to the link command
+
 Tue Sep  8 14:08:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c (moveLoop): Stop using Scr.fMWMMenus.

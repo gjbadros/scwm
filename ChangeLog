@@ -1,3 +1,8 @@
+Wed Sep  9 09:28:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Do an AC_SUBST on SM_LIB since -lSM -lICE were not 
+	being added to the link line (see also changes to scwm/Makefile.am)
+
 Tue Sep  8 17:14:20 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs:  Added -O option for
