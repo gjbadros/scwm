@@ -1,3 +1,13 @@
+Sat Sep 18 01:14:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xtest/scwmxtest.c, xpm-menus/draw-xpm-menu.c,
+ 	xlib-drawing/drawing.c, scwmgtkhelper/scwmgtkhelper.c,
+ 	proplist/scwmproplist.c, pie-menus/draw-pie-menu.c,
+ 	overlay-plane/overlay-plane.c, esdsound/sound.c,
+ 	corba/scwmcorba., c-animation/c-animation.c,
+ 	background/background.c, applefile/applefile.c:  Added
+	guile-compat.h for UNSET_SCM, generally good to have.
+
 Thu Sep 16 16:15:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/README: Added note re: .fsg file.
