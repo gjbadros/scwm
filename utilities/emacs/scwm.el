@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-06 Thu 20:52:41 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-08 Sat 13:15:59 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -230,10 +230,16 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-make-obarray ()
   "Create and return an obarray of SCWM symbols."
   ;; (setq scwm-obarray (scwm-make-obarray))
-  ;; can't use read-from-string because "? " is read as 32
+  ;; Can't use `read' because "? " is read as 32.  Another problem is
+  ;; that the symbols will be interned in the standard ELisp obarray
+  ;; `obarray', not in the obarray `scwm-obarray'.
   (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
     (with-temp-buffer
+      ;; make sure `apropos' is present
+      (scwm-eval "(use-modules (ice-9 session))" nil)
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
+      (unless (= (char-after 1) ?\()
+        (error "Not a list: %s" (buffer-string)))
       (goto-char pos)
       (while (re-search-forward "[ ()]" nil t)
         (intern (buffer-substring-no-properties pos (1- (point))) oa)
@@ -323,7 +329,9 @@ Returns a string which is present in the `scwm-obarray'."
                          " (display \"This Guile version lacks "
                          "`procedure-documentation'.\n\"))")
                  standard-output)
-      (let ((st (syntax-table))) ; add buttons to the help message
+      ;; add buttons to the help message
+      ;; clicking on quoted `symbol' invokes `scwm-documentation'.
+      (let ((st (syntax-table)))
         (set-syntax-table scwm-mode-syntax-table)
         (goto-char 1) (forward-line 8) ; skip the header and value
         (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
@@ -334,7 +342,6 @@ Returns a string which is present in the `scwm-obarray'."
 ;;;###autoload
 (defun scwm-apropos (pat)
   "List all scwm symbols matching PAT."
-  ;; (interactive (interactive-token "SCWM Apropos"))
   (interactive
    (list (read-string "SCWM Apropos: " (format "%s" (scwm-symbol-at-point)))))
   (with-output-to-temp-buffer "*Apropos*"
@@ -347,6 +354,7 @@ Returns a string which is present in the `scwm-obarray'."
       (delete-region (point) (progn (beginning-of-line) (point)))
       (goto-char 1) (forward-line 4)
       (sort-lines nil (point) (point-max))
+      ;; make the symbols clickable
       (let ((props '(action scwm-documentation mouse-face highlight
                      face italic)) p0 p1 p2 str)
         (while (not (eobp))
