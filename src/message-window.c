@@ -364,20 +364,22 @@ is used for MWN. */
   VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(4,bg_color);
   VALIDATE_ARG_BOOL_COPY_USE_F(5,shaped_p,fShaped);
 
-  pimg = IMAGE(image);
-
   msg->bg_image = image;
 
-  { /* scope */
+  if (SCM_BOOL_F != image) {
     Pixel fg = XCOLOR(fg_color);
     Pixel bg = XCOLOR(bg_color);
-    Pixmap mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
+    Pixmap mask;
+    pimg = IMAGE(image);
+    mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
     XSetWindowBackgroundPixmap(dpy, msg->win, pimg->image);
 #ifdef HAVE_SHAPE
     if (fShaped) {
       XShapeCombineMask(dpy,msg->win,ShapeBounding,0,0,mask,ShapeSet);
     }
 #endif
+  } else {
+    XSetWindowBackgroundPixmap(dpy,msg->win, None);
   }
     
   ResizeMessageWindow( msg );

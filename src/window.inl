@@ -40,13 +40,13 @@ MaxFrameWidth(const ScwmWindow *psw)
 STATIC_INLINE int
 MinFrameWidth(const ScwmWindow *psw)
 {
-  return psw->hints.min_width + 2*psw->xboundary_width;
+  return psw->hints.min_width; /*  + 2*psw->xboundary_width; */
 }
 
 STATIC_INLINE int
 MinFrameHeight(const ScwmWindow *psw)
 {
-  return psw->hints.min_height + 2*psw->boundary_width + psw->title_height;
+  return psw->hints.min_height; /* + 2*psw->boundary_width + psw->title_height; */
 }
 
 STATIC_INLINE int
