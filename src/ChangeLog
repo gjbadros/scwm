@@ -1,3 +1,8 @@
+1998-07-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* xproperty.c: Forgotten inclusion of guile-compat.h prevented
+	1.2-compatibility.
+
 1998-07-26  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h, window.c:  Remove the SMOB functions from window.h.
