@@ -1,3 +1,10 @@
+Fri Jul  2 22:25:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* proplist/scwmproplist.c: Largish cleanup of formal argument
+	names and added brief documentation strings to all primitives.
+	Some additional argument valiadation.  Still needs a good pass
+	through it and some work at making it easier to use, I think.
+
 Fri Jul  2 10:08:17 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* esdsound/sound.c (s_esd_reconnect): Doc fixes.
