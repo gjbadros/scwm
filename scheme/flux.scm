@@ -579,13 +579,13 @@ CUT_BUFFER0 property is not a string."
 	(car l)
 	#f)))
 
-
 (define*-public (display-message-briefly msg #&optional (sec-timeout 3))
   "Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG."
-  (display-message msg)
-  (add-timer-hook! (sec->usec sec-timeout)
-		   (lambda () (hide-message))))
+  (let ((mwn (make-message msg)))
+    (message-window-show! mwn)
+    (add-timer-hook! (sec->usec sec-timeout)
+		     (lambda () (hide-message)))))
 
 (define-public (close-all-xlogo-windows)
   "Close each window with class == XLogo.
@@ -701,25 +701,6 @@ the first element for changes to desk 1, etc."
 	       ;; (display n) (newline) ;; for debugging
 	       (system (vector-ref vector-of-commands new))
 	       )))
-
-(define*-public (position-message-window! x y gravity)
-  "Move the message window's GRAVITY point to (X,Y).
-GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
-(or spelled-out versions of these)."
-  (apply
-   (lambda (xa ya)
-     (set-message-window-position! x y xa ya))
-   (case gravity
-     ((nw northwest north-west) '(  0    0))
-     ((n  north)                '(-.5    0))
-     ((ne northeast north-east) '( -1    0))
-     ((w  west)                 '(  0  -.5))
-     ((center)                  '(-.5  -.5))
-     ((e  east)                 '( -1  -.5))
-     ((sw southwest south-west) '(  0   -1))
-     ((s  south)                '(-.5   -1))
-     ((se southeast south-east) '( -1   -1))
-     (else (error "Invalid gravity specified.")))))
 
 (define-public (execute-on-selection command)
   "Run COMMAND in the background, with arguments supplied by the X selection."

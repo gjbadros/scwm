@@ -17,14 +17,6 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-
-
-
-(define-module (app scwm base)
-  :use-module (app scwm optargs))
-
-
-
 (define menu-bg-color (make-color "gray80"))
 (define menu-text-color (make-color "black"))
 (define menu-stipple-color (make-color "grey60"))
@@ -34,6 +26,14 @@
 (define menu-side-bg-color-set #f)
 (define menu-bg-image #f)
 (define menu-look scwm-menu-look)
+
+
+
+
+(define-module (app scwm base)
+  :use-module (app scwm optargs))
+
+
 
 (define-public use-scwm-system-proc
 ;;;**VAR
@@ -586,4 +586,18 @@ Returns the child-pid, or #f if the fork fails."
 	;; case we want to wait for it at some point in the future.
 	child-pid)))
 
+
+;; JWN:FIXME:: Due to moving the message window code from C to scheme, the
+;; select-window-interactively function was no longer able to display
+;; a message window directly from the primitive.  For this reason, the 
+;; primitive has been renamed to select-window-interactively-no-message
+;; and this scheme function has been defined to wrap that primitive
+;; and use the old name.
+(define*-public (select-window-interactively #&optional (msg #f))
+  (if msg
+      (let ((msgwin (make-message-window msg)))
+	(message-window-show msgwin)
+	(select-window-interactively-no-message)
+	(message-window-hide msgwin)))
+  (select-window-interactively-no-message))
 
