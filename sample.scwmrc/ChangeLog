@@ -1,3 +1,10 @@
+Sat Jul 17 21:25:20 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use new scwm-logo-{0..23}.xpm images.  Fiddle with
+	animated-deiconify stuff to try to make it work more like what I
+	want.  Use `set-left-button-face!', `set-right-button-face!', and
+	use proper context names in `add-left-button', `add-right-button'.
+
 Fri Jul 16 17:38:53 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use shaped logo. Fix bug in

@@ -1,3 +1,15 @@
+Sat Jul 17 21:24:37 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.el:  Be sure that flux is loaded, for scwm-whereis;  use
+	`use-scwm-modules' instead of `use-modules'.
+
+Sat Jul 17 19:56:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added scwm-whereis (on C-h C-w), updated copyright,
+ 	added pointer to scwm web page.  Give scwm-complete-symbol a new
+	first argument that is a string prompt, and use it to give
+	unambiguous prompts.
+
 Mon May  3 21:40:19 1999  Greg J Badros  <gjb@bowman.cs.monash.edu.au>
 
 	* scwm.el: GNU Emacs calls it frame-parameter, so alias

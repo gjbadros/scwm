@@ -1,3 +1,11 @@
+Sat Jul 17 21:21:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Set version number to post0.99.1;  though we never 
+	released a version 0.99.1, Francessco had a Debian version from
+	CVS with that number, so skipping 0.99.1 will avoid confusion.
+	Our next release should be 0.99.2, and then we bump to post0.99.2
+	in CVS right away.
+
 Fri Jul 16 17:52:56 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Drop /usr/share/scwm-{modules,themes}-- no longer

@@ -1,3 +1,11 @@
+Sat Jul 17 21:23:41 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Fix uses of obsoleted contexts.
+
+	* face.scm: Added `set-left-button-face!',
+	`set-right-button-face!' to avoid needing to deal with the stupid
+	fvwm2 numbering convention.
+
 Sat Jul 17 19:59:56 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* animated-iconify.scm: Set 'last-viewport-position property in

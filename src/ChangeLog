@@ -1,3 +1,8 @@
+Sat Jul 17 21:22:36 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (MovePswToCurrentPosition): Improve message about
+	moving sticky window so it tells the correct new position.
+
 Sat Jul 17 19:04:06 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c:  Replace binding_contexts and context_strings
