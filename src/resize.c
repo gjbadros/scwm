@@ -536,19 +536,9 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
             
       DisplaySize(psw, dragWidth, dragHeight, True);
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
-#if 0 /* FIXGJB */
-        /* remove the move edit constraint so that we can do the virtual paging--
-           without this, the endEdit on the virtual paging removes the edit
-           variables for the window move */
-        CassowaryEndEdit(psw);
-#endif
         /* need to move the viewport */
         HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
                      &delta_x, &delta_y, False);
-#if 0 /* FIXGJB */
-        /* now re-establish the window edit constraint */
-        CassowaryEditSize(psw);
-#endif
         /* redraw outline if we paged - mab */
         if ((delta_x != 0) || (delta_y != 0)) {
           origx -= delta_x;

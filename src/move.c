@@ -205,17 +205,17 @@ DisplayPosition(ScwmWindow *psw, int x, int y, Bool fRelief)
 static void
 SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
 {
+  int xr = *px + width + 2*bw;
+  int yb = *py + height + 2*bw;
   /* Resist moving windows over the edge of the screen! */
-  if (((*px + width) >= Scr.DisplayWidth) &&
-      ((*px + width) < Scr.DisplayWidth + resistance))
+  if ((xr >= Scr.DisplayWidth) && (xr < Scr.DisplayWidth + resistance))
     *px = Scr.DisplayWidth - width - bw*2;
   if ((*px < 0) && (*px > -resistance))
-    *px = -bw;
-  if (((*py + height) >= Scr.DisplayHeight) &&
-      ((*py + height) < Scr.DisplayHeight + resistance))
+    *px = 0;
+  if ((yb >= Scr.DisplayHeight) && (yb < Scr.DisplayHeight + resistance))
     *py = Scr.DisplayHeight - height - bw*2;
   if ((*py < 0) && (*py > -resistance))
-    *py = -bw;
+    *py = 0;
 }
 
 /*
@@ -350,17 +350,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	  int ycenter = Event.xmotion.y_root;
           int delta_x = 0;
           int delta_y = 0;
-          /* remove the move edit constraint so that we can do the virtual paging--
-             without this, the endEdit on the virtual paging removes the edit
-             variables for the window move */
-#if 0 /* FIXGJB: virtual paging may try to edit Scr.Vx,Vy -- nested
-         beginEdit calls are not supported by Cassowary yet. --08/05/98 gjb */
-          if (!psw->fIconified) CassowaryEndEdit(psw);
 	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xcenter, &ycenter,
 		       &delta_x, &delta_y, False);
-          /* now re-establish the window edit constraint */
-          if (!psw->fIconified) CassowaryEditPosition(psw);
-#endif
 	  if ((delta_x != 0) || (delta_y == 0)) {
             xl += delta_x;
             yt += delta_y;

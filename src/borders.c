@@ -1421,7 +1421,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	} else if (i == 2) { /* bottom side */
 	  xwc.x = psw->corner_width;
 	  xwc.y = h - psw->boundary_width + psw->bw;
-	  xwc.height = psw->boundary_width + psw->bw;
+	  xwc.height = psw->boundary_width; /* FIXGJB: + psw->bw; */
 	  xwc.width = xwidth;
 	} else { /* left side */
 	  xwc.x = 0;
@@ -1484,6 +1484,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       }
     }
   }
+
+  XSetWindowBorderWidth(dpy,psw->frame,psw->bw);
+  XSetWindowBorderWidth(dpy,psw->Parent,psw->bw);
+
   XSync(dpy, False);
   /* FIXGJB: maybe this should be moved into a function and called from
      ResizePswToCurrentSize and MovePswToCurrentPosition */

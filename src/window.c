@@ -3012,6 +3012,18 @@ specified. */
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   COPY_BOOL_OR_ERROR(psw->fMWMBorders,flag,1,FUNC_NAME);
+  /* copied from SelectDecor */
+  if (psw->fMWMBorders)
+    psw->bw = 0;
+  else if (psw->boundary_width <= 0) {
+    psw->boundary_width = 0;
+    psw->bw = 0;
+  } else {
+    psw->bw = BW;
+    psw->boundary_width = psw->boundary_width - 1;
+  }
+  SetupFrame(psw,FRAME_X(psw),FRAME_Y(psw),FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
+             False, WAS_MOVED, WAS_RESIZED);
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
   return SCM_UNSPECIFIED;
 }
