@@ -26,6 +26,16 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
 {
   char *name;
 
+#ifdef HAVE_SCM_PUTS
+  name = SCWMDECOR(obj)->tag;
+  scm_puts("#<decor ", port);
+  if (NULL == name) {
+    scm_write(gh_int2scm((int) DECOR(obj)), port);
+  } else {
+    scm_puts(name, port);
+  }
+  scm_putc('>', port);
+#else /* !HAVE_SCM_PUTS */
   name = SCWMDECOR(obj)->tag;
   scm_gen_puts(scm_regular_port, "#<decor ", port);
   if (NULL == name) {
@@ -34,6 +44,8 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
     scm_gen_puts(scm_regular_port, name, port);
   }
   scm_gen_putc('>', port);
+#endif /* HAVE_SCM_PUTS */
+
   return 1;
 };
 

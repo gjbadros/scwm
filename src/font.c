@@ -47,9 +47,16 @@ free_font(SCM obj)
 int 
 print_font(SCM obj, SCM port, scm_print_state * pstate)
 {
+#ifdef HAVE_SCM_PUTS
+  scm_puts("#<font ", port);
+  scm_puts(FONTNAME(obj), port);
+  scm_putc('>', port);
+#else /* !HAVE_SCM_PUTS */
   scm_gen_puts(scm_regular_port, "#<font ", port);
   scm_gen_puts(scm_regular_port, FONTNAME(obj), port);
   scm_gen_putc('>', port);
+#endif /* HAVE_SCM_PUTS */
+
   return 1;
 }
 

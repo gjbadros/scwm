@@ -51,6 +51,16 @@ mark_window(SCM obj)
 int 
 print_window(SCM obj, SCM port, scm_print_state * pstate)
 {
+
+#if HAVE_SCM_PUTS
+  scm_puts("#<window ", port);
+  if (VALIDWINP(obj)) {
+    scm_write(gh_ulong2scm((unsigned long) (SCWMWINDOW(obj)->w)), port);
+  } else {
+    scm_puts("(invalid)", port);
+  }
+  scm_putc('>', port);
+#else /* !HAVE_SCM_PUTS */
   scm_gen_puts(scm_regular_port, "#<window ", port);
   if (VALIDWINP(obj)) {
     scm_write(gh_ulong2scm((unsigned long) (SCWMWINDOW(obj)->w)), port);
@@ -58,6 +68,8 @@ print_window(SCM obj, SCM port, scm_print_state * pstate)
     scm_gen_puts(scm_regular_port, "(invalid)", port);
   }
   scm_gen_putc('>', port);
+#endif /* HAVE_SCM_PUTS */
+
   return 1;
 }
 

@@ -1,9 +1,4 @@
 
-
-
-
-
-
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms indicated by the copyright below.
@@ -49,9 +44,16 @@ long scm_tc16_scwm_color;
 int 
 print_color(SCM obj, SCM port, scm_print_state * pstate)
 {
+#ifdef HAVE_SCM_PUTS
+  scm_puts("#<color ", port);
+  scm_write(gh_int2scm(COLOR(obj)), port);
+  scm_putc('>', port);
+#else /* HAVE_SCM_PUTS */
   scm_gen_puts(scm_regular_port, "#<color ", port);
   scm_write(gh_int2scm(COLOR(obj)), port);
   scm_gen_putc('>', port);
+#endif /* HAVE_SCM_PUTS */
+
   return 1;
 }
 

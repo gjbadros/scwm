@@ -1,8 +1,5 @@
 
 
-
-
-
 /****************************************************************************
  * This module is all original code 
  * by Maciej Stachowiak.
@@ -126,9 +123,16 @@ mark_menu(SCM obj)
 int 
 print_menu(SCM obj, SCM port, scm_print_state * pstate)
 {
+#ifdef HAVE_SCM_PUTS
+  scm_puts("#<menu \"", port);
+  scm_puts(MENUROOT(obj)->name, port);
+  scm_puts("\">", port);
+#else /* !HAVE_SCM_PUTS */
   scm_gen_puts(scm_regular_port, "#<menu \"", port);
   scm_gen_puts(scm_regular_port, MENUROOT(obj)->name, port);
   scm_gen_puts(scm_regular_port, "\">", port);
+#endif /* HAVE_SCM_PUTS */
+
   return 1;
 }
 
