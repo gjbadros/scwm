@@ -23,6 +23,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm base)
   :use-module (app scwm window-locations)
+  :use-module (app scwm winops)
   :use-module (app scwm virtual))
 
 
@@ -186,6 +187,18 @@ passed window before executing PROC, and may return to the previous
 desk and viewport, depending on the values of SWITCH and RETURN
 respectively."
   (wrap-switch-return switch return proc))
+
+(define-public (make-keep-winclass-centered class)
+  "Return a procedure that keeps windows of CLASS centered in the viewport.
+The resulting procedure should be used put in the `X-ConfigureRequest-hook'."
+  (lambda (win icon? x y width height)
+    (if (and (not icon?)
+	     (string=? (window-class win) class))
+	(begin
+	  (resize-window width height win 
+			 (- (viewport-center-x) (half width))
+			 (- (viewport-center-y) (half height)))
+	  (set! configure-request-handled #t)))))
 
 
 ;; implementation internals

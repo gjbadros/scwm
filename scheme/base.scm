@@ -180,6 +180,14 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   "Return the y coordinate of the current viewport."
   (cadr (viewport-position)))
 
+(define-public (viewport-center-x)
+  "Return the x coordinate of the center of the current viewport."
+  (+ (viewport-x-position) (half display-width)))
+
+(define-public (viewport-center-y)
+  "Return the y coordinate of the center of the current viewport."
+  (+ (viewport-y-position) (half display-height)))
+
 (define-public (viewport->virtual x y)
   "Return the virtual coordinates for viewport X,Y."
   (map + (viewport-position) (list x y)))

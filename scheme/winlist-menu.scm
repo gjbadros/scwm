@@ -179,3 +179,11 @@ The selection procedure deiconifies the window and gives it focus."
 				   (string=? (window-class w) "XTerm")
 				   (string=? (window-class w) "NXTerm")))
 			 #:proc animated-deiconify-to-vp-focus))
+
+(define*-public (show-netscape-window-list-menu)
+  "Show a window list of only Netscape windows.
+The selection procedure deiconifies the window and gives it focus."
+  (interactive)
+  (show-window-list-menu 1 #f
+			 #:only (class-match?? "Netscape")
+			 #:proc animated-deiconify-to-vp-focus))

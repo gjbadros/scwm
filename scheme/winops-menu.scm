@@ -11,6 +11,7 @@
   :use-module (app scwm winlist-menu)
   :use-module (app scwm window-selection)
   :use-module (app scwm wininfo)
+  :use-module (app scwm listops)
   :use-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm shove-window)
@@ -80,6 +81,18 @@ stick, shove, set the style, group, etc."
     (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
 	      #:action destroy-window))))
 
+;;(popup-menu (make-menu-focus-options (get-window)))
+(define*-public (make-menu-focus-options #&optional (win (get-window)))
+  "Create a menu of focus options for WIN."
+  (menu
+   (list
+    (menu-title "Focus options") menu-separator
+    (menuitem "&Click" #:action (lambda () (set-window-focus! 'click win)))
+    (menuitem "&Mouse" #:action (lambda () (set-window-focus! 'mouse win)))
+    (menuitem "&Sloppy" #:action (lambda () (set-window-focus! 'sloppy win)))
+    (menuitem "&None" #:action (lambda () (set-window-focus! 'none win))))))
+
+
 (define-public menu-window-ops
   (menu
    (list
@@ -96,6 +109,7 @@ stick, shove, set the style, group, etc."
 	       #:action (thunk toggle-iconify))
     (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
 	       #:action (thunk toggle-stick))
+    (menuitem "&Focus" #:submenu (lambda () (make-menu-focus-options)))
     (menuitem "Ma&ximize/Reset" #:action (thunk toggle-maximize-both))
     (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
 	       #:action (thunk toggle-maximize-vertical))

@@ -41,6 +41,7 @@ WIN defaults as usual to the current window context."
 		 (lambda (wildcard)
 		   (add-timer-hook! 200 handle-pending-events)
 		   (show-window-list-menu 1 #f #:only (title-match?? wildcard)))))
+
 ;; (show-window-list-matching-interactively)
 ;; (use-scwm-modules prompt-string)
 ;; (use-scwm-modules time-convert)
