@@ -125,8 +125,8 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (show-last-focus-time #f)
 				       (warp-to-first #f)
 				       (ignore-winlist-skip #f)
-				       (show-mini-icon #t))
-
+				       (show-mini-icon #t)
+				       (enumerate-hotkeys #t))
   "Popup a window list menu and permit a selection to be made.
 ONLY and EXCEPT are procedures that control which windows will appear
 in the list -- see `list-windows' for details. BY-STACKING, BY-FOCUS
@@ -154,6 +154,10 @@ menuitem (see `popup-menu').
 If BY-RESOURCE is #t, the window list is split into sublists by the
 window resource name (this is also the behaviour if too many windows
 exist to fit vertically on the menu).
+
+If ENUMERATE-HOT-KEYS is #t, then add alpha-numeric hot keys for the window-list.
+For the hotkey, the characters 1 through 9 are used first, followed by
+the letters a through z.
 "
   (let* 
       ((lw (list-windows #:only only #:except 
@@ -165,19 +169,30 @@ exist to fit vertically on the menu).
 			 #:by-stacking by-stacking
 			 #:by-focus by-focus
 			 #:reverse reverse))
+       (hotkeys "1234567890abcdefghijklmnopqrstuvwxyz")
+       (hk-len (string-length hotkeys))
+       (count -1)
        (split-by-resource (or by-resource (> (length lw) (menu-max-fold-lines))))
        (menuitems-with-window-resource
 	((if split-by-resource sorted-by-car-string noop)
 	 (map (lambda (x)
-		(let ((extra-label-string 
-		       (if show-geometry (window-geometry-string x) #f)))
+		(set! count (+ count 1))
+		(let* ((extra-label-string 
+			(if show-geometry (window-geometry-string x) #f))
+		       (hotkey (cond 
+				((not enumerate-hotkeys) #f)
+				((< count hk-len) (substring hotkeys count (+ count 1)))
+				(else #f)))
+		       (item-label (if enumerate-hotkeys 
+				       (string-append hotkey ".\t" (window-title x))
+				       (window-title x))))
 		  (if show-last-focus-time
 		      (set! extra-label-string 
 			    (string-append (or extra-label-string "")
 					   (if extra-label-string ", " "")
 					   (window-last-focus-time-string x))))
 		  (cons (window-resource x)
-			(make-menuitem (window-title x)
+			(make-menuitem item-label
 				       (lambda () (proc x))
 				       extra-label-string
 				       #f 
@@ -189,13 +204,18 @@ exist to fit vertically on the menu).
 				       (if unflash-window-proc
 					   (lambda () (unflash-window-proc x))
 					   #f)
-				       #f))))
+				       (if enumerate-hotkeys
+					   hotkey #f)))))
 	      lw))))
     (popup-menu (menu
 		 (append 
 		  (list 
-		   (make-menuitem "Window list" #f (if show-geometry "Geometry" #f)
-				  #f #f #f #f #f)
+		   (make-menuitem 
+		    (if enumerate-hotkeys
+			"	Window list"
+			"Window list")
+		    #f (if show-geometry "Geometry" #f)
+		    #f #f #f #f #f)
 		   menu-title)
 		  (if split-by-resource
 		      (fold-menu-list-by-group menuitems-with-window-resource)
