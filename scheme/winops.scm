@@ -193,7 +193,7 @@ motion does `interactive-move-maybe-opaque', and double-click does
 
 
 (define*-public (animated-move-to x y #&optional (win (get-window)))
-  "Move WIN to x y animatedly.
+  "Move WIN to viewport position x, y animatedly.
 If X or Y is 'x or 'y, respectively (or #f), then do not change
 that coordinate during the move.  At least one of X and Y must be
 a number."

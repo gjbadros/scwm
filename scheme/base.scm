@@ -109,6 +109,33 @@ If X is negative, moves to the left.  If Y is negative moves up."
   (let ((pos (pointer-position)))
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
+;; Horrible name kept for now for backward compatibility.
+;; move-window is the pr
+(define*-public (move-to x y 
+			#&optional (win (get-window))
+			(animated? #f)
+			(move-pointer-too? #f))
+  "Move WIN to virtual position X, Y.
+If X or Y is #f, then do not move along that axis (use existing
+value for that coordinate).
+If ANIMATED? is #t, then animate the window there.
+If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved."
+  (let ((pos (viewport-position)))
+    (if x (set! x (+ x (car pos))))
+    (if y (set! y (+ y (cadr pos))))
+    (move-window x y win animated? move-pointer-too?)))
+
+(define*-public (window-viewport-position #&optional (win (get-window)))
+  "Return the position of WIN in pixels within the viewport.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified.  See also `window-position'."
+  (let* ((pos (window-position win))
+	 (x (car pos))
+	 (y (cadr pos))
+	 (vpos (viewport-position)))
+    (list (- x (car vpos)) (- y (cadr vpos)))))
+    
 (define-public (move-viewport x y)
   "Move the viewport onto the virtual desktop relatively.
 Moves X pixels horizontally, to the right if positive, to the left if
