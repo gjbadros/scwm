@@ -8,4 +8,6 @@ config.status
 configure
 gjb.configure
 libtool
+ltconfig
+ltmain.sh
 scwm.spec
