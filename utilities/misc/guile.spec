@@ -83,6 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{prefix}/share/guile/site
 %dir %{prefix}/share/guile/%{PACKAGE_VERSION}
 %{prefix}/share/guile/%{PACKAGE_VERSION}/ice-9
+%{prefix}/share/guile/readline-activator.scm
 %{prefix}/share/aclocal/*
 %{prefix}/share/guile/slib
 
