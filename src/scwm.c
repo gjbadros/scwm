@@ -38,6 +38,7 @@
 #include <setjmp.h>
 
 #include "scwm.h"
+#include "errors.h"
 #include <stdarg.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>

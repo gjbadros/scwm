@@ -33,6 +33,7 @@
 #include "callbacks.h"
 
 #include "scwm.h"
+#include "errors.h"
 #include "guile-compat.h"
 
 #ifdef USE_DMALLOC
@@ -74,6 +75,8 @@ struct scwm_body_apply_data {
   SCM args;
 };
 
+static SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
+static SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 
 static SCM
 scwm_body_apply (void *body_data)

@@ -37,13 +37,10 @@
 #define SCWM_MAKE_HOOK(name,args) SCM_EOL
 #endif
 
-static SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
-
 /* Individual callbacks. */
 
 SCM call_interactively (SCM thunk, SCM debug);
 
-static SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
 SCM scwm_safe_call1 (SCM proc, SCM arg);
@@ -53,6 +50,7 @@ SCM scwm_safe_eval_str (char *string);
 
 /* Hooks. */
 SCM scwm_run_hook(SCM hook, SCM args);
+SCM scwm_run_hook0(SCM hook);
 SCM scwm_run_hook1(SCM hook, SCM arg1);
 SCM scwm_run_hook2(SCM hook, SCM arg1, SCM arg2);
 SCM scwm_run_hook_message_only(SCM hook, SCM args);

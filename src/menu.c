@@ -896,7 +896,6 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   char ch;
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   MenuItemInMenu *pmiimNewItem = NULL;
-  MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
   *pfHotkeyUsed = False;
   *pmenu_status = MENUSTATUS_NOP;
