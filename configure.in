@@ -7,7 +7,7 @@ dnl (C) 1998, 1999 Maciej Stachowiak and Greg J. Badros
 
 
 dnl ## Initialize autoconf ##
-AC_INIT(scwm/scwm.c)
+AC_INIT(src/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
@@ -742,7 +742,7 @@ AC_OUTPUT(Makefile \
           ANNOUNCE \
           README \
           sample.scwmrc/Makefile \
-          scwm/Makefile \
+          src/Makefile \
           scheme/Makefile \
           pixmaps/Makefile \
           app/Makefile \
