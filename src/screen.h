@@ -85,21 +85,13 @@ typedef struct {
 
 typedef enum {
   /* button types */
-#ifdef VECTOR_BUTTONS
   VectorButton,
-#endif
   SimpleButton,
-#ifdef GRADIENT_BUTTONS
   HGradButton,
   VGradButton,
-#endif
-#ifdef PIXMAP_BUTTONS
   PixmapButton,
   TiledPixmapButton,
-#endif
-#ifdef MINI_ICONS
   MiniIconButton,
-#endif
   SolidButton
   /* max button is 15 (0xF) */
 } ButtonFaceStyle;
@@ -117,52 +109,38 @@ enum {
   VBottom = (1 << 7),
 
   /* general style flags */
-#ifdef EXTENDED_TITLESTYLE
   UseTitleStyle = (1 << 8),
-#endif
-#ifdef BORDERSTYLE
   UseBorderStyle = (1 << 9),
-#endif
   FlatButton = (1 << 10),
   SunkButton = (1 << 11)
 };
 
-#ifdef BORDERSTYLE
 /* border style flags (uses ButtonFace) */
 enum {
   HiddenHandles = (1 << 8),
   NoInset = (1 << 9)
 };
 
-#endif
 
 typedef struct ButtonFace {
   ButtonFaceStyle style;
   union {
-#ifdef PIXMAP_BUTTONS
     Picture *p;
-#endif
     Pixel back;
-#ifdef GRADIENT_BUTTONS
     struct {
       int npixels;
       Pixel *pixels;
     } grad;
-#endif
   } u;
 
-#ifdef VECTOR_BUTTONS
   struct vector_coords {
     int num;
     int x[20];
     int y[20];
     int line_style[20];
   } vector;
-#endif
 
-#ifdef MULTISTYLE
   struct ButtonFace *next;
-#endif
   SCM sface;
 } ButtonFace;
 
@@ -173,12 +151,8 @@ enum {
 
 enum ButtonState {
   ActiveUp,
-#ifdef ACTIVEDOWN_BTNS
   ActiveDown,
-#endif
-#ifdef INACTIVE_BTNS
   Inactive,
-#endif
   MaxButtonState
 };
 
@@ -188,9 +162,7 @@ typedef struct {
 } TitleButton;
 
 typedef struct ScwmDecor {
-#ifdef USEDECOR
   char *tag;			/* general style tag */
-#endif
   ColorPair HiColors;		/* standard fore/back colors */
   ColorPair HiRelief;
   GC HiReliefGC;		/* GC for highlighted window relief */
@@ -203,14 +175,10 @@ typedef struct ScwmDecor {
   TitleButton left_buttons[5];
   TitleButton right_buttons[5];
   TitleButton titlebar;
-#ifdef BORDERSTYLE
   struct BorderStyle {
     ButtonFace *active, *inactive;
   } BorderStyle;
-#endif
-#ifdef USEDECOR
   struct ScwmDecor *next;	/* additional user-defined styles */
-#endif
   SCM scmdecor;
 } ScwmDecor;
 
@@ -260,9 +228,7 @@ typedef struct ScreenInfo {
   MyFont StdFont;		/* font structure */
   MyFont IconFont;		/* for icon labels */
 
-#if defined(PIXMAP_BUTTONS) || defined(GRADIENT_BUTTONS)
   GC TransMaskGC;		/* GC for transparency masks */
-#endif
   GC DrawGC;			/* GC to draw lines for move and resize */
   GC MenuGC;
   GC MenuStippleGC;
@@ -330,11 +296,7 @@ typedef struct ScreenInfo {
    This saves an indirection in case you don't want
    the UseDecor mechanism.
  */
-#ifdef USEDECOR
 #define GetDecor(window,part) ((window)->fl->##part)
-#else
-#define GetDecor(window,part) (Scr.DefaultDecor.##part)
-#endif
 
 /* some protos for the decoration structures */
 void LoadDefaultLeftButton(ButtonFace * bf, int i);

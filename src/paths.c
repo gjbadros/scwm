@@ -14,7 +14,6 @@
 #include "paths.h"
 
 
-#ifdef XPM
 char *PixmapPath = SCWM_ICONDIR;
 
 SCM 
@@ -41,7 +40,6 @@ set_pixmap_path_x(SCM newpath)
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
-#endif
 
 char *IconPath = SCWM_ICONDIR;
 
@@ -70,28 +68,3 @@ set_icon_path_x(SCM newpath)
   return SCM_UNSPECIFIED;
 }
 
-#if 0				/* no module support */
-#ifdef SCWM_MODULEDIR
-char *ModulePath = SCWM_MODULEDIR;
-
-#else
-char *ModulePath = SCWMDIR;
-
-#endif
-void 
-setModulePath(XEvent * eventp, Window w, ScwmWindow * tmp_win,
-	      unsigned long context, char *action, int *Module)
-{
-  static char *ptemp = NULL;
-  char *tmp;
-
-  if (ptemp == NULL)
-    ptemp = ModulePath;
-
-  if ((ModulePath != ptemp) && (ModulePath != NULL))
-    free(ModulePath);
-  tmp = stripcpy(action);
-  ModulePath = envDupExpand(tmp, 0);
-  free(tmp);
-}
-#endif

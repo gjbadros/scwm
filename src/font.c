@@ -26,10 +26,8 @@
 #include "font.h"
 #include "util.h"
 
-#ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
 
-#endif
 
 
 long scm_tc16_scwm_font;
@@ -163,11 +161,7 @@ set_window_font(SCM font)
 
   SCM_REDEFER_INTS;
 
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
 
   if (gh_string_p(font)) {
@@ -230,29 +224,3 @@ set_menu_font(SCM font)
   return (font);
 }
 
-#if 0
-
-void 
-redraw_menus(void)
-{
-  if (Scr.SizeWindow != None) {
-    Scr.SizeStringWidth = XTextWidth(Scr.StdFont.font,
-				     " +8888 x +8888 ", 15);
-    wid = Scr.SizeStringWidth + SIZE_HINDENT * 2;
-    hei = Scr.StdFont.height + SIZE_VINDENT * 2;
-    if (Scr.flags & MWMMenus) {
-      XMoveResizeWindow(dpy, Scr.SizeWindow,
-			Scr.MyDisplayWidth / 2 - wid / 2,
-			Scr.MyDisplayHeight / 2 - hei / 2,
-			wid, hei);
-    } else {
-      XMoveResizeWindow(dpy, Scr.SizeWindow, 0, 0, wid, hei);
-    }
-  }
-  if (Scr.SizeWindow != None) {
-    XSetWindowBackground(dpy, Scr.SizeWindow, Scr.MenuColors.back);
-  }
-  MakeMenus();
-}
-
-#endif

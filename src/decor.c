@@ -95,10 +95,8 @@ mark_decor(SCM obj)
 }
 
 
-#ifdef USEDECOR
 extern ScwmDecor *cur_decor;
 
-#endif
 
 
 SCM 
@@ -261,52 +259,3 @@ set_window_decor_x(SCM decor, SCM win)
 }
 
 
-#if 0
-
-/*****************************************************************************
- * 
- * Updates window decoration styles (veliaa@rpi.edu)
- *
- ****************************************************************************/
-void 
-UpdateDecor(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
-	    unsigned long context, char *action, int *Module)
-{
-  ScwmWindow *fw = Scr.ScwmRoot.next;
-
-#ifdef USEDECOR
-  ScwmDecor *fl = &Scr.DefaultDecor, *found = NULL;
-  char *item = NULL;
-
-  action = GetNextToken(action, &item);
-  if (item) {
-    /* search for tag */
-    for (; fl; fl = fl->next)
-      if (fl->tag)
-	if (strcasecmp(item, fl->tag) == 0) {
-	  found = fl;
-	  break;
-	}
-    free(item);
-  }
-#endif
-
-  for (; fw != NULL; fw = fw->next) {
-#ifdef USEDECOR
-    /* update specific decor, or all */
-    if (found) {
-      if (fw->fl == found) {
-	SetBorder(fw, True, True, True, None);
-	SetBorder(fw, False, True, True, None);
-      }
-    } else
-#endif
-    {
-      SetBorder(fw, True, True, True, None);
-      SetBorder(fw, False, True, True, None);
-    }
-  }
-  SetBorder(Scr.Hilite, True, True, True, None);
-}
-
-#endif

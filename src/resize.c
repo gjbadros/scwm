@@ -65,9 +65,7 @@ resize_window(XEvent * eventp, Window w, ScwmWindow * tmp_win,
     return;
 
   if (check_allowed_function2(F_RESIZE, tmp_win) == 0
-#ifdef WINDOWSHADE
       || (tmp_win->buttons & WSHADE)
-#endif
     ) {
     XBell(dpy, Scr.screen);
     return;

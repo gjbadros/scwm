@@ -45,10 +45,8 @@
 #include <X11/Xatom.h>
 #include "misc.h"
 #include "screen.h"
-#ifdef SHAPE
 #include <X11/extensions/shape.h>
 #include <X11/Xresource.h>
-#endif /* SHAPE */
 #include "module.h"
 #include "binding.h"
 #include "window.h"
@@ -75,10 +73,8 @@ static XrmOptionDescRec table[] =
 
 extern char *IconPath;
 
-#ifdef XPM
 extern char *PixmapPath;
 
-#endif
 
 /***********************************************************************
  *
@@ -99,24 +95,18 @@ AddWindow(Window w)
   ScwmWindow *tmp_win;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
 
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
   Pixmap TexturePixmap = None, TexturePixmapSave = None;
   unsigned long valuemask_save = 0;
 
-#endif
   XSetWindowAttributes attributes;	/* attributes for create windows */
   int i, width, height;
   int a, b;
   char *value;
 
-#ifdef MINI_ICONS
   char *mini_value;
 
-#endif
-#ifdef USEDECOR
   char *decor = NULL;
 
-#endif
   unsigned long tflag, saved_flags;
   int Desk, border_width, resize_width;
   extern Bool NeedToResizeToo;
@@ -139,10 +129,8 @@ AddWindow(Window w)
   tmp_win->w = w;
 
   tmp_win->cmap_windows = (Window *) NULL;
-#ifdef MINI_ICONS
   tmp_win->mini_pixmap_file = NULL;
   tmp_win->mini_icon = NULL;
-#endif
 
   if (!PPosOverride)
     if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
@@ -156,19 +144,13 @@ AddWindow(Window w)
     tmp_win->name = NoName;
 
   /* removing NoClass change for now... */
-#if 0
-  tmp_win->class.res_name = tmp_win->class.res_class = NULL;
-#else
   tmp_win->class.res_name = NoResource;
   tmp_win->class.res_class = NoClass;
-#endif /* 0 */
   XGetClassHint(dpy, tmp_win->w, &tmp_win->class);
-#if 1
   if (tmp_win->class.res_name == NULL)
     tmp_win->class.res_name = NoResource;
   if (tmp_win->class.res_class == NULL)
     tmp_win->class.res_class = NoClass;
-#endif /* 1 */
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);
@@ -184,7 +166,6 @@ AddWindow(Window w)
 
   tmp_win->old_bw = tmp_win->attr.border_width;
 
-#ifdef SHAPE
   if (ShapesSupported) {
     int xws, yws, xbs, ybs;
     unsigned wws, hws, wbs, hbs;
@@ -196,7 +177,6 @@ AddWindow(Window w)
 		       &clipShaped, &xbs, &ybs, &wbs, &hbs);
     tmp_win->wShaped = boundingShaped;
   }
-#endif /* SHAPE */
 
 
   /* if the window is in the NoTitle list, or is a transient,
@@ -209,12 +189,8 @@ AddWindow(Window w)
   tmp_win->flags |= TITLE;
 
   tflag = LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &value,
-#ifdef MINI_ICONS
 		     &mini_value,
-#endif
-#ifdef USEDECOR
 		     &decor,
-#endif
 		     &Desk,
 		     &border_width, &resize_width,
 		     &forecolor, &backcolor, &tmp_win->buttons,
@@ -239,7 +215,6 @@ AddWindow(Window w)
   if (tflag & STARTSONDESK_FLAG) {
     Desk = tmp_win->StartDesk;
   }
-#ifdef USEDECOR
   /* search for a UseDecor tag in the Style */
   tmp_win->fl = NULL;
   if (decor != NULL) {
@@ -253,7 +228,6 @@ AddWindow(Window w)
   }
   if (tmp_win->fl == NULL)
     tmp_win->fl = &Scr.DefaultDecor;
-#endif
 
   tmp_win->title_height = GetDecor(tmp_win, TitleHeight) + tmp_win->bw;
 
@@ -276,13 +250,11 @@ AddWindow(Window w)
     tmp_win->icon_bitmap_file = Scr.DefaultIcon;
   }
 
-#ifdef MINI_ICONS
   if (tflag & MINIICON_FLAG) {
     tmp_win->mini_pixmap_file = mini_value;
   } else {
     tmp_win->mini_pixmap_file = NULL;
   }
-#endif
 
   GetWindowSizeHints(tmp_win);
 
@@ -389,7 +361,6 @@ AddWindow(Window w)
 			   ButtonReleaseMask | EnterWindowMask |
 			   LeaveWindowMask | ExposureMask);
 
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
   if ((GetDecor(tmp_win, BorderStyle.inactive->style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
     TexturePixmap = GetDecor(tmp_win, BorderStyle.inactive->u.p->picture);
@@ -400,7 +371,6 @@ AddWindow(Window w)
     valuemask_save = valuemask;
     valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
-#endif
 
   /* What the heck, we'll always reparent everything from now on! */
   tmp_win->frame =
@@ -411,12 +381,10 @@ AddWindow(Window w)
 		  valuemask,
 		  &attributes);
 
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
   if (TexturePixmap) {
     attributes.background_pixmap = TexturePixmapSave;
     valuemask = valuemask_save;
   }
-#endif
 
   attributes.save_under = FALSE;
 
@@ -440,14 +408,12 @@ AddWindow(Window w)
   if (tmp_win->title_width < 1)
     tmp_win->title_width = 1;
   if (tmp_win->flags & BORDER) {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
       attributes.background_pixmap = TexturePixmap;
       valuemask_save = valuemask;
       valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
     }
-#endif
     /* Just dump the windows any old place and left SetupFrame take
      * care of the mess */
     for (i = 0; i < 4; i++) {
@@ -460,12 +426,10 @@ AddWindow(Window w)
 		      valuemask,
 		      &attributes);
     }
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
     if (TexturePixmap) {
       attributes.background_pixmap = TexturePixmapSave;
       valuemask = valuemask_save;
     }
-#endif
   }
   if (tmp_win->flags & TITLE) {
     tmp_win->title_x = tmp_win->boundary_width + tmp_win->title_height + 1;
@@ -479,7 +443,6 @@ AddWindow(Window w)
     attributes.cursor = Scr.ScwmCursors[SYS];
     for (i = 4; i >= 0; i--) {
       if ((i < Scr.nr_left_buttons) && (tmp_win->left_w[i] > 0)) {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
 	if (TexturePixmap
 	    && GetDecor(tmp_win, left_buttons[i].flags) & UseBorderStyle) {
 	  TexturePixmapSave = attributes.background_pixmap;
@@ -487,7 +450,6 @@ AddWindow(Window w)
 	  valuemask_save = valuemask;
 	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
 	}
-#endif
 	tmp_win->left_w[i] =
 	  XCreateWindow(dpy, tmp_win->frame, tmp_win->title_height * i, 0,
 			tmp_win->title_height, tmp_win->title_height, 0,
@@ -495,18 +457,15 @@ AddWindow(Window w)
 			CopyFromParent,
 			valuemask,
 			&attributes);
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
 	if (TexturePixmap
 	    && GetDecor(tmp_win, left_buttons[i].flags) & UseBorderStyle) {
 	  attributes.background_pixmap = TexturePixmapSave;
 	  valuemask = valuemask_save;
 	}
-#endif
       } else
 	tmp_win->left_w[i] = None;
 
       if ((i < Scr.nr_right_buttons) && (tmp_win->right_w[i] > 0)) {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
 	if (TexturePixmap
 	    && GetDecor(tmp_win, right_buttons[i].flags) & UseBorderStyle) {
 	  TexturePixmapSave = attributes.background_pixmap;
@@ -514,7 +473,6 @@ AddWindow(Window w)
 	  valuemask_save = valuemask;
 	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
 	}
-#endif
 	tmp_win->right_w[i] =
 	  XCreateWindow(dpy, tmp_win->frame,
 			tmp_win->title_width -
@@ -525,41 +483,31 @@ AddWindow(Window w)
 			CopyFromParent,
 			valuemask,
 			&attributes);
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
 	if (TexturePixmap
 	    && GetDecor(tmp_win, right_buttons[i].flags) & UseBorderStyle) {
 	  attributes.background_pixmap = TexturePixmapSave;
 	  valuemask = valuemask_save;
 	}
-#endif
       } else
 	tmp_win->right_w[i] = None;
     }
 
-#ifdef MINI_ICONS
     if (tmp_win->mini_pixmap_file) {
       tmp_win->mini_icon = CachePicture(dpy, Scr.Root,
 					IconPath,
-#ifdef XPM
 					PixmapPath,
-#else
-					NULL,
-#endif
 					tmp_win->mini_pixmap_file);
     } else {
       tmp_win->mini_icon = NULL;
     }
-#endif
   }
   if (tmp_win->flags & BORDER) {
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
       attributes.background_pixmap = TexturePixmap;
       valuemask_save = valuemask;
       valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
     }
-#endif
     for (i = 0; i < 4; i++) {
       attributes.cursor = Scr.ScwmCursors[TOP + i];
       tmp_win->sides[i] =
@@ -569,12 +517,10 @@ AddWindow(Window w)
 		      valuemask,
 		      &attributes);
     }
-#if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
     if (TexturePixmap) {
       attributes.background_pixmap = TexturePixmapSave;
       valuemask = valuemask_save;
     }
-#endif
   }
   XMapSubwindows(dpy, tmp_win->frame);
   XRaiseWindow(dpy, tmp_win->Parent);
@@ -677,7 +623,6 @@ AddWindow(Window w)
 		(unsigned long) tmp_win, tmp_win->class.res_class);
   BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_name);
-#ifdef MINI_ICONS
   if (tmp_win->mini_icon != NULL)
     Broadcast(M_MINI_ICON, 6,
 	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */
@@ -686,7 +631,6 @@ AddWindow(Window w)
 	      tmp_win->mini_icon->width,
 	      tmp_win->mini_icon->height,
 	      tmp_win->mini_icon->depth, 0);
-#endif
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);
@@ -986,12 +930,8 @@ GetWindowSizeHints(ScwmWindow * tmp)
 unsigned long 
 LookInList(name_list * list, char *name, XClassHint * class,
 	   char **value,
-#ifdef MINI_ICONS
 	   char **mini_value,
-#endif
-#ifdef USEDECOR
 	   char **decor,
-#endif
 	   int *Desk, int *border_width,
 	   int *resize_width, char **forecolor, char **backcolor,
 	   unsigned long *buttons, int *IconBox,
@@ -1001,12 +941,8 @@ LookInList(name_list * list, char *name, XClassHint * class,
   unsigned long retval = 0;
 
   *value = NULL;
-#ifdef MINI_ICONS
   *mini_value = NULL;
-#endif
-#ifdef USEDECOR
   *decor = NULL;
-#endif
   *forecolor = NULL;
   *backcolor = NULL;
   *Desk = 0;
@@ -1034,14 +970,10 @@ LookInList(name_list * list, char *name, XClassHint * class,
 	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	if (nptr->value != NULL)
 	  *value = nptr->value;
-#ifdef MINI_ICONS
 	if (nptr->mini_value != NULL)
 	  *mini_value = nptr->mini_value;
-#endif
-#ifdef USEDECOR
 	if (nptr->Decor != NULL)
 	  *decor = nptr->Decor;
-#endif
 	if (nptr->off_flags & STARTSONDESK_FLAG)
 	  *Desk = nptr->Desk;
 	if (nptr->off_flags & BW_FLAG)
@@ -1070,14 +1002,10 @@ LookInList(name_list * list, char *name, XClassHint * class,
 	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	if (nptr->value != NULL)
 	  *value = nptr->value;
-#ifdef MINI_ICONS
 	if (nptr->mini_value != NULL)
 	  *mini_value = nptr->mini_value;
-#endif
-#ifdef USEDECOR
 	if (nptr->Decor != NULL)
 	  *decor = nptr->Decor;
-#endif
 	if (nptr->off_flags & STARTSONDESK_FLAG)
 	  *Desk = nptr->Desk;
 	if (nptr->off_flags & FORE_COLOR_FLAG)
@@ -1107,14 +1035,10 @@ LookInList(name_list * list, char *name, XClassHint * class,
       if (nptr->value != NULL)
 	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	*value = nptr->value;
-#ifdef MINI_ICONS
       if (nptr->mini_value != NULL)
 	*mini_value = nptr->mini_value;
-#endif
-#ifdef USEDECOR
       if (nptr->Decor != NULL)
 	*decor = nptr->Decor;
-#endif
       if (nptr->off_flags & STARTSONDESK_FLAG)
 	*Desk = nptr->Desk;
       if (nptr->off_flags & FORE_COLOR_FLAG)

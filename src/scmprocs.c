@@ -86,11 +86,9 @@ init_scwm_procs(void)
   gh_new_procedure("stick", stick, 0, 1, 0);
   gh_new_procedure("unstick", unstick, 0, 1, 0);
   gh_new_procedure("sticky?", sticky_p, 0, 1, 0);
-#ifdef WINDOWSHADE
   gh_new_procedure("window-shade", window_shade, 0, 1, 0);
   gh_new_procedure("un-window-shade", un_window_shade, 0, 1, 0);
   gh_new_procedure("window-shaded?", window_shaded_p, 0, 1, 0);
-#endif /* WINDOWSHADE */
   gh_new_procedure("move-to", move_to, 2, 3, 0);
   gh_new_procedure("interactive-move", interactive_move, 0, 1, 0);
   gh_new_procedure("resize-to", resize_to, 2, 1, 0);
@@ -112,9 +110,7 @@ init_scwm_procs(void)
   gh_new_procedure("recapture", recapture, 0, 0, 0);
   gh_new_procedure("restart", restart, 1, 0, 0);
   gh_new_procedure("wait-for-window", wait_for_window, 1, 0, 0);
-#if XPM
   gh_new_procedure("set-pixmap-path!", set_pixmap_path_x, 1, 0, 0);
-#endif
   gh_new_procedure("set-icon-path!", set_icon_path_x, 1, 0, 0);
   gh_new_procedure("move-window-to-desk", move_window_to_desk, 1, 1, 0);
   gh_new_procedure("set-current-desk!", set_current_desk_x, 1, 0, 0);

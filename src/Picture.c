@@ -30,9 +30,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#ifdef XPM
 #include <X11/xpm.h>
-#endif
 #include "Picture.h"
 #include "system.h"
 
@@ -56,17 +54,14 @@ LoadPicture(Display * dpy, Window Root, char *path)
   int l;
   Picture *p;
 
-#ifdef XPM
   XpmAttributes xpm_attributes;
 
-#endif
 
   p = (Picture *) safemalloc(sizeof(Picture));
   p->count = 1;
   p->name = path;
   p->next = NULL;
 
-#ifdef XPM
   /* Try to load it as an X Pixmap first */
   xpm_attributes.colormap = PictureCMap;
   xpm_attributes.closeness = 40000;	/* Allow for "similar" colors */
@@ -80,7 +75,6 @@ LoadPicture(Display * dpy, Window Root, char *path)
     p->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
     return p;
   }
-#endif
 
   /* If no XPM support, or XPM loading failed, try bitmap */
   if (XReadBitmapFile(dpy, Root, path, &p->width, &p->height, &p->picture, &l, &l)

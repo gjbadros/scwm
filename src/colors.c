@@ -131,9 +131,7 @@ CreateGCs(void)
   Scr.ScratchGC2 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.ScratchGC3 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 
-#if defined(PIXMAP_BUTTONS) || defined(GRADIENT_BUTTONS)
   Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-#endif
 }
 
 
@@ -156,7 +154,6 @@ GetColor(char *name)
   return color.pixel;
 }
 
-#ifdef GRADIENT_BUTTONS
 /****************************************************************************
  * 
  * Allocates a nonlinear color gradient (veliaa@rpi.edu)
@@ -248,7 +245,6 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
   }
   return pixels;
 }
-#endif /* GRADIENT_BUTTONS */
 
 void 
 nocolor(char *note, char *name)

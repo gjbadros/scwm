@@ -23,9 +23,7 @@
 #endif
 
 #include <X11/Intrinsic.h>
-#ifdef XPM
 #include <X11/xpm.h>
-#endif /* XPM */
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
@@ -33,9 +31,7 @@
 #include "screen.h"
 #include "module.h"
 
-#ifdef SHAPE
 #include <X11/extensions/shape.h>
-#endif /* SHAPE */
 
 
 void GrabIconButtons(ScwmWindow *, Window);
@@ -154,14 +150,10 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
   }
 
 
-#ifdef XPM
-#ifdef SHAPE
   if (ShapesSupported && (tmp_win->flags & SHAPED_ICON)) {
     XShapeCombineMask(dpy, tmp_win->icon_pixmap_w, ShapeBounding, 2, 2,
 		      tmp_win->icon_maskPixmap, ShapeSet);
   }
-#endif
-#endif
 
   if (tmp_win->icon_w != None) {
     XSaveContext(dpy, tmp_win->icon_w, ScwmContext, (caddr_t) tmp_win);
@@ -554,7 +546,6 @@ GetBitmapFile(ScwmWindow * tmp_win)
 void 
 GetXPMFile(ScwmWindow * tmp_win)
 {
-#ifdef XPM
   XWindowAttributes root_attr;
   XpmAttributes xpm_attributes;
   extern char *PixmapPath;
@@ -577,13 +568,10 @@ GetXPMFile(ScwmWindow * tmp_win)
     tmp_win->icon_p_height = xpm_attributes.height;
     tmp_win->flags |= PIXMAP_OURS;
     tmp_win->iconDepth = Scr.d_depth;
-#ifdef SHAPE
     if (ShapesSupported && tmp_win->icon_maskPixmap)
       tmp_win->flags |= SHAPED_ICON;
-#endif
   }
   free(path);
-#endif /* XPM */
 }
 
 /****************************************************************************
@@ -611,14 +599,12 @@ GetIconWindow(ScwmWindow * tmp_win)
    * and define the cursor for it).
    */
   tmp_win->icon_pixmap_w = tmp_win->wmhints->icon_window;
-#ifdef SHAPE
   if (ShapesSupported) {
     if (tmp_win->wmhints->flags & IconMaskHint) {
       tmp_win->flags |= SHAPED_ICON;
       tmp_win->icon_maskPixmap = tmp_win->wmhints->icon_mask;
     }
   }
-#endif
   /* Make sure that the window is a child of the root window ! */
   /* Olwais screws this up, maybe others do too! */
   XReparentWindow(dpy, tmp_win->icon_pixmap_w, Scr.Root, 0, 0);
@@ -641,14 +627,12 @@ GetIconBitmap(ScwmWindow * tmp_win)
 	     (unsigned int *) &tmp_win->icon_p_height, &JunkBW, &JunkDepth);
   tmp_win->iconPixmap = tmp_win->wmhints->icon_pixmap;
   tmp_win->iconDepth = JunkDepth;
-#ifdef SHAPE
   if (ShapesSupported) {
     if (tmp_win->wmhints->flags & IconMaskHint) {
       tmp_win->flags |= SHAPED_ICON;
       tmp_win->icon_maskPixmap = tmp_win->wmhints->icon_mask;
     }
   }
-#endif
 }
 
 

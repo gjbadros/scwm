@@ -31,12 +31,8 @@
 static char *button_states[MaxButtonState] =
 {
   "ActiveUp",
-#ifdef ACTIVEDOWN_BTNS
   "ActiveDown",
-#endif
-#ifdef INACTIVE_BTNS
   "Inactive",
-#endif
 };
 #endif
 
@@ -213,10 +209,6 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
     x = t->frame_x;
     y = t->frame_y;
   }
-#if 0				/* don't want to warp the pointer by default anymore */
-  if (!(t->flags & ClickToFocus))
-    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x + 2, y + 2);
-#endif /* 0 */
   RaiseWindow(t);
   KeepOnTop();
 
@@ -332,10 +324,8 @@ FindPopup(char *action)
 
 
 
-#ifdef USEDECOR
 ScwmDecor *last_decor = NULL, *cur_decor = NULL;
 
-#endif
 char *last_menu = NULL;
 
 
@@ -468,11 +458,9 @@ quit_screen_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 
 
 
-#ifdef XPM
 extern char *PixmapPath;
 
 
-#endif /* XPM */
 
 extern char *IconPath;
 

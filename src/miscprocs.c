@@ -13,10 +13,8 @@
 #include "errors.h"
 #include "util.h"
 
-#ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
 
-#endif
 
 SCM 
 set_menu_mwm_style(SCM should)
@@ -74,11 +72,7 @@ set_title_justify(SCM just)
 
   SCM_REDEFER_INTS;
 
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   if (!gh_symbol_p(just)) {
     SCM_ALLOW_INTS;
@@ -107,11 +101,7 @@ set_title_height(SCM height)
   ScwmDecor *fl;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   if (!gh_number_p(height)) {
     SCM_ALLOW_INTS;
@@ -143,102 +133,6 @@ set_title_height(SCM height)
 
 
 
-#if 0
-
-void 
-SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
-	      unsigned long context, char *action, int *Module)
-{
-  char *parm = NULL, *prev = action;
-
-#ifdef USEDECOR
-  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-
-#else
-  ScwmDecor *fl = &Scr.DefaultDecor;
-
-#endif
-
-  action = GetNextToken(action, &parm);
-  while (parm && parm[0] != '\0') {
-    if (strncasecmp(parm, "centered", 8) == 0) {
-      fl->titlebar.flags &= ~HOffCenter;
-    } else if (strncasecmp(parm, "leftjustified", 13) == 0) {
-      fl->titlebar.flags |= HOffCenter;
-      fl->titlebar.flags &= ~HRight;
-    } else if (strncasecmp(parm, "rightjustified", 14) == 0) {
-      fl->titlebar.flags |= HOffCenter | HRight;
-    }
-#ifdef EXTENDED_TITLESTYLE
-    else if (strncasecmp(parm, "height", 6) == 0) {
-      int height, next;
-
-      if (sscanf(action, "%d%n", &height, &next) > 0
-	  && height > 4
-	  && height <= 256) {
-	int x, y, w, h, extra_height;
-	ScwmWindow *tmp = Scr.ScwmRoot.next, *hi = Scr.Hilite;
-
-	extra_height = fl->TitleHeight;
-	fl->TitleHeight = height;
-	extra_height -= fl->TitleHeight;
-
-	fl->WindowFont.y = fl->WindowFont.font->ascent
-	  + (height - (fl->WindowFont.font->ascent
-		       + fl->WindowFont.font->descent + 3)) / 2;
-	if (fl->WindowFont.y < fl->WindowFont.font->ascent)
-	  fl->WindowFont.y = fl->WindowFont.font->ascent;
-
-	tmp = Scr.ScwmRoot.next;
-	hi = Scr.Hilite;
-	while (tmp != NULL) {
-	  if (!(tmp->flags & TITLE)
-#ifdef USEDECOR
-	      || (tmp->fl != fl)
-#endif
-	    ) {
-	    tmp = tmp->next;
-	    continue;
-	  }
-	  x = tmp->frame_x;
-	  y = tmp->frame_y;
-	  w = tmp->frame_width;
-	  h = tmp->frame_height - extra_height;
-	  tmp->frame_x = 0;
-	  tmp->frame_y = 0;
-	  tmp->frame_height = 0;
-	  tmp->frame_width = 0;
-	  SetupFrame(tmp, x, y, w, h, True);
-	  SetTitleBar(tmp, True, True);
-	  SetTitleBar(tmp, False, True);
-	  tmp = tmp->next;
-	}
-	SetTitleBar(hi, True, True);
-      } else
-	scwm_msg(ERR, "SetTitleStyle",
-		 "bad height argument (height must be from 5 to 256)");
-      action += next;
-    } else {
-      if (!(action = ReadTitleButton(prev, &fl->titlebar, False, -1))) {
-	free(parm);
-	break;
-      }
-    }
-#else /* ! EXTENDED_TITLESTYLE */
-    else if (strcmp(parm, "--") == 0) {
-      if (!(action = ReadTitleButton(prev, &fl->titlebar, False, -1))) {
-	free(parm);
-	break;
-      }
-    }
-#endif /* EXTENDED_TITLESTYLE */
-    free(parm);
-    prev = action;
-    action = GetNextToken(action, &parm);
-  }
-}				/* SetTitleStyle */
-
-#endif
 
 
 SCM sym_focus, sym_mouse;

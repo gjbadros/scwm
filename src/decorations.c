@@ -316,12 +316,10 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
   if ((tflags & MWM_DECOR_FLAG) && (t->flags & TRANSIENT)) {
     decor &= ~(MWM_DECOR_MAXIMIZE | MWM_DECOR_MINIMIZE);
   }
-#ifdef SHAPE
   if (ShapesSupported) {
     if (t->wShaped)
       decor &= ~(BORDER | MWM_DECOR_RESIZEH);
   }
-#endif
   /* Assume no decorations, and build up */
   t->flags &= ~(BORDER | TITLE);
   if (tflags & MWM_BORDER_FLAG)

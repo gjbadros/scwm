@@ -180,17 +180,10 @@ Destroy(ScwmWindow * Tmp_win)
   if (Tmp_win->wmhints)
     XFree((char *) Tmp_win->wmhints);
   /* removing NoClass change for now... */
-#if 0
-  if (Tmp_win->class.res_name)
-    XFree((char *) Tmp_win->class.res_name);
-  if (Tmp_win->class.res_class)
-    XFree((char *) Tmp_win->class.res_class);
-#else
   if (Tmp_win->class.res_name && Tmp_win->class.res_name != NoResource)
     XFree((char *) Tmp_win->class.res_name);
   if (Tmp_win->class.res_class && Tmp_win->class.res_class != NoClass)
     XFree((char *) Tmp_win->class.res_class);
-#endif /* 0 */
   if (Tmp_win->mwm_hints)
     XFree((char *) Tmp_win->mwm_hints);
 
@@ -698,10 +691,6 @@ scwm_msg(int type, char *id, char *msg,...)
 
   switch (type) {
   case DBG:
-#if 0
-    if (!debugging)
-      return;
-#endif /* 0 */
     typestr = "<<DEBUG>>";
     break;
   case ERR:

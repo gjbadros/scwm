@@ -133,10 +133,8 @@ typedef struct ColorPair {
   Pixel back;
 } ColorPair;
 
-#ifdef USEDECOR
 struct ScwmDecor;		/* definition in screen.h */
 
-#endif
 
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
@@ -159,14 +157,10 @@ typedef struct ScwmWindow {
   int nr_right_buttons;
   Window left_w[5];
   Window right_w[5];
-#ifdef USEDECOR
   struct ScwmDecor *fl;
-#endif
   Window icon_w;		/* the icon window */
   Window icon_pixmap_w;		/* the icon window */
-#ifdef SHAPE
   int wShaped;			/* is this a shaped window */
-#endif
   int frame_x;			/* x position of frame */
   int frame_y;			/* y position of frame */
   int frame_width;		/* width of frame */
@@ -202,10 +196,8 @@ typedef struct ScwmWindow {
   Window transientfor;
 
   unsigned long flags;
-#ifdef MINI_ICONS
   char *mini_pixmap_file;
   Picture *mini_icon;
-#endif
   char *icon_bitmap_file;
 
   int orig_x;			/* unmaximized x coordinate */
@@ -289,11 +281,9 @@ typedef struct ScwmWindow {
 #define BUTTON9   256
 #define BUTTON10  512
 
-#ifdef WINDOWSHADE
 /* we're sticking this at the end of the buttons window member
    since we don't want to use up any more flag bits */
 #define WSHADE	(1<<31)
-#endif
 
 #include <stdlib.h>
 extern void Reborder(void);

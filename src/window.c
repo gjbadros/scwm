@@ -20,10 +20,8 @@
 #include "errors.h"
 #include "Grab.h"
 
-#ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
 
-#endif
 
 
 long scm_tc16_scwm_window;
@@ -298,18 +296,6 @@ raise_window(SCM win)
      start keeping a general stays on top flag as well a currently on
      top flag in the window struct, only the latter of which is
      changed by raises and lowers. */
-#if 0
-  if (LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &junk,
-#ifdef MINI_ICONS
-		 &junk,
-#endif
-#ifdef USEDECOR
-		 &junkC,
-#endif
-		 &junkD, &junkD, &junkD, &junkC, &junkC, &junkN,
-		 BoxJunk, &method) & STAYSONTOP_FLAG)
-    tmp_win->flags |= ONTOP;
-#endif
   KeepOnTop();
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -418,7 +404,6 @@ sticky_p(SCM win)
 
 
 
-#ifdef WINDOWSHADE
 /***********************************************************************
  *
  *  WindowShade -- shades or unshades a window (veliaa@rpi.edu)
@@ -478,7 +463,6 @@ window_shaded_p(SCM win)
   return ((SCWMWINDOW(win)->buttons & WSHADE) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
-#endif /* WINDOWSHADE */
 
 
 void 
@@ -687,9 +671,7 @@ resize_to(SCM w, SCM h, SCM win)
   tmp_win = SCWMWINDOW(win);
 
   if (check_allowed_function2(F_RESIZE, tmp_win) == 0
-#ifdef WINDOWSHADE
       || (tmp_win->buttons & WSHADE)
-#endif
     ) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
@@ -751,9 +733,7 @@ interactive_resize(SCM win)
 
 
   if (check_allowed_function2(F_RESIZE, tmp_win) == 0
-#ifdef WINDOWSHADE
       || (tmp_win->buttons & WSHADE)
-#endif
     ) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
@@ -1111,11 +1091,7 @@ show_titlebar(SCM win)
   ScwmDecor *fl;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   VALIDATE(win, "show-titlebar");
   tmp_win = SCWMWINDOW(win);
@@ -1139,11 +1115,7 @@ hide_titlebar(SCM win)
   ScwmDecor *fl;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   VALIDATE(win, "hide-titlebar");
   tmp_win = SCWMWINDOW(win);
@@ -1176,11 +1148,7 @@ normal_border(SCM win)
   int i;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   VALIDATE(win, "normal-border");
   tmp_win = SCWMWINDOW(win);
@@ -1206,12 +1174,8 @@ plain_border(SCM win)
 
   SCM_REDEFER_INTS;
   /* FIXGJB: what the heck does fl get used for?? */
-#ifdef 0
-#ifdef USEDECOR
+#if 0
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 #endif
 
   VALIDATE(win, "plain-border");
@@ -1245,11 +1209,7 @@ set_border_width_x(SCM width, SCM win)
   int w, oldw;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   if (!gh_number_p(width)) {
     scm_wrong_type_arg("set-border-width!", 1, width);

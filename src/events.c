@@ -63,9 +63,7 @@
 #include "misc.h"
 #include "parse.h"
 #include "screen.h"
-#ifdef SHAPE
 #include <X11/extensions/shape.h>
-#endif /* SHAPE */
 #include "module.h"
 #include "util.h"
 #include "binding.h"
@@ -90,11 +88,9 @@ Window last_event_window = 0;
 extern int interactive;
 int repl_fd;
 
-#ifdef SHAPE
 extern int ShapeEventBase;
 void HandleShapeNotify(void);
 
-#endif /* SHAPE */
 
 Window PressedW;
 
@@ -138,10 +134,8 @@ InitEventHandlerJumpTable(void)
   EventHandlerJumpTable[KeyPress] = HandleKeyPress;
   EventHandlerJumpTable[VisibilityNotify] = HandleVisibilityNotify;
   EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
-#ifdef SHAPE
   if (ShapesSupported)
     EventHandlerJumpTable[ShapeEventBase + ShapeNotify] = HandleShapeNotify;
-#endif /* SHAPE */
 }
 
 /***********************************************************************
@@ -1028,7 +1022,6 @@ HandleButtonPress()
 	(ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0)) {
     if (Tmp_win) {
       SetFocus(Tmp_win->w, Tmp_win, 1);
-/* #ifdef CLICKY_MODE_1 */
       if (Scr.ClickToFocusRaises 
 	  /* MS - these other conditions seem wrong to me. */
 #if 0
@@ -1038,8 +1031,7 @@ HandleButtonPress()
 	   (Event.xany.window != Tmp_win->Parent) &&
 	   (Event.xbutton.subwindow != Tmp_win->Parent))
 #endif
-)
-/* #endif */
+	  )
       {
 	RaiseWindow(Tmp_win);
       }
@@ -1300,7 +1292,6 @@ HandleConfigureRequest()
 		     cre->value_mask & (CWSibling | CWStackMode), &xwc);
     sendEvent = True;
   }
-#ifdef SHAPE
   if (ShapesSupported) {
     int xws, yws, xbs, ybs;
     unsigned wws, hws, wbs, hbs;
@@ -1310,7 +1301,6 @@ HandleConfigureRequest()
 		       &hws, &clipShaped, &xbs, &ybs, &wbs, &hbs);
     Tmp_win->wShaped = boundingShaped;
   }
-#endif /* SHAPE */
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
   x = Tmp_win->frame_x;
@@ -1351,7 +1341,6 @@ HandleConfigureRequest()
  *      HandleShapeNotify - shape notification event handler
  *
  ***********************************************************************/
-#ifdef SHAPE
 void 
 HandleShapeNotify(void)
 {
@@ -1368,7 +1357,6 @@ HandleShapeNotify(void)
     SetShape(Tmp_win, Tmp_win->frame_width);
   }
 }
-#endif /* SHAPE */
 
 /***********************************************************************
  *

@@ -30,10 +30,8 @@
 #include "errors.h"
 #include "../version.h"
 
-#ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
 
-#endif
 
 /* XXX - these should be made visible as bindings */
 #define BLACK COLOR(load_color(gh_str02scm("black")))
@@ -103,11 +101,7 @@ set_hilight_colors(SCM fg, SCM bg)
   ScwmWindow *hilight;
 
   SCM_REDEFER_INTS;
-#ifdef USEDECOR
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  fl = &Scr.DefaultDecor;
-#endif
 
   if (gh_string_p(fg)) {
     fg = load_color(fg);

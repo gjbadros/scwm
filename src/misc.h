@@ -23,12 +23,8 @@ typedef struct name_list_struct {
   struct name_list_struct *next;	/* pointer to the next name */
   char *name;			/* the name of the window */
   char *value;			/* icon name */
-#ifdef MINI_ICONS
   char *mini_value;		/* mini icon name */
-#endif
-#ifdef USEDECOR
   char *Decor;
-#endif
   int Desk;			/* Desktop number */
   unsigned long on_flags;
   unsigned long off_flags;
@@ -104,9 +100,7 @@ struct functions {
 #define NO_PPOSITION_FLAG    (1<<29)
 #define OL_DECOR_FLAG        (1<<30)
 
-#ifdef MINI_ICONS
 #define MINIICON_FLAG        (1<<31)
-#endif
 
 /* some fancy font handling stuff */
 #define NewFontAndColor(newfont,color,backcolor) {\
@@ -134,12 +128,8 @@ extern char NoResource[];
 
 extern unsigned long LookInList(name_list *, char *, XClassHint *,
 				char **value,
-#ifdef MINI_ICONS
 				char **mini_value,
-#endif
-#ifdef USEDECOR
 				char **decor,
-#endif
 				int *Desk, int *bw, int *nobw,
 				char **forecolor, char **backcolor,
 				unsigned long *buttons, int *IconBox,
@@ -224,11 +214,9 @@ void sleep_ms(int);
 void Maximize(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 	      unsigned long context, char *action, int *Module);
 
-#ifdef  WINDOWSHADE
 void WindowShade(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		 unsigned long context, char *action, int *Module);
 
-#endif
 extern void RaiseWindow(ScwmWindow * t);
 extern void LowerWindow(ScwmWindow * t);
 extern Bool GrabEm(int);
@@ -307,12 +295,8 @@ void ParseKeyEntry(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		   unsigned long context, char *tline, int *Module);
 void SetOneStyle(char *text, FILE *, char **, int *);
 void AddToList(char *name, char *icon_name,
-#ifdef MINI_ICONS
 	       char *miniicon_name,
-#endif
-#ifdef USEDECOR
 	       char *decor,
-#endif
 	       unsigned long off_flags,
 	       unsigned long on_flags, int desk, int bw, int nobw,
 	       char *forecolor, char *backcolor,
@@ -334,12 +318,9 @@ void SetEdgeResistance(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 void ButtonStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		 unsigned long context, char *action, int *Module);
 
-#ifdef MULTISTYLE
 void AddButtonStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		    unsigned long context, char *action, int *Module);
 
-#endif
-#ifdef USEDECOR
 void add_item_to_decor(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		       unsigned long context, char *action, int *Module);
 void ChangeDecor(XEvent * eventp, Window w, ScwmWindow * tmp_win,
@@ -347,7 +328,6 @@ void ChangeDecor(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 void DestroyDecor(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		  unsigned long context, char *action, int *Module);
 
-#endif
 void UpdateDecor(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		 unsigned long context, char *action, int *Module);
 void SetColormapFocus(XEvent * eventp, Window w, ScwmWindow * tmp_win,
@@ -456,12 +436,10 @@ void DestroyMenu(MenuRoot * mr);
 void GetColors(void);
 Pixel GetColor(char *);
 
-#ifdef GRADIENT_BUTTONS
 Pixel *AllocLinearGradient(char *s_from, char *s_to, int npixels);
 Pixel *AllocNonlinearGradient(char *s_colors[], int clen[],
 			      int nsegs, int npixels);
 
-#endif
 void bad_binding(int num);
 void nocolor(char *note, char *name);
 void MakeMenus(void);
@@ -497,21 +475,17 @@ void LoadIconFont(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 void LoadWindowFont(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		    unsigned long context, char *action, int *Module);
 
-#ifdef BORDERSTYLE
 void SetBorderStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		    unsigned long context, char *action, int *Module);
 
-#endif
 void SetMenuStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		  unsigned long context, char *action, int *Module);
 void SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		   unsigned long context, char *action, int *Module);
 
-#ifdef MULTISTYLE
 void AddTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		   unsigned long context, char *action, int *Module);
 
-#endif
 void SetDeskSize(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		 unsigned long context, char *action, int *Module);
 void SetOpaque(XEvent * eventp, Window w, ScwmWindow * tmp_win,

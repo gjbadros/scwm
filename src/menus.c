@@ -1045,10 +1045,8 @@ scanForPixmap(char *instring, Picture ** p, char identifier)
   char name[100];
   extern char *IconPath;
 
-#ifdef XPM
   extern char *PixmapPath;
 
-#endif
 
   /* save instring in case can't find pixmap */
   save_instring = (char *) safemalloc(strlen(instring) + 1);
@@ -1078,11 +1076,7 @@ scanForPixmap(char *instring, Picture ** p, char identifier)
       name[i] = 0;
 
       /* Next, check for a color pixmap */
-#ifdef XPM
       pp = CachePicture(dpy, Scr.Root, IconPath, PixmapPath, name);
-#else
-      pp = CachePicture(dpy, Scr.Root, IconPath, IconPath, name);
-#endif
       if (*txt != '\0')
 	txt++;
       while (*txt != '\0') {

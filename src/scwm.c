@@ -41,9 +41,7 @@
 #include <X11/Xatom.h>
 /* need to get prototype for XrmUniqueQuark for XUniqueContext call */
 #include <X11/Xresource.h>
-#ifdef SHAPE
 #include <X11/extensions/shape.h>
-#endif /* SHAPE */
 
 #if defined (sparc) && defined (SVR4)
 /* Solaris has sysinfo instead of gethostname.  */
@@ -125,11 +123,9 @@ static char l_g_bits[] =
 #define s_g_width 4
 #define s_g_height 4
 
-#ifdef SHAPE
 int ShapeEventBase, ShapeErrorBase;
 Boolean ShapesSupported = False;
 
-#endif
 
 long isIconicState = 0;
 extern XEvent Event;
@@ -340,9 +336,7 @@ scwm_main(int argc, char **argv)
     scwm_msg(ERR, "main", "Screen %d is not a valid screen", (char *) Scr.screen);
     exit(1);
   }
-#ifdef SHAPE
   ShapesSupported = XShapeQueryExtension(dpy, &ShapeEventBase, &ShapeErrorBase);
-#endif /* SHAPE */
 
   InternUsefulAtoms();
 
@@ -814,9 +808,6 @@ CreateCursors(void)
 void 
 LoadDefaultLeftButton(ButtonFace * bf, int i)
 {
-#ifndef VECTOR_BUTTONS
-  bf->style = SimpleButton;
-#else
   bf->style = VectorButton;
   switch (i % 5) {
   case 0:
@@ -893,7 +884,6 @@ LoadDefaultLeftButton(ButtonFace * bf, int i)
     bf->vector.num = 5;
     break;
   }
-#endif /* VECTOR_BUTTONS */
 }
 
 /***********************************************************************
@@ -905,9 +895,6 @@ LoadDefaultLeftButton(ButtonFace * bf, int i)
 void 
 LoadDefaultRightButton(ButtonFace * bf, int i)
 {
-#ifndef VECTOR_BUTTONS
-  bf->style = SimpleButton;
-#else
   bf->style = VectorButton;
   switch (i % 5) {
   case 0:
@@ -984,7 +971,6 @@ LoadDefaultRightButton(ButtonFace * bf, int i)
     bf->vector.num = 5;
     break;
   }
-#endif /* VECTOR_BUTTONS */
 }
 
 /***********************************************************************
@@ -1049,12 +1035,10 @@ void
 DestroyScwmDecor(ScwmDecor * fl)
 {
 
-#ifdef USEDECOR
   if (fl->tag) {
     free(fl->tag);
     fl->tag = NULL;
   }
-#endif
   if (fl->HiReliefGC != NULL) {
     XFreeGC(dpy, fl->HiReliefGC);
     fl->HiReliefGC = NULL;
@@ -1077,11 +1061,9 @@ InitScwmDecor(ScwmDecor * fl)
   fl->HiReliefGC = NULL;
   fl->HiShadowGC = NULL;
 
-#ifdef USEDECOR
   /*  fl->tag = NULL; */
   fl->next = NULL;
 
-#endif
 
 
 }
@@ -1177,9 +1159,7 @@ InitVariables(void)
   decor2scm(&Scr.DefaultDecor);
   DECORREF(Scr.DefaultDecor.scmdecor);
 
-#ifdef USEDECOR
   Scr.DefaultDecor.tag = "default";
-#endif
 
   Scr.SmartPlacementIsClever = False;
   Scr.ClickToFocusPassesClick = True;
@@ -1343,13 +1323,8 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 void 
 usage(void)
 {
-#if 0
-  scwm_msg(INFO, "usage", "\nScwm Version %s Usage:\n\n", VERSION);
-  scwm_msg(INFO, "usage", "  %s [-d dpy] [-debug] [-f config_cmd] [-s] [-blackout] [-version] [-h]\n", g_argv[0]);
-#else
   fprintf(stderr, "\nScwm Version %s Usage:\n\n", VERSION);
   fprintf(stderr, "  %s [-d dpy] [-debug] [-e expression] [-f rc_file] [-s] [-i] [-blackout] [-version] [-h]\n\n", g_argv[0]);
-#endif
 }
 
 /****************************************************************************

@@ -59,12 +59,10 @@ SCM stick(SCM win);
 SCM unstick(SCM win);
 SCM sticky_p(SCM win);
 
-#ifdef WINDOWSHADE
 SCM window_shade(SCM win);
 SCM un_window_shade(SCM win);
 SCM window_shaded_p(SCM win);
 
-#endif /* WINDOWSHADE */
 
 SCM set_animation_x(SCM vector);
 SCM move_to(SCM x, SCM y, SCM win, SCM animated, SCM move_pointer_too);

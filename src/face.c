@@ -220,9 +220,7 @@ flagval) { ButtonFace *bf;
 }
 
 
-#ifdef XPM
 extern char *PixmapPath;
-#endif
 
 extern char *IconPath;
 
@@ -413,11 +411,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	pixmap=gh_scm2newstr(arg,&dummy);
 	p = CachePicture(dpy, Scr.Root,
 			 IconPath,
-#ifdef XPM
 			 PixmapPath,
-#else
-			 NULL,
-#endif
 			 pixmap);
 	if (p==NULL) {
 	  /* signal an error: couldn't load picture */
@@ -473,19 +467,13 @@ ButtonFace *append_new_face(ButtonFace *bf) {
   }
 }
 
-#ifdef USEDECOR
 extern ScwmDecor *cur_decor;
-#endif
 
 
 SCM
 set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
 {
-#ifdef USEDECOR
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  ScwmDecor *fl = &Scr.DefaultDecor;
-#endif
 
   if (!(SCM_NIMP(active_up) && FACEP(active_up))) {
     scm_wrong_type_arg("set-title-face!",1,active_up);
@@ -519,11 +507,7 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
   int n;
   int left_p;
 
-#ifdef USEDECOR
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  ScwmDecor *fl = &Scr.DefaultDecor;
-#endif
 
   n=0;
 
@@ -573,11 +557,7 @@ SCM
 set_button_mwm_flag_x(SCM button, SCM flag) 
 {
   int n;
-#ifdef USEDECOR
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  ScwmDecor *fl = &Scr.DefaultDecor;
-#endif
 
   n=0;
 
@@ -603,11 +583,7 @@ set_button_mwm_flag_x(SCM button, SCM flag)
 SCM
 set_border_face_x(SCM active, SCM inactive) 
 {
-#ifdef USEDECOR
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#else
-  ScwmDecor *fl = &Scr.DefaultDecor;
-#endif
 
   if (!(SCM_NIMP(active) && FACEP(active))) {
     scm_wrong_type_arg("set-border-face!",1,active);
@@ -713,7 +689,6 @@ void
 FreeButtonFace(Display * dpy, ButtonFace * bf)
 {
   switch (bf->style & ButtonFaceTypeMask) {
-#ifdef GRADIENT_BUTTONS
   case HGradButton:
   case VGradButton:
     /* - should we check visual is not TrueColor before doing this? 
@@ -724,27 +699,22 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
     free(bf->u.grad.pixels);
     bf->u.grad.pixels = NULL;
     break;
-#endif
 
-#ifdef PIXMAP_BUTTONS
   case PixmapButton:
   case TiledPixmapButton:
     if (bf->u.p)
       DestroyPicture(dpy, bf->u.p);
     bf->u.p = NULL;
     break;
-#endif
   default:
     break;
   }
-#ifdef MULTISTYLE
   /* delete any compound styles */
   if (bf->next) {
     FreeButtonFace(dpy, bf->next);
     free(bf->next);
   }
   bf->next = NULL;
-#endif
   bf->style &= ~ButtonFaceTypeMask;
   bf->style |= SimpleButton;
 }
