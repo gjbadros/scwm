@@ -58,6 +58,14 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 		     (set! row (+ 1 row))))))
     row))
 
+(define-public (clist-set-row-text clist row cols)
+  "Set the text of ROW of CLIST to COLS.
+COLS is a list of strings."
+  (let ((i 0))
+    (for-each (lambda (val)
+		(gtk-clist-set-row clist row i val)
+		(set! i (1+ i)))
+	      cols)))
 
 (define ui-box-spacing 4)
 (define ui-box-border 5)
@@ -94,42 +102,41 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 	 (string-append (keymask-keycode->string modmask keybut))))
    binding))
 
+(define (binding-clist-set-row! x binding)
+  (let* ((key (raw-binding->key-descriptor binding))
+	 (proc (list-ref binding 4))
+	 (proc2 (list-ref binding 5))
+	 (procname (procedure->string proc))
+	 (procname2 (procedure->string proc2))
+	 (is-mouse (car binding)))
+    (vector-set! x 0 key)
+    (if is-mouse
+	(begin
+	  (if proc
+	      (begin
+		(vector-set! x 1 "Complex")
+		(vector-set! x 2 procname)))
+	  (if proc2
+	      (begin
+		(vector-set! x 1 "Immed")
+		(vector-set! x 2 procname2))))
+	;; not a mouse binding (i.e., key)
+	(begin
+	  (if proc
+	      (begin
+		(vector-set! x 1 "Press")
+		(vector-set! x 2 procname)))
+	  (if proc2
+	      (begin
+		(vector-set! x 1 "Release")
+		(vector-set! x 2 procname2)))))))
 
 (define (populate-clist-with-bindings-from clist context)
   (let ((x #("Key" "Type" "Command")))
     (for-each
      (lambda (binding)
-       (let* ((key (raw-binding->key-descriptor binding))
-	      (proc (list-ref binding 4))
-	      (proc2 (list-ref binding 5))
-	      (procname (procedure->string proc))
-	      (procname2 (procedure->string proc2))
-	      (is-mouse (car binding)))
-	 (vector-set! x 0 key)
-	 (if is-mouse
-	     (begin
-	       (if proc
-		   (begin
-		     (vector-set! x 1 "Complex")
-		     (vector-set! x 2 procname)
-		     (gtk-clist-append clist x)))
-	       (if proc2
-		   (begin
-		     (vector-set! x 1 "Immed")
-		     (vector-set! x 2 procname2)
-		     (gtk-clist-append clist x))))
-	     ;; not a mouse binding (i.e., key)
-	     (begin
-	       (if proc
-		   (begin
-		     (vector-set! x 1 "Press")
-		     (vector-set! x 2 procname)
-		     (gtk-clist-append clist x)))
-	       (if proc2
-		   (begin
-		     (vector-set! x 1 "Release")
-		     (vector-set! x 2 procname2)
-		     (gtk-clist-append clist x)))))))
+       (binding-clist-set-row! x binding)
+       (gtk-clist-append clist x))
      (sort!
       (lookup-procedure-bindings #f context)
       (lambda (a b)
@@ -165,6 +172,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 	(newline))))
 
 (define-public pb-cmd-clist #f)
+(define current-type "unset")
 
 (define (make-type-option-menu types)
   (let ((menu (gtk-menu-new))
@@ -172,6 +180,9 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (for-each (lambda (text) 
 		(let ((mi (gtk-radio-menu-item-new-with-label group text)))
 		  (gtk-menu-append menu mi)
+		  (gtk-signal-connect mi "activate"
+				      (lambda ()
+					(set! current-type text)))
 		  (set! group mi)))
 	      types)
     (gtk-widget-show menu)
@@ -183,11 +194,21 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 (define (make-key-type-option-menu)
   (make-type-option-menu (list "Press" "Release")))
 
+(define (remove-binding key type command)
+  noop)
+
+(define (remove-binding-for-row clist row)
+  (apply remove-binding (gtk-clist-get-row-values clist row 2)))
+
+(define (add-binding key type command)
+  #f)
+
 (define-public (prompt-binding-vbox)
   (let* ((name (symbol->string (caar contexts-and-descriptions)))
 	 (description (string-append descr-prefix-string (cdar contexts-and-descriptions)))
 	 (current-documented-command "")
 	 (current-cmd-row #f)
+	 (current-binding-row #f)
 	 (context-frame (gtk-frame-new name))
 	 (vbox (gtk-vbox-new #f 0))
 	 (ins-del-bbox (gtk-hbutton-box-new))
@@ -200,10 +221,10 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 	 (clist (gtk-clist-new-with-titles #("Key" "Type" "Command")))
 	 (scroller (gtk-scrolled-window-new)))
     
-    (gtk-widget-set-state insert 'insensitive)
-    (gtk-widget-set-state copy 'insensitive)
-    (gtk-widget-set-state change 'insensitive)
-    (gtk-widget-set-state delete 'insensitive)
+    ;;(gtk-widget-set-state insert 'insensitive)
+    ;;(gtk-widget-set-state copy 'insensitive)
+    ;;(gtk-widget-set-state change 'insensitive)
+    ;;(gtk-widget-set-state delete 'insensitive)
 
     (gtk-widget-set-usize context-label 400 32)
     (gtk-widget-set-usize scroller 400 250)
@@ -367,25 +388,48 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
       (gtk-signal-connect insert "clicked" 
 			  ;; prompt-binding:insert
 			  (lambda ()
-			    noop))
+			    (let ((x #("Null" "Press" "noop")))
+			      (gtk-clist-insert clist current-binding-row x)
+			      (gtk-clist-select-row clist current-binding-row 0)
+			      )))
 
-      ;; the delete button in the binding frame at the top
+      ;; the copy button in the binding frame at the top
       (gtk-signal-connect copy "clicked" 
 			  ;; prompt-binding:copy
 			  (lambda ()
-			    noop))
+			    (let* ((vals (gtk-clist-get-row-values clist current-binding-row 2)))
+			      (gtk-clist-insert clist current-binding-row vals)
+			      (gtk-clist-select-row clist current-binding-row 0))))
 
-      ;; the delete button in the binding frame at the top
+      ;; the change button in the binding frame at the top
       (gtk-signal-connect change "clicked" 
 			  ;; prompt-binding:change
+			  ;; get changes from
+			  ;; key, 
+			  ;; key-type-option-menu or button-type-option-menu, [in current-type]
+			  ;; and entry (the proc name)
 			  (lambda ()
-			    noop))
+			    (let* ((key-name (gtk-entry-get-text key))
+				   (proc-name (gtk-entry-get-text entry))
+				   (x #(key-name current-type proc-name)))
+			      (let ((code-to-add-binding (add-binding key-name current-type proc-name)))
+				;; above gives #f if the binding is no good
+				(if code-to-add-binding
+				    (begin
+				      (remove-binding-for-row clist current-binding-row)
+				      (code-to-add-binding)
+				      (clist-set-row-text clist 
+							  current-binding-row 
+							  (list key-name current-type proc-name)))
+				    (beep))))))
 
       ;; the delete button in the binding frame at the top
-      (gtk-signal-connect delete "clicked" 
+      (gtk-signal-connect delete "clicked"
 			  ;; prompt-binding:delete
 			  (lambda ()
-			    noop))
+			    (remove-binding-for-row clist current-binding-row)
+			    (gtk-clist-remove clist current-binding-row)
+			    (gtk-clist-select-row clist current-binding-row 0)))
 
       ;; the "set" button next to the name of the procedure
       ;; that we've bound to the event
@@ -393,7 +437,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 			  (lambda ()
 			    (gtk-entry-set-text entry current-documented-command)))
 
-
+      ;; the "grab" button next to the event descriptor (e.g., A-Button2)
       (gtk-signal-connect grab-key-button "clicked"
 			  (lambda ()
 			    (gtk-entry-set-text key (car (get-key-event)))))
@@ -404,6 +448,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
        ;; prompt-binding:select-row
        (lambda (row col event)
 	 (debug-clist-select "bindings" row col event)
+	 (set! current-binding-row row)
 	 (let* ((key-cmd-other (gtk-clist-get-row-values clist row 3))
 		(key-text (car key-cmd-other))
 		(type (cadr key-cmd-other))
@@ -420,7 +465,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 		(gtk-widget-hide button-type-option-menu))
 	      (gtk-widget-show key-type-option-menu))))))
       (gtk-widget-show-all vbox)
-      (gtk-widget-hide button-type-option-menu)
+      (gtk-clist-select-row clist 0 0)
       vbox)))
 
 (define*-public (prompt-binding #&optional (title "Bindings"))
