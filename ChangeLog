@@ -1,3 +1,7 @@
+Mon Aug  3 15:11:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* TODO: Updated to include 0.8 list, some other commentary.
+
 Wed Jul 29 19:18:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in, acconfig.h, scwm/Makefile.am: Check for -lXmu and
