@@ -719,10 +719,12 @@ that corner fixed."
 	  )))))
 
 (define-public (next-visible-non-iconified-window)
-  (next-window #:only visible? #:except iconified?))
+  (next-window #:only (lambda (win) (and (visible? win) (focussable-window? win) (not (window-shaded? win))))
+	       #:except iconified?))
 
 (define-public (prev-visible-non-iconified-window)
-  (prev-window #:only visible? #:except iconified?))
+  (prev-window #:only (lambda (win) (and (visible? win) (focussable-window? win) (not (window-shaded? win))))
+	       #:except iconified?))
 
 (define-public (window-task-switcher-menu)
   (show-window-list-menu #t #:by-focus #t #:show-last-focus-time #t
@@ -755,3 +757,13 @@ that corner fixed."
   (send-key-press "Prior"))
 (define-public (send-key-press-next)
   (send-key-press "Next"))
+
+(define*-public (vertical-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize 0 (%y 100) win))
+
+(define*-public (horizontal-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize (%x 100) 0 win))
+
+(define*-public (both-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize (%x 100) (%y 100)) win)
+

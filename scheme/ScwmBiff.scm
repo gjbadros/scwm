@@ -42,13 +42,15 @@
 	 (passive-image #f)
 	 (active-image #f)
 	 (state-active #f)
+	 (toplevel (if (not parent)
+		       (gtk-window-new 'toplevel)
+		       (#f)))
+	 (imagepath (find-file-in-path passive-icon-name image-load-path))
 	 )
     (if (not parent)
 	(begin
-	  (define toplevel (gtk-window-new 'toplevel))
 	  (gtk-window-set-title toplevel name)
 	  (gtk-window-set-wmclass toplevel name "Scwm")))
-    (define imagepath (find-file-in-path passive-icon-name image-load-path))
     (if (string? imagepath)
 	(begin
 	  (set! passive-image (gtk-pixmap-new imagepath button))
