@@ -112,3 +112,8 @@ scwmpaths.h: ../config.status
 	@mv scwmpaths.tmp scwmpaths.h
 
 CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
+
+# Want etags to mark SCM_SYMBOL macros and SCWM_PROC macros
+# Note that we mark through the 2nd argument to SCWM_PROC so we
+# get the scheme procedure name, too (not just the C function name)
+ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*([^,]*/' --regex='/[ \t]*SCWM_PROC[ \t]*([^,]*,[^,]*/' *.[ch]
