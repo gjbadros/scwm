@@ -1,3 +1,8 @@
+Mon Apr 12 10:53:19 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c: Made the rewrite changes as I did to
+	drawmenu.c -- see it's ChangeLog in the last couple days.
+
 Fri Apr  9 17:08:58 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xpm-menus/draw-xpm-menu.c: Honor menuitem font, bg, fg colors.
