@@ -593,17 +593,14 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
-;; JWN:FIXME:: Due to moving the message window code from C to scheme, the
-;; select-window-interactively function was no longer able to display
-;; a message window directly from the primitive.  For this reason, the 
-;; primitive has been renamed to select-window-interactively-no-message
-;; and this scheme function has been defined to wrap that primitive
-;; and use the old name.
 (define*-public (select-window-interactively #&optional (msg #f))
+  "Return an interactively-selected window after prompting (optionally) with MSG."
   (if msg
-      (let ((msgwin (make-message-window msg)))
-	(message-window-show msgwin)
-	(select-window-interactively-no-message)
-	(message-window-hide msgwin)))
-  (select-window-interactively-no-message))
-
+      (let ((msgwin (make-message-window msg))
+	    (answer #f))
+	(message-window-show! msgwin)
+	(set! answer (select-window-interactively-no-message))
+	(message-window-hide! msgwin)
+	answer)
+      (select-window-interactively-no-message)))
+;; (select-window-interactively "foo")
