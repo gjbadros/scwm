@@ -401,6 +401,7 @@ fi
 AM_PATH_GTK(1.0.0, HAVE_GTK=yes, HAVE_GTK=no)
 
 AM_CONDITIONAL(HAVE_GTK, test $HAVE_GTK = yes)
+AM_CONDITIONAL(HAVE_GNOME_CORBA, test "$HAVE_GNOME_CORBA" = yes)
 
 AC_SUBST(SESSION_MANAGER_OBJECTS)
 
@@ -702,6 +703,7 @@ AC_OUTPUT(Makefile \
           scheme/Makefile \
           pixmaps/Makefile \
           app/Makefile \
+	  corba/Makefile \
 	  modules/Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \

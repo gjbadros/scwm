@@ -2,7 +2,11 @@
 ## process this file with automake to create Makefile.in
 ## (You should run ./autogen.sh from the top level directory)
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
+if HAVE_GNOME_CORBA
 bin_PROGRAMS = scwm-corba-exec scwm_scheme_evaluator-server
+endif
 
 idl_output_source = \
 	scwm_scheme_evaluator-common.c \
@@ -16,7 +20,6 @@ $(idl_output_source): scwm_scheme_evaluator.idl
 
 #	orbit-idl --skeleton_impl $<
 
-AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@ `gnome-config --cflags gnome`
 
