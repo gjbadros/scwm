@@ -161,9 +161,9 @@ else
 	GUILE_LIBS_PRE="-L$exec_prefix/lib"
 fi
 if test "x$prefix" = "xNONE"; then
-	GUILE_INCLUDES="-L$ac_default_prefix/include"
+	GUILE_INCLUDES="-I$ac_default_prefix/include"
 else
-	GUILE_INCLUDES="-L$prefix/include"
+	GUILE_INCLUDES="-I$prefix/include"
 fi
 
 AC_ARG_WITH(guile-prefix,
