@@ -200,7 +200,6 @@ ResetAllFlags(ScwmWindow *psw)
     psw->fIconOurs =
     psw->fPixmapOurs =
     psw->fShapedIcon =
-    psw->fMaximized =
     psw->fDoesWmTakeFocus =
     psw->fDoesWmDeleteWindow =
     psw->fIconMoved =
@@ -296,8 +295,6 @@ CopySetAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
     psw->fPixmapOurs = True;
   if ( pswSrc->fShapedIcon )
     psw->fShapedIcon = True;
-  if ( pswSrc->fMaximized )
-    psw->fMaximized = True;
   if ( pswSrc->fDoesWmTakeFocus )
     psw->fDoesWmTakeFocus = True;
   if ( pswSrc->fDoesWmDeleteWindow )
@@ -347,7 +344,6 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
   psw->fIconOurs = pswSrc->fIconOurs;
   psw->fPixmapOurs = pswSrc->fPixmapOurs;
   psw->fShapedIcon = pswSrc->fShapedIcon;
-  psw->fMaximized = pswSrc->fMaximized;
   psw->fDoesWmTakeFocus = pswSrc->fDoesWmTakeFocus;
   psw->fDoesWmDeleteWindow = pswSrc->fDoesWmDeleteWindow;
   psw->fIconMoved = pswSrc->fIconMoved;
@@ -806,13 +802,13 @@ it may be changed entirely. */
 
 SCWM_PROC(get_window, "get-window", 0, 3, 0,
           (SCM kill_p, SCM select_p, SCM release_p))
-     /** Retrieve the context window or select interactively.
-If there is no context window, a window is selected interactively.
+     /** Retrieve the window context or select interactively.
+If there is no window context, a window is selected interactively.
 The optional boolean argument KILL?  (default #f) determines whether
 to use the "kill" cursor when selecting interactively. The boolean
 SELECT? argument (default #t) determines whether or not a window
-should be selected interactively if there is no current context
-window. And finally the RELEASE? argument (default #t) determines
+should be selected interactively if there is no current window
+context. And finally the RELEASE? argument (default #t) determines
 whether or not interactive selection (if any) should wait for a mouse
 release event or just a press. The latter behavior is useful if the
 action being performed on the window is an interactive one involving
@@ -848,9 +844,9 @@ mouse drags. */
 
 SCWM_PROC (set_window_context_x, "set-window-context!", 1, 0, 0,
            (SCM win))
-     /** Set the current window context to WIN, return the old context.
+     /** Set the current window context to WIN and return the old context.
 WIN can be either a window, or #f, to reset the current window-context.
-See also `with-window'. */
+See also `with-window' and `get-window'. */
 #define FUNC_NAME s_set_window_context_x
 {
   int iarg = 1;
@@ -1629,8 +1625,8 @@ defaults to the window context in the usual way if not specified. */
 SCWM_PROC(window_deletable_p, "window-deletable?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is able to be deleted, #f otherwise.
-Scwm may call `delete-window' on WIN only if this procedure returns
-#t. WIN defaults to the window context in the usual way if not
+If this procedure returns #f, then a call to `delete-window' on WIN
+will do nothing.  WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_window_deletable_p
 {
@@ -2050,7 +2046,7 @@ SCWM_PROC(window_shade, "window-shade", 0, 1, 0,
      /** Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
-way if not specified. See also `window-shade'.*/
+way if not specified. See also `window-unshade'.*/
 #define FUNC_NAME s_window_shade
 {
   ScwmWindow *psw;
@@ -2058,7 +2054,10 @@ way if not specified. See also `window-shade'.*/
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  if (!psw->fTitle || psw->fMaximized) {
+  /* CRW:FIXME:MS: Should this refuse to shade maximized windows?
+     (It used to try to do this by looking at the unused fMaximized
+     window flag...) */
+  if (!psw->fTitle) {
     return SCM_BOOL_F;
   }
 
@@ -2213,7 +2212,6 @@ context in the usual way if not specified.*/
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  psw->fMaximized = False;
 
   /* can't resize icons */
   if (psw->fIconified) {
@@ -2253,7 +2251,6 @@ context in the usual way if not specified.*/
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  psw->fMaximized = False;
 
   /* can't resize icons */
   if (psw->fIconified) {
@@ -2276,7 +2273,7 @@ SCWM_PROC (window_size_hints, "window-size-hints", 1, 0, 0,
      /** Return a list of the window size hints associated with WIN.
 The list returned contains 4 cons pairs containing:
 '((min-width . max-width) (min-height . max-height) 
-(width-inc . height-inc) (base-width . baseheight)) */
+(width-inc . height-inc) (base-width . base-height)) */
 #define FUNC_NAME s_window_size_hints
 {
   int iarg = 1;
@@ -2602,7 +2599,7 @@ WIN defaults to the window context in the usual way if not specified. */
 SCWM_PROC(window_icon_title, "window-icon-title", 0, 1, 0,
           (SCM win))
      /** Return the icon window title of WIN.
-This is the title as requested by the application . WIN defaults to
+This is the title as requested by the application. WIN defaults to
 the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_icon_title
 {
@@ -3255,7 +3252,7 @@ In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified. If FG is #f, then lets the decor highlight
 foreground color be used (turns off a special highlight
-color for WIN. */
+color for WIN). */
 #define FUNC_NAME s_set_window_highlight_foreground_x
 {
   ScwmWindow *psw;
@@ -3280,10 +3277,10 @@ SCWM_PROC(set_window_highlight_background_x, "set-window-highlight-background!",
      /** Set the highlighted background color of WIN to BG.
 This color is used when WIN has the focus to draw most of the window
 decorations, along with the relief colors generated from it, which are
-used to draw the window's 3-D bevels.  WIN defaults to the window
-context in the usual way if not specified. If BG is #f, then lets the decor highlight
-background color be used (turns off a special highlight 
-color for WIN.   */
+used to draw the window's 3-D bevels.  WIN defaults to the window context 
+in the usual way if not specified. If BG is #f, then lets the decor 
+highlight background color be used (turns off a special highlight color 
+for WIN).   */
 #define FUNC_NAME s_set_window_highlight_background_x
 {
   ScwmDecor * fl;
@@ -3813,9 +3810,8 @@ window property primitives should be considered in flux. */
 SCWM_PROC(window_property, "window-property", 2, 0, 0,
           (SCM win, SCM prop))
      /** Retrieve window property PROP of WIN.
-
 PROP should be a symbol. #f will be returned if the property does not
-exist (wether set by `set-window-property!' or otherwise). Soon, some
+exist (whether set by `set-window-property!' or otherwise). Soon, some
 properties will have magical meanings, accessing particular fields in
 the window structure. Also, a window-property-change-hook mechanism
 will soon be implemented for notification of all window property

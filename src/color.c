@@ -45,7 +45,32 @@ once is not inefficient, as caching ensures that color objects are
 shared.
 */
 
+/**CONCEPT: Shadow and Highlight Factors
+  Many decorations are supposed to look "three-dimensional".
+To implement this, the decorations use three colors: the specified
+decoration color, a brighter "highlight" color, and a darker "shadow"
+color.  For "raised" decorations, the top and left edges are drawn in
+the highlight color, and the bottom and right edges are drawn in the
+shadow color; this is reversed for "sunken" decorations.
 
+The highlight and shadow colors are computed from the decoration color
+using the highlight and shadow factors.  The highlight factor should be
+a floating-point number greater than 1.  If the highlight factor is
+1, then the highlight color is the same as the decoration color;
+the larger the highlight factor, the brighter the highlight color.
+The shadow factor should be a floating-point number between 0 and 1.  If 
+the shadow factor is 1, then the shadow color is the same as the
+decoration color; the smaller the shadow factor, the darker the
+shadow color.
+
+(It is actually possible to give a highlight factor which is less than
+1 (which makes the highlight color darker than the decoration color)
+and a shadow factor which is greater than 1 (which makes the shadow
+color brighter than the decoration color); the effect is to reverse
+"raised" and "sunken" elements throughout the user interface.)
+
+NOTE: "highlight" is often (mis-)spelled "hilight" or even "hilite".
+*/
 
 SCM_SYMBOL (sym_name,"name");
 SCM_SYMBOL (sym_pixel,"pixel");
@@ -494,10 +519,6 @@ SCWM_PROC(hilight_factor, "hilight-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-/**VAR: shadow-factor
-   The numeric factor used in generating shadow colors in the current decor.
-*/
-   
 
 SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
            (SCM factor))
@@ -603,7 +624,7 @@ redraw_hilight_window()
 
 SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
            (SCM fg) )
-     /** Use FG for foreground color of the window with the input focus.
+     /** Use FG for the foreground color of a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
 #define FUNC_NAME s_set_hilight_foreground_x
@@ -628,7 +649,7 @@ have their own foreground color. */
 
 SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
            () )
-     /** Return the foreground color of the window with the input focus.
+     /** Return the default foreground color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
 #define FUNC_NAME s_hilight_foreground
@@ -648,7 +669,7 @@ have their own foreground color. */
 
 SCWM_PROC(set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
            (SCM bg))
-     /** Use BG as the background color for the window with input focus.
+     /** Use BG as the background color for a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own background color. */
 #define FUNC_NAME s_set_hilight_background_x
@@ -703,7 +724,7 @@ have their own background color. */
 
 SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
            () )
-     /** Return the background color for windows with the input focus.
+     /** Return the default background color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own background color. */
 #define FUNC_NAME s_hilight_background

@@ -367,8 +367,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   CassowaryModifyOpaqueFlag(&fOpaque);
 
-  psw->fMaximized = False;
-
   InstallRootColormap();
   if (!GrabEm(CURSOR_MOVE)) {
     call0_hooks(cannot_grab_hook);

@@ -400,7 +400,11 @@ SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0,
 The placement is just as if SmartPlacementIsReallySmart were not in
 effect. That is, it tries to place the window so that it does not
 overlap any other. If it fails to do so, it returns #f; otherwise it
-returns #t. */
+returns #t.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
+`set-window-placement-proc!'). */
 #define FUNC_NAME s_smart_place_window
 {
   ScwmWindow *psw;
@@ -446,7 +450,11 @@ tries to place the window so as to minimize its area of
 overlap with other windows. Several parameters give different
 weight to various kinds of windows, but they are not tunable
 at runtime currently. If it fails to place the window, it
-returns #f; otherwise it returns #t. */
+returns #f; otherwise it returns #t.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
+`set-window-placement-proc!'). */
 #define FUNC_NAME s_clever_place_window
 {
   ScwmWindow *psw;
@@ -480,7 +488,11 @@ This placement is not truly random; it is based on two state variables
 which are incremented for the x and y coordinates, and which wrap
 around once a window would be forced off the screen. The placement is
 fairly arbitrary, but always succeeds, and so avoids user
-interaction. #t is always returned. */
+interaction. #t is always returned.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
+`set-window-placement-proc!'). */
 #define FUNC_NAME s_random_place_window
 {
   ScwmWindow *psw;
@@ -515,11 +527,13 @@ SCWM_PROC(default_placement_proc, "default-placement-proc", 1, 0, 0,
 This is the default placement procedure for non-transient windows. It
 tries `smart-place-window', `clever-place-window',
 `random-place-window', or `interactive-move' (to achieve interactive
-placement) on WIN depending on several style flags. However,
-if one of the following factors holds, the window will instead be
-placed exactly as requested by the program: the position was specified
-by the user, the position was specified by the program, and
-#:no-PPosition-hint is not set, or the window starts iconic. */
+placement) on WIN depending on several style flags. (See
+`set-smart-placement-is-really-smart!', `set-smart-placement!',
+and `set-random-placement!'.) However, if one of the following 
+factors holds, the window will instead be placed exactly as 
+requested by the program: the position was specified by the user, 
+the position was specified by the program and #:no-PPosition-hint 
+is not set, or the window starts iconic. */
 #define FUNC_NAME s_default_placement_proc
 { 
   ScwmWindow *psw;
@@ -586,6 +600,8 @@ It simply leaves the window WIN in place, exactly as requested. */
 /*
  * Handles initial placement and sizing of a new window
  * Returns False in the event of a lost window.
+ * CRW:FIXME:MS: I'm not sure what a "lost window" is, but as far as I can
+ * tell, this never returns False.
  */
 Bool 
 PlaceWindow(ScwmWindow *psw, int Desk)

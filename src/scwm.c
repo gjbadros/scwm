@@ -788,7 +788,7 @@ Repository Timestamp: %s\n",
     exit(1);
   }
   /*  Add a DISPLAY entry to the environment, incase we were started
-   * with scwm -display term:0.0
+   * with scwm --display term:0.0
    */
   len = strlen(XDisplayString(dpy));
   display_string = NEWC(len+10,char);

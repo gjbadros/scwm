@@ -109,7 +109,7 @@ FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
 of FORMAT-bit integers.
-ACTION - one of the symbols 'replace, 'prepend, or 'append signifying
+ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
 how the new VALUE should be merged (if at all) with the existing
 value. */
 #define FUNC_NAME s_X_property_set_x

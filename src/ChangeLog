@@ -1,3 +1,39 @@
+Sat Dec 12 00:09:50 1998  Carl R. Witty  <cwitty@newtonlabs.com>
+
+	* color.c (Shadow and Highlight Factors): New concept doc.
+
+	* Grab.c (s_X_ungrab_server): Rewrite doc.
+
+	* xproperty.c (s_X_property_set_x): Rewrite doc.
+
+	* window.c (s_window_deletable_p): Rewrite doc.
+	(s_window_shade): Typo fix in doc.
+	(s_window_size_hints): Typo fix in doc.
+
+	* miscprocs.c (s_wait_for_window): Update doc.
+
+	* window.c (s_set_window_context_x): Rewrite doc.
+	(s_get_window): Rewrite doc.
+
+	* color.c (s_set_hilight_foreground_x, s_hilight_foreground,
+ 	s_set_hilight_background_x, s_hilight_background): Rewrite docs.
+
+	* face.c (s_set_face_flag_x): Update doc.
+
+	* scwm.c (scwm_main): Typo fix in comment.
+
+	* window.c (s_window_property): Typo fix in doc.
+
+	* deskpage.c (s_set_edge_move_threshold_x): Rewrite doc.
+
+	* window.h, window.c, resize.c, borders.c, add_window.c: Eliminate
+ 	the fMaximized window flag.  (Nothing ever set this flag to True.)
+
+	* placement.c (s_smart_place_window, s_clever_place_window,
+ 	s_random_place_window, s_default_placement_proc): Update docs
+ 	(basically, add cross-referencing).
+	(PlaceWindow): Add FIXME comment.
+
 1998-12-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* Makefile.am (guile_snarfs): Snarf "session-manager.c".

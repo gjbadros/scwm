@@ -342,7 +342,6 @@ AddWindow(Window w)
 
   psw->fIconified = False;
   psw->fIconUnmapped = False;
-  psw->fMaximized = False;
 
   /* add the window into the scwm list */
   psw->next = Scr.ScwmRoot.next;

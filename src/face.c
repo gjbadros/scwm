@@ -347,7 +347,7 @@ faster. If only C had closures... */
 SCWM_PROC(set_face_flag_x,"set-face-flag!", 3, 0, 0,
           (SCM face, SCM flag, SCM flagval))
      /** Set the given FLAG to the given FLAGVAL for face FACE.
-See the section on the face-specification-flags concept. */
+See the section on the `Face Flags' concept. */
 #define FUNC_NAME s_set_face_flag_x
 {
   ButtonFace *bf;
@@ -553,7 +553,7 @@ title and border faces, are indicated below.
 
 ButtonFace *append_new_face(ButtonFace *bf);
 
-/**CONCEPT: Face Specification flags
+/**CONCEPT: Face Specification Flags
   Face specification flags are two-element lists that specify certain
 properties that may be chained to indicate how a face is drawn. Face
 specs may be fully or partially destructive. A fully destructive spec
@@ -588,7 +588,7 @@ or darker color. This spec is partially destructive.
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
-     '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
+     '(gradient ({horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL))
          </programlisting></informalexample></para></entry><entry>
      Draw a gradient in this element.  The gradient may be horizontal or
 vertical. The number of colors is specified, followed by a number of
@@ -597,7 +597,7 @@ colors with percentages and a final color. The percentages must add to
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
-      '(pixmap {'mini-icon|['tiled] IMAGE})
+      '(pixmap {mini-icon|IMAGE|(tiled IMAGE)})
          </programlisting></informalexample></para></entry><entry>
       Specify a pixmap to use, either the window's mini-icon, an image
 object or image specifier string, or a list of tiled and an image,
@@ -956,7 +956,8 @@ SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
      /** Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
-when the window is maximized. */
+when the window is maximized (has a non-#f "maximized" window
+property). */
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;

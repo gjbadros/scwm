@@ -197,13 +197,14 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 
 
     /* FIXGJB: using an object property below */
+    /* CRW:FIXME:: Don't use gh_symbol2scm; make a static symbol. */
   case VectorButton:
     if ((psw->fMWMButtons)
 	&& (stateflags & MWMButton)
-	&& (psw->fMaximized || (SCM_NFALSEP
-			      (scm_object_property
-			       (psw->schwin,
-				gh_symbol2scm("maximized"))))))
+	&& (SCM_NFALSEP
+	    (scm_object_property
+	     (psw->schwin,
+	      gh_symbol2scm("maximized")))))
       DrawLinePattern(win,
 		      ShadowGC, ReliefGC,
 		      &bf->vector,

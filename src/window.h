@@ -166,7 +166,6 @@ struct ScwmWindow {
   PackedBool(fIconOurs);
   PackedBool(fPixmapOurs);
   PackedBool(fShapedIcon);
-  PackedBool(fMaximized);
   PackedBool(fDoesWmTakeFocus);
   PackedBool(fDoesWmDeleteWindow);
   PackedBool(fIconMoved);	/* has the icon been moved by the user? */

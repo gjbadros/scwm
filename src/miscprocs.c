@@ -38,7 +38,7 @@ SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
      /** Set the justification for the title to JUST.
 JUST should be one of 'right, 'left, or 'center. Applies to the
-current decor */
+current decor. */
 #define FUNC_NAME s_set_title_justify_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -288,12 +288,15 @@ scratch. This is hopefully not necessary during normal operation. */
 #undef FUNC_NAME
 
 /* FIXGJB: should we dump wait-for-window? */
+/* CRW:FIXME:: I think it should go; as far as I can tell, it's at least
+as dangerous as locking the server. */
 
 SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
           (SCM predicate))
      /** Wait until a window appears which satisfies PREDICATE. 
 Given the existence of before-new-window-hook, this is of questionable
-usefulness and may be removed. */
+usefulness and may be removed. Note that if no window satisfying PREDICATE
+ever appears, this will block scwm forever. */
 #define FUNC_NAME s_wait_for_window
 {
   Bool done = False;
