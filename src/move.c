@@ -485,9 +485,16 @@ DisplayMessage(const char *sz, Bool fRelief)
   SCM scmFgRelief, scmBgRelief;
   scmBgRelief = adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
   scmFgRelief = adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
-  
-  SetGCFg(gcHilite,XCOLOR(scmFgRelief));
-  SetGCFg(gcShadow,XCOLOR(scmBgRelief));
+
+  if (scmFgRelief)
+    SetGCFg(gcHilite,XCOLOR(scmFgRelief));
+  else
+    SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
+
+  if (scmBgRelief)
+    SetGCFg(gcShadow,XCOLOR(scmBgRelief));
+  else
+    SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
 
   win_x = Scr.msg_window_x + (Scr.msg_window_x_align * winwidth);
   win_y = Scr.msg_window_y + (Scr.msg_window_y_align * winheight);
