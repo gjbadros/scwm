@@ -122,7 +122,7 @@ static void
 MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
 {
   static Pixel LastBGColor;
-  static double last_hilight_factor, last_shadow_factor;
+  static double last_highlight_factor, last_shadow_factor;
   unsigned long gcm;
   XGCValues gcv;
   Pixel Bright, Dim;
@@ -130,11 +130,11 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   InitGCs();
   
   if (pmd->pmdi->BGColor != LastBGColor ||
-      menu_hilight_factor_val != last_hilight_factor ||
+      menu_highlight_factor_val != last_highlight_factor ||
       menu_shadow_factor_val != last_shadow_factor) {
     /* Relief.fg */
     Bright = adjust_pixel_brightness(pmd->pmdi->BGColor,
-				     menu_hilight_factor_val);
+				     menu_highlight_factor_val);
     /* Relief.bg */
     Dim = adjust_pixel_brightness(pmd->pmdi->BGColor,
 				  menu_shadow_factor_val);
@@ -150,7 +150,7 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
     XChangeGC(dpy, MenuShadowGC, gcm, &gcv);
 
     LastBGColor = pmd->pmdi->BGColor;
-    last_hilight_factor = menu_hilight_factor_val;
+    last_highlight_factor = menu_highlight_factor_val;
     last_shadow_factor = menu_shadow_factor_val;
   }
   

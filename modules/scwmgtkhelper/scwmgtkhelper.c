@@ -44,6 +44,7 @@ Returns -1 if gdk_display is not initialized. */
 #undef FUNC_NAME 
 
 extern void newhandler(int sig);
+extern void newhandler_doreset(int sig);
 extern void newsegvhandler(int sig);
 extern void Restart(int nonsense);
 extern XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
@@ -61,6 +62,7 @@ after the (gtk gtk) module. */
      thing in scwm.c */
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGINT);
+  newhandler_doreset(SIGFPE);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   if (fHandleSegv)
