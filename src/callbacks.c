@@ -301,49 +301,56 @@ WarnBadHook(SCM hook)
 
 #ifdef HAVE_SCM_MAKE_HOOK
 
+static SCM run_hook_proc;
+
+__inline__ SCM scwm_run_hook(SCM hook, SCM args)
+{
+  return scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
+}
+
 __inline__ SCM call0_hooks(SCM hook)
 {
-  return scm_run_hook(hook,SCM_EOL);
+  return scwm_run_hook(hook,SCM_EOL);
 }
 
 __inline__ SCM call1_hooks(SCM hook, SCM arg1)
 {
-  return scm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
 }
 
 __inline__ SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
 }
 
 __inline__ SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
 }
 
 __inline__ SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
 }
 
 __inline__ SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
 }
 
 __inline__ SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
 }
 
 __inline__ SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
 {
-  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
 }
 
 __inline__ SCM apply_hooks(SCM hook, SCM args)
 {
-  return scm_run_hook(hook,args);
+  return scwm_run_hook(hook,args);
 }
 
 #else
@@ -973,6 +980,10 @@ void init_callbacks()
   timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));
   input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
   new_input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
+
+#ifdef HAVE_SCM_MAKE_HOOK
+  run_hook_proc = gh_lookup("run-hook");
+#endif
 
 #ifndef SCM_MAGIC_SNARFER
 #include "callbacks.x"

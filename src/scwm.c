@@ -245,6 +245,11 @@ Atom XA_WIN_SUPPORTING_WM_CHECK;
 
 static Window BlackoutWin = None; /* window to hide window captures */
 
+long basic_event_mask = (LeaveWindowMask | EnterWindowMask | PropertyChangeMask |
+                         SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
+                         SubstructureNotifyMask |
+                         ButtonPressMask | ButtonReleaseMask);
+
 static void 
 InternUsefulAtoms(void)
 {
@@ -958,11 +963,7 @@ Repository Timestamp: %s\n",
   
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
-  XSelectInput(dpy, Scr.Root,
-	       LeaveWindowMask | EnterWindowMask | PropertyChangeMask |
-	       SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
-	       SubstructureNotifyMask |
-	       ButtonPressMask | ButtonReleaseMask);
+  XSelectInput(dpy, Scr.Root,basic_event_mask);
   XSync(dpy, 0);
   
   XSetErrorHandler((XErrorHandler) ScwmErrorHandler);

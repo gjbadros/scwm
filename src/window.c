@@ -79,9 +79,13 @@ SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1);
 The hook procedures are called with a single argument, the window just left.
 This hook is not invoked upon selection completion (unlike
 `select-window-enter-hook' that is called initially upon calling
-`select-window-interactively-no-message').
+`select-window-interactively-no-message'). See also `select-window-done-hook'.
 */
 
+SCWM_HOOK(select_window_done_hook,"select-window-done-hook",1);
+  /** This hooks is run when a window is selected.
+The hook procedures are called with a single argument, the window just left.
+See also `select-window-enter-hook' and `select-window-leave-hook'. */
 
 /* also used by miscproc.c's set-colormap-focus! */
 SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
@@ -1468,6 +1472,8 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
+
+  call1_hooks(select_window_done_hook, (*ppsw)->schwin);
 
   UngrabEm();
   return True;

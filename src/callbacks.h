@@ -31,6 +31,12 @@
 #include <sys/select.h>  /* for file descriptors */
 #endif
 
+#ifdef HAVE_SCM_MAKE_HOOK
+#define SCWM_MAKE_HOOK(args) scm_permanent_object(scm_make_hook(gh_int2scm(args)))
+#else
+#define SCWM_MAKE_HOOK(args) SCM_EOL
+#endif
+
 SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
 SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 
@@ -58,23 +64,6 @@ SCM call7_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5
 
 SCM apply_hooks (SCM hook_type, SCM args);
 SCM apply_hooks_message_only (SCM hook_type, SCM args);
-
-#if 0
-/* GJB:FIXME:: new style hooks are not yet supported */
-#define call0_hooks(hook) run_hook(hook,SCM_EOL)
-#define call1_hooks(hook,a1) run_hook(hook,gh_list(a1,SCM_UNDEFINED))
-#define call2_hooks(hook,a1,a2) run_hook(hook,gh_list(a1,a2,SCM_UNDEFINED))
-#define call3_hooks(hook,a1,a2,a3) run_hook(hook,gh_list(a1,a2,a3,SCM_UNDEFINED))
-#define call4_hooks(hook,a1,a2,a3,a4) run_hook(hook,gh_list(a1,a2,a3,a4,SCM_UNDEFINED))
-#define call5_hooks(hook,a1,a2,a3,a4,a5) run_hook(hook,gh_list(a1,a2,a3,a4,a5,SCM_UNDEFINED))
-#define call6_hooks(hook,a1,a2,a3,a4,a5,a6) run_hook(hook,gh_list(a1,a2,a3,a4,a5,a6,SCM_UNDEFINED))
-#define call7_hooks(hook,a1,a2,a3,a4,a5,a6,a7) run_hook(hook,gh_list(a1,a2,a3,a4,a5,a6,a7,SCM_UNDEFINED))
-
-#define apply_hooks(hook,args) run_hook(hook,args)
-#define apply_hooks_message_only(hook,args) run_hook(hook,args)
-
-#endif
-
 
 int /* Bool */ FEmptyHook(SCM hook);
 

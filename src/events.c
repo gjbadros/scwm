@@ -108,6 +108,8 @@
 extern SCM sym_root_window;
 extern Bool fQuotingKeystrokes;
 
+static SCM x_motionnotify_hook;
+
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
 for a window scwm is managing. This indicates that an X window
@@ -209,8 +211,8 @@ int last_event_type = 0;
 Window last_event_window = 0;
 
 extern int ShapeEventBase;
-void HandleShapeNotify(void);
-
+static void HandleShapeNotify();
+static void HandleMotionNotify();
 
 Window PressedW;
 
@@ -256,17 +258,15 @@ InitEventHandlerJumpTable(void)
   EventHandlerJumpTable[VisibilityNotify] = HandleVisibilityNotify;
   EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
   EventHandlerJumpTable[MappingNotify] = HandleMappingNotify;
+  EventHandlerJumpTable[MotionNotify] = HandleMotionNotify;
 
   if (ShapesSupported)
     EventHandlerJumpTable[ShapeEventBase + ShapeNotify] = HandleShapeNotify;
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	DispatchEvent - handle a single X event stored in global var Event
- *
- ************************************************************************/
+/*
+ * DispatchEvent - handle a single X event stored in global var Event
+ */
 void 
 DispatchEvent()
 {
@@ -288,12 +288,9 @@ DispatchEvent()
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleEvents - handle X events
- *
- ************************************************************************/
+/*
+ * HandleEvents - handle X events
+ */
 void 
 HandleEvents(void)
 {
@@ -442,7 +439,7 @@ HandleFocusIn()
   while (XCheckTypedEvent(dpy, FocusIn, &d)) {
     w = d.xany.window;
   }
-  pswCurrent = PswFromWindow(dpy,w);
+  pswCurrent = PswFromAnyWindow(dpy,w);
   if (!pswCurrent) {
     if (w != Scr.NoFocusWin) {
       Scr.UnknownWinFocused = w;
@@ -760,13 +757,9 @@ HandleScwmExec()
 }
 #undef FUNC_NAME
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandlePropertyNotify - property notify event handler
- *
- ***********************************************************************/
-
+/*
+ * HandlePropertyNotify - property notify event handler
+ */
 void 
 HandlePropertyNotify()
 {
@@ -933,12 +926,9 @@ HandlePropertyNotify()
 #undef FUNC_NAME
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleClientMessage - client message event handler
- *
- ************************************************************************/
+/*
+ * HandleClientMessage - client message event handler
+ */
 void 
 HandleClientMessage()
 {
@@ -1027,12 +1017,9 @@ HandleClientMessage()
   }
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleExpose - expose event handler
- *
- ***********************************************************************/
+/*
+ * HandleExpose - expose event handler
+ */
 void 
 HandleExpose()
 {
@@ -1057,12 +1044,9 @@ HandleExpose()
   return;
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleDestroyNotify - DestroyNotify event handler
- *
- ***********************************************************************/
+/*
+ * HandleDestroyNotify - DestroyNotify event handler
+ */
 void 
 HandleDestroyNotify()
 {
@@ -1074,12 +1058,9 @@ HandleDestroyNotify()
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleMapRequest - MapRequest event handler
- *
- ************************************************************************/
+/*
+ * HandleMapRequest - MapRequest event handler
+ */
 void 
 HandleMapRequest()
 {
@@ -1179,12 +1160,9 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleMapNotify - MapNotify event handler
- *
- ***********************************************************************/
+/*
+ * HandleMapNotify - MapNotify event handler
+ */
 void 
 HandleMapNotify()
 {
@@ -1252,12 +1230,9 @@ HandleMapNotify()
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleUnmapNotify - UnmapNotify event handler
- *
- ************************************************************************/
+/*
+ * HandleUnmapNotify - UnmapNotify event handler
+ */
 void 
 HandleUnmapNotify()
 {
@@ -1372,13 +1347,36 @@ HandleUnmapNotify()
   XFlush(dpy);
 }
 
+/*
+  Call x_motionnotify_hook with
+  (X-ROOT Y-ROOT MODIFIER-STATE WINDOW-WITH-POINTER X-WIN Y-WIN)
+*/
+static void
+HandleMotionNotify()
+{
+#define FUNC_NAME "HandleMotionNotify"
+  XMotionEvent *pev = &Event.xmotion;
+  SCM x_root = gh_int2scm(pev->x_root);
+  SCM y_root = gh_int2scm(pev->y_root);
+  SCM state = gh_int2scm(pev->state);
+  SCM win = SCM_BOOL_F;
+  SCM x = x_root;
+  SCM y = y_root;
+  ScwmWindow *psw = PswFromPointerLocation(dpy);
+  if (psw) {
+    win = psw->schwin;
+    x = gh_int2scm(pev->x_root - psw->frame_x);
+    y = gh_int2scm(pev->y_root - psw->frame_y);
+  }
+  call6_hooks(x_motionnotify_hook,
+              x_root,y_root,state,win,x,y);
+}
+#undef FUNC_NAME
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleButtonPress - ButtonPress event handler
- *
- ***********************************************************************/
+
+/*
+ * HandleButtonPress - ButtonPress event handler
+ */
 void 
 HandleButtonPress()
 {
@@ -1753,12 +1751,9 @@ HandleConfigureRequest()
 }
 #undef FUNC_NAME
 
-/***********************************************************************
- *
- *  Procedure:
- *      HandleShapeNotify - shape notification event handler
- *
- ***********************************************************************/
+/*
+ * HandleShapeNotify - shape notification event handler
+ */
 void 
 HandleShapeNotify(void)
 {
@@ -2045,7 +2040,57 @@ WindowGettingButtonEvent(Window w, int x, int y)
 }
 #undef FUNC_NAME
 
+#ifdef HAVE_SCM_MAKE_HOOK
 
+static int cMotionHandlers = 0;
+extern long basic_event_mask;
+
+/* GJB:FIXME:: Only for newer guiles for now */
+SCWM_PROC(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
+          (SCM proc))
+     /** Call PROC on XMotionEvents.
+This can considerably slow Scwm down so use it only when
+necessary.  See `remove-motion-handler' and `reset-motion-handlers'. */
+#define FUNC_NAME s_add_motion_handler_x
+{
+  VALIDATE_ARG_PROC(1,proc);
+  if (cMotionHandlers++ == 0)
+    XSelectInput(dpy, Scr.Root,basic_event_mask | PointerMotionMask);
+  return scm_add_hook_x(x_motionnotify_hook,proc,SCM_BOOL_F);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
+          (SCM proc))
+     /** No longer call PROC on XMotionEvents.
+Handling motion events can considerably slow Scwm down so use it only when
+necessary.  See `add-motion-handler' and `reset-motion-handlers'. */
+#define FUNC_NAME s_remove_motion_handler_x
+{
+  VALIDATE_ARG_PROC(1,proc);
+  if (--cMotionHandlers == 0)
+    XSelectInput(dpy, Scr.Root,basic_event_mask);
+  return scm_remove_hook_x(x_motionnotify_hook,proc);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
+          ())
+     /** Call no procedures on XMotionEvents.
+Handling motion events can considerably slow Scwm down so use it only when
+necessary.  See `add-motion-handler' and `remove-motion-handler'. */
+#define FUNC_NAME s_reset_motion_handlers_x
+{
+  if (cMotionHandlers) {
+    XSelectInput(dpy, Scr.Root,basic_event_mask);
+    cMotionHandlers = 0;
+  }
+  return scm_reset_hook_x(x_motionnotify_hook);
+}
+#undef FUNC_NAME
+
+
+#endif
 
 /* Inspired by GWM 1.8c --gjb */
 
@@ -2195,6 +2240,9 @@ this unless you know what it means. */
 void 
 init_events()
 {
+  /* do not permit add-hook!, remove-hook! access to this */
+  x_motionnotify_hook = SCWM_MAKE_HOOK(6 /* numargs */);
+
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif
