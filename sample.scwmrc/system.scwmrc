@@ -24,6 +24,12 @@
 (define debug #t)
 (define suppress-xclients #t)
 
+;; This will make things go a bit faster at the expense
+;; of your having to be sure that NumLock and ScrollLock
+;; are never on (or are explicitly used in the bindings that
+;; you want to apply when they are on).
+;;(set-ignore-dubious-modifiers! #f)
+
 (define (debug-display arg)
   (if debug
       (display arg)
@@ -159,8 +165,8 @@
 				   "/share/scwm/cassowary_scm-procedures.txt"))))
 
 (append! *theme-path*
-	 (list (string-append (scwm-path-prefix) "/share/scwm/themes" 
-	       (string-append scwmdir "/themes"))))
+	 (list (string-append (scwm-path-prefix) "/share/scwm/themes")
+	       (string-append scwmdir "/themes")))
 
 ;;; Lost window?  Get it back with:
 ;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
@@ -1364,8 +1370,8 @@ union of all other window managers!
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 
 ;; avoid lots of warnings.... test for this first...
-(define have-kp-keysyms (not (null? (keysym->keycode "KP_Left"))))
-(define have-kp-num-keysyms (not (null? (keysym->keycode "KP_4"))))
+(define have-kp-keysyms (if (keysym->keycode "KP_Left") #t #f))
+(define have-kp-num-keysyms (if (keysym->keycode "KP_4") #t #f))
 
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
