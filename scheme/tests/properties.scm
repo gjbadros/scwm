@@ -111,3 +111,9 @@
 
 ;;; causes a core dump --07/05/98 gjb
 (add-hook! X-PropertyNotify-hook (lambda (sz w EXTRA-ARG) (write sz) (write w) (display "\n")))
+
+
+;; GJB:FIXME:: Should use test-case
+(define wm_foo (string->X-atom "WM_FOO"))
+(X-property-set! 'root-window wm_foo #(-2 5) "WM_BAR" 16)
+(X-property-get 'root-window wm_foo)
