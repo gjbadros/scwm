@@ -1,3 +1,7 @@
+Sat Feb 12 20:18:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */*.c: Use \n\ in docstrings.
+
 Thu Jan 20 11:42:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* */*.c: Include "scwmconfig.h", not <config.h>
