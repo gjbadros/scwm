@@ -460,8 +460,8 @@
 ;;; anyway...
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
-;;	      #:icon #f ;; this turns off icons, but leaves icon titles
-;;	      #:show-icon #t ;; this turns off both icon titles and icons
+	      #:icon #f ;; this turns off icons, but leaves icon titles
+	      #:show-icon #f ;; this turns off both icon titles and icons
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 4
 	      #:focus 'mouse
@@ -474,6 +474,8 @@
 	      #:PPosition-hint #f
 ;;	      #:mini-icon pic-xterm-mini)
 	      #:mini-icon pic-lambda-mini)
+
+;;(window-style "*" #:icon #f #:show-icon #f)
 
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
@@ -1352,7 +1354,8 @@ from other processes.
 
 (add-hook! change-desk-hook show-desk-name)
 
-(add-hook! X-ConfigureRequest-hook config-request-animate)
+;; (reset-hook! X-ConfigureRequest-hook)
+;;(add-hook! X-ConfigureRequest-hook config-request-animate)
 
 (append-hook! after-new-window-hook push-window-configuration)
 
