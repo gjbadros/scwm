@@ -452,3 +452,7 @@
 ;  (remove-hook! window-property-hook gnome-window-property-hook)
   (remove-hook! shutdown-hook disable-gnome-hints))
 
+
+;;;; Enable by default
+(enable-gnome-hints)
+

@@ -1,5 +1,7 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* gnome-hints.scm: Enable by default when loading module.
+
 	* gnome-hints.scm: Fully support _WIN_STATE, _WIN_LAYER and
 	_WIN_WORKSPACE including notification of internal state. Remove
 	debugging statements. Gnome hint support should now be complete,
