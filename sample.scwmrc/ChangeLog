@@ -1,3 +1,7 @@
+Thu Apr 22 20:15:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added a new show-desk-name proc to change-desk-hook.
+
 Thu Apr 15 19:06:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use window-selection, group modules.  Add dev
