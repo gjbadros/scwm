@@ -55,6 +55,9 @@ enum cursor {
  CURSOR_MAX_CURSORS		/*  */
 };
 
+
+struct ScwmWindowConstraintInfo;
+
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
  */
@@ -81,10 +84,12 @@ typedef struct ScwmWindow {
   Window icon_pixmap_w;		/* the icon window */
   int wShaped;			/* is this a shaped window */
 
-  ScwmClVariable frame_x;       /* x position of frame */
-  ScwmClVariable frame_y;       /* y position of frame */
-  ScwmClVariable frame_width;   /* width of frame */
-  ScwmClVariable frame_height;  /* height of frame */
+  int frame_x;                  /* x position of frame */
+  int frame_y;                  /* y position of frame */
+  int frame_width;              /* width of frame */
+  int frame_height;             /* height of frame */
+  struct ScwmWindowConstraintInfo *pswci; /* Constraint information for this scheme window */
+                                /* NULL if built w/o cassowary support */
 
   int boundary_width;
   int corner_width;
