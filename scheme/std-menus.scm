@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-06-08 Mon 18:12:27 EDT sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-06-19 Fri 12:19:12 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -39,7 +39,7 @@
     (do ((line (read-line pipe) (read-line pipe))
          (start-re (make-regexp "where mode is one of:" regexp/icase)))
         ((or (eof-object? line) (regexp-exec start-re line))
-         (if (eof-object? line) (error "modes not found"))))
+         (if (eof-object? line) (display "xlock modes not found\n"))))
     (do ((line (read-line pipe) (read-line pipe)) (match #f) (ml '())
          (mode-re (make-regexp "^[ 	]*([a-zA-Z0-9]+)")))
         ((eof-object? line) (close-pipe pipe)
