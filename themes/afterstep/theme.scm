@@ -27,7 +27,7 @@
 				#:mwm-border #t
 				#:hint-override #t #:decorate-transient #f
 				#:PPosition-hint #f
-				#:mini-icon pic-xterm-mini
+				#:mini-icon  (load-theme-image "mini-term.xpm")
 				#:button 1 #:button 3
 				#:button 2 #:button 4
 				#:no-button 5 #:no-button 7 #:no-button 9
