@@ -163,6 +163,7 @@ typedef struct ButtonFace {
 #ifdef MULTISTYLE
   struct ButtonFace *next;
 #endif
+  SCM sface;
 } ButtonFace;
 
 /* button style flags (per title button) */

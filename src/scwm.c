@@ -181,6 +181,7 @@ scwm_main(int argc, char **argv)
   init_menu();
   init_binding();
   init_window();
+  init_face();
   init_scwm_types();
   init_scwm_procs();
 

@@ -44,6 +44,7 @@
 #include "paths.h"
 #include "deskpage.h"
 #include "decor.h"
+#include "face.h"
 
 void 
 init_scwm_procs(void)
@@ -182,5 +183,5 @@ init_scwm_procs(void)
 		   set_click_to_focus_raises_x, 1, 0, 0);
   gh_new_procedure("set-mouse-focus-click-raises!", 
 		   set_mouse_focus_click_raises_x, 1, 0, 0);
-
+  gh_new_procedure("make-face",make_face,2,0,0);
 }
