@@ -1,5 +1,15 @@
 1999-07-28  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
+	* ui-constraints-classes.scm: Added support for using the
+	new nonant selection abilities of window-selection to the
+	ui constructors of ui-constraints-classes.
+
+	* window-selection.scm: Modified the show-selected-nonants
+	and hide-selected-nonants methods to turn on and off all
+	nonant markers.
+
+1999-07-28  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
 	* window-selection.scm: Added new code for nonant markers. 
 	The nonant selected at the time of the window is marked until
 	the window is deselected.  This feature will later be used 
