@@ -1,8 +1,16 @@
 In approximate order of priority:
 
+- Better error handling 
+  - get a line number!
+  - more consistent use, especially abstractions for argument type checking
+
 - Finish implementing (useful) Fvwm functions as Scheme procedures. 
 [this is mostly the style, decor, desk and path stuff,
 modules should be punted.]
+
+- replace ColorPair struct w/ scheme based
+
+- replace MyFont struct w/ scheme-object based
 
 - Clean out all of the artifacts of the FVWM function system.
 
