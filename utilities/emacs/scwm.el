@@ -4,7 +4,7 @@
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
 ;; File: <scwm.el - 1999-04-06 Tue 09:43:50 EDT sds@eho.eaglets.com>
-;; Author: Sam Steingold <sds@usa.net>
+;; Authors: Sam Steingold <sds@usa.net>, Greg J. Badros <gjb@cs.washington.edu>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
 
@@ -221,6 +221,27 @@ All evaluation goes through this procedure."
   (when (string-match "(\\s *\\(define\\|use-\\(scwm-\\)?modules\\|load\\)" sexp)
     (setq scwm-obarray nil))
   (call-process scwm-exec nil out nil sexp))
+
+(defun selected-frame-id-string ()
+  "Return the X11 window id of the selected Emacs frame as a string."
+  (frame-property (selected-frame) 'window-id))
+
+(defun scwm-eval-with-selected-frame (sexp out)
+  "Evaluate the SEXP with scwm-exec using this frame as the Scwm window context.
+This wraps SEXP with `(with-window (any-id->window SELECTED-FRAME-ID) ... )'
+before invoking `scwm-eval'."
+  (let ((swi (selected-frame-id-string)))
+    (scwm-eval (concat "(with-window (any-id->window " swi ")" sexp ")") out)))
+
+(defun scwm-start-emacs-flashing ()
+  "Start the selected-frame flashing."
+  (interactive)
+  (scwm-eval-with-selected-frame "(flash-window (get-window) #:continually #t)" nil))
+
+(defun scwm-stop-emacs-flashing ()
+  "Start the selected-frame flashing."
+  (interactive)
+  (scwm-eval-with-selected-frame "(stop-flashing-window)" nil))
 
 (defun scwm-safe-call (func args out)
   "Call FUNC with ARGS and output to OUT, checking existence of FUNC first."
