@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; window-selection.scm
-;;; Copyright (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999 Greg J. Badros, Jeff W. Nichols
 ;;;
 ;;; Functions for extended window selction capabilities
 ;;;
@@ -17,6 +17,7 @@
   :use-module (app scwm group)
   :use-module (app scwm time-convert)
   :use-module (app scwm path-cache)
+  :use-module (app scwm nonants)
   :use-module (app scwm optargs))
 
 
@@ -29,6 +30,16 @@
 (define selected-windows '())
 ;;(set! selected-windows '())
 
+(define show-nonant-flag #f)
+
+(define-public (show-selected-nonants)
+  "Show nonant markers on window when they are selected."
+  (set! show-nonant-flag #t))
+
+(define-public (hide-selected-nonants)
+  "Hide nonant markers on window when they are selected."
+  (set! show-nonant-flag #f))
+
 (define*-public (window-is-selected? #&optional (w (get-window)))
   "Return #t if W is in the selected window list, else #f.
 See also `select-window-add-selection' and `selected-windows-list'."
@@ -40,23 +51,28 @@ See also `select-window-add-selection' and `selected-windows-list'."
 
 ;;(define w (select-window-interactively))
 ;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
+;;(use-scwm-modules optargs flash-window listops)
 
-(define*-public (select-window-add-selection #&optional (w (get-window)))
+(define*-public (select-window-add-selection #&optional (w (get-window-with-nonant)))
   "Select a single window, highlight it, and add it to the seelcted-windows-list.
 The selected window is returned and will remain highlighted
 until `unflash-window' is called on that window.  The selected
 window is also added to a selected-windows list that can be
 accessed via `selected-windows-list'."
+  (if (not (object-property w 'nonant)) (set-object-property! w 'nonant 4))
   (if (member w selected-windows)
       (begin
 	(unflash-window w)
+	(remove-nonant-marker w)
 	(call-hook-procedures window-selection-remove-hook (list w))
 	(set! selected-windows (list-without-elem selected-windows w)))
       (begin
 	(flash-window w #:unflash-delay #f)
 	(call-hook-procedures window-selection-add-hook (list w))
+	(if show-nonant-flag (place-nonant-marker w))
 	(set! selected-windows (cons w selected-windows))
 	w)))
+
 
 ;; (unflash-window)
 ;; (member (get-window) selected-windows)
@@ -69,6 +85,7 @@ accessed via `selected-windows-list'."
   (catch #t 
 	 (lambda ()
 	   (for-each (lambda (w) 
+		       (remove-nonant-marker w)
 		       (call-hook-procedures window-selection-remove-hook (list w)))
 		     selected-windows))
 	 (lambda args noop))
@@ -129,3 +146,77 @@ HOOK should take a single parameter which is the window selected."
   "Remove a HOOK to be called when a window is removed from the selection list.
 HOOK should take a single parameter which is the window removed."
   (set! window-selection-remove-hook (delq hook window-selection-remove-hook)))
+
+
+;; nonant marker procedures
+
+(define (set-markwin-offset! win nonant markwin)
+  (let* ((marksize (message-window-size markwin))
+	 (winsize  (window-frame-size win))
+	 (winpos   (window-viewport-position win))
+	 (xoffset  (round (* 0.3 (car winsize))))
+	 (yoffset  (round (* 0.3 (cadr winsize))))
+	 (xnon     (- (remainder nonant 3) 1))
+	 (ynon     (- (quotient nonant 3) 1))
+	 (xpos     (+ (car winpos) (quotient (car winsize) 2)))
+	 (ypox     (+ (cadr winpos) (quotient (cadr winsize) 2))))
+    (message-window-set-position! markwin (+ xpos (* xoffset xnon)) (+ ypox (* yoffset ynon)))))
+
+
+(define* (place-nonant-marker #&optional (w (get-window-with-nonant)))
+  (if (and (window? w) (object-property w 'nonant))
+      (let ((nonant (object-property w 'nonant))
+	    (markwin (if (message-window? (object-property w 'markwin))
+			 (object-property w 'markwin)
+			 (make-message-window "*"))))
+	(set-markwin-offset! w nonant markwin)
+	(message-window-show! markwin)
+	(set-object-property! w 'markwin markwin))))
+
+	     
+(define* (remove-nonant-marker #&optional (w (get-window)))
+  (let ((markwin (object-property w 'markwin)))
+    (if (message-window? markwin)
+	(begin 
+	  (set-object-property! w 'markwin #f)
+	  (message-window-hide! markwin)))))
+
+
+;; hook routines to ensure nonant markers behave correctly
+
+(define (reset-position w)
+  (let ((markwin (object-property w 'markwin))
+	(nonant  (object-property w 'nonant)))
+    (if (message-window? markwin)
+	(set-markwin-offset! w nonant markwin))))
+
+(define (change-hook x y dx dy)
+  (for-each reset-position selected-windows))
+
+(add-hook! viewport-position-change-hook change-hook)
+;; (remove-hook! viewport-position-change-hook change-hook)      
+
+(define (move-hook win new-x new-y) 
+  (reset-position win))
+
+(add-hook! interactive-move-new-position-hook move-hook)
+;; (remove-hook! interactive-move-new-position-hook move-hook)
+
+(define (resize-hook win x y new-w new-h new-wu new-hu) 
+  (reset-position win))
+
+(add-hook! interactive-resize-new-size-hook resize-hook)
+;; (remove-hook! interactive-resize-new-size-hook resize-hook)
+
+(define (desk-hook new old)
+  (for-each (lambda (w)
+	      (let ((desk (window-desk w))
+		    (markwin (object-property w 'markwin)))
+		(if (message-window? markwin)
+		    (if (eqv? desk new)
+			(message-window-show! markwin)
+			(message-window-hide! markwin)))))
+	      selected-windows))
+  
+(add-hook! change-desk-hook desk-hook)
+;; (remove-hook! change-desk-hook desk-hook)

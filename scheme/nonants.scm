@@ -22,6 +22,7 @@
 
 
 (define-module (app scwm nonants)
+  :use-module (app scwm base)
   :use-module (app scwm optargs))
 
 

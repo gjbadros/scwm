@@ -7,7 +7,9 @@
   :use-module (app scwm ui-constraints)
   :use-module (app scwm message-window)
   :use-module (app scwm window-locations)
+  :use-module (app scwm nonants)
   :use-module (app scwm window-selection)
+  :use-module (app scwm nonants)
   :use-module (app scwm xlib-drawing))
 
 ;; (use-scwm-modules ui-constraints-classes)

@@ -11,7 +11,7 @@ highlight-current-window.scm gnome-hints.scm \
 group.scm image-loaders.scm key-mover-xtest.scm \
 kde-hints.scm key-mover.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
-netscape.scm number-convert.scm optargs.scm \
+nonants.scm netscape.scm number-convert.scm optargs.scm \
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
 property-respond.scm quote.scm report-usage.scm \
 rgb-database.scm send-string.scm \

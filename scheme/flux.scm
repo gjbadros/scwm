@@ -26,7 +26,7 @@
   :use-module (app scwm group)
   :use-module (app scwm path-cache)
   :use-module (app scwm window-selection)
-  :use-module (app scwm window-locations)
+  :use-module (app scwm nonants)
   :use-module (app scwm optargs)
   :use-module (app scwm tile)
   :use-module (app scwm highlight-current-window)
