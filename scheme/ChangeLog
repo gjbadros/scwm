@@ -1,3 +1,9 @@
+Thu Dec  3 10:28:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* tile.scm: Use raise parameter instead of restack; change default
+ 	to 'restack-only; fix documentation to say "tile" instead of
+ 	"cascade"; thanks to Eli Barzilay <eli@CS.Cornell.EDU>.	
+
 Wed Dec  2 08:42:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* tile.scm: New procedures `tile-windows' and `tile'. Similar to

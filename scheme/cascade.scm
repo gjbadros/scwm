@@ -39,7 +39,7 @@
 (define*-public (cascade-windows 
 		 windows #&key (start-pos '(0 0)) 
 		 (max-size (display-size)) (resize 'shrink-only)
-		 (raise #t)
+		 (raise 'restack-only)
 		 (x-increment (meta-apply + window-title-height
 					  window-frame-border-width))
 		 (y-increment (meta-apply + window-title-height
@@ -59,7 +59,7 @@ should not be moved in the stacking order; that they should be raised
 on top of other windows and placed in the cascade order with the upper
 left window lowest in the stacking order; or that they should be
 restacked as for #t but not raised above other windows,
-respectively. The default is #t.
+respectively. The default is 'restack-only.
 
 X-INCREMENT may be an integer or a procedure that takes a window and
 returns an integer, and which will be applied to a window to get the

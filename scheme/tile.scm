@@ -34,7 +34,7 @@
 (define*-public (tile-windows
 		 windows #&key (start-pos '(0 0)) 
 		 (end-pos (display-size)) (resize 'always)
-		 (restack #t)
+		 (raise 'restack-only)
 		 (max-windows #f)
 		 (order 'horizontal))
   "Tile WINDOWS according to several parameters.  
@@ -55,10 +55,10 @@ max size. The default is 'shrink-only.
 
 RAISE may be #f, #t, or 'restack-only, indicating that the windows
 should not be moved in the stacking order; that they should be raised
-on top of other windows and placed in the cascade order with the upper
+on top of other windows and placed in the tile order with the upper
 left window lowest in the stacking order; or that they should be
 restacked as for #t but not raised above other windows,
-respectively. The default is #t."
+respectively. The default is 'restack-only."
     (let* ((num-windows (if max-windows
 			    (min (length windows) max-windows)
 			    (length windows)))
@@ -66,7 +66,7 @@ respectively. The default is #t."
       (cond 
        ((not (null? windows))
 	(cond
-	 (raise (if (not (eq? restack 'restack-only))
+	 (raise (if (not (eq? raise 'restack-only))
 		    (raise-window (car windows)))
 		(restack-windows (reverse windows))))
 	(let* ((num-major (inexact->exact (ceiling (sqrt num-windows))))
@@ -134,8 +134,8 @@ respectively. The default is #t."
   "Tile the windows on the specified desk.
 The DESK option, defaulting to the current desk, specifies which desk;
 ALL-VIEWPORTS, when true indicates that the windows in all viewports
-of this desk should be cascaded, otherwise only the current viewport
-is cascaded. 
+of this desk should be tiled, otherwise only the current viewport
+is tiled. 
 
 The options ONLY, EXCEPT, BY-STACKING, BY-FOCUS and REVERSE indicate
 the windows to use and the order to use them in, as with
