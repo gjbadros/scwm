@@ -1,7 +1,11 @@
+1999-02-04  Sam Steingold  <sds@goems.com>
+
+	* placement.scm: remove `peek'.
+
 Sun Jan 31 13:13:35 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Fix drawing of keep-to-left-of now
-	that windows are kept in their original order in the ui-constraint 
+	that windows are kept in their original order in the ui-constraint
 	objects.
 
 1999-01-30  Maciej Stachowiak  <mstachow@alum.mit.edu>

@@ -163,10 +163,8 @@ respectively."
   (let ((final-pos
 	 (map (lambda (pp ws o po wav)
 		(+ wav pp o (inexact->exact (round (* ws po)))))
-	      (peek 'pointer-position (pointer-position))
-	      (peek 'window-size (window-frame-size win))
-	      (peek 'offset offset) (peek 'po proportional-offset)
-	      (peek 'wav (window-aligned-viewport win)))))
+              (pointer-position) (window-frame-size win)
+              offset proportional-offset (window-aligned-viewport win))))
     (move-window (car final-pos) (cadr final-pos) win)
     (move-inside-current-viewport win)))
 
