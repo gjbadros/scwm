@@ -41,7 +41,7 @@ make.  You need to edit the line that looks like:
 ac_cv_lib_rx_main=${ac_cv_lib_rx_main='no'}
                                        ^^ be sure this is no
 
-Scwm is tested with both guile-1.2, and recent developer releases of guile.
+Scwm is tested with guile-1.3.
 
 You also need the `sed' stream editor in your PATH, and a working GNU make.
 
