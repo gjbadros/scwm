@@ -45,6 +45,14 @@
 (define*-public (add-boolean-hint-option key th fh #&optional (cumulative? #f))
   (add-window-hint-option key (make-bool-handler th fh) cumulative?))
 
+(define ((make-property-handler property) val win)
+  (set-window-property! win property val))
+
+(define*-public (add-property-style-option key property #&optional 
+					    (cumulative? #f))
+  (add-window-style-option key (make-property-handler property) 
+			   'normal cumulative?))
+
 (define vector-first (lambda (v) (vector-ref v 0)))
 (define vector-second (lambda (v) (vector-ref v 1)))
 (define vector-third (lambda (v) (vector-ref v 2)))

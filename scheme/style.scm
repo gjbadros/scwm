@@ -187,15 +187,6 @@ for details."
   (set-object-property! win 'no-side-decorations #f)
   (force-reset-window-frame! win))
 
-(define-public (squash-titlebar-decoration win)
-  (set-object-property! win 'squashed-titlebar #t)
-  (force-reset-window-frame! win))
-
-(define-public (unsquash-titlebar-decoration win)
-  (set-object-property! win 'squashed-titlebar #f)
-  (force-reset-window-frame! win))
-
-
 ;; some useful style options
 (add-window-style-option #:border-width set-border-width!)
 (add-window-style-option #:background set-window-background!)
@@ -215,7 +206,7 @@ for details."
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
 (add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
-(add-boolean-style-option #:squashed-titlebar squash-titlebar-decoration unsquash-titlebar-decoration)
+(add-property-style--option #:squashed-titlebar 'squashed-titlebar)
 
 ; clashes with maximized so make it hint-only for now
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)
