@@ -181,7 +181,16 @@ Special commands:
 Turning on Scwm mode calls the value of the variable `scwm-mode-hook',
 if that value is non-nil.
 If you are using Emacs 20.2 or earlier and want to use fontifications,
-you have to (require 'font-lock) first.  Sorry.")
+you have to (require 'font-lock) first.  Sorry."
+  ;; Modify scheme-mode-syntax-table in order to support multi-line comment
+  ;; syntax. Use comment style b because syntax a (default) is screwed by
+  ;; newline \n. <stephent@sfu.ca>
+  (cond ((boundp 'running-xemacs)
+	 (modify-syntax-entry ?# "_ 58")
+	 (modify-syntax-entry ?! "_ 67"))
+	(t
+	 (modify-syntax-entry ?# "_ 14b")
+	 (modify-syntax-entry ?! "_ 23b"))))
 
 (define-key scwm-mode-map [(control j)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control c) (control l)] 'scwm-load-file)
@@ -608,8 +617,18 @@ Procedure Index or in another manual found via the variable
   (require 'cl)                 ; for assoc*
   (let ((font-keywds
          (cond ((boundp 'running-xemacs)
+		;; In order to support new multi-line comment syntax #! 
+		;; COMMENTS !# from guile, we cannot use font-lock-defaults
+		;; of scheme-mode, defined in font-lock.el. Instead we copy
+		;; it to here and remove (?! . "w") from it. 
+		;; <stephent@sfu.ca>
                 (put 'scwm-mode 'font-lock-defaults
-                     (get 'scheme-mode 'font-lock-defaults))
+		     '(scheme-font-lock-keywords
+		       nil t
+		       ((?: . "w") (?- . "w") (?* . "w") (?+ . "w") (?. . "w") (?< . "w")
+			(?> . "w") (?= . "w") (?? . "w") (?$ . "w") (?% . "w")
+			(?_ . "w") (?& . "w") (?~ . "w") (?^ . "w") (?/ . "w"))
+		       beginning-of-defun))
                 scheme-font-lock-keywords)
                ((and (string-lessp emacs-version "20.3")
                      (boundp 'font-lock-defaults-alist))
