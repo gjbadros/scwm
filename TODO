@@ -33,8 +33,9 @@ and add convenient ways to match on certain other things.
 * Promote generally useful things from flux.scm to somewhere more
 official.
 
-* Update NEWS, THANKS, AUTHORS, TODO, BUGS and ANNOUNCE. Make lsm
-file.
+* Update NEWS, THANKS, AUTHORS, TODO, BUGS and ANNOUNCE. 
+
+* Make lsm file -- [needs final update of file size] done --08/04/98 gjb
 
 * Try some beta testing (although there won't be much time for
 this). Personally make sure it builds and runs on Linux, NetBSD, Irix,
@@ -99,41 +100,40 @@ isn't now).
 ** (current-screen), (screen-count)
 ** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
 ** (invert-color COLOR) ; return a new color by inverting COLOR
-** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
 ** (last-key) ; return last key pressed
 ** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
-** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
-** (raise-window-above RAISEWINDOW ABOVEWINDOW) ; (these two in terms of restack-windows) done --08/02/98 gjb
 ** window closing hook? (upon removal of the window?)
 ** (rotate-cut-buffers)
-** (resource-get NAME CLASS), (resource-put NAME VALUE)
+** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE)
 ** window-group feature (at scheme level)
-** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp
-** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty)
 ** (save-yourself WINDOW) ; send ICCCM WM_SAVE_YOURSELF to window to update WM_COMMAND X property -- maybe in terms of a send-client-message primitive?
  - We should add proper X Session Management support instead of these, IMO
  - (needed for Hnome compliance anyway)
-
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** visibility change hooks (fully-obscured, partially-obscured, unobscured)
 ** (window-shaped? WINDOW)
 ** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive
-** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame)
-** (window-machine-name WINDOW) ; name of host on which client is running
-
+** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
 ** (window-user-set-position? WIN), (window-user-set-size? WIN) ; tell if user specified position/size on command line
 ** (window-program-set-position? WIN), (window-program-set-size? WIN) ; tell if client programmatically specified position/size on command line
  - I thought I added these! Will fix ASAP - Maciej
-
 ** (windows-at-position X Y), (windows-at-virtual-position X Y)  ; return in stacking order 
  - Could just be an abstraction on top of get-stacking-order (see above) - MS
+
+** DONE ONES
+*** (window-client-machine-name WINDOW) ; name of host on which client is running -- done --08/05/98 gjb
+*** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp --done [in flux] 08/05/98 gjb
+*** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
+*** (raise-window-above RAISEWINDOW ABOVEWINDOW) ; (these two in terms of restack-windows) done --08/02/98 gjb
+*** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
+*** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty) -- done [in flux] 08/05/98 gjb
 
 * Size/position window needs to be more dynamic, customizable
 
 * administrative b.s.
 ** cvsweb
-** gnats for problem reporting?
+** gnats for problem reporting
 
 * Memory profiling -- instrument NEW and FREE and keep track of
 alloc/dealloc to see where the memory is going... guile support for this?
