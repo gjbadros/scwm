@@ -1,3 +1,44 @@
+Sat Jan 22 16:11:07 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c (s_X_property_get): Use gh_free or FREE depending on 
+	how the string was allocated (overly conservative since they do
+	the same thing now).
+
+	* window.c: Added a missing FREEC that was leaking memory.
+
+	* session-manager.c (SaveYourself2), system.c (xgetcwd),
+ 	miscprocs.c: Use FREEC instead of FREE so it matches a NEWC (no
+ 	big deal, since they do the same thing).
+
+	* message-window.c: ws change.
+
+	* image.c (path_expand_image_fname): Added
+ 	DONE_PATH_EXPAND_FNAME:, and ensure memory is freed on error
+ 	conditions
+
+	* face.c: Use gh_free, not FREE, reorder a pair of frees to be
+	consistent.
+
+	* color.c: Use gh_free not FREE to match gh_scm2newstr().  No big
+ 	deal-- they do the same thing.
+
+	* binding.c:  Use gh_free not FREE to match gh_scm2newstr(), also
+	plug a leak.
+
+	* scwm.c: Use children, not nchildren, in determining whether to
+	free after and XQueryTree().
+
+	* events.c (HandleUnmapNotify): Force pointer re-focussing *after* 
+	the window that's disappearing is gone.
+
+	* xmisc.c (WXGetWindowParent): Plug memory leak of child window
+	list after XQueryTree().
+
+Fri Jan 21 17:17:22 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleUnmapNotify): Reset Scr.Focus if it is the
+	window that just got unmapped.
+
 Thu Jan 20 12:30:53 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c, validate.h, message-window.c, face.c, add_window.c:
