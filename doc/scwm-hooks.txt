@@ -112,7 +112,7 @@ client-message-hook (4 args)
 This hook is invoked whenever Scwm receives an X/11 client message.\n\
 It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), \n\
 and the vector of data.
-[From src/events.c:222]
+[From src/events.c:218]
 
 
 deiconify-hook (2 args)
@@ -165,7 +165,7 @@ whether a hook, a mouse binding, a key binding, a menu entry, a file\n\
 being processed, or anything else, error-hook will be invoked. Each\n\
 procedure in the hook will be called with the throw arguments; these\n\
 will generally include information about the nature of the error. 
-[From src/callbacks.c:46]
+[From src/callbacks.c:47]
 
 
 iconify-hook (2 args)
@@ -243,7 +243,7 @@ This hook is invoked with no arguments when the user hits an invalid\n\
 key or performs an invalid mouse action during an interactive\n\
 operation like `interactive-resize' or `interactive-move'. `beep' is\n\
 one example of a procedure to use here.
-[From src/window.c:60]
+[From src/window.c:59]
 
 
 load-processing-hook (1 args)
@@ -251,14 +251,14 @@ load-processing-hook (1 args)
 This hook is invoked for every several top-level s-exps in the startup file.\n\
 The hook procedures are invoked with one argument, the count of the\n\
 s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'.
-[From src/callbacks.c:54]
+[From src/callbacks.c:55]
 
 
 post-command-hook (2 args)
 - 
 This hook is invoked with two arguments after every `call-interactively' execution.\n\
 The arguments are the procedure just called, and the list of the arguments passed.
-[From src/callbacks.c:65]
+[From src/callbacks.c:66]
 
 
 pre-command-hook (2 args)
@@ -267,21 +267,21 @@ This hook is invoked with two arguments before every `call-interactively' execut
 The arguments are the procedure to be called, and a list of the arguments passed.\n\
 Global variable `this-command' and `this-command-args' can be modified to change \n\
 either of these.
-[From src/callbacks.c:59]
+[From src/callbacks.c:60]
 
 
 scwm-test-hook-0 (0 args)
 - 
 Just a test hook that takes no arguments.\n\
 See `scwm-run-test-hook-0'
-[From src/miscprocs.c:41]
+[From src/miscprocs.c:43]
 
 
 scwm-test-hook-1 (1 args)
 - 
 Just a test hook that takes one argument.\n\
 See `scwm-run-test-hook-1'.
-[From src/miscprocs.c:45]
+[From src/miscprocs.c:47]
 
 
 select-window-done-hook (1 args)
@@ -289,7 +289,7 @@ select-window-done-hook (1 args)
 This hooks is run when a window is selected.\n\
 The hook procedures are called with a single argument, the window just left.\n\
 See also `select-window-enter-hook' and `select-window-leave-hook'.
-[From src/window.c:85]
+[From src/window.c:84]
 
 
 select-window-enter-hook (1 args)
@@ -299,7 +299,7 @@ The hook procedures are called with a single argument, the window just entered.\
 This hook is invoked once `select-window-interactively-no-message' is\n\
 called if the pointer is already in a window.  (But the\n\
 leave hook is not invoked similarly when the selection completes).
-[From src/window.c:71]
+[From src/window.c:70]
 
 
 select-window-leave-hook (1 args)
@@ -309,7 +309,7 @@ The hook procedures are called with a single argument, the window just left.\n\
 This hook is not invoked upon selection completion (unlike\n\
 `select-window-enter-hook' that is called initially upon calling\n\
 `select-window-interactively-no-message'). See also `select-window-done-hook'.
-[From src/window.c:78]
+[From src/window.c:77]
 
 
 shutdown-hook (1 args)
@@ -362,7 +362,7 @@ window-enter-hook (1 args)
 This hook is invoked whenever the mouse pointer enters a top-level window.\n\
 It is called with one argument, the window object of the window just\n\
 entered.
-[From src/events.c:191]
+[From src/events.c:187]
 
 
 window-focus-change-hook (1 args)
@@ -371,7 +371,7 @@ This hook is invoked whenever the keyboard focus is changed.\n\
 It is called with one argument, the window object of the window\n\
 that now has the focus, or #f if no window now has the focus. \n\
 See also `window-focus-lost-hook'.
-[From src/events.c:185]
+[From src/events.c:181]
 
 
 window-focus-lost-hook (1 args)
@@ -387,7 +387,7 @@ window-fully-obscured-hook (1 args)
 Invoked when window receives a VisibilityFullyObscured event.\n\
 The hook procedures are invoked with one argument, the window object\n\
 of the window that is now fully obscured.
-[From src/events.c:201]
+[From src/events.c:197]
 
 
 window-leave-hook (1 args)
@@ -395,7 +395,7 @@ window-leave-hook (1 args)
 This hook is invoked whenever the mouse pointer leaves a top-level window.\n\
 The hook procedures are invoked with one argument, the window object\n\
 of the window just left.
-[From src/events.c:196]
+[From src/events.c:192]
 
 
 window-partially-obscured-hook (1 args)
@@ -406,7 +406,7 @@ object of the window that is now partially obscured.  Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events.
-[From src/events.c:206]
+[From src/events.c:202]
 
 
 window-property-change-hook (4 args)
@@ -426,7 +426,7 @@ of the window that is now fully visible. Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events.
-[From src/events.c:214]
+[From src/events.c:210]
 
 
 X-ConfigureRequest-hook (6 args)
@@ -440,7 +440,7 @@ aspect was not part of the configure request event. \n\
 If `configure-request-handled' is #t after execution of the\n\
 hook procedures, then no C-level handling of the request\n\
 will be performed.
-[From src/events.c:127]
+[From src/events.c:123]
 
 
 X-DestroyNotify-hook (1 args)
@@ -451,7 +451,7 @@ invoked with one argument, WINID, the X id of the window that was destroyed. \n\
 This hook is invoked for both the client window and the window frame\n\
 IDs (i.e., twice per top-level window).  You probably want to use\n\
 `window-close-hook' or `X-UnmapNotify-hook' instead.
-[From src/events.c:165]
+[From src/events.c:161]
 
 
 X-MappingNotify-hook (0 args)
@@ -460,7 +460,7 @@ This hook is invoked whenever a MappingNotify X event is\n\
 received. A MappingNotify event indicates a change of keymapping - in\n\
 particular, it may indicate a change of available modifiers or mouse\n\
 buttons. The hook procedures are invoked with no arguments.
-[From src/events.c:159]
+[From src/events.c:155]
 
 
 X-MapRequest-hook (1 args)
@@ -469,7 +469,7 @@ This hook is invoked upon MapRequest X events.  It indicates a\n\
 window is trying to map itself (add itself to the display).  The hook \n\
 procedures are invoked with one argument, WIN, the window being mapped.  \n\
 The WIN is valid during the hook procedures.
-[From src/events.c:179]
+[From src/events.c:175]
 
 
 X-PropertyNotify-hook (2 args)
@@ -482,7 +482,7 @@ procedures are invoked with two arguments, the name of the property\n\
 that changed (as a string) and the window that it changed for. See also\n\
 `X-root-PropertyNotify-hook' but beware it gets passed different\n\
 arguments.
-[From src/events.c:138]
+[From src/events.c:134]
 
 
 X-root-PropertyNotify-hook (2 args)
@@ -496,13 +496,13 @@ procedures are invoked with two arguments: the atom for the changed\n\
 property and a boolean telling whether the property was deleted. \n\
 These arguments are different from those passed to\n\
 X-PropertyNotify-hook's procedures.
-[From src/events.c:148]
+[From src/events.c:144]
 
 
 X-SelectionNotify-hook (0 args)
 - 
 Called when there is no selection after a `X-convert-selection' request.
-[From src/events.c:124]
+[From src/events.c:120]
 
 
 X-UnmapNotify-hook (1 args)
@@ -511,6 +511,6 @@ This hook is invoked upon UnmapNotify X events.  It indicates a\n\
 window is being unmapped (removed from display).  The hook procedures\n\
 are invoked with one argument, WIN, the window being destroyed.  The\n\
 WIN is still valid during the hook procedures.
-[From src/events.c:173]
+[From src/events.c:169]
 
 

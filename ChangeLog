@@ -1,3 +1,15 @@
+Fri Jan 28 17:25:52 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* SCWM-VERSION: Bump to 0.99.6.1
+
+	* NEWS, README: Updated for new release.
+
+	* scwm.spec.in: Do not use @examplesdir@, instead use
+	%{prefix}/share/doc/scwm/examples -- config.status substitutes in
+	${prefix} which is no good in a scwm.spec file.  The substitution
+	isn't necessary anyway, because the ./configure line is under the
+	control of the scwm.spec file.
+
 Fri Jan 28 13:57:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added CASSOWARY_STATIC_LIBS, GUILE_STATIC_LIBS @@
