@@ -532,7 +532,7 @@ force_new_input_hooks()
     SCM item = SCM_CAR(cur);
     SCM port = SCM_CAR(item);
     SCM proc = SCM_CDR(item);
-    while (SCM_BOOL_T==gh_memq(item, input_hooks) && 
+    while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
 	   SCM_BOOL_T==scm_char_ready_p(port)) {
       scwm_safe_call0(proc);
     }

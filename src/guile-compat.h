@@ -80,6 +80,10 @@ extern SCM scm_internal_stack_catch (SCM tag,
 #define scm_internal_parse_path scm_parse_path
 #endif
 
+#ifndef gh_memq
+#define gh_memq scm_memq
+#endif
+
 #endif GUILE_COMPAT_H
 
 

@@ -1,3 +1,11 @@
+1998-06-23  Maciej Stachowiak  <maciej@roc-ny1-07.ix.netcom.com>
+
+	* callbacks.c (force_new_input_hooks): Don't compare the result of
+	gh_memq to SCM_BOOL_T, compare for inequality with SCM_BOOL_F!
+
+	* guile-compat.h: add a define for gh_memq as scm_memq when not
+	already defined.
+
 1998-06-22  Maciej Stachowiak  <maciej@roc-ny2-11.ix.netcom.com>
 
 	* scwm.c: Use scm_internal_parse_path instead of scm_parse_path.
