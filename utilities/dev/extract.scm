@@ -314,11 +314,11 @@ exec guile -l $0 -- --run-from-shell "$@"
 	   (for-each (lambda (word)
 		       (if (and (upper-case? word)
 				(> (string-length word) 1)
-				(not (all-special? word))
+				(char-upper-case? (string-ref word 0))
 				(not (member word args)))
 			   (complain file line "Documentation for procedure " (proc:scheme-name procrec)
 				     " contains upper case word " word " which isn't an argument")))
-		     (apply append (map extract-words docrec))))
+		     (apply append (map (lambda (d) (extract-words d kw-delim?)) docrec))))
 
 	 ;; Check that there's a func_name & it matches the c-name
 	 (if funcname
@@ -348,7 +348,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 	   (loop (1+ i) l))
 	  (else #f))))
 
-(define (extract-words s)
+(define (extract-words s delimiter?)
   (define (skip i l result)
     (cond ((>= i l) result)
 	  ((delimiter? (string-ref s i))
@@ -361,9 +361,14 @@ exec guile -l $0 -- --run-from-shell "$@"
 	  (else (grab start (1+ end) l result))))
   (skip 0 (string-length s) '()))
 
-(define (delimiter? c)
+(define (word-delimiter? c)
   (case c
     ((#\: #\space #\tab #\+ #\= #\\ #\| #\{ #\} #\[ #\] #\' #\` #\" #\: #\; #\. #\/ #\< #\> #\@ #\# #\% #\^ #\& #\* #\( #\) #\,) #t)
+    (else #f)))
+
+(define (kw-delim? c)
+  (case c
+    ((#\: #\space #\tab #\+ #\= #\\ #\| #\{ #\} #\[ #\] #\' #\` #\: #\; #\. #\/ #\< #\> #\@ #\# #\% #\^ #\& #\* #\( #\) #\,) #t)
     (else #f)))
 
 (define (c-ident->scheme-ident s)
@@ -527,7 +532,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 				  (loop (cdr args) (- req 1) opt rest))))
 		 ((and (= req 0)
 		       (> opt 0))
-		  (cons " #&optional" (loop args (- req 1) opt rest)))
+		  (cons " #&amp;optional" (loop args (- req 1) opt rest)))
 		 ((and (< req 0)
 		       (> opt 0))
 		  (cons " " (cons (car args)
@@ -805,17 +810,18 @@ exec guile -l $0 -- --run-from-shell "$@"
 	 (doc (procdoc:doc data))
 	 (arglist (proc:args proc))
 	 (argregexp (arglist->argregexp arglist)))
-    `((refentry (id ,(proc:scheme-name proc)))
+    `((refentry (id ,(sgml-escape-xref (proc:scheme-name proc))))
       ((refnamediv)
        ((refname) ,(proc:scheme-name proc))
-       ((refpurpose) ,(car doc)))
+       ((refpurpose) ,(if (null? arglist) (car doc)
+			  (markup-args argregexp (car doc)))))
       ((refsynopsisdiv)
        ((synopsis) ,(function-call-decl proc)))
       ((refsect1)
        ((title) "Description")
-       ((para)  ,@(if (not (null? arglist))
-		      (map (lambda (d) (markup-args argregexp d)) doc)
-		      '())))
+       ((para)  ,@(if (null? arglist)
+		      doc
+		      (map (lambda (d) (markup-args argregexp d)) doc))))
       ((refsect1)
        ((title) "Implementation Notes")
        ((para) "Defined in "
@@ -886,7 +892,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 		     (doc (procdoc:doc (docitem:data rec))))
 		`((listitem)
 		  ((para)
-		   ((link (linkend ,(proc:scheme-name proc)))
+		   ((link (linkend ,(sgml-escape-xref (proc:scheme-name proc))))
 		    ((function) ,(proc:scheme-name proc))
 		    ,(string-append "&mdash; " 
 				    (cond ((null? doc)
@@ -931,17 +937,23 @@ exec guile -l $0 -- --run-from-shell "$@"
 
 
 (define (sgml-escape s)
-  (list->string
-   (let loop ((s (string->list s)))
-     (cond ((null? s) '())
-	   (else (case (car s)
-		   ((#\<) (append '(#\& #\l #\t #\;)
-				  (loop (cdr s))))
-		   ((#\>) (append '(#\& #\g #\t #\;)
-				  (loop (cdr s))))
-		   ((#\&) (append '(#\& #\a #\m #\p #\;)
-				  (loop (cdr s))))
-		   (else (cons (car s) (loop (cdr s))))))))))
+  (define echars (make-regexp " ([<&]) "))
+  (define (esc m)
+    (case (string-ref (match:substring m 1) 0)
+      ((#\<) " &lt; ")
+      ((#\&) " &amp; ")))
+  (my-regexp-substitute/global #f echars s 'pre esc 'post))
+
+(define (sgml-escape-xref s)
+  (define echars (make-regexp "->|_|!|\\?"))
+  (define (esc m)
+    (case (string-ref (match:substring m 0) 0)
+      ((#\-) "--to--")
+      ((#\_) "--")
+      ((#\!) "--p")
+      ((#\?) "--x")))
+  (my-regexp-substitute/global #f echars s 'pre esc 'post))
+  
 
 (define (my-regexp-substitute/global port rx string . items)
   ;; If `port' is #f, send output to a string.
@@ -987,7 +999,12 @@ exec guile -l $0 -- --run-from-shell "$@"
    (my-regexp-substitute/global #f
 				proc-regexp
 				s
-				`pre "<link linkend=\"" 1 "\"><function>" 1 "</function></link>" `post)
+				`pre
+				"<link linkend=\"" 
+				(lambda (m) (sgml-escape-xref (match:substring m 1)))
+				"\"><function>"
+				1
+				"</function></link>" `post)
    `pre "<literal>" 1 "</literal>" `post))
 
 
@@ -1218,7 +1235,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 				" flag given without arguments.  Ignored.\n")
 		      (process-cmd-line (cdr args) files actions))
 		     (else (set! *scwm-ok-words*
-				 (append (extract-words (cadr args))
+				 (append (extract-words (cadr args) word-delimiter?)
 					 *scwm-ok-words*))
 			   (process-cmd-line (cddr args) files actions))))
 	      ((-h -? --help)
