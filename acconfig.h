@@ -27,4 +27,8 @@
    gh_list_length. This should be true of snapshots newer than 970915.  */
 #undef HAVE_GH_LENGTH
 
+/* Define this if your system has a <getopt.h> header file. */
+#undef HAVE_GETOPT_H
 
+/* Define this if your system has the getopt_long function. */
+#undef HAVE_GETOPT_LONG

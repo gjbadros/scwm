@@ -171,6 +171,14 @@ AC_CHECK_LIB(guile, gh_length,AC_DEFINE(HAVE_GH_LENGTH))
 
 AC_HEADER_STDC
 
+#-------------------------------------------------------------------
+#
+# Check for getopt
+#
+#-------------------------------------------------------------------
+
+AC_CHECK_HEADERS(getopt.h, AC_DEFINE(HAVE_GETOPT_H))
+AC_CHECK_FUNCS(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG))
 
 #-------------------------------------------------------------------
 #

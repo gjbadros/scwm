@@ -40,8 +40,17 @@
    gh_list_length. This should be true of snapshots newer than 970915.  */
 #undef HAVE_GH_LENGTH
 
+/* Define this if your system has a <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
+/* Define this if your system has the getopt_long function. */
+#undef HAVE_GETOPT_LONG
+
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
+
+/* Define if you have the getopt_long function.  */
+#undef HAVE_GETOPT_LONG
 
 /* Define if you have the strcasecmp function.  */
 #undef HAVE_STRCASECMP
@@ -60,6 +69,9 @@
 
 /* Define if you have the waitpid function.  */
 #undef HAVE_WAITPID
+
+/* Define if you have the <getopt.h> header file.  */
+#undef HAVE_GETOPT_H
 
 /* Define if you have the dl library (-ldl).  */
 #undef HAVE_LIBDL
