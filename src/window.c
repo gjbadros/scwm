@@ -1535,7 +1535,8 @@ SCWM_PROC(focus, "focus", 0, 1, 0,
 
 This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
-specified. */
+specified. Note that WIN is not raised by giving it the focus;  see
+`raise-window' if that is your intent. */
 #define FUNC_NAME s_focus
 {
   ScwmWindow *psw;
@@ -1569,7 +1570,10 @@ SCWM_PROC(warp_to_window, "warp-to-window", 0, 1, 0,
 
 If WIN is on a different desk or in a different viewport, these will
 be changed appropriately so that the window is visible. WIN defaults
-to the window context in the usual way if not specified. */
+to the window context in the usual way if not specified.  Note that
+the target window is not raised, so if the target window's upper
+left corner is under another window, that other window may end up
+with the keyboard focus. */
 #define FUNC_NAME s_warp_to_window
 {
   SCM_REDEFER_INTS;
