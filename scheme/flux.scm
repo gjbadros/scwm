@@ -790,22 +790,17 @@ that corner fixed."
   (focus-change-warp-pointer
    (cadr (list-windows #:by-focus #t))))
 
-(define*-public (animated-deiconify-to-current-vp-focus #&optional (win (get-window)))
+(define*-public (animated-deiconify-to-vp-focus #&optional (win (get-window)))
   "Deiconify WIN to the current viewport, and give it the focus"
   (cond
-   (win (animated-deiconify-to-current-viewport win)
-	(focus-change-warp-pointer win))))
-
-(define*-public (animated-deiconify-to-last-vp-focus #&optional (win (get-window)))
-  (cond
-   (win (animated-deiconify-to-last-viewport-position win)
+   (win (animated-deiconify-to-viewport win)
 	(focus-change-warp-pointer win))))
 
 (define-public (show-icon-list-menu)
   "Show a window list of only iconfied programs for animatedly deiconifying and giving them focus."
   (show-window-list-menu 1 #f
 			 #:only iconified?
-			 #:proc animated-deiconify-to-current-vp-focus))
+			 #:proc animated-deiconify-to-vp-focus))
 
 (define-public (show-xterm-window-list-menu)
   "Show a window list of only xterms for animatedly deiconifying and giving them focus."
@@ -814,7 +809,7 @@ that corner fixed."
 				  (or 
 				   (string=? (window-class w) "XTerm")
 				   (string=? (window-class w) "NXTerm")))
-			 #:proc animated-deiconify-to-current-vp-focus))
+			 #:proc animated-deiconify-to-vp-focus))
 
 (define-public (move-or-shade)
   "Move the window on a drag, shade on a double-click."

@@ -7,8 +7,11 @@
   :use-module (app scwm virtual)
   :use-module (app scwm xlib-drawing))
 
-;; (use-modules (app scwm optargs))
-;; (use-modules (app scwm xlib-drawing))
+(define-public iconify-animation-offsets
+  (list 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0 ))
+
+;; (define-public iconify-animation-offsets
+;;  '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))
 
 (define (point-list->point-pair l)
   (cons (car l) (cadr l)))
@@ -65,7 +68,7 @@ The rectangle moves towards the icon's location, if there is one."
                                   (icon-size win)
                                   (window-frame-size win)
                                   20 (lambda () (iconify win)) #f
-                                  '(1.0 .9 .8 .7 .6 .5 .4 .3 .2 .1 0.0)))))
+                                  (reverse iconify-animation-offsets)))))
 
 
 (define*-public (animated-deiconify #&optional (win (get-window)))
@@ -77,9 +80,9 @@ The rectangle grows outwards from the icon, if there is one."
                                      (icon-size win)
                                      (window-frame-size win)
                                      20 #f (lambda () (deiconify win))
-                                     '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
+				     iconify-animation-offsets)))
 
-(define*-public (animated-deiconify-to-last-viewport-position #&optional (win (get-window)))
+(define*-public (animated-deiconify-to-viewport #&optional (win (get-window)))
   "Deiconify WIN with an animation to the same viewport position as it was iconified from."
   (if (iconified? win)
       (let ((pos (or (window-property win 'last-viewport-position)
@@ -94,22 +97,8 @@ The rectangle grows outwards from the icon, if there is one."
 				      (window-frame-size win)
 				      20 #f (lambda () (apply deiconify 
 							      (cons win (apply viewport->virtual pos))))
-						    '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))))
+				      iconify-animation-offsets))))
 
-
-(define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
-  "Deicionify WIN with an animation to the current viewport."
-  (if (iconified? win)
-    (animate-iconify-or-deiconify (icon-viewport-position win)
-                                  (apply virtual->viewport 
-                                         (window-position-in-viewport 
-                                          (current-viewport-offset-xx)
-                                          (current-viewport-offset-yy)
-                                          win))
-                                  (icon-size win)
-                                  (window-frame-size win)
-                                  20 #f (lambda () (deiconify-to-current-viewport win))
-                                  '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
 
 (define*-public (animated-toggle-iconify #&optional (win (get-window)))
   "Iconify WIN if not iconified, or de-iconify WIN if it is iconified.
@@ -119,13 +108,3 @@ Uses animation, in either case."
           (animated-deiconify win)
           (animated-iconify win))))
 
-;; (define w (select-window-interactively))
-;; (begin (animate-iconify w) (sleep 1) (animate-deiconify w))
-
-;;(window-frame-size (select-window-interactively))
-;; (window-property w 'last-viewport-position)
-
-;; (animated-iconify w)
-;; (animated-deiconify w)
-;; (animated-deiconify-to-current-viewport w)
-;; (animated-deiconify-to-last-viewport-position w)
