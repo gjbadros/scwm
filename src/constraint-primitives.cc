@@ -93,9 +93,61 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
 #undef FUNC_NAME
 
 
+SCWM_PROC (window_clv_x, "window-clv-x", 1, 0, 0,
+           (SCM window))
+     /**
+      */
+#define FUNC_NAME s_window_clv_x
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmX;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_clv_y, "window-clv-y", 1, 0, 0,
+           (SCM window))
+     /**
+      */
+#define FUNC_NAME s_window_clv_y
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmY;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
+           (SCM window))
+     /**
+      */
+#define FUNC_NAME s_window_clv_width
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmWidth;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_clv_height, "window-clv-height", 1, 0, 0,
+           (SCM window))
+     /**
+      */
+#define FUNC_NAME s_window_clv_height
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmHeight;
+}
+#undef FUNC_NAME
 
 
-// FIXGJB: below are obsoleted by general mechanism
+
+//// FIXGJB: below are obsoleted by general mechanism
 SCWM_PROC(keep_tops_even, "keep-tops-even", 2, 0, 0,
           (SCM winA, SCM winB))
   /** Keep the tops of the frames of winA and winB at the same y position.
@@ -114,7 +166,6 @@ WINA and WINB are both window objects */
   ScwmWindow const *const pswB = PSWFROMSCMWIN(winB);
   const ClVariable &clvY_A = pswA->pswci->_frame_y;
   const ClVariable &clvY_B = pswB->pswci->_frame_y;
-  psolver->addVar(clvY_A).addVar(clvY_B);
 
   ClLinearEquation eqY(clvY_A,clvY_B+0.0);
   strstream ss;
@@ -149,8 +200,6 @@ WINA and WINB are both window objects */
   const ClVariable &clvW_A = pswA->pswci->_frame_width;
   const ClVariable &clvX_B = pswB->pswci->_frame_x;
   const ClVariable &clvW_B = pswA->pswci->_frame_width;
-  psolver->addVar(clvX_A).addVar(clvX_B);
-  psolver->addVar(clvW_A).addVar(clvW_B);
 
   ClLinearInequality ineqX(clvX_A+clvW_A,cnLEQ,clvX_B);
   strstream ss;
