@@ -195,7 +195,7 @@ while (<>) {
     redo if (defined($_)); # start loop over w/o reading next line
   } elsif ($fScheme && m%^\(define-public\s+([^\s\)]+)%) {
     $last_public_scheme_definition = $1;
-  } elsif (m%(?:/|^;;;\s*)\*\*\s*(\w[^:\n]*)(?::\s*(.*?))?\s*$%) {
+  } elsif (m%(?:/|^;;;\s*)\*\*\s*(\w[^:\n\s]*)(?::\s*(.*?))?\s*$%) {
     # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
     my $type = $1;
     my $description = $2;
@@ -208,7 +208,9 @@ while (<>) {
 	next;
       }
     }
-    print STDERR "GOT $type, $description\n";
+    if ($fDebug) {
+      print STDERR "GOT $type, $description\n";
+    }
     if ($type eq "" || $description eq "") {
       print STDERR "$ARGV:$.:**** Improper /**-style comment: got type = \`$type\', description = \`$description\'.\n";
       next;
@@ -709,8 +711,8 @@ sub PurposeFromComment ( $$$$ ) {
 sub ReadRestOfComment ( $$ ) {
   my ($comment, $fScheme) = @_;
   if ($fScheme) {
-    while (defined($_ = <>) && m%^;;;%) {
-      $comment .= $_;
+    while (defined($_ = <>) && m%^;;;\s*(.*)$%) {
+      $comment .= $1;
       if (eof) {
 	close(ARGV);
 	# FIXGJB: this might be wrong-- resetting too early?
