@@ -62,10 +62,10 @@ EXTERN long scm_tc16_scwm_image;
 
 size_t free_image(SCM obj);
 int print_image(SCM obj, SCM port, scm_print_state * pstate);
+SCM mark_image(SCM obj);
 
 SCM image_p(SCM obj);
 SCM make_image(SCM picture_filename);
-SCM mark_image(SCM image);
 
 SCM image_p(SCM obj);
 
@@ -80,14 +80,4 @@ SCM make_image(SCM name);
 
 void init_image();
 
-
-
-
-
-
-
-
-
-
-
-
+#endif IMAGE_H
