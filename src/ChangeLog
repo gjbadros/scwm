@@ -1,3 +1,11 @@
+Tue Jan 27 18:16:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c, events.h, scwm.c, scmprocs.c: Added new Scheme
+ 	procedure add-input-hook and associated support code in the event
+ 	loop - basically this allows the user to provide an fd to select()
+ 	on and a thunk to call if input becomes available on the fd. This
+ 	should be useful for the preliminary fvwm module interface.	
+
 Tue Dec 16 15:38:02 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* misc.h, misc.c: Move Destroy, RaiseWindow, LowerWindow, and Unmap into
