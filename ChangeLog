@@ -1,3 +1,13 @@
+Fri Jul 16 17:52:56 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Drop /usr/share/scwm-{modules,themes}-- no longer
+	needed.  Thanks Jay XXX.
+
+Fri Jul 16 17:52:13 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Make HAVE_XTEST an automake condition, and create
+	modules/xtest/Makefile
+
 Tue Jul 13 23:04:20 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in:  export CFLAGS so --enable-cflags=XXX works.

@@ -1,3 +1,7 @@
+Fri Jul 16 17:54:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added XTEST_SUBDIRS (= xtest) iff HAVE_XTEST
+
 Tue Jul 13 23:02:12 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* */Makefile.am: Added @PREFIX_INCLUDES to the INCLUDES parameter.

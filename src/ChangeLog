@@ -1,3 +1,29 @@
+Fri Jul 16 17:56:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h, xmisc.c (Pixmap1DeepFromPixmap): Move this function
+	here, from cursor.c
+
+	* cursor.c: moved Pixmap1DeepFromPixmap to xmisc.c.
+
+	* virtual.c: Set XA_SCWM_VIEWPORT_OFFSET_X,
+ 	XA_SCWM_VIEWPORT_OFFSET_Y on root window in MoveViewport_internal
+ 	so that they are always current.
+
+	* scwm.h, scwm.c: Added XA_SCWM_VIEWPORT_OFFSET_X,
+	XA_SCWM_VIEWPORT_OFFSET_Y atoms.  Protect shape stuff with
+	HAVE_SHAPE.  Set some XTest globals from XTestQueryExtension
+
+	* message-window.c: Improved `message-window-set-image!' to take
+	fg, bg, and shaped? parameters, and permit them to be shaped
+	windows.
+
+	* icons.c, events.c, borders.c, add_window.c: Protect XShape fns w/ HAVE_SHAPE
+
+	* events.c: Have commented out code using XTestFakeKeyEvent --
+	does the wrong thing since Scwm still grabs the key. Duh.
+
+	* deskpage.c: Fix validate bug in set-desk-size!.  Thanks Jay XXXX.
+
 Thu Jul 15 09:33:36 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_select_viewport_position): Return window id instead
