@@ -111,6 +111,10 @@ option `--exec_prefix=PATH', the package will use PATH as the prefix
 for installing programs and libraries.  Normally, all files are
 installed using the same prefix.
 
+You may also need to use --with-guile-prefix if your guile headers are
+not in /usr/include (e.g., --with-guile-prefix=/uns if guile headers are 
+in /uns/include).
+
 `configure' ignores any other arguments that you give it.
 
 If your system requires unusual options for compilation or linking
