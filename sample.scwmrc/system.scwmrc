@@ -1086,8 +1086,13 @@ from other processes.
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 
 ;; avoid lots of warnings.... test for this first...
-(define have-kp-keysyms (if (null? (keysym->keycode "KP_Left")) #f #t))
-(define have-kp-num-keysyms (if (null? (keysym->keycode "KP_4")) #f #t))
+(define have-kp-keysyms 
+  (let ((v (keysym->keycode "KP_Left")))
+    (and v (not (null? v)))))
+
+(define have-kp-num-keysyms 
+  (let ((v (keysym->keycode "KP_4")))
+    (and v (not (null? v)))))
 
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
