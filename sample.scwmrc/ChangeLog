@@ -1,4 +1,8 @@
-Wed Feb 17 17:21:50 1999  Greg J Badros  <gjb@cs.washington.edu>
+Wed Mar 10 20:20:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Call `run-dot-xclients-at-startup'.  Reset the
+	window-context to #f when bringing up a root menu with
+	popup-menu-root-start.
 
 	* gjb.scwmrc: Added C-M-S-b for new fn start-xterm-on-other-host,
 	for a second preferred host.  Fixed show-xterm-window-list-menu bugs.
