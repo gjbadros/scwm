@@ -1,3 +1,9 @@
+Wed Nov 26 00:38:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* image.c: Added support for registering a "default" image loader
+ 	which is used if no loader is registered for the file's extension
+ 	or if the registered image loader fails.
+
 Tue Nov 25 16:37:01 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* face.c, face.h: Use scheme image objects instead of Picture
