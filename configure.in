@@ -10,19 +10,23 @@ dnl ## Initialize autoconf ##
 AC_INIT(scwm/scwm.c)
 AC_PREREQ(2.4)
 
+## This will try to create the named directory if it does not exist
 AC_DEFUN(SCWM_ARG_PATH,
 [
   AC_ARG_WITH($1,[$2],[
     if test -z "${withval}" || test "yes" = "${withval}" || test "no" = "${withval}"; then
       AC_MSG_ERROR(missing pathname argument to --with-$1)
-    elif test ! -d "${withval}"; then
-      AC_MSG_ERROR(invalid pathname argument to --with-$1: ${withval})
     else
+      if test ! -d "${withval}"; then
+        AC_MSG_WARN(directory for --with-$1: ${withval} does not exist -- creating)
+	mkdir -p ${withval} || mkdirhier ${withval}
+      fi
       $3
     fi],
     $4)
 ])
 
+## This does not permit non-existing directories
 AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
 [
   AC_ARG_WITH($1,[$2],[
