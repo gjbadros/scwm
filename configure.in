@@ -132,7 +132,7 @@ AC_CHECK_HEADERS(getopt.h, AC_DEFINE(HAVE_GETOPT_H))
 
 dnl ## Check for library functions ##
 
-AC_CHECK_FUNCS(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG))
+AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG))
 # AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(gethostname waitpid sysconf uname)
 AC_CHECK_FUNCS(strerror strcasecmp strncasecmp)
@@ -153,7 +153,7 @@ AC_CHECK_LIB(guile, scm_puts, AC_DEFINE(HAVE_SCM_PUTS), ,$GUILE_LIBS)
 dnl This checks if we have gh_vref or gh_vector_ref
 AC_CHECK_LIB(guile, gh_vector_ref, AC_DEFINE(HAVE_GH_VECTOR_REF), ,$GUILE_LIBS)
 
-dnl This checks if we have gh_vref or gh_vector_set
+dnl This checks if we have gh_vset or gh_vector_set
 AC_CHECK_LIB(guile, gh_vector_set_x, AC_DEFINE(HAVE_GH_VECTOR_SET_X), ,$GUILE_LIBS)
 
 dnl This checks if we have a guile with readline support
@@ -164,6 +164,7 @@ AC_CHECK_LIB(guile, gh_length, AC_DEFINE(HAVE_GH_LENGTH), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_parse_path, AC_DEFINE(HAVE_SCM_PARSE_PATH), ,$GUILE_LIBS)
 
+AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
 
 dnl ## Checks for typedefs, structures, and compiler characteristics. ##
 

@@ -1509,9 +1509,9 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   }
 
 #ifdef __hpux
-  retval = select(fd_width + 1, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
+  retval = scwm_internal_select(fd_width + 1, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
 #else
-  retval = select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
+  retval = scm_internal_select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
 #endif
 
   if (retval == 0) {

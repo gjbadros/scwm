@@ -77,6 +77,9 @@
 /* Define this if your libguile has scm_parse_path.  */
 #undef HAVE_SCM_PARSE_PATH
 
+/* Define this if your libguile has scm_parse_path.  */
+#undef HAVE_SCM_INTERNAL_SELECT
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
@@ -88,9 +91,6 @@
 
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
-
-/* Define if you have the getopt_long function.  */
-#undef HAVE_GETOPT_LONG
 
 /* Define if you have the strcasecmp function.  */
 #undef HAVE_STRCASECMP

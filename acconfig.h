@@ -51,6 +51,9 @@
 /* Define this if your libguile has scm_parse_path.  */
 #undef HAVE_SCM_PARSE_PATH
 
+/* Define this if your libguile has scm_parse_path.  */
+#undef HAVE_SCM_INTERNAL_SELECT
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 

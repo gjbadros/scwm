@@ -1,3 +1,9 @@
+Wed Jun 10 21:38:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c, scwm.h: Use scm_internal_select in place of select for
+ 	the main event loop when available; this should make scwm work
+ 	with guile threads.
+	
 Mon Jun  1 19:20:20 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: regenerated with automake 1.3

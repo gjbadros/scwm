@@ -113,6 +113,10 @@ enum wm_client_functions {
 #define gh_length gh_list_length
 #endif /* HAVE_GH_LENGTH */
 
+#ifndef HAVE_SCM_INTERNAL_SELECT
+#define scm_internal_select select
+#endif
+
 #define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
                                    (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \
                                 } } while (0)
