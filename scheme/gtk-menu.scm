@@ -41,8 +41,12 @@
 	      (gtk-container-add align pix)
 	      (gtk-widget-show pix)))
 	(gtk-box-pack-start hbox align #f #f 0)
-	(gtk-box-pack-start hbox lab #f #f 4)
+	(gtk-box-pack-start hbox lab #t #t 4)
 	(gtk-widget-show mi)
+	(if (bound? extra-label)
+	    (let ((extralab (gtk-label-new extra-label)))
+	      (gtk-misc-set-alignment extralab 0 1)
+	      (gtk-box-pack-start hbox extralab #f #f 4)))
 	(cond ((or forced-submenu? (gtk-menu? action) 
 		   (and (symbol? action) (gtk-menu? (eval action))))
 	       (gtk-menu-item-set-submenu mi (if (symbol? action) (eval action) action)))
@@ -113,7 +117,7 @@
    (list
     (scwm-gtk-menu-title "Really quit Scwm?")
     scwm-gtk-menu-separator
-    (scwm-gtk-menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
+    (scwm-gtk-menuitem "Restart scwm" #:image-left "mini-turn.xpm"  #:extra-label "foo"
 		       #:action (lambda () (display "restart scwm") (newline)))
     (scwm-gtk-menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
 		       #:action (lambda () (display "restart dev scwm") (newline)))
