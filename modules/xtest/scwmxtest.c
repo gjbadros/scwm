@@ -23,6 +23,7 @@
 #endif
 
 #include <X11/Xlib.h>
+#include <X11/extensions/XTest.h>
 
 #include <guile/gh.h>
 
@@ -123,7 +124,6 @@ If MS-DELAY is ommitted or is #f or 0, no delay is used.*/
 #define FUNC_NAME s_xtest_fake_relative_motion_event
 {
   int dxpos, dypos;
-  int scr;
   long delay;
 
   /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
