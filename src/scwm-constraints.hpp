@@ -92,8 +92,8 @@ public:
       DBUG((DBG,FUNC_NAME,"Adding stays for window %s: (%d,%d) %d x %d",
             Psw()->name, _frame_x.IntValue(), _frame_y.IntValue(),
             _frame_width.IntValue(), _frame_height.IntValue()));
-      psolver->AddPointStay(_frame_width,_frame_height,last_weight+40);
-      psolver->AddPointStay(_frame_x,_frame_y,last_weight);
+      psolver->AddPointStay(_frame_width,_frame_height,ClsMedium(),last_weight);
+      psolver->AddPointStay(_frame_x,_frame_y,ClsWeak(),last_weight);
       last_weight += 50;
     }
 #undef FUNC_NAME
