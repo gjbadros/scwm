@@ -25,6 +25,8 @@ include Makefile
 %.o: %.cc
 	$(CPPCOMPILE) -Wp,-MD,.deps/$(*F).P -c $<
 
+constraint-primitives.o: constraint-primitives.x
+
 SRCS = constraint-primitives.cc scwm-constraints.cc
 CPPDEP_FILES = $(SRCS:%.cc=.deps/%.P)
 OBJS = $(SRCS:.cc=.o)
