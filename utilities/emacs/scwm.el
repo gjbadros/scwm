@@ -191,7 +191,8 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map "\C-c\M-r" 'scheme-send-region-and-go)
 (define-key scwm-mode-map "\C-c\M-c" 'scheme-compile-definition)
 (define-key scwm-mode-map "\C-c\C-c" 'scheme-compile-definition-and-go)
-(define-key scwm-mode-map "\C-c\C-l" 'scheme-load-file)
+;; this conflicts w/ above scwm-load-file binding
+;;(define-key scwm-mode-map "\C-c\C-l" 'scheme-load-file) 
 (define-key scwm-mode-map "\C-c\C-k" 'scheme-compile-file)
 
 ;;;###autoload
