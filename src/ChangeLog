@@ -1,3 +1,9 @@
+Fri Aug 14 19:28:13 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* deskpage.c: Use <informalexample> tag instead of <code> (the
+	  latter is not a DocBook tag -- I made it up a ways back because
+	  I was too lazy to look up the right markup)
+
 Thu Aug 13 11:56:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c: Added DBUG code for ConstrainSize

@@ -1,3 +1,7 @@
+Fri Aug 14 19:24:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm, wmconfig-menu.scm: Document a proc in each.
+
 Fri Aug 14 17:13:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Added vars `opaque-move-percent' and

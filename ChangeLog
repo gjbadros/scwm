@@ -1,3 +1,10 @@
+Fri Aug 14 19:29:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: First go at extracting comments from 
+	  the scheme source files.  Pretty broken right now, but am going
+	  to update to try to use the Text::Balanced module by Damian
+	  Conway to match parens instead of using regexp hacks.
+
 Fri Aug 14 10:43:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in, configure: Scwm-0.8 released!
