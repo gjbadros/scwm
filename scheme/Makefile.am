@@ -8,7 +8,9 @@ scwm_common_scheme = advice.scm animation.scm auto-raise.scm base.scm \
     prefs-menu.scm report-usage.scm shutdown-opts.scm sort.scm stacking.scm \
     std-menus.scm style-options.scm style.scm theme-impl.scm themes.scm tile.scm \
     user-options.scm wininfo.scm winlist.scm winops.scm wmconfig-menu.scm \
-    desk-background.scm
+    desk-background.scm move-resize-message-window.scm \
+    move-with-message-window.scm standard-move-resize-message-window.scm \
+    resize-with-message-window.scm
 
 scwm_gtk_scheme = gtk.scm ScwmClock.scm ScwmDeskButtons.scm
 

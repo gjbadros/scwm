@@ -1,7 +1,8 @@
 ;;;; $Id$ -*- scwm -*-
 
 (define-module (app scwm desk-background)
-  :use-module (app scwm background))
+  :use-module (app scwm background)
+  :use-module (app scwm optargs))
 
 ;; JTL:FIXME:: completely arbitrary size
 ;; entries are vectors, #(reset? color image image-style)
