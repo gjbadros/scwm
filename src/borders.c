@@ -568,8 +568,14 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
     /* are we using textured borders? */
     if ((GetDecor(t, BorderStyle.active->style)
-	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = IMAGE(GetDecor(t, BorderStyle.active->u.image))->image;
+	 & ButtonFaceTypeMask) == TiledPixmapButton) {
+      SCM scmImage = GetDecor(t, BorderStyle.active->u.image);
+      if (IMAGE_P(scmImage)) {
+        scwm_image *simage = IMAGE(scmImage);
+	if (simage)
+	  TexturePixmap = simage->image;
+      }
+    }
 
     /* set the keyboard focus */
     if ((Mapped) && (t->flags & MAPPED) && (Scr.Hilite != t))
