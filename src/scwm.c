@@ -1040,6 +1040,7 @@ Repository Timestamp: %s\n",
 #endif
   
   /* MS:FIXME:: clean this ugly mess up. */
+  /* GJB:FIXME:: look for $HOME/scwm/.scwmrc, too */
   if (strlen(szCmdConfig) == 0) {
 #ifdef I18N
       scwm_safe_eval_str(
