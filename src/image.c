@@ -90,6 +90,8 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 static SCM *loc_image_load_path;
 
+static SCM *loc_image_not_found_hook;
+
 static SCM str_default;
 static SCM str_empty;
 
@@ -307,6 +309,14 @@ unregister_image_loader(SCM extension)
   return SCM_UNSPECIFIED;
 }
 
+SCM
+InvokeHook1(SCM proc, SCM arg1)
+{
+  if (proc != SCM_BOOL_F && gh_procedure_p(proc)) {
+    return gh_call1(proc, arg1);
+  }
+  return SCM_BOOL_F;
+}
 
 
 SCM
@@ -382,6 +392,7 @@ path_expand_image_fname(SCM name)
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
       scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
+      InvokeHook1(*loc_image_not_found_hook,gh_str02scm(c_name));
       free(c_name);
       free(c_fname);
       return SCM_BOOL_F;
@@ -579,5 +590,7 @@ void init_image()
   loc_image_load_path = SCM_CDRLOC
     (scm_sysintern("image-load-path", 
 		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));
+  loc_image_not_found_hook = SCM_CDRLOC
+    (scm_sysintern("image-not-found-hook", SCM_BOOL_F));
 }
 
