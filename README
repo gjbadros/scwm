@@ -42,10 +42,11 @@ arbitrary gui elements.
 
 The copyright for the code in the scwm and libs subdirectories is the
 fvwm copyright, which may be found in COPYING.FVWM. Several files may
-have a slightly different copyright, or be under my copyright. The
+have a slightly different copyright, or be under our copyright. The
 files in the scheme directory are under GPL (see scheme/COPYING). The
 files in the doc directory are all under the copyright specified by
 doc/COPYRIGHT.DOC.
 
- - Maciej Stachowiak <mstachow@mit.edu>
+ - Maciej Stachowiak <mstachow@mit.edu>  and
+      Greg J. Badros <gjb@cs.washington.edu>
 
