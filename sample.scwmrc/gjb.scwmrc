@@ -257,8 +257,8 @@
 ;;; anyway...
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
-	      #:icon pic-unknown
-;	      #:icon #f        ;; MS - specify #f to not get an icon.
+	      #:icon #f ;; this turns off icons, but leaves icon titles
+	      #:show-icon #f ;; this turns off both icon titles and icons
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 4 ;; MS borderwidth of 4 looks slightly better
 	                       ;; to my eye than 3.
@@ -536,7 +536,7 @@
     (menuitem "Really quit Scwm?" #f)
     menu-title
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "scwm")))
+	       #:action (lambda () (restart "/scratch/gjb/scwm/scwm/scwm -f /scratch/gjb/scwm/sample.scwmrc/gjb.scwmrc 2> /homes/gws/gjb/scwm.log")))
     menu-separator
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
@@ -1012,20 +1012,21 @@
 ;;; This does not work for me -- I get:
 ;;; Xlib: unexpected async reply (sequence 0x13e0)!
 ;;; 
-;;;(define fvwm-winlist (run-fvwm-module
-;;;	    ;; path to the module
-;;;	    fvwm-winlist-path
-;;;	    ;; your .fvwm2rc (does not need to exist for most modules)
-;;;	    "~/.fvwm2rc"
-;;;	    ;; list of configuration lines
-;;;	    '("*FvwmWinListBack #c3c3c3"
-;;;	      "*FvwmWinListFore Black"
-;;;	      "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
-;;;	      "*FvwmWinListAction Click1 Iconify -1,Focus"
-;;;	      "*FvwmWinListAction Click2 Iconify"
-;;;	      "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
-;;;	      "*FvwmWinListUseSkipList"
-;;;	      "*FvwmWinListGeometry +0-1")))
+(define fvwm-winlist 
+  (run-fvwm-module
+   ;; path to the module
+   fvwm-winlist-path
+   ;; your .fvwm2rc (does not need to exist for most modules)
+   "~/.fvwm2rc"
+   ;; list of configuration lines
+   '("*FvwmWinListBack #c3c3c3"
+     "*FvwmWinListFore Black"
+     "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+     "*FvwmWinListAction Click1 Iconify -1,Focus"
+     "*FvwmWinListAction Click2 Iconify"
+;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+     "*FvwmWinListUseSkipList"
+     "*FvwmWinListGeometry +0-1")))
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm-module fvwm-pager)
