@@ -114,28 +114,28 @@ SCM set_desk_size_x(SCM sx, SCM sy)
 }
 
 
-SCM get_display_size()
+SCM display_size()
 {
   return scm_listify(SCM_MAKINUM(Scr.MyDisplayWidth),
 		     SCM_MAKINUM(Scr.MyDisplayHeight),
 		     SCM_UNDEFINED);
 }
 
-SCM get_desk_size()
+SCM desk_size()
 {
   return scm_listify(SCM_MAKINUM((int)(Scr.VxMax/Scr.MyDisplayWidth)),
 		     SCM_MAKINUM((int)(Scr.VyMax/Scr.MyDisplayHeight)),
 		     SCM_UNDEFINED);
 }
 
-SCM get_viewport_position()
+SCM viewport_position()
 {
   return scm_listify(SCM_MAKINUM(Scr.Vx),
 		     SCM_MAKINUM(Scr.Vy),
 		     SCM_UNDEFINED);
 }
 
-SCM get_current_desk()
+SCM current_desk()
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
 }
