@@ -44,6 +44,8 @@ static char *scwm_errors[] = {
   "Invalid binding context.",
   "Colormap focus must be \'focus or \'mouse."
   "Bad menu entry specifier."
+  "Bad event for binding."
+  "Window focus must be \'click, \'mouse, \'sloppy or \'none."
 };
 
 
