@@ -1,3 +1,8 @@
+1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* session-manager.c (setSMProperties): Add GsmPriority prop.
+	(restoreWindowState): Would make most window start iconic erroneously.
+
 Mon Mar 22 18:57:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* callbacks.h, callback.c: Added some extra prototypes, prepare
