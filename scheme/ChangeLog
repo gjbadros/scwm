@@ -1,5 +1,9 @@
 Fri Mar  6 02:50:47 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* fvwm-module.scm: Slight corrections to the extra argument stuff;
+ 	also, broadcast the page info to modules that request the window
+ 	list.
+
 	* base.scm: A few changes to make menu-style work right.
 
 	* fvwm-module.scm: Added optional other-args argument to module.
