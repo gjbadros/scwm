@@ -25,6 +25,7 @@
 #include <X11/Xlib.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include "scwm.h"
 #include "image.h"

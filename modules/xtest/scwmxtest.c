@@ -26,6 +26,7 @@
 #include <X11/extensions/XTest.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include "scwm.h"
 #include "screen.h"

@@ -13,6 +13,7 @@
 #include <X11/extensions/shape.h>
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 #include <libguile/dynl.h>
 
 #include "scwm.h"

@@ -9,6 +9,7 @@
 #include <libgnorba/gnorba.h>
 #include <gtk/gtk.h>
 #include <guile/gh.h>
+#include "guile-compat.h"
 #include <string.h>
 #include <stdio.h>
 

@@ -25,6 +25,7 @@
 #include <signal.h>
 #include <esd.h>
 #include "scwm.h"
+#include "guile-compat.h"
 
 static int esd;
 

@@ -1,3 +1,6 @@
+/* $Id$
+ */
+
 #include "applefile_int.h"
 
 #include "applesingledouble.h"

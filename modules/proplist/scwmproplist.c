@@ -8,6 +8,7 @@
 #endif
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 
 #include <proplist.h>
 #include "proplistP.h" /* from the proplist source distribution */

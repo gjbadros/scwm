@@ -29,6 +29,7 @@
 
 #include "drawing.h"
 #include "scwm.h"
+#include "guile-compat.h"
 #include "screen.h"
 #include "xmisc.h"
 
