@@ -213,6 +213,9 @@ scwm_safe_call1 (SCM proc, SCM arg)
   return scwm_safe_apply (proc, gh_list(arg, SCM_UNDEFINED));
 }
 
+
+#ifndef HAVE_SCM_MAKE_HOOK
+
 SCM
 scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2)
 {
@@ -260,6 +263,8 @@ scwm_safe_call7 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM
      size two - seems lame. */
   return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, arg7, SCM_UNDEFINED));
 }
+
+#endif
 
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
@@ -376,9 +381,58 @@ WarnBadHook(SCM hook)
 user callbacks on particular events. Fundamentally, a hook is just a
 variable that contains a list of procedures that are called in order
 when the relevant event occurs. However, several convenience macros
-are provided for manipulating hooks; see `add-hook!', `remove-hook!'
-and `reset-hook!'. 
+are provided for manipulating hooks; see `add-hook!', `remove-hook!',
+`reset-hook!', and `run-hook'. 
 */
+
+#ifdef HAVE_SCM_MAKE_HOOK
+
+SCM call0_hooks(SCM hook)
+{
+  scm_run_hook(hook,SCM_EOL);
+}
+
+SCM call1_hooks(SCM hook, SCM arg1)
+{
+  scm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
+}
+
+SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
+}
+
+SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
+}
+
+SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
+}
+
+SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
+}
+
+SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
+}
+
+SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
+{
+  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
+}
+
+SCM apply_hooks(SCM hook, SCM args)
+{
+  scm_run_hook(hook,args);
+}
+
+#else
 
 SCM call0_hooks (SCM hook)
 {
@@ -561,6 +615,8 @@ SCM apply_hooks (SCM hook, SCM args)
   
   return SCM_UNSPECIFIED;
 }
+
+#endif
 
 /* This is needed for running error hooks - if an error hook throws an
    error, we really don't want to invoke the standard handler (which

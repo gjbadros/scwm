@@ -187,9 +187,9 @@ event happens more often than you might expect and an action procedure
 attached here should be very careful about manipulating windows in a way
 that might cause more Visibility events. */
 
-SCWM_HOOK(client_message_hook,"client-message-hook", 3);
+SCWM_HOOK(client_message_hook,"client-message-hook", 4);
   /** This hook is invoked whenever Scwm receives an X/11 client message.
-It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
+It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
 and the vector of data. */
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
