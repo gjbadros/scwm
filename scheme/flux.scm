@@ -270,8 +270,8 @@ Return the selected window object, or #f if none was selected"
 ;; (let ((w (select-window-from-window-list #:only iconified?)))
 ;;  (deiconify w) (move-to 0 0 w))
 
-(defmacro-public color->string (color)
-  `(color-property ,color 'name))
+(define-public (color->string color)
+  (color-property color 'name))
 
-(defmacro-public set-window-title! (win title)
-  `(set-window-text-property ,win "WM_NAME" ,title))
+(define-public (set-window-title! win title)
+  (set-window-text-property win "WM_NAME" title))
