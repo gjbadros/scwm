@@ -124,11 +124,15 @@ AC_CHECK_FUNC(gethostbyname, , AC_CHECK_LIB(nsl, main, [LIBS="$LIBS -lnsl"]))
 AC_CHECK_LIB(m, main)
 AC_CHECK_LIB(dl, main)
 
+AC_CHECK_LIB(termcap, main)
+AC_CHECK_LIB(readline, main)
+
 AC_CHECK_LIB(qthreads,main,[
-LIBS="-lqt $LIBS"
+LIBS="-lqthreads $LIBS"
 ],[
 AC_CHECK_LIB(qt, qt_null)
 ],$LIBS)
+
 
 AC_CHECK_LIB(guile, scm_handle_by_message_noexit,[
 LIBS="-lguile $LIBS"
