@@ -1,3 +1,26 @@
+1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
+
+	* pie-menus/draw-pie-menu.c: menu_look member added to pmdi; used
+	to differentiate variations on pie menus.
+	(InitGCs): MaskGC initialized;  one-time blocking done here, and
+	call moved to CreateDynamicPieMenu
+	(PaintDynamicMenu): inactive center only filled in in debug
+	builds; I'm not sure which way I prefer. Made attempt at adding
+	relief/shadow for circular window for circle-pie-menus; this
+	doesn't work well. 
+	(ConstructDynamicPieMenuInternal): renamed from
+	ConstructDynamicPieMenu; second argument added, menu_look, for
+	differentiating between variations.  first menu item's center is
+	MENU_ITEM_START (90 degrees), not 0.  If menu_look ==
+	circle_pie_menu_look, then keep track of smallest radius that will 
+	include all the labels, and shape window into a circle this size.
+	(ConstructDynamicPieMenu): New function with an old name; used for 
+	creating rectangular-window pie menus
+	(ConstructDynamicPieMenuShapeCircle): New function; used for
+	creating circule-shaped pie menus
+	(init_draw_pie_menu): added documentation for pie-menu-look; new
+	menu look circle-pie-menu-look created
+
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 
 	* pie-menus/draw-pie-menu.c: quite a bit of general cleanup;
