@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;; File: <prefs-menu.scm - 1998-09-09 Wed 13:04:22 EDT sds@eho.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-09-09 Wed 16:30:39 EDT sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 
 ;;; This program is free software; you can redistribute it and/or modify
@@ -171,10 +171,11 @@
                                       (display "\n\n" out)
                                       (help symbol out)
                                       (if (symbol-bound? #f setter)
-                                          (help setter out))))))))
-            (if (symbol-bound? #f setter)
-                ((symbol-binding #f setter) res)
-                (symbol-set! #f symbol res)))))))
+                                          (help setter out)))))))))))))
+            ;; commented out to prevent disasters
+            ;; (if (symbol-bound? #f setter)
+            ;;     ((symbol-binding #f setter) res)
+            ;;     (symbol-set! #f symbol res)))))))
 
 (define-public (user-option-menuitem symbol)
   "Create a menuaitem for the option."
