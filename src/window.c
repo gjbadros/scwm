@@ -1034,6 +1034,10 @@ window_shade(SCM win, SCM animated_p)
   
   if (fAnimated) {
     AnimatedShadeWindow(sw,True /* roll up */, -1, NULL);
+    /* handle expose events */
+    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+      DispatchEvent();
+    /* and discard the rest */
     XSync(dpy,True);  /* Discard events so we don't propagate a resize
 			 event that will call setupframe again */
     /* FIXGJB: the above XSync is timing dependent, sometimes the
@@ -1051,6 +1055,7 @@ window_shade(SCM win, SCM animated_p)
     /* need to reset the client window offset so that if
        if it's un-window-shaded w/o animation, things are ok */
     XMoveWindow(dpy,sw->w,0,0);
+    CoerceEnterNotifyOnCurrentWindow();
   }
 
   Broadcast(M_WINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
