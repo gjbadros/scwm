@@ -1,3 +1,37 @@
+Fri Dec  3 10:05:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* snap.scm: Added docs for wininfo.  Define wininfo-[nesw] more
+	consicely as aliases for car, cadr, etc.
+
+	* cursor.scm: Need nonants module, avoid race condition at startup 
+	by using startup-hook.
+
+Fri Dec  3 10:02:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* debianapps-menu.scm: New version from Francesco w/ some light
+ 	modifications by me.  He: cleaned up code; made
+ 	make-debianapps-menu pass args through to menu to permit, e.g., a
+ 	side-image.  Added *debian-menu-path* option: Perhaps a file list
+ 	would be better here > (something as '("/etc/X11/scwm/scwm_menus"
+ 	"/home/cesco/personal_menus")), > but I do'nt know if I can use
+ 	the #:path type in this case; borrowed some code from Greg's
+ 	system.scwmrc to make the generated menu > more good looking. I
+ 	kept out some menu entries because they call proprietary >
+ 	programs (Netscape): this is not very good for a debian package
+
+Thu Dec  2 09:26:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added cursor.scm
+
+	* wininfo.scm: Make windows-overlap? ignore iconified windows and
+	really return a boolean.  Added list-overlapping-windows,
+	list-non-overlapping-windows. 
+
+	* nonants.scm: Permit symbolic names for nonants in
+	nonant-decoration.
+
+	* cursor.scm: Added; support for pixmap resizing cursors.
+
 Wed Dec  1 17:09:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* netscape.scm: Update netscape-win to use the window-with-pointer 

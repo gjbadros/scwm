@@ -1,3 +1,8 @@
+Thu Dec  2 09:23:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/scwmgrammar.bnf: Added a comment about how to list
+	productions using fsgenum.
+
 Thu Nov 25 14:00:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (animate-windows): Added this
