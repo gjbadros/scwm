@@ -124,7 +124,9 @@ NewPchKeysUsed(DynamicMenu *pmd)
     item = gh_car(rest);
     pmi = SAFE_MENUITEM(item);
     if (!pmi) {
-      scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",ipmiim);
+      /* do not print a warning if a menu item is #f */
+      if (item != SCM_BOOL_F)
+	scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",ipmiim);
     } else {
       if (pmi->pchHotkeyPreferences) {
 	char *pchDesiredChars = pmi->pchHotkeyPreferences;
@@ -370,6 +372,8 @@ PmdFromWindow(Display *dpy, Window w)
   return pmd;
 }
 
+/* FIXGJB this may need to be dynamically loadable for more
+   flexible menu types (like pie menus) */
 static
 MenuItemInMenu *
 PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
@@ -455,7 +459,7 @@ RepaintMenuItem(MenuItemInMenu *pmiim)
 /*  MenuItem *pmi = pmiim->pmi; */
   DynamicMenu *pmd = pmiim->pmd;
   Window w = pmd->pmdi->w;
-  PaintMenuItem(w,pmd,pmiim);
+  pmd->fnPaintMenuItem(w,pmd,pmiim);
 }
 
 MenuItemInMenu *
@@ -954,7 +958,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
       pmdNeedsPainting = PmdFromWindow(dpy,Event.xany.window);
       if (pmdNeedsPainting) {
 	DBUG(__FUNCTION__,"Trying to paint menu");
-	PaintDynamicMenu(pmdNeedsPainting,&Event);
+	pmdNeedsPainting->fnPaintDynamicMenu(pmdNeedsPainting,&Event);
       }
     }
     continue;
@@ -1053,6 +1057,9 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 }
 
+PfnConstructDynamicMenu fnConstructDynamicMenuCurrent;
+static SCM *pscm_construct_menu_primitive;
+
 static
 DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
@@ -1065,7 +1072,20 @@ NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   pmd->fPinned = False;
 
   InitializeDynamicMenu(pmd);	/* add drawing independent fields */
-  ConstructDynamicMenu(pmd);	/* update/create pmd->pmdi */
+  /* FIXGJB: this ConstructDynamicMenu needs to possibly call a different
+     ConstructDynamicMenu == should be through a function pointer */
+
+  if (*pscm_construct_menu_primitive != SCM_BOOL_F)
+    {
+    fnConstructDynamicMenuCurrent = (PfnConstructDynamicMenu) 
+      scm_num2ulong (*pscm_construct_menu_primitive, (char *)SCM_ARG1, "NewDynamicMenu" );
+    }
+  else
+    {
+    fnConstructDynamicMenuCurrent = ConstructDynamicMenu;
+    }
+
+  fnConstructDynamicMenuCurrent(pmd);	/* update/create pmd->pmdi */
 
   { /* scope */
     /* Get the right events -- don't trust the drawing code to do this */
@@ -1166,4 +1186,8 @@ init_menu()
 #ifndef SCM_MAGIC_SNARFER
 # include "scwmmenu.x"
 #endif
+
+  pscm_construct_menu_primitive = SCM_CDRLOC
+    (scm_sysintern("construct-menu-primitive", SCM_BOOL_F));
+
 }
