@@ -1,3 +1,11 @@
+Wed Apr  7 11:36:53 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Updated all copyrights for files changed in 1999.  Added word
+	"Copyright" where it was missing.  Added some people to copyright
+	lists where they were missing.  Other header comment updates
+	including fixing Dollar-Id-Dollar (missing last dollar on
+	occasion), filename references, and more.
+
 Tue Mar 30 18:44:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Test for imlib, added --disable-imlib option to
