@@ -1,3 +1,11 @@
+Fri Jan  7 17:56:31 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-binding.scm: Use "Complex" instead of empty for the
+	non-immediate mouse event type.  Added a middle pane (the bottom
+	of the top pane, really) containing the current line for editing
+	purposes. Make its set and grab buttons active.  Getting close to
+	functional... 
+
 Fri Jan  7 11:25:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm: Added `raise-fvwm2-pager', `lower-fvwm2-pager'
