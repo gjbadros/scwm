@@ -1,3 +1,12 @@
+1998-07-23  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.sgml: added links between functions, to the files (these
+	are broken for other sites), and reduce redundancy in chapter 2 by 
+	making it a bunch of itemizedlists with links to the alphabetical listing
+
+	* Makefile.am (pkgdata_DATA): added scwm-procedures.txt so it gets 
+	installed in $prefix/share/scwm
+
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-procedures.txt: Added -- renamed from primitives.txt, and

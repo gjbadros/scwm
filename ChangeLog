@@ -1,3 +1,10 @@
+1998-07-23  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Added id's to refentry's, and add
+	links to reference them.  Also add ulinks to source
+	files. Reworked chapter two output to be just the primitive names
+	and links to the chapter 1 descriptions.
+
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Added spell checking using 'ispell

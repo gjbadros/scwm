@@ -1,3 +1,9 @@
+1998-07-23  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added new doc-files variable setting to use the new
+	(scwm-path-prefix) primitive.  (For the new `documentation'
+	procedure which accesses scwm-procedures.txt)
+
 1998-07-23  Maciej Stachowiak  <maciej@roc-ny1-20.ix.netcom.com>
 
 	* fvwm-module.scm (add-window): Determine the icon file
