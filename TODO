@@ -1,9 +1,12 @@
 # $Id$ -*- outline -*-
 
+* documentation strings in scwm scheme modules
+
 * Constraint embedding
-** use cleaner subclassing w/ partial wrap model, instead of C-like void pointers
+** consider using cleaner subclassing w/ partial wrap model, instead of C-like void pointers
 ** virtual desktop and sticky interaction with the constraint variables
 ** rubberband-resizing fixes -- generalization of the rubberband
+** z-order stacking constraints to replace add-hoc stays-on-top, raisewindow, lowerwindow
 
 * General cleanup
 ** more static function hidden behind modules
@@ -31,8 +34,10 @@ isn't now).
 * accelerated mouse movements w/ keyboard shortcuts
 
 * StayOnBottom style
+** constraints will do this really cleanly
 
 * Add useful primitives from GWM, other wms
+
 
 * Size/position window needs to be more dynamic, customizable
 

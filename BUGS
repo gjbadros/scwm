@@ -9,12 +9,28 @@ Incorrect usage of keyword arguments by a scheme function fails silently.
 -------------
 Some error messages are looked up in a table that is distant from the error.
 ---------------
+icon-box not honoured, moving icons moves windows
+-------------
 popup-menus attached to decorations come up centered over the click, instead of 
 flush with the window edge
 ---------------
 xdvorak's change mapping should cause all keybindings to be reset and
 new keycodes to be gotten
 ---------------
+Windows still aren't positioning correctly for me at startup.  They're
+starting too low (when positioned with -0, as in:
+
+xterm -j -sb -sl 128 -si -geometry 82x48-0-0 -T $XTERMNAME &
+xterm -j -sb -sl 128 -si -geometry 80x24+0-0 -T $XTERMNAME &
+
+The 1st xterm also ends up a little to far to the right (looks like
+it's off by the window border).
+
+This is with "guile 1.3a" (snap 980630), & a cvs update this morning
+of scwm.
+
+--hjstein
+-------------
 I've noticed this off-and-on with 0.6, and just noticed again with
 0.7: My xterms have #:focus 'sloppy set; sometimes (probably about
 one time in 25), when I have a pair of partially overlapping
