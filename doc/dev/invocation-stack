@@ -1,3 +1,6 @@
+scwm_run_hookN  # for hooks (n == 0, 1)
+ -> scwm_run_hook|scwm_run_hook_message_only
+   -> scwm_safe_apply|scwm_safe_apply_message_only
      -> scm_internal_stack_cwdr
        -> scm_internal_cwdr_no_unwind (cwssdr_body)
          -> scm_internal_catch
