@@ -566,7 +566,7 @@ SCWM_ARG_PATH(scwmrcdir,
 ])
 
 # open the parentheses
-scwm_image_load_path="(\\\"${libdir}/${PACKAGE}-pixmaps\\\" ";
+scwm_image_load_path="(\\\"${scwm_pixmapdir}\\\" ";
 
 for i in \
    ${x_includes}/X11/bitmaps \
