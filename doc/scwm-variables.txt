@@ -16,7 +16,7 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2375]
+[From src/events.c:2374]
 
 
 cursor-icon
@@ -102,14 +102,14 @@ this-command
 - 
 The current command when executing the `pre-command-hook';  may be mutated to affect 
       what command is run.  See also `this-command-args'. 
-[From src/callbacks.c:1112]
+[From src/callbacks.c:1111]
 
 
 this-command-args
 - 
 The arguments to the current command when executing the `post-command-hook'; may be
       mutated to affect the arguments when the command is run.  See also `this-command'. 
-[From src/callbacks.c:1115]
+[From src/callbacks.c:1114]
 
 
 xpm-shaped-menu-look

@@ -85,7 +85,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From src/binding.c:728]
+[From src/binding.c:736]
 
 
 Face Flags
@@ -620,7 +620,7 @@ use-theme (window-style) from scheme/themes.scm:48
 winlist-skip (boolean-style) from scheme/winlist.scm:91
 circulate-skip (boolean-style) from scheme/winlist.scm:138
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:139
-start-maximized (window-style) from scheme/winops.scm:175
+start-maximized (window-style) from scheme/winops.scm:178
 
 [From src/face.c:542]
 
@@ -646,7 +646,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From src/xproperty.c:360]
+[From src/xproperty.c:366]
 
 
 X Properties
