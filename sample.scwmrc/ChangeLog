@@ -1,3 +1,10 @@
+Wed Apr 28 19:47:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added "Change global theme", uncomment the
+	(load-preferences), and switch back to GNU XEmacs.  Still no
+	running of xclients since it's easy enough to run by hand when I
+	want it.
+
 1999-04-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Style changes.

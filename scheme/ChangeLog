@@ -1,3 +1,7 @@
+Wed Apr 28 19:49:31 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* tests/demo.scm: Minor changes from just before demoing Scwm to RMS.
+
 1999-04-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm (X-properties->string): Moved to xprop-extras.scm.
