@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-12-12 Sat 22:41:03 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-12-12 Sat 22:55:52 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -410,10 +410,9 @@ Returns a string which is present in the `scwm-obarray'."
       ;; make the symbols clickable
       (let ((props '(action scwm-documentation mouse-face highlight
                      face italic)) p0 p1 p2 str)
-        (while (progn (setq p0 (point) p1 (search-forward ": " nil t)
-                            p2 (1- (re-search-forward "\\s " nil t)))
-                      (and p1 p2))
-          (setq str (buffer-substring-no-properties p1 p2))
+        (while (setq p0 (point) p1 (search-forward ": " nil t))
+          (setq p2 (1- (re-search-forward "\\s " nil t))
+                str (buffer-substring-no-properties p1 p2))
           (add-text-properties p0 p2 (cons 'item (cons str props)))
           (forward-char -1)     ; in case the line just ended
           (forward-line 1)))

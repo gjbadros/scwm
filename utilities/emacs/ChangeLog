@@ -1,4 +1,8 @@
-1998-12-13  Sam Steingold  <sds@goems.com>
+1998-12-12  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (scwm-apropos): should be working again.
+
+1998-12-12  Sam Steingold  <sds@goems.com>
 
 	* scwm.el: fixed capitalization.
 
