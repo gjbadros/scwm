@@ -2846,8 +2846,6 @@ specified. */
 }
 #undef FUNC_NAME
 
-/* FIXDOC: will "WIN's" still result in "WIN" getting parsed as a
-   formal properly? */
 SCWM_PROC(set_border_width_x, "set-border-width!", 1, 1, 0,
           (SCM width, SCM win))
      /** Set the border width of WIN's border to WIDTH pixels. 

@@ -502,8 +502,6 @@ SPECS is a list of face specifiers. */
 }
 #undef FUNC_NAME
 
-/* FIXDOC: I need to make a table. How do I do that? For now using
-   ad-hoc formatting. */
 /**CONCEPT: Face Flags
    Face flags are two-element lists that specify certain properties
 that are set once and only once for a give face (as opposed to specs,
@@ -511,38 +509,47 @@ which may be chained arbitrarily). Nearly all flags may be used for
 button faces. Exceptions, as well as the flags that may be used for
 title and border faces, are indicated below.
 
-
-  Key               | Possible values      | Explanation
-  ------------------|----------------------|----------------
-  'justify          | 'left 'right 'center | How should the contents of the
-                    |                      | face (pixmap, relief pattern, etc)
-                    |                      | be justified?
-  'vertical-justify | 'top 'bottom 'center | How should the contents of the
-                    |                      | face (pixmap, relief pattern, etc)
-                    |                      | be justified vertically?
-  'relief           | 'flat 'sunk 'raised  | Should the face appear flat, 
-                    |                      | raised or sunk? This is the only
-                    |                      | face flag that may be used for 
-                    |                      | titles. It may be used for buttons
-                    |                      | as well, of course.
-  'use-style-of     | 'title 'border #f    | Before handling this faces specs,
-                    |                      | possibly apply the faces of the
-                    |                      | title or the border first.
-  'hidden-handles   | #t #f                | This flag may only be used for
-                    |                      | border faces; it indicates that
-                    |                      | the corner `handles' of a window
-                    |                      | should not be visually separated.
-  'no-inset         | #t #f                | This flag may only be used for
-                    |                      | border faces; it indicates that
-                    |                      | the border should be relieved only
-                    |                      | on the outside, not on the inside.
-                    |                      | This gives a Win9x-like effect.
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Flags</title>
+<tgroup align="char" cols="3">
+<thead><row>
+ <entry>Key</entry>  <entry>Possible values</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry>'justify</entry>
+     <entry>'left 'right 'center</entry>
+     <entry>Horizontal justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'vertical-justify</entry>
+     <entry>'top 'bottom 'center</entry>
+     <entry>Vertical justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'relief</entry>
+     <entry>'flat 'sunk 'raised</entry>
+     <entry>Use for titles and buttons to control appearance (only flag for titles)</entry>
+  </row>
+  <row>
+  <entry>'use-style-of</entry>
+     <entry>'title 'border #f</entry>
+     <entry>Inherit the face flags from the title or border first, then add these flags</entry>
+  </row>
+  <row>
+  <entry>'hidden-handles</entry>
+     <entry>#t #f</entry>
+     <entry>Set visibility of the corner handles -- only used for border faces</entry>
+  </row>
+  <row>
+  <entry>'no-inset</entry>
+     <entry>#t #f</entry>
+     <entry>Win-9x-like effect of relieving borders on outside instead of inside</entry>
+  </row>
+</tbody>
+</tgroup>
+</table>
 */
-
-/*   'clear            : #t      ; not implemented for now, of questionable
-                               ; usefulness when button styles are not
-			       ; mutable.
-*/
+  
 
 
 
@@ -559,35 +566,53 @@ but not all, of the drawing area.
   All specs may be used for button faces. All but non-tiled pixmaps may
 be used for titlebars, and only tiled pixmaps may be used for borders.
 
-  Format                                    : Explanation
-  ------------------------------------------:----------------------------
- '(relief-pattern ((X Y BOOL) ...))   : Draw a relief pattern using
-                                            : the list of triples, each of 
-                                            : which indicates a pair of X,Y
-                                            : coordinates given as a 
-                                            : percentage of the button size,
-                                            : and a boolean value indicating
-                                            : whether to use the lighter or
-                                            : darker color. This spec is 
-                                            : partially destructive.
- '(solid COLOR)                             : Use COLOR as the color for 
-                                            : this element; fully destructive.
- '(gradient (horizontal|vertical            : Draw a gradient in this element.
-    NCOLORS (COLOR PERCENT)* FINAL))        : The gradient may be horizontal
-                                            : or vertical. The number of colors
-                                            : is specified, followed by a 
-                                            : number of colors with percentages
-                                            : and a final color. The 
-                                            : percentages must add to 100.
-                                            : Fully destructive.
- '(pixmap mini-icon|IMAGE|                  : Specify a pixmap to use, either
-   (tiled IMAGE))                           : the window's mini-icon, an image
-                                            : object or image specifier string,
-                                            : or a list of tiled and an image,
-                                            : indicating the image should be
-                                            : tiled. Partially destructive, 
-                                            : except when tiled, which makes 
-                                            : it fully destructive.  
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Specification Flags</title>
+<tgroup align="char" cols="2">
+<thead><row>
+ <entry>Format</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry><paragraph><informalexample>
+     '(relief-pattern ((X Y BOOL) ...))
+       </informalexample></paragraph>
+  </entry><entry>
+      Draw a relief pattern using the list of triples, each of which
+indicates a pair of X,Y coordinates given as a percentage of the
+button size, and a boolean value indicating whether to use the lighter
+or darker color. This spec is partially destructive.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+     '(solid COLOR)
+         </informalexample></paragraph>
+  </entry><entry>
+      Use COLOR as the color for this element; fully destructive.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+     '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
+         </informalexample></paragraph>
+  </entry><entry>
+     Draw a gradient in this element.  The gradient may be horizontal or
+vertical. The number of colors is specified, followed by a number of
+colors with percentages and a final color. The percentages must add to
+100.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+      '(pixmap {'mini-icon|['tiled] IMAGE})
+         </informalexample></paragraph>
+  </entry><entry>
+      Specify a pixmap to use, either the window's mini-icon, an image
+object or image specifier string, or a list of tiled and an image,
+indicating the image should be tiled. Partially destructive, except
+when tiled, which makes it fully destructive.
+  </entry></row>
+</tbody>
+</tgroup>
+</table>
 */
 
 /* * '(simple #t)                                ;; non-destructive
