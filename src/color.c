@@ -374,7 +374,7 @@ which is suitable for use as a hilight. */
 
   VALIDATE_COLOR (color, FUNC_NAME, 1);
 
-  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
@@ -439,7 +439,7 @@ FACTOR is a positive floating point number. */
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
@@ -476,7 +476,7 @@ FACTOR is a positive floating point number */
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
@@ -514,7 +514,7 @@ FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_hilight_factor_x
 {
   double f;
-  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
@@ -543,7 +543,7 @@ FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_shadow_factor_x
 {
   double f;
-  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
