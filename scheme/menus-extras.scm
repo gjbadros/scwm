@@ -81,7 +81,7 @@ defaults to `default-menu-max-fold-lines'."
 ;; (split-list-by-group '(("Emacs" . "em1") ("Emacs" . "em2") ("Emacs" . "em3") ("XTerm" . "xt1") ("XLogo" . "xl1") ("XLogo" . "xl2")) #f)
 ;; (define answer '(("Emacs" "em3" "em2" "em1") ("XTerm" "xt1") ("XLogo" "xl2" "xl1")))
 
-(define*-public (fold-menu-list-by-group ml-cons)
+(define*-public (fold-menu-list-by-group ml-cons #&rest rest)
   "Split ML-CONS into chained menus based on their group.
 ML-CONS is a list of lists. Each sublist's car is the name of the
 group, and the cdr is a list of the menuitems for that group.
@@ -90,5 +90,5 @@ for each group, popping up the group's MENUITEMs."
   (map (lambda (lm)
 	 (if (null? (cddr lm))
 	     (cadr lm)
-	     (menuitem (car lm) #:action (menu (cdr lm)))))
+	     (menuitem (car lm) #:submenu (lambda () (apply menu (cons (cdr lm) rest))))))
        (split-list-by-group ml-cons)))
