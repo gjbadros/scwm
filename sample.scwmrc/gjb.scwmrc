@@ -46,6 +46,9 @@
 (define icon-font
   (load-font "fixed"))
 
+(define (menu-item name pixmap action)
+  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))
+
 ;;(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue" 
 ;;	    #:font font14 #:mwm #f)
 (menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" 
@@ -87,7 +90,7 @@
 ;;-------------------------------;;
 ;; set some window styles        ;;
 
-;;; FIXGJB: these should be regexps, not goofy wildcards
+;;; FIXGJB: these can be regexps, not goofy wildcards
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
 ;	      #:icon "unknown1.xpm" 
@@ -101,7 +104,6 @@
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
-	      ;;; FIXGJB: how do I do this?
 	      #:mini-icon "mini-term.xpm")
 
 (define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
@@ -114,7 +116,7 @@
 (define system-button-face (make-face '((relief flat))
 				      '((pixmap "mini-sys3d-full.xpm"))))
 
-(define mini-icon-button-face (make-face '((relief flat))
+(define mini-icon-button-face (make-face '((relief raised))
 					'((pixmap mini-icon))))
 
 (define sticky-button-face (make-face '((relief flat))
@@ -157,8 +159,8 @@
 ;;; windows
 ;;; FIXGJB: how does the number of buttons to be displayed get
 ;;; chosen;  is this dynamically changeable?
-(add-left-button system-button-face (lambda () (popup-small-ops)))
-;;(add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
+;;(add-left-button system-button-face (lambda () (popup-small-ops)))
+(add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
 (add-left-button sticky-button-face (lambda () (display "toggle sticky")))
 (add-left-button sysutils-button-face (lambda () (display "sysutils")))
 
@@ -172,7 +174,7 @@
 
 
 
-;;(set-button-face! 1 system-button-face)
+;;(set-button-face! 1 mini-icon-button-face)
 ;;(set-button-face! 1 tall-maximize-button-face)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
@@ -204,6 +206,7 @@
 ;(window-style "Emacs" #:icon "gnu-animal.bmp")
 ;(window-style "XTerm" #:icon "xterm.xpm")
 (window-style "XTerm" #:mini-icon "mini-term.xpm")
+(window-style "Emacs" #:mini-icon "mini-edit.xpm")
 
 
 ;;-------------------------------;;
@@ -213,25 +216,30 @@
 (define menu-window-ops
   (make-menu "Window Ops"
 	     'title
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Print" print-window)
-	     (list "(Un)Window-Shade" toggle-window-shade)
-	     (list "(De)Iconify" toggle-iconify)
-	     (list "(Un)Maximize" vertical-toggle-maximize)
-	     (list "(Un)Stick" toggle-stick)
-	     (list "(Un)Keep On Top" toggle-on-top)
+	     (menu-item "&Move" "move" interactive-move)
+	     (menu-item "&Resize" "resize" interactive-resize)
+	     (menu-item "R&aise" "raise" raise-window)
+	     (menu-item "&Lower" "lower" lower-window)
+	     (menu-item "&Iconify/Restore" "iconify" toggle-iconify)
+	     (menu-item "&Stick/Unstick" "stick" toggle-stick)
+	     (menu-item "Ma&ximize/Reset" #f both-toggle-maximize)
+	     (menu-item "Ma&ximize &Tall/Reset"
+			"maxtall" vertical-toggle-maximize)
+	     (menu-item "Maximize &Wide/Reset"
+			"maxwide" horizontal-toggle-maximize)
+	     (menu-item "S&hade/Reset" #f toggle-window-shade)
 	     'separator
-	     (list "Close" close-window)
-	     (list "Delete" delete-window)
-	     (list "Destroy" destroy-window)
+	     (menu-item "Keep-&on-top/Reset" #f toggle-on-top)
+	     (menu-item "&Print" #f print-window)
 	     'separator
-	     (list "Refresh Screen" refresh)))
+	     (menu-item "&Delete" #f delete-window)
+	     (menu-item "&Close" "cross" close-window)
+	     (menu-item "&Kill" "bomb" destroy-window)
+	     'separator
+	     (menu-item "Switch to..." #f (lambda () 
+					    (show-window-list-menu #:show-geometry #t)))
+	     (menu-item "Re&fresh Screen" "ray" refresh)))
 
-(define (menu-item name pixmap action)
-  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))
 
 ;;FIXGJB:
 (define (scwm-help)
@@ -254,12 +262,11 @@
 (define quit-verify
   (make-menu "Really quit scwm?"
 	     'title
-	     (list "Yes" quit)
-	     (list "No" noop)
+	     (menu-item "Yes" #f quit)
+	     (menu-item "No" #f noop)
 	     'separator
-	     (list "Restart scwm" (lambda () (restart "scwm")))))
-
-
+	     (menu-item "Restart scwm" #f
+			(lambda () (restart "scwm")))))
 
 (define use-complete-host-menu #t)
 
@@ -316,24 +323,24 @@
 (define menu-desk 
   (make-menu "Desks"
 	     'title
-	     (list "Desk 1" (lambda () (set-current-desk! 0)))
-	     (list "Desk 2" (lambda () (set-current-desk! 1)))
-	     (list "Desk 3" (lambda () (set-current-desk! 2)))
-	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+	     (menu-item "Desk 1" #f (lambda () (set-current-desk! 0)))
+	     (menu-item "Desk 2" #f (lambda () (set-current-desk! 1)))
+	     (menu-item "Desk 3" #f (lambda () (set-current-desk! 2)))
+	     (menu-item "Desk 4" #f (lambda () (set-current-desk! 3)))))
 
 (define menu-util 
   (make-menu "Utilities"
 	     'title
-	     (list "xterm" (lambda () (execute "xterm")))
-	     (list "rxvt" (lambda () (execute "rxvt")))
-	     (list "emacs" (lambda () (execute "emacs")))
-	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
-	     (list "xcalc" (lambda () (execute "xcalc")))
-	     (list "xmag" (lambda () (execute "xmag")))
+	     (menu-item "xterm" "term" (lambda () (execute "xterm")))
+	     (menu-item "rxvt" #f (lambda () (execute "rxvt")))
+	     (menu-item "emacs" "edit" (lambda () (execute "emacs")))
+	     (menu-item "top" #f (lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (menu-item "xcalc" #f (lambda () (execute "xcalc")))
+	     (menu-item "xmag" #f (lambda () (execute "xmag")))
 	     'separator
-	     (list "Desks" menu-desk)
+	     (menu-item "Desks" #f menu-desk)
 	     'separator
-	     (list "Exit scwm" quit-verify)))
+	     (menu-item "Exit scwm" #f quit-verify)))
 
 (define (popup-util)
   (popup menu-util))
@@ -342,29 +349,36 @@
   (popup menu-root-start))
 
 (define (make-small-window-ops-menu w)
-  (make-menu "Window Ops2"
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Iconify" iconify)
+  (make-menu "Window Ops Small"
+	     (menu-item "&Move" "move" interactive-move)
+	     (menu-item "Re&size" "resize" interactive-resize)
+	     (menu-item (if (iconified? w)
+			    "Unmi&nimize"
+			    "Mi&nimize") "iconify" iconify)
+	     (menu-item (if (maximized? w) 
+			    "Unma&ximize" 
+			    "Ma&ximize") #f both-toggle-maximize)
 	     'separator
-	     (list "More" (make-menu "More"
-			    (list (if (maximized? w)
-				      "Unmaximize"
-				      "Maximize") vertical-toggle-maximize)
-			    (list (if (sticky? w)
-				      "Unstick"
-				      "Stick") toggle-stick)
-			    (list (if (window-shaded? w)
-				      "UnWindow-Shade"
-				      "Window-Shade") toggle-window-shade)
-			    (list (if (kept-on-top? w)
-				      "UnKeep On Top"
-				      "Keep On Top") toggle-on-top)))
+	     (menu-item "More" 
+			#f (make-menu 
+			    "More"
+			    (menu-item "&Raise" #f raise-window)
+			    (menu-item "&Lower" #f lower-window)
+			    (menu-item (if (sticky? w)
+					   "Un&stick"
+					   "&Stick") 
+				       #f toggle-stick)
+			    (menu-item (if (window-shaded? w)
+					   "Unwindow-S&hade"
+					   "Window-S&hade")
+				       #f toggle-window-shade)
+			    (menu-item (if (kept-on-top? w)
+					   "UnKeep On Top"
+					   "Keep On Top") 
+				       #f toggle-on-top)))
              'separator
-	     (list "Close" close-window)
-	     (list "Destroy" destroy-window)))
+	     (menu-item "Close" "cross" close-window)
+	     (menu-item "Destroy" "bomb" destroy-window)))
 
 (define (popup-small-ops)
   (popup (make-small-window-ops-menu (get-window))))
