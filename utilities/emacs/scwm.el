@@ -87,7 +87,7 @@
 ;;; user functions
 ;;; ---- ---------
 
-;;;###autload
+;;;###autoload
 (define-derived-mode scwm-mode scheme-mode "Scwm"
   "Major mode for editing scwm code.
 Special commands:
