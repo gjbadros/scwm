@@ -60,14 +60,10 @@ SRCS = \
 	icons.c \
 	menus.c \
 	misc.c \
-	module.c \
 	move.c \
 	placement.c \
-	read.c \
 	resize.c \
-	style.c \
 	virtual.c \
-	windows.c \
 	scmprocs.c \
 	scmtypes.c \
 	font.c \
@@ -97,14 +93,10 @@ OBJS = \
 	icons.o \
 	menus.o \
 	misc.o \
-	module.o \
 	move.o \
 	placement.o \
-	read.o \
 	resize.o \
-	style.o \
 	virtual.o \
-	windows.o \
 	scmprocs.o \
 	scmtypes.o \
 	font.o \
