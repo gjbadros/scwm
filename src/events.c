@@ -295,7 +295,7 @@ DispatchEvent()
 {
   Window w = Event.xany.window;
 
-  DBUG((DBG,"DispatchEvent", "Routine Entered"));
+  DBUG((DBG,"DispatchEvent", "Entered"));
 
   StashEventTime(&Event);
 
@@ -303,10 +303,10 @@ DispatchEvent()
   last_event_type = Event.type;
   last_event_window = w;
 
-  if (EventHandlerJumpTable[Event.type])
+  if (EventHandlerJumpTable[Event.type])    
     (*EventHandlerJumpTable[Event.type]) ();
 
-  DBUG((DBG,"DispatchEvent", "Leaving Routine"));
+  DBUG((DBG,"DispatchEvent", "return"));
   return;
 }
 
@@ -317,8 +317,7 @@ DispatchEvent()
 void 
 HandleEvents(void)
 {
-
-  DBUG((DBG,"HandleEvents", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleEvents", "Entered"));
 
   while (True) {
     last_event_type = 0;
@@ -326,6 +325,7 @@ HandleEvents(void)
       DispatchEvent();
     }
   }
+  DBUG_EVENT((DBG,"HandleEvents", "return"));
 }
 
 SCWM_PROC(handle_pending_events, "handle-pending-events", 0,0,0,
@@ -351,7 +351,7 @@ void
 HandleMappingNotify()
 {
 #define FUNC_NAME "HandleMappingNotify"
-  DBUG((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
+  DBUG_EVENT((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
   init_pointer_mapping();
   call0_hooks(x_mappingnotify_hook);
@@ -438,7 +438,7 @@ HandleHardFocus(ScwmWindow *psw)
   GrabEm(XCursorByNumber(XC_watch));
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
-	       x + 2, y + 2);
+	       x + 1, y + 1);
   XSync(dpy, False);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
@@ -455,14 +455,18 @@ HandleFocusIn()
 {
   XEvent d;
   Window w;
+  ScwmWindow *psw;
 
-  DBUG((DBG,"HandleFocusIn", "Routine Entered"));
-
+  DBUG_EVENT((DBG,"HandleFocusIn", "Entered"));
+  
   w = Event.xany.window;
   while (XCheckTypedEvent(dpy, FocusIn, &d)) {
     w = d.xany.window;
   }
-  pswCurrent = PswFromAnyWindow(dpy,w);
+  psw = pswCurrent = PswFromAnyWindow(dpy,w);
+
+  DBUG_EVENT((DBG,"HandleFocusIn", "psw = %s",psw?psw->name:"NULL"));
+  
   if (!pswCurrent) {
     if (w != Scr.NoFocusWin) {
       /* Scr.UnknownWinFocused = w; */
@@ -483,18 +487,37 @@ HandleFocusIn()
       }
     }
   } else if (pswCurrent != Scr.Hilite) {
+    /* ClickToFocus focus queue manipulation - only performed for
+     * Focus-by-mouse type focus events */
+    if (psw && psw != Scr.Focus && psw != &Scr.ScwmRoot) {
+      ScwmWindow *pswPrev, *pswNext;
+      
+      pswPrev = psw->prev;
+      pswNext = psw->next;
+    
+      if (pswPrev)
+        pswPrev->next = pswNext;
+      if (pswNext)
+        pswNext->prev = pswPrev;
+      
+      psw->next = Scr.ScwmRoot.next;
+      if (Scr.ScwmRoot.next)
+        Scr.ScwmRoot.next->prev = psw;
+      Scr.ScwmRoot.next = psw;
+      psw->prev = &Scr.ScwmRoot;
+    }
     call1_hooks(window_focus_change_hook,pswCurrent->schwin);
     SetBorder(pswCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
-	      pswCurrent->frame, (unsigned long) pswCurrent,
-	      XCOLOR(GET_DECOR(pswCurrent, HiColors.fg)),
-	      XCOLOR(GET_DECOR(pswCurrent, HiColors.bg)),
-	      0, 0);
+              pswCurrent->frame, (unsigned long) pswCurrent,
+              XCOLOR(GET_DECOR(pswCurrent, HiColors.fg)),
+              XCOLOR(GET_DECOR(pswCurrent, HiColors.bg)),
+              0, 0);
     if (Scr.fColormapFollowsMouse) {
       if (Scr.Hilite && !Scr.Hilite->fIconified) {
-	InstallWindowColormaps(Scr.Hilite);
+        InstallWindowColormaps(Scr.Hilite);
       } else {
-	InstallWindowColormaps(NULL);
+        InstallWindowColormaps(NULL);
       }
     }
   }
@@ -515,14 +538,14 @@ HandleKeyEvent(Bool fPress)
     XKeysymToKeycode(dpy, 
                      XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
 
+  DBUG_EVENT((DBG,"HandleKeyPress", "Entered"));
+    
   if (!fQuotingKeystrokes) {
 #ifdef USE_XALLOW_EVENTS
     XAllowEvents(dpy,AsyncKeyboard,CurrentTime);
 #endif
     modifier = (Event.xkey.state & mods_used);
     ButtonWindow = pswCurrent;
-    
-    DBUG((DBG,"HandleKeyPress", "Routine Entered"));
     
     Context = GetContext(pswCurrent, &Event, &PressedW);
     PressedW = None;
@@ -766,7 +789,7 @@ HandlePropertyNotify()
 #define FUNC_NAME "HandlePropertyNotify"
   XTextProperty text_prop;
 
-  DBUG((DBG,"HandlePropertyNotify", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandlePropertyNotify", "Entered"));
 
   if (Event.xproperty.atom == XA_SCWMEXEC_REQWIN) {
     HandleScwmExec();
@@ -935,7 +958,7 @@ HandleClientMessage()
   ScwmWindow *psw;
   SCM win;
 
-  DBUG((DBG,"HandleClientMessage", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleClientMessage", "Entered"));
 
   if ((Event.xclient.message_type == XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
@@ -1030,9 +1053,8 @@ HandleExpose()
   if (Event.xexpose.count != 0)
     return;
 
-  DBUG((DBG,"HandleExpose", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleExpose", "Entered and xexpose.count is non-zero"));
 
-  
   if ( XFindContext(dpy,Event.xany.window,ExposeWindowProcContext,(XPointer *)&pExposeFunc) == 0/* && pExposeFunc != NULL*/) {
     (*pExposeFunc)( Event.xany.window );
   }
@@ -1043,6 +1065,8 @@ HandleExpose()
       SetBorder(pswCurrent, (Scr.Hilite == pswCurrent), True, True, Event.xany.window);
     }
   }
+
+  DBUG_EVENT((DBG,"HandleExpose", "return"));
   return;
 }
 
@@ -1053,7 +1077,7 @@ void
 HandleDestroyNotify()
 {
   Window w = Event.xdestroywindow.window;
-  DBUG((DBG,"HandleDestroyNotify", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleDestroyNotify", "Entered"));
 
   call1_hooks(x_destroynotify_hook,gh_ulong2scm(w));
 
@@ -1066,6 +1090,8 @@ HandleDestroyNotify()
   if (pswCurrent) {
     DestroyScwmWindow(pswCurrent);
   }
+
+  DBUG_EVENT((DBG,"HandleDestroyNotify", "return"));
 }
 
 
@@ -1075,9 +1101,9 @@ HandleDestroyNotify()
 void 
 HandleMapRequest()
 {
-  DBUG((DBG,"HandleMapRequest", "Routine Entered"));
-
+  DBUG_EVENT((DBG,"HandleMapRequest", "Entered"));
   HandleMapRequestKeepRaised(None);
+  DBUG_EVENT((DBG,"HandleMapRequest", "return"));
 }
 
 void 
@@ -1179,20 +1205,20 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 void 
 HandleMapNotify()
 {
-  DBUG((DBG,"HandleMapNotify", "Routine Entered for %s",
-        pswCurrent?pswCurrent->name:"null"));
+  DBUG_EVENT((DBG,"HandleMapNotify", "Entered for %s",
+              pswCurrent?pswCurrent->name:"null"));
 
   if (!pswCurrent) {
     if ((Event.xmap.override_redirect == True) &&
 	(Event.xmap.window != Scr.NoFocusWin)) {
       XSelectInput(dpy, Event.xmap.window, FocusChangeMask);
     }
-    return;
+    goto HMN_return;
   }
   /* Except for identifying over-ride redirect window mappings, we
    * don't need or want windows associated with the sunstructurenotifymask */
   if (Event.xmap.event != Event.xmap.window) {
-    return;
+    goto HMN_return;
   }
   /*
    * Need to do the grab to avoid race condition of having server send
@@ -1239,6 +1265,9 @@ HandleMapNotify()
   pswCurrent->fIconified = False;;
   pswCurrent->fIconUnmapped = False;
   KeepOnTop();
+ HMN_return:
+  DBUG_EVENT((DBG,"HandleMapNotify", "return"));
+  return;
 }
 
 
@@ -1253,8 +1282,7 @@ HandleUnmapNotify()
   XEvent dummy;
   extern ScwmWindow *colormap_win;
   int weMustUnmap;
-
-  DBUG((DBG,"HandleUnmapNotify", "Routine Entered"));
+  Bool fCoerceEnterNotify = False;
 
   /*
    * Don't ignore events as described below.
@@ -1263,6 +1291,9 @@ HandleUnmapNotify()
       (Event.xunmap.event != Scr.Root || !Event.xunmap.send_event)) {
     return;
   }
+
+  DBUG_EVENT((DBG,"HandleUnmapNotify", "Entered and passed init test"));
+
   /*
    * The July 27, 1988 ICCCM spec states that a client wishing to switch
    * to WithdrawnState should send a synthetic UnmapNotify with the
@@ -1278,7 +1309,7 @@ HandleUnmapNotify()
     pswCurrent = PswFromWindow(dpy, Event.xany.window);
   }
   if (!pswCurrent)
-    return;
+    goto HUN_return;
   
   if (pswCurrent->schwin == g_lastwin_entered) {
     call1_hooks(window_leave_hook, g_lastwin_entered);
@@ -1292,8 +1323,9 @@ HandleUnmapNotify()
   if (pswCurrent == Scr.Focus) {
     if (pswCurrent->fClickToFocus && pswCurrent->next) {
       HandleHardFocus(pswCurrent->next);
-    } else
-    SetFocus(Scr.NoFocusWin, NULL, False);
+    } else {
+      fCoerceEnterNotify = True;
+    }
   }
 
   if (pswCurrent == Scr.Hilite)
@@ -1309,14 +1341,14 @@ HandleUnmapNotify()
     colormap_win = NULL;
 
   if (!pswCurrent->fMapped && !pswCurrent->fIconified) {
-    return;
+    goto HUN_return;
   }
   XGrabServer_withSemaphore(dpy);
 
   if (XCheckTypedWindowEvent(dpy, Event.xunmap.window, DestroyNotify, &dummy)) {
     DestroyScwmWindow(pswCurrent);
     XUngrabServer_withSemaphore(dpy);
-    return;
+    goto HUN_return;
   }
   /*
    * The program may have unmapped the client window, from either
@@ -1359,6 +1391,10 @@ HandleUnmapNotify()
   XUngrabServer_withSemaphore(dpy);
 
   XFlush(dpy);
+ HUN_return:
+  if (fCoerceEnterNotify)
+    HandleHardFocus(PswFromPointerLocation(dpy));
+  DBUG_EVENT((DBG,"HandleUnmapNotify", "return"));
 }
 
 /*
@@ -1378,6 +1414,7 @@ HandleMotionNotify()
   SCM x = x_root;
   SCM y = y_root;
   ScwmWindow *psw = PswFromPointerLocation(dpy);
+  DBUG_EVENT((DBG,"HandleMotionNotify","Entered"));
   if (psw) {
     win = psw->schwin;
     x = gh_int2scm(pev->x_root - psw->frame_x);
@@ -1385,6 +1422,7 @@ HandleMotionNotify()
   }
   call6_hooks(x_motionnotify_hook,
               x_root,y_root,state,win,x,y);
+  DBUG_EVENT((DBG,"HandleMotionNotify","return"));
 #endif
 }
 #undef FUNC_NAME
@@ -1402,7 +1440,7 @@ HandleButtonPress()
   Window x;
   int LocalContext;
 
-  DBUG((DBG,"HandleButtonPress", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleButtonPress", "Entered"));
 
   /* click to focus stuff goes here */
   if (pswCurrent && pswCurrent->fClickToFocus
@@ -1438,7 +1476,7 @@ HandleButtonPress()
                    (fSendClick?ReplayPointer:AsyncPointer),
                    CurrentTime);
       XSync(dpy, False);
-      return;
+      goto HBP_return;
     }
   } else if (pswCurrent && !pswCurrent->fClickToFocus &&
 	     (Event.xbutton.window == pswCurrent->frame) &&
@@ -1453,7 +1491,7 @@ HandleButtonPress()
     XSync(dpy, False);
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
     XSync(dpy, False);
-    return;
+    goto HBP_return;
   }
   XSync(dpy, False);
   XAllowEvents(dpy, ReplayPointer, CurrentTime);
@@ -1504,6 +1542,8 @@ HandleButtonPress()
   else
     SetTitleBar(ButtonWindow, (Scr.Hilite == ButtonWindow), False);
   ButtonWindow = NULL;
+ HBP_return:
+  DBUG_EVENT((DBG,"HandleButtonPress", "return"));
 }
 #undef FUNC_NAME
 
@@ -1516,8 +1556,8 @@ HandleEnterNotify()
 {
   XEnterWindowEvent *ewp = &Event.xcrossing;
   XEvent d;
-
-  DBUG((DBG,"HandleEnterNotify", "Routine Entered"));
+  
+  DBUG_EVENT((DBG,"HandleEnterNotify", "Entered"));
 
   /* look for a matching leaveNotify which would nullify this enterNotify */
   if (XCheckTypedWindowEvent(dpy, ewp->window, LeaveNotify, &d)) {
@@ -1525,7 +1565,7 @@ HandleEnterNotify()
     if ((d.xcrossing.mode == NotifyNormal) &&
 	(d.xcrossing.detail != NotifyInferior)) {
       /* GJB:FIXME:: should we call both hooks here? */
-      return;
+      goto HEN_return;
     }
   }
   /* an EnterEvent in one of the PanFrameWindows activates the Paging */
@@ -1540,7 +1580,7 @@ HandleEnterNotify()
     HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY,
                  &Event.xcrossing.x_root, &Event.xcrossing.y_root,
                  &delta_x, &delta_y, True);
-    return;
+    goto HEN_return;
   }
 
   if (Event.xany.window == Scr.Root) {
@@ -1556,13 +1596,13 @@ HandleEnterNotify()
     if (Scr.fColormapFollowsMouse) {
       InstallWindowColormaps(NULL);
     }
-    return;
+    goto HEN_return;
   }
 
 
   /* make sure its for one of our windows */
   if (!pswCurrent)
-    return;
+    goto HEN_return;
 
   if (pswCurrent->schwin != g_lastwin_entered) {
     if (SCM_BOOL_F != g_lastwin_entered)
@@ -1580,6 +1620,8 @@ HandleEnterNotify()
     else
       InstallWindowColormaps(NULL);
   }
+ HEN_return:
+  DBUG_EVENT((DBG,"HandleEnterNotify", "return"));
   return;
 }
 
@@ -1592,7 +1634,7 @@ HandleLeaveNotify()
 {
   XEnterWindowEvent *ewp = &Event.xcrossing;
 
-  DBUG((DBG,"HandleLeaveNotify", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleLeaveNotify", "Entered"));
   /* If we leave the root window, then we're really moving
    * another screen on a multiple screen display, and we
    * need to de-focus and unhighlight to make sure that we
@@ -1614,6 +1656,8 @@ HandleLeaveNotify()
              ewp->window == Scr.PanFrameBottom.win) {
     GenerateEdgeEvents();
   }
+
+  DBUG_EVENT((DBG,"HandleLeaveNotify", "return"));
 }
 
 
@@ -1635,6 +1679,7 @@ HandleConfigureRequest()
   Bool fHeight_spec = cre->value_mask &CWHeight;
   Bool fIconConfigure = False;
 
+  DBUG_EVENT((DBG,FUNC_NAME, "Entered"));
   DBUG_RESIZE((DBG,FUNC_NAME, "Routine Entered"));
 
   /*
@@ -1801,7 +1846,7 @@ void
 HandleShapeNotify(void)
 {
 #ifdef HAVE_SHAPE
-  DBUG((DBG,"HandleShapeNotify", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleShapeNotify", "Routine Entered"));
 
   if (ShapesSupported) {
     XShapeEvent *sev = (XShapeEvent *) & Event;
@@ -1825,7 +1870,7 @@ HandleVisibilityNotify()
 {
   XVisibilityEvent *vevent = (XVisibilityEvent *) &Event;
 
-  DBUG((DBG,"HandleVisibilityNotify", "Routine Entered"));
+  DBUG_EVENT((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
   if (pswCurrent) {
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
@@ -1987,15 +2032,16 @@ NextScwmEvent(Display *dpy, XEvent *event, Bool fNoBlock)
    * flushed */
   XFlush(dpy);
   if (XPending(dpy)) {
-    DBUG((DBG,FUNC_NAME, "taking care of queued up events & returning"));
+    DBUG_EVENT((DBG,FUNC_NAME, "taking care of queued up events & returning"));
     XNextEvent(dpy, event);
     StashEventTime(event);
-    DBUG((DBG,FUNC_NAME, "leaving -- got event"));
+    DBUG((DBG,FUNC_NAME, "return -- got event"));
     return 0;
   }
-  DBUG((DBG,FUNC_NAME, "no X events waiting - calling NoEventsScwmUpdate"));
+  DBUG((DBG,FUNC_NAME, 
+              "no X events waiting - calling NoEventsScwmUpdate"));
   NoEventsScwmUpdate(fNoBlock);
-  DBUG((DBG,FUNC_NAME, "leaving"));
+  DBUG((DBG,FUNC_NAME, "return"));
   return 1;
 }
 #undef FUNC_NAME

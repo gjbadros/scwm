@@ -15,11 +15,19 @@
    purposes, uncomment the next line */
 
 /* #define SCWM_DEBUG_MSGS */
+/* #define SCWM_EVENT_DEBUG_MSGS */
+
 
 #ifdef SCWM_DEBUG_MSGS
 #  define DBUG(X) scwm_msg X
 #else
 #  define DBUG(X)		/* no messages */
+#endif
+
+#ifdef SCWM_EVENT_DEBUG_MSGS
+#  define DBUG_EVENT(X) scwm_msg X
+#else
+#  define DBUG_EVENT(X)		/* no messages */
 #endif
 
 /*

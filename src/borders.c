@@ -766,6 +766,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
     else if (psw->fIconified && (Scr.Hilite != psw) && !psw->fSuppressIcon)
       w = psw->icon_w;
     Scr.Hilite = psw;
+    Scr.Focus = psw;
 
     TextColor = PixelHiTextFromPsw(psw);
     BackPixmap = Scr.gray_pixmap;

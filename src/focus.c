@@ -31,6 +31,7 @@
 #include "screen.h"
 #include "focus.h"
 #include "cursor.h"
+#include "xmisc.h"
 #include "callbacks.h"
 
 #ifdef USE_DMALLOC
@@ -95,34 +96,18 @@ void
 SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
 {
   int i = 0;
+  DBUG_EVENT((DBG,"SetFocus", "Entered (give `%s' the focus)",psw?psw->name:"<none>"));
+  if (Scr.Focus == psw) {
+    DBUG_EVENT((DBG,"SetFocus", "return--%s already had focus",psw?psw->name:"win"));
+    return;
+  }
   if (psw) {
     psw->ttLastFocussed = time(NULL);
     psw->timeLastFocussed = lastTimestamp;
   }
 
-  /* ClickToFocus focus queue manipulation - only performed for
-   * Focus-by-mouse type focus events */
-  if (FocusByMouse && (psw && psw != Scr.Focus && psw != &Scr.ScwmRoot)) {
-    ScwmWindow *pswPrev, *pswNext;
-
-    pswPrev = psw->prev;
-    pswNext = psw->next;
-
-    if (pswPrev)
-      pswPrev->next = pswNext;
-    if (pswNext)
-      pswNext->prev = pswPrev;
-
-    psw->next = Scr.ScwmRoot.next;
-    if (Scr.ScwmRoot.next)
-      Scr.ScwmRoot.next->prev = psw;
-    Scr.ScwmRoot.next = psw;
-    psw->prev = &Scr.ScwmRoot;
-  }
   if (Scr.NumberOfScreens > 1) {
-    Window wRoot;
-    XQueryPointer(dpy, Scr.Root, &wRoot, &JunkChild,
-		  &JunkX, &JunkY, &JunkX, &JunkY, &JunkMask);
+    Window wRoot = WXGetPointerChild(Scr.Root);
     if (wRoot != Scr.Root) {
       if ((Scr.Ungrabbed != NULL) && Scr.Ungrabbed->fClickToFocus) {
 	/* Need to grab buttons for focus window */
@@ -199,6 +184,7 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
   }
 
   if (psw && psw->fDoesWmTakeFocus) {
+    DBUG_EVENT((DBG,"SetFocus","send_clientmessage XA_WM_TAKE_FOCUS"));
     send_clientmessage(dpy, w, XA_WM_TAKE_FOCUS, lastTimestamp);
   }
   XSync(dpy, False);
