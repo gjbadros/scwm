@@ -21,6 +21,7 @@
 
 (define-module (app scwm wininfo)
   :use-module (app scwm optargs)
+  :use-module (app scwm base)
   :use-module (ice-9 regex))
 
 
@@ -61,40 +62,59 @@
 	    (* w h))))))
 
 (define*-public (in-viewport-any-desk? #&optional (win (get-window)))
+  "Return #t if WIN is in the current viewport ignoring the desk, else #f."
   (if win (apply rectangle-overlap? 
 		 (append
-		  (window-position win)
+		  (window-viewport-position win)
 		  (window-frame-size win)
 		  (list 0 0)
 		  (map (lambda (p) (- p 1)) (display-size))))))
 
 
 (define-public (windows-overlap? win win2)
+  "Return #t if WIN and WIN2 overlap at all, else #f.
+I.e., returns #t if the intersection of the windows' areas
+is non-empty."
   (and
    (= (window-desk win) (window-desk win2))
    (apply rectangle-overlap?
 	  (append (window-position win) (window-frame-size win)
 		  (window-position win2) (window-frame-size win2)))))
 
+;;; MSFIX: Why is this separate instead of having the above
+;;; have optional arguments.
 (define*-public ((window-overlaps-window? #&optional (win (get-window))) 
 		 #&optional (win2 (get-window)))
   (windows-overlap? win win2))
 
 (define*-public (visible? #&optional (win (get-window)))
+  "Return #t if any of WIN is currently potentially visible, else #f.
+Note that this just checks if WIN is in the current viewport
+and on the current desk.  It may still return #t if WIN is completely
+obscured by other windows."
   (if win (and (on-current-desk? win)
 	       (in-viewport-any-desk? win))))
 
 (define*-public (percent-visible #&optional (win (get-window)))
-  (/ (* 100 
-	(apply intersection-area
-	       (append
-		(window-position win)
-		(window-frame-size win)
-		(list 0 0)
-		(display-size))))
-     (apply * (window-frame-size win))))
+  "Return the percent of WIN currently in the viewport as a real in [0,100].
+Note that this does not discount for other windows which may
+obscure WIN;  it only checks what fraction of WIN would be visible
+if it were on top (unobscured)."
+  (if (not (on-current-desk? win))
+      0 ;; none visible if on wrong desk
+      (/ (* 100 
+	    (apply intersection-area
+		   (append
+		    (window-viewport-position win)
+		    (window-frame-size win)
+		    (list 0 0)
+		    (display-size))))
+	 (apply * (window-frame-size win))))
 
 (define*-public (window-geometry-string #&optional (win (get-window)))
+  "Return a string corresponding to the geometry specifications for WIN.
+The virtual position and the frame size are used.  The resulting string
+looks like, e.g., FIXGJB."
   (if win (let ((i (iconified? win))
 		(pos (window-position win))
 		(size (window-size win)))
@@ -108,8 +128,10 @@
 
 ;; quote all regexp meta-characters, then turn \* and \? into
 ;; .* and . respectively.
-;; MSFIX: isn't a ? in a wildcard the same as ".", not ".?"? --08/02/98 gjb
 (define-public (wildcard->regexp wildcard)
+  "Return the string real regular expresision corresponding to WILDCARD.
+This involves quoting meta characters and replacing the wildcard
+meta-characters \"*\" with \".*\" and \"?\" with \".\"."
   (regexp-substitute/global 
    #f "\\\\\\*|\\\\\\?" 
    (regexp-quote wildcard) 

@@ -102,6 +102,7 @@ Use `show-system-info' to display it in a window."
      to-string "Guile verion:\t\t" (version)
      "\nLibguile timestamp:\t" (libguile-config-stamp)
      "\nSCWM version:\t\t" (scwm-version)
+     "\nFrom repository date:\t\t" (scwm-version-date)
      "\nRestarted:\t\t" (bool->str (restarted?))
      "\nDisplay Size:\t\t" (size->str (display-size))
      "\nDesk Size:\t\t" (size->str (desk-size))
