@@ -1,5 +1,5 @@
 %define nam      guile
-%define ver      1.3.2
+%define ver      1.3.3
 %define rel      1gjb
 %define prefix   /usr
 
