@@ -17,6 +17,7 @@
 #include <unistd.h>
 
 #include "scwm.h"
+#include "util.h"
 #include "window.h"
 #include "icons.h"
 #include "screen.h"

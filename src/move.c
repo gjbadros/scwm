@@ -42,6 +42,7 @@
 #include "virtual.h"
 #include "xmisc.h"
 #include "callbacks.h"
+#include "util.h"
 
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;

@@ -40,6 +40,7 @@
 #include <libguile.h>
 #include <X11/X.h>
 #include "scwm.h"
+#include "errors.h"
 #include "screen.h"
 #include "guile-compat.h"
 #include "window.h"

@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "scwm.h"
+#include "util.h"
 #include "screen.h"
 #include "xmisc.h"
 #include "syscompat.h"

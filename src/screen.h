@@ -26,8 +26,8 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _SCREEN_
-#define _SCREEN_
+#ifndef SCREEN_H__
+#define SCREEN_H__
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -312,7 +312,7 @@ SCM ScmFromPScreenInfo(ScreenInfo *psi);
  */
 #define GET_DECOR(window,part) ((window)->fl->part)
 
-#endif /* _SCREEN_ */
+#endif /* SCREEN_H__ */
 
 /* Local Variables: */
 /* tab-width: 8 */

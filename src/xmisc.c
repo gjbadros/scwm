@@ -154,12 +154,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     return;
 
   if (FXGetWindowTopLeft(psw->w, &xwc.x, &xwc.y )) {
-    int a, b, w2, h2;
     unsigned int mask;
-#if 0 /* FIXGJB */
-    XTranslateCoordinates(dpy, psw->frame, Scr.Root, xwc.x, xwc.y,
-			  &a, &b, &JunkChild);
-#endif
     /* Undo gravity adjustments. */
     xwc.x = psw->frame_x - GRAV_X_ADJUSTMENT(psw);
     xwc.y = psw->frame_y - GRAV_Y_ADJUSTMENT(psw);
@@ -192,8 +187,8 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
       if ((FRAME_X(psw) < 0) || (FRAME_Y(psw) < 0) ||
 	  (FRAME_X(psw) >= Scr.DisplayWidth) ||
 	  (FRAME_Y(psw) >= Scr.DisplayHeight)) {
-	w2 = (FRAME_WIDTH(psw) >> 1);
-	h2 = (FRAME_HEIGHT(psw) >> 1);
+	int w2 = (FRAME_WIDTH(psw) >> 1);
+	int h2 = (FRAME_HEIGHT(psw) >> 1);
 	if ((xwc.x < -w2) || (xwc.x > (Scr.DisplayWidth - w2))) {
 	  xwc.x = xwc.x % Scr.DisplayWidth;
 	  if (xwc.x < -w2)
