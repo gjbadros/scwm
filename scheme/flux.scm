@@ -21,17 +21,20 @@
 (define-public USER (getenv "USER"))
 (define-public user-init-file (string-append HOME "/.scwmrc"))
 
+;; The #t arguments should perhaps instead be a closure 
+;; returning whether an opaque move/resize is desired
+
 (define-public (interactive-move-window-with-focus)
-  (let ((w (current-window-with-focus))) (and w (interactive-move w))))
+  (let ((w (current-window-with-focus))) (and w (interactive-move w #t))))
 
 (define-public (interactive-resize-window-with-focus)
-  (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
+  (let ((w (current-window-with-focus))) (and w (interactive-resize w #t))))
 
 (define-public (interactive-move-window-with-pointer)
-  (let ((w (current-window-with-pointer))) (and w (interactive-move w))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-move w #t))))
 
 (define-public (interactive-resize-window-with-pointer)
-  (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-resize w #t))))
 
 (define-public (toggle-max-vert) (toggle-maximize 0 (%y 100)))
 (define-public (toggle-max-horz) (toggle-maximize (%x 100) 0))
@@ -207,8 +210,8 @@ Use the optional second argument as the separator."
 	   (set! i (+ 1 i)))))
 
 (define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
-  (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
-	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
+  (map (lambda (s) (string-append (scwm-path-prefix) "/share/scwm/" s))
+       '("scwm-procedures.txt" "cassowary_scm-procedures.txt")))
 
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
@@ -217,28 +220,24 @@ Return #t if found anything, #f if no documentation."
                 "(" (if (string? func) func (symbol->string func))))
          (len (string-length head))
          (delim (lambda (st) (and (= 1 (string-length st))
-                                  (char=? (string-ref st 0)  #\np))))
-	 (fl doc-files)
-	 (found #f))
-    (do ((fd #f))
-        ((and (null? fl)
-	      (if (not found) 
-		  (begin
-		    (write-all #t "No documentation for `" func "'\n")
-		    #t))))
-;;      (display "trying") (display (car fl)) (newline)
+                                  (char=? (string-ref st 0)  #\np)))))
+    (do ((fl doc-files (cdr fl)) (done #f) (fd #f))
+        ((or (null? fl) done)
+         (if (not done) (write-all #t "No documentation for `" func "'\n"))
+         done)
+;;      (display "trying ") (display (car fl)) (display "...\n")
       (set! fd (open-input-file (car fl)))
       (do ((ln (read-line fd) (read-line fd)) (delim-p #f))
-          ((or (eof-object? ln)) (close-input-port fd))
+          ((or (eof-object? ln) done) (close-input-port fd))
         (cond ((delim ln) (set! delim-p #t))
               ((and delim-p (< len (string-length ln))
                     (string=? head (substring ln 0 len))
                     (string-index " )" (string-ref ln len)))
+               (set! done #t)
                (display ln port) (newline port)
                (do ((ln (read-line fd) (read-line fd)))
                    ((delim ln))
-                 (display ln port) (newline port) (set! found #t)))))
-      (set! fl (cdr fl)))))
-
+                 (display ln port) (newline port))))))))
+;; For testing...
 ;; (documentation "window-position")
 ;; (documentation "make-cl-constraint")
