@@ -1,5 +1,8 @@
 1998-07-08  Greg Badros  <gjb@cs.washington.edu>
 
+	* color.c, shutdown.c: fixed arguments that didn't match argument
+	list numbers for req, opt, var (extract-docs found these bugs!)
+
 	* *.c, *.h: Rename swCurrent to pswCurrent, use psw for locat
 	ScwmWindow * variables.
 
