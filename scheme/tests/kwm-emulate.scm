@@ -1,4 +1,31 @@
 ;; $Id$
+;;;; Copyright (C) 1999 Greg J. Badros
+;;;; 
+;;;; This program is free software; you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published by
+;;;; the Free Software Foundation; either version 2, or (at your option)
+;;;; any later version.
+;;;; 
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;; 
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this software; see the file COPYING.  If not, write to
+;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+;;;; Boston, MA 02111-1307 USA
+;;;; 
+
+
+
+(define-module (app scwm kwm-emulate))
+
+
+
+;; This is just filler -- use scheme/tests/test.scm for real testing
+(defmacro-public test-case (TITLE FORM . RESULT)
+  #f)
 
 (define kwm-modules ())
 (define kwm-kpanel-winid #f)
@@ -52,21 +79,17 @@
     (car (X-property-get 'root-window property))))
 
 
-(kwm-double-property-set! "TEST_DOUBLE" 5 8)
-(kwm-double-property-get "TEST_DOUBLE")
+(test-case "kwm-double-property get/set"
+	   (begin
+	     (kwm-double-property-set! "TEST_DOUBLE" 5 8)
+	     (kwm-double-property-get "TEST_DOUBLE"))
+	   => #(5 8))
 
-(kwm-vector-property-set! "QRECT" #(45 30 90 60))
-(kwm-vector-property-get "QRECT")
-
-(kwm-numeric-property-set! "RUNNING" 1)
-;; (kwm-numeric-property-get "RUNNING")
-
-(kwm-numeric-property-set! "NUMBER_OF_DESKTOPS" number-of-desktops)
-
-(kwm-numeric-property-set! "CURRENT_DESKTOP" (current-desk))
-
-(kwm-numeric-property-set! "CURRENT_DESKTOP" 2) 
-
+(test-case "kwm-vector-property get/set"
+	   (begin
+	     (kwm-vector-property-set! "QRECT" #(45 30 90 60))
+	     (kwm-vector-property-get "QRECT"))
+	   => #(45 30 90 60))
 
 (define (kwm-change-desk new old)
   (let ((kwm-desk-number (+ 1 new)))
@@ -74,24 +97,15 @@
     (send-client-message kwm-kpanel-winid
 			 KWM_MODULE_DESKTOP_CHANGE kwm-desk-number)))
 
-;; (reset-hook! change-desk-hook)
-(add-hook! change-desk-hook kwm-change-desk)
-
-(let ((i 1))
-  (map (lambda (nm) 
-	 (begin
-	   (kwm-string-property-set! 
-	    (string-append "DESKTOP_NAME_" (number->string i)) nm)  
-	   (set! i (+ 1 i))))
-       desktop-names))
-
-;; (kwm-string-property-get "DESKTOP_NAME_1")
-
-(add-hook! X-PropertyNotify-hook (lambda (prop win)
-				   (if (eq? win 'root-window)
-				       (begin
-					 (display prop)
-					 (display " changed\n")))))
+(define (kwm-set-desktop-names)
+  "Sets the names of desktops to those in `desktop-names'."
+  (let ((i 1))
+    (map (lambda (nm) 
+	   (begin
+	     (kwm-string-property-set! 
+	      (string-append "DESKTOP_NAME_" (number->string i)) nm)  
+	     (set! i (+ 1 i))))
+	 desktop-names)))
 
 (define (kwm-client-message-handler atom format data)
   (if (eq? atom KWM_MODULE)
@@ -107,10 +121,6 @@
   (write d)
   (display "\n"))
 
-;; (reset-hook! client-message-hook)
-(add-hook! client-message-hook client-message-debug-handler)
-(add-hook! client-message-hook kwm-client-message-handler)
-
 (define (kwm-root-property-notify-handler atom deleted?)
   (if (eq? atom KWM_CURRENT_DESKTOP)
       (let ((desknum (kwm-numeric-property-get "CURRENT_DESKTOP")))
@@ -125,6 +135,21 @@
   (display (X-atom->string atom)) (display " ") 
   (display deleted?) (display "\n"))
 
-;; (reset-hook! X-root-PropertyNotify-hook)
-(add-hook! X-root-PropertyNotify-hook kwm-root-property-notify-handler)
-;;(add-hook! X-root-PropertyNotify-hook root-property-notify-debug-handler)
+(define (kwm-emulation-initialize)
+  (kwm-numeric-property-set! "RUNNING" 1)
+  (kwm-numeric-property-set! "NUMBER_OF_DESKTOPS" number-of-desktops)
+  (kwm-numeric-property-set! "CURRENT_DESKTOP" (current-desk))
+  (kwm-set-desktop-names)
+
+  ;; (reset-hook! change-desk-hook)
+  (add-hook! change-desk-hook kwm-change-desk)
+
+  ;; (reset-hook! client-message-hook)
+  ;; (add-hook! client-message-hook client-message-debug-handler)
+  (add-hook! client-message-hook kwm-client-message-handler)
+
+  ;; (reset-hook! X-root-PropertyNotify-hook)
+  ;;(add-hook! X-root-PropertyNotify-hook root-property-notify-debug-handler)
+  (add-hook! X-root-PropertyNotify-hook kwm-root-property-notify-handler))
+
+(kwm-emulation-initialize)
