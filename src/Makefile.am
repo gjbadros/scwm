@@ -78,7 +78,7 @@ SUFFIXES = .x
 DISTCLEANFILES = *.x
 
 init_scheme_string.c: ../scheme/minimal.scm
-	( echo -n "char *init_scheme_string = \"" ; \
+	( echo "char *init_scheme_string = \"\\" ; \
 	  sed -e 's/;.*$$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g" -e 's/$$/\\n\\/' ; \
 	  echo \"\; ) <$< > $@
 

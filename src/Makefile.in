@@ -173,7 +173,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/Grab.P .deps/ICCCM.P .deps/add_window.P \
 .deps/binding.P .deps/borders.P .deps/callbacks.P .deps/color.P \
@@ -399,7 +399,7 @@ maintainer-clean
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
 
 init_scheme_string.c: ../scheme/minimal.scm
-	( echo -n "char *init_scheme_string = \"" ; \
+	( echo "char *init_scheme_string = \"\\" ; \
 	  sed -e 's/;.*$$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g" -e 's/$$/\\n\\/' ; \
 	  echo \"\; ) <$< > $@
 

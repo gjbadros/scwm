@@ -1,9 +1,15 @@
 1998-06-18  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
 
+	* Makefile.am: Don't depend on having the `-n' option to `echo'
+	when building init_scheme_string.c.
+
+	Makefile.in: regenerated.
+	
 	* guile-compat.c, guile-compat.h, callbacks.c, menuitem.c: Restore
 	guile 1.2 compatability; provide implementations of
 	scm_internal_cwdr and scm_internal_stack_catch if needed, and use
-	the compatabilty stuff throughout.
+	the compatabilty stuff throughout. Bug reported by Dale Smith
+	<dale.smith@bellhow.com>
 	
 1998-06-18    Maciej Stachowiak <maciej@roc-ny5-07.ix.netcom.com>
 
@@ -12,7 +18,8 @@
 	behave more reasonably. If no argument, or the argument "scwm" is
 	given, it restarts scwm with the exact arguments it was given,
 	plus `-s', otherwise, it executes the exact string given using
-	`/bin/sh'.
+	`/bin/sh'. Bugs in previous version reported by Dale Smith
+	<dale.smith@bellhow.com>
 
 Sat Jun 13 02:51:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
