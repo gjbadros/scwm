@@ -28,6 +28,10 @@
 ;; constraint, and especially some easy way to organize
 ;; constraints.
 
+;; (use-scwm-modules ui-constraints-gtk-toggle-menu)
+;; (popup-ui-constraints-gtk-toggle-menu)
+
+
 (define-module (app scwm ui-constraints-gtk-toggle-menu)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)

@@ -377,15 +377,18 @@ in the user's home directory."
 
 ;; ((help-mesg "move-to"))
 
-(define-public (move-all-windows-relative x y)
+(define-public (move-nonsticky-windows-relative x y)
   "Move all windows right X, down Y pixels.
 See `move-window-relative.'"
-  (for-each (lambda (w) (move-window-relative x y w)) (list-all-windows)))
+  (for-each (lambda (w) (move-window-relative x y w)) (list-windows #:only (win-not?? sticky?))))
 
 ;; Recapture sometimes requires me to use this -- WHY? GJB:FIXME::
 ;; (use-modules (app scwm flux))
-;; (move-all-windows-relative 0 display-height)
-;; (move-all-windows-relative display-width 0)
+;; (move-nonsticky-windows-relative 0 display-height)
+;; (move-nonsticky-windows-relative 0 -1)
+;; (move-nonsticky-windows-relative display-width 0)
+;; (move-nonsticky-windows-relative 1 0)
+;; (move-nonsticky-windows-relative (- 0 display-width) 0)
 
 (defmacro-public @ args
   `(lambda (sym)
