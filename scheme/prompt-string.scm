@@ -67,7 +67,7 @@ See also `prompt-string'."
     (gtk-entry-set-text entry entry-init)
     (gtk-box-pack-start hbox label #f #f 10)
     (gtk-box-pack-start hbox entry #t #t)
-    (gtk-widget-set-usize entry (min 450 (max 100 (* 10 (string-length entry-init)))) 30)
+    (gtk-widget-set-usize entry (min 450 (max 100 (* 8 (string-length entry-init)))) 30)
     (gtk-widget-show entry)
     (gtk-widget-show label)
     (gtk-widget-show hbox)

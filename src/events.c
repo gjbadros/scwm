@@ -612,92 +612,98 @@ HandleScwmExec()
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
-                          (unsigned char **) &pw)==Success && pw!=NULL) {
-      /* This is the window we want to look at: */
-      w = *pw;
-      XFree(pw);
-      /* Increment the offset at which to read within the property. It
-	 will not get deleted until we read the very last bytes at the
-	 end. */
-      last_offset += nitems * (form_ret/8);
-      /* Save an indication of whether we need to read more or not. */
-      saved_bytes_after=bytes_after;
-      
-      DBUG((DBG,FUNC_NAME,"Trying to get request from %ld",w));
-
-      /* Get and delete its SCWMEXEC_REQUEST property. We do
-         XGetWindowProperty twice, once to get the length, and again
-         to read the whole length's worth. */
-      if (XGetWindowProperty(dpy, w,
-                             XA_SCWMEXEC_REQUEST,
-			     0, 0, False, XA_STRING, 
-			     &type_ret, &form_ret, &nitems, &bytes_after,
-			     &req)==Success && 
-	  XGetWindowProperty(dpy, w,
-                             XA_SCWMEXEC_REQUEST,
-			     0, (bytes_after / 4) +
-			     (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
-			     &type_ret, &form_ret, &nitems, &bytes_after,
-			     &req)==Success) {
-	SCM val, str_val;
-	unsigned char *ret, *output, *error;
-	int rlen, olen, elen;
-	SCM o_port, e_port;
-	SCM saved_def_e_port;
-	
-	/* Temporarily redirect output and error to string ports. 
-	   Note that the port setting functions return the current previous
-	   port. */
-	o_port=scm_set_current_output_port(make_output_strport(FUNC_NAME));
-	e_port=scm_set_current_error_port(make_output_strport(FUNC_NAME));
-
-	/* Workaround for a problem with older Guiles */
-	saved_def_e_port = scm_def_errp;
-	scm_def_errp = scm_current_error_port();
-
-        /* before we eval the request, record the window to respond
-           in a global, so Done can respond if necessary (in case
-           the eval-d expression calls `quit' or seg faults, etc.) */
-        w_for_scwmexec_response = w;
-	/* Evaluate the request expression and free it. */
-	val = scwm_safe_eval_str((char *) req);
-	XFree(req); 
-	str_val=scm_strprint_obj(val);
-	ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
-	
-	/* restore output and error ports. */
-	o_port=scm_set_current_output_port(o_port);
-	e_port=scm_set_current_error_port(e_port);
-	scm_def_errp = saved_def_e_port;
-
-	/* Retrieve output and errors */
-	output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),
-						 &olen);
-	error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),
-						&elen);
-	
-	/* Set the output, error and reply properties appropriately. */
-	XChangeProperty(dpy, w_for_scwmexec_response,
-                        XA_SCWMEXEC_OUTPUT, XA_STRING,
-			8, PropModeReplace, output, olen);
-	XChangeProperty(dpy, w_for_scwmexec_response,
-                        XA_SCWMEXEC_ERROR, XA_STRING,
-			8, PropModeReplace, error, elen);
-	XChangeProperty(dpy, w_for_scwmexec_response,
-                        XA_SCWMEXEC_REPLY, XA_STRING,
-			8, PropModeReplace, ret, rlen);
-
-        /* Since we successfully reset the reply properties,
-           shutdown.c's Done no longer needs to, so reset
-           the global */
-        w_for_scwmexec_response = None;
-	
-	FREE(ret);
-	FREE(output);
-	FREE(error);
+                          (unsigned char **) &pw)==Success) {
+      if (pw!=NULL) {
+        /* This is the window we want to look at: */
+        w = *pw;
+        XFree(pw);
+        /* Increment the offset at which to read within the property. It
+           will not get deleted until we read the very last bytes at the
+           end. */
+        last_offset += nitems * (form_ret/8);
+        /* Save an indication of whether we need to read more or not. */
+        saved_bytes_after=bytes_after;
+        
+        DBUG((DBG,FUNC_NAME,"Trying to get request from %ld",w));
+        
+        /* Get and delete its SCWMEXEC_REQUEST property. We do
+           XGetWindowProperty twice, once to get the length, and again
+           to read the whole length's worth. */
+        if (XGetWindowProperty(dpy, w,
+                               XA_SCWMEXEC_REQUEST,
+                               0, 0, False, XA_STRING, 
+                               &type_ret, &form_ret, &nitems, &bytes_after,
+                               &req)==Success && 
+            XGetWindowProperty(dpy, w,
+                               XA_SCWMEXEC_REQUEST,
+                               0, (bytes_after / 4) +
+                               (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
+                               &type_ret, &form_ret, &nitems, &bytes_after,
+                               &req)==Success) {
+          SCM val, str_val;
+          unsigned char *ret, *output, *error;
+          int rlen, olen, elen;
+          SCM o_port, e_port;
+          SCM saved_def_e_port;
+          
+          /* Temporarily redirect output and error to string ports. 
+             Note that the port setting functions return the current previous
+             port. */
+          o_port=scm_set_current_output_port(make_output_strport(FUNC_NAME));
+          e_port=scm_set_current_error_port(make_output_strport(FUNC_NAME));
+          
+          /* Workaround for a problem with older Guiles */
+          saved_def_e_port = scm_def_errp;
+          scm_def_errp = scm_current_error_port();
+          
+          /* before we eval the request, record the window to respond
+             in a global, so Done can respond if necessary (in case
+             the eval-d expression calls `quit' or seg faults, etc.) */
+          w_for_scwmexec_response = w;
+          /* Evaluate the request expression and free it. */
+          val = scwm_safe_eval_str((char *) req);
+          XFree(req); 
+          str_val=scm_strprint_obj(val);
+          ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
+          
+          /* restore output and error ports. */
+          o_port=scm_set_current_output_port(o_port);
+          e_port=scm_set_current_error_port(e_port);
+          scm_def_errp = saved_def_e_port;
+          
+          /* Retrieve output and errors */
+          output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),
+                                                   &olen);
+          error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),
+                                                  &elen);
+          
+          /* Set the output, error and reply properties appropriately. */
+          XChangeProperty(dpy, w_for_scwmexec_response,
+                          XA_SCWMEXEC_OUTPUT, XA_STRING,
+                          8, PropModeReplace, output, olen);
+          XChangeProperty(dpy, w_for_scwmexec_response,
+                          XA_SCWMEXEC_ERROR, XA_STRING,
+                          8, PropModeReplace, error, elen);
+          XChangeProperty(dpy, w_for_scwmexec_response,
+                          XA_SCWMEXEC_REPLY, XA_STRING,
+                          8, PropModeReplace, ret, rlen);
+          
+          /* Since we successfully reset the reply properties,
+             shutdown.c's Done no longer needs to, so reset
+             the global */
+          w_for_scwmexec_response = None;
+          
+          FREE(ret);
+          FREE(output);
+          FREE(error);
+        } else {
+          scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
+                   w_for_scwmexec_response);
+        }
       } else {
-        scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
-                 w_for_scwmexec_response);
+        DBUG((WARN,FUNC_NAME,"Done with last window in list of scwmexec requests"));
+        saved_bytes_after = 0;
+        last_offset = 0;
       }
     }
   } while (saved_bytes_after != 0);

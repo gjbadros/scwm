@@ -205,6 +205,7 @@
 (window-style "ScwmButtons"
 	      #:use-style desk-widget-on-top-no-titlebar)
 
+;; little icons
 (run-ScwmButtons
  (list
   (button-item "mini-term.xpm" #:action "xterm" #:tooltip "XTerm")
@@ -215,6 +216,19 @@
   (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
  #:auto-orient #t
  #:orientation 'vertical)
+
+
+;; big icons
+(run-ScwmButtons
+ (list
+  (button-item "term.xpm" #:action "xterm" #:tooltip "XTerm")
+  (button-item "xcalc.xpm" #:action "xcalc" #:tooltip "XCalc")
+  (button-item "xmcd.xpm" #:action "xmcd" #:tooltip "Xmcd")
+  (button-item "xv.xpm" #:action "xv" #:tooltip "Xv")
+  (button-item "gv.xpm" #:action "gv" #:tooltip "gv")
+  (button-item "nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
+ #:auto-orient #t
+ #:orientation 'horizontal)
 
 
 ;;;; ALTERNATIVE MULTIPLE WINDOWS INTERFACES

@@ -23,6 +23,7 @@
 (define-module (app scwm auto-raise)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
+  :use-module (app scwm style)
   :use-module (app scwm style-options)
   :use-module (app scwm module-types))
 
