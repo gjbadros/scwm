@@ -2440,12 +2440,12 @@ of circulation.*/
 #undef FUNC_NAME
 
 
-SCWM_PROC (list_all_windows_in_stacking_order, "list-all-windows-in-stacking-order", 0, 0, 0,
+SCWM_PROC (list_stacking_order, "list-stacking-order", 0, 0, 0,
            ())
      /** Return a list of all the top-level window objects, from top to bottom.
 The order is the stacking order of the windows. The first element is
 the topmost window, the last is the bottommost */
-#define FUNC_NAME s_list_all_windows_in_stacking_order
+#define FUNC_NAME s_list_stacking_order
 {
   SCM result = SCM_EOL;
   Window *rgw;
@@ -2457,8 +2457,10 @@ the topmost window, the last is the bottommost */
 
   for (; iw < cw; ++iw) {
     ScwmWindow *psw = PswFromWindow(dpy,rgw[iw]);
-    if (psw)
+    if (psw && ((psw->fIconified && psw->icon_w == rgw[iw]) ||
+		(!psw->fIconified && psw->frame == rgw[iw]))) {
       result = gh_cons(psw->schwin,result);
+    }
   }
 
   if (rgw) XFree(rgw);

@@ -1,3 +1,22 @@
+Fri Aug  7 17:57:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* stacking.scm: Add this new module with list-windows-above,
+ 	list-windows-below, raise-window-above (corrected from previous
+ 	version), lower-window-below, lower-by-one and raise-by-one.
+
+	* winops.scm: Remove raise-window-above and lower-window-below
+ 	from here.
+
+	* winlist.scm: Add #:by-stacking keyword arg to list-windows, and
+ 	show-window-list-menu.
+
+	Also, since `pick' reverses the result, reverse it again.
+
+	* wininfo.scm: Add windows-overlap? procedure to determine if two
+ 	windows overlap. Add window-overlaps-window? wrapper for this
+ 	which basically Currys it.
+	
+
 1998-08-07  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* style.scm: First shot at making squashed-titlebar available as

@@ -41,17 +41,21 @@
 (define-public window-list-proc default-winlist-proc)
 
 (define (filter-only-except l only except)
-  (pick (lambda (item)
-	  (and
-	   (and-map (lambda (pred) (pred item)) 
-		    (listify-if-atom only))
-	   (not (or-map (lambda (pred) (pred item)) 
-			(listify-if-atom except)))))
-	l))
+  (reverse (pick (lambda (item)
+		   (and
+		    (and-map (lambda (pred) (pred item)) 
+			     (listify-if-atom only))
+		    (not (or-map (lambda (pred) (pred item)) 
+				 (listify-if-atom except)))))
+		 l)))
 
 
-(define*-public (list-windows #&key (only '()) (except '()))
-	(filter-only-except (list-all-windows) only except))
+(define*-public (list-windows #&key (only '()) (except '())
+			      (by-stacking #f))
+	(filter-only-except 
+	 (if by-stacking
+	     (list-stacking-order)
+	     (list-all-windows)) only except))
 
 
 
@@ -69,6 +73,7 @@
 
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
+				       (by-stacking #f)
 				       (proc window-list-proc)
 				       (show-geometry #f)
 				       (warp-to-first #f)
@@ -91,7 +96,8 @@
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
-				    (listify-if-atom except))))))
+				    (listify-if-atom except))
+				   #:by-stacking by-stacking))))
 	      warp-to-first))
 
 (define (rotate-around w wl)

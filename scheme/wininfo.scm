@@ -55,6 +55,18 @@
 		(list 0 0)
 		(map (lambda (p) (- p 1)) (display-size))))))
 
+
+(define-public (windows-overlap? w w2)
+  (and
+   (= (window-desk w) (window-desk w2))
+   (apply rectangle-overlap?
+	  (append (window-position w) (window-size w)
+		  (window-position w2) (window-size w2)))))
+
+(define*-public ((window-overlaps-window? #&optional (w (get-window))) 
+		 #&optional (w2 (get-window)))
+  (windows-overlap? w w2))
+
 (define*-public (visible? #&optional (w (get-window)))
   (if w (and (on-current-desk? w)
 	     (in-viewport-any-desk? w))))
