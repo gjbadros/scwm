@@ -21,11 +21,12 @@
 
 (define-module (app scwm std-menus)
   :use-module (app scwm base)
+  :use-module (app scwm optargs)
+  :use-module (app scwm defoption)
   :use-module (app scwm menus-extras)
   :use-module (app scwm flux)
   :use-module (app scwm style)
   :use-module (app scwm themes)
-  :use-module (app scwm optargs)
   :use-module (ice-9 regex))
 
 
@@ -106,16 +107,24 @@ used) or a cons of (host . command)."
                                (string-append "-T telnet:_" hh) "-n telnet"))))
               host-list))))
 
+(define-public exe-on-selection-editor (exe-on-selection "$EDITOR"))
+(define-public exe-on-selection-gv (exe-on-selection "gv"))
+(define-public exe-on-selection-xv (exe-on-selection "xv"))
+(define-public exe-on-selection-gimp (exe-on-selection "gimp"))
+(define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
+(define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
+
+
 (define-scwm-option *context-map*
   `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
-			  #:action ,(exe-on-selection "gnuclient -q"))
-    ("\.ps$" "View (gv)" #:action ,(exe-on-selection "gv"))
-    ("\.(gif|jpg)$" "View (ee)" #:action ,(exe-on-selection "ee"))
+			  #:action ,exe-on-selection-editor)
+    ("\.ps$" "View (gv)" #:action ,exe-on-selection-gv)
+    ("\.(gif|jpg)$" "View (ee)" #:action ,exe-on-selection-xv)
     ("\.(gif|jpg|xcf)(\.gz)?$" "Edit (gimp)"
-			       #:action ,(exe-on-selection "gimp"))
+			       #:action ,exe-on-selection-gimp)
     ("\.mpe?g$" "Play (mpeg_play)"
-		#:action ,(exe-on-selection "mpeg_play -dither color"))
-    ("\.mp3$" "Play (mpg123)" #:action ,(exe-on-selection "mpg123")))
+		#:action ,exe-on-selection-mpeg_play)
+    ("\.mp3$" "Play (mpg123)" #:action ,exe-on-selection-mpg3))
   "An alist mapping filename patterns to applicable menu entries.
 Whenever the car (a regexp) matches a filename, the cdr is used to
 build a menuitem which is then added to the context menu."

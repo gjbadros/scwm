@@ -21,6 +21,7 @@
 
 (define-module (app scwm menus-extras)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm sort)  ;; GJB:FIXME:G1.4: not needed in guile-1.4
   :use-module (app scwm optargs))
 
@@ -44,7 +45,9 @@
 (define-scwm-option *menu-max-fold-lines* 30
   "The default number of items that menus are split into by `fold-menu-list'"
   #:type 'integer
-  #:group 'menu)
+  #:group 'menu
+  #:range '(5 . 100)
+  #:favorites '(10 20 25 30 35 40 50))
 
 (define (split-list ls max)
   (let ((le (length ls)) (tt ()) (t1 ()))

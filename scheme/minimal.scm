@@ -127,7 +127,7 @@ Run PROC immediately if MODULE has already been loaded."
 	   (display module) (newline)
 	   (catch #t
 		  (lambda () (apply handle-system-error (cons key args)))
-		  (lambda () #t))
+		  (lambda (key . args) #t))
 	   #f)))
 
 (define-public (process-use-scwm-modules module-list)

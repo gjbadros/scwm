@@ -21,6 +21,7 @@
 
 (define-module (app scwm edge-ops)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm winlist))
 
 
