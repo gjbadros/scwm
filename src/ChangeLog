@@ -1,3 +1,8 @@
+Mon Jul  5 17:24:51 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c: Remove spurious unmatched SCM_REDEFER_INTS.  These all 
+	need to be re-visited from scratch, I believe.
+
 Mon Jul  5 16:55:25 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Clean up DeferExecution a bit -- fix its return

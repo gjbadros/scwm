@@ -1,3 +1,21 @@
+Mon Jul  5 17:38:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Move *favorite-colors* option into
+	prompt-color.scm.  Somehow it can't access the option even if that 
+	module is used, so I turn it off, below, too.  For another day's
+	wondering... 
+
+	* prompt-color.scm: Use defoption, but comment out the
+	*favorite-colors* option -- something isn't kosher but I've not
+	time now to look into it.
+
+Mon Jul  5 17:14:46 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Biggish cleanup of some of the newer 
+	code to make a bit better scheme style.  Rename quadvec->string to 
+	dirvector->string. Renamed quadrant->vector to nonant->dirvector.
+	use #t/#f in dirvector-s, not 1/0.
+
 Mon Jul  5 17:07:43 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Fix typo, make `interactive-set-window-gravity!' more
