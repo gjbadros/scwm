@@ -70,9 +70,7 @@ Done(int restart_or_dump, char *command)
   /* need to be sure we've opened the display -- could
      seg fault during startup */
   if (dpy) {
-    call0_hooks(shutdown_hook);
-
-    MoveViewport(0, 0, False);
+    call1_hooks(shutdown_hook,SCM_BOOL_FromBool(restart_or_dump));
 
     Reborder((restart_or_dump > 0));
 

@@ -136,14 +136,11 @@
     (chdir old-dir)
     result))
 
-
-
 (define-public theme-unpack-dir
   (let ((tname (tmpnam)))
     (mkdir tname)
     tname))
 
-
 (add-hook! shutdown-hook 
-	   (lambda ()
+	   (lambda (restarting?)
 	     (system (string-append "rm -rf " theme-unpack-dir))))

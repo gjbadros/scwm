@@ -1,5 +1,15 @@
 Sun Nov 15 14:35:03 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* shutdown-opts.scm: New module which exports shutdown-options
+ 	procedure, a way to configure whether you want scwm to switch to
+ 	viewport (0 0) and/or move all windows to the current viewport at
+ 	shutdown.
+
+	Makefile.am: install it.
+	
+	* themes.scm, fvwm-modules.scm: Expect shutdown-hook procedures to
+ 	get a restarting? argument
+
 	* wininfo.scm (define-string-matcher): Pass value of regexp/icase,
  	not the quoted symbol regexp/icase, to make-regexp. Bug report from
 	Craig Struble <cstruble@vt.edu>.

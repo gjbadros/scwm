@@ -518,4 +518,6 @@
 					(string=? (list-ref fmod 6) module-name)) 
 				      active-modules)))
 
-(add-hook! shutdown-hook kill-all-fvwm2-modules)
+(add-hook! shutdown-hook
+	   (lambda (restarting?)
+	     (kill-all-fvwm2-modules)))

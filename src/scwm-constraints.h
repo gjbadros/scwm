@@ -22,8 +22,8 @@ struct ScreenInfo;
 #define FRAME_X(psw) ((psw)->frame_x)
 #define FRAME_Y(psw) ((psw)->frame_y)
 
-#define FRAME_X_VIRT(psw) (FRAME_X(psw) + (psw)->fSticky? Scr.Vx:0)
-#define FRAME_Y_VIRT(psw) (FRAME_Y(psw) + (psw)->fSticky? Scr.Vy:0)
+#define FRAME_X_VIRT(psw) (FRAME_X(psw) + ((psw)->fSticky? Scr.Vx:0))
+#define FRAME_Y_VIRT(psw) (FRAME_Y(psw) + ((psw)->fSticky? Scr.Vy:0))
 
 /* VP == viewport position */
 #define FRAME_X_VP(psw) (FRAME_X(psw) - ((psw)->fSticky? 0:Scr.Vx))

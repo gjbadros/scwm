@@ -1,3 +1,19 @@
+Sun Nov 15 00:48:48 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm-constraints.h: Fix bogus parenthesization in definitions of
+ 	FRAME_X_VIRT and FRAME_Y_VIRT.
+
+	* shutdown.c: Pass restarted? boolean argument to shutdown hooks;
+ 	do not switch to viewport 0,0.
+
+	* scwm.c (RestoreWithdrawnLocation): Do not attempt to move
+ 	windows to the current viewport, ever. This can be done in a
+ 	shutdown hook.
+
+	(Reborder): Release the windows in the reverse of the stacking
+ 	order. This way, the windows do not change stacking order when you
+ 	restart scwm, or exit it and run it again.
+
 Sat Nov 14 14:50:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c (restack_windows): Make restack_windows not lose on an

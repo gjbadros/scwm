@@ -1221,43 +1221,6 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     xwc.border_width = psw->old_bw;
     mask = (CWX | CWY | CWBorderWidth);
 
-    /* We can not assume that the window is currently on the screen.
-     * Although this is normally the case, it is not always true.  The
-     * most common example is when the user does something in an
-     * application which will, after some amount of computational delay,
-     * cause the window to be unmapped, but then switches screens before
-     * this happens.  The XTranslateCoordinates call above will set the
-     * window coordinates to either be larger than the screen, or negative.
-     * This will result in the window being placed in odd, or even
-     * unviewable locations when the window is remapped.  The followin code
-     * forces the "relative" location to be within the bounds of the display.
-     *
-     * gpw -- 11/11/93
-     *
-     * Also, fixed so that it only does this stuff if a window is more than
-     * half off the screen. (RN)
-     *
-     * Unfortunately, this does horrendous things during re-starts, 
-     * hence the "if(!fRestart)" clause (RN) 
-     */
-
-    if (!fRestart && UNSET_SCM(gh_lookup("scwm-no-move-windows-on-exit"))) {
-      /* Only fix it if its not partially on the screen now */
-      if (!FIsPartiallyInViewport(psw)) {
-	int w2 = FRAME_WIDTH(psw) / 2;
-	int h2 = FRAME_HEIGHT(psw) / 2;
-	if ((xwc.x < -w2) || (xwc.x > (Scr.DisplayWidth - w2))) {
-	  xwc.x %= Scr.DisplayWidth;
-	  if (xwc.x < -w2)
-	    xwc.x += Scr.DisplayWidth;
-	}
-	if ((xwc.y < -h2) || (xwc.y > (Scr.DisplayHeight - h2))) {
-	  xwc.y %= Scr.DisplayHeight;
-	  if (xwc.y < -h2)
-	    xwc.y += Scr.DisplayHeight;
-	}
-      }
-    }
 #ifdef DEBUG_RESTORE
     scwm_msg(DBG,__FUNCTION__,"Reparenting %s to %d,%d",
              psw->name, xwc.x, xwc.y);
@@ -1280,16 +1243,29 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
 /*
  * Reborder - Removes scwm border windows
  */
+/*
+ * Reborder - Removes scwm border windows
+ */
 void 
 Reborder(Bool fRestart)
 {
   ScwmWindow *psw = NULL;		/* temp scwm window structure */
+  SCM p;
 
   /* put a border back around all windows */
   XGrabServer_withSemaphore(dpy);
 
   InstallWindowColormaps(&Scr.ScwmRoot);	/* force reinstall */
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+
+  /* MS:FIXME:: Gratuitous to use list_stacking_order, we should
+     perhaps track stacking order explicitly somewhere in the window
+     struct. */
+
+  for (p=gh_reverse(list_stacking_order());
+       p != SCM_EOL;
+       p = SCM_CDR(p)) {
+    psw = PSWFROMSCMWIN(SCM_CAR(p));
+      
     RestoreWithdrawnLocation(psw, fRestart);
     XUnmapWindow(dpy, psw->frame);
     XDestroyWindow(dpy, psw->frame);
