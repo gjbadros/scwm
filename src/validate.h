@@ -102,6 +102,15 @@ NOTE: Assignments to the cvar in the error handling
                                  gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
   } while (0)
 
+#define VALIDATE_ARG_INT_MIN(pos,scm,low) \
+  do { \
+  int cvar; \
+  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = gh_scm2long(scm); \
+  if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
+                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
+  } while (0)
+
 #define VALIDATE_ARG_INT_MAX_COPY(pos,scm,high,cvar) \
   do { \
   if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \

@@ -688,9 +688,9 @@ removed.
 */
 
 SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
-          (SCM usec, SCM proc))
-     /** Add a timer hook to call PROC once sometime after USEC microseconds.
-When at least USEC microseconds have passed, procedure PROC will be
+          (SCM msec, SCM proc))
+     /** Add a timer hook to call PROC once sometime after MSEC milliseconds.
+When at least MSEC milliseconds have passed, procedure PROC will be
 called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned. */
 #define FUNC_NAME s_add_timer_hook_x
@@ -698,20 +698,19 @@ called with no arguments. A handle suitable for passing to
   SCM newcell;
   SCM p, last;
   SCM th_list;
-  int c_usec; /* unusued */
 
-  VALIDATE_ARG_INT_MIN_COPY(1,usec,0,c_usec);
+  VALIDATE_ARG_INT_MIN(1,msec,0);
   VALIDATE_ARG_PROC(2,proc);
 
   th_list=gh_cdr(timer_hooks);
-  newcell=gh_cons(usec, proc);
+  newcell=gh_cons(msec, proc);
   update_timer_hooks ();
 
   for (p = th_list, last = timer_hooks; p != SCM_EOL; 
        last = p, p = gh_cdr(p)) {
     SCM cur = gh_car(p);
     /* scm_gr_p is ">" */
-    if (SCM_FALSEP(scm_gr_p(usec, gh_car(cur)))) {
+    if (SCM_FALSEP(scm_gr_p(msec, gh_car(cur)))) {
       break;
     }
   }
@@ -797,9 +796,9 @@ void update_timer_hooks()
     SCM cur = gh_car(p);
     long val;
 
-    val = gh_scm2long(gh_car(cur));
+    val = 1000*gh_scm2long(gh_car(cur));
     val = max (0, val - usdelta);
-    gh_set_car_x(cur, gh_long2scm(val));
+    gh_set_car_x(cur, gh_long2scm(val/1000));
   }
 
   last_timeval = tmp;
