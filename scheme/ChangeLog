@@ -1,3 +1,9 @@
+Mon Dec  6 12:41:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gnome-panel-menus.scm: New version from Michael Schmitz: "sort
+ 	order is now taken into account, more functions are now public,
+ 	lots of documentation has been added."
+
 Sun Dec  5 17:41:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* key-mover-xtest.scm, key-mover.scm: Make returned procedures be interactive.
