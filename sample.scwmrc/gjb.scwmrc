@@ -33,16 +33,20 @@
 (use-modules (app scwm module-types))
 
 ;;; print some information
-(write-all () " *** Reading `scwmrc'...\nDisplay Size: " (display-size)
+(for-each (lambda (d) (debug-display d)) 
+	 (list " *** Reading `scwmrc'...\nDisplay Size: " (display-size)
 	   "\nDesk Size: " (desk-size) "\nViewport Position: "
-	   (viewport-position) "\nCurrent Desk: " (current-desk) "\n")
+	   (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
 
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
+(set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
+;;;(documentation "make-menuitem")
+;;;(apropos-internal "*")
 (define fvwm-pager-path "/uns/lib/fvwm2/FvwmPager")
-(define want-fvwm-pager-module #t)
+(define want-fvwm-pager-module #f)
 
 (define fvwm-winlist-path "/uns/lib/fvwm2/FvwmWinList")
 (define want-fvwm-winlist-module #f)
