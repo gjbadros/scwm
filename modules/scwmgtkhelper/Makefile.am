@@ -1,18 +1,16 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
-libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
-
-if HAVE_GTK
 scwm_module_LTLIBRARIES = libscwmgtkhelper.la
 
 libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c
+libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
+
 CFLAGS = @CFLAGS@ @GTK_CFLAGS@
 libscwmgtkhelper_snarfs = scwmgtkhelper.x
 
 INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 BUILT_SOURCES = $(libscwmgtkhelper_snarfs)
-endif
 
 SUFFIXES = .x
 
