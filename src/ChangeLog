@@ -1,3 +1,17 @@
+Sun Nov  9 14:11:47 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* Picture.c, window.c: Handle memory management of strings passed
+ 	to CachePicture better; gh_scm2newstr()-allocated strings must be
+ 	freed, so we give them a name.  LoadPicture uses strdup to get its
+ 	own copy of the filename --this was a bug before, as it might have
+ 	tried to free a local variable, or might have used memory that was
+ 	owned
+ 	(and later modified) by someone else.; free_picture() now calls
+ 	DestroyPicture before free-ing the scheme object.
+
+	* system.c: Added note about char * return value in findFile --
+ 	that needs to be freed, too.
+
 Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* face.c: Restore the calls to redraw_borders, since it is now
