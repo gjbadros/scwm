@@ -124,18 +124,23 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 (define (car-or-255 l)
   (if (and (list? l) (not (eq? l '()))) (car l) 255))
 
-(define-public XKM_CONTROL_L
-  (cons (car-or-255 (keysym->keycode "Control_L")) (mod-mask-control)))
+(define (key-keycode-and-modifier key modifier)
+  (if modifier
+      (cons (car-or-255 (keysym->keycode key)) modifier)
+      #f))
+
+(define-public XKM_CONTROL_L 
+  (key-keycode-and-modifier "Control_L" (mod-mask-control)))
 (define-public XKM_META_L
-  (cons (car-or-255 (keysym->keycode "Meta_L")) (mod-mask-meta)))
+  (key-keycode-and-modifier "Meta_L" (mod-mask-meta)))
 (define-public XKM_ALT_L
-  (cons (car-or-255 (keysym->keycode "Alt_L")) (mod-mask-alt)))
+  (key-keycode-and-modifier "Alt_L" (mod-mask-alt)))
 (define-public XKM_SHIFT_L
-  (cons (car-or-255 (keysym->keycode "Shift_L")) (mod-mask-shift)))
+  (key-keycode-and-modifier "Shift_L" (mod-mask-shift)))
 (define-public XKM_HYPER_L
-  (cons (car-or-255 (keysym->keycode "Hyper_L")) (mod-mask-hyper)))
+  (key-keycode-and-modifier "Hyper_L" (mod-mask-hyper)))
 (define-public XKM_SUPER_L
-  (cons (car-or-255 (keysym->keycode "Super_L")) (mod-mask-super)))
+  (key-keycode-and-modifier "Super_L" (mod-mask-super)))
 
 (define (mod-mask-tester?? mm)
   (lambda (modmask)
