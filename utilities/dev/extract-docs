@@ -38,13 +38,13 @@ use constant FALSE => (1==0);
 
 my $header = "";
 #my $fDebug = FALSE;
-my $fDebug = TRUE;
+my $fDebug = FALSE;
 
 while (<>) {
   close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
     $header = $_;
-    while (($_ = <>) !~ m%\*/% && $_ !~ m/^\s*{/) {
+    while (($_ = <>) !~ m/^\s*{/) {
       $header .= $_;
     }
     $header .= $_;
@@ -59,6 +59,7 @@ sub ProcessHeader( $ ) {
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^)]*)\)%;
   my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
+  my ($fname_define) = $header =~ m%^\s*\#\s*define\s+FUNC_NAME\s+(.*?)\s*$%m;
 
 { # cperl-mode gets confused at above regexp, so provide scope to help it out
   my $clean_argslist = $argslist;
@@ -89,6 +90,12 @@ sub ProcessHeader( $ ) {
     $comment = "";
   }
 
+  if (!defined($fname_define)) {
+    print STDERR "$ARGV:$.:****$cprimname: #define FUNC_NAME s_$cprimname is missing\n";
+  } elsif ($fname_define ne "s_".$cprimname) {
+    print STDERR "$ARGV:$.:****$cprimname: #define FUNC_NAME does not match function name\n";
+  }
+
   my @required_args = @args[0..($req-1)];
   my @optional_args = @args[$req..($req + $opt - 1)];
   my @var_args = @args[($req+$opt)..($req+$opt+$var-1)];
@@ -114,6 +121,7 @@ C-primitive-name:	$cprimname
 arg kinds:		$req, $opt, $var
 args:			@args
 arg listing:		$arg_listing
+fname define:           $fname_define
 EOC
 ;
   }
