@@ -1,3 +1,18 @@
+Sun Nov 30 13:23:00 1997  unknown  <gjb@cs.washington.edu>
+
+	* parse.h: Removed
+
+	* scwm.h: added enum wm_client_functions to replace the few parts
+ 	of parse.h that were used by check_allowed_function and
+ 	decorations stuff
+	
+	* decorations.c, window.c: renamed check_allowed_function2 to
+ 	check_allowed_function, since check_allowed_function no longer
+ 	exists
+	
+	* scwm.c: Renamed s_XXXX to szXXXX since they might as well be
+ 	consistent hungarian tags if they're going to be tag-like 
+
 Sun Nov 30 12:25:17 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Use enum cursor for cursors, and prefix the cursor names with CURSOR_
