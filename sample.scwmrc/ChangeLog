@@ -1,3 +1,9 @@
+Sat Jul 24 19:22:48 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Put scwm-logo up before loading the other 23
+	images.  Use background module, and set background to the scwm
+	logo at end of startup.  Use scwmdir's pixmaps first, not last.
+
 Tue Jul 20 08:26:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Minor re-ordering; added code for testing for

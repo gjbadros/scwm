@@ -1,3 +1,13 @@
+Sat Jul 24 19:07:20 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Simplify DeferExecution-- select-viewport-position was 
+	returning #f incorrectly for first constraint creation and it was
+	due to some obsoleted code choosing to return #f instead of the
+	selected window.
+
+	* image.c: Added note re `clone-resized-image' in docs for
+	`clone-scaled-image'. 
+
 Sat Jul 24 13:25:12 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: Added def of struct _ImlibData before using it in an

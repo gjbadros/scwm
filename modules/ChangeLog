@@ -1,3 +1,13 @@
+Sat Jul 24 18:31:17 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* background/background.c (s_clone_resized_image): Renamed from
+	`make-resized-image' to better match the `clone-scaled-image' name 
+	in image.c.  Remove the legacy guile-1.2 crap with saving SCMs in
+	a vector so they don't get collected.  Just use
+	scm_permanent_object on some file-static variables.  Fix some bugs 
+	I introduced to `set-background-image!' in my argument validation
+	cleanup.
+
 Sun Jul 18 16:29:28 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xtest/scwmxtest.c: Permit "delay" argument to be anything, and
