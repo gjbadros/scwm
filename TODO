@@ -8,19 +8,41 @@ See also doc/dev/scwm-1.0-release-todo
 
 * better dynamic linking test for platforms like HP/UX?
 
+* XTest module
+
+* XTest for quoting keystrokes
+
+* Improve esound wrapper
+
+* Test proplist module
+
+* window style options dialog ala GNOME
+
+* better-looking options dialog (copy econf's widget layout?)
+
+* multi-window animated move/resize
+
+* separate frame-size and client-size; introduce client-offset window parameter
+-> like fvwmscroll
+
+* client message primitive?
+
+* GUI for gravity stuff
+
+* permit normal bindings to move groups
+
+* eliminate the timeout waiting for double-click checks in IsClick()
+
 * Why did I have to do "cd libtool-1.3.2; cp libtool.m4 /usr/share/aclocal" to get "aclocal" to run on alpha? -- aclocal running gave "AM_PROG_LIBTOOL not found"
+
+* libtool --no-reexec bug-- how do you make it go away?
 
 * Use  gh_ interface to guile as much as possible -- limit uses of scm_ calls
 ** See and update doc/dev/Guile-gh-needs
 
 * Finish C-level API review, renaming things, adding getters, etc
 
-* Finish documenting scheme procedures, marking user vars (see below)
-
-* Make sure that scwm and guile-gtk interoperate reasonably well;
-provide some example uses of guile-gtk for scwm.
-** ask-string implementation
-** guile-gtk imitation of fvwm-buttons
+* Finish documenting scheme procedures
 
 * Advice (like emacs) mechanism for augmenting procedures 
 ** (Robert has done some work on this)
@@ -28,19 +50,14 @@ provide some example uses of guile-gtk for scwm.
 * overlay plane support (or grab server during constraint draws)
 ** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
 
-* Improve the gravity handling stuff.
-** Respect gravity on program resize
-** Respect gravity on resize-to
-** Let user get/set gravity.
-
-* Support for custom cursors
+* WM_HINTS update on gravity change
 
 * bug fixes
 
-* Try some beta testing
+* beta testing
 Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
-Solaris and SunOS.  On each of this try compiling and running with both
-guile 1.2 and the latest snap, and try with and without threads.
+Solaris and SunOS.  On each of this try compiling and running guile-1.3.1
+(should we test both w/ and w/o threads?)
 
 After Scwm 1.0:
 
@@ -103,6 +120,7 @@ Other Stuff
 
 * General cleanup
 ** more static function hidden behind modules
+** pervasive use of VALIDATE macros
 ** fewer primitives that do work themselves
 instead they should just process arguments and call C functions that do
 the real work -- those C functions would then be the core of a WM library
@@ -126,18 +144,22 @@ isn't now).
 
 * accelerating mouse movements w/ keyboard shortcuts
 
-* StayOnBottom style
-** constraints will do this really cleanly
+* Layers support (staysonbottom, etc.)
+** constraints could do this nicely, too
 
 * X Selection support
 ** Gtk have functions?  Wrap Xt Instrinsics (libXt)?
+
+* Better error handling  -- this may be more of a guile problem
+** more consistent use, especially abstractions for argument type checking
+** Warn if ')' encountered when reading top-level -- don't die!
+
 
 * Other useful primitives/procedures --08/02/98 gjb (inspired by GWM, other wms)
 ** (meminfo) ; Return string describing memory usage information
 ** (current-screen), (screen-count)
 ** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
 ** (last-key) ; return last key pressed
-** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
@@ -147,23 +169,6 @@ isn't now).
 ** (windows-at-position X Y), (windows-at-virtual-position X Y)  ; return in stacking order 
  - Could just be an abstraction on top of get-stacking-order (see above) - MS
 ** visibility change hooks (fully-obscured, partially-obscured, unobscured) -- subsumed by event rewrite --08/07/98 gjb
-
-** DONE ONES
-
-*** window closing hook? (upon removal of the window?) -- done 09/17/98 gjb
-*** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive -- done 09/17/98 gjb
-    Maybe should have set-window-context! and window-context routines that with-window is just a syntax around --09/02/98 gjb
-*** (window-shaped? WINDOW), (window-icon-shaped? WIN) --done 09/02/98 gjb
-*** (rotate-cut-buffers) --done 09/02/98 gjb
-*** (invert-color COLOR) ; return a new color by inverting COLOR --done 09/02/98 gjb
-*** (elapsed-time) ; get running time of scwm --done 09/02/98 gjb
-*** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE) --done 08/07/98 gjb
-*** (window-client-machine-name WINDOW) ; name of host on which client is running -- done --08/05/98 gjb
-*** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp --done [in flux] 08/05/98 gjb
-*** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
-*** (raise-window-above RAISEWINDOW ABOVEWINDOW) ; (these two in terms of restack-windows) done --08/02/98 gjb
-*** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
-*** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty) -- done [in flux] 08/05/98 gjb
 
 * Message (size/position) window needs to be more dynamic, customizable
 ** permit control of its position
@@ -210,9 +215,7 @@ alloc/dealloc to see where the memory is going... guile support for this?
 ** multi-columns?
 ** horizontal?
 
-* Better error handling  -- this may be more of a guile problem
-** more consistent use, especially abstractions for argument type checking
-** keyword argument checking -- give me errors instead of silently failing
+** keyword argument checking -- give me errors instead of silently failing --done!
 ** get a line number!  -- done!
 ** Don't crash and burn so often -- done!
 ** keep trying on .scwmrc especially! -- done!
@@ -242,9 +245,40 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 * rewrite of remaining copyrighted code  to allow release under GPL
 
-* Undo feature?
+* Refine undo feature
 
 
+** DONE STUFF
+
+* Make sure that scwm and guile-gtk interoperate reasonably well;
+provide some example uses of guile-gtk for scwm.
+** ask-string implementation
+** guile-gtk imitation of fvwm-buttons
+
+
+* Improve the gravity handling stuff.
+** Respect gravity on program resize
+** Respect gravity on resize-to
+** Let user get/set gravity.
+
+* Support for custom cursors --done 07/03/99 gjb
+
+** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM) --07/04/99 gjb
+*** window closing hook? (upon removal of the window?) -- done 09/17/98 gjb
+*** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive -- done 09/17/98 gjb
+    Maybe should have set-window-context! and window-context routines that with-window is just a syntax around --09/02/98 gjb
+*** (window-shaped? WINDOW), (window-icon-shaped? WIN) --done 09/02/98 gjb
+*** (rotate-cut-buffers) --done 09/02/98 gjb
+*** (invert-color COLOR) ; return a new color by inverting COLOR --done 09/02/98 gjb
+*** (elapsed-time) ; get running time of scwm --done 09/02/98 gjb
+*** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE) --done 08/07/98 gjb
+*** (window-client-machine-name WINDOW) ; name of host on which client is running -- done --08/05/98 gjb
+*** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp --done [in flux] 08/05/98 gjb
+*** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
+*** (raise-window-above RAISEWINDOW ABOVEWINDOW) ; (these two in terms of restack-windows) done --08/02/98 gjb
+*** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
+*** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty) -- done [in flux] 08/05/98 gjb
+
 DONE --04/14/99 gjb
 * generalize select-window to permit proc to be called when would-be-selected win changes
 
