@@ -1,3 +1,12 @@
+1998-07-22  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Added -o option for specifying
+	output .sgml file, don't markup & in scwm-procedures.txt -- use
+	$markup_usage to hold a copy, and mark that up, instead.
+
+	* utilities/dev/extract-docs: Add usage comment, options, clean up 
+	leading/trailing whitespace, separate procs on stdout by ^L
+
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Add sections for the per-file
