@@ -77,26 +77,37 @@
 ;; guile probably permits us access to a lot of these
 ;; things, but some new primitives may need to be added
 ;; --03/10/98 gjb
-;(define-public TWM_TYPE "fvwm")
+(define-public TWM_TYPE "fvwm")  ;; FIXGJB should this be scwm?
 ;(define-public SERVERHOST (X-server-host-name))
 ;(define-public CLIENTHOST (X-client-host-name))
 ;(define-public HOSTNAME (process-host-name))
 ;(define-public OSTYPE (process-ostype))
 ;(define-public USER (get-user-name (get-uid)))
+
 ;;; (X-version-information) should return '(version revision vendor release)
-;(define-public VERSION (car (X-version-information)))
-;(define-public REVISION (cadr (X-version-information)))
-;(define-public VENDOR (caddr (X-version-information)))
-;(define-public RELEASE (cadddr (X-version-information)))
-;(define-public WIDTH (display-width))
-;(define-public HEIGHT (display-height))
-;;; (display-parameters) should return '(x-res y-res planes bits-per-rgb class color)
-;(define-public X_RESOLUTION (car (display-parameters)))
-;(define-public Y_RESOLUTION (cadr (display-resolution)))
-;(define-public PLANES (caddr (display-resolution)))
-;(define-public BITS_PER_RGB (cadddr (display-resolution)))
-;(define-public CLASS (caddddr (display-resolution)))
-;(define-public COLOR (cadddddr (display-resolution)))
-;(define-public SCWM_VERSION (scwm-version)
-;(define-public OPTIONS "SHAPE XPM")
+(define X-version-info (X-version-information))
+
+(define-public VERSION (car X-version-info))
+(define-public REVISION (cadr X-version-info))
+(define-public VENDOR (caddr X-version-info))
+(define-public RELEASE (cadddr X-version-info))
+(define-public WIDTH (car (display-size)))
+(define-public HEIGHT (cadr (display-size)))
+
+;;(define (resolution pixels mm) 
+;;  (/ (+ (/ (* pixels 100000) mm) 50) 100))
+
+;;; (X-display-information) should return '(x-res y-res planes bits-per-rgb class color)
+
+(define X-display-info (X-display-information))
+
+(define-public X_RESOLUTION (list-ref X-display-info 0))
+(define-public Y_RESOLUTION (list-ref X-display-info 1))
+(define-public PLANES (list-ref X-display-info 2))
+(define-public BITS_PER_RGB (list-ref X-display-info 3))
+(define-public CLASS (list-ref X-display-info 4))
+(define-public COLOR (if (list-ref X-display-info 5) "Yes" "No"))
+(define-public SCWM_VERSION (scwm-version))
+(define-public FVWM_VERSION "3") ;; for lack of a better number
+(define-public OPTIONS "SHAPE XPM")
 ;(define-public FVWMDIR (default-directory))
