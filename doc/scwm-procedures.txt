@@ -45,7 +45,7 @@ right. The final result is returned. Compare to `reduce'.
 (activate-ScwmBiff sb)
 - (app scwm ScwmBiff)
 Turn on the ScwmBiff notification service.
-[From scheme/ScwmBiff.scm:101]
+[From scheme/ScwmBiff.scm:99]
 
 
 (add-boolean-hint-option key th fh #&optional (cumulative? #f))
@@ -77,13 +77,13 @@ returned.
 Call PROC on XMotionEvents.
 This can considerably slow Scwm down so use it only when
 necessary.  See `remove-motion-handler' and `reset-motion-handlers'.
-[From scwm/events.c:2034]
+[From scwm/events.c:2036]
 
 
 (add-ms-timer-hook! ms proc)
 - 
 No documentation supplied.
-[From scheme/flux.scm:589]
+[From scheme/flux.scm:591]
 
 
 (add-property-style-option key property #&optional 
@@ -167,6 +167,60 @@ is #f.
 [From scheme/animation.scm:45]
 
 
+(animated-move-to-center #&optional (win (get-window)))
+- 
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:61]
+
+
+(animated-move-to-e #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:43]
+
+
+(animated-move-to-n #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:37]
+
+
+(animated-move-to-ne #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:18]
+
+
+(animated-move-to-nw #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:12]
+
+
+(animated-move-to-s #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:49]
+
+
+(animated-move-to-se #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:30]
+
+
+(animated-move-to-sw #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:24]
+
+
+(animated-move-to-w #&optional (win (get-window)))
+- (app scwm animated-edge-moves)
+No documentation supplied.
+[From scheme/animated-edge-moves.scm:55]
+
+
 (animated-move-window x y #&optional win move-pointer-too?)
 - Primitive from (app scwm c-animation)
 Move WIN to virtual coordinates X, Y with animation.
@@ -175,7 +229,7 @@ If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window. WIN defaults to the window context in the usual
 way if not specified.
-[From modules/c-animation/c-animation.c:429]
+[From modules/c-animation/c-animation.c:430]
 
 
 (animated-resize-frame w h #&optional win x y move-pointer-too?)
@@ -186,7 +240,7 @@ specified.  If X and Y are given, they are a new virtual position for the northw
 corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window.
-[From modules/c-animation/c-animation.c:562]
+[From modules/c-animation/c-animation.c:563]
 
 
 (animated-resize-window w h #&optional win x y move-pointer-too?)
@@ -197,7 +251,7 @@ specified.  If X and Y are given, they are a new virtual position for the northw
 corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window.
-[From modules/c-animation/c-animation.c:547]
+[From modules/c-animation/c-animation.c:548]
 
 
 (animated-toggle-iconify #&optional (win (get-window)))
@@ -213,7 +267,7 @@ Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar.  The window will be animated
 as it rolls up, producing a pleasing visual effect. WIN defaults to
 the window context in the usual way if not specified.
-[From modules/c-animation/c-animation.c:332]
+[From modules/c-animation/c-animation.c:333]
 
 
 (animated-window-unshade  #&optional win)
@@ -222,7 +276,7 @@ Reverse the effect of `window-shade' on WIN.
 The window will be animated as it rolls down, producing a pleasing
 visual effect. WIN defaults to the window context in the usual way if
 not specified. See also `window-unshade', `animated-window-shade'.
-[From modules/c-animation/c-animation.c:391]
+[From modules/c-animation/c-animation.c:392]
 
 
 (any-id->window window-id)
@@ -369,7 +423,7 @@ invoked when the key is released.  The contexts include:
 'root-window
 'left-button-N  (N=1-5)
 'right-button-N (N=1-5)
-[From scwm/binding.c:1013]
+[From scwm/binding.c:1014]
 
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
@@ -382,7 +436,7 @@ specified key is pressed in the specified context.
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if
 nothing should be done on key release.
-[From scwm/binding.c:1087]
+[From scwm/binding.c:1088]
 
 
 (bind-mouse contexts button proc #&optional immediate-proc)
@@ -396,7 +450,7 @@ for a list of the contexts. If IMMEDIATE-PROC is given, it will be
 executed immediately on a button-click.  If IMMEDIATE-PROC returns
 #f, then PROC will still get executed after determining the mouse click
 type.
-[From scwm/binding.c:1140]
+[From scwm/binding.c:1141]
 
 
 (bind-three-modifier-key-events 
@@ -417,6 +471,12 @@ Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
 MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
 [From scheme/modifier-key-bindings.scm:26]
+
+
+(bind-wheel-mouse-prior-next matching-proc)
+- 
+No documentation supplied.
+[From scheme/flux.scm:734]
 
 
 (bool->string arg)
@@ -447,10 +507,16 @@ arguments can be used as the ACTIVE or INACTIVE arguments.
 [From scheme/face.scm:69]
 
 
+(both-toggle-maximize #&optional (win (get-window)))
+- 
+No documentation supplied.
+[From scheme/flux.scm:767]
+
+
 (button-item pixmap-file #&key (action noop) (tooltip #f))
 - 
 Create a button item for a ScwmButtons window.
-[From scheme/ScwmButtons.scm:189]
+[From scheme/ScwmButtons.scm:186]
 
 
 (button-style button #&key mwm
@@ -582,6 +648,12 @@ No documentation supplied.
 - (app scwm number-convert)
 Return the integer that corresponds to the Ascii code for CH.
 [From scheme/number-convert.scm:28]
+
+
+(choices-from-favorites fav)
+- (app scwm preferences)
+No documentation supplied.
+[From scheme/preferences.scm:91]
 
 
 (chop-newline str)
@@ -747,7 +819,7 @@ Makes a new image from IMAGE of the given WIDTH and HEIGHT.
 It does not scale IMAGE.  If the resized image is smaller than the
 original, it is cropped; if larger, the extra space in the new image
 is filled with BGCOLOR. See also `clone-scaled-image'.
-[From modules/background/background.c:75]
+[From modules/background/background.c:76]
 
 
 (clone-scaled-image image width height)
@@ -763,20 +835,20 @@ Close each window with class == XLogo.
 Greg uses XLogo windows as a sample window, so this
 is useful for clearing the xlogos away when there get to
 be more than desired.
-[From scheme/flux.scm:319]
+[From scheme/flux.scm:321]
 
 
 (close-ScwmBiff sb)
 - (app scwm ScwmBiff)
 Close the ScwmBiff notification window.
-[From scheme/ScwmBiff.scm:97]
+[From scheme/ScwmBiff.scm:95]
 
 
 (close-ScwmButtons sb)
 - (app scwm ScwmButtons)
 Close the ScwmButtons window of SB.
 SB should be a handle returned from `run-ScwmButtons'.
-[From scheme/ScwmButtons.scm:184]
+[From scheme/ScwmButtons.scm:181]
 
 
 (close-ScwmClock sc)
@@ -788,7 +860,7 @@ Close the ScwmClock with handle SC.
 (close-ScwmDeskButtons sdb)
 - 
 No documentation supplied.
-[From scheme/ScwmDeskButtons.scm:65]
+[From scheme/ScwmDeskButtons.scm:63]
 
 
 (close-ui-constraints-buttons)
@@ -847,14 +919,14 @@ colormap focus.
 - (app scwm ui-constraints)
 Returns #t if one of the windows in the constraint is in focus.
 Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:514]
+[From scheme/ui-constraints.scm:513]
 
 
 (constraint-satisfied? ui-constraint)
 - (app scwm ui-constraints)
 Returns the status of whether a UI-CONSTRAINT is satisfied.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:492]
+[From scheme/ui-constraints.scm:491]
 
 
 (containing-aligned-viewport pos)
@@ -872,13 +944,13 @@ viewport will be returned instead.
 (context->brief-context context)
 - 
 No documentation supplied.
-[From scheme/flux.scm:552]
+[From scheme/flux.scm:554]
 
 
 (context->string context)
 - 
 No documentation supplied.
-[From scheme/flux.scm:557]
+[From scheme/flux.scm:559]
 
 
 (copy-menu-look original-menu-look name #&optional extra)
@@ -888,7 +960,7 @@ If EXTRA is not given, the EXTRA information from the original menu is
 used. The form and purpose of the EXTRA information varies with the
 menu look, and is documented with the original menu looks; currently,
 only the Xpm menu look uses the EXTRA information.
-[From scwm/menulook.c:94]
+[From scwm/menulook.c:95]
 
 
 (copy-window-configuration configuration #&optional (win (get-window)))
@@ -905,8 +977,8 @@ Set CUT_BUFFER0 to be a string that is the title of WINDOW.
 
 (corba-evaluator-ior)
 - Primitive from (app scwm corba)
-Returns the IOR string for the scwm-scheme-evaluator servant.
-[From modules/corba/scwmcorba.c:109]
+Returns the "IOR" string for the scwm-scheme-evaluator servant.
+[From modules/corba/scwmcorba.c:110]
 
 
 (create-pixmap-cursor image #&optional fg-color bg-color x-hotspot y-hotspot)
@@ -916,7 +988,7 @@ IMAGE specifies the look of the cursor that will be returned.
 FG-COLOR and BG-COLOR specify the foreground and background colors
 respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the
 cursor's hot spot (from the top-left of the cursor).
-[From scwm/cursor.c:272]
+[From scwm/cursor.c:273]
 
 
 (current-decor)
@@ -928,7 +1000,7 @@ Return the current decor.
 (current-desk)
 - Built-in Primitive
 Returns the integer identifying the current desk.
-[From scwm/deskpage.c:80]
+[From scwm/deskpage.c:81]
 
 
 (current-viewport-offset-xx)
@@ -960,7 +1032,7 @@ Return the window that currently contains the mouse pointer.
 (deactivate-ScwmBiff sb)
 - 
 Make ScwmBiff no longer notify, but leave visible.
-[From scheme/ScwmBiff.scm:105]
+[From scheme/ScwmBiff.scm:103]
 
 
 (decrement-in-range v low)
@@ -1027,11 +1099,12 @@ The default behaviour when WIN is selected from the window list.
 (define-scwm-group-proc sym name #&key (docstring #f) (icon #f) (widget #f))
 - (app scwm defoption)
 No documentation supplied.
-[From scheme/defoption.scm:73]
+[From scheme/defoption.scm:76]
 
 
 (define-scwm-option-proc var sym docstring default #&key
 		  (type #f)
+		  (name #f)
 		  (permit-disable #f)
 		  (range #f)
 		  (favorites #f)
@@ -1042,7 +1115,7 @@ No documentation supplied.
 - (app scwm defoption)
 Helper procedure for `define-scwm-option'.
 See `define-scwm-option'.
-[From scheme/defoption.scm:144]
+[From scheme/defoption.scm:154]
 
 
 (deiconify  #&optional win x y)
@@ -1091,28 +1164,28 @@ all other instances are removed.
 (delete-multiple-windows-interactively)
 - 
 No documentation supplied.
-[From scheme/flux.scm:409]
+[From scheme/flux.scm:411]
 
 
 (delete-ui-constraint! ui-constraint)
 - (app scwm ui-constraints)
 Removes the UI-CONSTRAINT permanently.
 SIDE-EFFECT: removes instance object from the global list
-[From scheme/ui-constraints.scm:334]
+[From scheme/ui-constraints.scm:333]
 
 
 (delete-ui-constraint-class! ui-constraint-class)
 - (app scwm ui-constraints)
 Removes UI-CONSTRAINT-CLASS from the global class list.
 SIDE-EFFECT: removes class object from the global class list.
-[From scheme/ui-constraints.scm:109]
+[From scheme/ui-constraints.scm:108]
 
 
 (delete-ui-constraints-involving-window! win)
 - (app scwm ui-constraints)
 Delete all the ui-constraint objects that involve WIN.
 This removes the constraints from the global-constraint-instance-list.
-[From scheme/ui-constraints.scm:532]
+[From scheme/ui-constraints.scm:531]
 
 
 (delete-window  #&optional win)
@@ -1134,13 +1207,13 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
 (describe-key)
 - 
 No documentation supplied.
-[From scheme/flux.scm:529]
+[From scheme/flux.scm:531]
 
 
 (describe-mouse)
 - 
 No documentation supplied.
-[From scheme/flux.scm:540]
+[From scheme/flux.scm:542]
 
 
 (desk-background desk #&key
@@ -1164,7 +1237,7 @@ The default may be set by setting the background for DESK #t.
 Returns the size of the current desk.
 The returned value is in units of the physical screen size, as a list
 of the width and the height.
-[From scwm/deskpage.c:328]
+[From scwm/deskpage.c:329]
 
 
 (destroy-window  #&optional win)
@@ -1186,7 +1259,7 @@ DIR must be one of the symbols 'north, 'south, 'east, or 'west.
 (disable-all-constraints)
 - (app scwm ui-constraints)
 Disable all constraints in the global instance list.
-[From scheme/ui-constraints.scm:586]
+[From scheme/ui-constraints.scm:601]
 
 
 (disable-gnome-hints)
@@ -1195,7 +1268,7 @@ Disable support for GNOME hints.
 GNOME hint support allows for better integration with the GNOME
 desktop environment, including support for the GNOME panel and 
 pager applet. Reverses the effect of `enable-gnome-hints'.
-[From scheme/gnome-hints.scm:513]
+[From scheme/gnome-hints.scm:522]
 
 
 (disable-ui-constraint ui-constraint)
@@ -1203,7 +1276,7 @@ pager applet. Reverses the effect of `enable-gnome-hints'.
 Disables the constraint in the constraint solver
 errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint
-[From scheme/ui-constraints.scm:474]
+[From scheme/ui-constraints.scm:473]
 
 
 (display-message-briefly msg #&optional (sec-timeout 3))
@@ -1219,7 +1292,7 @@ Returns the size of the physical screen in pixels.
 The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list.
 See also the variables "display-width" and "display-height".
-[From scwm/deskpage.c:342]
+[From scwm/deskpage.c:343]
 
 
 (documentation func #&optional (port (current-output-port)))
@@ -1233,21 +1306,28 @@ Returns #t if any documentation was found, #f otherwise.
 (draw-all-constraints)
 - (app scwm ui-constraints)
 Draw all constraints in the global instance list.
-[From scheme/ui-constraints.scm:573]
+[From scheme/ui-constraints.scm:588]
 
 
 (draw-constraint ui-constraint)
 - (app scwm ui-constraints)
 Draw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
 an ui-constraint.
-[From scheme/ui-constraints.scm:557]
+[From scheme/ui-constraints.scm:556]
+
+
+(draw-constraints-of-window #&optional (win (get-window)))
+- (app scwm ui-constraints)
+Draw all constraints associated with WIN.
+If WIN is not specified, the user is prompted to select a window.
+[From scheme/ui-constraints.scm:572]
 
 
 (draw-overlay-plane)
 - Primitive from (app scwm overlay-plane)
 Draw a box in the overlay plane.
 This is just for demonstration and testing purposes for now.
-[From modules/overlay-plane/overlay-plane.c:99]
+[From modules/overlay-plane/overlay-plane.c:100]
 
 
 (dummy-prompt-hbox prompt initval)
@@ -1256,43 +1336,43 @@ Create and return a dummy-prompting hbox and entry.
 PROMPT is the prompt, and INITVAL is the initial string.
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
-[From scheme/preferences.scm:133]
+[From scheme/preferences.scm:137]
 
 
 (edge-move-threshold)
 - Built-in Primitive
 Return the edge move threshold as set by `set-edge-move-threshold!'.
-[From scwm/deskpage.c:282]
+[From scwm/deskpage.c:283]
 
 
 (edge-scroll-delay)
 - Built-in Primitive
 Return the edge scroll delay (in ms) as set by `set-edge-scroll-delay!'.
-[From scwm/deskpage.c:254]
+[From scwm/deskpage.c:255]
 
 
 (edge-x-scroll)
 - Built-in Primitive
 Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'.
-[From scwm/deskpage.c:146]
+[From scwm/deskpage.c:147]
 
 
 (edge-x-wrap)
 - Built-in Primitive
 Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'.
-[From scwm/deskpage.c:199]
+[From scwm/deskpage.c:200]
 
 
 (edge-y-scroll)
 - Built-in Primitive
 Return the vertical edge scroll increment as set by `set-edge-y-scroll!'.
-[From scwm/deskpage.c:174]
+[From scwm/deskpage.c:175]
 
 
 (edge-y-wrap)
 - Built-in Primitive
 Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.
-[From scwm/deskpage.c:224]
+[From scwm/deskpage.c:225]
 
 
 (elapsed-time)
@@ -1304,7 +1384,7 @@ Return the elapsed time in milliseconds since O.S. has been up.
 (enable-all-constraints)
 - (app scwm ui-constraints)
 Enable all constraints in the global instance list.
-[From scheme/ui-constraints.scm:592]
+[From scheme/ui-constraints.scm:607]
 
 
 (enable-gnome-hints)
@@ -1321,7 +1401,7 @@ pager applet. See also `disable-gnome-hints'.
 Enables the constraint in the constraint solver.
 errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint.
-[From scheme/ui-constraints.scm:455]
+[From scheme/ui-constraints.scm:454]
 
 
 (enclosing-rectangle wins)
@@ -1330,14 +1410,14 @@ Return the smallest rectangle that encloses the windows WINS.
 Return value's car is the top left of the rectangle, cdr is
 the bottom right.
 That is, the returned list is: ((nw-x nw-y) se-x se-y).
-[From scheme/flux.scm:462]
+[From scheme/flux.scm:464]
 
 
 (end-constraints)
 - (app scwm constraints)
 Terminate using the constraint solver.  
 Can restart with a fresh solver by using `start-constraints'.
-[From scheme/constraints.scm:37]
+[From scheme/constraints.scm:41]
 
 
 (end-highlighting-current-window 
@@ -1362,7 +1442,7 @@ is unset too, localhost is contacted.
 The esdsound module normally connects at startup. This function is useful
 if the connection was lost, esd was not running at startup, or its location
 unknown.
-[From modules/esdsound/sound.c:118]
+[From modules/esdsound/sound.c:119]
 
 
 (eval-after-load module proc)
@@ -1423,7 +1503,7 @@ Returns the PID of COMMAND.
 Find extreme value e of PRED in LST.
 If PRED defines a semi-ordering, `(PRED e x)' will hold for all members x
 of LST not equal to e. E.g. `(extreme < ...)' returns the lowest number.
-[From scheme/flux.scm:361]
+[From scheme/flux.scm:363]
 
 
 (filename-is-complete? fname)
@@ -1535,6 +1615,14 @@ specified. Note that WIN is not raised by giving it the focus;  see
 - (app scwm register)
 No documentation supplied.
 [From scheme/register.scm:55]
+
+
+(focussable-window?  #&optional win)
+- Built-in Primitive
+Return #t iff WIN may receive the keyboard focus.
+This will return #f, e.g., if WIN's focus style is 'none, or
+its X11 hints do not permit it to receive the focus.
+[From scwm/focus.c:78]
 
 
 (fold-menu-list
@@ -1727,13 +1815,13 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.
 (get-proplist-with-description desc)
 - Primitive from (app scwm proplist)
 Return a property list by parsing DESC in GNUstep proplist format.
-[From modules/proplist/scwmproplist.c:887]
+[From modules/proplist/scwmproplist.c:888]
 
 
 (get-proplist-with-path filename)
 - Primitive from (app scwm proplist)
 Return the proplist from path FILENAME.
-[From modules/proplist/scwmproplist.c:869]
+[From modules/proplist/scwmproplist.c:870]
 
 
 (get-register register)
@@ -1757,7 +1845,7 @@ Return the timer-hooks list.
 (get-ui-constraint-class-by-name name)
 - (app scwm ui-constraints)
 No documentation supplied.
-[From scheme/ui-constraints.scm:149]
+[From scheme/ui-constraints.scm:148]
 
 
 (get-window  #&optional select? release? cursor)
@@ -1779,7 +1867,7 @@ circle cursor.
 (get-window-colors  #&optional win)
 - Built-in Primitive
 Return a two-element list, "(fg bg)", the colors for WIN.
-[From scwm/window.c:3448]
+[From scwm/window.c:3449]
 
 
 (get-window-focus  #&optional win)
@@ -1793,7 +1881,7 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none.
 - Built-in Primitive
 Return a two-element list, "(fg bg)", the highlight colors for WIN.
 fg or bg may be #f, which means that the color is inherited from the decor.
-[From scwm/window.c:3462]
+[From scwm/window.c:3463]
 
 
 (get-window-nonant select-list)
@@ -1802,7 +1890,7 @@ SELECT-LIST is a list of (win x y), returns the nonant selected.
 The nonant is a number in [0,8] referring to which of the tic-tac-toe board
 squares x,y is in of WIN. x,y are root-window relative viewport positions.
 `select-viewport-position' returns lists of the form needed by this procedure.
-[From scheme/nonants.scm:110]
+[From scheme/nonants.scm:141]
 
 
 (get-window-with-nonant #&optional (window #f) (nonant 4))
@@ -1821,7 +1909,7 @@ window-selection and constraints modules.
 Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
 for use with the window-selection and constraints modules.
-[From scheme/nonants.scm:77]
+[From scheme/nonants.scm:106]
 
 
 (get-wm-command win)
@@ -1840,7 +1928,7 @@ NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,
 <file>X11/cursorfont.h</file> for the standard cursors.  Note
 that the "XC_" macro prefix should be omitted when used with
 this procedure..
-[From scwm/cursor.c:247]
+[From scwm/cursor.c:248]
 
 
 (global-window-configuration)
@@ -1938,7 +2026,7 @@ list, this returns either GROUP or the `car' of the list.
 (gtk-clist-get-row-values clist row col)
 - (app scwm prompt-proc)
 Return a list of the COL columns of row ROW of CLIST.
-[From scheme/prompt-proc.scm:234]
+[From scheme/prompt-proc.scm:227]
 
 
 (gtk-pixmap-new-search-scwm-path pixmap-name button)
@@ -1950,49 +2038,49 @@ Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-l
 (gtk-proc-selection-cancel-button proc-dialog)
 - (app scwm prompt-proc)
 Returns the cancel button from PROC-DIALOG.
-[From scheme/prompt-proc.scm:214]
+[From scheme/prompt-proc.scm:207]
 
 
 (gtk-proc-selection-clist-widget proc-dialog)
 - (app scwm prompt-proc)
 Returns the clist widgetfrom PROC-DIALOG.
-[From scheme/prompt-proc.scm:218]
+[From scheme/prompt-proc.scm:211]
 
 
 (gtk-proc-selection-get-procedure proc-dialog)
 - (app scwm prompt-proc)
 Returns the currently selected procedure from PROC-DIALOG.
-[From scheme/prompt-proc.scm:230]
+[From scheme/prompt-proc.scm:223]
 
 
 (gtk-proc-selection-get-procname proc-dialog)
 - (app scwm prompt-proc)
 Returns the currently selected procedure name from PROC-DIALOG.
-[From scheme/prompt-proc.scm:222]
+[From scheme/prompt-proc.scm:215]
 
 
 (gtk-proc-selection-new title #&optional (proclist #f))
 - (app scwm prompt-proc)
 Returns a new procedure-selecting dialog box.
-[From scheme/prompt-proc.scm:137]
+[From scheme/prompt-proc.scm:131]
 
 
 (gtk-proc-selection-ok-button proc-dialog)
 - (app scwm prompt-proc)
 Returns the ok button from PROC-DIALOG.
-[From scheme/prompt-proc.scm:210]
+[From scheme/prompt-proc.scm:203]
 
 
 (gtk-proc-selection-toplevel-widget proc-dialog)
 - (app scwm prompt-proc)
 Returns the toplevel window widget from PROC-DIALOG.
-[From scheme/prompt-proc.scm:206]
+[From scheme/prompt-proc.scm:199]
 
 
 (gtk-text-replace textwidget text)
 - (app scwm prompt-proc)
 No documentation supplied.
-[From scheme/prompt-proc.scm:130]
+[From scheme/prompt-proc.scm:124]
 
 
 (gtk-window->scwm-window gtkwin)
@@ -2008,7 +2096,7 @@ not support this procedure (you should upgrade!).
 (gui-set sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:94]
+[From scheme/preferences.scm:99]
 
 
 (half x)
@@ -2028,7 +2116,7 @@ of a long computation.
 (has-overlay-plane?)
 - Primitive from (app scwm overlay-plane)
 Return #t if the current screen has an overlay plane, #f otherwise.
-[From modules/overlay-plane/overlay-plane.c:41]
+[From modules/overlay-plane/overlay-plane.c:42]
 
 
 (help obj #&optional (port (current-output-port)))
@@ -2053,7 +2141,7 @@ Return the integer that corresponds to string NUMBER as a hexadecimal value.
 - Primitive from (app scwm overlay-plane)
 Draw a box in the overlay plane.
 This is just for demonstration and testing purposes for now.
-[From modules/overlay-plane/overlay-plane.c:112]
+[From modules/overlay-plane/overlay-plane.c:113]
 
 
 (hide-selected-nonants)
@@ -2114,10 +2202,22 @@ have their own foreground color.
 [From scwm/color.c:708]
 
 
+(highlight-window-nonant win nonant)
+- (app scwm nonants)
+No documentation supplied.
+[From scheme/nonants.scm:84]
+
+
 (hook-documentation hook)
 - (app scwm doc)
 Return the docstring for HOOK.
 [From scheme/doc.scm:20]
+
+
+(horizontal-toggle-maximize #&optional (win (get-window)))
+- 
+No documentation supplied.
+[From scheme/flux.scm:764]
 
 
 (icon-font)
@@ -2219,7 +2319,7 @@ such window object, return #f.
 - Built-in Primitive
 Return the status of the ignore-dubious-modifiers flag.
 See `set-ignore-dubious-modifiers!'.
-[From scwm/binding.c:1507]
+[From scwm/binding.c:1508]
 
 
 (image-properties image)
@@ -2296,7 +2396,7 @@ Increment the undo-index.
 - (app scwm ui-constraints-gtk-toggle-menu)
 Creates the GTK resources for the gtk-toggle-menu.
 To display the toggle menu, call ui-constraint-gtk-toggle-menu.
-[From scheme/ui-constraints-gtk-toggle-menu.scm:174]
+[From scheme/ui-constraints-gtk-toggle-menu.scm:171]
 
 
 (initialize-programs-that-exist)
@@ -2350,7 +2450,7 @@ will move along.
 (interactive-move-selected-group-or-window)
 - 
 No documentation supplied.
-[From scheme/flux.scm:602]
+[From scheme/flux.scm:604]
 
 
 (interactive-move-window-with-focus)
@@ -2358,7 +2458,7 @@ No documentation supplied.
 Interactively move the window which currently has the focus.
 `*move-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is moved.
-[From scheme/flux.scm:73]
+[From scheme/flux.scm:75]
 
 
 (interactive-move-window-with-pointer)
@@ -2366,7 +2466,7 @@ outline or the window itself is moved.
 Interactively move the window which currently contains the pointer.
 `move-opaquely?' is used to control whether a rubberband
 outline or the window itself is moved.
-[From scheme/flux.scm:85]
+[From scheme/flux.scm:87]
 
 
 (interactive-place win #&key (resize #f))
@@ -2429,7 +2529,7 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 Interactively resize the window which currently has the focus.
 `*resize-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is resized.
-[From scheme/flux.scm:79]
+[From scheme/flux.scm:81]
 
 
 (interactive-resize-window-with-pointer)
@@ -2437,7 +2537,7 @@ outline or the window itself is resized.
 Interactively resize the window which currently contains the pointer.
 `resize-opaquely?' is used to control whether a rubberband
 outline or the window itself is resized.
-[From scheme/flux.scm:91]
+[From scheme/flux.scm:93]
 
 
 (interactive-set-window-gravity!)
@@ -2446,7 +2546,7 @@ Permit user to click on an area of a window and anchor that nonant.
 E.g., if the user clicks on the northeast corner of a window, that
 window will be set to have northeast gravity so future resizes keep
 that corner fixed.
-[From scheme/flux.scm:512]
+[From scheme/flux.scm:514]
 
 
 (intersection-area x1 y1 w1 h1 x2 y2 w2 h2)
@@ -2626,14 +2726,14 @@ Return a string containing the X11 keysym for key with code KEYCODE.
 - Built-in Primitive
 Return a string representing KEYMASK.
 E.g., (keymask->string 4) => "C-". Returns #f on an error.
-[From scwm/binding.c:1613]
+[From scwm/binding.c:1614]
 
 
 (keymask-keycode->string keymask keycode)
 - Built-in Primitive
 Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
-[From scwm/binding.c:1633]
+[From scwm/binding.c:1634]
 
 
 (keysym->keycode keysym-name)
@@ -2641,7 +2741,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
 Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
-[From scwm/binding.c:951]
+[From scwm/binding.c:952]
 
 
 (kill-all-fvwm2-modules)
@@ -2772,7 +2872,7 @@ Load FILENAME to restore the Scwm preferences.
 Since the options file is just a bunch of S-expressions,
 this currently just `load's the file to evaluate it.
 Returns #t iff the load was successful, false otherwise.
-[From scheme/preferences.scm:527]
+[From scheme/preferences.scm:520]
 
 
 (load-theme fname)
@@ -2808,7 +2908,7 @@ KEY is a modifiers and keysym string.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding.
-[From scwm/binding.c:868]
+[From scwm/binding.c:869]
 
 
 (lookup-mouse contexts button)
@@ -2821,7 +2921,7 @@ BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
 The return values is the procedure object, or #f if there is no
 matching binding.
-[From scwm/binding.c:1215]
+[From scwm/binding.c:1216]
 
 
 (lookup-procedure-bindings  #&optional proc)
@@ -2832,7 +2932,7 @@ The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
 symbols.
-[From scwm/binding.c:1273]
+[From scwm/binding.c:1274]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -2903,7 +3003,7 @@ SPECS is a list of face specifiers.
 - 
 Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu.
-[From scheme/flux.scm:146]
+[From scheme/flux.scm:148]
 
 
 (make-font fname)
@@ -2985,7 +3085,7 @@ For a higher-level interface to this function, see `menuitem'.
 Return a list of menu-items from a list of detailed programs list.
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
 example usage.
-[From scheme/flux.scm:220]
+[From scheme/flux.scm:222]
 
 
 (make-message-window message)
@@ -3042,13 +3142,13 @@ from "gray50".
 (make-rhosts-menu)
 - 
 Returns a menu which lets you rlogin to each host mentioned in your .rhosts
-[From scheme/flux.scm:286]
+[From scheme/flux.scm:288]
 
 
 (make-small-window-ops-menu w)
 - 
 No documentation supplied.
-[From scheme/flux.scm:611]
+[From scheme/flux.scm:613]
 
 
 (make-string-usable-for-resource-key string)
@@ -3097,7 +3197,7 @@ toggle menu if that feature is in use.
 DHOOKS is a list of hook procedures that should be called when the enable is changed on this
 constraint.  These hook functions may only be added after an instance is created.
 SIDE-EFFECT: adds new instance object to the global list.
-[From scheme/ui-constraints.scm:277]
+[From scheme/ui-constraints.scm:276]
 
 
 (make-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
@@ -3116,7 +3216,7 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list.
-[From scheme/ui-constraints.scm:80]
+[From scheme/ui-constraints.scm:79]
 
 
 (make-ui-constraint-interactively ui-constraint-class)
@@ -3124,13 +3224,13 @@ SIDE-EFFECT: addes new class obj to the global class list.
 Uses the UI constructor of the constraint class to prompt the user to
 specify options for the constraint.  errors if UI-CONSTRAINT-CLASS is 
 not a ui-constraint-class.  Calls make-ui-constraint (see above).
-[From scheme/ui-constraints.scm:313]
+[From scheme/ui-constraints.scm:312]
 
 
 (make-window-group-menu w)
 - 
 No documentation supplied.
-[From scheme/flux.scm:664]
+[From scheme/flux.scm:666]
 
 
 (make-window-list-menu #&key (only '()) (except '())
@@ -3188,7 +3288,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 - (app scwm stylist)
 Offer a choice to style the window, like named windows, or a whole class.
 WIN is the window to style and defaults to the window-context.
-[From scheme/stylist.scm:167]
+[From scheme/stylist.scm:158]
 
 
 (make-wmconfig-menu 
@@ -3316,7 +3416,7 @@ Return #t if MENU's selected item is relieved, #f otherwise.
 (menu-hotkeys-activate-item?)
 - Built-in Primitive
 Return #t if hotkeys invoke item, #f if they just select the item.
-[From scwm/menu.c:1628]
+[From scwm/menu.c:1632]
 
 
 (menu-hover-delay menu)
@@ -3329,7 +3429,7 @@ See `set-menu-hover-delay!'.
 (menu-look? obj)
 - Built-in Primitive
 Return #t if OBJ is a menulook object, #f otherwise.
-[From scwm/menulook.c:51]
+[From scwm/menulook.c:52]
 
 
 (menu-max-fold-lines)
@@ -3466,7 +3566,7 @@ Return #t if and only if OBJ is a menu item object.
 - 
 Display the string arguments STR in a message window.
 Requires the program `xmessage'.
-[From scheme/flux.scm:160]
+[From scheme/flux.scm:162]
 
 
 (message-window-colors mwn)
@@ -3668,7 +3768,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1423]
+[From scwm/binding.c:1424]
 
 
 (mod-mask-control)
@@ -3676,7 +3776,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1407]
+[From scwm/binding.c:1408]
 
 
 (mod-mask-hyper)
@@ -3684,7 +3784,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1431]
+[From scwm/binding.c:1432]
 
 
 (mod-mask-meta)
@@ -3692,7 +3792,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1415]
+[From scwm/binding.c:1416]
 
 
 (mod-mask-numlock)
@@ -3700,7 +3800,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the NumLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as NumLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1449]
+[From scwm/binding.c:1450]
 
 
 (mod-mask-scrolllock)
@@ -3708,7 +3808,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the ScrollLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1458]
+[From scwm/binding.c:1459]
 
 
 (mod-mask-shift)
@@ -3716,7 +3816,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1399]
+[From scwm/binding.c:1400]
 
 
 (mod-mask-super)
@@ -3724,7 +3824,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1440]
+[From scwm/binding.c:1441]
 
 
 (module-and-proc-names->proc module-name proc-name)
@@ -3732,7 +3832,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the procedure named PROC-NAME from module named MODULE-NAME.
 PROC-NAME and MODULE-NAME are both strings.  Note that module name
 must be a full name such as "app scwm base".
-[From scheme/prompt-proc.scm:245]
+[From scheme/prompt-proc.scm:238]
 
 
 (module-event-name-from-number num)
@@ -3747,7 +3847,7 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:1379]
+[From scwm/binding.c:1380]
 
 
 (mouse-focus-click-raises?)
@@ -3808,7 +3908,7 @@ X and Y are given in pixels.
 - 
 Move all windows right X, down Y pixels.
 See `move-window-relative.'
-[From scheme/flux.scm:414]
+[From scheme/flux.scm:416]
 
 
 (move-pointer x y)
@@ -3952,6 +4052,12 @@ May error if no netscape windows are present.
 [From scheme/netscape.scm:27]
 
 
+(next-visible-non-iconified-window)
+- 
+No documentation supplied.
+[From scheme/flux.scm:721]
+
+
 (next-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
 - (app scwm winlist)
@@ -3976,14 +4082,20 @@ No documentation supplied.
 Return a gravity symbol given NONANT in [0,8].
 0 is northwest, 1 is north, 2 is northeast, etc.
 See also `get-window-nonant'.
-[From scheme/flux.scm:499]
+[From scheme/flux.scm:501]
 
 
 (nonant->string nonant)
 - 
 Return the brief string name for NONANT, an integer.
 E.g., an argument of 1 returns `N'.
-[From scheme/nonants.scm:128]
+[From scheme/nonants.scm:159]
+
+
+(nonant-decoration win nonant)
+- (app scwm nonants)
+No documentation supplied.
+[From scheme/nonants.scm:67]
 
 
 (normal-border  #&optional win)
@@ -4022,7 +4134,7 @@ VALUE is the optional value of any prefix to NUMBER.
 (number-of-mouse-buttons)
 - Built-in Primitive
 Return the number of mouse buttons of the current mouse.
-[From scwm/binding.c:1392]
+[From scwm/binding.c:1393]
 
 
 (object-documentation sym)
@@ -4092,13 +4204,13 @@ place.
 (option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:193]
+[From scheme/preferences.scm:197]
 
 
 (option-widget-and-getter sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:152]
+[From scheme/preferences.scm:154]
 
 
 (or-map proc first . rest)
@@ -4232,7 +4344,7 @@ The return value is a two-element list of the x and y coordinates.
 (popup-docs-for var)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:79]
+[From scheme/preferences.scm:80]
 
 
 (popup-menu menu #&optional warp-to-first? x-pos y-pos left-side?)
@@ -4241,7 +4353,7 @@ Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
 right justified against X-POS.
-[From scwm/menu.c:1638]
+[From scwm/menu.c:1642]
 
 
 (popup-menu-from-decoration menu win button-number)
@@ -4254,14 +4366,14 @@ This positions the popup menu appropriately.
 (popup-option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:220]
+[From scheme/preferences.scm:224]
 
 
 (popup-ui-constraints-gtk-toggle-menu)
 - (app scwm ui-constraints-gtk-toggle-menu)
 Pops up the constraint toggle menu.
 Maintains consistency with previous toggle menu code.
-[From scheme/ui-constraints-gtk-toggle-menu.scm:235]
+[From scheme/ui-constraints-gtk-toggle-menu.scm:227]
 
 
 (popup-ui-constraints-toggle-menu)
@@ -4277,6 +4389,12 @@ Move the move/resize message window's GRAVITY point to (X,Y).
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
 or spelled-out versions of these. See also `gravity->alignments'.
 [From scheme/message-window.scm:37]
+
+
+(prev-visible-non-iconified-window)
+- 
+No documentation supplied.
+[From scheme/flux.scm:725]
 
 
 (prev-window #&key (window (get-window #f #f))
@@ -4309,13 +4427,13 @@ use by `send-key-press'.  See also `X-synthetic-send-string'.
 (procedure->bindings-description proc)
 - 
 No documentation supplied.
-[From scheme/flux.scm:580]
+[From scheme/flux.scm:582]
 
 
 (procedure->string proc)
 - 
 No documentation supplied.
-[From scheme/flux.scm:524]
+[From scheme/flux.scm:526]
 
 
 (procedure-apropos rgx)
@@ -4424,7 +4542,7 @@ Return #t iff PROGRAM-NAME is in the current $PATH.
 			      (title "prompt-bool"))
 - (app scwm prompt-bool)
 Prompt with PROMPT for a boolean value, and call PROC with result if Ok button is clicked.
-[From scheme/prompt-bool.scm:42]
+[From scheme/prompt-bool.scm:43]
 
 
 (prompt-bool-hbox prompt initval)
@@ -4435,12 +4553,12 @@ that when invoked returns #t or #f depending on the state
 of the boolean displayed in hbox.
 The returned value is a list: (hbox getter).
 See also `prompt-bool'.
-[From scheme/prompt-bool.scm:78]
+[From scheme/prompt-bool.scm:52]
 
 
 (prompt-color prompt proc #&key
 			      (initval #f)
-			      (title #f)
+			      (title "prompt-color")
 			      (favorites #f))
 - (app scwm prompt-color)
 Prompt using PROMPT for a color and call PROC with value if Ok is clicked.
@@ -4455,7 +4573,29 @@ Create and return a color-prompting hbox, complete with link to full color dialo
 PROMPT is the prompt, INITVAL is the initial color as a color object or a string.
 The returned value is a list: (hbox getter).
 See also `prompt-color'.
-[From scheme/prompt-color.scm:94]
+[From scheme/prompt-color.scm:69]
+
+
+(prompt-enum prompt choices proc #&key
+			      (initval #f)
+			      (title "prompt-enum"))
+- (app scwm prompt-enum)
+Prompt with PROMPT for one of CHOICES, and call PROC with result.
+CHOICES is an a-list of symbols and strings.
+[From scheme/prompt-enum.scm:33]
+
+
+(prompt-enum-hbox prompt choices initval)
+- 
+Create and return an enum-prompting hbox and button.
+hbox is the gtk container widget, selected-proc?? is a proc
+that when invoked returns #t or #f depending on the state
+of the boolean displayed in hbox. 
+The returned value is a list: (hbox getter).
+PROMPT is the prompt to display, CHOICES is an a-list of
+symbols and strings. INITVAL is a symbol in the CHOICES a-list.
+See also `prompt-enum'.
+[From scheme/prompt-enum.scm:43]
 
 
 (prompt-file prompt proc #&key
@@ -4475,7 +4615,7 @@ Create and return a file-prompting hbox, complete with link to full file dialog.
 PROMPT is the prompt, INITVAL is the initial file as a string.
 The returned value is a list: (hbox getter).
 See also `prompt-file'.
-[From scheme/prompt-file.scm:68]
+[From scheme/prompt-file.scm:64]
 
 
 (prompt-font prompt proc #&key
@@ -4494,13 +4634,13 @@ Create and return a font-prompting hbox, complete with link to full font dialog.
 PROMPT is the prompt, INITVAL is the initial font as a font object or a string.
 The returned value is a list: (hbox getter).
 See also `prompt-font'.
-[From scheme/prompt-font.scm:79]
+[From scheme/prompt-font.scm:54]
 
 
-(prompt-from-name name)
-- (app scwm preferences)
+(prompt-from-symbol sym)
+- (app scwm defoption)
 No documentation supplied.
-[From scheme/preferences.scm:128]
+[From scheme/defoption.scm:147]
 
 
 (prompt-integer-range prompt range proc #&key
@@ -4510,7 +4650,7 @@ Prompt using PROMPT for an integer value in RANGE, and call PROC with value if O
 RANGE is a cons cell (low . high); ranges are inclusive. 
 INITVAL is a default initial value.
 TITLE is a window title.
-[From scheme/prompt-range.scm:83]
+[From scheme/prompt-range.scm:59]
 
 
 (prompt-integer-range-hbox prompt range initval)
@@ -4519,7 +4659,7 @@ Create and return an integer-range-prompting hbox and scale, label.
 PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
 The returned value is a list: (hbox getter).
 See also `prompt-range', `prompt-integer-range', `prompt-range-hbox'.
-[From scheme/prompt-range.scm:123]
+[From scheme/prompt-range.scm:97]
 
 
 (prompt-path-hbox prompt initval)
@@ -4528,7 +4668,7 @@ Create and return a path-prompting hbox and entry.
 PROMPT is the prompt, and INITVAL is the initial path (a list of strings).
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
-[From scheme/prompt-string.scm:77]
+[From scheme/prompt-string.scm:75]
 
 
 (prompt-proc prompt proc #&key
@@ -4548,7 +4688,7 @@ Create and return a proc-prompting hbox, complete with link to full proc dialog.
 PROMPT is the prompt, INITVAL is the initial proc as a string.
 The returned value is a list: (hbox getter entry).
 See also `prompt-proc'.
-[From scheme/prompt-proc.scm:78]
+[From scheme/prompt-proc.scm:75]
 
 
 (prompt-range prompt range proc #&key
@@ -4560,7 +4700,7 @@ Prompt using PROMPT for a numeric value in RANGE, and call PROC with value if Ok
 RANGE is a cons cell (low . hight); ranges are inclusive. 
 INITVAL is a default initial value.
 TITLE is a window title.
-[From scheme/prompt-range.scm:45]
+[From scheme/prompt-range.scm:46]
 
 
 (prompt-range-hbox prompt range initval #&optional (digits 1))
@@ -4569,7 +4709,7 @@ Create and return a range-prompting hbox and scale, label.
 PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
 The returned value is a list: (hbox getter).
 See also `prompt-range'.
-[From scheme/prompt-range.scm:96]
+[From scheme/prompt-range.scm:72]
 
 
 (prompt-string prompt proc #&key
@@ -4587,6 +4727,12 @@ PROMPT is the prompt, and INITVAL is the initial string.
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
 [From scheme/prompt-string.scm:59]
+
+
+(prompting-shell proc title hbox getter)
+- 
+No documentation supplied.
+[From scheme/prompting-shell.scm:28]
 
 
 (property-changed-debug prop win)
@@ -4607,75 +4753,75 @@ See also `X-PropertyNotify-hook'.  Currently handles
 (proplist-append-array-element pl-array item)
 - Primitive from (app scwm proplist)
 Return the PL-ARRAY after appending ITEM to the end.
-[From modules/proplist/scwmproplist.c:297]
+[From modules/proplist/scwmproplist.c:298]
 
 
 (proplist-deep-copy pl)
 - Primitive from (app scwm proplist)
 Return a deep copy of property list PL.
-[From modules/proplist/scwmproplist.c:373]
+[From modules/proplist/scwmproplist.c:374]
 
 
 (proplist-delete-domain pl-domain-name kick-me?)
 - Primitive from (app scwm proplist)
 Delete domain PL-DOMAIN-NAME.
 If KICK-ME? is #f, any callback registered for the domain will not be called.
-[From modules/proplist/scwmproplist.c:755]
+[From modules/proplist/scwmproplist.c:756]
 
 
 (proplist-get-all-dictionary-keys pl-dict)
 - Primitive from (app scwm proplist)
 Return a proplist array object that contains all the keys of PL-DICT.
-[From modules/proplist/scwmproplist.c:506]
+[From modules/proplist/scwmproplist.c:507]
 
 
 (proplist-get-array-element pl index)
 - Primitive from (app scwm proplist)
 Return the element at INDEX offset of PL.
-[From modules/proplist/scwmproplist.c:475]
+[From modules/proplist/scwmproplist.c:476]
 
 
 (proplist-get-container pl)
 - Primitive from (app scwm proplist)
 Return the array or dictionary of which PL is an element.
-[From modules/proplist/scwmproplist.c:462]
+[From modules/proplist/scwmproplist.c:463]
 
 
 (proplist-get-data pl)
 - Primitive from (app scwm proplist)
 Returns the raw data from PL (a data proplist object) as a string.
-[From modules/proplist/scwmproplist.c:583]
+[From modules/proplist/scwmproplist.c:584]
 
 
 (proplist-get-data-description pl)
 - Primitive from (app scwm proplist)
 Returns a description of PL (a data proplist object) in GNUstep format.
-[From modules/proplist/scwmproplist.c:560]
+[From modules/proplist/scwmproplist.c:561]
 
 
 (proplist-get-dictionary-entry pl-dict key)
 - Primitive from (app scwm proplist)
 Return the proplist dictionary entry associated with entry KEY in PL-DICT.
 Returns #f if KEY is not in PL-DICT.
-[From modules/proplist/scwmproplist.c:520]
+[From modules/proplist/scwmproplist.c:521]
 
 
 (proplist-get-domain pl-domain-name)
 - Primitive from (app scwm proplist)
 Return a property list represeting the domain PL-DOMAIN-NAME.
-[From modules/proplist/scwmproplist.c:772]
+[From modules/proplist/scwmproplist.c:773]
 
 
 (proplist-get-domainnames)
 - Primitive from (app scwm proplist)
 Return a array proplist containing all registered domain names.
-[From modules/proplist/scwmproplist.c:785]
+[From modules/proplist/scwmproplist.c:786]
 
 
 (proplist-get-filename pl)
 - Primitive from (app scwm proplist)
 Return the filename of PL.
-[From modules/proplist/scwmproplist.c:797]
+[From modules/proplist/scwmproplist.c:798]
 
 
 (proplist-get-number-of-elements pl)
@@ -4684,7 +4830,7 @@ Return the number of elements in PL.
 If PL is a string or data objects, this returns 0.  If it
 is an array or dictionary, it is the number of elements
 or pairs.
-[From modules/proplist/scwmproplist.c:491]
+[From modules/proplist/scwmproplist.c:492]
 
 
 (proplist-get-string pl)
@@ -4692,7 +4838,7 @@ or pairs.
 Returns the string from PL (a string proplist object).
 Note that numerous procedures automatically convert string
 proplist objects into Guile strings, so this may not often be necessary.
-[From modules/proplist/scwmproplist.c:609]
+[From modules/proplist/scwmproplist.c:610]
 
 
 (proplist-get-string-description pl)
@@ -4700,43 +4846,43 @@ proplist objects into Guile strings, so this may not often be necessary.
 Retuns a description of PL (a string proplist object) in GNUstep format.
 If the string contains whitespace or special characters, the string returned will
 be enclosed in quotes.
-[From modules/proplist/scwmproplist.c:536]
+[From modules/proplist/scwmproplist.c:537]
 
 
 (proplist-insert-array-element pl-array item index)
 - Primitive from (app scwm proplist)
 Return the PL-ARRAY after inserting ITEM at offset INDEX.
-[From modules/proplist/scwmproplist.c:279]
+[From modules/proplist/scwmproplist.c:280]
 
 
 (proplist-insert-dictionary-entry pl-dict key Value)
 - Primitive from (app scwm proplist)
 Return PL-DICT after inserting (KEY,VALUE) into it.
-[From modules/proplist/scwmproplist.c:313]
+[From modules/proplist/scwmproplist.c:314]
 
 
 (proplist-is-array pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is an array proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:655]
+[From modules/proplist/scwmproplist.c:656]
 
 
 (proplist-is-compound pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a dictionary or array proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:691]
+[From modules/proplist/scwmproplist.c:692]
 
 
 (proplist-is-data pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a data proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:643]
+[From modules/proplist/scwmproplist.c:644]
 
 
 (proplist-is-dictionary pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a dictionary proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:667]
+[From modules/proplist/scwmproplist.c:668]
 
 
 (proplist-is-equal plA plB)
@@ -4744,25 +4890,25 @@ Return #t iff PL is a dictionary proplist object, #f otherwise.
 Return #t iff PLA is equal to PLB.
 This does a case sensitive comparison by default.
 See `proplist-set-string-cmp-hook' for changing the behaviour.
-[From modules/proplist/scwmproplist.c:386]
+[From modules/proplist/scwmproplist.c:387]
 
 
 (proplist-is-simple pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a string or data proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:679]
+[From modules/proplist/scwmproplist.c:680]
 
 
 (proplist-is-string pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a string proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:631]
+[From modules/proplist/scwmproplist.c:632]
 
 
 (proplist-make-array-from-elements  . items)
 - Primitive from (app scwm proplist)
 Return a newly created array object populated with elements ITEMS.
-[From modules/proplist/scwmproplist.c:189]
+[From modules/proplist/scwmproplist.c:190]
 
 
 (proplist-make-data data)
@@ -4770,57 +4916,57 @@ Return a newly created array object populated with elements ITEMS.
 Return a proplist argument containing arbitrary data from DATA.
 This is often unnecessary as the proplist procedures will
 permit Guile strings to be used anywhere a string proplist object is expected.
-[From modules/proplist/scwmproplist.c:441]
+[From modules/proplist/scwmproplist.c:442]
 
 
 (proplist-make-dictionary-from-entries  . items)
 - Primitive from (app scwm proplist)
 Return a newly created dictionary object with elements ITEMS.
 The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).
-[From modules/proplist/scwmproplist.c:221]
+[From modules/proplist/scwmproplist.c:222]
 
 
 (proplist-merge-dictionaries pl-dict-dest pl-dict-source)
 - Primitive from (app scwm proplist)
 Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.
-[From modules/proplist/scwmproplist.c:345]
+[From modules/proplist/scwmproplist.c:346]
 
 
 (proplist-register pl-domain-name callback)
 - Primitive from (app scwm proplist)
 Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.
-[From modules/proplist/scwmproplist.c:716]
+[From modules/proplist/scwmproplist.c:717]
 
 
 (proplist-remove-array-element pl-array index)
 - Primitive from (app scwm proplist)
 Return PL-ARRAY after deleting the element at position INDEX.
-[From modules/proplist/scwmproplist.c:263]
+[From modules/proplist/scwmproplist.c:264]
 
 
 (proplist-remove-dictionary-entry pl-dict key)
 - Primitive from (app scwm proplist)
 Return PL-DICT after removing KEY and its corresponding value from it.
-[From modules/proplist/scwmproplist.c:330]
+[From modules/proplist/scwmproplist.c:331]
 
 
 (proplist-save pl atomically?)
 - Primitive from (app scwm proplist)
 Save PL, atomically if ATOMICALLY? is #t.
-[From modules/proplist/scwmproplist.c:841]
+[From modules/proplist/scwmproplist.c:842]
 
 
 (proplist-set-domain pl-domain-name value kick-me?)
 - Primitive from (app scwm proplist)
 Set PL-DOMAIN-NAME to have VALUE.
 If KICK-ME? is #f, any callback registered for the domain will not be called.
-[From modules/proplist/scwmproplist.c:736]
+[From modules/proplist/scwmproplist.c:737]
 
 
 (proplist-set-filename! pl filename)
 - Primitive from (app scwm proplist)
 Set the filename for PL to be FILENAME.
-[From modules/proplist/scwmproplist.c:810]
+[From modules/proplist/scwmproplist.c:811]
 
 
 (proplist-set-string-cmp-hook pred)
@@ -4828,25 +4974,25 @@ Set the filename for PL to be FILENAME.
 Use PRED as a predicate for doing proplist string comparisons.
 PRED should take two proplist objects and return #t or #f to answer
 whether they are equal in whatever sense it chooses.
-[From modules/proplist/scwmproplist.c:402]
+[From modules/proplist/scwmproplist.c:403]
 
 
 (proplist-shallow-copy pl)
 - Primitive from (app scwm proplist)
 Return a shallow copy of property list PL.
-[From modules/proplist/scwmproplist.c:360]
+[From modules/proplist/scwmproplist.c:361]
 
 
 (proplist-synchronize pl)
 - Primitive from (app scwm proplist)
 Synchronize the in-memory proplist PL with the disk contents.
-[From modules/proplist/scwmproplist.c:856]
+[From modules/proplist/scwmproplist.c:857]
 
 
 (proplist-unregister pl-domain-name)
 - Primitive from (app scwm proplist)
 No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.
-[From modules/proplist/scwmproplist.c:703]
+[From modules/proplist/scwmproplist.c:704]
 
 
 (publish-scwm-evaluator-servant)
@@ -4874,7 +5020,7 @@ Push STATE onto the undo list.
 (put-string-in-palm-clipboard str)
 - 
 No documentation supplied.
-[From scheme/flux.scm:389]
+[From scheme/flux.scm:391]
 
 
 (quote-key-event)
@@ -4887,7 +5033,7 @@ No documentation supplied.
 - Built-in Primitive
 Return #t iff key events are being qutoed.
 See also `set-quote-key-events!'.
-[From scwm/binding.c:856]
+[From scwm/binding.c:857]
 
 
 (quote-mouse-event)
@@ -4899,7 +5045,7 @@ No documentation supplied.
 (quotify-single-quotes str)
 - 
 Return a string that has single quote characters backslashified.
-[From scheme/flux.scm:155]
+[From scheme/flux.scm:157]
 
 
 (raise-by-one #&optional (w (get-window)))
@@ -4957,7 +5103,7 @@ used in user-defined placement procedures (see
 (raw-binding->string raw-binding)
 - 
 No documentation supplied.
-[From scheme/flux.scm:560]
+[From scheme/flux.scm:562]
 
 
 (read-and-append-to p #&optional (l '()))
@@ -5005,7 +5151,7 @@ This procedure might be useful for re-establishing bindings after
 quoting numerous keystrokes or mouse events.  Beware that it can
 take several seconds to execute.
 This procedure considers the state of `ignore-dubious-modifiers?'.
-[From scwm/binding.c:1534]
+[From scwm/binding.c:1535]
 
 
 (redo-passive-grab modmask keycode-or-butnum #&optional mouse?)
@@ -5013,7 +5159,7 @@ This procedure considers the state of `ignore-dubious-modifiers?'.
 Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows.
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
-[From scwm/binding.c:1571]
+[From scwm/binding.c:1572]
 
 
 (reduce proc init l)
@@ -5074,7 +5220,7 @@ input hook may safely remove itself.
 No longer call PROC on XMotionEvents.
 Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `reset-motion-handlers'.
-[From scwm/events.c:2047]
+[From scwm/events.c:2049]
 
 
 (remove-nonant-marker #&optional (w (get-window)))
@@ -5086,7 +5232,7 @@ Remove a nonant marker from W.
 (remove-suffix str suffix)
 - 
 No documentation supplied.
-[From scheme/flux.scm:595]
+[From scheme/flux.scm:597]
 
 
 (remove-timer-hook! handle)
@@ -5125,7 +5271,7 @@ however, no message will be sent even if this function is called.
 (reset-background!)
 - Primitive from (app scwm background)
 Resets the root window to the default "weave".
-[From modules/background/background.c:197]
+[From modules/background/background.c:198]
 
 
 (reset-constraints)
@@ -5134,7 +5280,7 @@ Reset the constraint solving system.
 This switches to a fresh new master solver object, and resets
 the global list of ui-constraint instances (so the menu of
 constraints is reset to empty).
-[From scheme/constraints.scm:19]
+[From scheme/constraints.scm:20]
 
 
 (reset-input-hook!)
@@ -5148,7 +5294,7 @@ Remove all procedures from the input hook.
 Call no procedures on XMotionEvents.
 Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `remove-motion-handler'.
-[From scwm/events.c:2063]
+[From scwm/events.c:2065]
 
 
 (reset-on-segv)
@@ -5178,7 +5324,7 @@ Remove all timer-hook procedures.
 (reset-ui-constraint-classes!)
 - (app scwm ui-constraints)
 Empty the global list of ui-constraint-classes.
-[From scheme/ui-constraints.scm:117]
+[From scheme/ui-constraints.scm:116]
 
 
 (reset-undo!)
@@ -5244,7 +5390,7 @@ Restart the window manager. If COMMAND is specified, use
 that, as the new window manager to run. If COMMAND is not specified or
 is exactly equal to "scwm", restart scwm with the same command-line
 arguments as given previously.
-[From scwm/shutdown.c:176]
+[From scwm/shutdown.c:177]
 
 
 (restarted?)
@@ -5264,7 +5410,7 @@ Restore the states of all windows from GLOBAL-CONFIGURATION.
 Restore the scwm behavior for signals and for X errors.
 This is automatically called when (app scwm gtk) is loaded, to clean up
 after the (gtk gtk) module.
-[From modules/scwmgtkhelper/scwmgtkhelper.c:72]
+[From modules/scwmgtkhelper/scwmgtkhelper.c:73]
 
 
 (restore-window-configuration global-configuration 
@@ -5392,7 +5538,7 @@ errors.
 Save the current Scwm preferences to FILENAME.
 FILENAME defaults to $HOME/.scwm-options if not specified.
 The string written is generated by `scwm-options-string'.
-[From scheme/preferences.scm:516]
+[From scheme/preferences.scm:509]
 
 
 (save-settings)
@@ -5405,31 +5551,31 @@ No documentation supplied.
 - Primitive from (app scwm scwmgtkhelper)
 Return the integer connection number of the gdk_display.
 Returns -1 if gdk_display is not initialized.
-[From modules/scwmgtkhelper/scwmgtkhelper.c:34]
+[From modules/scwmgtkhelper/scwmgtkhelper.c:35]
 
 
 (scwm-group-docstring sym)
 - (app scwm defoption)
 Return the prettified name for group SYM.
-[From scheme/defoption.scm:90]
+[From scheme/defoption.scm:93]
 
 
 (scwm-group-icon sym)
 - (app scwm defoption)
 Return the icon for group SYM.
-[From scheme/defoption.scm:95]
+[From scheme/defoption.scm:98]
 
 
 (scwm-group-name sym)
 - (app scwm defoption)
 Return the prettified name for group SYM.
-[From scheme/defoption.scm:85]
+[From scheme/defoption.scm:88]
 
 
 (scwm-group-properties sym)
 - (app scwm defoption)
 Return the group properties for group SYM.
-[From scheme/defoption.scm:81]
+[From scheme/defoption.scm:84]
 
 
 (scwm-gtk-sync)
@@ -5461,85 +5607,85 @@ Return #t iff MODULE has been loaded.
 (scwm-option-documentation sym)
 - (app scwm defoption)
 Return the documentation for SYM.
-[From scheme/defoption.scm:185]
+[From scheme/defoption.scm:196]
 
 
 (scwm-option-favorites sym)
 - (app scwm defoption)
 Return the favorites for SYM.
-[From scheme/defoption.scm:205]
+[From scheme/defoption.scm:216]
 
 
 (scwm-option-getter sym)
 - (app scwm defoption)
 Return the getter for SYM.
-[From scheme/defoption.scm:195]
+[From scheme/defoption.scm:206]
 
 
 (scwm-option-group sym)
 - (app scwm defoption)
 Return the group for SYM.
-[From scheme/defoption.scm:210]
+[From scheme/defoption.scm:221]
 
 
 (scwm-option-layout-hint sym)
 - (app scwm defoption)
 Return the permit-disable flag for SYM.
-[From scheme/defoption.scm:220]
+[From scheme/defoption.scm:231]
 
 
 (scwm-option-module sym)
 - (app scwm defoption)
 Return the module in which option SYM was defined.
-[From scheme/defoption.scm:175]
+[From scheme/defoption.scm:186]
 
 
 (scwm-option-name sym)
 - (app scwm defoption)
 Return the name of SYM.
-[From scheme/defoption.scm:180]
+[From scheme/defoption.scm:191]
 
 
 (scwm-option-permit-disable sym)
 - (app scwm defoption)
 Return the permit-disable flag for SYM.
-[From scheme/defoption.scm:215]
+[From scheme/defoption.scm:226]
 
 
 (scwm-option-range sym)
 - (app scwm defoption)
 Return the range for SYM.
-[From scheme/defoption.scm:200]
+[From scheme/defoption.scm:211]
 
 
 (scwm-option-setter sym)
 - (app scwm defoption)
 Return the setter for SYM.
-[From scheme/defoption.scm:190]
+[From scheme/defoption.scm:201]
 
 
 (scwm-option-short-documentation sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:66]
+[From scheme/preferences.scm:67]
 
 
 (scwm-option-symget sym)
 - 
 Get option SYM's value.
-[From scheme/defoption.scm:259]
+[From scheme/defoption.scm:270]
 
 
 (scwm-option-symset! sym value)
 - (app scwm defoption)
 Set option SYM to VALUE.
-[From scheme/defoption.scm:250]
+[From scheme/defoption.scm:261]
 
 
 (scwm-option-type sym)
 - (app scwm defoption)
 Return the type for SYM.
-[From scheme/defoption.scm:225]
+[From scheme/defoption.scm:236]
 
 
 (scwm-options-dialog)
@@ -5549,25 +5695,25 @@ You may need to use-modules all the modules that contain
 scwm-options to have this work for now.
 Put "(load-preferences)" in your .scwmrc where you
 want the saved preferences to take effect.
-[From scheme/preferences.scm:266]
+[From scheme/preferences.scm:270]
 
 
 (scwm-options-listbook done-action cancel-action)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:332]
+[From scheme/preferences.scm:329]
 
 
 (scwm-options-menu)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:237]
+[From scheme/preferences.scm:241]
 
 
 (scwm-options-notebook done-action cancel-action)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:312]
+[From scheme/preferences.scm:309]
 
 
 (scwm-options-string #&optional (syms scwm-options))
@@ -5579,13 +5725,13 @@ the options in the current session.  At present this means that if some
 modules are not loaded, those options will not be included.
 The returned string will contain multiple S-expressions, one for each Scwm preference
 value.
-[From scheme/preferences.scm:487]
+[From scheme/preferences.scm:480]
 
 
 (scwm-options-vbox-page parent done-action cancel-action title syms)
 - (app scwm preferences)
 Popup a scwm options dialog box.
-[From scheme/preferences.scm:375]
+[From scheme/preferences.scm:370]
 
 
 (scwm-path-exec-prefix)
@@ -5604,7 +5750,7 @@ Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
 - Built-in Primitive
 Exit scwm cleanly. `quit' is redefined as this within
 scwm. ARGS is ignored.
-[From scwm/shutdown.c:198]
+[From scwm/shutdown.c:199]
 
 
 (scwm-system cmd)
@@ -5713,7 +5859,7 @@ Windows are highlighted (see `flash-window') as they are selected.  The
 returned list can be used to un-highlight the windows:
  (let ((winlist (select-window-group)))
    (for-each (lambda (w) (unflash-window w)) winlist))
-[From scheme/flux.scm:248]
+[From scheme/flux.scm:250]
 
 
 (select-window-interactively #&optional (msg #f) (message-window #f))
@@ -5757,7 +5903,7 @@ press and a release are sent---a click. KIND can be one of 'press, 'release,
 PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
-[From scwm/events.c:2129]
+[From scwm/events.c:2131]
 
 
 (send-client-message win atom . data)
@@ -5783,7 +5929,31 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
 should not have to worry about this unless you know what it means.
-[From scwm/events.c:2079]
+[From scwm/events.c:2081]
+
+
+(send-key-press-down)
+- 
+No documentation supplied.
+[From scheme/flux.scm:754]
+
+
+(send-key-press-next)
+- 
+No documentation supplied.
+[From scheme/flux.scm:758]
+
+
+(send-key-press-prior)
+- 
+No documentation supplied.
+[From scheme/flux.scm:756]
+
+
+(send-key-press-up)
+- 
+No documentation supplied.
+[From scheme/flux.scm:752]
 
 
 (set-animation! vector)
@@ -5795,7 +5965,7 @@ make the window appear at the initial position, 1/4 of the way, 1/2 of
 the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves.
-[From modules/c-animation/c-animation.c:287]
+[From modules/c-animation/c-animation.c:288]
 
 
 (set-auto-raise! auto-raise? #&optional (win (get-window)))
@@ -5845,14 +6015,14 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame.
 (set-background-color! color)
 - Primitive from (app scwm background)
 Sets the color of the root window to COLOR.
-[From modules/background/background.c:48]
+[From modules/background/background.c:49]
 
 
 (set-background-image! image #&optional style)
 - Primitive from (app scwm background)
 Sets the background of the root window to be IMAGE.
 STYLE can be either 'centered or 'tiled.
-[From modules/background/background.c:155]
+[From modules/background/background.c:156]
 
 
 (set-border-face! active #&optional inactive)
@@ -5943,7 +6113,7 @@ one.
 - Built-in Primitive
 Change the current desk to DESK. DESK should be an integer
 small enough to fit in one machine word.
-[From scwm/deskpage.c:66]
+[From scwm/deskpage.c:67]
 
 
 (set-decorate-transient! flag #&optional win)
@@ -5953,7 +6123,7 @@ If FLAG is #t, then if WIN is transient it will be fully
 decorated. Transient windows that are not fully decorated will be
 given only a border and no titlebar regardless of other settings. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3922]
+[From scwm/window.c:3970]
 
 
 (set-default-menu-background! bg)
@@ -6030,7 +6200,7 @@ Both numbers are given in units of the physical screen size.  For
 example <informalexample><programlisting>(set-desk-size! 3 3)
 </programlisting></informalexample> creates a virtual world 9 times the
 size of the physical display.
-[From scwm/deskpage.c:293]
+[From scwm/deskpage.c:294]
 
 
 (set-edge-move-threshold! pixels)
@@ -6038,7 +6208,7 @@ size of the physical display.
 Set the edge move threshold to PIXELS.
 Attempts to move a window so that it is off the edge of the screen by
 fewer than PIXELS pixels will leave the window entirely onscreen.
-[From scwm/deskpage.c:266]
+[From scwm/deskpage.c:267]
 
 
 (set-edge-resistance! s m)
@@ -6065,7 +6235,7 @@ When the mouse pointer hits the edge of the screen, it must stay there
 for at least the edge scroll delay amount before the desktop will be
 scrolled. If this parameter is #f, the viewport will not scroll at all
 at the screen edge.
-[From scwm/deskpage.c:234]
+[From scwm/deskpage.c:235]
 
 
 (set-edge-wrap! x y)
@@ -6083,7 +6253,7 @@ Set the horizontal edge scroll increment to PIXELS.
 The horizontal edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the left or right edge. Use `%x' to
 convert from a percent of screen size to pixels.
-[From scwm/deskpage.c:129]
+[From scwm/deskpage.c:130]
 
 
 (set-edge-x-wrap! flag)
@@ -6092,7 +6262,7 @@ Set whether to wrap pointer around horizontal edges.
 If the boolean value FLAG is #t, the pointer will wrap from the right
 edge of the desktop to the left of the display as it moves off the
 right edge, and vice-versa. See also `set-edge-y-wrap!'
-[From scwm/deskpage.c:185]
+[From scwm/deskpage.c:186]
 
 
 (set-edge-y-scroll! pixels)
@@ -6101,7 +6271,7 @@ Set the vertical edge scroll increment to PIXELS.
 The vertical edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the top or bottom edge. Use `%y' to
 convert from a percent of screen size to pixels.
-[From scwm/deskpage.c:156]
+[From scwm/deskpage.c:157]
 
 
 (set-edge-y-wrap! flag)
@@ -6110,7 +6280,7 @@ Set whether to wrap pointer around vertical edges.
 If the boolean value FLAG is #t, the pointer will wrap from the bottom
 edge of the desktop to the top of the display as it moves off the very
 bottom edge, and vice-versa. See also `set-edge-x-wrap!'
-[From scwm/deskpage.c:209]
+[From scwm/deskpage.c:210]
 
 
 (set-face-flag! face flag flagval)
@@ -6126,7 +6296,7 @@ Set the window-manager-overriding property for WIN to boolean FLAG.
 If #t, the icon specified for WIN by the user through scwm will override an
 application-provided icon.  WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:3743]
+[From scwm/window.c:3791]
 
 
 (set-handle-segv! flag)
@@ -6170,7 +6340,7 @@ If FLAG is #t, the hints, which indicate what operations should be
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
 be honoured. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:3905]
+[From scwm/window.c:3953]
 
 
 (set-hover-focus! hover-focus? #&optional (win (get-window)))
@@ -6197,7 +6367,7 @@ Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
 also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:3780]
+[From scwm/window.c:3828]
 
 
 (set-icon-box! x y w h #&optional win)
@@ -6219,7 +6389,7 @@ Set the font used for drawing icon titles to FONT.
 - Built-in Primitive
 Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3726]
+[From scwm/window.c:3774]
 
 
 (set-ignore-dubious-modifiers! flag)
@@ -6229,7 +6399,7 @@ Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocat
 must occur for each binding made;  this can result in a noticeable delay when, e.g.,
 a new window is created.  If this bothers you, call this procedure with FLAG set
 to #f. The default is #t.
-[From scwm/binding.c:1493]
+[From scwm/binding.c:1494]
 
 
 (set-left-button-face! button active-up #&optional
@@ -6250,7 +6420,7 @@ when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
 FLAG. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:4035]
+[From scwm/window.c:4083]
 
 
 (set-load-processing-frequency! num-lines)
@@ -6318,7 +6488,7 @@ Otherwise, do not.  See also `set-menu-highlight-colors!'.
 If ACTIVATE? is #t, let menu hotkeys invoke the item.
 If #f, a menuitem hotkey just makes that item selected and still requires
 a Return or Space keypress to activate the item.
-[From scwm/menu.c:1616]
+[From scwm/menu.c:1620]
 
 
 (set-menu-hover-delay! menu hover-delay)
@@ -6383,7 +6553,7 @@ from the menu in which it is embedded.
 Set the image to use for the mini-icon of WIN to IMAGE. As
 usual, an image object or a filename string may be given. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3827]
+[From scwm/window.c:3875]
 
 
 (set-mod-mask-numlock! mask)
@@ -6392,7 +6562,7 @@ Set the bit-mask for the NumLock modifier key.
 MASK must be a power of 2. The NumLock modifier mask is
 set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
-[From scwm/binding.c:1466]
+[From scwm/binding.c:1467]
 
 
 (set-mod-mask-scrolllock! mask)
@@ -6401,7 +6571,7 @@ Set the bit-mask for the ScrollLock modifier key.
 MASK must be a power of 2. The ScrollLock modifier mask is
 set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
-[From scwm/binding.c:1479]
+[From scwm/binding.c:1480]
 
 
 (set-mouse-focus-click-raises! flag)
@@ -6418,7 +6588,7 @@ Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3681]
+[From scwm/window.c:3729]
 
 
 (set-mwm-buttons! flag #&optional win)
@@ -6427,7 +6597,7 @@ Set the mwm-buttons flag of WIN to boolean FLAG.
 The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3665]
+[From scwm/window.c:3713]
 
 
 (set-mwm-decor-hint! flag #&optional win)
@@ -6435,7 +6605,7 @@ to the window context in the usual way if not specified.
 Set whether or not Motif decoration hints are used for WIN.
 If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3938]
+[From scwm/window.c:3986]
 
 
 (set-mwm-func-hint! flag #&optional win)
@@ -6444,7 +6614,7 @@ Set whether or not Motif function hints are used for WIN.
 If FLAG is #t, the Motif function hints are respected for WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3952]
+[From scwm/window.c:4000]
 
 
 (set-not-menu-background! bg)
@@ -6464,7 +6634,7 @@ Use FG as the default foreground color for icons, titlebars, etc.
 Determine whether or not to respect Open Look decoration hints.
 If FLAG is #t, the decoration hints will be respected for WIN. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3984]
+[From scwm/window.c:4032]
 
 
 (set-PPosition-hint! flag #&optional win)
@@ -6475,13 +6645,13 @@ matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
 ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:3967]
+[From scwm/window.c:4015]
 
 
 (set-quote-key-events! quoting-on?)
 - Built-in Primitive
 Set key event quoting to QUOTING-ON?.
-[From scwm/binding.c:845]
+[From scwm/binding.c:846]
 
 
 (set-random-placement! flag #&optional win)
@@ -6490,7 +6660,7 @@ Set the random-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3598]
+[From scwm/window.c:3646]
 
 
 (set-register register value)
@@ -6540,7 +6710,7 @@ is #t, the icon will be displayed, if #f, it will not appear when the
 window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3761]
+[From scwm/window.c:3809]
 
 
 (set-skip-mapping! flag #&optional win)
@@ -6549,7 +6719,7 @@ Set or reset whether scwm should not change desktops on a map.
 This only affect the behaviour upon initial mapping of WIN. If FLAG is
 #t, the virtual desktop will not be changed when WIN is mapped.  WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:4020]
+[From scwm/window.c:4068]
 
 
 (set-smart-placement! flag #&optional win)
@@ -6558,7 +6728,7 @@ Set the smart-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3613]
+[From scwm/window.c:3661]
 
 
 (set-smart-placement-is-really-smart! flag)
@@ -6574,7 +6744,7 @@ the window's smart-placement flag is on.
 - Built-in Primitive
 Make WIN start on DESK when first mapped. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:3998]
+[From scwm/window.c:4046]
 
 
 (set-title-face! active-up #&optional active-down inactive)
@@ -6615,7 +6785,7 @@ current decor.
 - Built-in Primitive
 Position the upper left corner of the viewport at coordinates X, Y.
 X and Y are given in pixels.  Does not affect the current desk.
-[From scwm/deskpage.c:101]
+[From scwm/deskpage.c:102]
 
 
 (set-window-background! bg #&optional win)
@@ -6624,8 +6794,8 @@ Set the background color of WIN to BG.
 This color is used to draw most of the window decorations, along with
 the relief colors generated from it, which are used to draw the
 window's 3-D bevels.  WIN defaults to the window context in the usual
-way if not specified.
-[From scwm/window.c:3502]
+way if not specified. See also `get-window-colors'.
+[From scwm/window.c:3550]
 
 
 (set-window-button! n flag #&optional win)
@@ -6636,7 +6806,7 @@ drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: the titlebar will not expand if you disable
 a button via this procedure -- the decoration code is still
 far from perfect.)
-[From scwm/window.c:3628]
+[From scwm/window.c:3676]
 
 
 (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
@@ -6660,7 +6830,7 @@ If CURSOR is #f, this undefines the cursor for WIN and
 makes that window use its parent window's cursor.
 See `get-x-cursor', and `create-pixmap-cursor' for ways
 to create cursor objects.
-[From scwm/cursor.c:225]
+[From scwm/cursor.c:226]
 
 
 (set-window-decor! win decor)
@@ -6682,8 +6852,8 @@ if not specified.
 Set the foreground color of WIN to FG.
 This color is used to draw the title text currently. In the future, it
 may have other uses as well. WIN defaults to the window context in the
-usual way if not specified.
-[From scwm/window.c:3478]
+usual way if not specified. See also `get-window-colors'.
+[From scwm/window.c:3525]
 
 
 (set-window-gravity! gravity #&optional win)
@@ -6704,8 +6874,8 @@ decorations, along with the relief colors generated from it, which are
 used to draw the window's 3-D bevels.  WIN defaults to the window context
 in the usual way if not specified. If BG is #f, then lets the decor
 highlight background color be used (turns off a special highlight color
-for WIN).
-[From scwm/window.c:3562]
+for WIN).  See also `get-window-highlight-colors'.
+[From scwm/window.c:3610]
 
 
 (set-window-highlight-foreground! fg #&optional win)
@@ -6716,8 +6886,17 @@ In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified. If FG is #f, then lets the decor highlight
 foreground color be used (turns off a special highlight
-color for WIN).
-[From scwm/window.c:3533]
+color for WIN). See also `get-window-highlight-colors'.
+[From scwm/window.c:3581]
+
+
+(set-window-id-background! bg #&optional winid)
+- Built-in Primitive
+Set the background color of X11 window with id WINID to BG.
+This is not necessarily persistent.  In particular, if you set
+the background color of a window decoration, that decoration
+will revert to its usual color.  See also `window-decoration-ids'.
+[From scwm/window.c:3507]
 
 
 (set-window-placement-proc! proc win)
@@ -6785,20 +6964,20 @@ determining the result.
 (show-com com)
 - 
 Return a lambda to show the stdout generated by the COM shell pipeline.
-[From scheme/flux.scm:176]
+[From scheme/flux.scm:178]
 
 
 (show-file filename)
 - 
 Return a lambda to display the contents of filename in a window.
-[From scheme/flux.scm:172]
+[From scheme/flux.scm:174]
 
 
 (show-mesg . str)
 - 
 Return a lambda to display the string arguments STR in a message window.
 See also `message'.
-[From scheme/flux.scm:167]
+[From scheme/flux.scm:169]
 
 
 (show-selected-nonants)
@@ -6816,7 +6995,7 @@ No documentation supplied.
 (show-system-info)
 - 
 Display the `system-info-string' system details in a window.
-[From scheme/flux.scm:205]
+[From scheme/flux.scm:207]
 
 
 (show-titlebar  #&optional win in-place?)
@@ -6855,7 +7034,7 @@ Accepts all keyword arguments that `make-window-list-menu' takes.
 - 
 Displays the X properties of WIN in a message window.
 WIN is a window object, an X window id, or 'root-window.
-[From scheme/flux.scm:432]
+[From scheme/flux.scm:434]
 
 
 (shutdown-options #&key switch-to-home-viewport
@@ -6882,7 +7061,7 @@ Create and return a procedure-prompting hbox and entry.
 PROMPT is the prompt, and INITVAL is the initial path (a procedure).
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
-[From scheme/prompt-string.scm:89]
+[From scheme/prompt-string.scm:87]
 
 
 (simple-title-style #&key font height justify)
@@ -6906,7 +7085,7 @@ Use the optional second argument as the separator.
 Delay for MS milliseconds.
 Note that timer-hooks are much more useful in nearly all
 cases.  See `add-timer-hook!'.
-[From scheme/flux.scm:241]
+[From scheme/flux.scm:243]
 
 
 (SM-error-message)
@@ -6969,7 +7148,7 @@ Returned LS sorted according to COMPARE (defaults to ascending numerical order).
 (sort-options-by-type symlist)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:301]
+[From scheme/preferences.scm:303]
 
 
 (sort-windows-by-middle-pos winlist #&key (horiz #t) (ascending #t))
@@ -6989,21 +7168,21 @@ Sort the elements of list L based on the string value of their `car'.
 Load sound from FILE, tagging it with NAME.
 If NAME is not given, "scwm" is used.
 Returns a sound object usable with the other sound functions.
-[From modules/esdsound/sound.c:33]
+[From modules/esdsound/sound.c:34]
 
 
 (sound-play sound)
 - Primitive from (app scwm esdsound)
 Play SOUND.
 SOUND must be an object returned by `sound-load'.
-[From modules/esdsound/sound.c:90]
+[From modules/esdsound/sound.c:91]
 
 
 (sound-unload sound)
 - Primitive from (app scwm esdsound)
 Unload SOUND, freeing any resources it occupies.
 SOUND must be an object returned by `sound-load'.
-[From modules/esdsound/sound.c:69]
+[From modules/esdsound/sound.c:70]
 
 
 (split-list-by-group ls #&optional (rest #f))
@@ -7012,10 +7191,13 @@ No documentation supplied.
 [From scheme/menus-extras.scm:68]
 
 
-(start-constraints)
+(start-constraints #&key (draw-constraints-with-focus #f))
 - (app scwm constraints)
 Start using the constraint solver.
-[From scheme/constraints.scm:30]
+DRAW-CONSTRAINTS-WITH-FOCUS is used to specify whether
+you'd like all constraints drawn or just the ones which
+are associated with the current focus window.
+[From scheme/constraints.scm:31]
 
 
 (start-highlighting-current-window #&optional (win (window-context)))
@@ -7095,7 +7277,7 @@ No documentation supplied.
 Return a proplist object containing STRING.
 This is often unnecessary as the proplist procedures will
 permit Guile strings to be used anywhere a string proplist object is expected.
-[From modules/proplist/scwmproplist.c:422]
+[From modules/proplist/scwmproplist.c:423]
 
 
 (string->X-atom string)
@@ -7155,7 +7337,7 @@ unknown extensions.  Generally not needed with ImLib.
 - 
 Return a string with various system information.
 Use `show-system-info' to display it in a window.
-[From scheme/flux.scm:118]
+[From scheme/flux.scm:120]
 
 
 (take-screenshot
@@ -7168,7 +7350,7 @@ The screenshot will be saved in xwd format in the filename constructed from
 TEMPLATE. %-escapes in TEMPLATE will be replaced by time-elements, according
 to strftime rules. TEMPLATE defaults to the file "screenshot%y%m%d%H%M%S.xwd"
 in the user's home directory.
-[From scheme/flux.scm:369]
+[From scheme/flux.scm:371]
 
 
 (theme-names)
@@ -7269,7 +7451,7 @@ If `selected-windows-list' is empty, then `select-window-group' is used.
 See also the undo module and `insert-undo-global' to save the window 
 configuration before executing this in case the effect is not what you
 expected.
-[From scheme/flux.scm:476]
+[From scheme/flux.scm:478]
 
 
 (time-t->seconds-ago timet)
@@ -7352,31 +7534,31 @@ Dump all arguments into a string.
 (toggle-docs-for var)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:84]
+[From scheme/preferences.scm:85]
 
 
 (toggle-max-both #&optional (win (get-window)))
 - 
 Toggle the WIN's maximization (both vertically and horizontally).
-[From scheme/flux.scm:105]
+[From scheme/flux.scm:107]
 
 
 (toggle-max-horz #&optional (win (get-window)))
 - 
 Toggle the WIN's maximized-horizontally state.
-[From scheme/flux.scm:101]
+[From scheme/flux.scm:103]
 
 
 (toggle-max-vert #&optional (win (get-window)))
 - 
 Toggle the current window's maximized-vertically state.
-[From scheme/flux.scm:97]
+[From scheme/flux.scm:99]
 
 
 (toggle-max-vert-part #&optional (win (get-window)))
 - 
 Toggle the WIN's maximization-vertically to 95% of the screen height.
-[From scheme/flux.scm:109]
+[From scheme/flux.scm:111]
 
 
 (toggle-maximize nw nh #&optional (win (get-window)))
@@ -7432,147 +7614,147 @@ No documentation supplied.
 Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.
 HOOK should take one argument which is the new state of the UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:636]
+[From scheme/ui-constraints.scm:651]
 
 
 (ui-constraint-button ui-constraint)
 - (app scwm ui-constraints)
 Returns the a reference to panel representing the UI-CONSTRAINT in the toggle menu.
 Returns #f if the gtk toggle menu feature is not in use.
-[From scheme/ui-constraints.scm:418]
+[From scheme/ui-constraints.scm:417]
 
 
 (ui-constraint-class ui-constraint)
 - (app scwm ui-constraints)
 Returns the UI-CONSTRAINT-CLASS from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:383]
+[From scheme/ui-constraints.scm:382]
 
 
 (ui-constraint-class-ctr ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the constructor for instance of the constraint class.  errors
 if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:192]
+[From scheme/ui-constraints.scm:191]
 
 
 (ui-constraint-class-description ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the description for the constraint class.  
 Erors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:166]
+[From scheme/ui-constraints.scm:165]
 
 
 (ui-constraint-class-draw-proc ui-constraint-class)
 - (app scwm ui-constraints)
 returns the drawing procedure for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:218]
+[From scheme/ui-constraints.scm:217]
 
 
 (ui-constraint-class-menuname-proc ui-constraint-class)
 - (app scwm ui-constraints)
 Return the proc for determining the name for the constraint in
 the toggle menu.  Errors if object is not a ui-constraint-class object.
-[From scheme/ui-constraints.scm:249]
+[From scheme/ui-constraints.scm:248]
 
 
 (ui-constraint-class-name ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the name of the constraint class.
 Errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:158]
+[From scheme/ui-constraints.scm:157]
 
 
 (ui-constraint-class-num-windows ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the number of windows constrainable by instances of the constraint 
 class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:179]
+[From scheme/ui-constraints.scm:178]
 
 
 (ui-constraint-class-pixmap-name ui-constraint-class)
 - (app scwm ui-constraints)
 Return the pixmap-name of UI-CONSTRAINT-CLASS.
 Errors if object is not a ui-constraint-class object.
-[From scheme/ui-constraints.scm:240]
+[From scheme/ui-constraints.scm:239]
 
 
 (ui-constraint-class-satisfied-proc ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the satisfaction checking procedure for instances of the
 constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:231]
+[From scheme/ui-constraints.scm:230]
 
 
 (ui-constraint-class-ui-ctr ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the UI constructor for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:205]
+[From scheme/ui-constraints.scm:204]
 
 
 (ui-constraint-class? ui-constraint-class)
 - (app scwm ui-constraints)
 Returns a boolean: true if UI-CONSTRAINT-CLASS is a vector and starts with the
 correct obid.  False otherwise.
-[From scheme/ui-constraints.scm:130]
+[From scheme/ui-constraints.scm:129]
 
 
 (ui-constraint-cn ui-constraint)
 - (app scwm ui-constraints)
 Returns the CN list from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:358]
+[From scheme/ui-constraints.scm:357]
 
 
 (ui-constraint-enable-hooks ui-constraint)
 - (app scwm ui-constraints)
 Returns a list of the enable-hook functions added to the UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:653]
+[From scheme/ui-constraints.scm:668]
 
 
 (ui-constraint-enabled? ui-constraint)
 - (app scwm ui-constraints)
 Returns the ENABLE from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:371]
+[From scheme/ui-constraints.scm:370]
 
 
 (ui-constraint-opts ui-constraint)
 - (app scwm ui-constraints)
 Returns the list of optional data that may be added by the constraint class.
 Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:408]
+[From scheme/ui-constraints.scm:407]
 
 
 (ui-constraint-remove-enable-hook ui-constraint hook)
 - (app scwm ui-constraints)
 Removes a HOOK proc from the list in UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:645]
+[From scheme/ui-constraints.scm:660]
 
 
 (ui-constraint-set-button! ui-constraint button)
 - (app scwm ui-constraints)
 Sets the reference to the gtk button for this instance in the toggle menu.
 Errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:428]
+[From scheme/ui-constraints.scm:427]
 
 
 (ui-constraint-windows ui-constraint)
 - (app scwm ui-constraints)
 Returns the LIST-OF-WINDOWS from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:396]
+[From scheme/ui-constraints.scm:395]
 
 
 (ui-constraint? ui-constraint)
 - (app scwm ui-constraints)
 Returns #t if UI-CONSTRAINT is a ui-constraint.
 returns #f otherwise.
-[From scheme/ui-constraints.scm:347]
+[From scheme/ui-constraints.scm:346]
 
 
 (ui-constraints-composition-begin)
@@ -7593,14 +7775,14 @@ the construction of a composition.
 (ui-constraints-gtk-toggle-menu)
 - (app scwm ui-constraints-gtk-toggle-menu)
 Displays the GTK version of the constraints toggle menu.
-[From scheme/ui-constraints-gtk-toggle-menu.scm:227]
+[From scheme/ui-constraints-gtk-toggle-menu.scm:219]
 
 
 (ui-constraints-involving-window win)
 - (app scwm ui-constraints)
 Returns the list of ui-constraint objects that involve WIN.
 The entire global-constraint-instance-list is checked.
-[From scheme/ui-constraints.scm:522]
+[From scheme/ui-constraints.scm:521]
 
 
 (ui-constraints-toggle-menu)
@@ -7631,14 +7813,14 @@ CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
 The return value is #t if the binding was removed successfully, #f
 otherwise.
-[From scwm/binding.c:916]
+[From scwm/binding.c:917]
 
 
 (unbind-keycode contexts keycode #&optional modifier-mask)
 - Built-in Primitive
 Unbind the given KEYCODE within the CONTEXTS.
 KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
-[From scwm/binding.c:1117]
+[From scwm/binding.c:1118]
 
 
 (unbind-mouse contexts button)
@@ -7646,7 +7828,7 @@ KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:986]
+[From scwm/binding.c:987]
 
 
 (unbind-three-modifier-key-events
@@ -7678,7 +7860,7 @@ See `redo-all-passive-grabs' for re-establishing those bindings.
 This procedure can be useful for quoting numerous keystrokes or
 mouse events. Beware that it can take several seconds to execute.
 This procedure considers the state of `ignore-dubious-modifiers?'
-[From scwm/binding.c:1519]
+[From scwm/binding.c:1520]
 
 
 (undo-passive-grab modmask keycode-or-butnum #&optional mouse?)
@@ -7686,7 +7868,7 @@ This procedure considers the state of `ignore-dubious-modifiers?'
 Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows.
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
-[From scwm/binding.c:1550]
+[From scwm/binding.c:1551]
 
 
 (undo-state-at-index index)
@@ -7704,14 +7886,21 @@ Apply the state from the undo-list contained at INDEX.
 (undraw-all-constraints)
 - (app scwm ui-constraints)
 Undraw all constraints in the global instance list.
-[From scheme/ui-constraints.scm:580]
+[From scheme/ui-constraints.scm:595]
 
 
 (undraw-constraint ui-constraint)
 - (app scwm ui-constraints)
 Undraw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
 an ui-constraint.
-[From scheme/ui-constraints.scm:565]
+[From scheme/ui-constraints.scm:564]
+
+
+(undraw-constraints-of-window #&optional (win (get-window)))
+- (app scwm ui-constraints)
+Undraw all constraints associated with WIN.
+If WIN is not specified, the user is prompted to select a window.
+[From scheme/ui-constraints.scm:580]
 
 
 (unflash-window #&optional (win (get-window)))
@@ -7725,6 +7914,12 @@ Return the window changed.
 - Built-in Primitive
 Remove the input focus from any window that may have it.
 [From scwm/window.c:1770]
+
+
+(unhighlight-window-nonant win nonant)
+- (app scwm nonants)
+No documentation supplied.
+[From scheme/nonants.scm:88]
 
 
 (uninstall-hover-focus)
@@ -7800,7 +7995,7 @@ Execute one of the VECTOR-OF-COMMANDS shell commands when the desk changes.
 The 0th element of the vector is used for changes to desk 0,
 the first element for changes to desk 1, etc.  Changes to desks which are
 "off the end" of the vector do nothing.
-[From scheme/flux.scm:341]
+[From scheme/flux.scm:343]
 
 
 (use-placement-hint win)
@@ -7861,6 +8056,12 @@ the constant string "nobody".
 [From scwm/miscprocs.c:604]
 
 
+(vertical-toggle-maximize #&optional (win (get-window)))
+- 
+No documentation supplied.
+[From scheme/flux.scm:761]
+
+
 (viewport->virtual x y)
 - (app scwm base)
 Return the virtual coordinates for viewport X,Y.
@@ -7871,7 +8072,7 @@ Return the virtual coordinates for viewport X,Y.
 - Built-in Primitive
 Returns the current position of the viewport in pixels.
 The returned value is a list of the x and y positions.
-[From scwm/deskpage.c:116]
+[From scwm/deskpage.c:117]
 
 
 (viewport-x-position)
@@ -7917,6 +8118,109 @@ Note that this just checks if WIN is in the current viewport
 and on the current desk.  It may still return #t if WIN is completely
 obscured by other windows.
 [From scheme/wininfo.scm:102]
+
+
+(vv-close)
+- Primitive from (app scwm viavoice)
+Close connect to the ViaVoice speech recognizer.
+[From modules/viavoice/scwmviavoice.c:560]
+
+
+(vv-connect  #&optional proc)
+- Primitive from (app scwm viavoice)
+Connect to the ViaVoice speech recognizer, calling PROC after connected.
+See "modules/viavoice/README" for details. See also `vv-initialize'.
+[From modules/viavoice/scwmviavoice.c:534]
+
+
+(vv-connected?)
+- Primitive from (app scwm viavoice)
+Return #t if we are connected to the ViaVoice speech recognizer.
+Returns #f if we are not connected.
+[From modules/viavoice/scwmviavoice.c:572]
+
+
+(vv-define-grammar name grammar-file #&optional proc)
+- Primitive from (app scwm viavoice)
+Use GRAMMAR-FILE as the ViaVoice grammar and give it name NAME.
+Returns #f if not connected, otherwise returns the return
+code from DoSimpleGrammar. PROC is invoked with the response
+code when the asynchronous procedure completes.
+[From modules/viavoice/scwmviavoice.c:583]
+
+
+(vv-disconnect  #&optional proc)
+- Primitive from (app scwm viavoice)
+Disconnect from the ViaVoice speech recognizer, calling PROC after disconnected.
+[From modules/viavoice/scwmviavoice.c:548]
+
+
+(vv-enable-vocab name #&optional proc)
+- Primitive from (app scwm viavoice)
+Enable vocabulary/grammar NAME.
+PROC is invoked with the response code when the asynchronous procedure completes.
+[From modules/viavoice/scwmviavoice.c:612]
+
+
+(vv-initialize)
+- (app scwm viavoice)
+Use this to start ViaVoice recognition.
+[From scheme/viavoice.scm:96]
+
+
+(vv-initialize-environment)
+- (app scwm viavoice)
+No documentation supplied.
+[From scheme/viavoice.scm:47]
+
+
+(vv-recognition-actions accepted? command annotations)
+- (app scwm viavoice)
+No documentation supplied.
+[From scheme/viavoice.scm:104]
+
+
+(vv-recognition-debug accepted? word annotation)
+- 
+No documentation supplied.
+[From scheme/viavoice.scm:154]
+
+
+(vv-setup-recognition-hook)
+- (app scwm viavoice)
+No documentation supplied.
+[From scheme/viavoice.scm:84]
+
+
+(vv-smrc->error value)
+- (app scwm viavoice)
+No documentation supplied.
+[From scheme/viavoice.scm:43]
+
+
+(vv-turn-microphone-off  #&optional proc)
+- Primitive from (app scwm viavoice)
+Turn the microphone off to stop recognizing commands.
+PROC is invoked with the response code when the asynchronous procedure completes.
+[From modules/viavoice/scwmviavoice.c:645]
+
+
+(vv-turn-microphone-on  #&optional proc)
+- Primitive from (app scwm viavoice)
+Turn the microphone on to start recognizing commands.
+See also `vv-initialize'.
+PROC is invoked with the response code when the asynchronous procedure completes.
+[From modules/viavoice/scwmviavoice.c:628]
+
+
+(vv-use-grammar #&optional (name "scwmgrammar")
+				(file 
+				 (string-append 
+				  (scwm-path-prefix) 
+				  "/share/scwm/ViaVoice/scwmgrammar.fsg")))
+- (app scwm viavoice)
+No documentation supplied.
+[From scheme/viavoice.scm:66]
 
 
 (vx- x)
@@ -7981,7 +8285,7 @@ none does.
 - 
 Animatedly window shade and then unshade WIN.
 Just a toy--- perhaps could be useful to call attention to a window.
-[From scheme/flux.scm:113]
+[From scheme/flux.scm:115]
 
 
 (wildcard->regexp wildcard)
@@ -8035,7 +8339,7 @@ does.
 - (app scwm nonants)
 Return a nonant number in [0,8] from a window position and an offset.
 WIN is the window, DX and DY are positions relative to the top-left of WIN.
-[From scheme/nonants.scm:101]
+[From scheme/nonants.scm:132]
 
 
 (window-center-bottom win)
@@ -8121,7 +8425,7 @@ Return value's car is the top left, cdr is the bottom right.
 That is, the returned list is: ((nw-x nw-y) se-x se-y).  Use
 `rect-nw-x', `rect-nw-y', `rect-se-x', `rect-se-y' to take apart
 the returned list.
-[From scheme/flux.scm:443]
+[From scheme/flux.scm:445]
 
 
 (window-creation-time  #&optional win)
@@ -8134,6 +8438,14 @@ Return the time that WIN was created in seconds since 1/1/70.
 - Built-in Primitive
 Return WIN's decor.
 [From scwm/decor.c:300]
+
+
+(window-decoration-ids  #&optional win)
+- Built-in Primitive
+Returns a list of long integer window ids of the decoration windows for WIN.
+Returned list is ( frame title_w (side-n side-e side-s side-w)
+(corner-nw corner-ne corner-se corner-sw) ).
+[From scwm/window.c:3480]
 
 
 (window-deletable?  #&optional win)
@@ -8221,14 +8533,14 @@ Return value is one of the following:
 Get the icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3810]
+[From scwm/window.c:3858]
 
 
 (window-icon-shaped? win)
 - Built-in Primitive
 Return #t if WIN has shaped icon, #f otherwise.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3888]
+[From scwm/window.c:3936]
 
 
 (window-icon-title  #&optional win)
@@ -8250,7 +8562,7 @@ the window context in the usual way if not specified.
 (window-info #&optional (win (get-window)))
 - 
 Display information about WIN in a message window.
-[From scheme/flux.scm:180]
+[From scheme/flux.scm:182]
 
 
 (window-is-selected? #&optional (w (get-window)))
@@ -8312,7 +8624,7 @@ Returns #t if WIN is mapped, otherwise returns #f.
 Get the mini-icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3855]
+[From scwm/window.c:3903]
 
 
 (window-other-id win)
@@ -8451,7 +8763,7 @@ specified.
 - Built-in Primitive
 Return #t if WIN is a shaped window, #f otherwise.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3872]
+[From scwm/window.c:3920]
 
 
 (window-size  #&optional win)
@@ -8486,6 +8798,12 @@ Specify various properties for windows matching CONDITION.
 See the `Face Specification Flags' and `Window Style' sections
 for details.
 [From scheme/style.scm:41]
+
+
+(window-task-switcher-menu)
+- 
+No documentation supplied.
+[From scheme/flux.scm:729]
 
 
 (window-title  #&optional win)
@@ -8648,7 +8966,7 @@ Return the X connection file descriptor number.
 (X-cut-buffer->palm-clipboard)
 - 
 No documentation supplied.
-[From scheme/flux.scm:394]
+[From scheme/flux.scm:396]
 
 
 (X-cut-buffer-string)
@@ -8691,7 +9009,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:1594]
+[From scwm/binding.c:1595]
 
 
 (X-properties win)
@@ -8740,7 +9058,7 @@ WIN is the window to set the X property on, an X window id, or 'root-window.
 NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
-If FORMAT is 8, VALUE may be a string or a list of null-terminated STRINGS.
+If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.
 Otherwise it will be a vector of FORMAT-bit integers.
 ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
 how the new VALUE should be merged (if at all) with the existing
@@ -8753,7 +9071,7 @@ value.
 Save the Scwm resource database to FILENAME.
 Only the settings set or changed via `X-resource-put' go into
 the file.
-[From scwm/xrm.c:89]
+[From scwm/xrm.c:90]
 
 
 (X-resource-get name #&optional xclass)
@@ -8762,14 +9080,14 @@ Get X resource specified by NAME and XCLASS from Xrm database.
 Both NAME and XCLASS are strings, as is the returned value.  If
 XCLASS is omitted, it defaults to the same string as NAME.
 If there is no resource under the given key, #f is returned.
-[From scwm/xrm.c:60]
+[From scwm/xrm.c:61]
 
 
 (X-resource-put resource value)
 - Built-in Primitive
 Stores string VALUE as X resource RESOURCE (also a string).
 Later, the value can be retrieved using `X-resource-get'.
-[From scwm/xrm.c:41]
+[From scwm/xrm.c:42]
 
 
 (X-rotate-cut-buffers n)
@@ -8828,7 +9146,7 @@ The arc is specified in terms of a rectangle, in which it is wholly
 enclosed.  TOP-LEFT is a point pair for the upper left corner of the rectangle.  The
 rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to
 ANGLE2. Angles are specified in degrees (0.0 to 360.0).
-[From modules/xlib-drawing/drawing.c:127]
+[From modules/xlib-drawing/drawing.c:128]
 
 
 (xlib-draw-line! p1 p2)
@@ -8836,7 +9154,7 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).
 Draws a line using the Xlib call XDrawLine.
 The line is drawn from P1 to P2.
 Both P1 and P2 are pairs (X . Y) representing a point
-[From modules/xlib-drawing/drawing.c:109]
+[From modules/xlib-drawing/drawing.c:110]
 
 
 (xlib-draw-rectangle! top-left width height)
@@ -8845,7 +9163,7 @@ Draws a rectangle to the screen using the Xlib call XDrawRectangle.
 TOP-LEFT is the upper left point of the rectangle.  The rectangle is of size
 WIDTH by HEIGHT.
 TOP-LEFT is a point pair: (X . Y).
-[From modules/xlib-drawing/drawing.c:89]
+[From modules/xlib-drawing/drawing.c:90]
 
 
 (xlib-set-drawing-mask! value)
@@ -8853,7 +9171,7 @@ TOP-LEFT is a point pair: (X . Y).
 Set the drawing mask used by the xlib-* primitives.
 VALUE is XORed with the background when dragging non-opaque move or
 resize frames. VALUE should be an integer.
-[From modules/xlib-drawing/drawing.c:62]
+[From modules/xlib-drawing/drawing.c:63]
 
 
 (xlib-set-fill-style! style)
@@ -8861,13 +9179,13 @@ resize frames. VALUE should be an integer.
 Sets the fill style of the DrawingGC to STYLE.
 One of FillSolid (0), FillTiled (1), FillStippled (2), or FillOpaqueStippled (3)
 should be given as STYLE.
-[From modules/xlib-drawing/drawing.c:167]
+[From modules/xlib-drawing/drawing.c:168]
 
 
 (xlib-set-line-width! width)
 - Primitive from (app scwm xlib-drawing)
 Sets the line width of the DrawingGC to WIDTH.
-[From modules/xlib-drawing/drawing.c:153]
+[From modules/xlib-drawing/drawing.c:154]
 
 
 (xtest-fake-button-event button is-press? #&optional ms-delay)
@@ -8875,7 +9193,7 @@ Sets the line width of the DrawingGC to WIDTH.
 Fake an X event of button number BUTTON after a delay of MS-DELAY.
 The event is a mouse press if IS-PRESS? is #t, or a release otherwise. If
 MS-DELAY is ommitted or is not a number, no delay is used.
-[From modules/xtest/scwmxtest.c:46]
+[From modules/xtest/scwmxtest.c:47]
 
 
 (xtest-fake-key-event keycode is-press? #&optional ms-delay)
@@ -8883,7 +9201,7 @@ MS-DELAY is ommitted or is not a number, no delay is used.
 Fake an X event of key KEYCODE after a delay of MS-DELAY.
 The event is a key press if IS-PRESS? is #t, or a release otherwise. If
 MS-DELAY is ommitted or is not a number, no delay is used.
-[From modules/xtest/scwmxtest.c:70]
+[From modules/xtest/scwmxtest.c:71]
 
 
 (xtest-fake-modmask mask delay press?)
@@ -8909,20 +9227,20 @@ No documentation supplied.
 Fake an X motion event to X,Y after a delay of MS-DELAY on SCREEN.
 If SCREEN is ommitted, 0 is used.
 If MS-DELAY is ommitted or is not a number, no delay is used.
-[From modules/xtest/scwmxtest.c:94]
+[From modules/xtest/scwmxtest.c:95]
 
 
 (xtest-fake-relative-motion-event dx dy #&optional ms-delay)
 - Primitive from (app scwm xtest)
 Fake an X motion relative event of a move DX, DY after a delay of MS-DELAY.
 If MS-DELAY is ommitted or is #f or 0, no delay is used.
-[From modules/xtest/scwmxtest.c:120]
+[From modules/xtest/scwmxtest.c:121]
 
 
 (xtest-supported?)
 - Primitive from (app scwm xtest)
 Returns #t iff the XTest extension is supported on this server.
-[From modules/xtest/scwmxtest.c:36]
+[From modules/xtest/scwmxtest.c:37]
 
 
 (y- y)

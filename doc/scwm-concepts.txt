@@ -61,7 +61,7 @@ will ever need. You can change the current desk with
 `current-desk'; and set the desk a window is on with
 `set-window-desk!'.
 
-[From scwm/deskpage.c:53]
+[From scwm/deskpage.c:54]
 
 
 Event Contexts
@@ -85,7 +85,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:725]
+[From scwm/binding.c:726]
 
 
 Face Flags
@@ -324,7 +324,7 @@ When a key specifier is being used to indicate a binding, the
 additional special modifier *- may be used; it indicates that the key
 should be bound with every possible modifier combination, including
 possibly no modifiers. *- may not be combined with any other modifier.  
-[From scwm/binding.c:121]
+[From scwm/binding.c:122]
 
 
 Menu Looks
@@ -338,7 +338,7 @@ C modules.  For example, the xpm-menus module creates a variable
 using that code.  `copy-menu-look' can be used to copy a menu
 look and change some of its properties.
 
-[From scwm/menulook.c:78]
+[From scwm/menulook.c:79]
 
 
 Run-time command-line options
@@ -492,7 +492,7 @@ coordinate is relative to the current viewport (i.e., it is the
 coordinate you actually see on the screen).  A virtual coordinate
 is relative to the origin of the current desk.
 
-[From scwm/deskpage.c:90]
+[From scwm/deskpage.c:91]
 
 
 Window Context

@@ -1,3 +1,10 @@
+Sun Sep 19 15:27:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c, focus.c: Doc fixes.
+
+	* scwm-constraints.cc: Added some debug messages, catch edit use
+	exceptions to avoid an abnormal termination.
+
 Sun Sep 19 14:12:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* borders.c: added comment re: dynamic scoping in macro.

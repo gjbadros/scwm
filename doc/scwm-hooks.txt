@@ -131,7 +131,7 @@ desk-size-change-hook (2 args)
 This hook is invoked whenever the desk size is changed.  It is
 called with two arguments, both integers, which are the width and
 height of the new desk size in screens. 
-[From scwm/deskpage.c:48]
+[From scwm/deskpage.c:49]
 
 
 edge-enter-hook (1 args)
@@ -292,7 +292,7 @@ shutdown-hook (1 args)
 - 
 The procedures in shutdown-hook are before scwm quits or restarts.
 A single boolean argument is passed that is #t iff scwm is restarting. 
-[From scwm/shutdown.c:32]
+[From scwm/shutdown.c:33]
 
 
 startup-hook (0 args)
@@ -304,7 +304,7 @@ processing of the .scwmrc startup file, windows have not already been
 captured, so the window-list (as reported by `list-all-windows') is
 empty.  To provide behviour conditioned on a property of an existing
 window, this hook should be used instead. 
-[From scwm/shutdown.c:36]
+[From scwm/shutdown.c:37]
 
 
 viewport-position-change-hook (4 args)
@@ -314,6 +314,13 @@ It is called with four arguments, all integers.  The first two are
 the x and y coordinates of the new viewport position in pixels and
 the second two are the change in x and y from the previous position. 
 [From scwm/virtual.c:57]
+
+
+vv-recognition-hook (3 args)
+- 
+This hook is invoked when ViaVoice recognizes a phrase. 
+Called with 3 arguments: (was-accepted? phrase-string annotations-vector) 
+[From modules/viavoice/scwmviavoice.c:65]
 
 
 window-close-hook (1 args)
