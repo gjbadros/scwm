@@ -1,3 +1,15 @@
+Wed Aug  5 20:13:15 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: Fix wildcard->regexp to turn ? into ., instead of
+	  into .?; rename window-machine-name to window-client-machine-name
+
+	* minimal.scm: Fixes to resize-or-raise and move-or-raise by
+	  Stephen Tell.  Do not raise unless it's not a move or resize
+	  event.
+
+	* flux.scm: Added get-wm-command,
+	  make-string-usable-for-resource-key, and S.Senda's make-rhosts-menu.
+
 Sun Aug  2 16:31:41 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Added lower-window-below, raise-window-above as

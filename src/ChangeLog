@@ -1,3 +1,50 @@
+Thu Aug  6 11:55:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.cc: Add cassowary_scm.h to avoid warning
+	  re: init_cassowary_scm.
+
+	* add_window.c: put back in the ResizePswToCurrentSize in
+	  CassowaryEndEdit() for non-cassowary builds.
+
+Wed Aug  5 20:17:56 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* borders.c: Added SQUASHED_TITLEBAR_P macro and squashed-titlebar 
+	  feature (set-object-property! win 'squashed-titlebar #t), then
+	  resize the window to see rough but working version -- requires
+	  XShape extension.
+
+	* window.h, decorations.c, add_window.c: renamed wShaped field of
+	  ScwmWindow to fShaped, and make it a Bool instead of int.
+
+	* window.c: Clean up CopySetAllFlags to be consistent w/ use of
+	  braces.
+
+	* scwm.h: Added GDB_STOP macro for inserting a breakpoint in the
+	  source code for walking through newly written code.
+
+	* scwm.c: Call init_xrm(), XrmInitialize() (latter always
+	  should've been called); remove call to init_cassowary_scm() --
+	  let init_constraint_primitives() do that
+
+	* scwm-constraints.cc, add_window.c: Don't do anything on CassowaryEndEdit() if
+	  no solver; also, make XrmDatabase db non-file-static, so xrm.c
+	  can use it.
+
+	* constraint-primitives.cc: Call init_cassowary_scm() here,
+	  instead of from scwm.c
+
+	* move.c: Factor out SnapCoordsToEdges, and fix off by 1 error on
+	  left and top edges;  clean up some of the paging stuff while
+	  moving so that SetupFrame is called a lot less frequently
+	  (though it's still broken for cassowary pending the virtual
+	  screen rewrite)
+
+Wed Aug  5 20:09:52 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xrm.c: Added for primitives X-resource-put and X-resource-get
+
+	* Makefile.am: Updated for xrm.c, xrm.x
+
 Tue Aug  4 17:53:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc: Added cl-windows-of-constraint
