@@ -75,12 +75,6 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY, /* viewpor
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
   if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
 
-  if (startX < 0 || startY < 0) {
-    FXGetWindowTopLeft(w,&currentX,&currentY);
-    if (startX < 0) startX = currentX;
-    if (startY < 0) startY = currentY;
-    }
-
   deltaX = endX - startX;
   deltaY = endY - startY;
   lastX = startX;
@@ -131,16 +125,23 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY, /* viewpor
 
 void SendClientConfigureNotify(const ScwmWindow *psw);
 
-/* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
+/* GJB:FIXME:: can drop AnimatedMoveWindow since this is more general */
+/* Perform the resizing of the window. ppctMovement *must* have a 1.0 entry
    somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
    The positions given are viewport positions (not virtual) */
 void 
 AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
-		     int cmsDelay, float *ppctMovement )
+                     int startX, int startY, int endX, int endY,
+		     Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
 {
   int currentW, currentH;
   int lastW, lastH;
   int deltaW, deltaH;
+
+  int pointerX, pointerY;
+  int currentX, currentY;
+  int lastX, lastY;
+  int deltaX, deltaY;
 
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
@@ -157,10 +158,19 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
   lastW = startW;
   lastH = startH;
 
-  if (deltaW == 0 && deltaH == 0)
+  deltaX = endX - startX;
+  deltaY = endY - startY;
+  lastX = startX;
+  lastY = startY;
+
+  if ((deltaX == 0 && deltaY == 0) && \
+      (deltaW == 0 && deltaH == 0))
     return;
 
   do {
+    currentX = (int) (startX + deltaX * (*ppctMovement));
+    currentY = (int) (startY + deltaY * (*ppctMovement));
+
     currentW = (int) (startW + deltaW * (*ppctMovement));
     currentH = (int) (startH + deltaH * (*ppctMovement));
     /* XResizeWindow(dpy, w, currentW, currentH); */
@@ -168,10 +178,16 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
     SET_CVALUE(psw,frame_width,currentW);
     SET_CVALUE(psw,frame_height,currentH);
 
+    XMoveWindow(dpy,w,currentX,currentY);
+    if (fWarpPointerToo) {
+      WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
+      pointerX += currentX - lastX;
+      pointerY += currentY - lastY;
+      XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
+		   pointerX,pointerY);
+    }
     SendClientConfigureNotify(psw);
-
-    
-    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), currentW, currentH, 
+    SetupFrame(psw, currentX, currentY, currentW, currentH, 
                WAS_MOVED, WAS_RESIZED);
 
 
@@ -199,6 +215,8 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
 #endif
     lastW = currentW;
     lastH = currentH;
+    lastX = currentX;
+    lastY = currentY;
     }
   while (*ppctMovement != 1.0 && ppctMovement++);
 
@@ -456,18 +474,24 @@ way if not specified. */
 #undef FUNC_NAME
 
 
-
+/*SCWM_VALIDATE: w, h, win, x, y, move_pointer_too_p */
 SCM 
-animated_resize_common(SCM w, SCM h, SCM win, const char *func_name, Bool frame_p)
+animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p,
+                       const char *func_name, Bool frame_p)
 {
   ScwmWindow *psw;
   int width, height;
+  int startX, startY, destX, destY;
+  Bool fWarpPointerToo;
 
 #define FUNC_NAME func_name
-  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
+  VALIDATE_ARG_INT_COPY(1,w,width);
+  VALIDATE_ARG_INT_COPY(2,h,height);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win,psw);
+  VALIDATE_ARG_INT_OR_UNDEF(4,x);
+  VALIDATE_ARG_INT_OR_UNDEF(5,y);
+  VALIDATE_ARG_BOOL_COPY_USE_F(6,move_pointer_too_p, fWarpPointerToo);
 #undef FUNC_NAME
-  psw = PSWFROMSCMWIN(win);
-
   if (check_allowed_function(F_RESIZE, psw) == 0
       || SHADED_P(psw)) {
     return SCM_BOOL_F;
@@ -478,9 +502,6 @@ animated_resize_common(SCM w, SCM h, SCM win, const char *func_name, Bool frame_
     return SCM_BOOL_F;
   }
 
-  width = gh_scm2int(w);
-  height = gh_scm2int(h);
-
   if (!frame_p) {
     width += (2*psw->xboundary_width);
     height += (psw->title_height + 2*psw->boundary_width);
@@ -489,45 +510,66 @@ animated_resize_common(SCM w, SCM h, SCM win, const char *func_name, Bool frame_
   { /* scope */
     SCM animation_ms_delay = SCM_CDR(animation_delay);
     int cmsDelay = -1;
+    Window x_win;
     
     if (animation_ms_delay != SCM_BOOL_F &&
 	gh_number_p(animation_ms_delay)) {
       cmsDelay = gh_scm2int(animation_ms_delay);
     }
 
+    if (SCM_BOOL_F==
+        convert_move_data(x,y,win,func_name,
+                          &startX,&startY,&destX, &destY, &psw, &x_win)) {
+      /* destX, destY are viewport */
+      return SCM_BOOL_F;
+    };
+
+    ConstrainSize(psw, 0, 0, &width, &height);
+    ComputePositionForResize(psw, &destX, &destY, width, height);
+
     /* use viewport coordinates */
     AnimatedResizeWindow(psw, psw->frame, 
-			 psw->frame_width, psw->frame_height,
+			 FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
 			 width, height,
-			 cmsDelay,NULL);
+                         startX - WIN_VP_OFFSET_X(psw),
+                         startY - WIN_VP_OFFSET_Y(psw),
+                         destX - WIN_VP_OFFSET_X(psw),
+                         destY - WIN_VP_OFFSET_Y(psw),
+			 fWarpPointerToo,cmsDelay,NULL);
   } /* scope */
 
-  ConstrainSize(psw, 0, 0, &width, &height);
-  ResizeTo(psw,width,height);
+  /* endX, endY are virtual */
+  MoveResizeTo(psw,destX,destY,width,height);
 
   return SCM_UNSPECIFIED;
 }
 
-SCWM_PROC(animated_resize_window, "animated-resize-window", 2, 1, 0,
-          (SCM w, SCM h, SCM win))
-     /** Resize the frame of WIN to size W, H with animation.  
+SCWM_PROC(animated_resize_window, "animated-resize-window", 2, 4, 0,
+          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p))
+     /** Resize the client area of WIN to size W, H (pixels) with animation.  
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.  If X and Y are given, they are a new virtual position for the northwest
+corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
+the same amount as the window, animating the motion of the pointer
+along with the window. */
 #define FUNC_NAME s_animated_resize_window
 {
-  return animated_resize_common(w, h, win, FUNC_NAME, False);
+  return animated_resize_common(w, h, win, x, y, move_pointer_too_p, FUNC_NAME, False);
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(animated_resize_frame, "animated-resize-frame", 2, 1, 0,
-          (SCM w, SCM h, SCM win))
-     /** Resize the frame of WIN to size W, H with animation.  
+SCWM_PROC(animated_resize_frame, "animated-resize-frame", 2, 4, 0,
+          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p))
+     /** Resize the frame of WIN to size W, H (pixels) with animation.  
 WIN defaults to the window context in the usual way if not
-specified. */
+specified.  If X and Y are given, they are a new virtual position for the northwest
+corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
+the same amount as the window, animating the motion of the pointer
+along with the window. */
 #define FUNC_NAME s_animated_resize_frame
 {
-  return animated_resize_common(w, h, win, FUNC_NAME, True);
+  return animated_resize_common(w, h, win, x, y, move_pointer_too_p, FUNC_NAME, True);
 }
 #undef FUNC_NAME
 
