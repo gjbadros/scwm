@@ -1,0 +1,184 @@
+X-From-Line: owner-guile@cygnus.com  Thu Mar 12 13:21:32 1998
+Received: from cygnus.com (runyon.cygnus.com [205.180.230.5]) by june.cs.washington.edu (8.8.7+CS/7.2ju) with ESMTP id NAA12982 for <gjb@cs.washington.edu>; Thu, 12 Mar 1998 13:21:31 -0800
+Received: (from majordom@localhost)
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) id LAA26175;
+	Thu, 12 Mar 1998 11:37:28 -0800 (PST)
+Received: from mdj.nada.kth.se (mdj.nada.kth.se [130.237.224.95])
+	by runyon.cygnus.com (8.8.7-cygnus/8.8.7) with ESMTP id LAA26168
+	for <guile@cygnus.com>; Thu, 12 Mar 1998 11:37:25 -0800 (PST)
+Received: (from mdj@localhost)
+	by mdj.nada.kth.se (8.8.7/8.8.7) id UAA17531;
+	Thu, 12 Mar 1998 20:37:23 +0100 (MET)
+To: guile@cygnus.com
+Subject: [Mikael Djurfeldt <mdj@nada.kth.se>] Procedure documentation
+Cc: mdj@nada.kth.se
+From: Mikael Djurfeldt <mdj@nada.kth.se>
+Date: 12 Mar 1998 20:37:22 +0100
+Message-ID: <xy7u393zonh.fsf@mdj.nada.kth.se>
+X-Mailer: Gnus v5.5/Emacs 20.2
+Sender: owner-guile@cygnus.com
+Precedence: bulk
+Xref: elwha.cs.washington.edu scwm-related:6
+Lines: 160
+
+With regard to Greg Badros' question about procedure documentation:
+
+I sent the following letters to the developers' list a while ago, but
+nobody commented on it, so I dropped the subject.  If we could settle
+upon what properties to store, and how the Scheme level and C level
+syntax for it should look like, then maybe we could start putting
+documentation into the system.
+
+Let's start with the first question: Which information should be
+stored along with a procedure?
+
+------- Start of forwarded message -------
+Date: Thu Mar 12 20:32:16 1998
+From: Mikael Djurfeldt <mdj@nada.kth.se>
+Subject: Procedure documentation
+
+Topics:
+   Procedure documentation
+   Re: Procedure documentation
+
+
+----------------------------------------------------------------------
+
+Date: Tue, 9 Sep 1997 22:20:37 +0200 (MET DST)
+From: Mikael Djurfeldt <mdj@nada.kth.se>
+Subject: Procedure documentation
+Message-Id: <199709092020.WAA06947@mdj.nada.kth.se>
+
+Dear Guile developers,
+
+Isn't it time we decided for a system for procedure documentation.  It
+seems silly to me that we postpone the inevitable task of supplying
+documentation to C-level and Scheme-level procedures.  I'd like to do
+that when I write my procedures.
+
+Therefore I think we should decide on a design for this ASAP.  Jim?
+
+We could add a procedure `doc' to the (ice-9 session) module to give
+users easy access to it from the command line.
+
+As we've discussed before, I think it is nice to supply documentation
+as procedure properties.
+
+We could have serveral properties related to procedure documentation,
+for example:
+
+property	value
+--------	-----
+
+type		One of { builtin, builtin-primitive, user,
+                user-primitive, etc } or something similar.  It is, for
+		example, important for a compiler to being able to determine
+		which functions are builtins and which functions must
+		be supplied in the load module.  (Note that it is
+		possible for a compiler or a compiler interface to do
+		dependency analysis due to the function
+		`procedure-source'.)
+
+c-name		The C-level name.  The compiler wants to have this so
+		that it can generate calls builtins and functions in
+		other modules.
+
+signature	Information on how to call the function.  This could
+		include number of required arguments, number of
+		optional arguments, a flag telling whether it teakes a
+		"rest" argument, possible/required types of arguments
+		(for `+' it would be `number', for `pair?' it would be
+		 `#t'), type/possible types of return value.
+
+module		Name of module which defines the procedure.  I thought
+		first that this is information which rather should be
+		associated with the module, but then realized that a
+		module can import a function and then re-export it.
+
+documentation	Human readable doc string.  We could of course adopt
+		conventions in a mannar similar to that in Emacs (for
+		example: first line should be a short summary of
+		what the function does, argument names should be in
+		upper case, etc. (c.f. the Elisp manual)).
+
+Can you think of more?  ;-)
+
+If this scares you: Note that
+
+1. In order to save memory, we can use an optimized data structure to
+   implement the procedure properties in the same way as source
+   properties are implemented:  Even though the interface to, for
+   example, the rest args would be:
+
+     (procedure-property foo rest?) --> #t
+
+   The actual space occupied by this information could be one bit.
+
+2. Although all of the properties above fits nicely as procedure
+   properties, some of the may not even need to be stored in a data
+   structure associated with the procedure, but could be calculated at
+   the time of call to `procedure-property'.  Such properties would be
+   "read-only".
+
+
+/mdj
+
+
+------------------------------
+
+Date: 09 Sep 1997 22:39:43 +0200
+From: Mikael Djurfeldt <mdj@nada.kth.se>
+To: Mikael Djurfeldt <djurfeldt@nada.kth.se>
+Cc: mdj@nada.kth.se
+Subject: Re: Procedure documentation
+Message-ID: <xy7lo16i5m8.fsf@mdj.nada.kth.se>
+References: <199709092020.WAA06947@mdj.nada.kth.se>
+
+Mikael Djurfeldt <mdj@nada.kth.se> writes:
+
+> 2. Although all of the properties above fits nicely as procedure
+>    properties, some of the may not even need to be stored in a data
+>    structure associated with the procedure, but could be calculated at
+>    the time of call to `procedure-property'.  Such properties would be
+>    "read-only".
+
+If we call those properties described under 2 above "implicit", some
+could even be "semi-implicit".  The `source' property below will
+result in a calculation (unmemoizing a lambda closure) for
+scheme-level procedures and access to a data structure for primitives:
+
+ (procedure-property foo 'source) --> (lambda (x . rest)
+				        ((if (null? rest) * +)
+				         x
+				         5))
+
+ (procedure-property (transformer or) 'source) --> (syntax-rules ()
+				                     ((or) #f)
+				                     ((or e1 en ...)
+				                      (if e1
+				                          e1
+				                          (or en ...))))
+
+(transformer or) above is a primitive procedure which is defined in
+eval.c, but we would supply it's source (a compiled-in data structure
+in eval.c) so that different compilers know how to compile it to a
+small set of core forms and calls to Guile builtins.
+
+This may be a bad example---you might not agree with me that it is
+sensible to supply source for R4RS primitives, but it definitely *is*
+sensible to supply source information for Guile-specific primitives.
+
+It would be crazy to update all available compilers every time there
+is a new primitive added to Guile, and what about primitives added by
+user C-level modules?
+
+/mdj
+
+
+------------------------------
+
+End of forwarda002QV Digest
+***************************
+------- End of forwarded message -------
+
+
