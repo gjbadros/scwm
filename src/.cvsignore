@@ -4,6 +4,7 @@ Makefile
 Makefile.in
 init_scheme_string.c
 out.log
+scm_init_funcs.h
 scwm
 scwm-works
 scwm_cl
