@@ -1,3 +1,10 @@
+Tue Mar 24 15:57:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scmprocs.c, miscprocs.c, miscprocs.h: Added
+	X-version-information and X-display-information primitives, which
+	are needed for FvwmM4 module compatibility, but generally useful
+	in their own right
+
 Tue Mar 24 15:14:16 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* miscprocs.c, miscprocs.h, scmprocs.c: Added restarted?
