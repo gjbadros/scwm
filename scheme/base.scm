@@ -177,7 +177,7 @@ creation of individual menus."
 (define*-public (simple-title-style #&key font height justify)
   "Set the style for titlebars.
 FONT is a font object or a string, HEIGHT is a number of points,
-JUSTIFY is a legal argument to `set-title-justify' such as 'left,
+JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 'right, or 'center."
   (if (bound? font)
       (set-title-font! font))
