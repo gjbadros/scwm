@@ -108,6 +108,8 @@ int MetaMask = 0,
   numlock_mask = 0, 
   scrollock_mask = 0;
 
+static Bool fIgnoreDubiousModifiers = True;
+
 static int c_mask_mod_combos = 7;
 static unsigned int mask_mod_combos[7];
 
@@ -383,11 +385,10 @@ GrabButtonWithModifiersMaskXcPm(int button, int modifier,
                                 Window w, unsigned int event_mask,
                                 Cursor xc, int pointer_mode)
 {
-  if (AnyModifier == modifier) {
-    XGrabButton(dpy, button, modifier, w,
-                True, event_mask,
-                pointer_mode, GrabModeAsync, None, xc);
-  } else {
+  XGrabButton(dpy, button, modifier, w,
+              True, event_mask,
+              pointer_mode, GrabModeAsync, None, xc);
+  if (fIgnoreDubiousModifiers && AnyModifier != modifier) {
     int i = 0;
     for (; i<c_mask_mod_combos; ++i) {
       XGrabButton(dpy, button, (modifier | mask_mod_combos[i]), w,
@@ -414,9 +415,8 @@ GrabButtonWithModifiers(int button, int modifier,
 void
 UngrabButtonWithModifiersWin(int button, int modifier, Window w)
 {
-  if (AnyModifier == modifier) {
-    XUngrabButton(dpy, button, modifier, w);
-  } else {
+  XUngrabButton(dpy, button, modifier, w);
+  if (fIgnoreDubiousModifiers && AnyModifier != modifier) {
     int i = 0;
     for (; i<c_mask_mod_combos; ++i) {
       XUngrabButton(dpy, button, (modifier | mask_mod_combos[i]), w);
@@ -434,7 +434,7 @@ GrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
 {
   XGrabKey(dpy, key, modifier, w, True,
            GrabModeAsync, GrabModeAsync);
-  if (modifier != AnyModifier) {
+  if (fIgnoreDubiousModifiers && AnyModifier != modifier) {
     int i = 0;
     for (; i < c_mask_mod_combos; ++i) {
       XGrabKey(dpy, key, modifier | mask_mod_combos[i],
@@ -452,7 +452,7 @@ void
 UngrabKeyWithModifiersWin(KeyCode key, unsigned int modifier, Window w)
 {
   XUngrabKey(dpy, key, modifier, w);
-  if (modifier != AnyModifier) {
+  if (fIgnoreDubiousModifiers && AnyModifier != modifier) {
     int i = 0;
     for (; i < c_mask_mod_combos ; ++i) {
       XUngrabKey(dpy, key, modifier | mask_mod_combos[i], w);
@@ -1476,6 +1476,22 @@ need to override the built-in algorithm. */
   return SCM_UNSPECIFIED;
 } 
 #undef FUNC_NAME
+
+
+SCWM_PROC(set_ignore_dubious_modifiers_x, "set-ignore-dubious-modifiers!", 1, 0, 0, 
+          (SCM flag))
+     /** If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.
+Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocations
+must occur for each binding made;  this can result in a noticeable delay when, e.g.,
+a new window is created.  If this bothers you, call this procedure with FLAG set
+to #f. The default is #t. */
+#define FUNC_NAME s_set_ignore_dubious_modifiers_x
+{
+  VALIDATE_ARG_BOOL_COPY(1,flag,fIgnoreDubiousModifiers);
+  return SCM_UNSPECIFIED;
+} 
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
