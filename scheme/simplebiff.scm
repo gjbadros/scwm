@@ -1,4 +1,5 @@
-;;;; $Id$ -*-scwm-*-
+;;;; -*-scwm-*-
+;;;; $Id$
 ;;;; Copyright (C) 1999 Glenn Trigg
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -44,6 +45,8 @@
 (define*-public
   (simplebiff #&key (mail-spool-dir "/var/spool/mail")
 	      (username (getenv "USER"))
+	      (activate-proc beep)
+	      (deactivate-proc noop)
 	      (check-interval 10))
   (let* ((mailfile (string-append mail-spool-dir "/" username))
 	 (mail-file-time (stat:mtime (stat mailfile)))
@@ -53,9 +56,12 @@
 	      (lambda ()
 		(let* ((newtime (stat:mtime (stat mailfile)))
 		       (newsize (stat:size (stat mailfile))))
-		  (if (and (> newtime mail-file-time)
-			   (> newsize mail-file-size))
-		      (beep))
+		  (cond ((and (> newtime mail-file-time)
+			      (> newsize mail-file-size))
+			 (activate-proc))
+			((and (> newtime mail-file-time)
+			      (<= newsize mail-file-size))
+			 (deactivate-proc)))
 		  (set! mail-file-time newtime)
 		  (set! mail-file-size newsize)
 		  (set! handle (add-timer-hook! (* 1000000 check-interval)
@@ -63,6 +69,8 @@
 	     (remove-hook (lambda () 
 			    (if handle (remove-timer-hook! handle)))))
       (check-mail-file)
+      (lambda ()
+	(remove-hook))
       )))
 
 (define-public (stop-simplebiff sb)
