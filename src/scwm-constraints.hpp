@@ -43,6 +43,7 @@ public:
         szNm[ich] = 'y'; _frame_y.setName(szNm);
         szNm[ich] = 'w'; _frame_width.setName(szNm);
         szNm[ich] = 'h'; _frame_height.setName(szNm);
+        free(szNm);
       }
       _frame_x.setPv(psw);
       _frame_y.setPv(psw);
@@ -72,6 +73,7 @@ public:
     {
       int minWidth, minHeight, maxWidth, maxHeight;
       ScwmWindow *psw = Psw();
+      assert(psw);
       minWidth = psw->hints.min_width;
       minHeight = psw->hints.min_height;
 
@@ -81,8 +83,8 @@ public:
       // Required constraints
       ClLinearInequality ineqMinWidth(_frame_width,cnGEQ,minWidth);
       ClLinearInequality ineqMaxWidth(_frame_width,cnLEQ,maxWidth);
-      ClLinearInequality ineqMinHeight(_frame_width,cnGEQ,minHeight);
-      ClLinearInequality ineqMaxHeight(_frame_width,cnLEQ,maxHeight);
+      ClLinearInequality ineqMinHeight(_frame_height,cnGEQ,minHeight);
+      ClLinearInequality ineqMaxHeight(_frame_height,cnLEQ,maxHeight);
       (*psolver)
         .addConstraint(ineqMinWidth)
         .addConstraint(ineqMaxWidth)
@@ -127,8 +129,8 @@ public:
         int w = _frame_width.intValue();
         int h = _frame_height.intValue();
         if (psw->frame_width != w || psw->frame_height != h) {
-          scwm_msg(DBG,__FUNCTION__,"Resized from (%d x %d) to (%d x %d)",
-                   psw->frame_width,psw->frame_height, w,h);
+          DBUG(__FUNCTION__,"Resized from (%d x %d) to (%d x %d)",
+               psw->frame_width,psw->frame_height, w,h);
           psw->frame_width = w,
           psw->frame_height = h;
           *pfResized = true;

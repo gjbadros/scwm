@@ -27,8 +27,8 @@ include Makefile
 
 constraint-primitives.o: constraint-primitives.x
 
-SRCS = constraint-primitives.cc scwm-constraints.cc
-HDRS = constraint-primitives.h scwm-constraints.hpp
+SRCS = constraint-primitives.cc scwm-constraints.cc 
+HDRS = constraint-primitives.h scwm-constraints.hpp scwm-screen-ci.hpp
 CPPDEP_FILES = $(SRCS:%.cc=.deps/%.P)
 OBJS = $(SRCS:.cc=.o)
 

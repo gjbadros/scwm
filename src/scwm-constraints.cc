@@ -15,6 +15,7 @@ extern "C" {
 #include "scwm-constraints.h"
 #include "window.h"
 #include "screen.h"
+#include "virtual.h"
 #include "xmisc.h"
 }
 
@@ -168,12 +169,47 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
        pswci->_frame_height.intValue());
 }
 
+void
+CassowaryModifyOpaqueFlag(Bool *pfOpaque)
+{
+  *pfOpaque = True;
+}
 
+void 
+ChangeVirtualPosition(int vx, int vy, Bool fGrab)
+{
+  if (!psolver) {
+    MoveViewport_internal(vx, vy, fGrab);
+    return;
+  }
+
+  ScwmScreenConstraintInfo *pssci = Scr.pssci;
+
+  /* do not bother with re-solve if nothing has changed */
+  if (pssci->_vx.intValue() == vx &&
+      pssci->_vy.intValue() == vy)
+    return;
+
+  (*psolver)
+    .addEditVar(pssci->_vx)
+    .addEditVar(pssci->_vy)
+    .beginEdit()
+    .resolve(vx,vy);
+  psolver->endEdit();
+
+  MoveViewport_internal(pssci->_vx.intValue(),pssci->_vy.intValue(),fGrab);
+}
+
+
+/* Just pass a NULL window for ending an
+   edit that does not involve a window 
+   (e.g., the virtual position) */
 void 
 CassowaryEndEdit(PScwmWindow psw)
 {
   if (!psolver) {
-    ResizePswToCurrentSize(psw);
+    if (psw)
+      ResizePswToCurrentSize(psw);
     return;
   }
   psolver->endEdit();

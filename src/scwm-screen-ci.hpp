@@ -34,10 +34,14 @@ public:
       _vy.setName("vy");
       _pointerx.setName("px");
       _pointery.setName("py");
+#if 0 /* FIXGJB: just leave the Pv()s at NULL for now */
+      /* will need to do something with this when supporting multiple
+         screens better */
       _vx.setPv(pscreen);
       _vy.setPv(pscreen);
       _pointerx.setPv(pscreen);
       _pointery.setPv(pscreen);
+#endif 
       SCM_DEFER_INTS;
       scm_protect_object(_scmVx = ScmMakeClVariable(&_vx));
       scm_protect_object(_scmVy = ScmMakeClVariable(&_vy));
@@ -46,26 +50,30 @@ public:
       SCM_ALLOW_INTS;
     }
 
+#if 0
+  /* FIXGJB: will need to do something with this when supporting
+     multiple screens better */
   ScreenInfo *Pscreen() const
     {
       return static_cast<ScreenInfo *>(_vx.Pv());
     }
+#endif
 
-  void CopyStateToPscreenVars(bool *pfVirtualMove) const
+  void
+  AddStays(ClSimplexSolver *psolver)
     {
-      ScreenInfo *pscreen = Pscreen();
-      assert(pscreen);
-      *pfVirtualMove = false;
-
-      { /* scope */
-        int vx = _vx.intValue();
-        int vy = _vy.intValue();
-        if (pscreen->Vx != vx || pscreen->Vy != vy) {
-          pscreen->Vx = vx;
-          pscreen->Vy = vy;
-          *pfVirtualMove = true;
-        }
-      }
+      psolver->addStay(_vx,clsMedium(),1.0);
+      psolver->addStay(_vy,clsMedium(),1.0);
+      ClLinearInequality minX(_vx,cnGEQ,0);
+      ClLinearInequality minY(_vy,cnGEQ,0);
+      ClLinearInequality maxX(_vx,cnLEQ,Scr.VxMax);
+      ClLinearInequality maxY(_vy,cnLEQ,Scr.VyMax);
+      (*psolver)
+        .addConstraint(minX)
+        .addConstraint(minY)
+        .addConstraint(maxX)
+        .addConstraint(maxY);
+      /*     psolver->addPointStay(_pointerx,_pointery); */
     }
 
   ClVariable _vx;

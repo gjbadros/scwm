@@ -119,6 +119,8 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
     psw->pswci->AddSizeConstraints(psolver);
   }
 
+  Scr.pssci->AddStays(psolver);
+
   psolver->SetChangeClvCallback(ScwmClvChanged);
   psolver->SetResolveCallback(ScwmResolve);
   return SCM_UNDEFINED;

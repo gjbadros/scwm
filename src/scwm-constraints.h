@@ -40,6 +40,9 @@ void CassowaryEditSize(PScwmWindow psw);
 void SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque);
 void SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque);
 void CassowaryEndEdit(PScwmWindow psw);
+void ChangeVirtualPosition(int vx, int vy, Bool fGrab);
+void CassowaryModifyOpaqueFlag(Bool *pfOpaque);
+
 
 #ifdef __cplusplus
 }
