@@ -1,3 +1,7 @@
+1999-04-15  Sam Steingold  <sds@goems.com>
+
+	* flux.scm (window-info): added `get-window-focus'.
+
 Thu Apr 15 19:39:17 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window-selection.scm: In select-multiple-windows-interactively,
@@ -8,7 +12,7 @@ Thu Apr 15 19:39:17 1999  Greg J Badros  <gjb@cs.washington.edu>
 	if it's obscured by a dead one.
 
 	* flux.scm: Use window-selection module (needed by
-	delete-multiple-windows-interactively) 
+	delete-multiple-windows-interactively)
 
 Thu Apr 15 19:15:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -17,7 +21,7 @@ Thu Apr 15 19:15:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* std-menus.scm, flux.scm: Moved `execute-on-selection',
  	`exe-on-selection' from flux.scm
 
-	* window-selection.scm: Added-- way cool (IIDSSM) window selection 
+	* window-selection.scm: Added-- way cool (IIDSSM) window selection
 	stuff that does even cooler things with group.scm (even w/o the
 	constraint solver!)
 
@@ -26,7 +30,7 @@ Thu Apr 15 19:15:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* flash-window.scm: Added flash-window-on, giving #:unflash-delay #f.
 
 	* minimal.scm: Try to report errors better when loading modules;
-	reverse the module list before calling process-use-scwm-modules so 
+	reverse the module list before calling process-use-scwm-modules so
 	it more closely matches what use-modules would've done.
 
 	* group.scm: Added `group-window' to give a window from a group

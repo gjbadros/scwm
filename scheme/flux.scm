@@ -154,6 +154,7 @@ See also `message'."
    "\nDesk:\t\t\t" (number->string (window-desk win)) "\nClass:\t\t\t\""
    (window-class win) "\"\nResource:\t\t\"" (window-resource win)
    "\"\nBorder Normal:\t\t" (bool->string (border-normal? win))
+   "\nFocus:\t\t\t" (get-window-focus win)
    "\nDeletable:\t\t" (bool->string (window-deletable? win))
    "\nIconified:\t\t" (bool->string (iconified? win))
    "\nKept On Top:\t\t" (bool->string (kept-on-top? win))
@@ -356,7 +357,7 @@ in the user's home directory."
     (display str port)
     (close-port port)))
 
-(define-public (X-cut-buffer->palm-clipboard) 
+(define-public (X-cut-buffer->palm-clipboard)
   (put-string-in-palm-clipboard (X-cut-buffer-string)))
 
 ;;(put-string-in-palm-clipboard "testing\nto\nsee\nif this\nworks")
@@ -368,7 +369,7 @@ in the user's home directory."
 ;; 	    (str (read-line port)))
 ;;     (close-port port)
 ;;     str))
-;; 
+;;
 ;; (get-string-from-palm-clipboard)
 
 (define-public (delete-multiple-windows-interactively)
