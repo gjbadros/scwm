@@ -118,7 +118,7 @@ scwmpaths.h: ../config.status
 
 scm_init_funcs.h: ../config.status
 	@echo "Generating scm_init_funcs.h..."
-	@./generate_scm_init_funcs $(guile_snarfs) > $@
+	@$(srcdir)/generate_scm_init_funcs $(guile_snarfs) > $@
 
 CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
 
