@@ -4,8 +4,8 @@
 
 (define-module (app scwm cached-program-exists))
 
-;; Switch this to #t if you're having programs
-(define debug-program-cache #f)
+;; Switch this to #t if you're having problems
+(define-public debug-program-cache #f)
 
 (define programs-that-exist #f)
 
@@ -28,11 +28,11 @@ spawns a zsh process to get the list of files in the $PATH very quickly."
     (if (not programs-that-exist)
 	(display "Failed to initialize list of programs from $PATH using zsh")))
 
-(if debug-program-cache
-    (define-public (cached-program-exists? program-name)
-      "Return #t if PROGRAM-NAME is in the cache of programs that exist.
-Returns #f otherwise.  Debugging is enabled so a message will print
-to stdout on hits and misses."
+(define-public (cached-program-exists? program-name)
+  "Return #t if PROGRAM-NAME is in the cache of programs that exist.
+Returns #f otherwise.  If `debug-program-cache' is true, a message will 
+print to stdout on hits and misses."
+  (if debug-program-cache
       (if programs-that-exist
 	  (if (member program-name programs-that-exist) 
 	      (begin (display "hit ") (display program-name) (newline) #t)
@@ -40,9 +40,7 @@ to stdout on hits and misses."
 	  (begin
 	    (display "using which") (newline)
 	    (= 0 (system (string-append "which " program-name " >/dev/null" ))))))
-    (define-public (cached-program-exists? program-name)
-      "Return #t if PROGRAM-NAME is in the cache of programs that exist.
-Returns #f otherwise."
-      (if programs-that-exist
-	  (if (member program-name programs-that-exist) #t #f)
-	  (= 0 (system (string-append "which " program-name " >/dev/null" ))))))
+  (if programs-that-exist
+      (if (member program-name programs-that-exist) #t #f)
+      (= 0 (system (string-append "which " program-name " >/dev/null" )))))
+

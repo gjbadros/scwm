@@ -1,3 +1,10 @@
+Sun Oct  4 20:25:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* cached-program-exists.scm: Make cached-program-exists? check
+ 	debug-program-cache each time called so debugging can be turned on
+ 	dynamically; make debug-program-cache a public definition so the
+ 	user can `set!' it from his or her .scwmrc.
+
 Sun Oct  4 16:51:29 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Use cached-program-exists module and
