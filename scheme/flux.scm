@@ -331,6 +331,19 @@ will be returned."
 	(car wlist)
 	#f)))
 
+(define-public (find-window-by-class-resource class resource)
+  "Return a window by its CLASS and RESOURCE names (as strings).
+If there are multiple such windows, an unspecified one of them
+will be returned."
+  (let ((wlist (list-windows
+		#:only (lambda (w)
+			 (and (string=? (window-class w) class)
+			      (string=? (window-resource w) resource))))))
+    (if (not (null? wlist))
+	(car wlist)
+	#f)))
+
+
 (define (list-without-elem l e)
   (cond ((null? l) l)
 	((eq? (car l) e) (cdr l))
@@ -630,4 +643,5 @@ to go to that page."
    display-message-briefly (netscape-win)))
 
 ;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
+;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
 

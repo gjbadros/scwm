@@ -65,3 +65,19 @@ motion does `interactive-move', and double-click does
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
 (bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
+
+;; FIXGJB: BEGIN gross hack -- better way?
+(define (with-grabbed-server thunk)
+  "Execute THUNK with the X server grabbed."
+  #f)
+
+(let ((xgs X-grab-server)
+      (xugs X-ungrab-server))
+  (set! with-grabbed-server (lambda (thunk)
+			      (dynamic-wind xgs thunk xugs))))
+
+;; now undefine the dangerous primitives
+(undefine X-grab-server)
+(undefine X-ungrab-server)
+
+;; END gross hack

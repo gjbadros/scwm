@@ -19,7 +19,6 @@
 
 
 ;;; FIXMS: disgusting hack for now to get these in the root module.
-
 (define menu-bg-color (make-color "gray80"))
 (define menu-text-color (make-color "black"))
 (define menu-font (make-font "fixed"))
@@ -520,10 +519,5 @@ This may be a bug (not meeting POSIX.2 specifications)."
   "Execute COMMAND in the background."
   ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
 
-(define-public (with-grabbed-server thunk)
-  "Execute THUNK with the X server grabbed."
-  (dynamic-wind X-grab-server
-		thunk
-		X-ungrab-server))
 
 
