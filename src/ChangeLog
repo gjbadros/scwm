@@ -1,3 +1,17 @@
+1999-08-02  Greg Badros  <gjb@cs.washington.edu>
+
+	* session-manager.c: Remove `SM-client-id' (was deprecated). Use
+	`SM-register' instead
+
+1999-08-01  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.h, events.c: Use PbndFromXXXX, not PBindingFromXXX..
+
+	* binding.c: Make remove_binding take a bnum_or_keycode argument
+	instaed of both button and keycode arguments.  Fix calls to it,
+	calls to PBindingFromXXXX fns that have been renamed.  Added new
+	primitive `number-of-mouse-buttons'.
+
 Sat Jul 31 20:09:06 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c (remove_binding_keysym): Added this function as a
