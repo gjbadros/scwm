@@ -988,6 +988,8 @@ circle cursor. */
       SCM win = gh_car(select_viewport_position(cursor,release_p));
       if (!WINDOWP(win)) {
         call0_hooks(invalid_interaction_hook);
+        /* do not return a window id -- be sure it is #f */
+        return SCM_BOOL_F;
       }
       return win;
     } else {
