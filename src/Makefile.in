@@ -37,13 +37,19 @@ EXTRA_DEFINES=-DXPM -DSHAPE ${PATH_DEFINES} -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -D
 
 CC=@CC@
 INCLUDES=-I../include -I${top_srcdir}/include ${x_includes} -I${prefix}/include
-CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES} 
+CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES}
 MAKEDEPEND=@MAKEDEPEND@
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RM=@RM@
 
 PROG=${scwm_name}
+
+HEADERS = $(wildcard *.h)
+
+LIBRARY_SRCS = $(wildcard ../libs/*.c)
+
+LIBRARY_HEADERS = $(wildcard ../libs/*.h)
 
 
 SRCS = \
@@ -113,6 +119,9 @@ OBJS = \
 	decor.o
 
 all: ${PROG}
+
+tags: $(SRCS) $(HEADERS) $(LIBRARY_SRCS) $(LIBRARY_HEADERS)
+	etags $^
 
 depend:
 	${MAKEDEPEND} ${CFLAGS} ${SRCS}
