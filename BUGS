@@ -3,6 +3,9 @@ tried finding some quick fixes but they cause segfaults, thus this is
 something to fix by reconsidering all this code and implementing true
 layers functionality.
 -------------
+Graeme.Cross@sci.monash.edu.au reports problems using ApplixWare's windows
+and Scwm (perhaps related to bitmaps that Applixware puts on the windows)
+-------------
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
