@@ -1,3 +1,18 @@
+Sun Mar 31 16:35:12 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* edge-ops.scm: Marked entire file as broken.  This code is
+	redundant with the C code anyway and the C code actually works.
+	I have trouble believing this code ever worked.
+
+	Fixed a bad variable reference to a variable that does not exist.
+	
+	Moved add-hook! parts into new public function 'edge-ops-add-hooks'
+	just in case someone has found a way to use this file.  This should
+	protect people from screwing up the edge scrolling stuff with this
+	broken implementation.  Added 'edge-ops-remove-hooks' as a safety
+	for anyone silly enough to run 'edge-ops-add-hooks'.  Both functions
+	marked deprecated.
+
 Sun Mar 31 05:41:03 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* window-configuration.scm: Fixed bug in generation of xforms
