@@ -1537,7 +1537,9 @@ HandleButtonPress()
     if (NULL != pswCurrent) {
       set_window_context(pswCurrent->schwin);
     }
+    /* First call the immediate proc */
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
+      find_mouse_event_type(&Event.xbutton);
       done = call_interactively(pbnd->ReleaseThunk,SCM_BOOL_F);
     }
     /* GJB:FIXME:: maybe this should only not

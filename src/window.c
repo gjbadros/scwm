@@ -509,6 +509,9 @@ options and retrieve information about the window.
 size_t
 free_window(SCM obj)
 {
+#if defined(SCWM_DEBUG_MAKE_FREE_WIN)
+  fprintf(stderr,"Freeing win %ld\n",obj);
+#endif
   FREE(WINDOW(obj));
   return (0);
 }
@@ -550,6 +553,20 @@ mark_window(SCM obj)
     GC_MARK_SCM_IF_SET(psw->HiBackColor);
     GC_MARK_SCM_IF_SET(psw->other_properties);
 
+#ifndef SCWM_NO_DEBUG_BAD_MARKWIN
+    if (obj != psw->schwin) {
+      char szPtr[32];
+      sprintf(szPtr,"%ld vs %ld\n",obj,psw->schwin);
+      scm_puts("obj != psw->schwin: obj = ", scm_current_output_port());
+      scm_write(obj,scm_current_output_port());
+      scm_newline(scm_current_output_port());
+      scm_puts("psw->schwin = ", scm_current_output_port());
+      scm_write(psw->schwin,scm_current_output_port());
+      scm_newline(scm_current_output_port());
+      scm_puts(szPtr, scm_current_output_port());
+    }
+#endif
+      
     assert (obj == psw->schwin);
   }
 
@@ -563,7 +580,9 @@ print_window(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   scm_puts("#<window ", port);
   if (VALIDWINP(obj)) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
-    scm_write(gh_ulong2scm((unsigned long) (psw->w)), port);
+    char szId[12];
+    sprintf(szId,"%ld",psw->w);
+    scm_puts(szId,port);
     if (psw->name) {
       scm_puts(": \"",port);
       scm_puts(psw->name,port);
@@ -599,6 +618,12 @@ make_window(ScwmWindow * win)
   scm_protect_object(answer);
 
   SET_VALIDWIN_FLAG(answer,True);
+
+#if defined(SCWM_DEBUG_MAKE_FREE_WIN)
+  fprintf(stderr,"Made window %ld at %p (name = %s)\n",
+          answer, SCWMWINDOW(answer), SCWMWINDOW(answer)->name);
+#endif
+
   scwm_allow_ints();
   return answer;
 }

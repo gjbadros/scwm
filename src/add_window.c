@@ -417,6 +417,7 @@ AddWindow(Window w)
    */
   XGrabServer_withSemaphore(dpy); 
   if (!FXWindowAccessible(dpy,w)) {
+    invalidate_window(psw->schwin);
     FREE(psw);
     XUngrabServer_withSemaphore(dpy);
     return (NULL);
