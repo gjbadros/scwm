@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-04 Tue 12:25:05 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-04 Tue 13:09:04 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -312,7 +312,13 @@ Returns a string which is present in the `scwm-obarray'."
       (princ "\n\n ")
       (with-face 'highlight (princ "procedure-documentation"))
       (princ ":\n\n")
-      (scwm-safe-call "procedure-documentation" pat standard-output)
+      (scwm-eval (concat "(if (defined? 'procedure-documentation) "
+                         "(if (procedure? " pat ") (procedure-documentation "
+                         pat ") (begin (display " pat ") (display "
+                         "\" is not a procedure\n\")))"
+                         " (display \"This Guile version lacks "
+                         "`procedure-documentation'.\n\"))")
+                 standard-output)
       ;; add buttons to the help message
       (goto-char 1) (forward-line 8) ; skip the header and value
       (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
