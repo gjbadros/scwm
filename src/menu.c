@@ -217,8 +217,8 @@ NewPchKeysUsed(DynamicMenu *pmd)
 }
 #undef FUNC_NAME
 
-/* GJB:FIXME:: better as an assoc list, probably: we'd have to invent a name for
-   menu-items if we did */
+/* GJB:FIXME:: better as an assoc list, probably: we'd have to invent
+   a name for menu-items if we did */
 
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
@@ -242,7 +242,6 @@ image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
 		 pmenu->scmImgBackground,
 		 pmenu->scmFont,
 		 pmenu->scmExtraOptions,
-/*		 pmenu->scmMenuLook, */
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
                  gh_scm2int(pmenu->cmsPopupDelay),
                  gh_scm2int(pmenu->cmsHoverDelay),
