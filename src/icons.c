@@ -414,14 +414,8 @@ DrawIconWindow(ScwmWindow * psw)
       Relief = Scr.MenuGC;
       Shadow = Scr.MenuGC;
     } else {
-      Globalgcv.foreground = XCOLOR(psw->ReliefColor);
-      Globalgcm = GCForeground;
-      XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
-      Relief = Scr.ScratchGC1;
-
-      Globalgcv.foreground = XCOLOR(psw->ShadowColor);
-      XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
-      Shadow = Scr.ScratchGC2;
+      SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(psw->ReliefColor));
+      SetGCFg(Shadow = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));
     }
     /* resize the icon name window */
     if (psw->icon_w != None) {
@@ -442,9 +436,9 @@ DrawIconWindow(ScwmWindow * psw)
   /* write the icon label */
 
 #ifdef I18N
-  NewFontAndColor(FONT(Scr.icon_font)->xfs->fid, TextColor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,FONT(Scr.icon_font)->xfs->fid, TextColor, BackColor);
 #else
-  NewFontAndColor(XFONT(Scr.icon_font)->fid, TextColor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,XFONT(Scr.icon_font)->fid, TextColor, BackColor);
 #endif
 
   if (psw->icon_pixmap_w != None)

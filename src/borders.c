@@ -623,14 +623,8 @@ SetBorderX(ScwmWindow * psw, Bool onoroff, Bool force, Bool Mapped,
     if (psw->fSticky)
       BackPixmap = Scr.sticky_gray_pixmap;
     BackColor = XCOLOR(psw->BackColor);
-    Globalgcv.foreground = XCOLOR(psw->ReliefColor);
-    Globalgcm = GCForeground;
-    XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
-    ReliefGC = Scr.ScratchGC1;
-
-    Globalgcv.foreground = XCOLOR(psw->ShadowColor);
-    XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
-    ShadowGC = Scr.ScratchGC2;
+    SetGCFg(ReliefGC = Scr.ScratchGC1,XCOLOR(psw->ReliefColor));
+    SetGCFg(ShadowGC = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));
     BorderColor = XCOLOR(psw->ShadowColor);
   }
 
@@ -972,14 +966,8 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
   } else {
     Forecolor = XCOLOR(psw->TextColor);
     BackColor = XCOLOR(psw->BackColor);
-    Globalgcv.foreground = XCOLOR(psw->ReliefColor);
-    Globalgcm = GCForeground;
-    XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
-    ReliefGC = Scr.ScratchGC1;
-
-    Globalgcv.foreground = XCOLOR(psw->ShadowColor);
-    XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
-    ShadowGC = Scr.ScratchGC2;
+    SetGCFg(ReliefGC = Scr.ScratchGC1,XCOLOR(psw->ReliefColor));
+    SetGCFg(ShadowGC = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));
   }
   if (PressedW == psw->title_w) {
     tGC = ShadowGC;
@@ -1015,9 +1003,9 @@ SetTitleBar(ScwmWindow * psw, Bool onoroff, Bool NewTitle)
     hor_off = (psw->title_width - w) / 2;
 
 #ifdef I18N
-  NewFontAndColor(FONT(GetDecor(psw, window_font))->xfs->fid, Forecolor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,FONT(GetDecor(psw, window_font))->xfs->fid, Forecolor, BackColor);
 #else
-  NewFontAndColor(XFONT(GetDecor(psw, window_font))->fid, Forecolor, BackColor);
+  NewFontAndColor(Scr.ScratchGC3,XFONT(GetDecor(psw, window_font))->fid, Forecolor, BackColor);
 #endif
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */

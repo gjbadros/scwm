@@ -55,8 +55,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
     scwm_msg(ERR,__FUNCTION__,"psimg is NULL");
     return;
   }
-  Globalgcv.foreground = bg;
-  XChangeGC(dpy, Scr.ScratchGC1, GCForeground, &Globalgcv);
+  SetGCFg(Scr.ScratchGC1,bg);
   XFillRectangle(dpy, w, Scr.ScratchGC1, 
 		 MENU_ITEM_RR_SPACE, MENU_ITEM_RR_SPACE,
 		 psimg->width, cpixHeight - 2*MENU_ITEM_RR_SPACE);
