@@ -158,3 +158,6 @@ list instead of the module."
 
 (defmacro use-scwm-modules modules
   `(process-use-scwm-modules ',modules))
+
+(X-property-set! 'root-window "_WIN_WM_NAME" "scwm")
+(X-property-set! 'root-window "_WIN_WM_VERSION" (scwm-version))
