@@ -53,9 +53,9 @@ GetShadow(Pixel background)
   bg_color.pixel = background;
   XQueryColor(dpy, attributes.colormap, &bg_color);
 
-  r = bg_color.red % 0xffff;
-  g = bg_color.green % 0xffff;
-  b = bg_color.blue % 0xffff;
+  r = bg_color.red; /* % 0xffff; */
+  g = bg_color.green; /* % 0xffff; */
+  b = bg_color.blue; /* % 0xffff; */
 
   r = r >> 1;
   g = g >> 1;
@@ -66,6 +66,7 @@ GetShadow(Pixel background)
   bg_color.blue = b;
 
   if (!XAllocColor(dpy, attributes.colormap, &bg_color)) {
+    puts("color allocation failed.");
     nocolor("alloc shadow", "");
     bg_color.pixel = background;
   }
