@@ -97,6 +97,9 @@ SCWM_SYMBOL(sym_none , "none");
 SCWM_SYMBOL(sym_sticky , "sticky");
 SCWM_SYMBOL(sym_desk   , "desk");
 SCWM_SYMBOL(sym_on_top , "on-top");
+SCWM_SYMBOL(sym_unobscured , "unobscured");
+SCWM_SYMBOL(sym_partially_obscured , "partially-obscured");
+SCWM_SYMBOL(sym_fully_obscured , "fully-obscured");
 
 /* Also used by c-animation.c */
 SCWM_GLOBAL_SYMBOL(sym_shaded , "shaded");
@@ -2848,6 +2851,28 @@ SCWM_PROC (window_creation_time, "window-creation-time", 0, 1, 0,
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return gh_long2scm(PSWFROMSCMWIN(win)->ttCreated);
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_visibility, "window-visibility", 0, 1, 0,
+           (SCM win))
+     /** Return the visibility state for WIN.
+Returns either 'partially-obscured, 'fully-obscured, or 'unobscured. */
+#define FUNC_NAME s_window_creation_time
+{
+  ScwmWindow *psw;
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
+  switch (psw->visibility) {
+  case VisibilityPartiallyObscured:
+    return sym_partially_obscured;
+  case VisibilityFullyObscured:
+    return sym_fully_obscured;
+  case VisibilityUnobscured:
+    return sym_unobscured;
+  default:
+    assert(!"psw->visibility in unknown state");
+  }
+  return SCM_BOOL_F;
 }
 #undef FUNC_NAME
 

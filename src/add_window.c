@@ -260,6 +260,7 @@ AddWindow(Window w)
     psw->ttLastFocussed = time(NULL);
 
   psw->timeLastFocussed = lastTimestamp;
+  psw->visibility = VisibilityUnobscured;
 
   if (!PPosOverride && !FXWindowAccessible(dpy,psw->w)) {
     FREE(psw);
@@ -452,7 +453,7 @@ AddWindow(Window w)
   attributes.cursor = XCURSOR(psw->frame_cursor);
   attributes.event_mask = (SubstructureRedirectMask | ButtonPressMask |
 			   ButtonReleaseMask | EnterWindowMask |
-			   LeaveWindowMask | ExposureMask);
+			   LeaveWindowMask | ExposureMask | VisibilityChangeMask );
 
   if ((GET_DECOR(psw, BorderStyle.inactive->style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
@@ -479,6 +480,8 @@ AddWindow(Window w)
 		  CopyFromParent,
 		  valuemask,
 		  &attributes);
+  /* turn off VisibilityNotify event for Parent window */
+  attributes.event_mask &= ~VisibilityChangeMask;
   ScwmSaveContextPsw(dpy, psw->frame, psw);
 
   if (TexturePixmap) {

@@ -151,7 +151,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   while (!finished) {
     while (XCheckMaskEvent(dpy, 
                            ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-                           PointerMotionMask | ButtonMotionMask | ExposureMask, 
+                           PointerMotionMask | ButtonMotionMask | ExposureMask | VisibilityChangeMask, 
                            &Event) == False) {
 #ifndef NOT_MORE_RESPONSIVE
       NoEventsScwmUpdate(False);

@@ -249,7 +249,7 @@ struct ScwmWindow {
   PackedBool(fIconified);
   PackedBool(fTransient);
   PackedBool(fRaised);
-  PackedBool(fVisible);
+  PackedBool(fVisible);         /* visibility field gives more related information */
   PackedBool(fIconOurs);
   PackedBool(fPixmapOurs);
   PackedBool(fShapedIcon);
@@ -314,6 +314,9 @@ struct ScwmWindow {
 
   SCM schwin;
   int highlighted_nonant;       /* is 0-8, or -1 if not highlighted */
+  int visibility;               /* One of VisibilityFullyObscured, 
+                                   VisibilityPartiallyObscured, VisibilityUnobscured;
+                                   fVisible flag should be same as (visibility == VisibilityUnobscured) */
 };
 
 /* FIXJTL: This is ugly, but needed to make window_fwd work at all; is

@@ -302,7 +302,13 @@ DispatchEvent()
   pswCurrent = PswFromAnyWindow(dpy,w);
   last_event_type = Event.type;
   last_event_window = w;
-
+#ifdef DEBUG_VISIBILITY_NOTIFY_EVENT_WINDOWS
+  if (Event.type == VisibilityNotify) {
+    fprintf(stderr,"Got visibility event on %ld, translates to psw->name %s\n",
+            w,pswCurrent->name);
+  }
+#endif
+  
   if (EventHandlerJumpTable[Event.type])    
     (*EventHandlerJumpTable[Event.type]) ();
 
@@ -1881,7 +1887,7 @@ HandleVisibilityNotify()
 
   DBUG_EVENT((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
-  if (pswCurrent) {
+  if (pswCurrent && last_event_window == pswCurrent->frame) {
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
     /* For the most part, we'll raised partially obscured fOnTop windows
@@ -1906,6 +1912,7 @@ HandleVisibilityNotify()
       call1_hooks(window_partially_obscured_hook,pswCurrent->schwin);
       break;
     }
+    pswCurrent->visibility = vevent->state;
   }
 }
 

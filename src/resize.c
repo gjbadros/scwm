@@ -535,7 +535,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     XEvent ResizeEvent;
     while (XCheckMaskEvent(dpy,
                            ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-                           ButtonMotionMask | PointerMotionMask | ExposureMask,
+                           ButtonMotionMask | PointerMotionMask | ExposureMask | VisibilityChangeMask,
                            &ResizeEvent) == False) {
 #ifndef NOT_MORE_RESPONSIVE
       NoEventsScwmUpdate(False);
