@@ -26,12 +26,12 @@ static GC DrawingGC;
 
 /* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
-SCWM_PROC(set_drawing_mask_x, "set-drawing-mask!", 1, 0, 0,
+SCWM_PROC(xlib_set_drawing_mask_x, "xlib-set-drawing-mask!", 1, 0, 0,
           (SCM value))
-     /** Set the drawing mask used when drawing and removing shapes to the
-screen. VALUE is XORed with the background when dragging non-opaque move or
+     /** Set the drawing mask used by the xlib-* primitives.
+VALUE is XORed with the background when dragging non-opaque move or
 resize frames. VALUE should be an integer. */
-#define FUNC_NAME s_set_drawing_mask_x
+#define FUNC_NAME s_xlib_set_drawing_mask_x
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -113,8 +113,8 @@ WIDTH by HEIGHT. */
 
 SCWM_PROC(xlib_draw_line_x, "xlib-draw-line!", 4, 0, 0,
 	  (SCM x1, SCM y1, SCM x2, SCM y2))
-     /** Draws a line using the Xlib call XDrawLine from ( X1, Y1 ) to 
-( X2, Y2 ). */
+     /** Draws a line using the Xlib call XDrawLine.
+The line is drawn from ( X1, Y1 ) to ( X2, Y2 ).  */
 #define FUNC_NAME s_xlib_draw_line_x
 {
   int iX1, iY1, iX2, iY2;
@@ -224,7 +224,7 @@ specified in degrees (0.0 to 360.0).*/
 
 SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
 	  (SCM width))
-     /** Sets the line width of the DrawingGC to WIDTH */
+     /** Sets the line width of the DrawingGC to WIDTH. */
 #define FUNC_NAME s_xlib_set_line_width_x
 {
   int iWidth;
@@ -254,7 +254,7 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
 
 SCWM_PROC(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
 	  (SCM style))
-     /** Sets the fill style of the DrawingGC to STYLE */
+     /** Sets the fill style of the DrawingGC to STYLE. */
 #define FUNC_NAME s_xlib_set_fill_style_x
 {
   int iStyle;
