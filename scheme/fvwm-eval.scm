@@ -563,9 +563,11 @@ working commands."
 ;;; DesktopSize Iconify         Refresh         SetAnimation
 ;;; Destroy     Lower           RefreshWindow   Stick
 ;;; MoveToDesk (7th July 1999)
+;;; Current (17th October 1999)
+;;; ChangeDecor (17th October 1999) 
 
 ;;; Implemented and Untested or broken:
-;;; Current            IconFont        Next            Recapture
+;;;                    IconFont        Next            Recapture
 ;;; Echo               Key             None            WindowFont
 ;;; ExecUseSHELL       Mouse           Prev
 
@@ -579,7 +581,7 @@ working commands."
 ;;; AnimatedMove       KillModule              Title
 ;;; BorderStyle        Menu                    TitleStyle
 ;;; ButtonStyle        Menustyle               UpdateDecor
-;;; ChangeDecor        Module                  Wait
+;;;                    Module                  Wait
 ;;; ColorLimit         ModulePath              WindowId
 ;;; ColormapFocus      Nop                     WindowList
 ;;; CursorStyle        PipeRead                +
