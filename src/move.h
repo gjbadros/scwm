@@ -21,7 +21,8 @@ void AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 void moveLoop(ScwmWindow *psw, int XOffset, int YOffset, int Width,
 	      int Height, int *FinalX, int *FinalY, Bool opaque_move);
 
-void DisplayPosition(ScwmWindow *psw, int x, int y, int Init);
+void DisplayPosition(ScwmWindow *psw, int x, int y, Bool fInitializeRelief);
+void DisplayMessage(ScwmWindow *psw, const char *sz, Bool fInitializeRelief);
 
 void Keyboard_shortcuts(XEvent * Event, int ReturnEvent);
 

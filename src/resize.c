@@ -105,7 +105,7 @@ DoResize(int x_root, int y_root, ScwmWindow * psw)
 /* Create the small window to show the interactively-moved/resized window's
    size/position */
 Window
-CreateSizeDisplayWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
+CreateMessageWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
   Window w;
   XSetWindowAttributes attributes;
   unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
@@ -165,8 +165,8 @@ being moved or resized interactively. */
   Scr.size_window_fg = fg_color;
   Scr.size_window_bg = bg_color;
   XDestroyWindow(dpy,Scr.SizeWindow);
-  Scr.SizeWindow = CreateSizeDisplayWindow( XCOLOR(Scr.size_window_fg), 
-                                            XCOLOR(Scr.size_window_bg), Scr.flags & MWMMenus);
+  Scr.SizeWindow = CreateMessageWindow( XCOLOR(Scr.size_window_fg), 
+                                        XCOLOR(Scr.size_window_bg), Scr.flags & MWMMenus);
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
@@ -182,65 +182,11 @@ being moved or resized interactively. */
  *      height  - the height of the rubber band
  */
 void 
-DisplaySize(ScwmWindow *psw, int width, int height, Bool Init)
+DisplaySize(ScwmWindow *psw, int width, int height, Bool fInitializeRelief)
 {
-  char str[100];
-  int dwidth, dheight, offset;
-#ifdef I18N
-  XRectangle dummy,log_ret;
-#endif
-
-  if (last_width == width && last_height == height)
-    return;
-
-  last_width = width;
-  last_height = height;
-
-  dheight = height - psw->title_height - 2 * psw->boundary_width;
-  dwidth = width - 2 * psw->boundary_width;
-
-  dwidth -= psw->hints.base_width;
-  dheight -= psw->hints.base_height;
-  dwidth /= psw->hints.width_inc;
-  dheight /= psw->hints.height_inc;
-
-  (void) sprintf(str, " %4d x %-4d ", dwidth, dheight);
-#ifdef I18N
-  XmbTextExtents(XFONT(Scr.size_window_font),"WWWWWWWWWWWWWWW",15,&dummy,&log_ret);
-  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2 - log_ret.width) / 2;
-  if (Init) {
-    XClearWindow(dpy, Scr.SizeWindow);
-    if (Scr.d_depth >= 2)
-      RelieveWindow(psw,
-                    Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    log_ret.height + SIZE_VINDENT * 2,
-		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
-  } else {
-    XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       log_ret.height, False);
-  }
-
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font), Scr.MenuGC,
-	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT, str, 13);
-#else
-  offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.size_window_font), str, strlen(str))) / 2;
-  if (Init) {
-    XClearWindow(dpy, Scr.SizeWindow);
-    if (Scr.d_depth >= 2)
-      RelieveWindow(psw,
-	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2,
-		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
-  } else {
-    XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       FONTHEIGHT(Scr.size_window_font), False);
-  }
-
-  XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
-	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT, str, 13);
-#endif
-
+  char sz[30];
+  sprintf(sz, " %4d x %-4d ", width, height);
+  DisplayMessage(psw,sz,fInitializeRelief);
 }
 
 /*

@@ -364,48 +364,71 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   XUnmapWindow(dpy, Scr.SizeWindow);
 }
 
+
+void
+DisplayPosition(ScwmWindow *psw, int x, int y, Bool Init)
+{
+  char sz[30];
+  sprintf(sz, " %+-4d %+-4d ", x, y);
+  DisplayMessage(psw,sz,Init);
+}
+
+
+const double message_hilight_factor = 1.2;
+const double message_shadow_factor = 0.5;
+
 /*
- * DisplayPosition - display the position in the dimensions window
+ * DisplayMessage - Display a string in the dimensions window
  *      psw - the current scwm window
  *      x, y    - position of the window
+ * FIXGJBNOW: still need to create a better relief GC
  */
 void 
-DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
+DisplayMessage(ScwmWindow * psw, const char *sz, Bool fInitializeRelief)
 {
-  char str[100];
   int offset;
+  GC gcMsg = Scr.ScratchGC2;
+  GC gcHilite = Scr.ScratchGC2;
+  GC gcShadow = Scr.ScratchGC3;
+  SCM scmFgRelief, scmBgRelief;
 #ifdef I18N
   XRectangle dummy,log_ret;
 #endif
+  scmBgRelief = adjust_brightness(Scr.size_window_bg, message_shadow_factor);
+  scmFgRelief = adjust_brightness(Scr.size_window_bg, message_hilight_factor);
 
-  (void) sprintf(str, " %+-4d %+-4d ", x, y);
-  if (Init) {
+  SetGCFg(gcHilite,XCOLOR(scmFgRelief));
+  SetGCFg(gcShadow,XCOLOR(scmBgRelief));
+  
+  if (fInitializeRelief) {
     XClearWindow(dpy, Scr.SizeWindow);
-    if (Scr.d_depth >= 2)
+    if (Scr.d_depth >= 2) {
       RelieveWindow(psw, Scr.SizeWindow, 0, 0,
 		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
 		    FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2,
-		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
+		    gcHilite, gcShadow, FULL_HILITE);
+    }
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
 	       FONTHEIGHT(Scr.size_window_font), False);
   }
 
+  NewFontAndColor(gcMsg,XFONT(Scr.size_window_font)->fid,
+                  XCOLOR(Scr.size_window_fg), XCOLOR(Scr.size_window_bg)); 
+
 #ifdef I18N
-  XmbTextExtents(XFONT(Scr.size_window_font), str, strlen(str), &dummy, &log_ret);
+  XmbTextExtents(XFONT(Scr.size_window_font), sz, strlen(sz), &dummy, &log_ret);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
 	    - log_ret.width ) / 2;
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font),Scr.MenuGC,
-	      offset,
-	      FONTY(Scr.size_window_font) + SIZE_VINDENT,
-	      str, strlen(str));
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font),gcMsg,
+	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT,
+	      sz, strlen(sz));
 #else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.size_window_font), str, strlen(str))) / 2;
-  XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
-	      offset,
-	      FONTY(Scr.size_window_font) + SIZE_VINDENT,
-	      str, strlen(str));
+	    - XTextWidth(XFONT(Scr.size_window_font), sz, strlen(sz))) / 2;
+  XDrawString(dpy, Scr.SizeWindow, gcMsg,
+	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT,
+	      sz, strlen(sz));
 #endif
 }
 
