@@ -16,7 +16,7 @@
   "Return the register-alist."
   register-alist)
 
-(define*-public (get-register-name #&optional (descriptor #f))
+(define*-public (get-register-name #:optional (descriptor #f))
   "Prompt for a register name and return a corresponding symbol.
 If DESCRIPTOR is given, then use DECRIPTOR before \"Register?\"
 in the prompt."
@@ -66,7 +66,7 @@ in the prompt."
 ;; (jump-to-register)
 ;; (selected-windows-to-register)
 
-(define*-public (focus-to-register #&optional (register (get-register-name "Focus-to-")))
+(define*-public (focus-to-register #:optional (register (get-register-name "Focus-to-")))
   "Save the currently-focused window to REGISTER."
   (interactive)
   (if register
@@ -74,7 +74,7 @@ in the prompt."
 	(set-register register win))))
 
 (define*-public (window-configuration-to-register 
-		 #&optional (win (or (window-with-focus) (get-window)))
+		 #:optional (win (or (window-with-focus) (get-window)))
 		 (register (get-register-name "Window-configuration-to-")))
   "Save the configuration of WIN to REGISTER."
   (interactive)
@@ -82,7 +82,7 @@ in the prompt."
       (set-register register (window-configuration win))))
 
 (define*-public (selected-windows-to-register 
-		 #&optional (register (get-register-name "Selected-windows-to-")))
+		 #:optional (register (get-register-name "Selected-windows-to-")))
   "Save the current set of selected windows to REGISTER."
   (interactive)
   (if register
@@ -90,7 +90,7 @@ in the prompt."
 	(set-register register val))))
 
 (define*-public (global-window-configuration-to-register
-		 #&optional (register (get-register-name "Global-configurations-to-")))
+		 #:optional (register (get-register-name "Global-configurations-to-")))
   "Save the global configuration of windows to REGISTER."
   (interactive)
   (if register
@@ -107,7 +107,7 @@ in the prompt."
    (val 'global-window-configuration)
    (else #f)))
 
-(define*-public (jump-to-register #&optional (register (get-register-name "Jump-to-")))
+(define*-public (jump-to-register #:optional (register (get-register-name "Jump-to-")))
   "Restore the state saved in REGISTER."
   (interactive)
   (let ((val (get-register register)))

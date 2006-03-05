@@ -23,7 +23,7 @@
 (if (> guile-version 1.3)
     (use-modules (ice-9 popen)))
 
-(define*-public (read-and-append-to p #&optional (l '()))
+(define*-public (read-and-append-to p #:optional (l '()))
   "Read in the lines from port P and return them.
 L is a the tail of the accumulating list. "
   (let ((s (read p)))

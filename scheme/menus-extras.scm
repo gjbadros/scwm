@@ -30,7 +30,9 @@
 (define-public (menu-max-fold-lines)
   "Return an approximation of the number of menuitems that will fit vertically on screen."
   (let* ((menu-font-property menu-font)
-	 (menu-font (if (symbol? menu-font-property) (eval menu-font-property) menu-font-property))
+	 (menu-font (if (symbol? menu-font-property)
+                        (eval menu-font-property)
+                        menu-font-property))
 	 (menu-font-height (assoc-ref (font-properties menu-font) 'height)))
     (round/ (cadr (display-size)) (+ 7 menu-font-height))))
 
@@ -56,13 +58,13 @@ order."
 ;;; sublist returned will have no more than max elements
 ;;; This function destroys the original list.
 (define (split-list! ls max)
-  (let ((le (length ls)) (tt ()) (t1 ()))
+  (let ((le (length ls)) (tt '()) (t1 '()))
     (cond ((<= le max) (list ls))
 	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
-	      (set-cdr! tt ()) (cons ls (split-list! t1 max))))))
+	      (set-cdr! tt '()) (cons ls (split-list! t1 max))))))
 
 (define*-public (fold-menu-list!
-		ml #&optional (max-lines (optget *menu-max-fold-lines*)))
+		ml #:optional (max-lines (optget *menu-max-fold-lines*)))
   "Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `*menu-max-fold-lines*'.  Destroys the argument ML."
@@ -106,7 +108,7 @@ the elements of LS in the same group.  Maintains the order of the groups."
 ;; (define answer '(("Emacs" "em1" "em2" "em3") ("XTerm" "xt1") ("XLogo" "xl1" "xl2")))
 
 ;;; SRL:FIXME:: This interface stinks.  Fix it.
-(define*-public (fold-menu-list-by-group ml-cons #&rest rest)
+(define*-public (fold-menu-list-by-group ml-cons #:rest rest)
   "Split ML-CONS into chained menus based on their group.
 ML-CONS is a association list. Each sublist's car is the name of the
 group, and the cdr is a menuitem for that group.  See 'sorted-by-car-string'

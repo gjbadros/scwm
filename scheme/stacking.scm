@@ -18,7 +18,6 @@
 ;;;; 
 
 
-
 (define-module (app scwm stacking)
   :use-module (app scwm optargs)
   :use-module (app scwm wininfo)
@@ -27,7 +26,7 @@
 
 
 
-(define*-public (list-windows-above w #&key (only ()) (except()))
+(define*-public (list-windows-above w #:key (only '()) (except '()))
   "List the windows above w from bottom to top.
 Returns a list in the reverse of the stacking order of the windows
 above W, in other words, from the one immediately above, to the topmost
@@ -37,9 +36,9 @@ procedures that deal with the window list."
 						    #:by-stacking #t)))))
     (if memq-result
 	(cdr memq-result)
-	())))
+	'())))
 
-(define*-public (list-windows-below w #&key (only ()) (except()))
+(define*-public (list-windows-below w #:key (only '()) (except '()))
   "List the windows below w from top to bottom.
 Returns a list in the stacking order of the windows below in, in other
 words, from the one immediately below, to the bottommost window; the
@@ -49,7 +48,7 @@ that deal with the window list."
 					   #:by-stacking #t))))
     (if memq-result
 	(cdr memq-result)
-	())))
+	'())))
 
 (define-public (restack-window-below w w2)
   "Restack window W immediately below W2."
@@ -66,7 +65,7 @@ that deal with the window list."
 (define-public lower-window-below restack-window-below)
 (define-public raise-window-above restack-window-above)
 
-(define*-public (lower-by-one #&optional (w (get-window)))
+(define*-public (lower-by-one #:optional (w (get-window)))
   "Lower window W below the next window down that overlaps it.
 W defaults to the window context in the usual way."
   (let ((windows-below  (list-windows-below w #:only 
@@ -74,7 +73,7 @@ W defaults to the window context in the usual way."
     (if (not (null? windows-below))
 	(restack-window-below w (car windows-below)))))
 
-(define*-public (raise-by-one #&optional (w (get-window)))
+(define*-public (raise-by-one #:optional (w (get-window)))
   "Raise window W above the next window up that overlaps it.
 W defaults to the window context in the usual way."
   (let ((windows-above (list-windows-above w #:only 

@@ -97,7 +97,7 @@ xterm
 (image-properties i)
 
 (use-scwm-modules nonants)
-(define*-public (image-name->cursor name #&optional (x-hotspot 8) (y-hotspot 8))
+(define*-public (image-name->cursor name #:optional (x-hotspot 8) (y-hotspot 8))
   (create-pixmap-cursor (make-image name) #f #f x-hotspot y-hotspot))
 (define resize-br (image-name->cursor "resize_br.xpm"))
 (define resize-tr (image-name->cursor "resize_tr.xpm"))

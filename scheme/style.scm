@@ -18,16 +18,29 @@
 ;;;; 
 
 
-
 (define-module (app scwm style)
+  :use-module (srfi srfi-1)
+  :use-module (app scwm minimal)
   :use-module (app scwm base)
   :use-module (app scwm listops)
   :use-module (app scwm style-options)
   :use-module (app scwm winops)
   :use-module (app scwm wininfo))
 
+(export
+ debug-style-handler-applications
+ global-conditional-style
+ style-one-window
+ window-style
+ window-unstyle
+ clear-window-style
+ make-style
+ default-style-condition-handler
+ make-conditional-style
+ apply-style
+ set-window-placement-proc!
+ set-window-transient-placement-proc!)
 
-
 ;;;; Definitions for style type.
 
 ;;; A style is simply a list of style-entries.
@@ -39,18 +52,18 @@
   style)
 
 ;; Set this to #t for help with debugging
-(define-public debug-style-handler-applications #f)
+(define debug-style-handler-applications #f)
 
 ;; GJB:FIXME:: this is public only for debugging
-(define-public global-conditional-style (x-make-style ()))
+(define global-conditional-style (x-make-style '()))
 
-(define-public (style-one-window win . args)
+(define (style-one-window win . args)
   "Add style options ARGS to the style for WIN.
 See 'window-style' for more details on style options."
   (let ((new-style (apply make-conditional-style always? args)))
     (apply-style new-style win)))
 
-(define-public (window-style condition . args) 
+(define (window-style condition . args) 
   "Specify various properties for windows matching CONDITION.
 ARGS are extra agruments to the 'window-style' function.  These
 style options should come in pairs of key followed by value
@@ -71,7 +84,7 @@ and returns #t iff that window is to be considered a match."
     (set! global-conditional-style
 	  (merge-styles global-conditional-style new-style))))
 
-(define-public (window-unstyle . style)
+(define (window-unstyle . style)
   "Remove STYLE definition from list of window styles.
 STYLE must be given exactly the same way as on invocation of `window-style'.
 If style is present multiple times, every instance is removed."
@@ -81,12 +94,12 @@ If style is present multiple times, every instance is removed."
                              global-conditional-style)))
            (apply make-conditional-style style)))
 
-(define-public (clear-window-style)
+(define (clear-window-style)
   "Clear all previous 'window-style' directives.
 This will not affect windows already on the screen."
   (set! global-conditional-style (x-make-style '())))
 
-(define-public (make-style . args)
+(define (make-style . args)
   "Make an unconditional window style using ARGS as the style options."
   (apply make-conditional-style always? args))
 
@@ -103,9 +116,9 @@ This will not affect windows already on the screen."
 ;;;       (list key1 val1 key2 val2 ... )
 (define (mcs-parse-args condition args)
   (let loop ((l args)
-	     (style-accum ())
-	     (hint-accum ())
-	     (already ()))
+	     (style-accum '())
+	     (hint-accum '())
+	     (already '()))
     (cond
      ((null? l) 
       (x-make-style (append already
@@ -131,7 +144,7 @@ This will not affect windows already on the screen."
 		 (loop (cddr l) (acons key value style-accum) (acons key value hint-accum)
 		       already))
 		((splicing) 
-		 (loop (cddr l) () ()
+		 (loop (cddr l) '() '()
 		       (append already
 			       (list
 				(make-style-entry condition (reverse style-accum)
@@ -140,7 +153,7 @@ This will not affect windows already on the screen."
 		(else (mcs-complain "Unknown" (symbol->keyword key)))))))))))
 
 
-(define-public default-style-condition-handler resource-match??)
+(define default-style-condition-handler resource-match??)
 ;;(define-public default-style-condition-handler class-match??)
 ;;(define-public default-style-condition-handler window-match??)
 
@@ -155,13 +168,13 @@ This will not affect windows already on the screen."
    ((procedure? condition) condition)
    (else (error "Bad window specifier for window-style."))))
 
-(define-public (make-conditional-style condition . args)
+(define (make-conditional-style condition . args)
   "Make a style that only applies to windows matching CONDITION.
 ARGS is style options to use in the new style.
 See 'window-style' for more information."
   (simplify-style (mcs-parse-args (condition->predicate condition) args)))
 
-(define-public (apply-style style win)
+(define (apply-style style win)
   "Apply STYLE to WIN.
 This only applies normal and both styles from STYLE.
 Hint styles are not applied."
@@ -315,7 +328,7 @@ Hint styles are not applied."
 ;; The only reason for the existence of the following functions is to
 ;; have a place to hang the documentation...
 
-(define-public (set-window-placement-proc! proc win)
+(define (set-window-placement-proc! proc win)
   "Set the 'placement-proc property of WIN to PROC.
 When the window manager tries to place WIN, it will call PROC to
 actually set its position.  This function must be called before the 
@@ -323,7 +336,7 @@ window is placed (i.e., from before-new-window-hook); see `window-style'
 for a way to make sure this function is called at the correct time."
   (set-object-property! win 'placement-proc proc))
 
-(define-public (set-window-transient-placement-proc! proc win)
+(define (set-window-transient-placement-proc! proc win)
   "Like `set-window-placement-proc!', but for transient windows."
   (set-object-property! win 'transient-placement-proc proc))
 

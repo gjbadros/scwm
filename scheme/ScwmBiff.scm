@@ -34,7 +34,7 @@
   :use-module (app scwm optargs))
 
 (define*-public
-  (run-ScwmBiff passive-icon-name active-icon-name #&key
+  (run-ScwmBiff passive-icon-name active-icon-name #:key
 		(action noop)
 		(parent #f)
 		(name "ScwmBiff"))

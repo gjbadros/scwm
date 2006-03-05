@@ -21,9 +21,9 @@ typedef struct {
 
 extern long scm_tc16_scwm_face;
 
-#define FACEP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_face))
-#define FACE(X)  ((scwm_face *)gh_cdr(X))
-#define BUTTONFACE(X) (((scwm_face *)gh_cdr(X))->bf)
+#define FACEP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_face, X))
+#define FACE(X)  ((scwm_face *)SCM_SMOB_DATA(X))
+#define BUTTONFACE(X) (((scwm_face *)SCM_SMOB_DATA(X))->bf)
 
 extern SCM default_titlebar_face;
 extern SCM default_border_face;

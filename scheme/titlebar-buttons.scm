@@ -30,7 +30,7 @@ from the edges again."
   (set! left-button-number 1)
   (set! right-button-number 1))
 
-(define*-public (add-left-button button-face hook #&optional (immed-hook #f))
+(define*-public (add-left-button button-face hook #:optional (immed-hook #f))
   "Add a left button to the current decor."
   (set-left-button-face! left-button-number button-face)
   (bind-mouse (string->symbol 
@@ -40,7 +40,7 @@ from the edges again."
   (set! left-button-number (+ 1 left-button-number)))
 
 
-(define*-public (add-right-button button-face hook #&optional (immed-hook #f))
+(define*-public (add-right-button button-face hook #:optional (immed-hook #f))
   "Add a right button to the current decor."
   (set-right-button-face! right-button-number button-face)
   (bind-mouse (string->symbol 

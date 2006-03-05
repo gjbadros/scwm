@@ -119,8 +119,8 @@ static
 void
 vv_scwm_cb(SCM proc, SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(calldata) )
 {
-  if (gh_procedure_p(proc)) {
-    scwm_safe_apply(proc, gh_list(gh_int2scm((int) reply), SCM_UNDEFINED));
+  if (scm_to_bool(scm_procedure_p(proc))) {
+    scwm_safe_apply(proc, scm_list_n(scm_from_int((int) reply), SCM_UNDEFINED));
   }
 }
 
@@ -370,22 +370,22 @@ SmHandler GetNextWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
 SCM
 ScmAnnotationsFromRgAnnotations(int n, SM_ANNOTATION rgannot[])
 {
-  SCM answer = gh_make_vector(gh_int2scm(n), SCM_BOOL_F);
+  SCM answer = scm_make_vector(scm_from_int(n), SCM_BOOL_F);
   int i = 0;
   for (; i < n ; ++i ) {
     SCM value = SCM_BOOL_F;
     switch (rgannot[i].type) {
     case SM_ANNOTATION_NUMERIC:
-      value = gh_long2scm(rgannot[i].annodata.numeric);
+      value = scm_from_long(rgannot[i].annodata.numeric);
       break;
     case SM_ANNOTATION_STRING:
-      value = gh_str02scm(rgannot[i].annodata.string);
+      value = scm_from_locale_string(rgannot[i].annodata.string);
       break;
     case SM_ANNOTATION_OTHER:
       /* GJB:FIXME:: maybe use 'other */
       break;
     }
-    gh_vector_set_x(answer, gh_int2scm(i), value);
+    scm_vector_set_x(answer, scm_from_int(i), value);
   }
   return answer;
 }
@@ -497,10 +497,10 @@ SmHandler RecoPhraseCB ( SM_MSG reply,
     SCM annotations = ScmAnnotationsFromRgAnnotations(num_annots, annots);
 
     scwm_run_hook(vv_recognition_hook,
-                  gh_list(gh_bool2scm( (flags & SM_PHRASE_ACCEPTED ) ),
-                          gh_str02scm(phrase),
-                          annotations,
-                          SCM_UNDEFINED));
+                  scm_list_n(scm_from_bool(flags & SM_PHRASE_ACCEPTED),
+			     scm_from_locale_string(phrase),
+			     annotations,
+			     SCM_UNDEFINED));
   }
   
   /* Tell the engine to 'go' again */
@@ -553,7 +553,7 @@ SCM_DEFINE(vv_disconnect,"vv-disconnect",0,1,0,
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);
   DisconnectCB_proc = proc;
-  return gh_int2scm(DisconnectStuff(NULL));
+  return scm_from_int(DisconnectStuff(NULL));
 }
 #undef FUNC_NAME
 
@@ -564,7 +564,7 @@ SCM_DEFINE(vv_close,"vv-close",0,0,0,
 #define FUNC_NAME s_vv_close
 {
   fOpened = False;
-  return gh_int2scm(SmClose());
+  return scm_from_int(SmClose());
 }
 #undef FUNC_NAME
 
@@ -576,7 +576,7 @@ SCM_DEFINE(vv_connected_p,"vv-connected?",0,0,0,
 Returns #f if we are not connected.")
 #define FUNC_NAME s_vv_connected_p
 {
-  return gh_bool2scm(fConnected);
+  return scm_from_bool(fConnected);
 }
 #undef FUNC_NAME
 
@@ -600,12 +600,12 @@ code when the asynchronous procedure completes.")
   DefineGrammarCB_proc = proc;
 
   { /* scope */
-    char *szName = gh_scm2newstr(name, NULL);
-    char *szFile = gh_scm2newstr(grammar_file, NULL);
+    char *szName = scm_to_locale_string(name);
+    char *szFile = scm_to_locale_string(grammar_file);
     int rc = SmDefineGrammar ( szName, szFile, 0, SmAsynchronous );
-    gh_free(szName);
-    gh_free(szFile);
-    return gh_int2scm(rc);
+    free(szName);
+    free(szFile);
+    return scm_from_int(rc);
   }
 }
 #undef FUNC_NAME
@@ -620,8 +620,8 @@ PROC is invoked with the response code when the asynchronous procedure completes
   VALIDATE_ARG_PROC_USE_F(2,proc);
   EnableVocabCB_proc = proc;
   { /* scope */
-    char *sz = gh_scm2newstr(name,NULL);
-    return gh_int2scm(SmEnableVocab(sz,SmAsynchronous));
+    char *sz = scm_to_locale_string(name);
+    return scm_from_int(SmEnableVocab(sz,SmAsynchronous));
   }
 }
 #undef FUNC_NAME
@@ -638,7 +638,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
   scwm_msg(INFO,"ViaVoice","TurnMicOn called" );
   /* Send a request to tell the engine to turn the mic on.  The reply 
      comes back to the MicOnCB */
-  return gh_int2scm(SmMicOn(SmAsynchronous));
+  return scm_from_int(SmMicOn(SmAsynchronous));
 }
 #undef FUNC_NAME
 
@@ -654,7 +654,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
   scwm_msg(INFO,"ViaVoice","TurnMicOff called" );
   /* Send a request to tell the engine to turn the mic on.  The reply 
      comes back to the MicOnCB */
-  return gh_int2scm(SmMicOff(SmAsynchronous));
+  return scm_from_int(SmMicOff(SmAsynchronous));
 }
 #undef FUNC_NAME
 

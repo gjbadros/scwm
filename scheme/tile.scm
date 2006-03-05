@@ -36,7 +36,7 @@
    (round (+ start (/ (* range step) steps)))))
 
 (define*-public (tile-windows
-		 windows #&key (start-pos '(0 0)) 
+		 windows #:key (start-pos '(0 0)) 
 		 (end-pos (display-size)) (resize 'always)
 		 (raise 'restack-only)
 		 (max-windows #f)
@@ -125,7 +125,7 @@ respectively. The default is 'restack-only."
 		      (integer-step start-y range-y num-per-column 
 				    (+ row 2)))))))))))))    
 			  
-(define*-public (tile #&key (only ()) (except ()) 
+(define*-public (tile #:key (only '()) (except '()) 
 			 (by-stacking #f) (by-focus #f)
 			 (reverse #f)
 			 (all-viewports #f) (desk (current-desk))
@@ -156,7 +156,7 @@ control the tiling options as for `tile-windows'."
 			     (list in-viewport-any-desk?))
 			 only))
     #:except (append (if ignore-default-exceptions
-			 ()
+			 '()
 			 (list transient? maximized? 
 			       sticky-window? iconified-window?
 			       (lambda (w) 
@@ -167,7 +167,7 @@ control the tiling options as for `tile-windows'."
    #:resize resize #:max-windows max-windows #:order order))
 
 
-(define*-public (tile-windows-interactively #&optional (order 'horizontal))
+(define*-public (tile-windows-interactively #:optional (order 'horizontal))
   "Tile a set of selected windows either vertically or horizontally.
 ORDER can be either 'horizontal or 'vertical.
 The windows used are selected either by `selected-windows-list' or 

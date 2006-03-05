@@ -22,8 +22,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #define WINPROP_IMPLEMENTATION
 
 #include "winprop.h"
@@ -35,10 +33,10 @@
 #define HANDLER_TABLE_SIZE 7
 
 SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4,
-"This hook is invoked whenever a window property changes.
-The hook procedures are invoked with four arguments, the window whose
-property changed, the name of the changed property, the new value and
-the old value.");
+"This hook is invoked whenever a window property changes.\n\n"
+"The hook procedures are invoked with four arguments, the window whose\n"
+"property changed, the name of the changed property, the new value and\n"
+"the old value.");
 
 SCM property_handler_hash_table;
 
@@ -77,7 +75,7 @@ void
 signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val)
 {
   scwm_run_hook(window_property_change_hook, 
-                gh_list (win, prop, new_val, old_val, SCM_UNDEFINED));
+                scm_list_n(win, prop, new_val, old_val, SCM_UNDEFINED));
 }
 
 
@@ -105,12 +103,12 @@ window property primitives should be considered in flux.")
  
   handler = scm_hashq_ref(property_handler_hash_table, prop, SCM_BOOL_F);
 
-  if (handler != SCM_BOOL_F) {
+  if (scm_is_true(handler)) {
     CALL_PH_SETTER(handler, win, val);
   } else {
     old_val = scm_hashq_ref(psw->other_properties, prop, SCM_BOOL_F);
     
-    if (val==SCM_BOOL_F) {
+    if (scm_is_false(val)) {
       scm_hashq_remove_x(psw->other_properties, prop);
     } else {
       scm_hashq_set_x(psw->other_properties, prop, val);
@@ -144,7 +142,7 @@ be considered in flux.")
 
   handler = scm_hashq_ref(property_handler_hash_table, prop, SCM_BOOL_F);
 
-  if (handler != SCM_BOOL_F) {
+  if (scm_is_true(handler)) {
     return CALL_PH_GETTER(handler, win);
   } else {
     return scm_hashq_ref(PSWFROMSCMWIN(win)->other_properties, 
@@ -154,22 +152,17 @@ be considered in flux.")
 #undef FUNC_NAME
 
 
-MAKE_SMOBFUNS(property_handler);
-
-
 void 
 init_winprop()
 {
   REGISTER_SCWMSMOBFUNS(property_handler);
 
   property_handler_hash_table = 
-    gh_make_vector (SCM_MAKINUM(HANDLER_TABLE_SIZE), SCM_EOL);
+    scm_make_vector (scm_from_int(HANDLER_TABLE_SIZE), SCM_EOL);
 
   scm_permanent_object(property_handler_hash_table);
 
-#ifndef SCM_MAGIC_SNARFER
 #include "winprop.x"
-#endif
 }
 
 

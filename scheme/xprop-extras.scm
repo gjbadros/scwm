@@ -27,17 +27,17 @@ cut buffer is empty or is not a string."
 This is the cut text selected by X clients."
   (X-store-bytes string))
 
-(define*-public (copy-window-title-to-cut-buffer #&optional (window (get-window)))
+(define*-public (copy-window-title-to-cut-buffer #:optional (window (get-window)))
   "Set X cut buffer to be a string that is the title of WINDOW."
   (X-set-cut-buffer-string! (window-title window)))
 
-(define*-public (paste-window-title-from-cut-buffer #&optional (window (get-window)))
+(define*-public (paste-window-title-from-cut-buffer #:optional (window (get-window)))
   "Set the window title of WINDOW to be the string in the X cut buffer.
 Do nothing if the cut buffer does not contain a string."
   (let ((t (X-cut-buffer-string)))
     (if t (set-window-title! window t))))
 
-(define*-public (propagate-selection-to-cut-buffer #&optional (selection "PRIMARY"))
+(define*-public (propagate-selection-to-cut-buffer #:optional (selection "PRIMARY"))
   "Make the cut-buffer contain the current selection."
   (interactive)
   (X-handle-selection-string selection
@@ -77,7 +77,7 @@ notion of what the command line was used to run the application."
   (let ((prop (X-property-get win "WM_COMMAND")))
     (and (list? prop) (car prop))))
 
-(define*-public (X-atomic-property-set-if-unset! window name value #&optional
+(define*-public (X-atomic-property-set-if-unset! window name value #:optional
 						(type "STRING") (format 8))
   "Set property NAME on WINDOW to VALUE, if it's currently unset.
 Returns #f if the property is already set, #t otherwise.
@@ -189,13 +189,13 @@ name, and `window-pid' to get the process id.
 			'(MWD-ALL MWD-BORDER MWD-RESIZEH MWD-TITLE MWD-MENU
 				  MWD-MINIMIZE MWD-MAXIMIZE)))))
 
-(define*-public (X-properties->string #&optional (win (get-window))
+(define*-public (X-properties->string #:optional (win (get-window))
 				      (recurse #t))
   "Prints the X properties of WIN into a string.
 WIN is a window object, an X window id, or 'root-window.
 If RECURSE is non-#f, also list properties of referenced windows."
   (let ((win (if (number? win) win (window-id win)))
-	(todo ()))
+	(todo '()))
     (apply
      string-append
      (append!
@@ -212,7 +212,7 @@ If RECURSE is non-#f, also list properties of referenced windows."
 			   (set! todo (append! todo
 					       (cons (cons leader
 							   "client leader")
-						     ()))))
+						     '()))))
 		       (string-append "# 0x" (number->hex-string leader))))
 		    ((equal? type "STRING")
 		     (string-join
@@ -261,7 +261,7 @@ If RECURSE is non-#f, also list properties of referenced windows."
 				(not (assoc leader todo)))
 			   (set! todo (append! todo (cons (cons leader
 								"group leader")
-							  ())))))
+							  '())))))
 		     (apply
 		      string-append
 		      (map
@@ -412,4 +412,4 @@ If RECURSE is non-#f, also list properties of referenced windows."
 		 (string-append "\n--- " (cdr w) " ---\n"
 				(X-properties->string (car w) #f)))
 	       todo)
-	  ())))))
+	  '())))))

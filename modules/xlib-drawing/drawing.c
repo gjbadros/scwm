@@ -45,17 +45,17 @@ static GC DrawingGC;
 static 
 Bool xlib_point_pair_p(SCM point)
 {
-  if (!gh_pair_p(point))
+  if (!scm_to_bool(scm_pair_p(point)))
     return False;
-  return (gh_number_p(gh_car(point)) && gh_number_p(gh_cdr(point)));
+  return scm_is_number(scm_car(point)) && scm_is_number(scm_cdr(point));
 }
 
 /* assumes top_left is an xlib_point_pair */
 static
 void xlib_point_pair_get_values(SCM p, int *piX, int *piY)
 {
-  *piX = gh_scm2int(gh_car(p));
-  *piY = gh_scm2int(gh_cdr(p));
+  *piX = scm_to_int(scm_car(p));
+  *piY = scm_to_int(scm_cdr(p));
 }
 
 

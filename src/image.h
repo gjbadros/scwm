@@ -22,14 +22,14 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif
 
 #include <unistd.h>
 #include <X11/Intrinsic.h>
-
-#include <guile/gh.h>
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -64,15 +64,15 @@ typedef struct
 } scwm_image;
 
 
-#define IMAGE_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_scwmimage)
-#define IMAGE(X)  ((scwm_image *)gh_cdr(X))
-#define SAFE_IMAGE(X)  (IMAGE_P((X))? IMAGE((X)) : NULL)
-#define DYNAMIC_IMAGE_P(X) (gh_symbol_p(X)? \
-                            IMAGE_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+#define IMAGE_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_scwmimage, X))
+#define IMAGE(X)  ((scwm_image *)SCM_SMOB_DATA(X))
+#define SAFE_IMAGE(X)  (IMAGE_P(X)? IMAGE(X) : NULL)
+#define DYNAMIC_IMAGE_P(X) (scm_is_symbol(X)? \
+                            IMAGE_P(scm_variable_ref(scm_lookup(X))) : \
                             IMAGE_P(X))
-#define IMAGE_OR_SYMBOL_P(X) (IMAGE_P(X) || gh_symbol_p(X))
-#define DYNAMIC_SAFE_IMAGE(X) (gh_symbol_p(X)? \
-                               SAFE_IMAGE(scm_symbol_binding(SCM_BOOL_F,(X))):\
+#define IMAGE_OR_SYMBOL_P(X) (IMAGE_P(X) || scm_is_symbol(X))
+#define DYNAMIC_SAFE_IMAGE(X) (scm_is_symbol(X)? \
+                               SAFE_IMAGE(scm_variable_ref(scm_lookup(X))):\
                                SAFE_IMAGE(X))
 
 EXTERN long scm_tc16_scwm_scwmimage;
@@ -118,13 +118,13 @@ void init_image_colormap();
 
 #define VALIDATE_ARG_IMAGE_OR_STRING(pos,scm) \
   do { \
-  if (gh_string_p(scm)) scm = make_image(scm); \
+  if (scm_is_string(scm)) scm = make_image(scm); \
   if (!IMAGE_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_IMAGE_OR_STRING_OR_F(pos,scm) \
   do { \
-  if (gh_string_p(scm)) scm = make_image(scm); \
+  if (scm_is_string(scm)) scm = make_image(scm); \
   if (!IMAGE_P(scm) && SCM_BOOL_F != scm) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 

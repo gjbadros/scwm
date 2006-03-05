@@ -44,7 +44,7 @@ PROCS to ARGS."
       (proc-or-num win)))
 
 (define*-public (cascade-windows 
-		 windows #&key (start-pos '(0 0)) 
+		 windows #:key (start-pos '(0 0)) 
 		 (max-size (display-size)) (resize 'shrink-only)
 		 (raise 'restack-only)
 		 (x-increment (meta-apply + window-title-height
@@ -102,7 +102,7 @@ sum of the window's border width and title height."
 	  (loop (cdr windows) (+ cur-x (num-or-apply x-increment win))
 		(+ cur-y (num-or-apply y-increment win)))))))
   
-(define*-public (cascade #&key (only ()) (except ()) 
+(define*-public (cascade #:key (only '()) (except '()) 
 			 (by-stacking #f) (by-focus #f)
 			 (reverse #t)
 			 (all-viewports #f) (desk (current-desk))
@@ -135,7 +135,7 @@ control the cascading options as for `cascade-windows'."
 			     (list in-viewport-any-desk?))
 			 (listify-if-atom only)))
     #:except (append (if ignore-default-exceptions
-			 ()
+			 '()
 			 (list transient? maximized? 
 			       sticky-window? iconified-window?
 			       (lambda (w) 

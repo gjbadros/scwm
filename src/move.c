@@ -146,9 +146,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 
   /* same hook is called identically before the iterations; see above */
   scwm_run_hook(interactive_move_new_position_hook, 
-                gh_list(SCM_FROM_PSW(psw),
-                        gh_int2scm(saved_x), gh_int2scm(saved_y),
-                        SCM_UNDEFINED));
+                scm_list_n(SCM_FROM_PSW(psw),
+			   scm_from_int(saved_x), scm_from_int(saved_y),
+			   SCM_UNDEFINED));
 
   while (!finished) {
     while (XCheckMaskEvent(dpy, 
@@ -267,9 +267,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                 WIN_VP_OFFSET_X(psw)+xl,WIN_VP_OFFSET_Y(psw)+yt);
 #endif
 	scwm_run_hook(interactive_move_new_position_hook, 
-                      gh_list(SCM_FROM_PSW(psw),
-                              gh_int2scm(real_x), gh_int2scm(real_y),
-                              SCM_UNDEFINED));
+                      scm_list_n(SCM_FROM_PSW(psw),
+				 scm_from_int(real_x), scm_from_int(real_y),
+				 SCM_UNDEFINED));
 
 	/*DisplayPosition(psw, real_x, real_y, True);*/
 
@@ -535,9 +535,9 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
   /* same hook is called above, before the iterations begin, and during the iterations */
   scwm_run_hook(interactive_move_new_position_hook, 
-                gh_list(SCM_FROM_PSW(psw),
-                        gh_int2scm(FRAME_X_VP(psw)), gh_int2scm(FRAME_Y_VP(psw)),
-                        SCM_UNDEFINED));
+                scm_list_n(SCM_FROM_PSW(psw),
+			   scm_from_int(FRAME_X_VP(psw)), scm_from_int(FRAME_Y_VP(psw)),
+			   SCM_UNDEFINED));
   scwm_run_hook1(interactive_move_finish_hook, SCM_FROM_PSW(psw));
 
   if (psw->fIconified) {
@@ -568,7 +568,7 @@ specified.")
   VALIDATE_PRESS_ONLY(win);
   InteractiveMove(PSWFROMSCMWIN(win), False, &x, &y);
 
-  return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(x),scm_from_int(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -586,7 +586,7 @@ defaults to the window context in the usual way if not specified.")
   VALIDATE_PRESS_ONLY(win);
   InteractiveMove(PSWFROMSCMWIN(win), True, &x, &y);
 
-  return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(x),scm_from_int(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -594,9 +594,7 @@ defaults to the window context in the usual way if not specified.")
 void 
 init_move()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "move.x"
-#endif
 }
 
 /* Local Variables: */

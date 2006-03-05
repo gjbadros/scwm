@@ -20,8 +20,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include <guile/gh.h>
-
 #define MENUITEM_IMPLEMENTATION
 #include "menu.h"
 
@@ -93,7 +91,7 @@ SCM_DEFINE(menuitem_p,"menuitem?",1,0,0,
 "Return #t if and only if OBJ is a menu item object.")
 #define FUNC_NAME s_menuitem_p
 {
-  return SCM_BOOL_FromBool(MENUITEM_P(obj));
+  return scm_from_bool(MENUITEM_P(obj));
 }
 #undef FUNC_NAME
 
@@ -111,16 +109,16 @@ primitive.")
 {
   MenuItem *pmi;
   VALIDATE_ARG_MENUITEM_COPY(1,menu_item,pmi);
-  return gh_list(gh_str02scm(pmi->szLabel),
-		 pmi->scmAction,
-		 gh_str02scm(pmi->szExtra),
-		 pmi->scmImgAbove,
-		 pmi->scmImgLeft,
-		 pmi->scmHover,
-		 pmi->scmUnhover,
-		 gh_str02scm(pmi->pchHotkeyPreferences),
-                 gh_bool2scm(pmi->fIsForcedSubmenu),
-		 SCM_UNDEFINED);
+  return scm_list_n(scm_from_locale_string(pmi->szLabel),
+		    pmi->scmAction,
+		    scm_from_locale_string(pmi->szExtra),
+		    pmi->scmImgAbove,
+		    pmi->scmImgLeft,
+		    pmi->scmHover,
+		    pmi->scmUnhover,
+		    scm_from_locale_string(pmi->pchHotkeyPreferences),
+		    scm_from_bool(pmi->fIsForcedSubmenu),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -155,7 +153,7 @@ For a higher-level interface to this function, see `menuitem'.")
 
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
-  } else if (!gh_symbol_p(action) && !gh_procedure_p(action) && !MENU_P(action)) {
+  } else if (!scm_is_symbol(action) && !scm_is_true(scm_procedure_p(action)) && !MENU_P(action)) {
     SCWM_WRONG_TYPE_ARG(2,action);
   }
   pmi->scmAction = action;
@@ -189,8 +187,8 @@ For a higher-level interface to this function, see `menuitem'.")
   VALIDATE_ARG_BOOL_COPY_USE_F(9,submenu_p,pmi->fIsForcedSubmenu);
 
   pmi->fIsSeparator =
-    (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
-     picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F);
+    (scm_is_false(action) && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
+     scm_is_false(picture_left) && scm_is_false(picture_above));
   
   pmi->scmBGColor = SCM_BOOL_F;
   pmi->scmFGColor = SCM_BOOL_F;
@@ -232,7 +230,7 @@ the menu in which it is embedded.")
 {
   MenuItem *pmi;
   VALIDATE_ARG_MENUITEM_COPY(1,menuitem,pmi);
-  return gh_list(pmi->scmFGColor,pmi->scmBGColor,SCM_UNDEFINED);
+  return scm_list_n(pmi->scmFGColor, pmi->scmBGColor, SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -267,17 +265,12 @@ from the menu in which it is embedded.")
 #undef FUNC_NAME
 
 
-
-MAKE_SMOBFUNS(menuitem);
-
 void
 init_menuitem()
 {
   REGISTER_SCWMSMOBFUNS(menuitem);
 
-#ifndef SCM_MAGIC_SNARFER
-# include "menuitem.x"
-#endif
+#include "menuitem.x"
 }
 
 /* Local Variables: */

@@ -4,6 +4,8 @@
  * Background image extension added --07/01/99 gjb
  */
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif
@@ -11,7 +13,6 @@
 #define MESSAGE_WINDOW_IMPLEMENTATION
 #include "message-window.h"
 
-#include <guile/gh.h>
 #include <libguile.h>
 #include <X11/X.h>
 #ifdef HAVE_SHAPE
@@ -92,7 +93,7 @@ SCM_DEFINE(message_window_p, "message-window?", 1, 0, 0,
 "Returns #t if MWN is a msgwindow object, otherwise #f.")
 #define FUNC_NAME s_message_window_p
 {
-  return SCM_BOOL_FromBool(MSGWINDOW_P(mwn));
+  return scm_from_bool(MSGWINDOW_P(mwn));
 }
 #undef FUNC_NAME
 
@@ -140,12 +141,12 @@ DrawWindow( scwm_msgwindow* msg )
 
   XClearWindow(dpy, msg->win);
   if (msg->fRelief) {
-    if (scmFgRelief != SCM_BOOL_F)
+    if (scm_is_true(scmFgRelief))
       SetGCFg(gcHilite,XCOLOR(scmFgRelief));
     else
       SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
     
-    if (scmBgRelief != SCM_BOOL_F)
+    if (scm_is_true(scmBgRelief))
       SetGCFg(gcShadow,XCOLOR(scmBgRelief));
     else
       SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
@@ -274,7 +275,7 @@ Uses defaults from the ScreenInfo struct for the other values.")
   if (SCM_UNDEFINED == message)
     msg->sz = NULL;
   else
-    msg->sz = gh_scm2newstr(message,NULL);
+    msg->sz = scm_to_locale_string(message);
 
   /* JWN:FIXME:: For now, I'll assume the ScreenInfo struct contains good defaults
      for the message window params.  Is there another better place? */
@@ -339,9 +340,9 @@ The message will be MESSAGE")
   VALIDATE_ARG_STR(2,message);
 
   if (msg->sz) {
-    gh_free(msg->sz);
+    free(msg->sz);
   }
-  msg->sz = gh_scm2newstr(message,NULL);
+  msg->sz = scm_to_locale_string(message);
   ResizeMessageWindow( msg );
 
   return SCM_UNSPECIFIED;
@@ -368,7 +369,7 @@ is used for MWN.")
 
   msg->bg_image = image;
 
-  if (SCM_BOOL_F != image) {
+  if (scm_is_true(image)) {
     Pixel fg = XCOLOR(fg_color);
     Pixel bg = XCOLOR(bg_color);
     Pixmap mask;
@@ -401,7 +402,7 @@ The font will be FNT")
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
-  if (gh_string_p(fnt)) {
+  if (scm_is_string(fnt)) {
     fnt = make_font(fnt);
   }
 
@@ -424,12 +425,12 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR"
   scwm_msgwindow *msg;
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
-  if ( fg_color != SCM_BOOL_F ) {
+  if (scm_is_true(fg_color)) {
     VALIDATE_ARG_COLOR(2,fg_color);
     msg->fg_color = fg_color;
   }
 
-  if ( bg_color != SCM_BOOL_F ) {
+  if (scm_is_true(bg_color)) {
     VALIDATE_ARG_COLOR(3,bg_color);
     msg->bg_color = bg_color;
     msg->shadow_color = adjust_brightness(msg->bg_color, 
@@ -534,14 +535,14 @@ the window will not ever disappear).")
   VALIDATE_ARG_MSGWINDOW(1,mwn);
 
   /* if it's already visible, we need do nothing;
-     in particular, scm_protect_object may track
+     in particular, scm_gc_protect_object may track
      protections, and we want a single hide to
      eliminate the affects of all show!-s */
   if (FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win))
     return SCM_UNSPECIFIED;
 
   /* do not let GC collect the object when it is visible */
-  scm_protect_object(mwn);
+  scm_gc_protect_object(mwn);
 
   MapMessageWindow(MSGWINDOW(mwn));
   ResizeMessageWindow( MSGWINDOW(mwn) );
@@ -566,7 +567,7 @@ See also `message-window-show'.")
   UnmapMessageWindow(MSGWINDOW(mwn));
   XFlush(dpy);
 
-  scm_unprotect_object(mwn);
+  scm_gc_unprotect_object(mwn);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -580,7 +581,7 @@ See also `message-window-show', `message-window-hide'.")
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
 
-  return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win));
+  return scm_from_bool(FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win));
 }
 #undef FUNC_NAME
 
@@ -591,7 +592,7 @@ SCM_DEFINE (message_window_message, "message-window-message", 1, 0, 0,
 #define FUNC_NAME s_message_window_message
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
-  return gh_str02scm(MSGWINDOW(mwn)->sz);
+  return scm_from_locale_string(MSGWINDOW(mwn)->sz);
 }
 #undef FUNC_NAME
 
@@ -616,9 +617,9 @@ This is returned as a four element list: (x y x-align y-align).")
   scwm_msgwindow* msg;
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
-  return gh_list(gh_int2scm(msg->x), gh_int2scm(msg->y), 
-		 gh_double2scm(msg->x_align), gh_double2scm(msg->y_align), 
-		 SCM_UNDEFINED );
+  return scm_list_n(scm_from_int(msg->x), scm_from_int(msg->y), 
+		    scm_from_double(msg->x_align), scm_from_double(msg->y_align), 
+		    SCM_UNDEFINED );
 }
 #undef FUNC_NAME
 
@@ -637,7 +638,7 @@ Returns as a two element list: (width height).")
   w = MessageWindowWidth(msg);
   h = MessageWindowHeight(msg);
 
-  return gh_list(gh_int2scm(w), gh_int2scm(h), SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(w), scm_from_int(h), SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -659,7 +660,7 @@ SCM_DEFINE (message_window_id, "message-window-id", 1, 0, 0,
 #define FUNC_NAME s_message_window_id
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
-  return gh_long2scm(MSGWINDOW(mwn)->win);
+  return scm_from_long(MSGWINDOW(mwn)->win);
 }
 #undef FUNC_NAME
 
@@ -672,7 +673,7 @@ These are returned in a list of the form (fg_color,bg_color).")
 {
   scwm_msgwindow* msg;
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-  return gh_list( msg->fg_color, msg->bg_color, SCM_UNDEFINED );
+  return scm_list_n( msg->fg_color, msg->bg_color, SCM_UNDEFINED );
 }
 #undef FUNC_NAME
 
@@ -683,21 +684,17 @@ SCM_DEFINE (message_window_relief_p, "message-window-relief?", 1, 0, 0,
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
 
-  return SCM_BOOL_FromBool(MSGWINDOW(mwn)->fRelief);
+  return scm_from_bool(MSGWINDOW(mwn)->fRelief);
 }
 #undef FUNC_NAME
 
-
-MAKE_SMOBFUNS(msgwindow);
 
 void 
 init_message_window()
 {
   REGISTER_SCWMSMOBFUNS(msgwindow);
 
-#ifndef SCM_MAGIC_SNARFER
 #include "message-window.x"
-#endif
 }
 
 /* Local Variables: */

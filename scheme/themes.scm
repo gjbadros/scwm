@@ -53,7 +53,7 @@
 			 'splicing)
 
 
-(define*-public (use-theme theme #&key (for-windows #t) 
+(define*-public (use-theme theme #:key (for-windows #t) 
 			    (for-menus #t) (for-icons #t)
 			    (for-background #t) 
 			    (for-global-settings #t))
@@ -101,7 +101,7 @@ tar file with extension .tar, .tar.gz, or .tgz."
 
 (define-public theme-dictionary (make-hash-table 7))
 
-(define*-public (load-cached-theme fname #&optional force?)
+(define*-public (load-cached-theme fname #:optional force?)
   (or (and (not force?) (hash-ref theme-dictionary fname))
       (let ((theme (load-theme fname)))
 	(if theme

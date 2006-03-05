@@ -6,7 +6,7 @@
 ;;(define theme-dir "/scratch/gjb/themes/")  ;; needs trailing slash
 ;;(define theme-dir "/home/gjb/scwm-themes/")
 
-(define* (list-of-theme-images prefix #&optional 
+(define* (list-of-theme-images prefix #:optional 
 			       (list-of-image-names '("topleft"
 						      "top"
 						      "topright"

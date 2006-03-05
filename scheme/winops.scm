@@ -18,11 +18,11 @@
 ;;;; 
 
 
-
 (define-module (app scwm winops)
+  :use-module (app scwm minimal)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
-  :use-module (app scwm c-animation)
+  ;; :use-module (app scwm c-animation)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
   :use-module (app scwm wininfo)
@@ -30,7 +30,8 @@
   :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
   :use-module (app scwm window-selection)
-  :use-module (app scwm sort))
+  ;;:use-module (app scwm sort)
+  :export (toggle-maximize-vertical toggle-maximize-horizontal))
 
 
 
@@ -43,7 +44,7 @@
 PRED, NEG, and POS should be functions which take a window and
 check whether the property holds for the window, reset the property
 on the window, and set the property on the window, respectively."
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   "A toggling window operation.
 See `make-toggling-winop'."
     (interactive)
@@ -51,7 +52,7 @@ See `make-toggling-winop'."
 		(neg win)
 		(pos win)))))
 
-(define*-public (close-window #&optional (win (get-window #t #t #t)))
+(define*-public (close-window #:optional (win (get-window #t #t #t)))
   "Close WIN either by deleting it or destroying it.
 WIN is only destroyed if it is not deleteable."
   (interactive)
@@ -59,7 +60,7 @@ WIN is only destroyed if it is not deleteable."
 	      (delete-window win)
 	      (destroy-window win))))
 
-(define*-public (focus-or-toggle-raise #&optional (win (window-with-pointer)))
+(define*-public (focus-or-toggle-raise #:optional (win (window-with-pointer)))
   "Focus on WIN if it does not have the focus, else toggle-raise WIN."
   (interactive)
   (if (equal? (window-with-focus) win)
@@ -84,28 +85,28 @@ WIN is only destroyed if it is not deleteable."
 (define-public toggle-titlebar
   (make-toggling-winop titlebar-shown? hide-titlebar show-titlebar))
 
-(define*-public (hide-titlebar-in-place #&optional (win (get-window)))
+(define*-public (hide-titlebar-in-place #:optional (win (get-window)))
   "Turn off display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
   (interactive)
   (hide-titlebar win #t))
 
-(define*-public (show-titlebar-in-place #&optional (win (get-window)))
+(define*-public (show-titlebar-in-place #:optional (win (get-window)))
   "Turn on display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
   (interactive)
   (show-titlebar win #t))
 
-(define*-public (hide-side-decorations #&optional (win (get-window)))
+(define*-public (hide-side-decorations #:optional (win (get-window)))
   "Do not display the sidebar decorations for WIN.
 See also `show-side-decorations'."
   (interactive)
   (set-object-property! win 'no-side-decorations #t)
   (force-reset-window-frame! win))
 
-(define*-public (show-side-decorations #&optional (win (get-window)))
+(define*-public (show-side-decorations #:optional (win (get-window)))
   "Display the sidebar decorations for WIN.
 See also `hide-side-decorations'."
   (interactive)
@@ -129,7 +130,7 @@ See also `hide-side-decorations'."
 ;;(set! *maximize-animatedly* #f)
 
 ;;; Maximization
-(define*-public (maximize nw nh #&optional (win (get-window)))
+(define*-public (maximize nw nh #:optional (win (get-window)))
   "Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed."
   (if win (let* ((pos (window-viewport-position win))
@@ -154,20 +155,22 @@ If NW or NH is 0, that dimension is not changed."
 			 (if (> nw 0) nw pix-width)
 			 (if (> nh 0) nh pix-height) win (vpx->vx nx) (vpy->vy ny))))
 ;;	      (write args) (newline)  ;; debugging
-	      (apply (if *maximize-animatedly* 
-			 animated-resize-frame resize-frame) args))
+;;	      (apply (if *maximize-animatedly* 
+;;			 animated-resize-frame resize-frame) args)
+              (apply resize-frame args)
+              )
 	    (if (not (maximized? win))
 		(begin
 ;;		  (set-window-gravity! 'northwest win)
 		  (set-window-property!
 		   win 'maximized (list virt-pos cli-size frame-size)))))))
 
-(define*-public (maximized? #&optional (win (get-window)))
+(define*-public (maximized? #:optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
   (->bool (window-property win 'maximized)))
 
 ;; uses client units
-(define*-public (unmaximize #&optional (win (get-window)))
+(define*-public (unmaximize #:optional (win (get-window)))
   "Unmaximize WIN so it returns to its size/position before maximization."
   (if win (let ((max-prop (window-property win 'maximized)))
 	       (cond
@@ -175,14 +178,15 @@ If NW or NH is 0, that dimension is not changed."
 		 (let* ((pos (car max-prop))
 			(cli-size (cadr max-prop))
 			(frame-size (caddr max-prop)))
-		   ((if *maximize-animatedly*
-			animated-resize-frame resize-frame)
+		   (;;(if *maximize-animatedly*
+			;;animated-resize-frame resize-frame)
+                    resize-frame
 		    (car frame-size) (cadr frame-size)
 		    win (car pos) (cadr pos))
 		   (set-window-property! win 'maximized #f)))))))
 
 
-(define*-public (toggle-maximize nw nh #&optional (win (get-window)))
+(define*-public (toggle-maximize nw nh #:optional (win (get-window)))
   "Maximize to width NW, height NH if not maximized, or unmaximize."
   (if win (if (maximized? win)
 	      (unmaximize win)
@@ -251,7 +255,7 @@ The procedure should take a single argument, the window."
 
 
 (define*-public (interactive-move 
-		 #&optional (win (get-window #t #f #f))
+		 #:optional (win (get-window #t #f #f))
 		 (opaquely? (if win ((optget *move-opaquely-proc*) win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
@@ -262,7 +266,7 @@ opaquely if that returns #t and uses a rubber-band if it returns #f."
   (if win ((if opaquely? opaque-move rubber-band-move) win)))
 
 (define*-public (interactive-resize 
-		 #&optional (win (get-window #t #f #f))
+		 #:optional (win (get-window #t #f #f))
 		 (opaquely? (if win ((optget *resize-opaquely-proc*) win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
@@ -273,20 +277,18 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
   (interactive)
   (if win ((if opaquely? opaque-resize rubber-band-resize) win)))
 
-;;; hack to work with minimal.scm
-(set! hack-interactive-move interactive-move)
-(set! hack-interactive-resize interactive-resize)
+
 
 
 ;; Printing
 (if (cached-program-exists? "xpr")
-    (define*-public (print-window #&optional (win (get-window)))
+    (define*-public (print-window #:optional (win (get-window)))
       "Print WIN using xpr and lpr."
       (if win (execute (string-append "xwd -id " 
 				      (number->string (window-id win))
 				      " | xpr | lpr")))))
 
-(define*-public (resize-window w h #&optional (win (get-window)) x y)
+(define*-public (resize-window w h #:optional (win (get-window)) x y)
   "Resize WIN's client area to a size of W by H in pixels. 
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
@@ -301,7 +303,7 @@ if not specified."
 
 ;; Sort windows by position
 
-(define*-public (sort-windows-by-middle-pos winlist #&key (horiz #t) (ascending #t))
+(define*-public (sort-windows-by-middle-pos winlist #:key (horiz #t) (ascending #t))
   "Sort WINLIST (a list of windows) by their middle positioins.
 Sort on horizontal position (x coordinate) if HORIZ is #t, otherwise
 sort on vertical position (y coordiate) otherwise.  Sort in 
@@ -407,42 +409,42 @@ outline or the window itself is resized."
   (interactive)
   (let ((w (window-with-pointer))) (and w (interactive-resize w))))
 
-(define*-public (toggle-maximize-vertical #&optional (win (get-window)))
+(define* (toggle-maximize-vertical #:optional (win (get-window)))
   "Toggle the current window's maximized-vertically state."
   (interactive)
   (toggle-maximize 0 (%y 100) win))
 
-(define*-public (toggle-maximize-horizontal #&optional (win (get-window)))
+(define* (toggle-maximize-horizontal #:optional (win (get-window)))
   "Toggle the WIN's maximized-horizontally state."
   (interactive)
   (toggle-maximize (%x 100) 0 win))
 
-(define*-public (toggle-maximize-both #&optional (win (get-window)))
+(define*-public (toggle-maximize-both #:optional (win (get-window)))
   "Toggle the WIN's maximization (both vertically and horizontally)."
   (interactive)
   (toggle-maximize (%x 100) (%y 100) win))
 
-(define*-public (toggle-maximize-vertical-part #&optional (win (get-window)))
+(define*-public (toggle-maximize-vertical-part #:optional (win (get-window)))
   "Toggle the WIN's maximization-vertically to 95% of the screen height."
   (interactive)
   (toggle-maximize 0 (%y 95) win))
 
-(define*-public (maximize-vertical #&optional (win (get-window)))
+(define*-public (maximize-vertical #:optional (win (get-window)))
   "Maximize WIN vertically."
   (interactive)
   (maximize 0 (%y 100) win))
 
-(define*-public (maximize-horizontal #&optional (win (get-window)))
+(define*-public (maximize-horizontal #:optional (win (get-window)))
   "Maximize WIN horizontally."
   (interactive)
   (maximize (%x 100) 0 win))
 
-(define*-public (maximize-both #&optional (win (get-window)))
+(define*-public (maximize-both #:optional (win (get-window)))
   "Maximize WIN both horizontally and vertically."
   (interactive)
   (maximize (%x 100) (%y 100) win))
 
-(define*-public (focus-change-warp-pointer #&optional (win (get-window)))
+(define*-public (focus-change-warp-pointer #:optional (win (get-window)))
   "Deiconify, focus, raise, and warp-to WIN.
 This is initially the default behaviour when WIN is selected from the window list."
   (interactive)
@@ -480,3 +482,8 @@ you can do something like:
   (interactive)
   (focus-change-warp-pointer
    (cadr (list-windows #:by-focus #t))))
+
+
+;;; hack to work with minimal.scm
+;(set! hack-interactive-move interactive-move)
+;(set! hack-interactive-resize interactive-resize)

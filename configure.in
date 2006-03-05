@@ -17,7 +17,7 @@ AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/scwmconfig.h)
 
 ## This will try to create the named directory if it does not exist
-AC_DEFUN(SCWM_ARG_PATH,
+AC_DEFUN([SCWM_ARG_PATH],
 [
   AC_ARG_WITH($1,[$2],[
     if test -z "${withval}" || test "yes" = "${withval}" || test "no" = "${withval}"; then
@@ -33,7 +33,7 @@ AC_DEFUN(SCWM_ARG_PATH,
 ])
 
 ## This does not permit non-existing directories
-AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
+AC_DEFUN([SCWM_ARG_PATH_MAYBE_EMPTY],
 [
   AC_ARG_WITH($1,[$2],[
     if test ! -z "${withval}" && test ! "yes" = "${withval}" && test ! "no" = ${withval} && test ! -d "${withval}"; then
@@ -79,7 +79,7 @@ AC_PROG_CXX
 
 AC_CHECK_PROGS(GTAR, gnutar gtar tar, "no")
 
-AC_DEFUN(scwm_TAR_IS_GNU_TAR,
+AC_DEFUN([scwm_TAR_IS_GNU_TAR],
 [AC_MSG_CHECKING(whether $GTAR is GNU tar)
 AC_CACHE_VAL(scwm_cv_TAR_IS_GNU_TAR,
 [
@@ -192,7 +192,7 @@ else
 fi
 
 if test "no" = "$GUILE_CONFIG_works"; then
-  AC_MSG_ERROR(Need a working guile-config script in your \$PATH --- check installation of Guile-1.3.4 or later)
+  AC_MSG_ERROR(Need a working guile-config script in your \$PATH --- check installation of Guile-1.8.0 or later)
   exit -1
 fi
 
@@ -600,25 +600,27 @@ AC_CHECK_LIB(guile, gh_length, AC_DEFINE(HAVE_GH_LENGTH), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_parse_path, AC_DEFINE(HAVE_SCM_PARSE_PATH), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_internal_cwdr, AC_DEFINE(HAVE_SCM_INTERNAL_CWDR), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_std_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_internal_stack_catch, AC_DEFINE(HAVE_SCM_INTERNAL_STACK_CATCH), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_internal_cwdr, AC_DEFINE(HAVE_SCM_INTERNAL_CWDR), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_internal_parse_path, AC_DEFINE(HAVE_SCM_INTERNAL_PARSE_PATH), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_internal_stack_catch, AC_DEFINE(HAVE_SCM_INTERNAL_STACK_CATCH), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILES), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_internal_parse_path, AC_DEFINE(HAVE_SCM_INTERNAL_PARSE_PATH), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILES), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_create_hook, AC_DEFINE(HAVE_SCM_CREATE_HOOK), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_hook_empty_p, AC_DEFINE(HAVE_SCM_HOOK_EMPTY_P), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_create_hook, AC_DEFINE(HAVE_SCM_CREATE_HOOK), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_make_smob_type_mfpe, AC_DEFINE(HAVE_SCM_MAKE_SMOB_TYPE_MFPE), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_hook_empty_p, AC_DEFINE(HAVE_SCM_HOOK_EMPTY_P), ,$GUILE_LIBS)
 
-AC_CHECK_LIB(guile, scm_strport_to_string, AC_DEFINE(HAVE_SCM_STRPORT_TO_STRING), ,$GUILE_LIBS)
+dnl AC_CHECK_LIB(guile, scm_make_smob_type_mfpe, AC_DEFINE(HAVE_SCM_MAKE_SMOB_TYPE_MFPE), ,$GUILE_LIBS)
+
+dnl AC_CHECK_LIB(guile, scm_strport_to_string, AC_DEFINE(HAVE_SCM_STRPORT_TO_STRING), ,$GUILE_LIBS)
 
 LDFLAGS="${saved_LDFLAGS}"
 
@@ -816,16 +818,14 @@ AC_OUTPUT([Makefile \
 	  modules/Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \
-	  modules/corba/Makefile \
 	  modules/esdsound/Makefile \
 	  modules/overlay-plane/Makefile \
 	  modules/pie-menus/Makefile \
-	  modules/scwmgtkhelper/Makefile \
 	  modules/xlib-drawing/Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/proplist/Makefile \
 	  modules/xtest/Makefile \
-	  modules/viavoice/Makefile \
+	  modules/scwmgtkhelper/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
@@ -844,3 +844,7 @@ AC_OUTPUT([Makefile \
 	  utilities/dev/create-dependency-dot-graph \
 ],[chmod +x src/scwm-doc-snarf ] \
 )
+
+##	  modules/scwmgtkhelper/Makefile
+##	  modules/corba/Makefile
+##	  modules/viavoice/Makefile \

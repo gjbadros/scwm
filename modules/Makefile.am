@@ -6,7 +6,6 @@ EXTRA_DIST=ChangeLog
 SUBDIRS = \
 	background \
 	c-animation \
-	corba \
 	overlay-plane \
 	pie-menus \
 	xlib-drawing \
@@ -14,7 +13,8 @@ SUBDIRS = \
 	esdsound \
 	proplist \
 	xtest \
-	scwmgtkhelper \
-	viavoice
+	scwmgtkhelper
 
 DIST_SUBDIRS = $(SUBDIRS)
+
+## 	viavoice corba scwmgtkhelper

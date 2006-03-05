@@ -8,7 +8,6 @@
 ;;; window that appears and tells you how much you're
 ;;; moving/resizing your window.
 
-
 (define-module (app scwm message-window)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
@@ -49,7 +48,7 @@ or spelled-out versions of these. See also `gravity->alignments'."
 
 ;;;; message-window-options - configure placement and behavior for various actions
 
-(define*-public (message-window-options action #&key enable
+(define*-public (message-window-options action #:key enable
 					follow-window 
 					position gravity offset 
 					proportional-offset)
@@ -82,17 +81,17 @@ These options are cumulative for repeated calls to
 `message-window-options' for the same action."
   (let ((options (or (msgwin-action-options action)
 		     (copy-tree default-msgwin-options))))
-    (if (bound? enable)
+    (if enable
 	(message-window-enable action enable))
-    (if (bound? follow-window)
+    (if follow-window
 	(assq-set! options 'follow-window follow-window))
-    (if (bound? position)
+    (if position
 	(assq-set! options 'position position))
-    (if (bound? gravity)
+    (if gravity
 	(assq-set! options 'gravity gravity))
-    (if (bound? offset)
+    (if offset
 	(assq-set! options 'offset offset))
-    (if (bound? proportional-offset)
+    (if proportional-offset
 	(assq-set! options 'proportional-offset proportional-offset))
     (set-msgwin-action-options! action options)))
 
@@ -231,7 +230,7 @@ These options are cumulative for repeated calls to
 (define (move-message-finish-hook win)
   (message-window-hide! default-message-window))
 
-(define*-public (message-window-style msgwin #&key (font #f) (fg #f) (bg #f))
+(define*-public (message-window-style msgwin #:key (font #f) (fg #f) (bg #f))
   "Set visual style of MSGWIN.
 FONT specifies the font, FG the foreground color, and BG the
 background color."
@@ -239,7 +238,7 @@ background color."
       (message-window-set-font! msgwin font))
   (message-window-set-colors! msgwin fg bg))
 
-(define*-public (make-message-window-with-image img #&optional (shaped? #f))
+(define*-public (make-message-window-with-image img #:optional (shaped? #f))
   "Return a new message window with IMG as a background, sized appropriately.
 Initially the message window is centered in the display."
   (let ((answer (make-message-window "")))
@@ -273,7 +272,7 @@ Returns a list of the font, fg-color, bg-color of msgwin-source"
 (message-window-options 'interactive-resize #:enable #t)
 (message-window-options 'interactive-move #:enable #t)
 
-(define*-public (display-message-briefly msg #&optional (sec-timeout 3))
+(define*-public (display-message-briefly msg #:optional (sec-timeout 3))
   "Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG."
   (let ((mwn (make-message-window-clone-default msg)))
@@ -281,7 +280,7 @@ See `display-message' for details about MSG."
     (add-timer-hook! (sec->msec sec-timeout)
 		     (lambda () (message-window-hide! mwn)))))
 
-(define*-public (make-message-window-win-copy #&optional (win 'root-window))
+(define*-public (make-message-window-win-copy #:optional (win 'root-window))
   "Return a message window with a background that is a copy of the image in WIN.
 The message-window will have no text and no relief, and be the same size
 as WIN."

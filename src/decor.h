@@ -37,17 +37,17 @@ EXTERN_SET(ScwmDecor *cur_decor,NULL);
 
 EXTERN long scm_tc16_scwm_decor;
 
-#define DECORP(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_decor)
-#define DECOR(X)  ((scwm_decor *)gh_cdr(X))
-#define SCWMDECOR(X) (((scwm_decor *)gh_cdr(X))->sd)
+#define DECORP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_decor, X))
+#define DECOR(X)  ((scwm_decor *)SCM_SMOB_DATA(X))
+#define SCWMDECOR(X) (DECOR(X)->sd)
 
 /* These macros should only be used in two places, though,
    setting the current decor that commands are redirected to, and
    setting the default decor. Other than that, the mark/sweep
    algorithm should be sufficient. */
 
-#define DECORREF(X) do {if (DECOR(X)->refcnt == 0) {DECOR(X)->refcnt++; scm_protect_object(X);}} while (0)
-#define DECORUNREF(X) do {int x = --DECOR(X)->refcnt; if (x == 0) scm_unprotect_object(X); else if (x < 0) DECOR(X)->refcnt = 0; } while (0)
+#define DECORREF(X) do {if (DECOR(X)->refcnt == 0) {DECOR(X)->refcnt++; scm_gc_protect_object(X);}} while (0)
+#define DECORUNREF(X) do {int x = --(DECOR(X)->refcnt); if (x == 0) scm_gc_unprotect_object(X); else if (x < 0) DECOR(X)->refcnt = 0; } while (0)
 
 SCM decor2scm(ScwmDecor * fl);
 

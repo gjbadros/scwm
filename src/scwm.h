@@ -60,7 +60,6 @@
 #include <X11/Xutil.h>
 #include <X11/Intrinsic.h>
 
-#include <guile/gh.h>
 #include "scwm-guile.h"
 
 #include "color.h"
@@ -94,23 +93,13 @@ extern int g_argc;
 
 #define STREQ(a,b) (!strcmp(a,b))
 
-#ifdef HAVE_SCM_MAKE_SMOB_TYPE_MFPE
-/* new-style SMOBs -- this gives smobs names, too */
-#define MAKE_SMOBFUNS(T) /* nothing */
 #define REGISTER_SCWMSMOBFUNS(T) \
  do { \
-    scm_tc16_scwm_ ## T = scm_make_smob_type_mfpe( #T, 0, &(mark_ ##T), &(free_ ## T), &(print_ ## T), NULL); \
+    scm_tc16_scwm_##T = scm_make_smob_type(#T, 0); \
+    scm_set_smob_mark(scm_tc16_scwm_##T, &(mark_##T)); \
+    scm_set_smob_free(scm_tc16_scwm_##T, &(free_##T)); \
+    scm_set_smob_print(scm_tc16_scwm_##T, &(print_##T)); \
   } while (0)
-#else
-/* old-style SMOBs */
-#define MAKE_SMOBFUNS(T) \
-static scm_smobfuns T ## _smobfuns = { \
-  &mark_ ## T, \
-  &free_ ## T, \
-  &print_ ## T,  0 }
-
-#define REGISTER_SCWMSMOBFUNS(T) do { scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns); } while (0)
-#endif
 
 
 #ifndef SCWM_EXTRACT_COMMENTS
@@ -121,16 +110,16 @@ static scm_smobfuns T ## _smobfuns = { \
 
 #define SCWM_VAR_INIT(cvar, name, val) \
   do { pscm_ ## cvar = SCM_CDRLOC( \
-      scm_sysintern(name, val) ); } while (0)
+      scm_c_define(name, val) ); } while (0)
 
 #define SCWM_VAR(cvar, name) \
   do { pscm_ ## cvar = SCM_CDRLOC( \
-      scm_sysintern0(name) ); } while (0)
+      scm_c_define(name, SCM_BOOL_F) ); } while (0)
 
 
 /* GJB:FIXME:: Note that cvar is ignored for now */
 #define SCWM_VAR_READ_ONLY(cvar, name,val) \
-  do { scm_sysintern(name,val); \
+  do { scm_c_define(name,val); \
      } while (0)
 
 #endif /* !SCWM_EXTRACT_COMMENTS */

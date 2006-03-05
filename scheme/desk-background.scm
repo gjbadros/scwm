@@ -22,7 +22,7 @@
 	   (set-background-image! image image-style)))
      bgstyle)))
 
-(define*-public (desk-background desk #&key
+(define*-public (desk-background desk #:key
 				 (reset #f) 
 				 (color #f) 
 				 (image #f)

@@ -7,6 +7,8 @@
 (define-module (app scwm sort)
   :use-module (app scwm optargs))
 
+(export sort)
+
 ;; Modified from Springer & Friedman,
 ;; _Scheme_and_the_Art_of_Programming_
 
@@ -38,7 +40,7 @@
 	       (pair-merge (cddr sublists) compare)))))
 
 ;; natural merge sort
-(define*-public (sort ls #&optional (compare <))
+(define* (sort ls #:optional (compare <))
   "Returned LS sorted according to COMPARE (defaults to ascending numerical order)."
   (if (null? ls)
       '()

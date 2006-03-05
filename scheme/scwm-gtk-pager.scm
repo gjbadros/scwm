@@ -48,7 +48,7 @@
 (define-public scwm-pager-size-h 0)
 (define-public scwm-pager-offscreen #f)
 
-(define*-public (initialize-pager #&key (parent #f) (width 10) (height 10))
+(define*-public (initialize-pager #:key (parent #f) (width 10) (height 10))
   "Initialize the pager."
   (set! scwm-pager-drawarea (gtk-drawing-area-new))
   (let ((drawarea scwm-pager-drawarea))

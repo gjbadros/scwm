@@ -39,7 +39,7 @@ SCM_DEFINE(xtest_supported_p,"xtest-supported?",0,0,0,
 "Returns #t iff the XTest extension is supported on this server.")
 #define FUNC_NAME s_xtest_supported_p
 {
-  return gh_bool2scm(XTestSupported);
+  return scm_from_bool(XTestSupported);
 }
 #undef FUNC_NAME 
 
@@ -57,7 +57,7 @@ MS-DELAY is ommitted or is not a number, no delay is used")
 
   /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
      to not change the semantics here */
-  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
+  if (!scm_is_number(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,button,but);
   VALIDATE_ARG_BOOL_COPY(2,is_press_p,fPress);
@@ -80,7 +80,7 @@ MS-DELAY is ommitted or is not a number, no delay is used.")
   long delay;
   /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
      to not change the semantics here */
-  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
+  if (!scm_is_number(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,keycode,key);
   VALIDATE_ARG_BOOL_COPY(2,is_press_p,fPress);
@@ -105,7 +105,7 @@ If MS-DELAY is ommitted or is not a number, no delay is used.")
 
   /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
      to not change the semantics here */
-  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
+  if (!scm_is_number(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,x,xpos);
   VALIDATE_ARG_INT_COPY(2,y,ypos);
@@ -129,7 +129,7 @@ If MS-DELAY is ommitted or is #f or 0, no delay is used")
 
   /* we do this to permit an extra value of #t/#f from get-key-event/get-mouse-event
      to not change the semantics here */
-  if (!gh_number_p(ms_delay)) ms_delay = SCM_BOOL_F;
+  if (!scm_is_number(ms_delay)) ms_delay = SCM_BOOL_F;
 
   VALIDATE_ARG_INT_COPY(1,dx,dxpos);
   VALIDATE_ARG_INT_COPY(2,dy,dypos);

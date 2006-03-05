@@ -20,7 +20,7 @@
 
 (define-public auto-shrink-delay-seconds 5)
 
-(define*-public (shrink-window #&key (frac .99) (min-width 30) (min-height 45) (win (get-window)))
+(define*-public (shrink-window #:key (frac .99) (min-width 30) (min-height 45) (win (get-window)))
   "Shrink the window WIN to FRAC * its old size.
 Never let it get smaller than MIN-WIDTH by MIN-HEIGHT."
   (interactive)
@@ -35,7 +35,7 @@ Never let it get smaller than MIN-WIDTH by MIN-HEIGHT."
 	  (set! new-ht min-height))
       (resize-frame new-wid new-ht win))))
 
-(define*-public (not-focussed-for? seconds #&optional (win (get-window)))
+(define*-public (not-focussed-for? seconds #:optional (win (get-window)))
   "Returns #t if WIN did not have the focus in the last SECONDS seconds."
   (let ((lf (window-last-focus-time win))
 	(ct (current-time)))

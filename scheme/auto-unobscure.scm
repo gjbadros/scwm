@@ -19,7 +19,6 @@
 
 
 
-
 (define-module (app scwm auto-unobscure)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
@@ -34,13 +33,13 @@
 ;; (window-style "XLogo" #:auto-unobscure-proc smart-place-window)
 ;; (window-style "XLogo" #:auto-unobscure-proc clever-place-window)
 
-(define*-public (set-auto-unobscure! auto-unobscure? #&optional (win (get-window)))
+(define*-public (set-auto-unobscure! auto-unobscure? #:optional (win (get-window)))
   "Turn auto-unobscure on (#t) or off (#f) for WIN.
 Auto-unobscure makes a window automatically move when it becomes
 fully obscured."
   (if win (set-window-property! win 'auto-unobscure auto-unobscure?)))
 
-(define*-public (set-auto-unobscure-proc! fproc #&optional (win (get-window)))
+(define*-public (set-auto-unobscure-proc! fproc #:optional (win (get-window)))
   "Set the auto-unobscure-proc for WIN.
 The auto-unobscure-proc is the procedure which is invoked
 when WIN is fully obscured if auto-unobscuring is set for the window."

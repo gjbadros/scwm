@@ -23,8 +23,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #include "guile-compat.h"
 #include "scwm-guile.h"
 
@@ -57,10 +55,12 @@ cwdr_no_unwind_handler (void *data, SCM tag, SCM args)
 
 
 SCM 
-scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
-			     scm_catch_handler_t handler, void *handler_data,
+scm_internal_cwdr_no_unwind (scm_t_catch_body body, void *body_data,
+			     scm_t_catch_handler handler, void *handler_data,
 			     SCM_STACKITEM *stack_start)
 {
+  return scm_internal_cwdr (body, body_data, handler, handler_data, stack_start);
+#if 0
 #ifdef USE_STACKJMPBUF
   scm_contregs static_jmpbuf;
 #endif
@@ -130,34 +130,11 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
     return handler (handler_data, my_handler_data.tag, my_handler_data.args);
   else
     return answer;
+#endif /* 0 */
 }
 
 
-#ifndef HAVE_SCM_PARSE_PATH
-SCM
-scm_parse_path (char *path, SCM tail)
-{
-  if (path && path[0] != '\0')
-    {
-      char *scan, *elt_end;
-
-      /* Scan backwards from the end of the string, to help
-         construct the list in the right order.  */
-      scan = elt_end = path + strlen (path);
-      do {
-        /* Scan back to the beginning of the current element.  */
-        do scan--;
-        while (scan >= path && *scan != ':');
-        tail = gh_cons(scm_makfromstr (scan + 1, elt_end - (scan + 1), 0),
-                         tail);
-        elt_end = scan;
-      } while (scan >= path);
-    }
-
-  return tail;
-}
-#endif /* HAVE_SCM_PARSE_PATH */
-
+#define HAVE_SCM_INTERNAL_STACK_CATCH 1
 #ifndef HAVE_SCM_INTERNAL_STACK_CATCH
 /* scm_internal_stack_catch
    Use this one if you want debugging information to be stored in
@@ -166,20 +143,23 @@ scm_parse_path (char *path, SCM tail)
 static SCM
 ss_handler (void *data, SCM tag, SCM throw_args)
 {
+#if 0
   /* Save the stack */
-  SET_LAST_STACK(scm_make_stack (gh_cons(SCM_BOOL_T, SCM_EOL)));
+  SET_LAST_STACK(scm_make_stack (scm_cons(SCM_BOOL_T, SCM_EOL)));
   /* Throw the error */
   return scm_throw (tag, throw_args);
-}
+#else
+  scm_puts("ss_handler: ", scm_current_error_port());
+  scm_print1(tag, scm_current_error_port(), 0);
+  scm_puts(": ", scm_current_error_port());
+  scm_print1(throw_args, scm_current_error_port(), 0);
+  scm_putc('\n', scm_current_error_port());
 
-struct cwss_data
-{
-  SCM tag;
-  scm_catch_body_t body;
-  void *data;
-};
-
-static SCM
+  scm_handle_by_message_noexit(data, tag, throw_args);
+  scm_force_output(scm_current_error_port());
+  scm_ithrow(tag, throw_args, 1);
+  return SCM_UNSPECIFIED; /* never returns */
+#endif } struct cwss_data { SCM tag; scm_t_catch_body body; void *data; }; static SCM
 cwss_body (void *data)
 {
   struct cwss_data *d = data;
@@ -188,10 +168,8 @@ cwss_body (void *data)
 
 SCM
 scm_internal_stack_catch (SCM tag,
-			  scm_catch_body_t body,
-			  void *body_data,
-			  scm_catch_handler_t handler,
-			  void *handler_data)
+			  scm_t_catch_body body, void *body_data,
+			  scm_t_catch_handler handler, void *handler_data)
 {
   struct cwss_data d;
   d.tag = tag;
@@ -201,56 +179,6 @@ scm_internal_stack_catch (SCM tag,
 }
 
 #endif /* HAVE_SCM_INTERNAL_STACK_CATCH */
-
-#ifndef HAVE_SCM_LOAD_STARTUP_FILES
-/*
- *  Procedures:
- *	scwm_gh_enter, scwm_gh_launch_pad - Replacement for gh_enter that 
- *      guarantees loading of boot-9.scm
- */
-
-static void 
-scwm_gh_launch_pad (void *closure, int argc, char **argv)
-{
-  main_prog_t c_main_prog = (main_prog_t) closure;
-
-  gh_eval_str ("(primitive-load-path \"ice-9/boot-9.scm\")");
-  c_main_prog (argc, argv);
-  exit (0);
-}
-
-void 
-scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog)
-{
-  scm_boot_guile (argc, argv, scwm_gh_launch_pad, (void *) c_main_prog);
-  /* never returns */
-}
-#endif /* !HAVE_SCM_LOAD_STARTUP_FILES */
-
-
-
-SCM make_output_strport(char *fname)
-{
-  return scm_mkstrport(SCM_INUM0, scm_make_string(SCM_INUM0, 
-						  SCM_UNDEFINED),
-		       SCM_OPN | SCM_WRTNG,
-		       fname);
-}
-
-#ifndef HAVE_SCM_STRPORT_TO_STRING
-SCM scm_strport_to_string(SCM port)
-{
-  SCM answer;
-  { /* scope */
-    scwm_defer_ints();
-    answer = scm_makfromstr (SCM_CHARS (gh_cdr (SCM_STREAM (port))),
-			     SCM_INUM (gh_car (SCM_STREAM (port))),
-			     0);
-    scwm_allow_ints();
-  }
-  return answer;
-}
-#endif
 
 
 #ifdef __cplusplus

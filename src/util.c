@@ -15,8 +15,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #include "util.h"
 
 #include "scwm.h"

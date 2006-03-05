@@ -44,9 +44,9 @@
 
 (define (wmc-process-file fl)	; return (group . menuitem)
   (let ((fd (open-input-file fl)))
-    (do ((wd (read fd) (read fd)) (mi ()) (gr ()) (nm ()))
+    (do ((wd (read fd) (read fd)) (mi '()) (gr '()) (nm '()))
 	((eof-object? wd) (close-input-port fd)
-	 (cons gr (if (eq? nm ()) () (apply menuitem nm mi))))
+	 (cons gr (if (eq? nm '()) '() (apply menuitem nm mi))))
       (cond ((string=? wd "mini-icon")
 	     (let ((img (make-image (string (read fd)))))
 	       ;; could resize image here if we so choose --07/02/99 gjb
@@ -60,7 +60,7 @@
   (display "Processing directory: ") (display wmconfig-dir)
   (cond ((access? wmconfig-dir R_OK)
 	 (display ": directory readable...") (newline)
-	 (let ((wmcd (opendir wmconfig-dir)) (res ()))
+	 (let ((wmcd (opendir wmconfig-dir)) (res '()))
 	   (do ((fl (readdir wmcd) (readdir wmcd)))
 	       ((eof-object? fl) (closedir wmcd) (newline) res)
 	     (display " ") (display fl)
@@ -69,17 +69,17 @@
 		    (if (eqv? (stat:type (stat fl)) 'regular)
 			(begin
 			  (set! fl (wmc-process-file fl))
-			  (if (eq? (car fl) ()) ()
+			  (if (eq? (car fl) '()) '()
 			      (let ((ff (assoc (car fl) res)))
 				(cond (ff (set-cdr! ff (cons (cdr fl) (cdr ff))))
 				      (#t (set-cdr! fl (list (cdr fl)))
 					  (set! res (cons fl res))))))
 			  (display "+"))))
 		   (#t (display "-"))))))
-	(#t (display ": directory unreadable!!!") (newline) ())))
+	(#t (display ": directory unreadable!!!") (newline) '())))
 
 (define (wmc-regroup ls)	; regroup the menu items
-  (let ((main ()) (sub ()))
+  (let ((main '()) (sub '()))
     (for-each (lambda (me)
 		(if (string-index (car me) #\/) (set! sub (cons me sub))
 		    (set! main (cons me main)))) ls)
@@ -95,7 +95,7 @@
     (map (lambda (me) (menuitem (car me) #:action (menu (cdr me)))) main)))
 
 (define*-public (make-wmconfig-menu 
-		 #&optional (wmconfig-title default-wmconfig-title)
+		 #:optional (wmconfig-title default-wmconfig-title)
 		 (wmconfig-dir default-wmconfig-dir))
   "Return a menu object for the window-manager configuration menu."
   (menu (append! (list (menu-title wmconfig-title #f) menu-separator)

@@ -19,7 +19,6 @@
 
 
 
-
 (define-module (app scwm auto-raise)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
@@ -100,35 +99,35 @@ or `set-auto-raise-unfocus-proc!'."
   #:group 'focus)
 
 
-(define*-public (set-auto-raise! auto-raise? #&optional (win (get-window)))
+(define*-public (set-auto-raise! auto-raise? :&optional (win (get-window)))
   "Turn auto-raise on (#t) or off (#f) for WIN.
 Auto-raise makes a window automatically raise when the mouse pointer
 enters the window frame.  See `set-auto-raise-delay!' for controlling
 the delay before the window raises."
   (if win (set-object-property! win 'auto-raise auto-raise?)))
 
-(define*-public (set-auto-raise-delay! delay #&optional (win (get-window)))
+(define*-public (set-auto-raise-delay! delay #:optional (win (get-window)))
   "Set the auto-raise delay to DELAY (in ms) for WIN.
 DELAY is the number of milliseconds after the pointer enters
 WIN that WIN will be raised.  See `set-auto-raise!' to turn
 auto-raise on or off for a given window."
   (if win (set-object-property! win 'auto-raise-delay delay)))
 
-(define*-public (set-auto-raise-unfocus-delay! delay #&optional 
+(define*-public (set-auto-raise-unfocus-delay! delay #:optional 
 					       (win (get-window)))
   "Set the timeout to DELAY (in ms) for the unfocus-proc of WIN.
 After DELAY milliseconds after the pointer leaves WIN's frame,
 the auto-raise-unfocus-proc will be called."
   (if win (set-object-property! win 'auto-raise-unfocus-delay delay)))
 
-(define*-public (set-auto-raise-focus-proc! fproc #&optional (win (get-window)))
+(define*-public (set-auto-raise-focus-proc! fproc #:optional (win (get-window)))
   "Set the auto-raise-focus-proc for WIN.
 The auto-raise-focus-proc is the procedure which is invoked
 after the auto-raise-delay after the pointer enters WIN's frame."
   (if win (set-object-property! win 'auto-raise-focus-proc fproc)))
 
 (define*-public (set-auto-raise-unfocus-proc! ufproc 
-					     #&optional (win (get-window)))
+					     #:optional (win (get-window)))
   "Set the auto-raise-unfocus-proc for WIN.
 The auto-raise-unfocus-proc is the procedure which is invoked
 after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
@@ -205,7 +204,7 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
   #:group 'focus
   #:setter (lambda (auto-raise?)
 	     (if auto-raise? (window-style "*" #:auto-raise #t)
-		 (if (feature? 'scwm-auto-raise)
+		 (if (provided? 'scwm-auto-raise) ; feature?
 		     (begin
 		       (use-modules (app scwm style))
 		       (window-style "*" #:auto-raise #f))))

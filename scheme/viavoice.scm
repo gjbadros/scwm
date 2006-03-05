@@ -63,7 +63,7 @@
   (system (string-append (getenv "SPCH_BIN") "/vvuseradm -makedirs")))
 
 ;; (vv-use-grammar "scwmgrammar.fsg")
-(define*-public (vv-use-grammar #&optional (name "scwmgrammar")
+(define*-public (vv-use-grammar #:optional (name "scwmgrammar")
 				(file 
 				 (string-append 
 				  (scwm-path-prefix) 

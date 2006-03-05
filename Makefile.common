@@ -3,18 +3,16 @@
 # Want etags to mark SCM_SYMBOL macros and SCWM_PROC macros
 # Note that we mark through the 2nd argument to SCWM_PROC so we
 # get the scheme procedure name, too (not just the C function name)
-ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_[IW]?PROC[ \t]*(\([^,]*\),[^,]*/\1/'
+ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCW?M_[IW]?PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 SCWM_SRC_DIR = $(top_srcdir)/src
 SCWM_BUILDSRC_DIR = $(top_builddir)/src
 
 SUFFIXES = .x .doc
 .c.x:
-	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
-	|| { rm $@; false; }
+	guile-snarf -o $@ $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $<
 .cc.x:
-	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
-	|| { rm $@; false; }
+	guile-snarf -o $@ $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $<
 .c.doc:
-	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > /dev/null \
-        || { rm $@; false; }
+	guile-snarf -o /dev/null $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $<
+

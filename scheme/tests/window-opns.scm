@@ -4,7 +4,7 @@
 
 (define swi select-window-interactively)
 
-;;(defmacro swi ()
+;;(defmacro swi '()
 ;;  `(select-window-interactively))
 
 (raise-window-above (swi) (swi))
@@ -34,7 +34,7 @@
 
 ;; We need accessors for window background information,
 ;; and window-hilight background information
-(define* (flash-window win #&optional (color (make-color "red")))
+(define* (flash-window win #:optional (color (make-color "red")))
   (set-window-background! color win)
   (add-timer-hook! (sec->usec .5) (lambda () (set-window-background! "grey76" win))))
 

@@ -6,7 +6,8 @@
   :use-module (app scwm optargs)
   :use-module (app scwm winops)
   :use-module (app scwm virtual)
-  :use-module (app scwm xlib-drawing))
+  ;;:use-module (app scwm xlib-drawing)
+  )
 
 (define-public iconify-animation-offsets
   (list 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0 ))
@@ -48,7 +49,7 @@
        (and after-animation-proc (after-animation-proc)))
      (lambda () (set-X-server-synchronize! #f)))))
 
-(define*-public (animated-iconify #&optional (win (get-window)))
+(define*-public (animated-iconify #:optional (win (get-window)))
   "Iconify WIN using a simple animation of a shrinking rectangle.
 The rectangle moves towards the icon's location, if there is one."
   (interactive)
@@ -64,7 +65,7 @@ The rectangle moves towards the icon's location, if there is one."
                                   (reverse iconify-animation-offsets)))))
 
 
-(define*-public (animated-deiconify #&optional (win (get-window)))
+(define*-public (animated-deiconify #:optional (win (get-window)))
   "Deiconify WIN using a simple animation of a growing rectangle.
 The rectangle grows outwards from the icon, if there is one."
   (interactive)
@@ -76,7 +77,7 @@ The rectangle grows outwards from the icon, if there is one."
                                      20 #f (lambda () (deiconify-window win))
 				     iconify-animation-offsets)))
 
-(define*-public (animated-deiconify-to-viewport #&optional (win (get-window)))
+(define*-public (animated-deiconify-to-viewport #:optional (win (get-window)))
   "Deiconify WIN with an animation to the same viewport position as it was iconified from."
   (interactive)
   (if (iconified-window? win)
@@ -99,7 +100,7 @@ The rectangle grows outwards from the icon, if there is one."
 					  iconify-animation-offsets)))))
 
 
-(define*-public (animated-toggle-iconify #&optional (win (get-window)))
+(define*-public (animated-toggle-iconify #:optional (win (get-window)))
   "Iconify WIN if not iconified, or de-iconify WIN if it is iconified.
 Uses animation, in either case."
   (interactive)
@@ -109,7 +110,7 @@ Uses animation, in either case."
           (animated-iconify win))))
 
 
-(define*-public (animated-deiconify-to-vp-focus #&optional (win (get-window)))
+(define*-public (animated-deiconify-to-vp-focus #:optional (win (get-window)))
   "Deiconify WIN to the current viewport, and give it the focus."
   (interactive)
   (cond

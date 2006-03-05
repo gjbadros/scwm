@@ -75,7 +75,6 @@
 #endif
 
 #include <libguile.h>
-#include <guile/gh.h>
 
 #include "scwm.h"
 
@@ -253,7 +252,7 @@ int restart_vp_offset_x = 0, restart_vp_offset_y = 0;
 int fd_width, x_fd;
 char *display_name = NULL;
 
-static void scwm_main(int, char **);
+static void scwm_main(void *, int, char **);
 
 Atom XA_MIT_PRIORITY_COLORS;
 Atom XA_WM_CHANGE_STATE;
@@ -490,7 +489,7 @@ InitVariables(void)
   CassowaryInitClVarsInPscreen(&Scr);
 
   scwm_defer_ints();
-  scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
+  scm_gc_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
   Scr.schscreen = scmScreen;
   scwm_allow_ints();
 
@@ -538,18 +537,20 @@ InitVariables(void)
 static void
 scwm_maybe_send_thankyou_packet()
 {
+#if 0
   char buf[256];
-  SCM log_usage = gh_lookup("thank-scwm-authors-with-usage-note");
+  SCM log_usage = scm_variable_ref(scm_c_lookup("thank-scwm-authors-with-usage-note"));
 
   /* use (define thank-scwm-authors-with-usage-note #t) to
      send a packet to let us know you're using scwm.
      Or set the environment variable SCWM_DO_NOT_LOG_USAGE to 
      never do anything */
-  if (log_usage != SCM_BOOL_T)
+  if (scm_is_bool(log_usage) && !scm_is_true(log_usage))
     return;
   
   sprintf(buf, "%s, %s: STARTED", SCWM_VERSION, szRepoLastChanged);
   SendUsagePacket(0, 0, "scwm", 0, buf);
+#endif
 }
 
 static void
@@ -588,7 +589,7 @@ InitUserData()
 
 /*
  *  Procedure:
- *	main - Enters scwm_main using the gh_enter convention.
+ *	main - Enters scwm_main using the scm_boot_guile convention.
  */
 
 #ifdef ENABLE_DUMP
@@ -604,7 +605,7 @@ main(int argc, char **argv)
 #if ENABLE_DUMP
   init_sbrk();			/* Do this before malloc()s. */
 #endif
-  scwm_gh_enter(argc, argv, scwm_main);
+  scm_boot_guile(argc, argv, scwm_main, 0);
   return 0;
 }
 
@@ -692,82 +693,9 @@ void scwm_brk_report()
 
 #endif
 
-/*
- * scwm_main - main routine for scwm
- */
-static void 
-scwm_main(int argc, char **argv)
+static void
+scwm_init_funcs(void *unused)
 {
-#ifdef ENABLE_DUMP
-  static Bool fShouldDump = False;
-  static char *szBinaryPath = NULL;
-  static char *szDumpFile = NULL;
-#endif
-  int i;
-  extern int x_fd;
-  int len;
-
-  /* getopt vars */
-  int getopt_ret;
-  extern char *optarg;
-  extern int /* optind, opterr, */ optopt;
-
-  char *display_string;
-  char message[255];
-  Bool single = False;
-  Bool option_error = False;
-
-#ifdef I18N
-  char *Lang,*territory,*tmp;
-#endif
-
-#ifdef SCWM_DEBUG_MALLOC
-  __malloc_hook = scwm_malloc_debug;
-  __free_hook = scwm_free_debug;
-  __realloc_hook = scwm_realloc_debug;
-#endif
-
-  gh_eval_str ("(define-module (guile))");  
-
-#ifdef I18N
-  /* setlocale in guile */
-  scm_setlocale( gh_lookup("LC_CTYPE"), gh_str02scm("") ); 
-  /* setlocale in X (system native locale or X_LOCALE) */
-  if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
-    scwm_msg(WARN,"main","Can't set specified locale.\n");
-    Lang = "C";
-  }
-  if (! XSupportsLocale()) {
-    scwm_msg(ERR, "main", "locale not supported by Xlib, locale set to C");
-    Lang = setlocale(LC_ALL, "C");
-  }
-  if (! XSetLocaleModifiers(""))
-    scwm_msg(ERR, "main", "X locale modifiers not supported, using default");
-
-  tmp = index(Lang,'.');
-  if (tmp) {
-      territory = NEWC(tmp-Lang+1,char);
-      strncpy(territory,Lang,(tmp-Lang));
-      *(territory+(size_t)(tmp-Lang)) = '\0';
-  } else {
-      territory = Lang;
-  }
-  SCWM_VAR_READ_ONLY(NULL,"locale-fullname",gh_str02scm(Lang));
-  /** Full name of the current locale, as a string. */
-
-  SCWM_VAR_READ_ONLY(NULL,"locale-language-territory",gh_str02scm(territory));
-  /** The language territory name, as a string */
-#endif
-
-  
-  /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
-     it's useful to pipe through to grep -v or X-error-describe
-     while debugging: GJB:FIXME:MS: make these runtime options -- also,
-     isn't stderr never block bufferred?? */
-  setlinebuf(stderr);
-  setlinebuf(stdout);
-
-  scwm_defer_ints();
   init_errors();
   init_font();
   init_decor();
@@ -801,7 +729,93 @@ scwm_main(int argc, char **argv)
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
-  scwm_allow_ints();
+}
+
+static void
+scwm_init_funcs2(void *unused)
+{
+  init_message_window();
+  init_borders();
+  init_xrm();
+  init_image();
+}
+
+/*
+ * scwm_main - main routine for scwm
+ */
+static void 
+scwm_main(void * closure, int argc, char **argv)
+{
+#ifdef ENABLE_DUMP
+  static Bool fShouldDump = False;
+  static char *szBinaryPath = NULL;
+  static char *szDumpFile = NULL;
+#endif
+  int i;
+  extern int x_fd;
+  int len;
+
+  /* getopt vars */
+  int getopt_ret;
+  extern char *optarg;
+  extern int /* optind, opterr, */ optopt;
+
+  char *display_string;
+  char message[255];
+  Bool single = False;
+  Bool option_error = False;
+
+#ifdef I18N
+  char *Lang,*territory,*tmp;
+#endif
+
+#ifdef SCWM_DEBUG_MALLOC
+  __malloc_hook = scwm_malloc_debug;
+  __free_hook = scwm_free_debug;
+  __realloc_hook = scwm_realloc_debug;
+#endif
+
+#ifdef I18N
+  /* setlocale in guile */
+  scm_setlocale( scm_variable_ref(scm_c_lookup("LC_CTYPE")), scm_from_locale_string("") ); 
+  /* setlocale in X (system native locale or X_LOCALE) */
+  if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
+    scwm_msg(WARN,"main","Can't set specified locale.\n");
+    Lang = "C";
+  }
+  if (! XSupportsLocale()) {
+    scwm_msg(ERR, "main", "locale not supported by Xlib, locale set to C");
+    Lang = setlocale(LC_ALL, "C");
+  }
+  if (! XSetLocaleModifiers(""))
+    scwm_msg(ERR, "main", "X locale modifiers not supported, using default");
+
+  tmp = index(Lang,'.');
+  if (tmp) {
+      territory = NEWC(tmp-Lang+1,char);
+      strncpy(territory,Lang,(tmp-Lang));
+      *(territory+(size_t)(tmp-Lang)) = '\0';
+  } else {
+      territory = Lang;
+  }
+  SCWM_VAR_READ_ONLY(NULL,"locale-fullname",scm_from_locale_string(Lang));
+  /** Full name of the current locale, as a string. */
+
+  SCWM_VAR_READ_ONLY(NULL,"locale-language-territory",scm_from_locale_string(territory));
+  /** The language territory name, as a string */
+#endif
+
+  
+  /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
+     it's useful to pipe through to grep -v or X-error-describe
+     while debugging: GJB:FIXME:MS: make these runtime options -- also,
+     isn't stderr never block bufferred?? */
+  setlinebuf(stderr);
+  setlinebuf(stdout);
+
+  //scwm_defer_ints();
+  scm_c_define_module("guile", scwm_init_funcs, NULL);
+  //scwm_allow_ints();
 
   InitUserData();
 
@@ -1162,13 +1176,13 @@ Repository Timestamp: %s\n",
   BlackoutScreen();           /* if they want to hide the capture/startup */
   
   InitVariables();
-  init_message_window();
   init_image_colormap();
-  init_borders();
   init_resize_gcs();
   XrmInitialize();
-  init_xrm();
-  init_image();
+
+  //scwm_defer_ints();
+  scm_c_define_module("guile", scwm_init_funcs2, NULL);
+  //scwm_allow_ints();
 
   InitEventHandlerJumpTable();
 
@@ -1199,7 +1213,6 @@ Repository Timestamp: %s\n",
 
   /* Add the SCWM_LOAD_PATH preprocessor symbol and evironment
      variable to the guile load path. */
-  
   init_scwm_load_path();
   
   DBUG((DBG,"main", "Setting up rc file defaults..."));
@@ -1208,16 +1221,32 @@ Repository Timestamp: %s\n",
      and guile-1.3.2;  only the first clause is needed when 
      we drop support for guile-1.3.2 */
   if (!fDisableBacktrace) {
-    gh_eval_str("(debug-enable 'debug) (debug-enable 'backtrace) (read-enable 'positions)");
+    //scm_c_eval_string("(debug-enable 'debug) (debug-enable 'backtrace) (read-enable 'positions)");
+#if 1
+    SCM_DEVAL_P = 1;
+    SCM_BACKTRACE_P = 1;
+    SCM_RECORD_POSITIONS_P = 1;
+    SCM_RESET_DEBUG_MODE;
+#endif
   } else {
-    gh_eval_str("(debug-disable 'debug) (debug-disable 'backtrace) (read-disable 'positions)");
-  }
+    //scm_c_eval_string("(debug-disable 'debug) (debug-disable 'backtrace) (read-disable 'positions)");
+#if 1
+    SCM_DEVAL_P = 0;
+    SCM_BACKTRACE_P = 0;
+    SCM_RECORD_POSITIONS_P = 0;
+    SCM_RESET_DEBUG_MODE;
+#endif
+ }
   
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
   { /* scope */
+#if 1
     extern char *init_scheme_string;
     scwm_safe_eval_str(init_scheme_string);
+#else
+    scm_c_use_module("app scwm minimal");
+#endif
   } /* end scope */
 
 #ifdef ENABLE_DUMP
@@ -1644,10 +1673,10 @@ Reborder(Bool fRestart)
      perhaps track stacking order explicitly somewhere in the window
      struct. */
 
-  for (p=gh_reverse(list_stacking_order());
-       p != SCM_EOL;
-       p = SCM_CDR(p)) {
-    psw = PSWFROMSCMWIN(SCM_CAR(p));
+  for (p=scm_reverse(list_stacking_order());
+       !scm_is_null(p);
+       p = scm_cdr(p)) {
+    psw = PSWFROMSCMWIN(scm_car(p));
       
     RestoreWithdrawnLocation(psw, fRestart);
     XUnmapWindow(dpy, psw->frame);
@@ -1836,56 +1865,58 @@ UnBlackoutScreen()
 }				/* UnBlackoutScreen */
 
 
+#if 0
 SCM
 scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList)
 {
   static SCM sym_arglist = SCM_UNDEFINED;
   if (!sym_arglist || UNSET_SCM(sym_arglist))
-    sym_arglist = scm_permanent_object(SCM_CAR(scm_intern0("arglist")));
+    sym_arglist = scm_permanent_object(scm_car(scm_intern0("arglist")));
   { /* scope */
-  SCM p = scm_make_gsubr(name,req,opt,var,fcn);
-  if (fDocumentPrimitiveFormals) {
-    SCM arglist = gh_eval_str(szArgList);
-    scm_permanent_object(arglist);
-    scm_set_procedure_property_x(p,sym_arglist,arglist);
-  }
-  return p;
-  }
-}
-
-SCM
-scwm_make_igsubr(const char *name, int req, int opt, int var,
-                 SCM (*fcn)(), char *szInteractiveSpecification, char *szArgList)
-{
-  extern SCM sym_interactive;
-  /* GJB:FIXME:: a hack to guarantee that this is initialized
-     since events.c has the SCWM_GLOBAL_SYMBOL definition of it */
-  if (!sym_interactive || UNSET_SCM(sym_interactive))
-    sym_interactive = 
-      scm_permanent_object(SCM_CAR(scm_intern0("interactive")));
-  { /* scope */
-    SCM p = scwm_make_gsubr(name,req,opt,var,fcn,szArgList);
-    scm_set_procedure_property_x(p,sym_interactive,
-                                 szInteractiveSpecification?
-                                 gh_str02scm(szInteractiveSpecification):SCM_BOOL_T);
+    SCM p = scm_make_gsubr(name,req,opt,var,fcn);
+    if (fDocumentPrimitiveFormals) {
+      SCM arglist = scm_eval_str(szArgList);
+      scm_permanent_object(arglist);
+      scm_set_procedure_property_x(p,sym_arglist,arglist);
+    }
     return p;
   }
 }
-
-
-void init_scwm_load_path()
+#else
+SCM
+scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList)
 {
-  SCM *pscm_pct_load_path;
-  SCM path;
+  return scm_c_define_gsubr(name, req, opt, var, fcn);
+}
+#endif
 
-  SCWM_VAR(pct_load_path,"%load-path");
-  /** The internal compiled-in loading path for scwm. */
 
-  path = *pscm_pct_load_path;
-  path = gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
-  path = gh_cons(gh_str02scm(SCWM_BIN_LOAD_PATH),path);
-  path = scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
-  *pscm_pct_load_path = path;
+SCM
+scwm_make_igsubr(const char *name, int req, int opt, int var, SCM (*fcn)(),
+		 char *ispec, char *docstr)
+{
+  SCM p = scm_c_define_gsubr(name, req, opt, var, fcn);
+  scm_set_procedure_property_x(p, scm_from_locale_symbol("interactive"),
+			       ispec ? scm_from_locale_string(ispec) : SCM_BOOL_T);
+  return p;
+}
+
+void
+prepend_to_list(SCM path, char *string)
+{
+  scm_variable_set_x(path,
+		     scm_cons(scm_from_locale_string(string),
+			      scm_variable_ref(path)));
+}
+
+void
+init_scwm_load_path()
+{
+  SCM path = scm_c_lookup("%load-path");
+  prepend_to_list(path, SCWM_LOAD_PATH);
+  prepend_to_list(path, SCWM_BIN_LOAD_PATH);
+  if (getenv("SCWM_LOAD_PATH"))
+    prepend_to_list(path, getenv("SCWM_LOAD_PATH"));
 }
 
 
@@ -1894,7 +1925,7 @@ scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args)
 {
   SCM eport = scm_current_error_port();
   char *typestr;
-  assert (gh_list_p(args));
+  assert (scm_is_true(scm_list_p(args)));
 
   switch (type) {
   case DBG:
@@ -1912,7 +1943,7 @@ scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args)
   scm_puts(" ",eport);
   scm_puts((char *)id,eport);
   scm_puts(": ",eport);
-  scwm_error_message(gh_str02scm((char *)msg),args);
+  scwm_error_message(scm_from_locale_string((char *)msg),args);
 }
 
 /*

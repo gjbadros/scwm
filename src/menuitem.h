@@ -10,8 +10,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #include "image.h"
 
 #undef EXTERN
@@ -76,8 +74,8 @@ typedef struct MenuItemInMenu_tag
   int ichShortcutOffset;	/* For drawing */
 } MenuItemInMenu;
 
-#define MENUITEM_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_menuitem)
-#define MENUITEM(X)  ((MenuItem *)gh_cdr(X))
+#define MENUITEM_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_menuitem, X))
+#define MENUITEM(X)  ((MenuItem *)SCM_SMOB_DATA(X))
 #define SAFE_MENUITEM(X)  (MENUITEM_P((X))? MENUITEM((X)) : NULL)
 
 #define VALIDATE_ARG_MENUITEM(pos,scm) \

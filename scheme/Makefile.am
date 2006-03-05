@@ -15,7 +15,7 @@ group.scm hooks.scm image-loaders.scm image-path-suggestor.scm key-mover-xtest.s
 kde-hints.scm key-mover.scm last-mapped-window.scm lambda-startup-logo.scm \
 listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
-nonants.scm netscape.scm number-convert.scm optargs.scm \
+nonants.scm netscape.scm number-convert.scm \
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
 property-respond.scm quote.scm \
 rectangle.scm reexport.scm reflection.scm register.scm report-usage.scm \

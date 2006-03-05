@@ -40,7 +40,7 @@
 
 ;;(use-modules (app scwm prompt-bool))
 ;;(define w (prompt-bool "Do it?" (lambda (v) (display v) (newline)) #:initval #t))
-(define*-public (prompt-bool prompt proc #&key
+(define*-public (prompt-bool prompt proc #:key
 			      (initval #f)
 			      (title "prompt-bool"))
   "Prompt with PROMPT for a boolean value, and call PROC with result if Ok button is clicked."

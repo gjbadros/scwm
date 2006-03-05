@@ -13,8 +13,6 @@
 
 #include <X11/Intrinsic.h>
 
-#include <guile/gh.h>
-
 #include "image.h"
 #include "menuitem.h"
 #include "font.h"
@@ -82,26 +80,26 @@ struct DynamicMenu_tag
   int cpixWidth;		/* the width of the window */
 };
 
-#define MENU_P(X) (SCM_NIMP((X)) && (gh_car((X)) == (SCM)scm_tc16_scwm_menu))
-#define MENU(X)  ((Menu *)gh_cdr((X)))
+#define MENU_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_menu, X))
+#define MENU(X)  ((Menu *)SCM_SMOB_DATA(X))
 
-#define MENU_OR_SYMBOL_P(X) (MENU_P((X)) || gh_symbol_p((X)))
+#define MENU_OR_SYMBOL_P(X) (MENU_P(X) || scm_is_symbol(X))
 
 #define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
 
 #define DYNAMIC_MENU_P(X) \
-  (gh_symbol_p((X))? (\
+  (scm_is_symbol(X)? (\
     scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
-      MENU_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+      MENU_P(scm_variable_ref(scm_lookup(X))) : \
       False ) : \
-    MENU_P((X)))
+    MENU_P(X))
 
 #define DYNAMIC_SAFE_MENU(X) \
-  (gh_symbol_p((X))? (\
+  (scm_is_symbol(X)? (\
     scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
-      SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+      SAFE_MENU(scm_variable_ref(scm_lookup(X))) : \
       NULL ) : \
-    SAFE_MENU((X)))
+    SAFE_MENU(X))
 
 #define VALIDATE_ARG_MENU(pos,scm) \
   do { \

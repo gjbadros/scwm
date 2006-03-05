@@ -43,7 +43,7 @@
 ;;(use-modules (app scwm prompt-range))
 ;;(define w (prompt-range "Value?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval 3))
 ;;(define w (prompt-integer-range "Value?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval 1))
-(define*-public (prompt-range prompt range proc #&key
+(define*-public (prompt-range prompt range proc #:key
 			      (initval #f)
 			      (title #f)
 			      (digits 1))
@@ -56,7 +56,7 @@ TITLE is a window title."
 	 (getter (cadr hbox-and-getter)))
     (prompting-shell proc title hbox getter)))
 
-(define*-public (prompt-integer-range prompt range proc #&key
+(define*-public (prompt-integer-range prompt range proc #:key
 				      (initval #f) (title #f))
   "Prompt using PROMPT for an integer value in RANGE, and call PROC with value if Ok is clicked.
 RANGE is a cons cell (low . high); ranges are inclusive. 
@@ -69,7 +69,7 @@ TITLE is a window title."
 
 
 
-(define*-public (prompt-range-hbox prompt range initval #&optional (digits 1))
+(define*-public (prompt-range-hbox prompt range initval #:optional (digits 1))
   "Create and return a range-prompting hbox and scale, label.
 PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
 The returned value is a list: (hbox getter).

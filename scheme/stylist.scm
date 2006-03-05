@@ -32,7 +32,7 @@
 
 (define-public *style-list-flash-window-color* (make-color "green"))
 
-(define* (select-style-for predicate #&key (title "Style Selector")
+(define* (select-style-for predicate #:key (title "Style Selector")
 					    (template #f))
   "Select a style for the windows matching PREDICATE.
 TITLE is the title of the dialog window; defaults to `Style Selector'.
@@ -40,7 +40,7 @@ TEMPLATE is the window where the initial values come from; defaults to a
 random window that matches PREDICATE."
   (let* ((windows (list-windows #:only (eval predicate)))
 	 (flashed-windows windows)
-	 (the-style ()))
+	 (the-style '()))
     (if (and (not template) (pair? windows))
 	(set! template (car windows)))
     (for-each (lambda (w) (flash-window-on w *style-list-flash-window-color*)) windows)
@@ -54,13 +54,13 @@ random window that matches PREDICATE."
 	   (Apply (lambda ignored-args
 		    (for-each unflash-window flashed-windows)
 		    (flash-selected-windows-on)
-		    (set! flashed-windows ())
+		    (set! flashed-windows '())
 		    (run-hook apply-hook)
 		    (let ((form `(window-style ,predicate ,@the-style)))
 		      (eval form)
 		      (write form)
 		      (newline))
-		    (set! the-style ())))
+		    (set! the-style '())))
 	   (Ok (lambda args
 		 (apply Apply args)
 		 (apply Cancel args))))
@@ -71,7 +71,7 @@ random window that matches PREDICATE."
 	 box
 	 (let ((table (gtk-table-new 2 15 #f))
 	       (row 1))
-	   (gtk-table-attach table (gtk-label-new "active") 1 2 0 1 () () 2 5)
+	   (gtk-table-attach table (gtk-label-new "active") 1 2 0 1 '() '() 2 5)
 	   (for-each
 	    (lambda (name prompter getter converter style)
 	      (let ((button (gtk-check-button-new)))
@@ -166,7 +166,7 @@ random window that matches PREDICATE."
 	(gtk-container-add top box))
       (gtk-widget-show-all top))))
 
-(define*-public (make-window-style-menu #&optional (win (get-window)))
+(define*-public (make-window-style-menu #:optional (win (get-window)))
   "Offer a choice to style the window, like named windows, or a whole class.
 WIN is the window to style and defaults to the window-context."
   (let ((resource (window-resource win))

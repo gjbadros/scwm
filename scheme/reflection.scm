@@ -118,7 +118,7 @@ any \"lambda*\" formals generated using optargs. See also
   "BROKEN:Return a list of the optargs keyword arguments for PROC.
 Returns #f if PROC was not defined using keyword or optional
 arguments (this includes procedures defined using standard . rest
-syntax).  Otherwise returns a list such as '(foo #&optional bar).
+syntax).  Otherwise returns a list such as '(foo #:optional bar).
 Note that these currently do not display in their expected format"
   (and (symbol? proc) (set! proc (eval proc)))
   (procedure-property proc 'optargs-arglist))
@@ -130,7 +130,7 @@ Note that these currently do not display in their expected format"
   (let ((optargs-arglist (procedure-optargs-arglist proc)))
     (if optargs-arglist
 	(let ((got-key #f))
-	  (filter-map (lambda (i) (if (eq? i '#&key)
+	  (filter-map (lambda (i) (if (eq? i '#:key)
 				      (set! got-key #t))
 			      (and got-key 
 				   (pair? i) i)) optargs-arglist))
@@ -146,9 +146,9 @@ Note that these currently do not display in their expected format"
 	  (if optargs-arglist
 	      (let ((in-optional #f))
 		(filter-map (lambda (i) (case i
-					  ('#&optional
+					  ('#:optional
 					   (set! in-optional #t))
-					  ('#&key
+					  ('#:key
 					   (set! in-optional #f)))
 				    (and in-optional
 					 (pair? i)

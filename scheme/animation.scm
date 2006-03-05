@@ -18,11 +18,10 @@
 ;;;;
 
 
-
 (define-module (app scwm animation)
   :use-module (app scwm base)
   :use-module (app scwm winops)
-  :use-module (app scwm c-animation)   ;; other modules should use this module, not c-animation
+  ;; :use-module (app scwm c-animation)   ;; other modules should use this module, not c-animation
   :use-module (app scwm optargs))
 
 
@@ -42,7 +41,7 @@
 		       animated-window-shade))
 
 
-(define*-public (animated-move-to x y #&optional (win (get-window))
+(define*-public (animated-move-to x y #:optional (win (get-window))
 				  (move-pointer-too? #t))
   "Move WIN to viewport coordinates X, Y with animation. 
 If X or Y is #f, then do not change that coordinate during 

@@ -18,28 +18,40 @@
 ;;;; 
 
 
-
 (define-module (app scwm wininfo)
+  :use-module (srfi srfi-1)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
   :use-module (app scwm listops)
   :use-module (app scwm winlist)
-  :use-module (ice-9 regex))
+  :use-module (app scwm minimal)
+  :use-module (ice-9 regex)
+  :export (on-desk?
+           on-current-desk?
+           in-viewport-any-desk?
+           visible?
+           percent-visible
+           window-geometry-string
+           window-last-focus-time-string
+           window-client-machine-name
+           wildcard-matcher
+           wildcard-match?
+           define-string-matcher))
 
 
 
 ;; on-desk?
 
 
-(define*-public (on-desk? n #&optional (win (get-window)))
+(define* (on-desk? n #:optional (win (get-window)))
   "Return #t if WIN is on desk N, else #f."
   (if win (= n (window-desk win))))
 
-(define*-public ((on-desk-n? n) #&optional (win (get-window)))
+(define*-public ((on-desk-n? n) #:optional (win (get-window)))
   "Returns a function which takes WIN and returns #t if WIN is on desk N, else #f."
   (on-desk? n win))
 
-(define*-public (on-current-desk? #&optional (win (get-window)))
+(define* (on-current-desk? #:optional (win (get-window)))
   "Return #t if WIN is on the current desk."
   (on-desk? (current-desk) win))
 
@@ -70,7 +82,7 @@ X2,Y2 and W2 x H2 are the position and size of the second rectangle."
 		(h (+ (- ymin ymax) 1)))
 	    (* w h))))))
 
-(define*-public (in-viewport-any-desk? #&optional (win (get-window)))
+(define* (in-viewport-any-desk? #:optional (win (get-window)))
   "Return #t if WIN is in the current viewport ignoring the desk, else #f."
   (if win (apply rectangle-overlap? 
 		 (append
@@ -93,8 +105,8 @@ will definitely return #f."
 	   (append (window-virtual-position win) (window-frame-size win)
 		   (window-virtual-position win2) (window-frame-size win2))))))
 
-(define*-public ((window-overlaps-window? #&optional (win (get-window)))
-		 #&optional (win2 (get-window)))
+(define*-public ((window-overlaps-window? #:optional (win (get-window)))
+		 #:optional (win2 (get-window)))
   "Return a function that takes WIN2 and returns #t if it overlaps WIN."
   (windows-overlap? win win2))
 
@@ -112,7 +124,7 @@ Iconified windows are ignored. See also `windows-overlap?'."
 					(not (iconified-window? w))))))
 
 
-(define*-public (visible? #&optional (win (get-window)))
+(define* (visible? #:optional (win (get-window)))
   "Return #t if any of WIN is currently potentially visible, else #f.
 Note that this just checks if WIN is in the current viewport
 and on the current desk.  It may still return #t if WIN is completely
@@ -121,7 +133,7 @@ obscured by other windows."
 	       (on-current-desk? win)
 	       (in-viewport-any-desk? win))))
 
-(define*-public (percent-visible #&optional (win (get-window)))
+(define* (percent-visible #:optional (win (get-window)))
   "Return the percent of WIN currently in the viewport as a real in [0,100].
 Note that this does not consider other windows which may
 obscure WIN;  it only checks what fraction of WIN would be visible
@@ -146,7 +158,7 @@ if it were on top (unobscured)."
        (window-position win)
        (window-frame-size win)))
 
-(define*-public (window-geometry-string #&optional (win (get-window)))
+(define* (window-geometry-string #:optional (win (get-window)))
   "Return a string corresponding to the geometry specifications for WIN.
 The virtual position and the frame size are used.  The resulting string
 looks like \"157x133+200+306\".  If WIN is iconified, the string
@@ -165,7 +177,7 @@ returned is in parentheses."
   "Return the number of seconds that have passed since TIMET was the current time."
   (- (current-time) timet))
 
-(define*-public (window-last-focus-time-string #&optional (win (get-window)))
+(define* (window-last-focus-time-string #:optional (win (get-window)))
   "Return a string corresponding to the last focus time for WIN."
   (string-append 
    (number->string (time-t->seconds-ago (window-last-focus-time win)))
@@ -190,14 +202,14 @@ meta-characters \"*\" with \".*\" and \"?\" with \".\"."
 	   ((#\?) "."))))
    'post))
 
-(define*-public (window-client-machine-name #&optional (win (get-window)))
+(define* (window-client-machine-name #:optional (win (get-window)))
   "Return the name of the client machine on which WIN is running."
   (if win
       (let ((prop (X-property-get win "WM_CLIENT_MACHINE")))
 	(and (list? prop) (car prop)))
       #f))
 
-(define*-public (wildcard-matcher wildcard #&key (full-regexp #f)
+(define* (wildcard-matcher wildcard #:key (full-regexp #f)
 				  (regexp-options `(,regexp/icase)))
   "Return a procedure that matches WILDCARD against a window.
 REGEXP-OPTIONS is passed to `make-regexp'.  If FULL-REGEXP is #t, 
@@ -212,7 +224,7 @@ of the window."
 		     (wildcard->regexp wildcard))
 		 regexp-options)))
     (lambda*
-     (#&optional (win (get-window)))
+     (#:optional (win (get-window)))
      (or
       (let* ((title (window-title win))
 	     (result (regexp-exec wc-rgx title)))
@@ -224,8 +236,8 @@ of the window."
 	     (result (regexp-exec wc-rgx resource)))
 	(and result (= (match:end result) (string-length resource))))))))
 
-(define*-public (wildcard-match? wildcard #&optional (win (get-window))
-				 #&key (full-regexp #f)
+(define* (wildcard-match? wildcard #:optional (win (get-window))
+				 #:key (full-regexp #f)
 				 (regexp-options `(,regexp/icase)))
   "Returns #t if WILDCARD matches WIN (in the sense of `wildcard-matcher').
 See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS."
@@ -270,12 +282,12 @@ See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS."
 (define-public default-matcher-case-sensitive #f)
 
 (defmacro*-public define-string-matcher
-  (name docstring-or-accessor #&optional accessor)
-  (let ((docstring-list (if (bound? accessor) 
+  (name docstring-or-accessor #:optional accessor)
+  (let ((docstring-list (if accessor 
 			    (list docstring-or-accessor) '()))
-	(accessor (if (bound? accessor) accessor docstring-or-accessor)))
+	(accessor (if accessor accessor docstring-or-accessor)))
     `(define-predicate-maker define*-public
-       (,name string #&optional 
+       (,name string #:optional 
 	     (type default-matcher-type) 
 	     (case-sensitive default-matcher-case-sensitive))
        ,@docstring-list
@@ -354,7 +366,7 @@ case-sensitive or not."
 	  (lambda (pred)
 	    (cond
 	     ((object-property pred 'win-and??) 
-	      => id)
+	      => identity)
 	     (else (list pred))))
 	  ;;; FIXME: need a copy of uniq
 	  (delete-duplicates (delq always? predicates)))))
@@ -379,7 +391,7 @@ case-sensitive or not."
 	  (lambda (pred)
 	    (cond
 	     ((object-property pred 'style-or) 
-	      => id)
+	      => identity)
 	     (else (list pred))))
 	  (delete-duplicates (delq never? predicates)))))
     (internal-win-or?? predicates)))
@@ -411,7 +423,7 @@ case-sensitive or not."
 
 
 (define-predicate-maker
-  define*-public (window-match?? string #&optional 
+  define*-public (window-match?? string #:optional 
 				 (type default-matcher-type) 
 				 (case-sensitive 
 				  default-matcher-case-sensitive))

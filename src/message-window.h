@@ -17,8 +17,6 @@
 #include <X11/Xatom.h>
 #include <X11/Intrinsic.h>
 
-#include <guile/gh.h>
-
 #undef EXTERN
 #undef EXTERN_SET
 #ifdef MESSAGE_WINDOW_IMPLEMENTATION
@@ -33,8 +31,8 @@ void init_message_window();
 
 EXTERN long scm_tc16_scwm_msgwindow;
 
-#define MSGWINDOW_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_msgwindow)
-#define MSGWINDOW(X)   ((scwm_msgwindow *)(gh_cdr(X)))
+#define MSGWINDOW_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_msgwindow, X))
+#define MSGWINDOW(X)   ((scwm_msgwindow *)SCM_SMOB_DATA(X))
 #define MSGWINDOW_IMAGE(X)     (MSGWINDOW(X)->bg_image)
 
 
@@ -64,11 +62,11 @@ SCM make_message_window( SCM msg );
 
 /* Some stuff for determining whether the object is a msgwindow or not */
 
-#define MSGWINDOW_OR_SYMBOL_P(x) (MSGWINDOW_P((x)) || gh_symbol_p((x)))
+#define MSGWINDOW_OR_SYMBOL_P(x) (MSGWINDOW_P(x) || scm_is_symbol(x))
 
-#define DYNAMIC_MSGWINDOW_P(X) (gh_symbol_p((X))? \
-			        MSGWINDOW_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			        MSGWINDOW_P((X)))
+#define DYNAMIC_MSGWINDOW_P(X) (scm_is_symbol(X)? \
+			        MSGWINDOW_P(scm_variable_ref(scm_lookup(X))) : \
+			        MSGWINDOW_P(X))
 
 /* Context for expose event handling */
 

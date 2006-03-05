@@ -17,7 +17,7 @@ That is, the returned list is: ((nw-x nw-y) se-x se-y).  Use
 the returned list."
   (let ((p (window-position win))
 	(s (window-frame-size win)))
-    (set-cdr! (cdr s) ())
+    (set-cdr! (cdr s) '())
     (cons p (map + p s))))
 
 (define-public rect-nw car)

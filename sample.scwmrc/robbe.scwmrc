@@ -37,10 +37,31 @@
 
 (display "[robbe.scwmrc] Loading modules ...\n")
 
-(use-scwm-modules base winops winlist wininfo style face flux optargs
-		  std-menus animation message-window pie-menus gnome-hints
-		  xlock-menus placement winlist-menu
-		  group (ice-9 format) (ice-9 string-fun) (ice-9 regex))
+;;(use-scwm-modules base winops winlist wininfo style face flux optargs
+;;		  std-menus animation message-window pie-menus gnome-hints
+;;		  xlock-menus placement winlist-menu
+;;		  group (ice-9 format) (ice-9 string-fun) (ice-9 regex))
+
+(use-modules (app scwm base)
+             (app scwm winops)
+             (app scwm winlist)
+             (app scwm wininfo)
+             (app scwm style)
+             (app scwm face)
+             (app scwm flux)
+             (app scwm optargs)
+             (app scwm std-menus)
+             (app scwm animation)
+             (app scwm message-window)
+             (app scwmpie-menus)
+             (app scwm gnome-hints)
+             (app scwm xlock-menus)
+             (app scwm placement)
+             (app scwm winlist-menu)
+             (app scwm group)
+             (ice-9 format)
+             (ice-9 string-fun)
+             (ice-9 regex))
 
 (display "[robbe.scwmrc] Loading modules ... done.\n")
 
@@ -213,7 +234,7 @@
 ; window is deiconified, unshaded, and raised).
 ; unless a window with resourcename RES is already present.
 (define* (xcmd-action name command
-		      #&key (class #f) (resource #f) (needs-term #f))
+		      #:key (class #f) (resource #f) (needs-term #f))
   (lambda () 
     (let ((w (if needs-term
 		 (find-window-by-name name)
@@ -281,8 +302,8 @@
 ; LOCK chooses between screen-locking and -saving.
 (define (make-xlock-menu lock modes)
   (if (> (length modes) screen-rows)
-      (do ((current ())
-	   (potential () (cons (car rest) potential))
+      (do ((current '())
+	   (potential '() (cons (car rest) potential))
 	   (omega #\z)
 	   (rest modes (cdr rest))
 	   (template (list (menu-title (if lock "Lock Screen" "Save Screen"))
@@ -636,7 +657,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-key 'all (super "space") toggle-focus)
 
 ; desk switching
-(define focused-windows ())
+(define focused-windows '())
 
 (define (change-desk inc)
   (set-current-desk! (+ (current-desk) inc)))
@@ -862,10 +883,10 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:icon "Viewer.xpm.gz")
 
 ; list of windows currently flashing
-(define flash-window-list ())
+(define flash-window-list '())
 
 (define* (flash-window-start
-	  #&optional (win (select-window-interactively "Flash what?")))
+	  #:optional (win (select-window-interactively "Flash what?")))
   "Color-cycle WIN's title."
   (if (not (member win flash-window-list))
       (letrec ((n 0)
@@ -905,6 +926,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	(schedule count-up))))
 
 (define* (flash-window-stop
-	  #&optional (win (select-window-interactively "Stop flashing what?")))
+	  #:optional (win (select-window-interactively "Stop flashing what?")))
   "Stop color-cycling WIN's title."
   (set! flash-window-list (delete win flash-window-list)))

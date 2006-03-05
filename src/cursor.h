@@ -20,8 +20,8 @@
 #endif
 
 
-#define CURSOR(X)  ((scwm_cursor *)(gh_cdr(X)))
-#define IS_CURSOR(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_cursor)
+#define CURSOR(X)  ((scwm_cursor *)SCM_SMOB_DATA(X))
+#define IS_CURSOR(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_cursor, X))
 #define XCURSOR(X)  (IS_CURSOR((X))?CURSOR(X)->cursor:None)
 
 EXTERN SCM *pscm_cursor_set_focus;

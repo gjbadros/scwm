@@ -25,8 +25,6 @@
 
 #include "scwm.h"
 
-#include <guile/gh.h>
-
 #include "errors.h"
 
 SCWM_GLOBAL_SYMBOL(sym_scwm_error, "scwm-error");
@@ -34,8 +32,8 @@ SCWM_GLOBAL_SYMBOL(sym_scwm_error, "scwm-error");
 void 
 scwm_error(const char *subr, const char *szErr)
 {
-  scm_error(sym_scwm_error, subr, SCWM_DISPLAY,
-	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED),
+  scm_error(sym_scwm_error, subr, "~A",
+	    scm_list_n(scm_from_locale_string((char *)szErr), SCM_UNDEFINED),
             SCM_UNDEFINED);
 }
 
@@ -48,9 +46,7 @@ scwm_error_message (SCM message, SCM args)
 void
 init_errors()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "errors.x"
-#endif
 }
 
 

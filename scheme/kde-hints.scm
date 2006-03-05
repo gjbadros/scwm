@@ -27,7 +27,7 @@
 (defmacro-public test-case (TITLE FORM . RESULT)
   #f)
 
-(define-public kwm-module-winids ())
+(define-public kwm-module-winids '())
 
 (define WM_PROTOCOLS (string->X-atom "WM_PROTOCOLS"))
 (define WM_DELETE_WINDOW (string->X-atom "WM_DELETE_WINDOW"))

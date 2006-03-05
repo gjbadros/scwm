@@ -24,7 +24,6 @@
 
 #include <X11/Xlib.h>
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #include "scwm.h"
@@ -170,8 +169,8 @@ STYLE can be either 'centered or 'tiled.")
   }
 
   if (style==sym_centered) {
-    image = clone_resized_image(image, gh_ulong2scm(Scr.DisplayWidth),
-                                gh_ulong2scm(Scr.DisplayHeight),
+    image = clone_resized_image(image, scm_from_ulong(Scr.DisplayWidth),
+                                scm_from_ulong(Scr.DisplayHeight),
                                 root_bg_color);
   };
 
@@ -207,9 +206,8 @@ SCM_DEFINE(reset_background_x, "reset-background!", 0, 0, 0,
 #undef FUNC_NAME 
 
 
-static
 void
-init_background()
+scwm_init_background()
 {
 
   atom_XROOTPMAP_ID = XInternAtom (dpy, "_XROOTPMAP_ID", False);
@@ -223,10 +221,6 @@ init_background()
 #endif
 }
 
-void scm_init_app_scwm_background_module()
-{
-  scm_register_module_xxx("app scwm background", init_background);
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

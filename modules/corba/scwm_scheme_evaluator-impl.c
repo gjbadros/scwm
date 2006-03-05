@@ -113,7 +113,7 @@ impl_scwm_scheme_evaluator_evaluate_sexp(impl_POA_scwm_scheme_evaluator *ARG_UNU
   /* Evaluate the request expression and free it. */
   val = scwm_safe_eval_str(expr);
   str_val = scm_strprint_obj(val);
-  szAnswer = gh_scm2newstr(str_val, NULL);
+  szAnswer = scm_to_locale_string(str_val);
   
   /* restore output and error ports; use returned o_port/e_port
      below for getting the strings back */
@@ -122,14 +122,14 @@ impl_scwm_scheme_evaluator_evaluate_sexp(impl_POA_scwm_scheme_evaluator *ARG_UNU
   scm_def_errp = saved_def_e_port;
   
   /* Retrieve output and errors */
-  szOutput = gh_scm2newstr(scm_strport_to_string(o_port),NULL);
-  szErrorOutput = gh_scm2newstr(scm_strport_to_string(e_port),NULL);
+  szOutput = scm_to_locale_string(scm_strport_to_string(o_port));
+  szErrorOutput = scm_to_locale_string(scm_strport_to_string(e_port));
           
   *answer = CORBA_string_dup(szAnswer);
   *output = CORBA_string_dup(szOutput);
   *error_output = CORBA_string_dup(szErrorOutput);
-  gh_free(szAnswer);
-  gh_free(szOutput);
-  gh_free(szErrorOutput);
+  free(szAnswer);
+  free(szOutput);
+  free(szErrorOutput);
 }
 #undef FUNC_NAME

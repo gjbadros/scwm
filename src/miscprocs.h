@@ -10,8 +10,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #endif	/* MISCPROCS_H */
 
 /* Local Variables: */

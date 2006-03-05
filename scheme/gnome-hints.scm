@@ -379,7 +379,7 @@
   ;;  (cond
   ;;   ((eqv? prop _WIN_WORKSPACE)
   ;;    (gnome-update-workspace))))
-  ())
+  '())
 
 
 (define (gnome-X-PropertyNotify-hook prop win)

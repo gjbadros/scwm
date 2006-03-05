@@ -41,7 +41,7 @@
 
 ;; selecting nonants from windows
 
-(define*-public (get-window-with-nonant #&optional (window #f) (nonant 4))
+(define*-public (get-window-with-nonant #:optional (window #f) (nonant 4))
   "Select a WINDOW and a NONANT, defaulting to the current window context.  
 If the WINDOW is not specified and there is no window context, 
 perform interactive selection.  If WINDOW is passed in but 
@@ -133,7 +133,7 @@ If ORIENTATION is 'vertical, then returns 'left, 'hcenter, or 'right."
 ;; (get-window-with-nonant-interactively 'horizontal)
 ;; (get-window-with-nonant-interactively 'vertical)
 ;; nonants
-(define*-public (get-window-with-nonant-interactively #&optional (orientation #f) (cursor #f))
+(define*-public (get-window-with-nonant-interactively #:optional (orientation #f) (cursor #f))
   "Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
 for use with the window-selection and constraints modules.

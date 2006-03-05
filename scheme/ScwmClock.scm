@@ -30,7 +30,7 @@
 (define (date-string format)
   (strftime format (localtime (current-time))))
 
-(define*-public (run-ScwmClock #&key (24-hour #t) (show-timezone #t)
+(define*-public (run-ScwmClock #:key (24-hour #t) (show-timezone #t)
 			       (update-interval 1) (parent #f))
   "Start a ScwmClock window display.
 24-HOUR is #t if you want to use military time, #f for am/pm display.

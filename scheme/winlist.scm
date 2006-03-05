@@ -18,8 +18,8 @@
 ;;;; 
 
 
-
 (define-module (app scwm winlist)
+  :use-module (srfi srfi-1)
   :use-module (app scwm optargs)
   :use-module (app scwm wininfo)
   :use-module (app scwm base)
@@ -50,7 +50,7 @@ does not accept."
 
 (define local-reverse reverse)
 
-(define*-public (list-windows #&key (only '()) (except '())
+(define*-public (list-windows #:key (only '()) (except '())
 			      (by-stacking #f)
 			      (by-focus #f)
 			      (reverse #f))
@@ -63,7 +63,7 @@ true, they are returned in the reverse of the usual order. ONLY and
 EXCEPT each are procedures which take a single window argument and
 returns #t if the window should be included (for ONLY) or 
 excluded (for EXCEPT), or #f otherwise."
-  ((if reverse local-reverse id)
+  ((if reverse local-reverse identity)
    (filter-only-except 
     (if by-stacking
 	(list-stacking-order)
@@ -71,17 +71,17 @@ excluded (for EXCEPT), or #f otherwise."
 	    (list-focus-order)
 	    (list-all-windows))) only except)))
 
-(define*-public (winlist-hit #&optional (win (get-window)))
+(define*-public (winlist-hit #:optional (win (get-window)))
   "Permit WIN to be displayed in the window list by default.
 This resets the 'winlist-skip property of WIN.  See also `winlist-skip'."
   (if win (set-object-property! win 'winlist-skip #f)))
 
-(define*-public (winlist-skip #&optional (win (get-window)))
+(define*-public (winlist-skip #:optional (win (get-window)))
   "Do not show WIN in the window list by default.
 This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
   (if win (set-object-property! win 'winlist-skip #t)))
 
-(define*-public (winlist-skip? #&optional (win (get-window)))
+(define*-public (winlist-skip? #:optional (win (get-window)))
   "Return #t if WIN is skipped in the window list, #f otherwise."
   (if win (object-property win 'winlist-skip) #f))
 
@@ -89,41 +89,41 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 (add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
 
 
-(define*-public (circulate-hit #&optional (win (get-window)))
+(define*-public (circulate-hit #:optional (win (get-window)))
   "Include WIN among the windows in the circulate list.
 This resets the 'circulate-skip property of WIN.  See also `circulate-skip'."
   (if win (set-object-property! win 'circulate-skip #f)))
 
-(define*-public (circulate-skip #&optional (win (get-window)))
+(define*-public (circulate-skip #:optional (win (get-window)))
   "Do not include WIN among the windows in the circulate list.
 This sets the 'circulate-skip property of WIN.  See also `circulate-hit'."
   (if win (set-object-property! win 'circulate-skip #t)))
 
-(define*-public (circulate-skip? #&optional (win (get-window)))
+(define*-public (circulate-skip? #:optional (win (get-window)))
   "Return #t if WIN is not among the windows in the circulate list.
 Otherwise return #f."
   (if win (object-property win 'circulate-skip) #f))
 
-(define*-public (circulate-hit-icon #&optional (win (get-window)))
+(define*-public (circulate-hit-icon #:optional (win (get-window)))
   "Include WIN's icon among the windows in the circulate list.
 This resets the 'circulate-skip-icon property of WIN.  
 See also `circulate-skip-icon'."
   (if win (set-object-property! win 'circulate-skip-icon #f)))
 
-(define*-public (circulate-skip-icon #&optional (win (get-window)))
+(define*-public (circulate-skip-icon #:optional (win (get-window)))
   "Do not include WIN's icon among the windows in the circulate list.
 This sets the 'circulate-skip-icon property of WIN.  
 See also `circulate-hit-icon'."
   (if win (set-object-property! win 'circulate-skip-icon #t)))
 
-(define*-public (circulate-skip-icon? #&optional (win (get-window)))
+(define*-public (circulate-skip-icon? #:optional (win (get-window)))
   "Return #t if WIN's icon is not among the windows in the circulate list.
 Otherwise return #f."
   (if win (object-property win 'circulate-skip-icon) #f))
 
 ;; CRW:FIXME:MS: Shouldn't this be:
 ;; ((if (iconified-window? win) circulate-skip? circulate-skip-icon?) win)
-(define*-public (should-circulate-skip? #&optional (win (get-window)))
+(define*-public (should-circulate-skip? #:optional (win (get-window)))
   "Return #t if WIN should now be skipped when circulating, #f otherwise.
 Uses the current state of WIN (whether it is iconified or not) in
 determining the result."
@@ -156,7 +156,7 @@ determining the result."
 (define (circulate backwards? window only except proc)
   (let* ((window (or window last-circulated))
 	 (wl (if window
-		 ((if backwards? reverse id)
+		 ((if backwards? reverse identity)
 		  (rotate-around window (list-all-windows)))
 		 (list-all-windows))))
     (cond
@@ -169,7 +169,7 @@ determining the result."
 	     (set! last-circulated (car x))
 	     (proc (car x)))))))))
 
-(define*-public (next-window #&key (window (get-window #f #f))
+(define*-public (next-window #:key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
   "Switch to the next matching window.
 If WINDOW is given, switch to that window.
@@ -184,7 +184,7 @@ See also `prev-window'."
   (circulate #f window only except proc))
 
 
-(define*-public (prev-window #&key (window (get-window #f #f))
+(define*-public (prev-window #:key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
   "Circulate to the previous matching window.
 If WINDOW is given, circulate to that window.

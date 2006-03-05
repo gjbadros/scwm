@@ -26,7 +26,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <guile/gh.h>
 #include <libguile.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -63,10 +62,8 @@ SCM_SYMBOL (sym_height,"height");
 SCM
 mark_font(SCM obj)
 {
-  GC_MARK_SCM_IF_SET(FONT(obj)->name);
-  return SCM_BOOL_F;
+  return FONT(obj)->name;
 }
-
 
 size_t 
 free_font(SCM obj)
@@ -77,7 +74,7 @@ free_font(SCM obj)
   XFreeFont(dpy, XFONT(obj));
 #endif
   FREE(FONT(obj));
-  return (0);
+  return 0;
 }
 
 int 
@@ -96,9 +93,9 @@ print_font(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 
 SCM_DEFINE(make_font, "make-font", 1, 0, 0,
           (SCM fname),
-"Return the font object for the X font specifier FNAME.\n\
-If FNAME is not a valid X font name, or cannot be\n\
-allocated, an error results.")
+"Return the font object for the X font specifier FNAME.\n\n"
+"If FNAME is not a valid X font name, or cannot be\n"
+"allocated, an error results.")
 #define FUNC_NAME s_make_font
 {
   SCM answer;
@@ -119,7 +116,7 @@ allocated, an error results.")
   VALIDATE_ARG_STR_NEWCOPY(1,fname,fn);
   
   answer=scm_hash_ref(font_hash_table, fname, SCM_BOOL_F);
-  if (answer!=SCM_BOOL_F) {
+  if (scm_is_true(answer)) {
     return answer;
   }
 
@@ -136,7 +133,7 @@ allocated, an error results.")
     FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
-    if (answer!=SCM_BOOL_F) {
+    if (scm_is_true(answer)) {
       return answer;
     }
     
@@ -171,7 +168,7 @@ allocated, an error results.")
     FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
-    if (answer!=SCM_BOOL_F) {
+    if (scm_is_true(answer)) {
       return answer;
     }
     
@@ -209,7 +206,7 @@ allocated, an error results.")
   XFONT(answer) = xfs;
   FONT(answer)->height = XFONT(answer)->ascent + XFONT(answer)->descent;
 #endif
-  FONTNAME(answer) = gh_str02scm(fn);
+  FONTNAME(answer) = scm_from_locale_string(fn);
   scwm_allow_ints();
   FREE(fn);
 
@@ -224,22 +221,22 @@ SCM_DEFINE(font_p, "font?", 1, 0, 0,
 "Returns #t if OBJ is a font object, otherwise #f.")
 #define FUNC_NAME s_font_p
 {
-  return SCM_BOOL_FromBool(FONT_P(obj));
+  return scm_from_bool(FONT_P(obj));
 }
 #undef FUNC_NAME
 
 
 SCM_DEFINE(font_properties, "font-properties", 1, 0, 0,
           (SCM font),
-"Return an association list giving some properties of FONT.\n\
-Currently defined properties are 'name, the string name of the\n\
-color, and 'height, its total height in pixels.")
+"Return an association list giving some properties of FONT.\n\n"
+"Currently defined properties are 'name, the string name of the\n"
+"color, and 'height, its total height in pixels.")
 #define FUNC_NAME s_font_properties
 {
   VALIDATE_ARG_FONT(1,font);
-  return gh_list(gh_cons(sym_name, FONTNAME(font)),
-		 gh_cons(sym_height, gh_int2scm(FONTHEIGHT(font))),
-		 SCM_UNDEFINED);
+  return scm_list_n(scm_cons(sym_name, FONTNAME(font)),
+		    scm_cons(sym_height, scm_from_int(FONTHEIGHT(font))),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -305,12 +302,12 @@ SCM_DEFINE(title_font, "title-font", 0, 0, 0,
 
 SCM_DEFINE(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
           (SCM name),
-"Fonts are cached by name. It is remotely possible that the\n\
-meaning of a particular string as a fonts will change in your X\n\
-server, if you try hard enough (perhaps if you add or remove font\n\
-servers). For this unlikely eventuality, `clear-font-cache-entry' is\n\
-provided - it removes the font associated with NAME from the font\n\
-cache")
+"Fonts are cached by name. It is remotely possible that the\n\n"
+"meaning of a particular string as a fonts will change in your X\n"
+"server, if you try hard enough (perhaps if you add or remove font\n"
+"servers). For this unlikely eventuality, `clear-font-cache-entry' is\n"
+"provided - it removes the font associated with NAME from the font\n"
+"cache")
 #define FUNC_NAME s_clear_font_cache_entry
 {
   scm_hash_remove_x(font_hash_table, name);
@@ -319,28 +316,27 @@ cache")
 #undef FUNC_NAME
 
 
-
-MAKE_SMOBFUNS(font);
-
 void init_font() 
 {
-  REGISTER_SCWMSMOBFUNS(font);
-
+  scm_tc16_scwm_font = scm_make_smob_type("font", 0);  
+  scm_set_smob_print(scm_tc16_scwm_font, print_font);
+  scm_set_smob_free(scm_tc16_scwm_font, free_font);
+  scm_set_smob_mark(scm_tc16_scwm_font, mark_font);
+  
   /* GJB:FIXME:: should make the font object containing
      the fixed font used throughout and made permanent.
      The string should not be used in C code --03/22/99 gjb */
-  scwm_defer_ints();
-  str_fixed=gh_str02scm(XFIXEDFONTNAME);
+  //scwm_defer_ints();
+  str_fixed=scm_from_locale_string(XFIXEDFONTNAME);
   scm_permanent_object(str_fixed);
 
   font_hash_table = 
-    scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
+    scm_make_weak_value_hash_table (scm_from_int(FONT_HASH_SIZE));
   scm_permanent_object(font_hash_table);
 
-  scwm_allow_ints();
-#ifndef SCM_MAGIC_SNARFER
+  //scwm_allow_ints();
+
 #include "font.x"
-#endif
 }
 
 

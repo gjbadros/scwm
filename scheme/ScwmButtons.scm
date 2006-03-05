@@ -83,7 +83,7 @@
   :use-module (gtk gdk)
   :use-module (app scwm optargs))
 
-(define*-public (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
+(define*-public (run-ScwmButtons button-item-list #:key (orientation 'horizontal)
 				 (name "ScwmButtons") (auto-orient #t)
 				 (auto-orient-margin 100))
   "Start a ScwmButtons window giving a simple toolbar button/action interface.
@@ -186,7 +186,7 @@ determines how wide the \"edge\" of a viewport is (in pixels)."
 SB should be a handle returned from `run-ScwmButtons'."
   (sb 'quit))
 
-(define*-public (button-item pixmap-file #&key (action noop) (tooltip #f))
+(define*-public (button-item pixmap-file #:key (action noop) (tooltip #f))
   "Create a button item for a ScwmButtons window."
   (if (string? action)	;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))

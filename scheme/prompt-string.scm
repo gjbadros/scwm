@@ -32,7 +32,7 @@
 
 
 
-(define*-public (prompt-string prompt proc #&key
+(define*-public (prompt-string prompt proc #:key
 			       (initval #f) (title "prompt-string"))
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
 E.g., (prompt-string \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"

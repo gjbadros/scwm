@@ -14,8 +14,6 @@
 #include <assert.h>
 #include <X11/X.h>
 
-#include <guile/gh.h>
-
 #include "module-interface.h"
 
 #include "scwm.h"
@@ -69,16 +67,16 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 	  unsigned long data7)
 {
   scwm_run_hook(broadcast_hook, 
-                gh_list(gh_ulong2scm(event_type), 
-                        gh_ulong2scm(num_datum),
-                        gh_ulong2scm(data1),
-                        gh_ulong2scm(data2),
-                        gh_ulong2scm(data3),
-                        gh_ulong2scm(data4),
-                        gh_ulong2scm(data5),
-                        gh_ulong2scm(data6),
-                        gh_ulong2scm(data7),
-                        SCM_UNDEFINED));
+                scm_list_n(scm_from_ulong(event_type), 
+			   scm_from_ulong(num_datum),
+			   scm_from_ulong(data1),
+			   scm_from_ulong(data2),
+			   scm_from_ulong(data3),
+			   scm_from_ulong(data4),
+			   scm_from_ulong(data5),
+			   scm_from_ulong(data6),
+			   scm_from_ulong(data7),
+			   SCM_UNDEFINED));
 }
 
 
@@ -100,22 +98,22 @@ BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
   if (Scr.fWindowsCaptured) {
     scwm_run_hook2(broadcast_config_hook, 
-                  gh_ulong2scm(event_type), SCM_FROM_PSW(psw));
+                  scm_from_ulong(event_type), SCM_FROM_PSW(psw));
   }
 }
 
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *szName)
 {
-  SCM name = gh_str02scm(szName);
+  SCM name = scm_from_locale_string(szName);
   if (Scr.fWindowsCaptured) {
     scwm_run_hook(broadcast_name_hook, 
-                  gh_list(gh_ulong2scm(event_type), 
-                          gh_ulong2scm(data1),
-                          gh_ulong2scm(data2),
-                          gh_ulong2scm(data3),
-                          name,
-                          SCM_UNDEFINED));
+                  scm_list_n(scm_from_ulong(event_type), 
+			     scm_from_ulong(data1),
+			     scm_from_ulong(data2),
+			     scm_from_ulong(data3),
+			     name,
+			     SCM_UNDEFINED));
   }
 }
 
@@ -123,7 +121,7 @@ void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 {
   if (Scr.fWindowsCaptured) {
     scwm_run_hook2(broadcast_mini_icon_hook, 
-                   gh_ulong2scm(event_type), SCM_FROM_PSW(psw));
+                   scm_from_ulong(event_type), SCM_FROM_PSW(psw));
   }
 }
 
@@ -168,7 +166,7 @@ module packet for WIN as a Scheme string.")
   info[++i] = XCOLOR(psw->TextColor);
   info[++i] = XCOLOR(psw->BackColor);
 
-  return gh_str2scm((char *)info,sizeof(info));
+  return scm_from_locale_stringn((char *)info,sizeof(info));
 }
 #undef FUNC_NAME
 
@@ -201,17 +199,13 @@ module packet for WIN as a Scheme string.")
     info[7] = psw->icon_w_height+psw->icon_p_height;
   }
 
-  return gh_str2scm((char *)info,sizeof(info));
+  return scm_from_locale_stringn((char *)info,sizeof(info));
 }
 #undef FUNC_NAME
 
 void init_module_interface()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "module-interface.x"
-#endif
-  /* This will ensure that these are defined in the root module. */
-
 }
 
 

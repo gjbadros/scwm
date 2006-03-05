@@ -30,7 +30,7 @@
 
 ;;(use-modules (app scwm prompt-enum))
 ;;(define w (prompt-enum "Focus?" '((click . "Click") (mouse . "Mouse")) (lambda (v) (display "answer = ") (display v) (newline)) #:initval 'mouse))
-(define*-public (prompt-enum prompt choices proc #&key
+(define*-public (prompt-enum prompt choices proc #:key
 			      (initval #f)
 			      (title "prompt-enum"))
   "Prompt with PROMPT for one of CHOICES, and call PROC with result.

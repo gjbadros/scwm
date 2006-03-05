@@ -42,7 +42,7 @@
 
 ;;(use-modules (app scwm prompt-color))
 ;;(define w (prompt-color "Window color?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval "navyblue"))
-(define*-public (prompt-color prompt proc #&key
+(define*-public (prompt-color prompt proc #:key
 			      (initval #f)
 			      (title "prompt-color")
 			      (favorites #f))
@@ -67,7 +67,7 @@ TITLE is a window title."
 ;; (gdk-color-name (gdk-color-parse "red"))
 ;; (gdk-color-red (gdk-color-parse "red"))
 
-(define*-public (prompt-color-hbox prompt initval #&optional favorites)
+(define*-public (prompt-color-hbox prompt initval #:optional favorites)
   "Create and return a color-prompting hbox, complete with link to full color dialog.
 PROMPT is the prompt, INITVAL is the initial color as a color object or a string.
 The returned value is a list: (hbox getter).

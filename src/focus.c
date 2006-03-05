@@ -45,9 +45,9 @@
 Time lastTimestamp = CurrentTime;	/* until Xlib does this for us */
 
 SCWM_HOOK(window_focus_lost_hook,"window-focus-lost-hook", 1,
-"This hook is invoked whenever the focus is lost on a window.\n\
-It is called with one argument, the window object of the window\n\
-that just lost the keyboard focus. See also `window-focus-change-hook'.");
+"This hook is invoked whenever the focus is lost on a window.\n\n"
+"It is called with one argument, the window object of the window\n"
+"that just lost the keyboard focus. See also `window-focus-change-hook'.");
 
 
 /* Invoke the window_focus_lost_hook iff Scr.Focus is a SchemeWindow 
@@ -78,14 +78,14 @@ FFocussableWin(ScwmWindow *psw)
 
 SCM_DEFINE(focussable_window_p,"focussable-window?",0,1,0,
           (SCM win),
-"Return #t iff WIN may receive the keyboard focus.\n\
-This will return #f, e.g., if WIN's focus style is 'none, or\n\
-its X11 hints do not permit it to receive the focus.")
+"Return #t iff WIN may receive the keyboard focus.\n\n"
+"This will return #f, e.g., if WIN's focus style is 'none, or\n"
+"its X11 hints do not permit it to receive the focus.")
 #define FUNC_NAME s_focussable_window_p
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
-  return gh_bool2scm(FFocussableWin(psw));
+  return scm_from_bool(FFocussableWin(psw));
 }
 #undef FUNC_NAME
 
@@ -254,9 +254,7 @@ StashEventTime(XEvent * ev)
 void 
 init_focus()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "focus.x"
-#endif
 }
 
 

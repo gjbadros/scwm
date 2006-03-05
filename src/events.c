@@ -60,8 +60,6 @@
 #endif
 #include <assert.h>
 
-#include <guile/gh.h>
-
 #define EVENTS_IMPLEMENTATION
 #include "events.h"
 
@@ -107,7 +105,6 @@ extern Bool fQuotingKeystrokes;
 static SCM x_motionnotify_hook;
 static SCM g_lastwin_entered = SCM_BOOL_F;
 
-
 SCWM_GLOBAL_SYMBOL(sym_interactive,"interactive");
 
 SCWM_SYMBOL(sym_press,"press");
@@ -116,110 +113,115 @@ SCWM_SYMBOL(sym_desk_press,"desk-press");
 SCWM_SYMBOL(sym_desk_release,"desk-release");
 SCWM_SYMBOL(sym_desk_click,"desk-click");
 
+SCM_VARIABLE_INIT(scm_configure_request_handled,"configure-request-handled",SCM_BOOL_F);
+/** Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
+See also `X-ConfigureRequest-hook'. */
+
+
 
 SCWM_HOOK(x_selectionnotify_hook,"X-SelectionNotify-hook", 0,
 "Called when there is no selection after a `X-convert-selection' request.");
 
 SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6,
-"This hook is invoked upon ConfigureRequest events.\n\
-The arguments are: '(win icon? x y width height) where win\n\
-is the window requesting the configuration change, icon? is #t\n\
-iff that window's icon is requesting the change, x, y, width,\n\
-and height are either integers or #f to indicate that that\n\
-aspect was not part of the configure request event. \n\
-If `configure-request-handled' is #t after execution of the\n\
-hook procedures, then no C-level handling of the request\n\
-will be performed.");
+"This hook is invoked upon ConfigureRequest events.\n\n"
+"The arguments are: '(win icon? x y width height) where win\n"
+"is the window requesting the configuration change, icon? is #t\n"
+"iff that window's icon is requesting the change, x, y, width,\n"
+"and height are either integers or #f to indicate that that\n"
+"aspect was not part of the configure request event. \n"
+"If `configure-request-handled' is #t after execution of the\n"
+"hook procedures, then no C-level handling of the request\n"
+"will be performed.");
 
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2,
-"This hook is invoked whenever a PropertyNotify event is received\n\
-for a window scwm is managing. This indicates that an X window\n\
-property has changed. Watching for window property changes can be used\n\
-to construct your own custom window manager protocols. The hook\n\
-procedures are invoked with two arguments, the name of the property\n\
-that changed (as a string) and the window that it changed for. See also\n\
-`X-root-PropertyNotify-hook' but beware it gets passed different\n\
-arguments.");
+"This hook is invoked whenever a PropertyNotify event is received\n\n"
+"for a window scwm is managing. This indicates that an X window\n"
+"property has changed. Watching for window property changes can be used\n"
+"to construct your own custom window manager protocols. The hook\n"
+"procedures are invoked with two arguments, the name of the property\n"
+"that changed (as a string) and the WINDOW that it changed for. See also\n"
+"`X-root-PropertyNotify-hook' but beware it gets passed different\n"
+"arguments.");
 
 SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2,
-"This hook is invoked whenever a PropertyNotify event is received\n\
-on the root window.  This indicates that an X window\n\
-property has changed. Watching for window property changes can be used\n\
-to construct your own custom window manager protocols, or interface\n\
-to other desktop environments such as KDE or GNOME. The hook\n\
-procedures are invoked with two arguments: the atom for the changed\n\
-property and a boolean telling whether the property was deleted. \n\
-These arguments are different from those passed to\n\
-X-PropertyNotify-hook's procedures.");
+"This hook is invoked whenever a PropertyNotify event is received\n\n"
+"on the root window.  This indicates that an X window\n"
+"property has changed. Watching for window property changes can be used\n"
+"to construct your own custom window manager protocols, or interface\n"
+"to other desktop environments such as KDE or GNOME. The hook\n"
+"procedures are invoked with two arguments: the atom for the changed\n"
+"property and a boolean telling whether the property was deleted. \n"
+"These arguments are different from those passed to\n"
+"X-PropertyNotify-hook's procedures.");
 
 SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook", 0,
-"This hook is invoked whenever a MappingNotify X event is\n\
-received. A MappingNotify event indicates a change of keymapping - in\n\
-particular, it may indicate a change of available modifiers or mouse\n\
-buttons. The hook procedures are invoked with no arguments.");
+"This hook is invoked whenever a MappingNotify X event is\n\n"
+"received. A MappingNotify event indicates a change of keymapping - in\n"
+"particular, it may indicate a change of available modifiers or mouse\n"
+"buttons. The hook procedures are invoked with no arguments.");
 
 SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1,
-"This hook is invoked upon DestroyNotify X events.\n\
-It indicates a window was destroyed.  The hook procedures are\n\
-invoked with one argument, WINID, the X id of the window that was destroyed. \n\
-This hook is invoked for both the client window and the window frame\n\
-IDs (i.e., twice per top-level window).  You probably want to use\n\
-`window-close-hook' or `X-UnmapNotify-hook' instead.");
+"This hook is invoked upon DestroyNotify X events.\n\n"
+"It indicates a window was destroyed.  The hook procedures are\n"
+"invoked with one argument, WINID, the X id of the window that was destroyed. \n"
+"This hook is invoked for both the client window and the window frame\n"
+"IDs (i.e., twice per top-level window).  You probably want to use\n"
+"`window-close-hook' or `{X-UnmapNotify-hook' instead.");
 
 SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1,
-"This hook is invoked upon UnmapNotify X events.  It indicates a\n\
-window is being unmapped (removed from display).  The hook procedures\n\
-are invoked with one argument, WIN, the window being destroyed.  The\n\
-WIN is still valid during the hook procedures.");
+"This hook is invoked upon UnmapNotify X events.  It indicates a\n\n"
+"window is being unmapped (removed from display).  The hook procedures\n"
+"are invoked with one argument, WIN, the window being destroyed.  The\n"
+"WIN is still valid during the hook procedures.");
 
 SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook", 1,
-"This hook is invoked upon MapRequest X events.  It indicates a\n\
-window is trying to map itself (add itself to the display).  The hook \n\
-procedures are invoked with one argument, WIN, the window being mapped.  \n\
-The WIN is valid during the hook procedures.");
+"This hook is invoked upon MapRequest X events.  It indicates a\n\n"
+"window is trying to map itself (add itself to the display).  The hook \n"
+"procedures are invoked with one argument, WIN, the window being mapped.  \n"
+"The WIN is valid during the hook procedures.");
 
 SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1,
-"This hook is invoked whenever the keyboard focus is changed.\n\
-It is called with one argument, the window object of the window\n\
-that now has the focus, or #f if no window now has the focus. \n\
-See also `window-focus-lost-hook'.");
+"This hook is invoked whenever the keyboard focus is changed.\n\n"
+"It is called with one argument, the window object of the window\n"
+"that now has the focus, or #f if no window now has the focus. \n"
+"See also `window-focus-lost-hook'.");
 
 SCWM_HOOK(window_enter_hook, "window-enter-hook", 1,
-"This hook is invoked whenever the mouse pointer enters a top-level window.\n\
-It is called with one argument, the window object of the window just\n\
-entered.");
+"This hook is invoked whenever the mouse pointer enters a top-level window.\n\n"
+"It is called with one argument, the window object of the window just\n"
+"entered.");
 
 SCWM_HOOK(window_leave_hook, "window-leave-hook", 1,
-"This hook is invoked whenever the mouse pointer leaves a top-level window.\n\
-The hook procedures are invoked with one argument, the window object\n\
-of the window just left.");
+"This hook is invoked whenever the mouse pointer leaves a top-level window.\n\n"
+"The hook procedures are invoked with one argument, the window object\n"
+"of the window just left.");
 
 SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 2,
-"Invoked when window receives a VisibilityFullyObscured event.\n\
-The hook procedures are invoked with two arguments: the window object\n\
-of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
-See also `window-visibility'.");
+"Invoked when window receives a VisibilityFullyObscured event.\n\n"
+"The hook procedures are invoked with two arguments: the window object\n"
+"of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n"
+"See also `window-visibility'.");
 
 SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 2,
-"Invoked when window receives a VisibilityPartiallyObscured\n\
-event.  The hook procedures are invoked with two arguments: the window object\n\
-of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
-Beware that this event happens more often than you might expect and an action procedure\n\
-attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events. See also `window-visibility'.");
+"Invoked when window receives a VisibilityPartiallyObscured\n\n"
+"event.  The hook procedures are invoked with two arguments: the window object\n"
+"of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n"
+"Beware that this event happens more often than you might expect and an action procedure\n"
+"attached here should be very careful about manipulating windows in a way\n"
+"that might cause more Visibility events. See also `window-visibility'.");
 
 SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 2,
-"Invoked when window receives a VisibilityUnobscured event.\n\
-The hook procedures are invoked with two arguments: the window object\n\
-of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n\
-Beware that this event happens more often than you might expect and an action procedure\n\
-attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events. See also `window-visibility'.");
+"Invoked when window receives a VisibilityUnobscured event.\n\n"
+"The hook procedures are invoked with two arguments: the window object\n"
+"of the window that is now fully obscured, resulting-from-viewport-move? (a boolean).\n"
+"Beware that this event happens more often than you might expect and an action procedure\n"
+"attached here should be very careful about manipulating windows in a way\n"
+"that might cause more Visibility events. See also `window-visibility'.");
 
 SCWM_HOOK(client_message_hook,"client-message-hook", 4,
-"This hook is invoked whenever Scwm receives an X/11 client message.\n\
-It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), \n\
-and the vector of data.");
+"This hook is invoked whenever Scwm receives an X/11 client message.\n\n"
+"It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), \n"
+"and the vector of data.");
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -355,9 +357,9 @@ HandleEvents(void)
 
 SCM_DEFINE(handle_pending_events, "handle-pending-events", 0,0,0,
           (),
-"Handle all pending Scwm events, returns number of dispatched events.\n\
-This is useful to maintain responsiveness of Scwm when in the middle\n\
-of a long computation.")
+"Handle all pending Scwm events, returns number of dispatched events.\n\n"
+"This is useful to maintain responsiveness of Scwm when in the middle\n"
+"of a long computation.")
 #define FUNC_NAME s_handle_pending_events
 {
   int cevents = 0;
@@ -369,7 +371,7 @@ of a long computation.")
       DispatchEvent();
     }
   }
-  return gh_int2scm(cevents);
+  return scm_from_int(cevents);
 }
 #undef FUNC_NAME
 
@@ -499,7 +501,7 @@ HandleFocusIn()
     if (w != Scr.NoFocusWin) {
       /* Scr.UnknownWinFocused = w; */
     } else {
-      scwm_run_hook1(window_focus_change_hook,SCM_BOOL_F);
+      scwm_run_hook1(window_focus_change_hook, SCM_BOOL_F);
       Scr.Focus = NULL;
       SetBorder(Scr.Hilite, False, True, True, None);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
@@ -655,12 +657,12 @@ FIXDOC: Link to file!
 
 SCM_DEFINE (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
            (),
-"Reset the scwmexec protocol.\n\
-This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the\n\
-root window.  It should not be necessary but may be useful in case\n\
-your X server goes awry (and otherwise you would have to restart your\n\
-X server).  Use if scwmexec or scwmrepl are not returning (e.g.,\n\
-if your Emacs hangs when you try evaluating a scwm expression).")
+"Reset the scwmexec protocol.\n\n"
+"This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the\n"
+"root window.  It should not be necessary but may be useful in case\n"
+"your X server goes awry (and otherwise you would have to restart your\n"
+"X server).  Use if scwmexec or scwmrepl are not returning (e.g.,\n"
+"if your Emacs hangs when you try evaluating a scwm expression).")
 #define FUNC_NAME s_reset_scwmexec_protocol
 {
   XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
@@ -739,13 +741,14 @@ HandleScwmExec()
         /* Temporarily redirect output and error to string ports. 
            Note that the port setting functions return the current previous
            port. */
-        o_port = scm_set_current_output_port(make_output_strport(FUNC_NAME));
-        e_port = scm_set_current_error_port(make_output_strport(FUNC_NAME));
-        
+        o_port = scm_set_current_output_port(scm_open_output_string());
+        e_port = scm_set_current_error_port(scm_open_output_string());
+
+#if 0        
         /* Workaround for a problem with older Guiles */
         saved_def_e_port = scm_def_errp;
         scm_def_errp = scm_current_error_port();
-        
+#endif
         /* before we eval the request, record the window to respond
            in a global, so Done can respond if necessary (in case
            the eval-d expression calls `quit' or seg faults, etc.) */
@@ -754,18 +757,20 @@ HandleScwmExec()
         val = scwm_safe_eval_str((char *) req);
         XFree(req); 
         str_val=scm_strprint_obj(val);
-        ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
+        ret = (unsigned char *) scm_to_locale_stringn(str_val, &rlen);
         
         /* restore output and error ports; use returned o_port/e_port
            below for getting the strings back */
         o_port = scm_set_current_output_port(o_port);
         e_port = scm_set_current_error_port(e_port);
+#if 0
         scm_def_errp = saved_def_e_port;
-        
+#endif
+   
         /* Retrieve output and errors */
-        output = (unsigned char *) gh_scm2newstr(scm_strport_to_string(o_port),
+        output = (unsigned char *) scm_to_locale_stringn(scm_strport_to_string(o_port),
                                                  &olen);
-        error = (unsigned char *) gh_scm2newstr(scm_strport_to_string(e_port),
+        error = (unsigned char *) scm_to_locale_stringn(scm_strport_to_string(e_port),
                                                 &elen);
         
         /* Set the output, error and reply properties appropriately. */
@@ -784,9 +789,9 @@ HandleScwmExec()
            the global */
         w_for_scwmexec_response = None;
         
-        gh_free(ret);
-        gh_free(output);
-        gh_free(error);
+        free(ret);
+        free(output);
+        free(error);
       } else {
         scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
                  w_for_scwmexec_response);
@@ -826,8 +831,8 @@ HandlePropertyNotify()
 
   if (Event.xproperty.window == Scr.Root) {
     scwm_run_hook2(x_root_propertynotify_hook, 
-                   gh_long2scm(Event.xproperty.atom),
-                   SCM_BOOL_FromBool(Event.xproperty.state == PropertyDelete));
+                   scm_from_long(Event.xproperty.atom),
+                   scm_from_bool(Event.xproperty.state == PropertyDelete));
   }
 
   if (!pswCurrent || !FXWindowAccessible(dpy, pswCurrent->w))
@@ -970,7 +975,7 @@ HandlePropertyNotify()
     char *szName = XGetAtomName(dpy,Event.xproperty.atom);
     
     scwm_run_hook2(x_propertynotify_hook, 
-                   gh_str02scm(szName), SCM_FROM_PSW(pswCurrent));
+                   scm_from_locale_string(szName), SCM_FROM_PSW(pswCurrent));
     XFree(szName);
   }
 }
@@ -1000,12 +1005,12 @@ HandleClientMessage()
     return;
   }
 
-  if (SCM_BOOL_F == scm_hook_empty_p(client_message_hook)) {
+  if (scm_is_false(scm_hook_empty_p(client_message_hook))) {
     /* hook is not empty */
     SCM data = SCM_BOOL_F;
     switch (Event.xclient.format) {
     case 8: /* interpret as a string */
-      data = gh_str02scm(Event.xclient.data.b);
+      data = scm_from_locale_string(Event.xclient.data.b);
       break;
     case 16:
       /* GJB:FIXME:: 
@@ -1013,9 +1018,9 @@ HandleClientMessage()
       { /* scope */
         short *ps = Event.xclient.data.s;
         int i = 0;
-        data = gh_make_vector(SCM_MAKINUM(10), SCM_BOOL_F);
+        data = scm_make_vector(scm_from_int(10), SCM_BOOL_F);
         while (i < 10) {
-          gh_vector_set_x(data,SCM_MAKINUM(i),gh_int2scm(*ps));
+          scm_vector_set_x(data,scm_from_int(i),scm_from_int(*ps));
           ++i;
           ++ps;
         }
@@ -1025,9 +1030,9 @@ HandleClientMessage()
       { /* scope */
         long *pl = Event.xclient.data.l;
         int i = 0;
-        data = gh_make_vector(SCM_MAKINUM(5), SCM_BOOL_F);
+        data = scm_make_vector(scm_from_int(5), SCM_BOOL_F);
         while (i < 5) {
-          gh_vector_set_x(data,SCM_MAKINUM(i),gh_long2scm(*pl));
+          scm_vector_set_x(data,scm_from_int(i),scm_from_long(*pl));
           ++i;
           ++pl;
         }
@@ -1049,10 +1054,10 @@ HandleClientMessage()
     }
 
     scwm_run_hook(client_message_hook,
-                  gh_list(win,
-                          gh_long2scm(Event.xclient.message_type),
-                          gh_int2scm(Event.xclient.format),
-                          data, SCM_UNDEFINED));
+                  scm_list_n(win,
+			     scm_from_long(Event.xclient.message_type),
+			     scm_from_int(Event.xclient.format),
+			     data, SCM_UNDEFINED));
   }
 
   /*
@@ -1107,7 +1112,7 @@ HandleDestroyNotify()
   Window w = Event.xdestroywindow.window;
   DBUG_EVENT((DBG,"HandleDestroyNotify", "Entered"));
 
-  scwm_run_hook1(x_destroynotify_hook,gh_ulong2scm(w));
+  scwm_run_hook1(x_destroynotify_hook,scm_from_ulong(w));
 
   /* maybe use the window in the XDestroyWindowEvent structure
      if the one in xany did not correlate to a sw */
@@ -1451,11 +1456,10 @@ static void
 HandleMotionNotify()
 {
 #define FUNC_NAME "HandleMotionNotify"
-#ifdef HAVE_SCM_MAKE_HOOK
   XMotionEvent *pev = &Event.xmotion;
-  SCM x_root = gh_int2scm(pev->x_root);
-  SCM y_root = gh_int2scm(pev->y_root);
-  SCM state = gh_int2scm(pev->state);
+  SCM x_root = scm_from_int(pev->x_root);
+  SCM y_root = scm_from_int(pev->y_root);
+  SCM state = scm_from_int(pev->state);
   SCM win = SCM_BOOL_F;
   SCM x = x_root;
   SCM y = y_root;
@@ -1463,14 +1467,13 @@ HandleMotionNotify()
   DBUG_EVENT((DBG,"HandleMotionNotify","Entered"));
   if (psw) {
     win = SCM_FROM_PSW(psw);
-    x = gh_int2scm(pev->x_root - FRAME_X_VP(psw));
-    y = gh_int2scm(pev->y_root - FRAME_Y_VP(psw));
+    x = scm_from_int(pev->x_root - FRAME_X_VP(psw));
+    y = scm_from_int(pev->y_root - FRAME_Y_VP(psw));
   }
-  scm_run_hook(x_motionnotify_hook,
-               gh_list(x_root,y_root,state,win,x,y,
-                       SCM_UNDEFINED));
+  scm_run_hook(scm_variable_ref(x_motionnotify_hook),
+               scm_list_n(x_root,y_root,state,win,x,y,
+			  SCM_UNDEFINED));
   DBUG_EVENT((DBG,"HandleMotionNotify","return"));
-#endif
 }
 #undef FUNC_NAME
 
@@ -1562,15 +1565,15 @@ HandleButtonPress()
       set_window_context(SCM_FROM_PSW(pswCurrent));
     }
     /* First call the immediate proc */
-    if (gh_procedure_p(pbnd->ReleaseThunk)) {
+    if (scm_is_true(scm_procedure_p(pbnd->ReleaseThunk))) {
       stash_orig_button_position(&Event.xbutton);
       done = call_interactively(pbnd->ReleaseThunk,SCM_BOOL_F);
     }
     /* GJB:FIXME:: maybe this should only not
        do the main action if immediate proc returns
        'done */
-    if (SCM_BOOL_F == done &&
-        gh_procedure_p(pbnd->Thunk)) {
+    if (scm_is_false(done) &&
+        scm_is_true(scm_procedure_p(pbnd->Thunk))) {
       find_mouse_event_type(&Event.xbutton);
       call_interactively(pbnd->Thunk,SCM_BOOL_F);
       clear_mouse_event_type();
@@ -1628,7 +1631,7 @@ HandleEnterNotify()
   }
 
   if (Event.xany.window == Scr.Root) {
-    if (SCM_BOOL_F != g_lastwin_entered) {
+    if (scm_is_true(g_lastwin_entered)) {
       scwm_run_hook1(window_leave_hook, g_lastwin_entered);
       g_lastwin_entered = SCM_BOOL_F;
     }
@@ -1649,7 +1652,7 @@ HandleEnterNotify()
     goto HEN_return;
 
   if (SCM_FROM_PSW(pswCurrent) != g_lastwin_entered) {
-    if (SCM_BOOL_F != g_lastwin_entered)
+    if (scm_is_true(g_lastwin_entered))
       scwm_run_hook1(window_leave_hook, g_lastwin_entered);
     g_lastwin_entered = SCM_FROM_PSW(pswCurrent);
     scwm_run_hook1(window_enter_hook, SCM_FROM_PSW(pswCurrent));
@@ -1738,19 +1741,20 @@ HandleConfigureRequest()
                     (pswCurrent->icon_pixmap_w == cre->window));
 
 
-  *pscm_configure_request_handled = SCM_BOOL_F;
+  scm_variable_set_x(scm_configure_request_handled, SCM_BOOL_F);
 
   scwm_run_hook(x_configurerequest_hook,
-                gh_list(pswCurrent?SCM_FROM_PSW(pswCurrent):SCM_BOOL_F,
-                        gh_bool2scm(fIconConfigure),
-                        fX_spec? gh_int2scm(cre->x): SCM_BOOL_F,
-                        fY_spec? gh_int2scm(cre->y): SCM_BOOL_F,
-                        fWidth_spec? gh_int2scm(cre->width): SCM_BOOL_F,
-                        fHeight_spec? gh_int2scm(cre->height): SCM_BOOL_F,
-                        SCM_UNDEFINED));
+                scm_list_n(pswCurrent?SCM_FROM_PSW(pswCurrent):SCM_BOOL_F,
+			   scm_from_bool(fIconConfigure),
+			   fX_spec? scm_from_int(cre->x): SCM_BOOL_F,
+			   fY_spec? scm_from_int(cre->y): SCM_BOOL_F,
+			   fWidth_spec? scm_from_int(cre->width): SCM_BOOL_F,
+			   fHeight_spec? scm_from_int(cre->height): SCM_BOOL_F,
+			   SCM_UNDEFINED));
                         
   /* do nothing else in C if the hook handles it */
-  if (SCM_BOOL_T == *pscm_configure_request_handled)
+  // eq? #t  scm_is_bool() &&
+  if (scm_is_true(scm_variable_ref(scm_configure_request_handled)))
     return;
 
   /*
@@ -1925,7 +1929,7 @@ HandleVisibilityNotify()
   DBUG_EVENT((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
   if (pswCurrent && last_event_window == pswCurrent->frame) {
-    SCM from_move_viewport_action = gh_bool2scm(fInMoveViewport_internal);
+    SCM from_move_viewport_action = scm_from_bool(fInMoveViewport_internal);
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
 
     /* For the most part, we'll raised partially obscured fOnTop windows
@@ -2189,16 +2193,14 @@ WindowGettingButtonEvent(Window w, int x, int y)
 #undef FUNC_NAME
 
 
-#ifdef HAVE_SCM_MAKE_HOOK
-
 extern long basic_event_mask;
 
 /* GJB:FIXME:: Only for newer guiles for now */
 SCM_DEFINE(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
           (SCM proc),
-"Call PROC on XMotionEvents.\n\
-This can considerably slow Scwm down so use it only when\n\
-necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
+"Call PROC on XMotionEvents.\n\n"
+"This can considerably slow Scwm down so use it only when\n"
+"necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_add_motion_handler_x
 {
   VALIDATE_ARG_PROC(1,proc);
@@ -2209,9 +2211,9 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 
 SCM_DEFINE(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
           (SCM proc),
-"No longer call PROC on XMotionEvents.\n\
-Handling motion events can considerably slow Scwm down so use it only when\n\
-necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
+"No longer call PROC on XMotionEvents.\n\n"
+"Handling motion events can considerably slow Scwm down so use it only when\n"
+"necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_remove_motion_handler_x
 {
   SCM answer;
@@ -2225,9 +2227,9 @@ necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
 
 SCM_DEFINE(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
           (),
-"Call no procedures on XMotionEvents.\n\
-Handling motion events can considerably slow Scwm down so use it only when\n\
-necessary.  See `add-motion-handler' and `remove-motion-handler'.")
+"Call no procedures on XMotionEvents.\n\n"
+"Handling motion events can considerably slow Scwm down so use it only when\n"
+"necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 #define FUNC_NAME s_reset_motion_handlers_x
 {
   XSelectInput(dpy, Scr.Root,basic_event_mask);
@@ -2235,21 +2237,19 @@ necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 }
 #undef FUNC_NAME
 
-#endif
-
 /* Inspired by GWM 1.8c --gjb */
 
 SCM_DEFINE(send_key, "send-key", 1,4,0,
           (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p),
-"Send a synthetic press/release of KEY.  \n\
-The usual key specification format (with modifiers) is used. The event\n\
-is sent to window WIN if specified; otherwise the window to be used\n\
-defaults to the window context in the usual way. By default, both a\n\
-press and a release are sent. However, the boolean parameters\n\
-KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent\n\
-individually. PROPAGATE? indicates whether the propagate flag is set\n\
-on the event; the default is #f. You should not have to worry about\n\
-this unless you know what it means.")
+"Send a synthetic press/release of KEY.\n\n"
+"The usual key specification format (with modifiers) is used. The event\n"
+"is sent to window WIN if specified; otherwise the window to be used\n"
+"defaults to the window context in the usual way. By default, both a\n"
+"press and a release are sent. However, the boolean parameters\n"
+"{KEY-PRESS? and KEY-RELEASE? allow you to specify which are sent\n"
+"individually. PROPAGATE? indicates whether the propagate flag is set\n"
+"on the event; the default is #f. You should not have to worry about\n"
+"this unless you know what it means.")
 #define FUNC_NAME s_send_key
 {
   KeySym keysym;
@@ -2280,8 +2280,7 @@ this unless you know what it means.")
 		 (XEvent *) &event);
     }
   } else {
-    scwm_message(WARN,FUNC_NAME,"Bad keysym `" SCWM_DISPLAY
-                 "' not sent",SCM_LIST1(key));
+    scwm_message(WARN,FUNC_NAME,"Bad keysym `~A' not sent",scm_list_1(key));
   }
   return SCM_UNSPECIFIED;
 }
@@ -2289,19 +2288,19 @@ this unless you know what it means.")
 
 SCM_DEFINE(send_button, "send-button", 1, 5, 0,
           (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy),
-"Send a synthetic mouse button/release event.\n\
-Create a synthetic event of a press of mouse button BUTTON. The usual\n\
-mouse button specification format (with modifiers) is used. Send the\n\
-event to window WIN if specified; otherwise the window to be used\n\
-defaults to the window context in the usual way. By default, both a\n\
-press and a release are sent---a click. KIND can be one of 'press, 'release,\n\
-'click, 'desk-press, 'desk-release, or 'desk-click.\n\
-If DX or DY is set, that value is used as the offset within WIN for\n\
-the button events to occur.  If one is not specified or #f, then the\n\
-pointer offset of that coordinate is used instead.\n\
-PROPAGATE? indicates whether the propagate flag is set\n\
-on the event; the default is #f. You should not have to worry about\n\
-this unless you know what it means.")
+"Send a synthetic mouse button/release event.\n\n"
+"Create a synthetic event of a press of mouse button BUTTON. The usual\n"
+"mouse button specification format (with modifiers) is used. Send the\n"
+"event to window WIN if specified; otherwise the window to be used\n"
+"defaults to the window context in the usual way. By default, both a\n"
+"press and a release are sent---a click. KIND can be one of 'press, 'release,\n"
+"'click, 'desk-press, 'desk-release, or 'desk-click.\n"
+"If DX or DY is set, that value is used as the offset within WIN for\n"
+"the button events to occur.  If one is not specified or #f, then the\n"
+"pointer offset of that coordinate is used instead.\n"
+"PROPAGATE? indicates whether the propagate flag is set\n"
+"on the event; the default is #f. You should not have to worry about\n"
+"this unless you know what it means.")
 #define FUNC_NAME s_send_button
 {
   int bnum;
@@ -2391,15 +2390,9 @@ void
 init_events()
 {
   /* do not permit add-hook!, remove-hook! access to this */
-  x_motionnotify_hook = SCWM_MAKE_HOOK("%X-MotionNotify-hook", 6);
-
-  SCWM_VAR_INIT(configure_request_handled,"configure-request-handled",SCM_BOOL_F);
-  /** Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
-See also `X-ConfigureRequest-hook'. */
-
-#ifndef SCM_MAGIC_SNARFER
+  x_motionnotify_hook = SCWM_MAKE_HOOK("%X-MotionNotify-hook", scm_from_int(6));
+  
 #include "events.x"
-#endif
 }
 
 

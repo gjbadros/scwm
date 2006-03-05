@@ -17,6 +17,55 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
+
+
+(define-module (app scwm base)
+  ;:use-module (app scwm optargs)
+  :use-module (ice-9 optargs)
+  :use-module (ice-9 string-fun)
+  :use-module (app scwm defoption)
+  :export (hash-table->alist
+           add-hook-once!
+           append-hook-once!
+           round/
+           half
+           sleep-ms
+           maybe-make-color
+           display-width
+           display-height
+           display-depth
+           %x
+           %y
+           pix->%x
+           pix->%y
+           x- y-
+           viewport-x-position viewport-y-position
+           viewport-center-x viewport-center-y
+
+           menu-title
+           menuitem
+           menu
+           popup-menu-from-decoration
+           image-property
+           font-property
+           menu-style
+           simple-title-style
+
+           ;; These were not declared public, but other modules make use of
+           ;; them.
+           menu-bg-color
+           menu-text-color
+           menu-stipple-color
+           menu-font
+           menu-title-font
+           menu-side-image
+           menu-side-bg-color
+           menu-side-bg-color-set
+           menu-bg-image
+           menu-look
+           menu-hl-fg-color
+           menu-hl-bg-color))
+
 (define menu-bg-color (make-color "gray80"))
 (define menu-text-color (make-color "black"))
 (define menu-stipple-color (make-color "grey60"))
@@ -32,48 +81,40 @@
 
 
 
-(define-module (app scwm base)
-  :use-module (app scwm optargs)
-  :use-module (ice-9 string-fun)
-  :use-module (app scwm defoption)
-  )
-
-
-
 (define-scwm-group system "System")
 (define-scwm-group menu "Menu")
 
-(if (bound? hash-fold)
-    (define-public (hash-table->alist table)
-      (hash-fold acons () table))
-    (define-public (hash-table->alist h) 
+(if hash-fold
+    (define (hash-table->alist table)
+      (hash-fold acons '() table))
+    (define (hash-table->alist h) 
       (apply append (vector->list h))))
 
-(define-public (add-hook-once! hook proc)
+(define (add-hook-once! hook proc)
   "Add PROC to HOOK only if it does not contain PROC already."
   (if (not (memq proc (hook->list hook)))
       (add-hook! hook proc)))
 
-(define-public (append-hook-once! hook proc)
+(define (append-hook-once! hook proc)
   "Append PROC to HOOK only if it does not contain PROC already."
   (if (not (memq proc (hook->list hook)))
       (append-hook! hook proc)))
 
-(define-public (round/ x y)
+(define (round/ x y)
   "Return the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
 
-(define-public (half x)
+(define (half x)
   "Return the closest integer to half of X."
   (quotient x 2))
 
-(define-public (sleep-ms ms)
+(define (sleep-ms ms)
   "Delay for MS milliseconds.
 Note that timer-hooks are much more useful in nearly all
 cases.  See `add-timer-hook!'."
   (select '() '() '() 0 (* 1000 ms)))
 
-(define-public (maybe-make-color obj)
+(define (maybe-make-color obj)
   "Try to make OBJ into a color and return that color object.
 Returns #f if OBJ is not a color object or a string."
   (catch #t
@@ -144,48 +185,48 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
 
 
 
-(define-public display-width (car (display-size)))
-(define-public display-height (cadr (display-size)))
-(define-public display-depth (caddr (X-display-information)))
+(define display-width (car (display-size)))
+(define display-height (cadr (display-size)))
+(define display-depth (caddr (X-display-information)))
 
 ;; Convenience procedures for specifying positions and sizes.
-(define-public (%x x)
+(define (%x x)
   "Return the number of pixels that is X percent of the display width."
   (round/ (* x display-width) 100))
 
-(define-public (%y y)
+(define (%y y)
   "Return the number of pixels that is Y percent of the display height."
   (round/ (* y display-height) 100))
 
-(define-public (pix->%x pix)
+(define (pix->%x pix)
   "Return the percent of the display width that PIX is."
   (round/ (* pix 100) display-width))
 
-(define-public (pix->%y pix)
+(define (pix->%y pix)
   "Return the percent of the display height that PIX is."
   (round/ (* pix 100) display-height))
 
-(define-public (x- x)
+(define (x- x)
   "Return the viewport pixel coordinate X pixels left of the right display edge."
   (- display-width x))
 
-(define-public (y- y)
+(define (y- y)
   "Return the viewport pixel coordinate Y pixels up from the bottom display edge."
   (- display-height y))
 
-(define-public (viewport-x-position)
+(define (viewport-x-position)
   "Return the x coordinate of the current viewport."
   (car (viewport-position)))
 
-(define-public (viewport-y-position)
+(define (viewport-y-position)
   "Return the y coordinate of the current viewport."
   (cadr (viewport-position)))
 
-(define-public (viewport-center-x)
+(define (viewport-center-x)
   "Return the x coordinate of the center of the current viewport."
   (+ (viewport-x-position) (half display-width)))
 
-(define-public (viewport-center-y)
+(define (viewport-center-y)
   "Return the y coordinate of the center of the current viewport."
   (+ (viewport-y-position) (half display-height)))
 
@@ -245,11 +286,11 @@ If Y is #f, just return #f."
   "Return the pixel coordinate Y percent of the height away from the bottom edge."
   (round/ (* (- 100 y) display-height) 100))
 
-(define*-public (w%x x #&optional (w (get-window)))
+(define*-public (w%x x #:optional (w (get-window)))
   "Return a pixel width X percent of the width of window W."
   (round/ (* x (car (window-frame-size w))) 100))
 
-(define*-public (w%y y #&optional (w (get-window)))
+(define*-public (w%y y #:optional (w (get-window)))
   "Return a pixel height Y percent of the height of window W."
   (round/ (* y (cadr (window-frame-size w))) 100))
 
@@ -309,29 +350,29 @@ If BG is #f, use the default menu background"
   "Set the default menu highlight background color to BG."
   (set! menu-hl-bg-color (if (color? bg) bg (make-color bg))))
 
-;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
+;;(define*-public (set-window-foreground! fg #:optional (w (get-window)))
 ;;  (set-window-colors! fg #f w))
 
-;;(define*-public (set-window-background! bg #&optional (w (get-window)))
+;;(define*-public (set-window-background! bg #:optional (w (get-window)))
 ;;  (set-window-colors! #f bg w))
 
-(define*-public (set-highlight-colors! #&optional (bg #f) (fg #f))
+(define*-public (set-highlight-colors! #:optional (bg #f) (fg #f))
   "Set the highlight window's background color to BG, foreground color to FG.
 The \"highlight window\" is the window with the current input focus."
   (if bg (set-highlight-background! bg win))
   (if fg (set-highlight-foreground! fg win)))
 
-(define*-public (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
+(define*-public (set-window-colors! #:optional (bg #f) (fg #f) (win (get-window)))
   "Set WIN's background color to BG, foreground color to FG."
   (if bg (set-window-background! bg win))
   (if fg (set-window-foreground! fg win)))
 
-(define*-public (window-background-color #&optional (win (get-window)))
+(define*-public (window-background-color #:optional (win (get-window)))
   (if (eq? win (window-with-focus))
       (or (cadr (get-window-highlight-colors win)) (highlight-background))
       (cadr (get-window-colors win))))
 
-(define*-public (window-foreground-color #&optional (win (get-window)))
+(define*-public (window-foreground-color #:optional (win (get-window)))
   (if (eq? win (window-with-focus))
       (or (car (get-window-highlight-colors win)) (highlight-background))
       (car (get-window-colors win))))
@@ -348,7 +389,7 @@ If X is negative, moves to the left.  If Y is negative moves up."
 
 ;; Give move-to a better name, too
 (define*-public (move-window-viewport-position x y 
-			#&optional (win (get-window)))
+			#:optional (win (get-window)))
   "Move WIN to viewport position X, Y.
 If X or Y is #f, then do not move along that axis (use existing
 value for that coordinate).
@@ -370,7 +411,7 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17)."
   (map + xy-list (list dx dy)))
 ;; (delta-position '(2 10) 5 7)
 
-(define*-public (move-window-relative x y #&optional (win (get-window)))
+(define*-public (move-window-relative x y #:optional (win (get-window)))
   "Move WIN X, Y pixels from where it is currently.
 Positive X moves right, negative moves left.
 Positive Y moves down, negative moves up."
@@ -378,17 +419,17 @@ Positive Y moves down, negative moves up."
 	       (let ((pos (window-viewport-position)))
 		 (apply move-to (delta-position pos x y)))))
 
-(define*-public (window-title-height #&optional (win (get-window)))
+(define*-public (window-title-height #:optional (win (get-window)))
   "Return WIN's titlebar's height.
 See also `window-title-size', `window-title-width'."
   (cadr (window-title-size win)))
 
-(define*-public (window-title-width #&optional (win (get-window)))
+(define*-public (window-title-width #:optional (win (get-window)))
   "Return WIN's titlebar's width.
 See also `window-title-size', `window-title-height'."
   (car (window-title-size win)))
 
-(define*-public (window-viewport-position #&optional (win (get-window)))
+(define*-public (window-viewport-position #:optional (win (get-window)))
   "Return the position of WIN in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
@@ -397,7 +438,7 @@ way if not specified.  See also `window-position'."
     (if (sticky-window? win) pos
 	(apply virtual->viewport pos))))
 
-(define*-public (window-virtual-position #&optional (win (get-window)))
+(define*-public (window-virtual-position #:optional (win (get-window)))
   "Return the virtual position of WIN in pixels.
 If WIN is sticky, this returns the position of the window in the
 current viewport."
@@ -405,7 +446,7 @@ current viewport."
     (if (sticky-window? win) (apply viewport->virtual pos)
 	pos)))
 
-(define*-public (icon-viewport-position #&optional (win (get-window)))
+(define*-public (icon-viewport-position #:optional (win (get-window)))
   "Return the position of WIN's icon in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
@@ -430,7 +471,7 @@ icons in gmc)."
 
 ;; FIXJTL: image-align - to work like others, C code has to dereference
 ;; symbols that aren't one of 'top, 'bottom or 'center
-(define*-public (menu-style #&key
+(define* (menu-style #:key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (hl-fg #f) (hl-foreground #f)
@@ -458,16 +499,16 @@ See `make-menu' for options on creation of individual menus."
 ;; to load all of face.scm to get at it; will probably go away in the
 ;; future.
 
-(define*-public (simple-title-style #&key font height justify)
+(define* (simple-title-style #:key font height justify)
   "Set the style for titlebars.
 FONT is a font object or a string, HEIGHT is a number of points,
 JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 'right, or 'center."
-  (if (bound? font)
+  (if font
       (set-title-font! font))
-  (if (bound? height)
+  (if height
       (set-title-height! height))
-  (if (bound? justify)
+  (if justify
       (set-title-justify! justify)))
 
 ;; Create an empty menu-item which is drawn as a separator line in menus.
@@ -477,8 +518,8 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 ;; should this be public?
 (define (hotkeys-from-name label)
   (let ((char-list (string->list label))
-	(return-key-char-list ())
-	(return-label-char-list ()))
+	(return-key-char-list '())
+	(return-label-char-list '()))
     (while (not (null? char-list))
 	   ;; If the last character in the label is an &, leave it
 	   ;; as a literal &
@@ -491,14 +532,14 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
     (list (list->string (reverse return-label-char-list))
 	  (list->string (reverse return-key-char-list)))))
 
-(define-public (menu-title label . rest)
+(define (menu-title label . rest)
   "Return a menuitem object that is a title.
 All arguments that `menuitem' takes are accepted as usual,
 except the font defaults to `*menu-title-font*' instead of
 `*menu-font*'."
   (apply menuitem (append (list label #:font 'menu-title-font) rest)))
 
-(define*-public (menuitem label #&key image-above image-left
+(define* (menuitem label #:key image-above image-left
 			  (fg #f) (bg #f) (font #f)
 			  extra-label action submenu hover-action unhover-action
 			  hotkey-prefs)
@@ -517,9 +558,9 @@ when the item is unhighlighted.  HOTKEY-PREFS is a string listing
 the characters which are appropriate shortcut-keys for the item;
 the first not-yet-used-in-this-menu character will be used for
 the shortcut key for the menu item."
-  (if (or (bound? hotkey-prefs)
+  (if (or hotkey-prefs
 	  (string=? label ""))
-      ()
+      '()
       (let ((result (hotkeys-from-name label)))
 	(set! label (car result))
 	(set! hotkey-prefs (cadr result))))
@@ -533,33 +574,33 @@ the shortcut key for the menu item."
   (if (string? action)			;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))
 	(set! action (lambda* () "" (execute program-name)))))
-  (if (and (bound? action) (bound? submenu))
+  (if (and action submenu)
       (error "Cannot give both an action and a submenu"))
-  (if (bound? submenu)
+  (if submenu
       (set! action submenu))
   (let ((mi
 	 (make-menuitem label action extra-label image-above image-left
-			hover-action unhover-action hotkey-prefs (bound? submenu))))
+			hover-action unhover-action hotkey-prefs submenu)))
     (if (or fg bg) (set-menuitem-colors! mi fg bg))
     (if font (set-menuitem-font! mi font))
     mi))
 
 
-(define*-public (menu list-of-menuitems #&key
-		      (image-side 'menu-side-image)
-		      (image-align 'top)
-		      (color-bg-image-side 'menu-side-bg-color)
-		      (image-bg 'menu-bg-image)
-		      (color-text 'menu-text-color)
-		      (color-bg 'menu-bg-color)
-		      (color-stipple 'menu-stipple-color)
-		      (hl-color-fg 'menu-hl-fg-color)
-		      (hl-color-bg 'menu-hl-bg-color)
-		      (hl-relief? #t)
-		      (font 'menu-font)
-		      (look 'menu-look)
-		      popup-delay hover-delay
-		      (extra #f))
+(define* (menu list-of-menuitems #:key
+               (image-side 'menu-side-image)
+               (image-align 'top)
+               (color-bg-image-side 'menu-side-bg-color)
+               (image-bg 'menu-bg-image)
+               (color-text 'menu-text-color)
+               (color-bg 'menu-bg-color)
+               (color-stipple 'menu-stipple-color)
+               (hl-color-fg 'menu-hl-fg-color)
+               (hl-color-bg 'menu-hl-bg-color)
+               (hl-relief? #t)
+               (font 'menu-font)
+               (look 'menu-look)
+               popup-delay hover-delay
+               (extra #f))
   "Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
 `make-menuitem' or `menuitem').  IMAGE-SIDE is an image object to be
@@ -586,15 +627,15 @@ specific to the menu look used for this menu."
 			 font 
 			 image-side image-align color-bg-image-side image-bg
 			 extra)))
-    (and (bound? popup-delay) popup-delay (set-menu-popup-delay! menu popup-delay))
-    (and (bound? hover-delay) hover-delay (set-menu-hover-delay! menu hover-delay))
+    (and popup-delay (set-menu-popup-delay! menu popup-delay))
+    (and hover-delay (set-menu-hover-delay! menu hover-delay))
     (if (or hl-color-bg hl-color-fg) 
 	(set-menu-highlight-colors! menu hl-color-fg hl-color-bg))
     (set-menu-highlight-relief! menu hl-relief?)
     (set-menu-look! menu look)
     menu))
 
-(define-public (popup-menu-from-decoration menu win button-number)
+(define (popup-menu-from-decoration menu win button-number)
   "Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
 This positions the popup menu appropriately."
   (let* ((pos (window-viewport-position win))
@@ -613,12 +654,12 @@ This positions the popup menu appropriately."
 		    (window-title-height win))))))
     (popup-menu menu #f x y #t)))
 
-(define-public (image-property image key)
+(define (image-property image key)
   "Return the KEY property of IMAGE.
 See `image-properties' for a list of the keys."
   (cdr (assoc key (image-properties image))))
 
-(define-public (font-property font key)
+(define (font-property font key)
   "Return the KEY property of FONT.
 See `font-properties' for a list of the keys."
   (cdr (assoc key (font-properties font))))
@@ -673,7 +714,7 @@ The rest of the arguments are passed as options to the xterm command."
                              (map (lambda (st) (string-append " " st)) opts))
                       " -e " cmd)))
 
-(define*-public (start-xterm #&optional (opt (optget *xterm-user-shell-options*)))
+(define*-public (start-xterm #:optional (opt (optget *xterm-user-shell-options*)))
   "Start an xterm using `*xterm-command*' and `*xterm-user-shell-options*'."
   (interactive)
   (execute (string-append (optget *xterm-command*) " " opt)))
@@ -751,7 +792,7 @@ dimension to a number of pixels."
 
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
-  (bound? scwm-set-master-solver!))
+  (if scwm-set-master-solver! #t #f))
 
 (define-public (scwm-system cmd)
   "Run CMD using /bin/sh -c CMD and return a list: (exit-status child-pid).
@@ -820,7 +861,7 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
-(define*-public (select-window #&optional (cursor #f) (release? #f))
+(define*-public (select-window #:optional (cursor #f) (release? #f))
   "Select a window interactively, and return the specified window.
 Use a special cursor and let the user click to select the window. 
 The optional CURSOR argument can be either a cursor object or #t to
@@ -844,7 +885,7 @@ argument to the catch exception lambda.
   (display descriptor (current-error-port))
   (apply display-error (append (list #f (current-error-port)) (cdr args))))
 
-(define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
+(define*-public (select-window-interactively #:optional (msg #f) (message-window #f))
   "Return an interactively-selected window after prompting (optionally) with MSG.
 If given, use message window MESSAGE-WINDOW to display the message, otherwise create
 a new message window."
@@ -873,7 +914,7 @@ Uses the `startup-hook' and `run-dot-xclients-script' to do so."
   "Return a string containing the X11 keysym for key with code KEYCODE."
   (keymask-keycode->string 0 keycode))
 
-(define*-public (window-class #&optional (win (get-window)))
+(define*-public (window-class #:optional (win (get-window)))
   "Return the window resources class of WIN. 
 WIN defaults to the window context in the usual way if not specified. 
 Returns \"NoClass\" if the window has not set its class.
@@ -881,7 +922,7 @@ See also `window-class-hint'."
   (let ((prop (X-property-get win "WM_CLASS")))
     (if prop (cadar prop) "NoClass")))
 
-(define*-public (window-resource #&optional (win (get-window)))
+(define*-public (window-resource #:optional (win (get-window)))
   "Return the window resource instance of WIN. 
 WIN defaults to the window context in the usual way if not specified. 
 Returns \"NoResource\" if the window has not set its resource name.

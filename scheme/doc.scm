@@ -22,7 +22,7 @@
 
 (define-public documentation-debug #f)
 
-(define*-public (documentation func #&optional (port (current-output-port)))
+(define*-public (documentation func #:optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
 Works by searching through the files listed in `doc-files'.
 Returns #t if any documentation was found, #f otherwise."
@@ -58,14 +58,14 @@ Returns #t if any documentation was found, #f otherwise."
                      ((set! ln (read-line fd))))))
             (documentation-debug (display "file not found\n" port))))))
 
-(define*-public (help obj #&optional (port (current-output-port)))
+(define*-public (help obj #:optional (port (current-output-port)))
   "Print all possible documentation for string or symbol."
   (display " *** documentation for `" port)
   (display obj port)
   (display "':\n\n" port)
   (documentation obj port)
-  (let ((bb (symbol-binding #f (if (string? obj) (string->symbol obj) obj))))
-    (cond ((procedure? bb)
+  (let ((bb (variable-ref (module-variable (current-module) (if (string? obj) (string->symbol obj) obj)))))
+        (cond ((procedure? bb)
            (display "\n *** procedure-documentation for `" port)
            (display obj port) (display "':\n\n" port)
            (with-output-to-port port

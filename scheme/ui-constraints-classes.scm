@@ -138,7 +138,7 @@ drawn.  POINT is of the form (X . Y)."
 	 (lambda () (end-highlighting-selected-window))))))
 
 
-(define*-public (one-window-prompter name #&optional (p1 "select window"))
+(define*-public (one-window-prompter name #:optional (p1 "select window"))
   (let ((winlist (selected-windows-list)))
     (if (eqv? (length winlist) 1)
 	(begin 
@@ -153,7 +153,7 @@ drawn.  POINT is of the form (X . Y)."
 	 (lambda () (end-highlighting-selected-window))))))
 
 
-(define*-public (two-window-or-more-nonant-prompter name #&key (p1 "first window") (p2 "second window") (orientation #f))
+(define*-public (two-window-or-more-nonant-prompter name #:key (p1 "first window") (p2 "second window") (orientation #f))
   (let ((winlist (selected-windows-list)))
     (if (>= (length winlist) 2)
 	(begin
@@ -262,16 +262,16 @@ drawn.  POINT is of the form (X . Y)."
 ;; (nonant->dirvector (get-window-nonant (select-viewport-position)))
 ;; (cnctr-anchor (select-window-interactively) #(#t #f #f #f) #t)
 ;; constructor
-(define* (cnctr-anchor w1 nonant #&optional (enable? #f))
+(define* (cnctr-anchor w1 nonant #:optional (enable? #f))
   (if (not (window? w1))
       (error "No window selected"))
   (let ((top (cdr (window-center-top w1)))
 	(bot (cdr (window-center-bottom w1)))
 	(rgt (car (window-right-middle w1)))
 	(lft (car (window-left-middle w1)))
-	(cn-list ())
-	(sc-list ())
-	(clv-list ()))
+	(cn-list '())
+	(sc-list '())
+	(clv-list '()))
 
     (if (vector-ref nonant 0)
 	(let* ((w1-yt (window-clv-yt w1))
@@ -377,7 +377,7 @@ to make it resize around its center."
 
 
 ;; constructor
-(define* (cnctr-strict-relpos winlist nonantlist #&optional (enable? #f))
+(define* (cnctr-strict-relpos winlist nonantlist #:optional (enable? #f))
   (let* ((clvxposlist (map get-vcl-from-nonant winlist nonantlist))
 	 (clvyposlist (map get-hcl-from-nonant winlist nonantlist))
 	 (xposlist (map (lambda (w n) (car (get-vpos-from-nonant w n))) winlist nonantlist))
@@ -471,7 +471,7 @@ determines what part of each window is connected to the other."
     ))
 
 ;; constructor
-(define* (cnctr-halign wlist qlist #&optional (enable? #f))
+(define* (cnctr-halign wlist qlist #:optional (enable? #f))
   (let* ((var1 (get-hcl-from-nonant (car wlist) (car qlist)))
 	 (varlist (map (lambda (w q) (get-hcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
 	 (cnlist (map (lambda (v) (make-cl-constraint var1 = v)) varlist)))
@@ -554,7 +554,7 @@ Also can be used to glue top and bottom edges of windows together."
     ))
 
 ;; constructor
-(define* (cnctr-valign wlist qlist #&optional (enable? #f))
+(define* (cnctr-valign wlist qlist #:optional (enable? #f))
   (let* ((var1 (get-vcl-from-nonant (car wlist) (car qlist)))
 	 (varlist (map (lambda (w q) (get-vcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
 	 (cnlist (map (lambda (v) (make-cl-constraint var1 = v)) varlist)))
@@ -634,7 +634,7 @@ Also can be used to glue left and right edges of windows together."
    "Second window?"))
 
 ;; constructor
-(define* (cnctr-hsize winlist #&optional (enable? #f))
+(define* (cnctr-hsize winlist #:optional (enable? #f))
   (let* ((width1 (car (window-frame-size (car winlist))))
 	 (widthlist (map (lambda (w) (car (window-frame-size w))) (cdr winlist)))
 	 (clvlist (map (lambda (w) (make-cl-variable "clvhwdiff" (- width1 w))) widthlist))
@@ -696,7 +696,7 @@ Resize the widths of windows together."
    "Second window?"))
 
 ;; constructor
-(define* (cnctr-vsize winlist #&optional (enable? #f))
+(define* (cnctr-vsize winlist #:optional (enable? #f))
   (let* ((h1 (cadr (window-frame-size (car winlist))))
 	 (hlist (map (lambda (w) (cadr (window-frame-size w))) (cdr winlist)))
 	 (clvlist (map (lambda (h) (make-cl-variable "clvvwdiff" (- h1 h))) hlist))
@@ -760,7 +760,7 @@ Resize the heights of windows together."
   (one-window-prompter "Minimum width"))
 
 ;; constructor
-(define* (cnctr-minhsize win #&optional (enable? #f))
+(define* (cnctr-minhsize win #:optional (enable? #f))
   (let* ((clv (make-cl-variable "clvminwidth" (car (window-frame-size win))))
 	 (cleq (window-clv-width win))
 	 (cn (make-cl-constraint cleq >= clv))
@@ -808,7 +808,7 @@ Do not let window get narrower than it is."
   (one-window-prompter "Minimum height"))
 
 ;; constructor
-(define* (cnctr-minvsize win #&optional (enable? #f))
+(define* (cnctr-minvsize win #:optional (enable? #f))
   (let* ((clv (make-cl-variable "clvminheight" (cadr (window-frame-size win))))
 	 (cleq (window-clv-height win))
 	 (cn (make-cl-constraint cleq >= clv))
@@ -861,7 +861,7 @@ Do not let window get shorter than it is."
   (one-window-prompter "Maximum width"))
 
 ;; constructor
-(define* (cnctr-maxhsize win #&optional (enable? #f))
+(define* (cnctr-maxhsize win #:optional (enable? #f))
   (let* ((clv (make-cl-variable "clvmaxwidth" (car (window-frame-size win))))
 	 (cleq (window-clv-width win))
 	 (cn (make-cl-constraint cleq <= clv))
@@ -909,7 +909,7 @@ Do not let window get wider than it is."
   (one-window-prompter "Maximum height"))
 
 ;; constructor
-(define* (cnctr-maxvsize win #&optional (enable? #f))
+(define* (cnctr-maxvsize win #:optional (enable? #f))
   (let* ((clv (make-cl-variable "clvmaxheight" (cadr (window-frame-size win))))
 	 (cleq (window-clv-height win))
 	 (cn (make-cl-constraint cleq <= clv))
@@ -990,13 +990,13 @@ Do not let window get taller than it is."
   (let ((n (length items)))
     (if (< n 2)
 	(error "drop-last-element! cannot shrink a list with fewer than 2 elements"))
-    (set-cdr! (list-tail items (- n 2)) ())))
+    (set-cdr! (list-tail items (- n 2)) '())))
   
 (define (drop-last-element list)
   (if (or (null? list) (null? (cdr list))) '() (cons (car list) (drop-last-element (cdr list)))))
 
 ;; constructor
-(define* (cnctr-keep-above winlist #&optional (enable? #f))
+(define* (cnctr-keep-above winlist #:optional (enable? #f))
   (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #f))
 	 (clvtlist (map (lambda (w) (window-clv-yt w)) (cdr sortedwl)))
 	 (clvblist (map (lambda (w) (window-clv-yb w)) sortedwl)))
@@ -1052,7 +1052,7 @@ Keep one window wholly above another."
 	      short-winlist (cdr winlist))))
 
 ;; constructor
-(define* (cnctr-keep-to-left-of winlist #&optional (enable? #f))
+(define* (cnctr-keep-to-left-of winlist #:optional (enable? #f))
   (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #t))
 	 (clvrlist (map (lambda (w) (window-clv-xr w)) sortedwl))
 	 (clvllist (map (lambda (w) (window-clv-xl w)) (cdr sortedwl))))
@@ -1091,7 +1091,7 @@ Keep one window wholly to the left of another."
    "Second window?"))
 
 ;; constructor
-(define* (cnctr-sum-to-width winlist #&optional (enable? #f))
+(define* (cnctr-sum-to-width winlist #:optional (enable? #f))
   (let* ((width1 (car (window-frame-size (car winlist))))
 	 (widthlist (map (lambda (w) (car (window-frame-size w))) (cdr winlist)))
 	 (clvlist (map (lambda (w) (make-cl-variable "clvwtotal" (+ width1 w))) widthlist))
@@ -1145,7 +1145,7 @@ in the constraint remain constant."
    "Second window?"))
 
 ;; constructor
-(define* (cnctr-sum-to-height winlist #&optional (enable? #f))
+(define* (cnctr-sum-to-height winlist #:optional (enable? #f))
   (let* ((h1 (cadr (window-frame-size (car winlist))))
 	 (hlist (map (lambda (w) (cadr (window-frame-size w))) (cdr winlist)))
 	 (clvlist (map (lambda (h) (make-cl-variable "clvhtotal" (+ h1 h))) hlist))

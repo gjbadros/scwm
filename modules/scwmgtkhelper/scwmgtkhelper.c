@@ -38,7 +38,7 @@ SCM_DEFINE(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
 Returns -1 if gdk_display is not initialized.")
 #define FUNC_NAME s_scwm_gdk_X_fdes
 {
-  return gh_int2scm(gdk_display?
+  return scm_from_int(gdk_display?
                     XConnectionNumber(gdk_display):
                     -1);
 }

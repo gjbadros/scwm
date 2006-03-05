@@ -27,12 +27,12 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
-(define debug #f)
+(define debug #t)
 
 (define (debug-display arg)
   (if debug
       (display arg)
-      ()))
+      '()))
 
 (if debug
     (begin
@@ -138,7 +138,9 @@
 (use-scwm-modules base message-window gnome-hints)
 
 ;; do this early, since gnome times out in 10 seconds
+(display "(enable-gnome-hints)\n" (current-error-port))
 (enable-gnome-hints)
+(display "Done: (enable-gnome-hints)\n" (current-error-port))
 
 ;; SCWMDIR is mostly used for testing and running Scwm w/o installing
 ;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if

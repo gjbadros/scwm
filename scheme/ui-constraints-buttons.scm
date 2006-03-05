@@ -106,7 +106,7 @@
     (gtk-widget-show button)
     button))
 
-(define* (add-extra-button name pixmap-name description click-action #&optional (show? #t))
+(define* (add-extra-button name pixmap-name description click-action #:optional (show? #t))
   (let* ((button (gtk-button-new))
 	 (label (gtk-label-new name))
 	 (pixmap (gtk-pixmap-new-search-scwm-path pixmap-name button)))
@@ -135,7 +135,7 @@
 ;; initialize the buttons window
 ;; it would be nice to add a constraint class remove options
 
-(define*-public (initialize-ui-constraints-buttons #&key (vertical #f) (pixmap #t) (show #f))
+(define*-public (initialize-ui-constraints-buttons #:key (vertical #f) (pixmap #t) (show #f))
   (let* ((toplevel (gtk-window-new 'toplevel))
 	 (box (if vertical (gtk-vbutton-box-new) (gtk-hbutton-box-new)))
 	 (ui-constraint-classes global-constraint-class-list))
@@ -185,7 +185,7 @@
 
 ;; change the existing window
 	 
-(define*-public (change-ui-constraints-buttons #&key (vertical toggle-vertical) (pixmap toggle-pixmap))
+(define*-public (change-ui-constraints-buttons #:key (vertical toggle-vertical) (pixmap toggle-pixmap))
   (initialize-ui-constraints-buttons #:vertical vertical #:pixmap pixmap #:show #t))
 
 ;; open the buttons window

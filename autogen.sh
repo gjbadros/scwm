@@ -18,6 +18,7 @@ autoheader
 
 # Generate Makefile.in's from Makefile.am's and configure.in
 # (adding missing files that may be needed for proper operation)
+#automake-1.4 --add-missing --gnu
 automake --add-missing --gnu
 
 # Generate configure from configure.in and aclocal.m4

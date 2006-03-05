@@ -43,7 +43,7 @@
 (define-public mail-file-time 0)
 (define-public mail-file-size 0)
 
-(define*-public (simplebiff #&key (mail-spool-dir "/var/spool/mail")
+(define*-public (simplebiff #:key (mail-spool-dir "/var/spool/mail")
 			    (username (getenv "USER"))
 			    (activate-proc beep)
 			    (deactivate-proc noop)

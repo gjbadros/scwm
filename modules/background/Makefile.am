@@ -5,13 +5,25 @@ include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
-scwm_module_LTLIBRARIES = libbackground.la
+BUILT_SOURCES = background.x
 
-libbackground_la_SOURCES = background.c
-libbackground_la_LDFLAGS = -export-dynamic
+scwm_module_LTLIBRARIES = libscwm_background.la
 
-libbackground_snarfs = background.x
+libscwm_background_la_SOURCES = background.x background.c
+libscwm_background_la_LDFLAGS = -export-dynamic
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
-BUILT_SOURCES = $(libbackground_snarfs)
+
+
+EXTRA_DIST = background.scm
+
+MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+snarfcppopts = $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+
+#SUFFIXES = .x
+#.c.x:
+#	$(GUILE_SNARF) -o $@ $< $(snarfcppopts)
+
+CLEANFILES = *.x

@@ -28,7 +28,7 @@
 
 ;;(use-modules (app scwm prompt-file))
 ;;(define w (prompt-file "File to list?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval "Helvetica-12"))
-(define*-public (prompt-file prompt proc #&key
+(define*-public (prompt-file prompt proc #:key
 			      (initval #f)
 			      (title #f)
 			      (favorites #f))
@@ -61,7 +61,7 @@ TITLE is a window title."
       (gtk-widget-hide toplevel)
       (gtk-widget-destroy toplevel))))
 
-(define*-public (prompt-file-hbox prompt initval #&optional favorites)
+(define*-public (prompt-file-hbox prompt initval #:optional favorites)
   "Create and return a file-prompting hbox, complete with link to full file dialog.
 PROMPT is the prompt, INITVAL is the initial file as a string.
 The returned value is a list: (hbox getter).

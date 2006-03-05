@@ -6,7 +6,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm time-convert))
 
-(define*-public (flash-window-on #&optional (win (get-window))
+(define*-public (flash-window-on #:optional (win (get-window))
 				 (color "red"))
   "Flash WIN's titlebar and boundary color to COLOR indefinitely.
 Returns the window changed.  Use `unflash-window' to rever the
@@ -15,7 +15,7 @@ window to its normal colors."
   (flash-window win #:color color #:unflash-delay #f)
   win)
 
-(define*-public (flash-window #&optional (win (get-window)) #&key
+(define*-public (flash-window #:optional (win (get-window)) #:key
 			      (color "red")
 			      (unflash-delay .5)
 			      (continually #f))
@@ -49,11 +49,11 @@ color.  See `unflash-window'."
 ;; (flash-window (get-window) #:continually #t)
 ;; (stop-flashing-window)
 
-(define*-public (window-flashing? #&optional (win (get-window)))
+(define*-public (window-flashing? #:optional (win (get-window)))
   "Return #t iff WIN is currently flashing, #f otherwise."
   (object-property win 'flashing))
 
-(define*-public (unflash-window #&optional (win (get-window)))
+(define*-public (unflash-window #:optional (win (get-window)))
   "Revert WIN's titlebar and boundary color to state before a `flash-window'.
 Return the window changed."
   (interactive)
@@ -68,7 +68,7 @@ Return the window changed."
     (set-object-property! win 'old-hi-bg #f))
   win)
 
-(define*-public (stop-flashing-window #&optional (win (get-window)))
+(define*-public (stop-flashing-window #:optional (win (get-window)))
   "Turn off window flashing of WIN.
 Has no effect if WIN is not flashing.
 N.B. flashing and highlight-selection of windows currently use the
@@ -79,7 +79,7 @@ WIN."
   (unflash-window win)
   win)
 
-(define*-public (raise-and-stop-flashing #&optional (win (get-window)))
+(define*-public (raise-and-stop-flashing #:optional (win (get-window)))
   "Turn off window flashing of WIN and raise it.
 Also return #f so that this can be used as an bound IMMEDIATE-PROC."
   (interactive)

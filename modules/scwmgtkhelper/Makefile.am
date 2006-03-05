@@ -14,7 +14,7 @@ libscwmgtkhelper_snarfs = scwmgtkhelper.x
 
 libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
 
-CFLAGS = @GTK_CFLAGS@ @CFLAGS@
+AM_CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
-INCLUDES = -I$(SCWM_SRC_DIR) @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
+INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libscwmgtkhelper_snarfs)

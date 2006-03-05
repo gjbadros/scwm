@@ -29,7 +29,7 @@
 (define opt-switch-to-home-viewport #f)
 (define opt-move-windows-to-current-viewport #f)
 
-(define*-public (shutdown-options #&key switch-to-home-viewport
+(define*-public (shutdown-options #:key switch-to-home-viewport
 				  move-windows-to-current-viewport)
   "Configure shutdown preferences.
 
@@ -43,9 +43,9 @@ The possible settings mean never, always, only when shutting down or
 only when restarting, respectively.
 
 Any window movement is done after any viewport switching."
-  (if (bound? switch-to-home-viewport)
+  (if switch-to-home-viewport
       (set! opt-switch-to-home-viewport switch-to-home-viewport))
-  (if (bound? move-windows-to-current-viewport)
+  (if move-windows-to-current-viewport
       (set! opt-move-windows-to-current-viewport
 	    move-windows-to-current-viewport)))
 

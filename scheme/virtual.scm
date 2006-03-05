@@ -79,7 +79,7 @@ The returned value will be a non-negative real number."
 ;;;
 
 ;; GJB:FIXME:: rename to window-position-in-aligned-viewport
-(define*-public (window-position-in-viewport xx yy #&optional win)
+(define*-public (window-position-in-viewport xx yy #:optional win)
   "Return a virtual position for WIN that is in viewport (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
 full display-size increments (e.g., (1,0) is the viewport
@@ -100,7 +100,7 @@ the position that `move-window-to-viewport' would move the window to."
 	     (modulo (cadr pos) (- display-height (round/ height 2)))))))
 
 ;; GJB:FIXME:: rename to move-window-to-aligned-viewport
-(define*-public (move-window-to-viewport xx yy #&optional (win (get-window)))
+(define*-public (move-window-to-viewport xx yy #:optional (win (get-window)))
   "Move WIN to the viewport numbered (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
 full display-size increments (e.g., (1,0) is the viewport
@@ -139,7 +139,7 @@ viewport just to the right of the home (0,0) viewport)."
 The viewport selected will be an integral multiple of the desk size."
   (apply move-inside-viewport win (window-aligned-viewport win)))
 
-(define*-public (deiconify-to-current-viewport #&optional (win (get-window)))
+(define*-public (deiconify-to-current-viewport #:optional (win (get-window)))
   "De-iconify WIN and make it visible in the current viewport."
   (let ((vpx (current-viewport-offset-xx))
 	(vpy (current-viewport-offset-yy)))

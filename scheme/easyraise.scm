@@ -18,7 +18,7 @@
 ;;   with invalid windows which never get removed from easyraise-windows.  This
 ;;   wastes memory with all of these invalid windows.
 
-(define*-public (set-easyraise-window! easyraise? #&optional (win (get-window)))
+(define*-public (set-easyraise-window! easyraise? #:optional (win (get-window)))
   ""
   (if win 
       (begin
@@ -29,7 +29,7 @@
                     (set! easyraise-windows (cons win easyraise-windows)))
                 (set! easyraise-windows (delq! win easyraise-windows)))))))
 
-(define*-public (easyraise-window? #&optional (win (get-window)))
+(define*-public (easyraise-window? #:optional (win (get-window)))
   ""
   (object-property win 'easyraise))
 

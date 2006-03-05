@@ -22,7 +22,7 @@ gone. See also `focus-last-mapped-window'."
       last-mapped-window-internal
       #f))
 
-(define*-public (focus-last-mapped-window #&optional (push-focus? #t))
+(define*-public (focus-last-mapped-window #:optional (push-focus? #t))
   "Focus and warp to the window that was mapped most recently.
 See also `last-mapped-window'."
   (interactive)

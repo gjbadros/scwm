@@ -18,7 +18,6 @@
 ;;;; 
 
 
-
 (define-module (app scwm style-options)
   :use-module (app scwm optargs))
 
@@ -48,7 +47,7 @@
 
 
 ;;; Four types are allowed: 'normal 'hint 'both 'splicing
-(define*-public (add-window-style-option key handler #&optional 
+(define*-public (add-window-style-option key handler #:optional 
 					 (type 'normal) (cumulative? #f))
   "Add a window style.
 KEY is the key to use in 'window-style' calls.
@@ -69,31 +68,31 @@ CUMULATIVE indicates that the option can be specified multiple times
     proc))
 
 ;; Convenience wrappers for backwards-compatiblity
-(define*-public (add-boolean-style-option key th fh #&optional (cumulative? #f))
+(define*-public (add-boolean-style-option key th fh #:optional (cumulative? #f))
   "Adds a boolean style option with type 'normal.
 The option is added with key KEY and handlers TH and FH
 for true/false values, respectively.  See 'add-window-style-option'."
   (add-window-style-option key (make-bool-handler th fh) 'normal cumulative?))
 
-(define*-public (add-window-hint-option key handler #&optional (cumulative? #f))
+(define*-public (add-window-hint-option key handler #:optional (cumulative? #f))
   "Adds a window style option with type 'hint.
 The option is added with key KEY and handler HANDLER.
 See 'add-window-style-option'."
   (add-window-style-option key handler 'hint cumulative?))
 
-(define*-public (add-boolean-hint-option key th fh #&optional (cumulative? #f))
+(define*-public (add-boolean-hint-option key th fh #:optional (cumulative? #f))
   "Adds a boolean style option with type 'hint.
 The option is added with key KEY and handlers TH and FH
 for true/false values, respectively.  See 'add-window-style-option'."
   (add-window-hint-option key (make-bool-handler th fh) cumulative?))
 
-(define*-public (add-window-both-option key handler #&optional (cumulative? #f))
+(define*-public (add-window-both-option key handler #:optional (cumulative? #f))
   "Adds a window style option with type 'both.
 The option is added with key KEY and handler HANDLER.
 See 'add-window-style-option'."
   (add-window-style-option key handler 'both cumulative?))
 
-(define*-public (add-boolean-both-option key th fh #&optional (cumulative? #f))
+(define*-public (add-boolean-both-option key th fh #:optional (cumulative? #f))
   "Adds a boolean style option with type 'both.
 The option is added with key KEY and handlers TH and FH
 for true/false values, respectively.  See 'add-window-style-option'."
@@ -108,7 +107,7 @@ for true/false values, respectively.  See 'add-window-style-option'."
     proc))
     
 
-(define*-public (add-property-style-option key property #&optional 
+(define*-public (add-property-style-option key property #:optional 
 					    (cumulative? #f))
   (add-window-style-option key (make-property-handler property) 
 			   'normal cumulative?))

@@ -52,7 +52,7 @@
 ;;;   icon-sticky?
 ;;;   shaded?
 
-(define*-public (window-configuration #&optional (win (get-window)))
+(define*-public (window-configuration #:optional (win (get-window)))
   "Return a list containing the state of WIN.
 Use the win-cfg-* functions to access parts of the configuration.
 Elements of the configuration may move at any time and the type of
@@ -213,14 +213,14 @@ WIN-CONFIGS should be a list of elements of the form
      win-configs))))
 
 ;; GJB:FIXME:: make animation optional.
-(define*-public (copy-window-configuration configuration #&optional (win (get-window)))
+(define*-public (copy-window-configuration configuration #:optional (win (get-window)))
   "Apply a saved state CONFIGURATION to window WIN."
   (apply-window-configurations (list (list win configuration))))
 
 ;; (copy-window-configuration c)
 
 (define*-public (restore-window-configuration global-configuration 
-					     #&optional (win (get-window)))
+					     #:optional (win (get-window)))
   "Restore the state of WIN from GLOBAL-CONFIGURATION."
   (let ((c (assoc win global-configuration)))
     (if c (begin (copy-window-configuration c win) #t) #f)))
@@ -250,7 +250,7 @@ WIN-CONFIGS should be a list of elements of the form
     (list-stacking-order)))
   (restack-windows (map car global-configuration)))
 
-(define*-public (push-window-configuration #&optional (win (get-window)))
+(define*-public (push-window-configuration #:optional (win (get-window)))
   "Save the configuration of WIN on its stack of previous configurations."
   (interactive)
   (set-window-property! 
@@ -260,7 +260,7 @@ WIN-CONFIGS should be a list of elements of the form
     (or (window-property win 'window-configuration-stack) '()))))
 
 				      
-(define*-public (pop-window-configuration #&optional (win (get-window)))
+(define*-public (pop-window-configuration #:optional (win (get-window)))
   "Restore the last configuration of WIN that was saved on its stack of previous configurations."
   (interactive)
   (let ((config (window-property win 'window-configuration-stack)))

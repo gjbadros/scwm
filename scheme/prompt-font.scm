@@ -40,7 +40,7 @@
 
 ;;(use-modules (app scwm prompt-font))
 ;;(define w (prompt-font "Window font?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval "Helvetica-12"))
-(define*-public (prompt-font prompt proc #&key
+(define*-public (prompt-font prompt proc #:key
 			      (initval #f)
 			      (title #f))
   "Prompt using PROMPT for a font and call PROC with value if Ok is clicked.

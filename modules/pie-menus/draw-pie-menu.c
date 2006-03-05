@@ -558,7 +558,8 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 		     pmd->pmenu->scmSideAlign);
     }
   }
-  
+
+#if 0
 #if 0 || SCWM_DEBUG_MSGS
   /* FIXJTL: I can't decide if this looks good or not */
   XFillArc(dpy, pmd->w, MenuShadowGC,
@@ -577,6 +578,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 	   2 * pmd->pmdi->cpixLabelRadius + 1,
 	   0, 360*64);
 #endif
+#endif /* #if 0 */
 
   if (pmd->pmdi->menu_look == circle_pie_menu_look) {
     /* XXX this for shaped_pie_menu_look also? */

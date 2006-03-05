@@ -52,7 +52,7 @@ This is equivalent to `move-window-to-desk', just named
 differently for clarity and convenience."
   (move-window-to-desk desk win))
 
-(define*-public (place-interactively win #&key (resize #f))
+(define*-public (place-interactively win #:key (resize #f))
   "Place WIN interactively.
 First WIN is moved interactively with a rubber-band style move, then,
 if the optional RESIZE argument is provided, it is resized
@@ -60,7 +60,7 @@ interactively immediately after it is placed."
   (interactive-place-internal win resize))
 
 
-(define*-public (place-at-point win #&key (offset '(0 0))
+(define*-public (place-at-point win #:key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5)))
   "Place WIN at the pointer position.
 
@@ -119,7 +119,7 @@ The procedure will act just like calling `place-on-desk' on the
 window with the same DESK argument."
   (lambda (win) (place-on-desk win desk)))
 
-(define*-public (interactive-placement #&key (resize #f) (switch #t)
+(define*-public (interactive-placement #:key (resize #f) (switch #t)
   (return #f))
   "Return a procedure that takes a window and places it interactively.
 If the RESIZE argument is true, the resulting procedure will
@@ -135,7 +135,7 @@ places a window interactively."
   (wrap-switch-return switch return
    (lambda (win) (interactive-place-internal win resize))))
 
-(define*-public (at-point-placement #&key (offset '(0 0))
+(define*-public (at-point-placement #:key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5))
 			       (switch #t) (return #f)
 			       (auto-focus #f))
@@ -166,7 +166,7 @@ a window at the pointer position."
 					(lambda ()
 					  (focus-change-warp-pointer win))))))))
 
-(define*-public (auto-accept-dialog-placement #&optional (delay 500))
+(define*-public (auto-accept-dialog-placement #:optional (delay 500))
   "Return a procedure that auto-accepts a dialog box window.
 DELAY is the number of msec to delay before sending the \"Return\"
 keystroke to accept the dialog."
@@ -175,7 +175,7 @@ keystroke to accept the dialog."
 
 ;;; SRL:FIXME:: Why is one of proportional-offset/relative-to numeric and
 ;;;   the other one symbolic.  Very inconsistent.
-(define*-public (near-window-placement window-getter #&key (offset '(0 0))
+(define*-public (near-window-placement window-getter #:key (offset '(0 0))
 				       (proportional-offset '(-0.5 -0.5))
 				       (relative-to 'center)
 				       (auto-focus #f))
@@ -218,7 +218,7 @@ centered at the control point of the existing window."
 ;;; SRL:FIXME:: Do we really need this level of indirection or could we just
 ;;;   change all calls to wrap-switch-return with calls to 
 ;;;   virtual-switch-placement
-(define*-public (virtual-switch-placement proc #&key (switch #t) (return #f))
+(define*-public (virtual-switch-placement proc #:key (switch #t) (return #f))
   "Wrap placement procedure PROC with virtual switching code.
 PROC is a procedure that takes a single window argument. The return
 value is also a procedure of one one window argument which has the
@@ -229,7 +229,7 @@ respectively."
   (wrap-switch-return switch return proc))
 
 ;;; SRL:FIXME:: Incredibly specific.  Do we need this procedure?
-(define*-public (strict-relpos-placement proc #&key (anchor 'northeast))
+(define*-public (strict-relpos-placement proc #:key (anchor 'northeast))
   "Wrap placement procedure PROC with adding a contraint that the windows stay relatively where they are.
 PROC needs to return a list of two windows, ANCHOR chooses which nonant of the windows
 are the anchored positions."
@@ -258,7 +258,7 @@ from moving the window (for example interactively)."
 ;; implementation internals
 
 (define (wrap-switch-return switch return proc)
-  ((if return save-place-excursion id)
+  ((if return save-place-excursion identity)
    (lambda (win)
      (if switch
 	 (warp-to-window-viewport win))
@@ -288,7 +288,7 @@ from moving the window (for example interactively)."
 
 ;; (re-place-window)
 ;; (re-place-window (get-window) smart-place-window)
-(define*-public (re-place-window #&optional (win (get-window)) (proc clever-place-window))
+(define*-public (re-place-window #:optional (win (get-window)) (proc clever-place-window))
   "Reposition WIN by re-placing it using PROC.
 PROC defaults to `clever-place-window'.  The
 return value is the new position of the window,

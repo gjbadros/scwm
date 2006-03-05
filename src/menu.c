@@ -21,8 +21,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include <guile/gh.h>
-
 #define MENU_IMPLEMENTATION
 #include "menu.h"
 
@@ -67,7 +65,7 @@ SzFirstItemFromPmd(const DynamicMenu *pmd)
   if (pmi)
     return pmi->szLabel;
 
-  scmItem = gh_car(pmd->pmenu->scmMenuItems);
+  scmItem = scm_car(pmd->pmenu->scmMenuItems);
   pmi = SAFE_MENUITEM(scmItem);
 
   if (pmi)
@@ -119,7 +117,7 @@ print_menu(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
     if (MENUITEM_P(pmenu->scmMenuTitle)) {
       scm_write(pmenu->scmMenuTitle, port);
     } else if (SCM_NIMP(pmenu->scmMenuItems)) {
-      scm_write(gh_car(pmenu->scmMenuItems), port);
+      scm_write(scm_car(pmenu->scmMenuItems), port);
     }
     if (pmenu->pchUsedShortcutKeys) {
       scm_puts(", hotkeys: ",port);
@@ -138,7 +136,7 @@ SCM_DEFINE(menu_p,"menu?", 1,0,0,
 "Return #t if and only if OBJ is a menu object.")
 #define FUNC_NAME s_menu_p
 {
-  return SCM_BOOL_FromBool(MENU_P(obj));
+  return scm_from_bool(MENU_P(obj));
 }
 #undef FUNC_NAME
 
@@ -155,7 +153,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
   SCM list_of_menuitems = pmd->pmenu->scmMenuItems;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
   int ipmiim = 0;
-  int cItems = gh_length(list_of_menuitems);
+  int cItems = scm_to_size_t(scm_length(list_of_menuitems));
   char *pch = NEWC(cItems+1, char);
   int ich = 0;
   SCM item;
@@ -163,11 +161,11 @@ NewPchKeysUsed(DynamicMenu *pmd)
   MenuItem *pmi;
 
   while (True) {
-    item = gh_car(rest);
+    item = scm_car(rest);
     pmi = SAFE_MENUITEM(item);
     if (!pmi) {
       /* do not print a warning if a menu item is #f */
-      if (item != SCM_BOOL_F)
+      if (scm_is_true(item))
 	scwm_msg(WARN,FUNC_NAME,"Bad menu item %d",ipmiim);
     } else {
       if (pmi->pchHotkeyPreferences) {
@@ -185,7 +183,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
       }
       ipmiim++;
     }
-    rest = gh_cdr(rest);
+    rest = scm_cdr(rest);
     if (SCM_NULLP(rest))
       break;
   }
@@ -198,30 +196,30 @@ NewPchKeysUsed(DynamicMenu *pmd)
 
 SCM_DEFINE(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu),
-"Returns the a list of the menu properties of MENU, a menu object.\n\
-The properties returned are: \n\
-'(menu-title menu-items side-image side-image-align side-bg-color bg-color\n\
-text-color stipple-color\n\
-image-bg font extra-options used-shortcut-keys popup-delay hover-delay)")
+"Returns the a list of the menu properties of MENU, a menu object.\n\n"
+"The properties returned are: \n"
+"'(menu-title menu-items side-image side-image-align side-bg-color bg-color\n"
+"text-color stipple-color\n"
+"image-bg font extra-options used-shortcut-keys popup-delay hover-delay)")
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu;
   VALIDATE_ARG_MENU_COPY(1,menu,pmenu);
-  return gh_list(pmenu->scmMenuTitle,
-		 pmenu->scmMenuItems,
-		 pmenu->scmImgSide,
-		 pmenu->scmSideAlign,
-		 pmenu->scmSideBGColor,
-		 pmenu->scmBGColor,
-		 pmenu->scmTextColor,
-		 pmenu->scmStippleColor,
-		 pmenu->scmImgBackground,
-		 pmenu->scmFont,
-		 pmenu->scmExtraOptions,
-		 gh_str02scm(pmenu->pchUsedShortcutKeys),
-                 gh_int2scm(pmenu->cmsPopupDelay),
-                 gh_int2scm(pmenu->cmsHoverDelay),
-                 SCM_UNDEFINED);
+  return scm_list_n(pmenu->scmMenuTitle,
+		    pmenu->scmMenuItems,
+		    pmenu->scmImgSide,
+		    pmenu->scmSideAlign,
+		    pmenu->scmSideBGColor,
+		    pmenu->scmBGColor,
+		    pmenu->scmTextColor,
+		    pmenu->scmStippleColor,
+		    pmenu->scmImgBackground,
+		    pmenu->scmFont,
+		    pmenu->scmExtraOptions,
+		    scm_from_locale_string(pmenu->pchUsedShortcutKeys),
+		    scm_from_int(pmenu->cmsPopupDelay),
+		    scm_from_int(pmenu->cmsHoverDelay),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -240,15 +238,15 @@ SCM_DEFINE(make_menu, "make-menu", 5, 5, 0,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
            SCM picture_bg, 
            SCM extra_options),
-"Make and return a menu object from the given arguments.\n\
-LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';\n\
-BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;\n\
-FONT is a font object or symbol;\n\
-PICTURE-SIDE is an image object to draw on the left side of the menu;\n\
-SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;\n\
-SIDE-BG-COLOR is a color object or symbol;\n\
-PICTURE-BG is an image object;\n\
-EXTRA-OPTIONS can be anything understood by the menu-look")
+"Make and return a menu object from the given arguments.\n\n"
+"LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem;\n"
+"BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;\n"
+"FONT is a font object or symbol;\n"
+"PICTURE-SIDE is an image object to draw on the left side of the menu;\n"
+"SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;\n"
+"SIDE-BG-COLOR is a color object or symbol;\n"
+"PICTURE-BG is an image object;\n"
+"EXTRA-OPTIONS can be anything understood by the menu-look")
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
@@ -287,7 +285,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look")
   /* SIDE-PICTURE-ALIGN: Optional */
   if (UNSET_SCM(side_picture_align)) {
     side_picture_align = sym_top;
-  } else if (!gh_symbol_p(side_picture_align) ||
+  } else if (!scm_is_symbol(side_picture_align) ||
 	     (side_picture_align != sym_top &&
 	      side_picture_align != sym_center &&
 	      side_picture_align != sym_bottom)) {
@@ -320,8 +318,8 @@ EXTRA-OPTIONS can be anything understood by the menu-look")
 
 SCM_DEFINE(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
           (SCM menu, SCM popup_delay),
-"Set MENU's submenu popup delay to POPUP-DELAY.\n\
-POPUP-DELAY is the number of ms to wait before popping up submenus.")
+"Set MENU's submenu popup delay to POPUP-DELAY.\n\n"
+"POPUP-DELAY is the number of ms to wait before popping up submenus.")
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
   VALIDATE_ARG_MENU(1,menu);
@@ -333,12 +331,12 @@ POPUP-DELAY is the number of ms to wait before popping up submenus.")
 
 SCM_DEFINE(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
           (SCM menu),
-"Return MENU's submenu popup delay.\n\
-See `set-menu-popup-delay!'.")
+"Return MENU's submenu popup delay.\n\n"
+"See `set-menu-popup-delay!'.")
 #define FUNC_NAME s_menu_popup_delay
 {
   VALIDATE_ARG_MENU(1,menu);
-  return gh_int2scm(MENU(menu)->cmsPopupDelay);
+  return scm_from_int(MENU(menu)->cmsPopupDelay);
 }
 #undef FUNC_NAME
 
@@ -363,7 +361,7 @@ See `set-menu-hover-delay!'.")
 #define FUNC_NAME s_menu_hover_delay
 {
   VALIDATE_ARG_MENU(1,menu);
-  return gh_int2scm(MENU(menu)->cmsHoverDelay);
+  return scm_from_int(MENU(menu)->cmsHoverDelay);
 }
 #undef FUNC_NAME
 
@@ -464,7 +462,7 @@ SCM_DEFINE(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
 {
   Menu *pm;
   VALIDATE_ARG_MENU_COPY(1,menu,pm);
-  return gh_list(pm->scmHLTextColor,pm->scmHLBGColor,SCM_UNDEFINED);
+  return scm_list_n(pm->scmHLTextColor,pm->scmHLBGColor,SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -475,7 +473,7 @@ SCM_DEFINE(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
 {
   Menu *pm;
   VALIDATE_ARG_MENU_COPY(1,menu,pm);
-  return SCM_BOOL_FromBool(pm->fHighlightRelief);
+  return scm_from_bool(pm->fHighlightRelief);
 }
 #undef FUNC_NAME
 
@@ -510,7 +508,7 @@ color to BG-COLOR.")
   pm->scmImgSide = picture;
 
   if (!UNSET_SCM(align)) {
-    if (!gh_symbol_p(align) ||
+    if (!scm_is_symbol(align) ||
         (align != sym_top &&
          align != sym_center &&
          align != sym_bottom)) {
@@ -1390,14 +1388,14 @@ FreeDynamicMenu(DynamicMenu *pmd)
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
     pmd->pmdv->fnFreePmidi(pmiim->pmidi);
     /* permit the menu item to be freed again */
-    scm_unprotect_object(pmiim->pmi->self);
+    scm_gc_unprotect_object(pmiim->pmi->self);
     FREE(pmiim);
     pmd->rgpmiim[ipmiim] = NULL;
   }
   FREEC(pmd->rgpmiim);
   pmd->pmdv->fnFreePmdi(pmd->pmdi);
   /* now let the menu get gc-d if appropriate */
-  scm_unprotect_object(pmd->pmenu->self);
+  scm_gc_unprotect_object(pmd->pmenu->self);
 
   FREE(pmd);
 }  
@@ -1412,7 +1410,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
 
   /* GJB:FIXME:: strip #f-s in make-menu!
      allow #f-s to be embed and just skip them */
-  if (item == SCM_BOOL_F) {
+  if (scm_is_false(item)) {
     return NULL;
   }
 
@@ -1427,7 +1425,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
      just from the menu item */
   pmiim->pmi = pmi;
   pmiim->pmi->self = item;
-  scm_protect_object(item); /* be sure the item is not gc-d */
+  scm_gc_protect_object(item); /* be sure the item is not gc-d */
   pmiim->pmd = pmd;
   pmiim->ipmiim = ipmiim;
   pmiim->chShortcut = '\0';
@@ -1438,7 +1436,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
     (DYNAMIC_MENU_P(pmiim->pmi->scmHover)) ||
     pmiim->pmi->fIsForcedSubmenu;
   
-  if (pmiim->pmi->scmAction == SCM_BOOL_F)
+  if (scm_is_false(pmiim->pmi->scmAction))
     pmiim->mis = MIS_Grayed;
   else
     pmiim->mis = MIS_Enabled;	/* GJB:FIXME:: set using hook info? */
@@ -1451,30 +1449,30 @@ InitializeDynamicMenu(DynamicMenu *pmd)
 {
 #define FUNC_NAME "InitializeDynamicMenu"
   Menu *pmenu = pmd->pmenu;
-  int cmiim = gh_length(pmenu->scmMenuItems);
+  int cmiim = scm_to_size_t(scm_length(pmenu->scmMenuItems));
   int ipmiim = 0;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim = NEWC(cmiim, MenuItemInMenu *);
   SCM rest = pmd->pmenu->scmMenuItems;
 
   /* be sure the menu does not get gc-d */
-  scm_protect_object(pmenu->self);
+  scm_gc_protect_object(pmenu->self);
 
   /* Initialize the list of dynamic menu items;
      only the drawing-independent code here */
   while (True) {
-    SCM item = gh_car(rest);
+    SCM item = scm_car(rest);
 
     rgpmiim[ipmiim] = InitializeMenuItemInMenu(item, ipmiim, pmd);
     if (rgpmiim[ipmiim]) {
       ipmiim++;
     } else {
       /* permit #f menuitems without giving warning message */
-      if (item != SCM_BOOL_F) {
+      if (scm_is_true(item)) {
         scwm_msg(WARN,FUNC_NAME,"Bad menu item number %d",ipmiim);
       }
     }
     
-    rest = gh_cdr(rest);
+    rest = scm_cdr(rest);
     if (SCM_NULLP(rest))
       break;
   }
@@ -1618,7 +1616,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* this recurses indirectly back into PopupGrabMenu */
     return popup_menu(scmAction, SCM_BOOL_F,
-                      SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F, gh_bool2scm(fPermitAltReleaseToSelect));
+                      SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F, scm_from_bool(fPermitAltReleaseToSelect));
   }
   return SCM_BOOL_F;
 }
@@ -1640,7 +1638,7 @@ SCM_DEFINE(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
 "Return #t if hotkeys invoke item, #f if they just select the item.")
 #define FUNC_NAME s_menu_hotkeys_activate_item_p
 {
-  return SCM_BOOL_FromBool(fMenuHotkeysActivateItems);
+  return scm_from_bool(fMenuHotkeysActivateItems);
 }
 #undef FUNC_NAME
 
@@ -1661,7 +1659,8 @@ the Alt/Meta modifier select a menu item.")
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   VALIDATE_ARG_MENU(1,menu);
-  if (SCM_BOOL_T == warp_to_index) warp_to_index = gh_int2scm(1);
+  if (scm_is_bool(warp_to_index) && scm_is_true(warp_to_index))
+    warp_to_index = scm_from_int(1);
   VALIDATE_ARG_INT_COPY_USE_DEF(2,warp_to_index,warp_to,0);
   VALIDATE_ARG_INT_COPY_USE_DEF(3,x_pos,x,-1);
   VALIDATE_ARG_INT_COPY_USE_DEF(4,y_pos,y,-1);
@@ -1673,16 +1672,12 @@ the Alt/Meta modifier select a menu item.")
 }
 #undef FUNC_NAME
 
-MAKE_SMOBFUNS(menu);
-
 void
 init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
 
-#ifndef SCM_MAGIC_SNARFER
 # include "menu.x"
-#endif
 }
 
 /* Local Variables: */

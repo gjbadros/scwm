@@ -7,7 +7,7 @@
   :use-module (app scwm winlist-menu)
   :use-module (app scwm winlist))
 
-(define*-public (window-task-switcher-menu #&optional (last? #f) #&rest rest)
+(define*-public (window-task-switcher-menu #:optional (last? #f) #:rest rest)
   "Popup a task-switcher window list.
 Start out on the window that last had the focus."
   (interactive)

@@ -6,10 +6,12 @@
 ;;;; In a sense, these are compiled-in primitives implemented in scheme
 ;;;; (these can get overridden later, of course)
 
-(use-modules (app scwm optargs))
+(define-module (app scwm minimal)
+  :use-module (ice-9 optargs))
+  ;:use-module (app scwm optargs))
 
-(define-public guile-version (+ (string->number (major-version)) 
-				(/ (string->number (minor-version)) 10)))
+(define guile-version (+ (string->number (major-version)) 
+			 (/ (string->number (minor-version)) 10)))
 
 ;; Turn off buffering so that we can see messages as
 ;; they are displayed (an issue in >= guile-1.3.2)
@@ -18,7 +20,9 @@
 
 ;; Make quit an alias for scwm-quit
 (define quit scwm-quit)
-(undefine scwm-quit)
+(set-procedure-property! scwm-quit 'interactive #t)
+(set-procedure-property! quit 'interactive #t)
+;(undefine scwm-quit)
 
 (define FIXED-FONT (make-font "fixed"))
 
@@ -42,27 +46,31 @@
 
 
 ;;; Some functions for decoration bindings
-(define* (resize-or-raise)
+;(define* (resize-or-raise)
+(define (resize-or-raise)
   "Perform a resize, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-resize', and double-click does
 `lower-window'."
-  (interactive)
+  ;(interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-resize))
     ((double-click) (lower-window))))
+(set-procedure-property! resize-or-raise 'interactive #t)
 
-(define* (move-or-raise)
+;(define* (move-or-raise)
+(define (move-or-raise)
   "Perform a move, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-move', and double-click does
 `lower-window'."
-  (interactive)
+  ;(interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-move))
     ((double-click) (lower-window))))
+(set-procedure-property! move-or-raise 'interactive #t)
 
 ;;; Initialize the decoration bindings to
 ;;; permit at least some useful behaviour
@@ -94,49 +102,49 @@ motion does `interactive-move', and double-click does
 			      (dynamic-wind xgs thunk xugs))))
 
 ;; now undefine the dangerous primitives
-(undefine X-grab-server)
-(undefine X-ungrab-server)
+;(undefine X-grab-server)
+;(undefine X-ungrab-server)
 
 ;; END gross hack
 
-(if (not (defined? 'run-hook))
-    ;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
-    (define-public (run-hook hook-list . args)
-      "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
-If any error, the others still run.  The procedures are executed in the
-order in which they appear in HOOK-LIST"
-      (for-each (lambda (p) 
-		  (catch #t
-			 (lambda () (apply p args))
-			 (lambda args
-			   (display "Error running hook: ")
-			   (write p)
-			   (newline))))
-		hook-list)))
+;(if (not (defined? 'run-hook))
+;    ;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
+;    (define-public (run-hook hook-list . args)
+;      "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
+;If any error, the others still run.  The procedures are executed in the
+;order in which they appear in HOOK-LIST"
+;      (for-each (lambda (p) 
+;		  (catch #t
+;			 (lambda () (apply p args))
+;			 (lambda args
+;			   (display "Error running hook: ")
+;			   (write p)
+;			   (newline))))
+;		hook-list)))
+;
+;
+;(if (not (defined? 'reset-hook!))
+;    (defmacro-public reset-hook! (hook)
+;      `(set! ,hook '())))
+;
+;(if (not (defined? 'make-hook))
+;    (begin
+;      ;; guile-1.3
+;      (define-public (make-hook . n) '())
+;      (define-public hook? list?))
+;    ;; guile-1.3.2 and later
+;    (define-public (hook? h) 
+;      (and (pair? h) (eq? (car h) 'hook))))
 
-
-(if (not (defined? 'reset-hook!))
-    (defmacro-public reset-hook! (hook)
-      `(set! ,hook ())))
-
-(if (not (defined? 'make-hook))
-    (begin
-      ;; guile-1.3
-      (define-public (make-hook . n) ())
-      (define-public hook? list?))
-    ;; guile-1.3.2 and later
-    (define-public (hook? h) 
-      (and (pair? h) (eq? (car h) 'hook))))
-
-(define-public (append-hook! hook proc)
+(define (append-hook! hook proc)
   "Add PROC to HOOK at the end of the list."
   (add-hook! hook proc #t))
 
 ;; GJB:FIXME:: this should not be public,
 ;; but I leave it public for now for easier debugging --07/03/99 gjb
-(define-public *scwm-modules* '())
+(define *scwm-modules* '())
 
-(define-public (scwm-module-loaded? module)
+(define (scwm-module-loaded? module)
   "Return #t iff MODULE has been loaded."
   (let ((entry (assoc module *scwm-modules*))) 
     (and entry (null? (cdr entry)))))
@@ -150,6 +158,7 @@ order in which they appear in HOOK-LIST"
   (display "loaded ") (write module) (newline))
 
 (define module-loaded-hook (make-hook 1))
+(add-hook! module-loaded-hook display-module-loaded)
 
 (define (use-scwm-module-note-success module)
   (run-hook module-loaded-hook module)
@@ -162,7 +171,7 @@ order in which they appear in HOOK-LIST"
 		(set-cdr! entry '())
 		answer))))))
 
-(define-public (eval-after-load module proc)
+(define (eval-after-load module proc)
   "Run PROC after MODULE is loaded.
 Run PROC immediately if MODULE has already been loaded."
   (if (scwm-module-loaded? module)
@@ -174,7 +183,7 @@ Run PROC immediately if MODULE has already been loaded."
       (set! module (append '(app scwm) (list module))))
   (catch #t
 	 (lambda ()
-	   (process-use-modules (list module))
+	   (process-use-modules (list (list module)))
 	   (use-scwm-module-note-success module)
 	   (run-hook load-processing-hook -1)
 	   module)
@@ -188,7 +197,7 @@ Run PROC immediately if MODULE has already been loaded."
 		  (lambda (key . args) #t))
 	   #f)))
 
-(define-public (process-use-scwm-modules module-list)
+(define (process-use-scwm-modules module-list)
   "Returns a list of all the modules loaded in successfully.
 Modules that failed to load have #f in their place in the
 list instead of the module."
@@ -200,7 +209,7 @@ list instead of the module."
 (X-property-set! 'root-window "_WIN_WM_NAME" "scwm")
 (X-property-set! 'root-window "_WIN_WM_VERSION" (scwm-version))
 
-(define-public (standard-place-window win)
+(define (standard-place-window win)
   "Do an ordinary placement of a window.
 First try `smart-place-window', then `clever-place-window',
 then `random-place-window', and finally `interactive-place-window'."
@@ -215,3 +224,19 @@ then `random-place-window', and finally `interactive-place-window'."
 ;; Use the above as the default placement procedure
 (set! default-placement-proc standard-place-window)
 (set! default-transient-placement-proc null-place-window)
+
+(export
+ guile-version
+ *scwm-modules*
+ append-hook!
+ scwm-module-loaded?
+ eval-after-load
+ resize-or-raise
+ move-or-raise
+ ;;scwm-quit
+ process-use-scwm-modules
+ standard-place-window
+ hack-interactive-move
+ hack-interactive-resize
+ use-scwm-modules)
+

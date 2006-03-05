@@ -25,7 +25,7 @@
 ;; (where-is 'describe-event)
 ;; (where-is "describe-key")
 ;; (where-is)
-(define*-public (where-is #&optional (proc #f))
+(define*-public (where-is #:optional (proc #f))
   "Show bindings that invoke PROC.
 Pops up a procedure selection window if PROC is omitted or #f.
 PROC can be the procedure object, a symbol, or a string; 

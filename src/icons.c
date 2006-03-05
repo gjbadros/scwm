@@ -47,16 +47,16 @@
 #include "cursor.h"
 
 SCWM_HOOK(iconify_hook, "iconify-hook", 2,
-"This hook is invoked when a window is iconified.\n\
-It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n\
-WINDOW is the window iconfied, and WAS-ICONIFIED? is\n\
-a boolean telling whether the window was iconified previously.");
+"This hook is invoked when a window is iconified.\n\n"
+"It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n"
+"WINDOW is the window iconfied, and WAS-ICONIFIED? is\n"
+"a boolean telling whether the window was iconified previously.");
 
 SCWM_HOOK(deiconify_hook, "deiconify-hook", 2,
-"This hook is invoked when a window is deiconified.\n\
-It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n\
-WINDOW is the window iconfied, and WAS-ICONIFIED? is\n\
-a boolean telling whether the window was iconified previously.");
+"This hook is invoked when a window is deiconified.\n\n"
+"It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n"
+"WINDOW is the window iconfied, and WAS-ICONIFIED? is\n"
+"a boolean telling whether the window was iconified previously.");
 
 
 /*
@@ -233,7 +233,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
     psw->icon_image=psw->icon_req_image;
   }
 
-  if (ShapesSupported && psw->icon_image != SCM_BOOL_F && 
+  if (ShapesSupported && scm_is_true(psw->icon_image) && 
       IMAGE(psw->icon_image)->mask!=None) {
     psw->fShapedIcon = True;
   }
@@ -254,7 +254,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
     psw->icon_w_height = 0;
   }
 
-  if (psw->icon_image != SCM_BOOL_F) {
+  if (scm_is_true(psw->icon_image)) {
     psw->icon_p_height = IMAGE(psw->icon_image)->height + 
       (psw->fIconOurs ? 4 : 0);
     psw->icon_p_width = IMAGE(psw->icon_image)->width + 
@@ -325,7 +325,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 
 
   if (ShapesSupported && psw->fShapedIcon &&
-    psw->icon_image != SCM_BOOL_F) {
+    scm_is_true(psw->icon_image)) {
     XShapeCombineMask(dpy, psw->icon_pixmap_w, ShapeBounding, 2, 2,
 		      IMAGE(psw->icon_image)->mask, ShapeSet);
   }
@@ -426,7 +426,7 @@ DrawIconWindow(ScwmWindow * psw)
   MovePswIconToCurrentPosition(psw);
 
   if (psw->fIconOurs) {
-    if ((psw->icon_image != SCM_BOOL_F) &&
+    if ((scm_is_true(psw->icon_image)) &&
 	!psw->fShapedIcon) {
       RelieveWindow(psw, psw->icon_pixmap_w, 0, 0,
 		    psw->icon_p_width, psw->icon_p_height,
@@ -434,7 +434,7 @@ DrawIconWindow(ScwmWindow * psw)
     }
 
   /* need to locate the icon pixmap */
-    if (psw->icon_image != SCM_BOOL_F) {
+    if (scm_is_true(psw->icon_image)) {
       if (IMAGE(psw->icon_image)->depth == Scr.d_depth) {
 	XCopyArea(dpy, IMAGE(psw->icon_image)->image, 
 		  psw->icon_pixmap_w, Scr.ScratchGC3,
@@ -618,7 +618,7 @@ DeIconify(ScwmWindow *psw)
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     if ((t == psw) ||
 	(t->fTransient && (t->transientfor == psw->w))) {
-      SCM was_iconified_p = SCM_BOOL_FromBool(t->fIconified);
+      SCM was_iconified_p = scm_from_bool(t->fIconified);
       t->fMapped = True;
       if (Scr.Hilite == t)
 	SetBorder(t, False, True, True, None);
@@ -700,7 +700,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
       SetMapStateProp(t, IconicState);
       SetBorder(t, False, False, False, None);
       if (t != psw) {
-        SCM was_iconified_p = SCM_BOOL_FromBool(psw->fIconified);
+        SCM was_iconified_p = scm_from_bool(psw->fIconified);
 	t->fIconified = True;
 	t->fIconUnmapped = True;
 
@@ -726,7 +726,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
     psw->icon_w_width = psw->icon_t_width + 6;
   }
   { /* scope */
-    SCM was_iconified_p = SCM_BOOL_FromBool(psw->fIconified);
+    SCM was_iconified_p = scm_from_bool(psw->fIconified);
     AutoPlace(psw);
     psw->fIconified = True;
     psw->fIconUnmapped = False;
@@ -797,9 +797,7 @@ SetMapStateProp(ScwmWindow *psw, int state)
 void
 init_icons()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "icons.x"
-#endif
 }
 
 

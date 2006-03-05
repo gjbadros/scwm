@@ -219,7 +219,7 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
 	(if (not hoz-win)
 	    (set! hoz-win vert-win))
 	(if (and hoz-win
-		 (eq? ()
+		 (eq? '()
 		      (ui-constraints-involving-two-windows hoz-win win))
 		 (eq? (sticky-window? win) (sticky-window? hoz-win)))
 	    (let ((uic
@@ -243,7 +243,7 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
 ;; ui-constraints
 ;; snap-constraints
 ;; (snap-initialize)
-(define*-public (snap-initialize #&optional (sw 25))
+(define*-public (snap-initialize #:optional (sw 25))
   "Turn on auto-snapping during interactive moves."
   (interactive)
   (if (not (scwm-master-solver))

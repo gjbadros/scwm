@@ -51,7 +51,7 @@ See `pop-focus-window'."
   "Return #t iff the focus-stack is empty, else #f."
   (null? focus-stack))
 
-(define*-public (close-window-and-pop-focus #&optional (win (get-window)))
+(define*-public (close-window-and-pop-focus #:optional (win (get-window)))
   "Close WIN and pop the focus with `pop-focus-window'."
   (interactive)
   (delete-window win)

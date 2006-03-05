@@ -10,7 +10,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #include "drawmenu.h"
@@ -564,7 +563,7 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 
 static
 MenuItemInMenu *
-PmiimFromPmdXY(DynamicMenu *pmd, int ARG_UNUSED(x), int y)
+PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 {
 #define FUNC_NAME "PmiimFromPmdXY"
   int ipmiim;
@@ -809,12 +808,11 @@ init_drawmenu()
   drawmenu_menu_look = make_menulook("scwm-menu-look", SCM_UNDEFINED, pmdvt);
 
   SCWM_VAR_READ_ONLY(NULL,"scwm-menu-look",drawmenu_menu_look);
+  scm_c_export("scwm-menu-look", NULL);
   /** The default menu look for Scwm.
 Used as an argument to `set-menu-look'. */
   
-#ifndef SCM_MAGIC_SNARFER
 #include "drawmenu.x"
-#endif
 }
 
 

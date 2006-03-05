@@ -19,8 +19,6 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 #include "face.h"
 
 #include "scwm.h"
@@ -344,8 +342,8 @@ this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
 SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
           (SCM face, SCM flag, SCM flagval),
-"Set the given FLAG to the given FLAGVAL for face FACE.\n\
-See the section on the `Face Flags' concept.")
+"Set the given FLAG to the given FLAGVAL for face FACE.\n\n"
+"See the section on the `Face Flags' concept.")
 #define FUNC_NAME s_set_face_flag_x
 {
   ButtonFace *bf;
@@ -404,7 +402,7 @@ See the section on the `Face Flags' concept.")
     } else if (flagval==sym_border) {
       bf->style |= UseBorderStyle;
       bf->style &= ~UseTitleStyle;
-    } else if (flagval==SCM_BOOL_F) {
+    } else if (scm_is_false(flagval)) {
       bf->style &= ~UseBorderStyle & ~UseTitleStyle;
     } 
     else {
@@ -413,9 +411,9 @@ See the section on the `Face Flags' concept.")
     }
 
   } else if (flag==sym_hidden_handles) {
-    if (flagval==SCM_BOOL_T) {
+    if (scm_is_bool(flagval) && scm_is_true(flagval)) {
       bf->style |= HiddenHandles;
-    } else if (flagval==SCM_BOOL_F) {
+    } else if (scm_is_false(flagval)) {
       bf->style &= ~HiddenHandles;
     } else {
       /* MS:FIXME:: use something more accurate. */
@@ -423,9 +421,9 @@ See the section on the `Face Flags' concept.")
     }
 
   } else if (flag==sym_no_inset) {
-    if (flagval==SCM_BOOL_T) {
+    if (scm_is_bool(flagval) && scm_is_true(flagval)) {
       bf->style |= NoInset;
-    } else if (flagval==SCM_BOOL_F) {
+    } else if (scm_is_false(flagval)) {
       bf->style &= ~NoInset;
     } else {
       /* MS:FIXME:: use something more accurate. */
@@ -442,9 +440,9 @@ See the section on the `Face Flags' concept.")
 
 SCM_DEFINE(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs),
-"Create a new face.\n\
-FLAGS is a list of face flags (see concept) and\n\
-SPECS is a list of face specifiers.")
+"Create a new face.\n\n"
+"FLAGS is a list of face flags (see concept) and\n"
+"SPECS is a list of face specifiers.")
 #define FUNC_NAME s_make_face
 {
   SCM answer;
@@ -465,21 +463,21 @@ SPECS is a list of face specifiers.")
   bf->next = NULL;
   scwm_allow_ints();
 
-  for (p=flags; p!=SCM_EOL; p=gh_cdr(p)) {
-    flag = gh_car(p);
-    if (gh_list_p(flag) && gh_length(flag)==2) {
-      set_face_flag_x(answer,gh_car(flag),gh_cadr(flag));
+  for (p=flags; !scm_is_null(p); p=scm_cdr(p)) {
+    flag = scm_car(p);
+    if (scm_is_true(scm_list_p(flag)) && scm_to_size_t(scm_length(flag))==2) {
+      set_face_flag_x(answer,scm_car(flag),scm_cadr(flag));
     } else {
       /* Bad flag specifier error */
       SCWM_WRONG_TYPE_ARG(1,flags);          
     }
   }
 
-  for (p=specs; p!=SCM_EOL; p=gh_cdr(p)) {
-    spec = gh_car(p);
+  for (p=specs; !scm_is_null(p); p=scm_cdr(p)) {
+    spec = scm_car(p);
  
-    if (gh_list_p(spec) && gh_length(spec)==2) {
-      add_spec_to_face_x(answer,gh_car(spec),gh_cadr(spec));
+    if (scm_is_true(scm_list_p(spec)) && scm_to_size_t(scm_length(spec))==2) {
+      add_spec_to_face_x(answer,scm_car(spec),scm_cadr(spec));
     } else {
       /* Bad flag specifier error */
       SCWM_WRONG_TYPE_ARG(2,specs);
@@ -662,18 +660,18 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
   if (spec==sym_relief_pattern) {
     int l;
     /* MS:FIXME:: arbitrary limit of 20 points in relief patterns is silly */
-    if (gh_list_p(arg) &&((l=gh_length(arg)) >= 2)
+    if (scm_is_true(scm_list_p(arg)) &&((l=scm_to_size_t(scm_length(arg))) >= 2)
 	&& (l <= 20)) {
       struct vector_coords vc;
       SCM p, pel;
       vc.num=0;
       
-      for (p=arg; p != SCM_EOL; p = gh_cdr(p)) {
-	pel=gh_car(p);
-	if ((gh_list_p(pel) && (gh_length(pel)==3))) {
-	  vc.x[vc.num]=gh_scm2int(gh_car(pel));
-	  vc.y[vc.num]=gh_scm2int(gh_cadr(pel));
-	  vc.line_style[vc.num]=gh_scm2bool(gh_caddr(pel));
+      for (p=arg; !scm_is_null(p); p = scm_cdr(p)) {
+	pel=scm_car(p);
+	if ((scm_is_true(scm_list_p(pel)) && (scm_to_size_t(scm_length(pel))==3))) {
+	  vc.x[vc.num]=scm_to_int(scm_car(pel));
+	  vc.y[vc.num]=scm_to_int(scm_cadr(pel));
+	  vc.line_style[vc.num]=scm_to_bool(scm_caddr(pel));
 	  vc.num++;
 	}
       }
@@ -705,18 +703,18 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
   } else if (spec==sym_gradient) {
     int vert_p;
-    if (gh_list_p(arg) && gh_length(arg) > 2
-	&& ((vert_p=(gh_car(arg)==sym_vertical)) ||
-	    gh_car(arg)==sym_horizontal)) {
+    if (scm_is_true(scm_list_p(arg)) && scm_to_size_t(scm_length(arg)) > 2
+	&& ((vert_p=(scm_car(arg)==sym_vertical)) ||
+	    scm_car(arg)==sym_horizontal)) {
       char **s_colors;
       int npixels, nsegs, i, sum;
       int *perc;
       Pixel *pixels;
       SCM p;
 
-      npixels=gh_scm2int(gh_cadr(arg));
-      arg=gh_cddr(arg);
-      nsegs=gh_length(arg)-1;
+      npixels=scm_to_int(scm_cadr(arg));
+      arg=scm_cddr(arg);
+      nsegs=scm_to_size_t(scm_length(arg))-1;
 
       if (nsegs < 1 || nsegs > 128) {
 	/* MS:FIXME:: give a better error message */
@@ -726,25 +724,24 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       s_colors = NEWC(nsegs+1,char *);
 
       sum=0;
-      for (i = 0, p=arg; i <= nsegs; ++i, p=gh_cdr(p)) {
-	int dummy;
-	SCM item_i=gh_car(p);
+      for (i = 0, p=arg; i <= nsegs; ++i, p=scm_cdr(p)) {
+	SCM item_i=scm_car(p);
 
-	if (i< nsegs-1 || gh_list_p(item_i)) {
-	  perc[i] = gh_scm2int(gh_cadr(item_i));
+	if (i< nsegs-1 || scm_is_true(scm_list_p(item_i))) {
+	  perc[i] = scm_to_int(scm_cadr(item_i));
 	  sum += perc[i];
           /* SRL:FIXME:: This is evil!  Use another variable! */
-	  item_i=gh_car(item_i);
+	  item_i=scm_car(item_i);
 	} else if (i < nsegs) {
 	  perc[i] = abs(100-sum);
 	  sum += perc[i];
 	} 
-	s_colors[i]=gh_scm2newstr(item_i, &dummy);
+	s_colors[i]=scm_to_locale_string(item_i);
       }
       
       if (sum!=100) {
 	for (i = 0; i <= nsegs; ++i) {
-	  gh_free(s_colors[i]);
+	  free(s_colors[i]);
 	}
 	FREEC(s_colors);
 	FREEC(perc);
@@ -754,7 +751,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
       for (i = 0; i <= nsegs; ++i) {
-	gh_free(s_colors[i]);
+	free(s_colors[i]);
       }
       FREEC(s_colors);
       FREEC(perc);
@@ -786,16 +783,16 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     int tiled_p;
     int mini_p=0;
     
-    tiled_p=(gh_list_p(arg) && gh_length(arg) == 2 &&
-	     gh_car(arg)==sym_tiled &&
-	     (gh_string_p(gh_cadr(arg)) || IMAGE_P(gh_cadr(arg))));
-    if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_program_icon ||
+    tiled_p=(scm_is_true(scm_list_p(arg)) && scm_to_size_t(scm_length(arg)) == 2 &&
+	     scm_car(arg)==sym_tiled &&
+	     (scm_is_string(scm_cadr(arg)) || IMAGE_P(scm_cadr(arg))));
+    if (tiled_p || scm_is_string(arg) || (mini_p=(arg==sym_mini_program_icon ||
 						arg==sym_mini_icon)) ||
 	IMAGE_P(arg)) {
       SCM image = SCM_BOOL_F;
       
       if (tiled_p) {
-	arg=gh_cadr(arg);
+	arg=scm_cadr(arg);
       }
 
       /* GJB:FIXME:MS: I think this should only take pixmap objects;
@@ -809,7 +806,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	} else {
 	  image = make_image(arg);
 	}
-	if (image==SCM_BOOL_F) {
+	if (scm_is_false(image)) {
 	  /* signal an error: couldn't load picture */
 	  /* MS:FIXME:: give a better error message */
 	  scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
@@ -867,16 +864,16 @@ extern ScwmDecor *cur_decor;
 
 SCM_DEFINE(set_title_face_x, "set-title-face!", 1 , 2, 0,
           (SCM active_up, SCM active_down, SCM inactive),
-"Set the titlebar faces for the various window states.\n\
-In the current decor, use ACTIVE-UP as the face for the title\n\
-bar when active and not pressed in. Use ACTIVE-DOWN when the title bar\n\
-is active and pressed in, and INACTIVE when the window is\n\
-inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not\n\
-specified. Note that ACTIVE-DOWN will magically reverse the sense of\n\
-the relief flag, so if your titlebar bar is raised in the ACTIVE-UP\n\
-state, it will be sunk in the ACTIVE-DOWN state by default.  This\n
-also means that if you are explicitly passing ACTIVE-DOWN, you must\n
-reverse the sense of the relief flag to compensate.")
+"Set the titlebar faces for the various window states.\n"
+"In the current decor, use ACTIVE-UP as the face for the title\n"
+"bar when active and not pressed in. Use ACTIVE-DOWN when the title bar\n"
+"is active and pressed in, and INACTIVE when the window is\n"
+"inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not\n"
+"specified. Note that ACTIVE-DOWN will magically reverse the sense of\n"
+"the relief flag, so if your titlebar bar is raised in the ACTIVE-UP\n"
+"state, it will be sunk in the ACTIVE-DOWN state by default.  This\n"
+"also means that if you are explicitly passing ACTIVE-DOWN, you must\n"
+"reverse the sense of the relief flag to compensate.")
 #define FUNC_NAME s_set_title_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -897,17 +894,17 @@ reverse the sense of the relief flag to compensate.")
 
 SCM_DEFINE(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive),
-"Set the button faces for the various window states.\n\
-See `set-left-button-face!' and `set-right-button-face!' for a\n\
-more natural interface for this.\n\
-In the current decor, use ACTIVE-UP as the face for the\n\
-button specified by the integer BUTTON when active and not pressed\n\
-in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE\n\
-when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to\n\
-ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically\n\
-reverse the sense of the relief flag, so if the button is raised in\n\
-the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by\n\
-default. ")
+"Set the button faces for the various window states.\n\n"
+"See `set-left-button-face!' and `set-right-button-face!' for a\n"
+"more natural interface for this.\n"
+"In the current decor, use ACTIVE-UP as the face for the\n"
+"button specified by the integer BUTTON when active and not pressed\n"
+"in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE\n"
+"when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to\n"
+"ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically\n"
+"reverse the sense of the relief flag, so if the button is raised in\n"
+"the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by\n"
+"default.")
 #define FUNC_NAME s_set_button_face_x
 {
   int n;
@@ -943,11 +940,11 @@ default. ")
 
 SCM_DEFINE(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
           (SCM button, SCM flag),
-"Specify the Mwm flag for BUTTON.\n\
-If FLAG is #t, the button's relief pattern (if any) will appear to\n\
-reverse in depth sense (i.e., flip from sunken in to extruding out)\n\
-when the window is maximized (has a non-#f \"maximized\" window\n\
-property).")
+"Specify the Mwm flag for BUTTON.\n\n"
+"If FLAG is #t, the button's relief pattern (if any) will appear to\n"
+"reverse in depth sense (i.e., flip from sunken in to extruding out)\n"
+"when the window is maximized (has a non-#f \"maximized\" window\n"
+"property).")
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;
@@ -970,10 +967,10 @@ property).")
 
 SCM_DEFINE(set_border_face_x, "set-border-face!", 1, 1, 0,
           (SCM active, SCM inactive),
-"Set the face for the border In the current decor.\n\
-Use ACTIVE as the face for the border when the window is active. Use\n\
-INACTIVE when the window is inactive. INACTIVE defaults to the same as\n\
-ACTIVE when not specified.")
+"Set the face for the border In the current decor.\n\n"
+"Use ACTIVE as the face for the border when the window is active. Use\n"
+"INACTIVE when the window is inactive. INACTIVE defaults to the same as\n"
+"ACTIVE when not specified.")
 #define FUNC_NAME s_set_border_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -1025,34 +1022,31 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
   bf->style |= SimpleButton;
 }
 
-MAKE_SMOBFUNS(face);
-
 void 
 init_face()
 {
   int i;
+
   /* This needs to be done before the faces are created, below */
   REGISTER_SCWMSMOBFUNS(face);
 
   /* these should probably be exported as Scheme variables */
   default_titlebar_face=make_face(SCM_EOL, SCM_EOL);
-  scm_protect_object(default_titlebar_face);
+  scm_gc_protect_object(default_titlebar_face);
 
   default_border_face=make_face(SCM_EOL, SCM_EOL);
-  scm_protect_object(default_border_face);
+  scm_gc_protect_object(default_border_face);
 
   for (i=0; i<5; i++) {
     default_lbutton_face[i]= make_face(SCM_EOL, SCM_EOL);
     LoadDefaultLeftButton(BUTTONFACE(default_lbutton_face[i]),i);
-    scm_protect_object(default_lbutton_face[i]);
+    scm_gc_protect_object(default_lbutton_face[i]);
     default_rbutton_face[i]= make_face(SCM_EOL, SCM_EOL);
     LoadDefaultRightButton(BUTTONFACE(default_rbutton_face[i]),i);
-    scm_protect_object(default_rbutton_face[i]);
+    scm_gc_protect_object(default_rbutton_face[i]);
   }
 
-#ifndef SCM_MAGIC_SNARFER
 #include "face.x"
-#endif
 }
 
 /* Local Variables: */

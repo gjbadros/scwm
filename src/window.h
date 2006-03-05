@@ -102,9 +102,9 @@ extern SCM sym_click, sym_root_window;
 
 #define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,cvar) \
   do {  if (arg == sym_root_window) cvar = Scr.Root;              \
-        else if (gh_number_p(arg)) {                              \
+        else if (scm_is_number(arg)) {                            \
           assert(sizeof(Window) == sizeof(unsigned long));        \
-          cvar = gh_scm2ulong(arg);                               \
+          cvar = scm_to_ulong(arg);                               \
         } else if (WINDOWP(arg) && VALIDWINP(arg)) {              \
           cvar = PSWFROMSCMWIN(arg)->w;                           \
         } else {                                                  \
@@ -116,9 +116,9 @@ extern SCM sym_click, sym_root_window;
 
 #define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(pos,arg,w) \
   do {  if (arg == sym_root_window) w = Scr.Root;                 \
-        else if (gh_number_p(arg)) {                              \
+        else if (scm_is_number(arg)) {                            \
           assert(sizeof(Window) == sizeof(unsigned long));        \
-          w = gh_scm2ulong(arg);                                  \
+          w = scm_to_ulong(arg);                                  \
         } else {                                                  \
           if ((arg = ensure_valid(win,pos,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) { \
             w = None;                                             \
@@ -377,12 +377,12 @@ typedef struct {
 EXTERN long scm_tc16_scwm_window;
 EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 
-#define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
-#define WINDOW(X)  ((scwm_window *)gh_cdr(X))
+#define WINDOWP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_window, X))
+#define WINDOW(X)  ((scwm_window *)SCM_SMOB_DATA(X))
 
 /* SRL:FIXME:: This is also defined in guile-compat.h.  Bad idea. */
 #ifndef UNSET_SCM
-#define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
+#define UNSET_SCM(x) (scm_is_eq(x, SCM_UNDEFINED) || scm_is_false(x))
 #endif
 
 
@@ -397,7 +397,7 @@ SCM SCM_FROM_PSW(const ScwmWindow *psw) {
 }
 #endif
 
-#define SCWMWINDOW_FROM_PSW(X) WINDOW((SCM_FROM_PSW(X)))
+#define SCWMWINDOW_FROM_PSW(X) WINDOW(SCM_FROM_PSW(X))
 
 /* SCWMWINDOW is just an accessor for setting/getting
    PSWFROMSCMWIN returns NULL for invalid windows
@@ -405,17 +405,17 @@ SCM SCM_FROM_PSW(const ScwmWindow *psw) {
 
    MOST CODE SHOULD USE PSWFROMSCMWIN */
 
-#define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw)
+#define SCWMWINDOW(X) (WINDOW(X)->psw)
 #define PSWFROMSCMWIN(X) (VALIDWINP(X)?SCWMWINDOW(X):0)
 
 /* I tried making VALIDWINP ensure WINDOWP first, but that
    failed miserably and strangely.... why? --04/12/99 gjb */
-#define VALIDWINP(X) (((scwm_window *)gh_cdr(X))->valid)
+#define VALIDWINP(X) (WINDOW(X)->valid)
 
 
-#define SET_VALIDWIN_FLAG(X,f) do { ((scwm_window *)gh_cdr(X))->valid = f; } while (0)
+#define SET_VALIDWIN_FLAG(X,f) do { WINDOW(X)->valid = f; } while (0)
 
-#define set_window_context(X) do { scm_window_context = (X); } while (0)
+#define set_window_context(X) do { scm_window_context = X; } while (0)
 #define unset_window_context() do { scm_window_context = SCM_UNDEFINED; } while (0)
 
 ScwmWindow *PswFromWindow(Display *dpy, Window w);

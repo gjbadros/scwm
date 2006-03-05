@@ -1,4 +1,4 @@
-;; $Id$
+;; $Id$ -*- scheme -*-
 
 ;; simple.scwmrc was system.scwmrc until Scwm-0.99.2
 
@@ -8,13 +8,50 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
+;(define (foo filename)
+;  (simple-format #t "Loading ~S~%" filename))
+;(set! %load-hook foo)
+
+(define user-image-load-path 
+  (list (string-append (user-home) "/src/scwm/pixmaps")
+	(string-append (user-home) "/src/scwm/bitmaps")))
+
+;;; set path to use for image searches
+(set! image-load-path 
+      (append 
+       user-image-load-path 
+       '("/usr/X11/lib/X11/mini-icons" "/usr/X11/include/X11/pixmaps" 
+	 "/usr/lib/icons" "/usr/local/X11/include/X11/pixmaps"
+	 "/usr/local/lib/icons" "/usr/local/icons"
+	 "/uns/share/include/X11/pixmaps" "/uns/share/include/X11/bitmaps")
+       image-load-path))
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
-(use-scwm-modules base winops winlist wininfo 
+#!
+(use-scwm-modules minimal base winops winlist wininfo 
 		  doc style message-window face
 		  preferences style
-		  optargs winlist-menu)
+		  ;optargs winlist-menu)
+		  winlist-menu)
+!#
+
+
+(use-modules
+ (app scwm minimal)
+ (app scwm base)
+ (app scwm style)
+ (app scwm winops)
+ (app scwm winlist)
+ (app scwm wininfo)
+ (app scwm doc)
+ (app scwm message-window)
+ (app scwm face)
+ ;(app scwm preferences)
+ (app scwm optargs)
+ (app scwm winlist-menu))
+
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -35,12 +72,6 @@
 (set-highlight-foreground! "white")
 (set-highlight-background! "blueviolet")
 (set-rubber-band-mask! 127)
-
-
-(define user-image-load-path 
-  (list (string-append (user-home) "/pixmaps")
-	(string-append (user-home) "/bitmaps")))
-
 
 ;;-------------------------------;;
 ;; set some paths                ;;
@@ -73,7 +104,6 @@
 	      #:PPosition-hint #f
 	      #:lenience #t
 	      )
-
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:focus 'none))
@@ -124,10 +154,14 @@
   (interactive)
   (popup-menu window-ops-menu))
 
+;; Hack to let quit work
+(set-procedure-property! quit 'interactive #t)
+
 (define menu-quit-verify
   (menu 
    (list
     (menu-title "Really quit scwm?") menu-separator
+    ;;(menuitem "Yes" #:action scheme-quit)
     (menuitem "Yes" #:action quit)
     (menuitem "No" #:action #f)
     menu-separator
@@ -149,7 +183,7 @@
   (menu 
    (list
     (menu-title "Utilities") menu-separator
-    (menuitem "Preferences..." #:action scwm-options-dialog)
+    ;(menuitem "Preferences..." #:action scwm-options-dialog)
     menu-separator
     (menuitem "xterm" #:action (lambda () (execute "xterm")))
     (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
@@ -200,7 +234,8 @@
     (menuitem "Close" #:action close-window)
     (menuitem "Destroy" #:action destroy-window))))
 
-(define (popup-small-ops)
+(define* (popup-small-ops)
+  "" (interactive)
   (popup-menu (make-small-window-ops-menu (get-window))))
 
 
@@ -223,12 +258,14 @@
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)
+
 (define* (move-or-shade)
   ""
   (interactive)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))
     (else (move-or-raise))))
+
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 3 lower-window)
 
@@ -241,7 +278,9 @@
 (bind-key 'all "C-M-S-q" quit-verify)
 
 ;; some stuff for icons
-(define (move-or-deiconify)
+(define* (move-or-deiconify)
+  ""
+  (interactive)
   (case (mouse-event-type)
     ((motion) (interactive-move))
     ((double-click) (deiconify-window))))

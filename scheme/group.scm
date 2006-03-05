@@ -66,7 +66,7 @@ all the group action procedures to be used on lists of windows, too."
 	    (list group)))))
 
 (for-each (lambda (group-op window-op)
-	    (eval `(define*-public (,group-op #&optional (group (get-window)))
+	    (eval `(define*-public (,group-op #:optional (group (get-window)))
 		     ,(string-append "Apply `" window-op "' to all members "
 				     "of GROUP.")
 		     (for-each ,window-op (group->windows group)))))
@@ -126,40 +126,40 @@ all the group action procedures to be used on lists of windows, too."
                 (seperate-group-windows-list windows (list group) members non-members)))
           (seperate-group-windows-id windows group members non-members))))
 
-(define*-public (raise-group #&optional (group (get-window)))
+(define*-public (raise-group #:optional (group (get-window)))
   "Raise members of GROUP above all other windows.
 Keeps the relative stacking order of the members intact."
   (let ((res (seperate-group-windows (list-windows #:by-stacking #t
 						   #:reverse #t)
-				     group () ())))
+				     group '() '())))
     (restack-windows (append (car res) (cdr res)))))
 
-(define*-public (lower-group #&optional (group (get-window)))
+(define*-public (lower-group #:optional (group (get-window)))
   "Raise members of GROUP above all other windows.
 Keeps the relative stacking order of the members intact."
   (let ((res (seperate-group-windows (list-windows #:by-stacking #t
 						   #:reverse #t)
-				     group () ())))
+				     group '() '())))
     (restack-windows (append (cdr res) (car res)))))
 
-(define*-public (move-group-relative dx dy #&optional (group (get-window)))
+(define*-public (move-group-relative dx dy #:optional (group (get-window)))
   "Move all members of GROUP by DX, DY pixels."
   (for-each (lambda (w) (move-window-relative dx dy w))
 	    (group->windows group)))
 
-(define*-public (move-group x y #&optional (group (get-window)))
+(define*-public (move-group x y #:optional (group (get-window)))
   "Move GROUP to viewport coordinates X, Y.
 Move the window GROUP represents to X, Y, and keep the other windows in GROUP
 in the same relative positions to this window."
   (let ((pos (window-viewport-position (group-window group))))
     (move-group-relative (- x (car pos)) (- y (cadr pos)) group)))
 
-(define*-public (move-group-to-desk desk #&optional (group (get-window)))
+(define*-public (move-group-to-desk desk #:optional (group (get-window)))
   "Move all members of GROUP to DESK.
 See `move-window-to-desk'."
   (for-each (lambda (w) (move-window-to-desk desk w)) (group->windows group)))
 
-(define*-public (interactive-move-group #&optional (group (get-window #t #f #f)))
+(define*-public (interactive-move-group #:optional (group (get-window #t #f #f)))
   "Move GROUP interactively.
 You can drag around the window GROUP represents. The other windows in GROUP
 will move along."
@@ -190,7 +190,7 @@ will move along."
 	     (remove-hook! interactive-move-new-position-hook drag-others-along)))))))
 
 ;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is deadly.
-(define*-public (deiconify-group #&optional (group (get-window)) x y)
+(define*-public (deiconify-group #:optional (group (get-window)) x y)
   "BROKEN: Deiconify all members of GROUP."
   (for-each (lambda (w)
 	      (deiconify-window w x y)
@@ -199,7 +199,7 @@ will move along."
 	    (group->windows group)))
 
 ;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is broken.
-(define*-public (deiconify-group-or-window #&optional (win (get-window)) x y)
+(define*-public (deiconify-group-or-window #:optional (win (get-window)) x y)
   "BROKEN: Deiconify WIN, and perhaps all members of its group.
 If WIN's icon was the result of an `iconify-group', all members of the group
 are deiconified; otherwise, only WIN is affected."
@@ -210,7 +210,7 @@ are deiconified; otherwise, only WIN is affected."
 ;;; SRL:FIXME:: If group is a list of windows, then no icon is actually displayed
 ;;; SRL:FIXME:: Some windows will not iconify here that will iconify singly
 ;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is broken.
-(define*-public (iconify-group #&optional (group (get-window)))
+(define*-public (iconify-group #:optional (group (get-window)))
   "BROKEN: Iconify GROUP into one icon.
 The icon is that of the window GROUP represents.
 `deiconify-group-or-window' will deiconify this icon into the whole GROUP."
@@ -301,7 +301,7 @@ windows based on comparison to properties of W."
 		     #:action (lambda () (close-group swl) (unselect-all-windows)))
 	   (menuitem (string-append "Destroy group " nstr " windows")
 		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
-	  ()
+	  '()
 	  )))))
 
 (define*-public (popup-window-group-menu)

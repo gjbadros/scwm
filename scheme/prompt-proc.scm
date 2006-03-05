@@ -37,7 +37,7 @@
 
 ;;(use-modules (app scwm prompt-proc))
 ;;(define w (prompt-proc "Procedure?" (lambda (v) (display v) (newline)) #:initval move-window))
-(define*-public (prompt-proc prompt proc #&key
+(define*-public (prompt-proc prompt proc #:key
 			      (initval #f)
 			      (title #f)
 			      (favorites #f))
@@ -77,7 +77,7 @@ TITLE is a window title."
       (gtk-widget-hide toplevel)
       (gtk-widget-destroy toplevel))))
 
-(define*-public (prompt-proc-hbox prompt initval #&optional favorites)
+(define*-public (prompt-proc-hbox prompt initval #:optional favorites)
   "Create and return a proc-prompting hbox, complete with link to full proc dialog.
 PROMPT is the prompt, INITVAL is the initial proc as a string.
 The returned value is a list: (hbox getter entry).
@@ -122,12 +122,12 @@ See also `prompt-proc'."
 	  entry)))
 
 (define (formals-to-string formals)
-  (if (and formals (not (eq? formals ())))
+  (if (and formals (not (eq? formals '())))
       (to-string formals)
       ""))
 
 ;;(prompt-proc "Procedure?" (lambda (v) (display v) (newline)) #:initval move-window)
-(define*-public (gtk-proc-selection-new title #&optional (proclist #f))
+(define*-public (gtk-proc-selection-new title #:optional (proclist #f))
   "Returns a new procedure-selecting dialog box."
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (titles #("Module" "Procedure" "Required" "Optional" "Keyword"))

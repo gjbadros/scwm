@@ -18,8 +18,6 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 
-#include <guile/gh.h>
-
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"
@@ -58,12 +56,12 @@ current decor.")
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE_ARG_SYM(1,just);
-  if (gh_eq_p(just, sym_center)) {
+  if (scm_is_eq(just, sym_center)) {
     fl->titlebar.flags &= ~HOffCenter;
-  } else if (gh_eq_p(just, sym_left)) {
+  } else if (scm_is_eq(just, sym_left)) {
     fl->titlebar.flags |= HOffCenter;
     fl->titlebar.flags &= ~HRight;
-  } else if (gh_eq_p(just, sym_right)) {
+  } else if (scm_is_eq(just, sym_right)) {
     fl->titlebar.flags |= HOffCenter | HRight;
   } else {
     scwm_error(FUNC_NAME, "Justification must be \'left, \'right or \'center.");
@@ -131,7 +129,7 @@ Applies to the current decor.")
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  return gh_int2scm(fl->TitleHeight);
+  return scm_from_int(fl->TitleHeight);
 }
 #undef FUNC_NAME
 
@@ -142,7 +140,7 @@ SCM_DEFINE(restarted_p, "restarted?", 0, 0, 0,
 "Returns true if scwm is being restarted by itself.")
 #define FUNC_NAME s_restarted_p
 {
-  return SCM_BOOL_FromBool(Restarting);
+  return scm_from_bool(Restarting);
 }
 #undef FUNC_NAME
 
@@ -155,16 +153,16 @@ probably avoid interaction and perhaps avoid moving the window being\n\
 placed at all.")
 #define FUNC_NAME s_capturing_p
 {
-  return SCM_BOOL_FromBool(PPosOverride);
+  return scm_from_bool(PPosOverride);
 }
 #undef FUNC_NAME
 
 
 SCWM_IPROC(refresh, "refresh", 0, 0, 0,
            (), NULL,
-"Make sure all windows and their decorations are up to date.\n\
-This forces a redraw of the entire current viewport. Should not be\n\
-necessary during normal operation.")
+"Make sure all windows and their decorations are up to date.\n\n"
+"This forces a redraw of the entire current viewport. Should not be\n"
+"necessary during normal operation.")
 #define FUNC_NAME s_refresh
 {
   refresh_common(Scr.Root);
@@ -194,7 +192,7 @@ SCM_DEFINE(click_delay, "click-delay", 0, 0, 0,
 See also `set-click-delay!'")
 #define FUNC_NAME s_click_delay
 {
-  return gh_long2scm(Scr.ClickTime);
+  return scm_from_long(Scr.ClickTime);
 }
 #undef FUNC_NAME
 
@@ -210,9 +208,9 @@ other than 'mouse.")
 {
   VALIDATE_ARG_SYM(1,ftype);
 
-  if (gh_eq_p(ftype, sym_focus)) {
+  if (scm_is_eq(ftype, sym_focus)) {
     Scr.fColormapFollowsMouse = False;
-  } else if (gh_eq_p(ftype, sym_mouse)) {
+  } else if (scm_is_eq(ftype, sym_mouse)) {
     Scr.fColormapFollowsMouse = True;
   } else {
     scwm_error(FUNC_NAME, "Colormap focus must be \'focus or \'mouse.");
@@ -245,7 +243,7 @@ The return value is a two-element list of the x and y coordinates.")
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
-  return gh_list(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(x), scm_from_int(y), SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -268,9 +266,9 @@ SCM_DEFINE(move_pointer_to, "move-pointer-to", 2, 0, 0,
 
 SCWM_IPROC(recapture, "recapture", 0, 0, 0,
            (), NULL,
-"Recapture all the windows.\n\
-This destroys all the current frame windows and recreate them from\n\
-scratch. This is hopefully not necessary during normal operation.")
+"Recapture all the windows.\n\n"
+"This destroys all the current frame windows and recreate them from\n"
+"scratch. This is hopefully not necessary during normal operation.")
 #define FUNC_NAME s_recapture
 {
   BlackoutScreen();		/* if they want to hide the recapture */
@@ -313,7 +311,7 @@ SCM_DEFINE(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 
 "Returns #t iff a click-to-focus window is sent the click, else #f.")
 #define FUNC_NAME s_click_to_focus_passes_click_p
 {
-  return SCM_BOOL_FromBool(Scr.fClickToFocusPassesClick);
+  return scm_from_bool(Scr.fClickToFocusPassesClick);
 }
 #undef FUNC_NAME
 
@@ -340,7 +338,7 @@ SCM_DEFINE(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
 "Returns #t iff a click-to-focus window gets raised on focus, else #f.")
 #define FUNC_NAME s_click_to_focus_raises_p
 {
-  return SCM_BOOL_FromBool(Scr.fClickToFocusRaises);
+  return scm_from_bool(Scr.fClickToFocusRaises);
 }
 #undef FUNC_NAME
 
@@ -370,7 +368,7 @@ SCM_DEFINE(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 "Returns a boolean value indicating whether a mouse-focus-click will raise the window.")
 #define FUNC_NAME s_mouse_focus_click_raises_p
 {
-  return SCM_BOOL_FromBool(Scr.fMouseFocusClickRaises);
+  return scm_from_bool(Scr.fMouseFocusClickRaises);
 }
 #undef FUNC_NAME
 
@@ -420,7 +418,7 @@ SCM_DEFINE(elapsed_time, "elapsed-time", 0, 0, 0,
   time = ((buffer.tms_utime + buffer.tms_stime) * 1000 ) / TIME_UNIT;
 #endif
   
-  return gh_ulong2scm(time);
+  return scm_from_ulong(time);
 #undef TIME_UNIT
 }
 #undef FUNC_NAME
@@ -432,7 +430,7 @@ SCM_DEFINE(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
 #define FUNC_NAME s_scwm_last_timestamp
 {
   extern Time lastTimestamp;
-  return gh_long2scm(lastTimestamp);
+  return scm_from_long(lastTimestamp);
 }
 #undef FUNC_NAME
 
@@ -442,7 +440,7 @@ SCM_DEFINE(scwm_version, "scwm-version", 0, 0, 0,
 "Return the version of scwm running.")
 #define FUNC_NAME s_scwm_version
 {
-  return gh_str02scm(SCWM_VERSION);
+  return scm_from_locale_string(SCWM_VERSION);
 }
 #undef FUNC_NAME
 
@@ -453,7 +451,7 @@ SCM_DEFINE(scwm_version_date, "scwm-version-date", 0, 0, 0,
 #define FUNC_NAME s_scwm_version_date
 {
   extern char *szRepoLastChanged;
-  return gh_str02scm(szRepoLastChanged);
+  return scm_from_locale_string(szRepoLastChanged);
 }
 #undef FUNC_NAME
 
@@ -463,7 +461,7 @@ SCM_DEFINE(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
 "Return the <envar>$PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_prefix
 {
-  return gh_str02scm(SCWM_PREFIX);
+  return scm_from_locale_string(SCWM_PREFIX);
 }
 #undef FUNC_NAME
 
@@ -473,7 +471,7 @@ SCM_DEFINE(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 "Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_exec_prefix
 {
-  return gh_str02scm(SCWM_PREFIX);
+  return scm_from_locale_string(SCWM_PREFIX);
 }
 #undef FUNC_NAME
 
@@ -502,11 +500,11 @@ Return value is a list of the X protocol version, the X protocol\n\
 revision, the X server vendor, and the vendor release number.")
 #define FUNC_NAME s_X_version_information
 {
-  return gh_list(SCM_MAKINUM(ProtocolVersion(dpy)),
-                 SCM_MAKINUM(ProtocolRevision(dpy)),
-                 gh_str02scm(ServerVendor(dpy)),
-                 SCM_MAKINUM(VendorRelease(dpy)),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(ProtocolVersion(dpy)),
+		    scm_from_int(ProtocolRevision(dpy)),
+		    scm_from_locale_string(ServerVendor(dpy)),
+		    scm_from_int(VendorRelease(dpy)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -575,13 +573,13 @@ be shared among multiple machines.")
       break;
   }
 
-  return gh_list(SCM_MAKINUM(xres),
-                 SCM_MAKINUM(yres),
-                 SCM_MAKINUM(planes),
-                 SCM_MAKINUM(bits_per_rgb),
-                 gh_str02scm(vc), /* class */
-                 SCM_BOOL_FromBool(fColor),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(xres),
+		    scm_from_int(yres),
+		    scm_from_int(planes),
+		    scm_from_int(bits_per_rgb),
+		    scm_from_locale_string(vc), /* class */
+		    scm_from_bool(fColor),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -594,7 +592,7 @@ the name field of the current uid's entry in the password file,\n\
 the constant string \"nobody\".")
 #define FUNC_NAME s_user_name
 {
-  return gh_str02scm(UserName);
+  return scm_from_locale_string(UserName);
 }
 #undef FUNC_NAME
 
@@ -607,7 +605,7 @@ the directory field of the current uid's entry in the password file,\n\
 the constant string \"/tmp\".")
 #define FUNC_NAME s_user_home
 {
-  return gh_str02scm(UserHome);
+  return scm_from_locale_string(UserHome);
 }
 #undef FUNC_NAME
 
@@ -621,7 +619,7 @@ Windows must all be captured and the `startup-hook' must have\n\
 already run for this to return #t.")
 #define FUNC_NAME s_done_startup_p
 {
-  return gh_bool2scm(fDoneStartup);
+  return scm_from_bool(fDoneStartup);
 }
 #undef FUNC_NAME
 
@@ -659,7 +657,7 @@ See `set-reset-on-segv!'.")
 #define FUNC_NAME s_reset_on_segv
 {
   extern int segvs_to_reset;
-  return gh_int2scm(segvs_to_reset);
+  return scm_from_int(segvs_to_reset);
 }
 #undef FUNC_NAME
 
@@ -692,7 +690,7 @@ SCM_DEFINE(x_connection_number, "x-connection-number", 0, 0, 0,
 #define FUNC_NAME s_x_connection_number
 {
   int c = ConnectionNumber(dpy);
-  return gh_int2scm(c);
+  return scm_from_int(c);
 }
 #undef FUNC_NAME
 
@@ -805,22 +803,22 @@ See also `get-mouse-event' and `get-key-event'.")
   if (fKey) {
     char *sz = SzNewForModMaskKeyCode(ev.xkey.state,
                                       ev.xkey.keycode);
-    SCM answer = gh_str02scm(sz);
+    SCM answer = scm_from_locale_string(sz);
     FREE(sz);
-    return gh_list(answer,gh_int2scm(ev.xkey.state),
-                   gh_int2scm(ev.xkey.keycode), SCM_UNDEFINED);
+    return scm_list_n(answer,scm_from_int(ev.xkey.state),
+		      scm_from_int(ev.xkey.keycode), SCM_UNDEFINED);
   } else {
     /* mouse button */
     char *sz = SzNewModifierStringForModMask(ev.xbutton.state);
     char *szFull = NEWC(strlen(sz)+4,char);
     SCM answer;
     sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
-    answer = gh_str02scm(szFull);
+    answer = scm_from_locale_string(szFull);
     FREE(sz);
     FREEC(szFull);
-    return gh_list(answer,gh_int2scm(ev.xbutton.state),
-                   gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
-                   SCM_UNDEFINED);
+    return scm_list_n(answer,scm_from_int(ev.xbutton.state),
+		      scm_from_int(ev.xbutton.button),SCM_BOOL_T,
+		      SCM_UNDEFINED);
   }
 }
 #undef FUNC_NAME
@@ -883,10 +881,10 @@ end in a \"-\"; e.g., \"S-C-M-\".  See also `get-next-event'.")
   { /* scope */
     char *sz = SzNewForModMaskKeyCode(ev.xkey.state,
                                       ev.xkey.keycode);
-    SCM answer = gh_str02scm(sz);
+    SCM answer = scm_from_locale_string(sz);
     FREE(sz);
-    return gh_list(answer,gh_int2scm(ev.xkey.state),
-                   gh_int2scm(ev.xkey.keycode), SCM_UNDEFINED);
+    return scm_list_n(answer,scm_from_int(ev.xkey.state),
+		      scm_from_int(ev.xkey.keycode), SCM_UNDEFINED);
   }
 }
 #undef FUNC_NAME
@@ -938,12 +936,12 @@ See also `get-next-event'.")
     char *szFull = NEWC(strlen(sz)+4,char);
     SCM answer;
     sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
-    answer = gh_str02scm(szFull);
+    answer = scm_from_locale_string(szFull);
     FREE(sz);
     FREEC(szFull);
-    return gh_list(answer,gh_int2scm(ev.xbutton.state),
-                   gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
-                   SCM_UNDEFINED);
+    return scm_list_n(answer,scm_from_int(ev.xbutton.state),
+		      scm_from_int(ev.xbutton.button),SCM_BOOL_T,
+		      SCM_UNDEFINED);
   }
 }
 #undef FUNC_NAME
@@ -964,7 +962,7 @@ XFetchBytes is called.")
     return SCM_BOOL_F;
 
   /* EJB:FIXME:: XStoreBytes allows embedded NULLs.  Does this? Do we care? */
-  result = gh_str02scm(str);
+  result = scm_from_locale_string(str);
   XFree(str);
   return result;
 }
@@ -978,11 +976,11 @@ SCM_DEFINE(X_store_bytes, "X-store-bytes", 1, 0, 0,
   char *sz;
 
   VALIDATE_ARG_STR_NEWCOPY(1,string,sz);
-  sz=gh_scm2newstr(string, NULL);
+  sz=scm_to_locale_string(string);
   /* EJB:FIXME:: XStoreBytes allows embedded NULLs.  This doesn't.
    * Do we care? */
   XStoreBytes(dpy, sz, strlen(sz));
-  gh_free(sz);
+  free(sz);
   XSetSelectionOwner(dpy, XA_PRIMARY, None, CurrentTime);
   return SCM_UNSPECIFIED;
 }
@@ -992,9 +990,7 @@ SCM_DEFINE(X_store_bytes, "X-store-bytes", 1, 0, 0,
 void 
 init_miscprocs()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "miscprocs.x"
-#endif
 }
 
 

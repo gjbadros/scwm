@@ -32,7 +32,7 @@
     (message-window-set-position! markwin (+ xpos (* xoffset xnon)) (+ ypox (* yoffset ynon)))))
 
 
-(define* (place-nonant-marker #&optional (w (get-window-with-nonant)))
+(define* (place-nonant-marker #:optional (w (get-window-with-nonant)))
   (if (and (window? w) (object-property w 'nonant))
       (let ((nonant (object-property w 'nonant))
 	    (markwin (if (message-window? (object-property w 'markwin))
@@ -43,7 +43,7 @@
 	(set-object-property! w 'markwin markwin))))
 
 	     
-(define* (remove-nonant-marker #&optional (w (get-window)))
+(define* (remove-nonant-marker #:optional (w (get-window)))
   (let ((markwin (object-property w 'markwin)))
     (if (message-window? markwin)
 	(begin 

@@ -528,7 +528,7 @@ KEY-PROC is either `bind-key' or `unbind-key'."
       (gtk-clist-select-row clist 0 0)
       vbox)))
 
-(define*-public (prompt-binding #&optional (title "Scwm Bindings"))
+(define*-public (prompt-binding #:optional (title "Scwm Bindings"))
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (vbox (gtk-vbox-new #f 5))
 	 (hbox-buttons (gtk-hbutton-box-new))

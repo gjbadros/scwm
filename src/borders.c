@@ -28,7 +28,6 @@
 #include <X11/extensions/shape.h>
 #endif
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #include "borders.h"
@@ -207,7 +206,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
   case VectorButton:
     if ((psw->fMWMButtons)
 	&& (stateflags & MWMButton)
-	&& (SCM_NFALSEP
+	&& (scm_is_true
 	    (scm_object_property
 	     (SCM_FROM_PSW(psw), sym_maximized))))
       DrawLinePattern(win,
@@ -226,7 +225,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
     if (type == PixmapButton)
       image = SAFE_IMAGE(bf->u.image);
     else {
-      if (psw->mini_icon_image==SCM_BOOL_F)
+      if (scm_is_false(psw->mini_icon_image))
 	break;
       image = SAFE_IMAGE(psw->mini_icon_image);
     }
@@ -1737,6 +1736,7 @@ void
 init_borders()
 {
   XGCValues gcv;
+
   gcv.line_width = 0;
   gcv.function = GXcopy;
   gcv.plane_mask = AllPlanes;
@@ -1746,9 +1746,7 @@ init_borders()
                           GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth,
                           &gcv);
 
-#ifndef SCM_MAGIC_SNARFER
 #include "borders.x"
-#endif
 }
 
 /* Local Variables: */

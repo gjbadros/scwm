@@ -59,8 +59,8 @@
 
 ;; CRW:FIXME:: The following docstring is totally redundant with the function
 ;; name and argument list.  Can we do better?
-(define*-public (make-theme name #&key (window-style (make-style #t))
-			   (background-style (lambda () ())))
+(define*-public (make-theme name #:key (window-style (make-style #t))
+			   (background-style (lambda () '())))
   "Creates a theme object with the given NAME, WINDOW-STYLE, and BACKGROUND-STYLE."
   (vector name window-style background-style))
 

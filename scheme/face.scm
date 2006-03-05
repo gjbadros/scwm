@@ -18,12 +18,16 @@
 ;;;; 
 
 
-
 (define-module (app scwm face)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
   :use-module (app scwm optargs))
 
+(export title-style
+        set-left-button-face!
+        set-right-button-face!
+        button-style
+        border-style)
 
 (define-scwm-group face "Decorations")
 
@@ -113,7 +117,7 @@
 				   => (lambda (x)
 					((cdr x)
 					 first second)))
-				  (else ())))))))
+				  (else '())))))))
   (helper specs-or-flags '()))
 
 (define (parse-title-face-flags flags)
@@ -156,7 +160,7 @@
 
 ;;;; setters
 
-(define*-public (set-left-button-face! button active-up #&optional
+(define* (set-left-button-face! button active-up #:optional
 				      (active-down #f) (inactive #f))
   "Set the button face for the left-button numbered BUTTON.
 Not recommended to call directly, see 'button-style'.
@@ -167,7 +171,7 @@ ACTIVE-DOWN, and INACTIVE."
   (set-button-face! (+ (* (- button 1) 2) 1)
 		    active-up active-down inactive))
 
-(define*-public (set-right-button-face! button active-up #&optional
+(define* (set-right-button-face! button active-up #:optional
 				       (active-down #f) (inactive #f))
   "Set the button face for the right-button numbered BUTTON.
 Not recommended to call directly, see 'button-style'.
@@ -185,10 +189,10 @@ ACTIVE-DOWN, and INACTIVE."
 ;;;   it was explicitly set using active-down.  Having the C code reverse
 ;;;   this flag is just wrong!
 ;;; SRL:FIXME:: Remove WARNING when make-icon gets fixed.
-(define*-public (title-style #&key font height justify
+(define* (title-style #:key font height justify
 			     (active-up   '()) 
 			     (active-down '()) 
-			     (inactive    '()) #&allow-other-keys #&rest rest)
+			     (inactive    '()) #:allow-other-keys #:rest rest)
   "Set the title style in the current decor.
 WARNING: The #:pixmap flag will crash scwm if it can't find the pixmap specified!
   Suggest using 'make-image-or-warn' to be safe.
@@ -213,11 +217,11 @@ would set the title to be red in either active state, and green
 in the inactive state, leaving FONT, HEIGHT, and JUSTIFY in their
 current state, and returning everything else about the title
 to their default state."
-  (if (bound? font)
+  (if font
       (set-title-font! font))
-  (if (bound? height) 
+  (if height
       (set-title-height! height))
-  (if (bound? justify)
+  (if justify
       (set-title-justify! justify))
   (act-on-face-specs set-title-face! parse-title-face-specs
 		     parse-title-face-flags rest active-up
@@ -226,8 +230,8 @@ to their default state."
 ;;; SRL:FIXME:: Why aren't their more options?
 ;;;   Should be able to set border-width, relief, etc. in here.
 ;;;   Should be able to specify active-down options.
-(define*-public (border-style #&key (active '())  
-                              (inactive '()) #&allow-other-keys #&rest rest)
+(define* (border-style #:key (active '())  
+                              (inactive '()) #:allow-other-keys #:rest rest)
   "Set the border style in the current decor.
 This completely overwrites the previous border style (except in
 the trivial case of not passing any arguments).
@@ -239,17 +243,17 @@ borders with #:pixmap so the image is more visible, see the
 #:mwm-border style option.  These keyword arguments can
 either be included in the main argument list, or lists of these
 arguments can be used as the ACTIVE or INACTIVE arguments."
-  (act-on-face-specs (lambda* (active #&optional ignore inactive)
-			      (if (bound? inactive)
+  (act-on-face-specs (lambda* (active #:optional ignore inactive)
+			      (if inactive
 				  (set-border-face! active inactive)
 				  (set-border-face! active)))
 		     parse-border-face-specs parse-border-face-flags
 		     rest active '() inactive))
 
-(define*-public (button-style button #&key mwm
+(define* (button-style button #:key mwm
 			      (active-up '()) 
 			      (active-down '()) 
-			      (inactive '()) #&allow-other-keys #&rest rest)
+			      (inactive '()) #:allow-other-keys #:rest rest)
   "Set the button style for button number BUTTON in the current decor.
 MWM sets the button's mwm flag (see `set-button-mwm-flag!'.
 This function also takes the keyword arguments #:justify, #:relief,
@@ -264,7 +268,7 @@ is an always-tiled pixmap, #:vector is a synonym for #:relief-pattern,
 These extra keyword arguments can either be included
 in the main argument list, or lists of these arguments can be used
 as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
-  (if (bound? mwm)
+  (if mwm
       (set-button-mwm-flag! mwm))
   (act-on-face-specs (lambda args
 		       (apply set-button-face! button args))

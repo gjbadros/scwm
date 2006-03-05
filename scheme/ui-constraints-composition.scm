@@ -84,7 +84,7 @@ End this recording by calling 'ui-constraints-composition-end'."
 	      rlist))))
 
 
-(define*-public (ui-constraints-composition-end #&optional (cancel? #f))
+(define*-public (ui-constraints-composition-end #:optional (cancel? #f))
   "End the recording of a constraint composition.  NAME is the name to be 
 given to the new composition.  Optionally, CANCEL may be specified to cancel
 the construction of a composition."
@@ -175,7 +175,7 @@ the construction of a composition."
 	       (else elem))
 	      rlist))))
 
-(define* (composition-ctr winlist arg-list #&optional (enable? #f))
+(define* (composition-ctr winlist arg-list #:optional (enable? #f))
   (let* ((ui-cns (map (lambda (ctrdef) 
 			(let ((arglst (replace-proxies-with-windows (cdr ctrdef) winlist))
 			      (class (get-ui-constraint-class-by-name (car ctrdef))))

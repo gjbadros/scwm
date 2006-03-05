@@ -2,13 +2,13 @@
  * Copyright (C) 1998, 1999, 2000  Greg J. Badros and Maciej Stachowiak 
  */
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif
 
 #include <assert.h>
-
-#include <guile/gh.h>
 
 #define SCREEN_IMPLEMENTATION
 #include "screen.h"
@@ -73,15 +73,12 @@ ScmFromPScreenInfo(ScreenInfo *psi)
 }
 
 
-MAKE_SMOBFUNS(screen);
-
 void
 init_screen()
 {
   REGISTER_SCWMSMOBFUNS(screen);
-#ifndef SCM_MAGIC_SNARFER
+
 #include "screen.x"
-#endif
 }
 
 

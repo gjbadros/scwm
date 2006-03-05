@@ -5,6 +5,8 @@
 #ifndef BINDING_H
 #define BINDING_H
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif

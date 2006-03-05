@@ -57,71 +57,71 @@ NOTE: Assignments to the cvar in the error handling
 */
 #define VALIDATE_ARG_BOOL_COPY(pos,scm,f) \
   do { \
-  if (scm == SCM_BOOL_T) f = True; \
-  else if (scm == SCM_BOOL_F) f = False; \
+  if (scm_is_eq(scm, SCM_BOOL_T)) f = True; \
+  else if (scm_is_false(scm)) f = False; \
   else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_BOOL_COPY_USE_T(pos,scm,f) \
   do { \
-  if (scm == SCM_BOOL_T || scm == SCM_UNDEFINED) f = True; \
-  else if (scm == SCM_BOOL_F) f = False; \
+  if (scm_is_eq(scm, SCM_BOOL_T) || scm_is_eq(scm,SCM_UNDEFINED)) f = True; \
+  else if (scm_is_false(scm)) f = False; \
   else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_BOOL_COPY_USE_F(pos,scm,f) \
   do { \
-  if (scm == SCM_BOOL_T) f = True; \
-  else if (scm == SCM_BOOL_F || scm == SCM_UNDEFINED) f = False; \
+  if (scm_is_eq(scm,SCM_BOOL_T)) f = True; \
+  else if (scm_is_false(scm) || scm_is_eq(scm, SCM_UNDEFINED)) f = False; \
   else {f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 
 #define VALIDATE_ARG_BOOL_INVERT(pos,scm,f) \
   do { \
-  if (scm == SCM_BOOL_F) f = True; \
-  else if (scm == SCM_BOOL_T) f = False; \
+  if (scm_is_false(scm)) f = True; \
+  else if (scm_is_eq(scm, SCM_BOOL_T)) f = False; \
   else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 /* range is [low,high]; i.e., low and high are both okay values */
 #define VALIDATE_ARG_INT_RANGE_COPY(pos,scm,low,high,cvar) \
   do { \
-  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  cvar = gh_scm2long(scm); \
+  if (!scm_is_number(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = scm_to_long(scm); \
   if (cvar < low || cvar > high) \
      scm_misc_error(FUNC_NAME,"Argument %S must be in [%S,%S]", \
-                    gh_list(gh_int2scm(pos),gh_int2scm(low),gh_int2scm(high),SCM_UNDEFINED)); \
+                    scm_list_n(scm_from_int(pos),scm_from_int(low),scm_from_int(high),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_MIN_COPY(pos,scm,low,cvar) \
   do { \
-  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  cvar = gh_scm2long(scm); \
+  if (!scm_is_number(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = scm_to_long(scm); \
   if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
-                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
+                                 scm_list_n(scm_from_int(pos),scm_from_int(low),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_MIN(pos,scm,low) \
   do { \
   int cvar; \
-  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  cvar = gh_scm2long(scm); \
+  if (!scm_is_number(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = scm_to_long(scm); \
   if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
-                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
+                                 scm_list_n(scm_from_int(pos),scm_from_int(low),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_MAX_COPY(pos,scm,high,cvar) \
   do { \
-  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  cvar = gh_scm2long(scm); \
+  if (!scm_is_number(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = scm_to_long(scm); \
   if (cvar > high) scm_misc_error(FUNC_NAME,"Argument %S must be less than %S", \
-                                  gh_list(gh_int2scm(pos),gh_int2scm(high),SCM_UNDEFINED)); \
+                                  scm_list_n(scm_from_int(pos),scm_from_int(high),SCM_UNDEFINED)); \
   } while (0)
 
 #define VALIDATE_ARG_INT_OR_UNDEF(pos,x) \
   do { \
-    if (!UNSET_SCM(x) && !gh_number_p(x)) SCWM_WRONG_TYPE_ARG(pos, x); \
+    if (!UNSET_SCM(x) && !scm_is_number(x)) SCWM_WRONG_TYPE_ARG(pos, x); \
   } while (0)
 
 
@@ -131,97 +131,97 @@ NOTE: Assignments to the cvar in the error handling
 #define VALIDATE_ARG_INT_COPY_USE_DEF(pos,scm,cvar,val) \
   do { \
   if (UNSET_SCM(scm)) cvar = val; \
-  else if (gh_number_p(scm)) cvar = gh_scm2int(scm); \
+  else if (scm_is_number(scm)) cvar = scm_to_int(scm); \
   else { cvar = 0; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 
 #define VALIDATE_ARG_INT_COPY(pos,scm,cvar) \
   do { \
-  if (gh_number_p(scm)) cvar = gh_scm2int(scm); \
+  if (scm_is_number(scm)) cvar = scm_to_int(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_WINID_COPY(pos,scm,cvar) \
   do { \
-  if (gh_number_p(scm)) cvar = (Window) gh_scm2ulong(scm); \
+  if (scm_is_number(scm)) cvar = (Window) scm_to_ulong(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 
 #define VALIDATE_ARG_DBL_MIN_COPY(pos,scm,low,cvar) \
   do { \
-  if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  if (scm_is_number(scm)) cvar = scm_to_double(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
-                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_UNDEFINED)); \
+                                 scm_list_n(scm_from_int(pos),scm_from_int(low),SCM_UNDEFINED)); \
   } while (0)
 
 
 #define VALIDATE_ARG_DBL_COPY(pos,scm,cvar) \
   do { \
-  if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  if (scm_is_number(scm)) cvar = scm_to_double(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_DBL_COPY_USE_DEF(pos,scm,cvar,val) \
   do { \
   if (UNSET_SCM(scm)) cvar = val; \
-  else if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  else if (scm_is_number(scm)) cvar = scm_to_double(scm); \
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_LIST(pos,scm) \
   do { \
-  if (!gh_list_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  if (!scm_to_bool(scm_list_p(scm))) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_LISTNONEMPTY(pos,scm) \
   do { \
-  if (!gh_list_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  else if (!gh_pair_p(scm)) scm_misc_error(FUNC_NAME,"List must be non-empty.",SCM_EOL); \
+  if (!scm_to_bool(scm_list_p(scm))) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else if (!scm_to_bool(scm_pair_p(scm))) scm_misc_error(FUNC_NAME,"List must be non-empty.",SCM_EOL); \
   } while (0)
 
 #define VALIDATE_ARG_SYM(pos,scm) \
   do { \
-  if (!gh_symbol_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  if (!scm_is_symbol(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_SYM_USE_DEF(pos,scm,def) \
   do { \
   if (UNSET_SCM(scm)) scm = def; \
-  else if (!gh_symbol_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else if (!scm_is_symbol(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 
 #define VALIDATE_ARG_STR(pos,scm) \
   do { \
-  if (!gh_string_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  if (!scm_is_string(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_STR_NEWCOPY(pos,scm,pch) \
   do { \
-  if (gh_string_p(scm)) pch = gh_scm2newstr(scm,NULL); \
+  if (scm_is_string(scm)) pch = scm_to_locale_string(scm); \
   else { pch = NULL; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_STR_NEWCOPY_LEN(pos,scm,pch,len) \
   do { \
-  if (gh_string_p(scm)) pch = gh_scm2newstr(scm,&len); \
+  if (scm_is_string(scm)) pch = scm_to_locale_stringn(scm,&len); \
   else { pch = NULL; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_STR_NEWCOPY_USE_NULL(pos,scm,pch) \
   do { \
   if (UNSET_SCM(scm)) pch = NULL; \
-  else if (gh_string_p(scm)) pch = gh_scm2newstr(scm,NULL); \
+  else if (scm_is_string(scm)) pch = scm_to_locale_string(scm); \
   else { pch = NULL; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 
 #define VALIDATE_ARG_PROC(pos,scm) \
   do { \
-  if (!gh_procedure_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  if (!scm_to_bool(scm_procedure_p(scm))) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 /* we use UNSET_SCM instead of just testing for == SCM_UNDEFINED
@@ -229,7 +229,7 @@ NOTE: Assignments to the cvar in the error handling
 #define VALIDATE_ARG_PROC_USE_F(pos,scm) \
   do { \
   if (UNSET_SCM(scm)) scm = SCM_BOOL_F; \
-  else if (!gh_procedure_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else if (!scm_to_bool(scm_procedure_p(scm))) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_PROC_OR_SYM_USE_F(pos,scm) \

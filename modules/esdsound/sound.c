@@ -26,6 +26,7 @@
 #include <esd.h>
 #include "scwm.h"
 #include "guile-compat.h"
+#include <stdio.h>
 
 static int esd;
 
@@ -40,23 +41,23 @@ Returns a sound object usable with the other sound functions.")
 {
   SCM r;
 
-  if (!gh_string_p(file)) {
+  if (!scm_is_string(file)) {
     SCWM_WRONG_TYPE_ARG(1, file);
   }
-  if (!UNSET_SCM(name) && !gh_string_p(name)) {
+  if (!UNSET_SCM(name) && !scm_is_string(name)) {
       SCWM_WRONG_TYPE_ARG(2, name);
   }
   if (ESD_CONNECTED_P) {
     char *path, *tag;
     int sample;
 
-    path = gh_scm2newstr(file, NULL);
+    path = scm_to_locale_string(file);
     if (UNSET_SCM(name))
       tag = "scwm";
     else
-      tag = gh_scm2newstr(name, NULL);
+      tag = scm_to_locale_string(name);
     sample = esd_file_cache(esd, tag, path);
-    r = (sample >= 0) ? gh_int2scm(sample) : SCM_BOOL_F;
+    r = (sample >= 0) ? scm_from_int(sample) : SCM_BOOL_F;
     if (!UNSET_SCM(name))
       FREE(tag);
     FREE(path); 
@@ -74,12 +75,12 @@ SOUND must be an object returned by `sound-load'.")
 #define FUNC_NAME s_sound_unload
 {
   if (ESD_CONNECTED_P) {
-    if (!gh_number_p(sound)) {
+    if (!scm_is_number(sound)) {
       SCWM_WRONG_TYPE_ARG(1, sound);
     }
-    esd_sample_free(esd, gh_scm2int(sound));
+    esd_sample_free(esd, scm_to_int(sound));
   } else {
-    if (!gh_string_p(sound)) {
+    if (!scm_is_string(sound)) {
       SCWM_WRONG_TYPE_ARG(1, sound);
     }
     /* no resources were allocated, do nothing */
@@ -97,18 +98,18 @@ SOUND must be an object returned by `sound-load'.")
   if (ESD_CONNECTED_P) {
     int sample;
 
-    if (!gh_number_p(sound)) {
+    if (!scm_is_number(sound)) {
       SCWM_WRONG_TYPE_ARG(1, sound);
     }
-    sample = gh_scm2int(sound);
+    sample = scm_to_int(sound);
     esd_sample_play(esd, sample);
   } else {
     char *path;
 
-    if (!gh_string_p(sound)) {
+    if (!scm_is_string(sound)) {
       SCWM_WRONG_TYPE_ARG(1, sound);
     }
-    path = gh_scm2newstr(sound, NULL);
+    path = scm_to_locale_string(sound);
     esd_play_file("scwm", path, 1);
     FREE(path);
   }
@@ -131,10 +132,10 @@ unknown.")
   if (UNSET_SCM(host)) {
     hostname = NULL;
   } else {
-    if (!gh_string_p(host)) {
+    if (!scm_is_string(host)) {
       SCWM_WRONG_TYPE_ARG(1, host);
     }
-    hostname = gh_scm2newstr(host, NULL);
+    hostname = scm_to_locale_string(host);
   }
   if (ESD_CONNECTED_P)
     esd_close(esd);

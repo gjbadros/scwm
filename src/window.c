@@ -1,3 +1,4 @@
+
 /* $Id$
  * window.c
  *
@@ -20,8 +21,6 @@
 #include <stdio.h>
 #include <X11/keysym.h>
 #include <limits.h>
-
-#include <guile/gh.h>
 
 #define WINDOW_IMPLEMENTATION
 #include "window.h"
@@ -225,7 +224,7 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
 #define UPDATE_FLAG(f) do { psw->f = flags & 1; flags>>=1; } while(0)
 #define UPDATE_OBJ_PROP(p) \
 	do { scm_set_object_property_x(SCM_FROM_PSW(psw), p, \
-				       gh_bool2scm(flags & 1)); \
+				       scm_from_bool(flags & 1)); \
 	     flags>>=1; } while(0)
 
   UPDATE_FLAG(fStartIconic);			/* 00000001 */
@@ -454,14 +453,14 @@ ScmWindowDelta(ScwmWindow *psw, Window w, int startW,int startH,int endW, int en
                int startX, int startY, int endX, int endY, 
                Bool fSetEndX, Bool fSetEndY)
 {
-  return gh_list(SCM_FROM_PSW(psw),
-                 (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
-                 gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
-                 gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
-                 gh_cons(gh_int2scm(startX),gh_int2scm(startY)),
-                 gh_cons(gh_int2scm(endX),gh_int2scm(endY)),
-                 gh_cons(gh_bool2scm(fSetEndX),gh_bool2scm(fSetEndY)),
-                 SCM_UNDEFINED);
+  return scm_list_n(SCM_FROM_PSW(psw),
+		    (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
+		    scm_cons(scm_from_int(startW),scm_from_int(startH)),
+		    scm_cons(scm_from_int(endW),scm_from_int(endH)),
+		    scm_cons(scm_from_int(startX),scm_from_int(startY)),
+		    scm_cons(scm_from_int(endX),scm_from_int(endY)),
+		    scm_cons(scm_from_bool(fSetEndX),scm_from_bool(fSetEndY)),
+		    SCM_UNDEFINED);
 }
 
 /* ScmWindowDeltaVP is like the above, but converts x/y coords in viewport
@@ -475,39 +474,39 @@ ScmWindowDeltaVP(ScwmWindow *psw, Window w, int startW,int startH,int endW, int 
     dx = WIN_VP_OFFSET_X(psw),
     dy = WIN_VP_OFFSET_Y(psw);
 
-  return gh_list(SCM_FROM_PSW(psw),
-                 (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
-                 gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
-                 gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
-                 gh_cons(gh_int2scm(startX-dx),gh_int2scm(startY-dy)),
-                 gh_cons(gh_int2scm(endX-dx),gh_int2scm(endY-dy)),
-                 gh_cons(gh_bool2scm(fSetEndX),gh_bool2scm(fSetEndY)),
-                 SCM_UNDEFINED);
+  return scm_list_n(SCM_FROM_PSW(psw),
+		    (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
+		    scm_cons(scm_from_int(startW),scm_from_int(startH)),
+		    scm_cons(scm_from_int(endW),scm_from_int(endH)),
+		    scm_cons(scm_from_int(startX-dx),scm_from_int(startY-dy)),
+		    scm_cons(scm_from_int(endX-dx),scm_from_int(endY-dy)),
+		    scm_cons(scm_from_bool(fSetEndX),scm_from_bool(fSetEndY)),
+		    SCM_UNDEFINED);
 }
 
 Bool
 FScmIsWindowDelta(SCM obj)
 {
   SCM cns;
-  if (!WINDOWP(gh_car(obj))) return False;
-  obj = gh_cdr(obj);
-  if (obj == SCM_EOL || !gh_boolean_p(gh_car(obj))) return False;
-  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
-  cns = gh_car(obj);
-  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
-  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
-  cns = gh_car(obj);
-  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
-  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
-  cns = gh_car(obj);
-  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
-  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
-  cns = gh_car(obj);
-  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
-  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
-  cns = gh_car(obj);
-  if (!gh_pair_p(cns) || !gh_boolean_p(gh_car(cns)) || !gh_boolean_p(gh_cdr(cns))) return False;
-  if (gh_cdr(obj) != SCM_EOL) return False;
+  if (!WINDOWP(scm_car(obj))) return False;
+  obj = scm_cdr(obj);
+  if (scm_is_null(obj) || !scm_is_bool(scm_car(obj))) return False;
+  obj = scm_cdr(obj); if (scm_is_null(obj)) return False;
+  cns = scm_car(obj);
+  if (!scm_is_true(scm_pair_p(cns)) || !scm_is_number(scm_car(cns)) || !scm_is_number(scm_cdr(cns))) return False;
+  obj = scm_cdr(obj); if (scm_is_null(obj)) return False;
+  cns = scm_car(obj);
+  if (!scm_is_true(scm_pair_p(cns)) || !scm_is_number(scm_car(cns)) || !scm_is_number(scm_cdr(cns))) return False;
+  obj = scm_cdr(obj); if (scm_is_null(obj)) return False;
+  cns = scm_car(obj);
+  if (!scm_is_true(scm_pair_p(cns)) || !scm_is_number(scm_car(cns)) || !scm_is_number(scm_cdr(cns))) return False;
+  obj = scm_cdr(obj); if (scm_is_null(obj)) return False;
+  cns = scm_car(obj);
+  if (!scm_is_true(scm_pair_p(cns)) || !scm_is_number(scm_car(cns)) || !scm_is_number(scm_cdr(cns))) return False;
+  obj = scm_cdr(obj); if (scm_is_null(obj)) return False;
+  cns = scm_car(obj);
+  if (!scm_is_true(scm_pair_p(cns)) || !scm_is_bool(scm_car(cns)) || !scm_is_bool(scm_cdr(cns))) return False;
+  if (!scm_is_null(scm_cdr(obj))) return False;
   return True;
 }
 
@@ -629,10 +628,10 @@ make_window(ScwmWindow * win)
   /* MS:FIXME:: 
      Warning, arbitrary constant, we really need growable hash
      tables. */
-  win->other_properties = gh_make_vector(SCM_MAKINUM(5), SCM_EOL);
-  scm_protect_object(answer);
+  win->other_properties = scm_make_vector(scm_from_int(5), SCM_EOL);
+  scm_gc_protect_object(answer);
 
-  SET_VALIDWIN_FLAG(answer,True);
+  SET_VALIDWIN_FLAG(answer, True);
 
 #if defined(SCWM_DEBUG_MAKE_FREE_WIN)
   fprintf(stderr,"Made window %ld at %p (name = %s)\n",
@@ -648,7 +647,7 @@ invalidate_window(SCM schwin)
 {
   SET_VALIDWIN_FLAG(schwin, False);
   SCWMWINDOW(schwin) = NULL;
-  scm_unprotect_object(schwin);
+  scm_gc_unprotect_object(schwin);
 }
 
 /**** ResizeTo, MoveResizeTo, MoveTo
@@ -947,7 +946,7 @@ SCM_DEFINE(window_p, "window?", 1, 0, 0,
 "Returns #t if OBJ is a window object, otherwise returns #f.")
 #define FUNC_NAME s_window_p
 {
-  return SCM_BOOL_FromBool(WINDOWP(obj));
+  return scm_from_bool(WINDOWP(obj));
 }
 #undef FUNC_NAME
 
@@ -958,7 +957,7 @@ A window is no longer valid when it is destroyed or closed.  An iconified\n\
 window that can be deiconified is still represented by a valid window object.")
 #define FUNC_NAME s_window_valid_p
 {
-  return SCM_BOOL_FromBool(WINDOWP(obj) && VALIDWINP(obj));
+  return scm_from_bool(WINDOWP(obj) && VALIDWINP(obj));
 }
 #undef FUNC_NAME
 
@@ -971,7 +970,7 @@ a subset of procedures can be successfully called on them.")
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  return SCM_BOOL_FromBool(psw->fFullyConstructed);
+  return scm_from_bool(psw->fFullyConstructed);
 }
 #undef FUNC_NAME
 
@@ -982,7 +981,7 @@ SCM_DEFINE(window_mapped_p, "window-mapped?", 1, 0, 0,
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  return SCM_BOOL_FromBool(psw->fMapped);
+  return scm_from_bool(psw->fMapped);
 }
 #undef FUNC_NAME
 
@@ -995,7 +994,7 @@ map is actually performed.")
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  return SCM_BOOL_FromBool(psw->fMapPending);
+  return scm_from_bool(psw->fMapPending);
 }
 #undef FUNC_NAME
 
@@ -1028,9 +1027,9 @@ destroy-window), or #f or omitted for the standard circle cursor.")
   VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(1,cursor,x_cursor);
   VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
 
-  if (SCM_BOOL_F == cursor || x_cursor == None) {
+  if (scm_is_false(cursor) || x_cursor == None) {
     x_cursor = XCURSOR_SELECT;
-  } if (SCM_BOOL_T == cursor) {
+  } if (scm_is_bool(cursor) && scm_is_true(cursor)) {
     x_cursor = XCURSOR_KILL;
   }
 
@@ -1043,11 +1042,11 @@ destroy-window), or #f or omitted for the standard circle cursor.")
     }
   }
   
-  if (SCM_BOOL_F == win && None != win) {
-    win = gh_long2scm((long)w);
+  if (scm_is_false(win) && None != win) {
+    win = scm_from_long((long)w);
   }
 
-  return gh_list(win,gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
+  return scm_list_n(win,scm_from_int(x),scm_from_int(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -1082,15 +1081,18 @@ circle cursor.")
 {
   Bool fSelect, fRelease;
   Cursor xcursor;
-  VALIDATE_ARG_BOOL_COPY_USE_T(1,select_p,fSelect);
-  VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
-  VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(3,cursor,xcursor);
+
+  VALIDATE_ARG_BOOL_COPY_USE_T(1, select_p, fSelect);
+  VALIDATE_ARG_BOOL_COPY_USE_T(2, release_p, fRelease);
+  VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(3, cursor, xcursor);
 
   if (UNSET_SCM(scm_window_context)) {
     if (fSelect) {
-      SCM win = gh_car(select_viewport_position(cursor,release_p));
+      SCM win = scm_car(select_viewport_position(cursor, release_p));
       if (!WINDOWP(win)) {
-        scwm_run_hook0(invalid_interaction_hook);
+	if (scm_to_bool(scm_hook_p(invalid_interaction_hook))) {
+	  scwm_run_hook0(invalid_interaction_hook);
+	}
         /* do not return a window id -- be sure it is #f */
         return SCM_BOOL_F;
       }
@@ -1409,8 +1411,8 @@ PswFromPointerLocation(Display *dpy)
 ScwmWindow *
 PswSelectInteractively(Display *ARG_UNUSED(dpy))
 {
-  SCM result = gh_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
-  if (result == SCM_BOOL_F)
+  SCM result = scm_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
+  if (scm_is_false(result))
     return NULL;
   return PSWFROMSCMWIN(result);
 }
@@ -1508,7 +1510,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
     }
     if (eventp->type == EnterNotify) {
       ScwmWindow *psw = PswFromAnyWindow(dpy,eventp->xany.window);
-      if (Scr.Root == eventp->xany.window && SCM_BOOL_F != lastwin_entered) {
+      if (Scr.Root == eventp->xany.window && scm_is_true(lastwin_entered)) {
         /* See note above about spurious EnterNotify event on the
            root window that we throw away when first entering this function */
         scwm_run_hook1(select_window_leave_hook, lastwin_entered);
@@ -1516,7 +1518,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
       } else if (psw && SCM_FROM_PSW(psw) && VALIDWINP(SCM_FROM_PSW(psw))) {
         SCM win = SCM_FROM_PSW(psw);
         if (win != lastwin_entered) {
-          if (SCM_BOOL_F != lastwin_entered)
+          if (scm_is_true(lastwin_entered))
             scwm_run_hook1(select_window_leave_hook, lastwin_entered);
           lastwin_entered = win;
           scwm_run_hook1(select_window_enter_hook, lastwin_entered);
@@ -1795,8 +1797,8 @@ defaults to the window context in the usual way if not specified.")
   } else if (leader) {
     unsigned long win = (unsigned long) (*(Window *)leader);
     /* GJB:FIXME:: this requires a patch to guile-gtk-0.15 */
-    SCM gdk_leader = gh_lookup("gdk-leader-window");
-    if (gh_number_p(gdk_leader) && win == gh_scm2ulong(gdk_leader)) {
+    SCM gdk_leader = scm_variable_ref(scm_c_lookup("gdk-leader-window"));
+    if (scm_is_number(gdk_leader) && win == scm_to_ulong(gdk_leader)) {
       /* do not permit the destroy */
       return SCM_BOOL_F;
     }
@@ -1823,7 +1825,7 @@ specified.")
 #define FUNC_NAME s_window_deletable_p
 {
   VALIDATEKILL(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fDoesWmDeleteWindow);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fDoesWmDeleteWindow);
 }
 #undef FUNC_NAME
 
@@ -1940,9 +1942,9 @@ be ignored without signalling an error.")
   /* MS:FIXME:: Hmmm, do we really want to restack the icons of iconified
      windows? */
 
-  for (p=winlist, cnt=0; SCM_EOL!=p; p=gh_cdr(p)) {
+  for (p=winlist, cnt=0; !scm_is_null(p); p=scm_cdr(p)) {
     ScwmWindow *psw;
-    SCM cur=gh_car(p);
+    SCM cur=scm_car(p);
 
     if (!WINDOWP(cur)) {
       SCWM_WRONG_TYPE_ARG(1, winlist);
@@ -1977,8 +1979,8 @@ be ignored without signalling an error.")
      functionality using a more general hook of some kind,
      ultimately. */
   
-  for (p = winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
-      SCM cur=gh_car(p);
+  for (p = winlist, i=0; !scm_is_null(p); p=scm_cdr(p)) {
+      SCM cur=scm_car(p);
       ScwmWindow *psw;
 
       if (VALIDWINP(cur)) {
@@ -2025,7 +2027,7 @@ window you called `raise-window' on).")
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
-  return SCM_BOOL_FromBool(psw == Scr.LastWindowRaised ||
+  return scm_from_bool(psw == Scr.LastWindowRaised ||
 			   psw->fVisible);
 }
 #undef FUNC_NAME
@@ -2042,7 +2044,7 @@ specified.")
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
-  return SCM_BOOL_FromBool(psw->fTransient);
+  return scm_from_bool(psw->fTransient);
 }
 #undef FUNC_NAME
 
@@ -2129,7 +2131,7 @@ specified.")
 
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fIconified);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fIconified);
 }
 #undef FUNC_NAME
 
@@ -2167,7 +2169,7 @@ specified.")
 
 
   signal_window_property_change(win, sym_sticky, SCM_BOOL_T,
-                               SCM_BOOL_FromBool(old));
+                               scm_from_bool(old));
 
   return SCM_UNSPECIFIED;
 }
@@ -2201,7 +2203,7 @@ the usual way if not specified.")
   }
 
   signal_window_property_change(win, sym_sticky, SCM_BOOL_F,
-                               SCM_BOOL_FromBool(old));
+                               scm_from_bool(old));
 
   return SCM_UNSPECIFIED;
 }
@@ -2216,13 +2218,13 @@ window context in the usual way if not specified.")
 #define FUNC_NAME s_sticky_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSticky);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fSticky);
 }
 #undef FUNC_NAME
 
 void set_sticky (SCM win, SCM flag)
 {
-  if (flag==SCM_BOOL_F) {
+  if (scm_is_false(flag)) {
     unstick_window(win);
   } else {
     stick_window(win);
@@ -2279,7 +2281,7 @@ the client application window is not visible.")
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
   signal_window_property_change(win, sym_shaded, SCM_BOOL_T,
-                                SCM_BOOL_FromBool(old));
+                                scm_from_bool(old));
 
   return SCM_UNSPECIFIED;
 }
@@ -2313,7 +2315,7 @@ the client application window is not visible.")
 
 
   signal_window_property_change(win, sym_shaded, SCM_BOOL_F,
-                                SCM_BOOL_FromBool(old));
+                                scm_from_bool(old));
 
 
   return SCM_UNSPECIFIED;
@@ -2329,7 +2331,7 @@ specified.")
 #define FUNC_NAME s_shaded_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(SHADED_P(PSWFROMSCMWIN(win)));
+  return scm_from_bool(SHADED_P(PSWFROMSCMWIN(win)));
 }
 #undef FUNC_NAME
 
@@ -2364,12 +2366,12 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
   if (UNSET_SCM(x))
     *pDestX = *pStartX + WIN_VP_OFFSET_X(*ppsw);
   else
-    *pDestX = gh_scm2int(x);
+    *pDestX = scm_to_int(x);
 
   if (UNSET_SCM(y))
     *pDestY = *pStartY + WIN_VP_OFFSET_Y(*ppsw);
   else
-    *pDestY = gh_scm2int(y);
+    *pDestY = scm_to_int(y);
 
   *pStartX += WIN_VP_OFFSET_X(*ppsw);
   *pStartY += WIN_VP_OFFSET_Y(*ppsw);
@@ -2387,9 +2389,9 @@ beyond that of the client window width/height.")
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  return gh_list(gh_int2scm(DecorationWidth(psw)),
-                 gh_int2scm(DecorationHeight(psw)),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(DecorationWidth(psw)),
+		    scm_from_int(DecorationHeight(psw)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2408,9 +2410,8 @@ specified.")
   int startX, startY;
   int destX, destY;
 
-  if (SCM_BOOL_F==
-      convert_move_data(x,y,win, FUNC_NAME,
-			&startX,&startY,&destX, &destY, &psw, &w)) {
+  if (scm_is_false(convert_move_data(x,y,win, FUNC_NAME,
+			&startX,&startY,&destX, &destY, &psw, &w))) {
     return SCM_BOOL_F;
   };
 
@@ -2474,17 +2475,17 @@ The list returned contains 4 cons pairs containing:\n\
   ScwmWindow *psw;
   VALIDATE_WIN_COPY(win,psw);
 
-  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.base_width),
-                           gh_int2scm(psw->hints.base_height)),answer);
+  answer = scm_cons(scm_cons(scm_from_int(psw->hints.base_width),
+			     scm_from_int(psw->hints.base_height)),answer);
 
-  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.width_inc),
-                           gh_int2scm(psw->hints.height_inc)),answer);
+  answer = scm_cons(scm_cons(scm_from_int(psw->hints.width_inc),
+			     scm_from_int(psw->hints.height_inc)),answer);
 
-  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.min_height),
-                           gh_int2scm(psw->hints.max_height)),answer);
+  answer = scm_cons(scm_cons(scm_from_int(psw->hints.min_height),
+			     scm_from_int(psw->hints.max_height)),answer);
 
-  answer = gh_cons(gh_cons(gh_int2scm(psw->hints.min_width),
-                           gh_int2scm(psw->hints.max_width)),answer);
+  answer = scm_cons(scm_cons(scm_from_int(psw->hints.min_width),
+			     scm_from_int(psw->hints.max_width)),answer);
 
   return answer;
 }
@@ -2518,7 +2519,7 @@ notify_new_desk(ScwmWindow *psw, int desk, int old)
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
   signal_window_property_change(SCM_FROM_PSW(psw), sym_desk,
-                                gh_int2scm(desk), gh_int2scm(old));
+                                scm_from_int(desk), scm_from_int(old));
 }
 
 
@@ -2626,9 +2627,9 @@ way if not specified.  See also `window-viewport-position'.")
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(SCM_MAKINUM(FRAME_X(psw)),
-                 SCM_MAKINUM(FRAME_Y(psw)),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(FRAME_X(psw)),
+		    scm_from_int(FRAME_Y(psw)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2647,9 +2648,9 @@ way if not specified.")
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(SCM_MAKINUM(ICON_X(psw)),
-                 SCM_MAKINUM(ICON_Y(psw)),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(ICON_X(psw)),
+		    scm_from_int(ICON_Y(psw)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2667,9 +2668,9 @@ specified.")
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(SCM_MAKINUM(psw->icon_p_width),
-                 SCM_MAKINUM(psw->icon_p_height + psw->icon_w_height),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(psw->icon_p_width),
+		    scm_from_int(psw->icon_p_height + psw->icon_w_height),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2689,9 +2690,9 @@ specified. See `window-size' if you want the size of the application\n\
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(SCM_MAKINUM(FRAME_WIDTH(psw)),
-                 SCM_MAKINUM(FRAME_HEIGHT(psw)),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(FRAME_WIDTH(psw)),
+		    scm_from_int(FRAME_HEIGHT(psw)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2741,9 +2742,9 @@ and height in resize units (e.g., characters for an xterm).  See\n\
 
   window_pixel_size_to_client_units(psw,cpixX,cpixY,&width,&height);
 
-  return gh_list(gh_int2scm(cpixX),gh_int2scm(cpixY),
-                 gh_int2scm(width),gh_int2scm(height),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(cpixX),scm_from_int(cpixY),
+		    scm_from_int(width),scm_from_int(height),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2756,9 +2757,9 @@ SCM_DEFINE (window_title_size, "window-title-size", 0, 1, 0,
   ScwmWindow *psw;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
-  return gh_list(gh_int2scm(psw->title_width),
-                 gh_int2scm(psw->title_height),
-                 SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(psw->title_width),
+		    scm_from_int(psw->title_height),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2772,7 +2773,7 @@ WIN defaults to the window context in the usual way if not specified.")
   ScwmWindow *psw;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
-  return gh_int2scm(psw->boundary_width);
+  return scm_from_int(psw->boundary_width);
 }
 #undef FUNC_NAME
 
@@ -2785,10 +2786,10 @@ the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_id
 {
   if (win == sym_root_window) {
-    return SCM_MAKINUM(Scr.Root);
+    return scm_from_int(Scr.Root);
   }
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_MAKINUM(PSWFROMSCMWIN(win)->w);
+  return scm_from_int(PSWFROMSCMWIN(win)->w);
 }
 #undef FUNC_NAME
 
@@ -2801,7 +2802,7 @@ specified.")
 #define FUNC_NAME s_window_frame_id
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_MAKINUM(PSWFROMSCMWIN(win)->frame);
+  return scm_from_int(PSWFROMSCMWIN(win)->frame);
 }
 #undef FUNC_NAME
 
@@ -2867,7 +2868,7 @@ WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_desk
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_MAKINUM(PSWFROMSCMWIN(win)->Desk);
+  return scm_from_int(PSWFROMSCMWIN(win)->Desk);
 }
 #undef FUNC_NAME
 
@@ -2879,7 +2880,7 @@ WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_title
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_str02scm(PSWFROMSCMWIN(win)->name);
+  return scm_from_locale_string(PSWFROMSCMWIN(win)->name);
 }
 #undef FUNC_NAME
 
@@ -2891,7 +2892,7 @@ the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_icon_title
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_str02scm(PSWFROMSCMWIN(win)->icon_name);
+  return scm_from_locale_string(PSWFROMSCMWIN(win)->icon_name);
 }
 #undef FUNC_NAME
 
@@ -2903,7 +2904,7 @@ specified. You should prefer `window-class'.")
 #define FUNC_NAME s_window_class_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_class);
+  return scm_from_locale_string(PSWFROMSCMWIN(win)->classhint.res_class);
 }
 #undef FUNC_NAME
 
@@ -2916,7 +2917,7 @@ You should prefer `window-resource'.")
 #define FUNC_NAME s_window_resource_hint
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_name);
+  return scm_from_locale_string(PSWFROMSCMWIN(win)->classhint.res_name);
 }
 #undef FUNC_NAME
 
@@ -2930,7 +2931,7 @@ SCM_DEFINE (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
 #define FUNC_NAME s_window_last_focus_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_ulong2scm(PSWFROMSCMWIN(win)->ttLastFocussed);
+  return scm_from_ulong(PSWFROMSCMWIN(win)->ttLastFocussed);
 }
 #undef FUNC_NAME
 
@@ -2942,7 +2943,7 @@ too frequenly.")
 #define FUNC_NAME s_window_last_focus_x_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_ulong2scm(PSWFROMSCMWIN(win)->timeLastFocussed);
+  return scm_from_ulong(PSWFROMSCMWIN(win)->timeLastFocussed);
 }
 #undef FUNC_NAME
 
@@ -2953,7 +2954,7 @@ SCM_DEFINE (window_creation_time, "window-creation-time", 0, 1, 0,
 #define FUNC_NAME s_window_creation_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_long2scm(PSWFROMSCMWIN(win)->ttCreated);
+  return scm_from_long(PSWFROMSCMWIN(win)->ttCreated);
 }
 #undef FUNC_NAME
 
@@ -2991,7 +2992,7 @@ of circulation")
   ScwmWindow *psw; SCM result = SCM_EOL;
 
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
-    result = gh_cons(SCM_FROM_PSW(psw), result);
+    result = scm_cons(SCM_FROM_PSW(psw), result);
   }
 
   return result;
@@ -3021,7 +3022,7 @@ the topmost window, the last is the bottommost")
     ScwmWindow *psw = PswFromWindow(dpy,rgw[iw]);
     if (psw && ((psw->fIconified && psw->icon_w == rgw[iw]) ||
 		(!psw->fIconified && psw->frame == rgw[iw]))) {
-      result = gh_cons(SCM_FROM_PSW(psw),result);
+      result = scm_cons(SCM_FROM_PSW(psw),result);
     }
   }
 
@@ -3096,7 +3097,7 @@ WIN defaults to the window context in the usual way if not specified.")
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
   signal_window_property_change(win, sym_on_top, SCM_BOOL_T,
-                               SCM_BOOL_FromBool(old));
+                               scm_from_bool(old));
 
 
   raise_window(win);
@@ -3126,7 +3127,7 @@ way if not specified.")
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
   signal_window_property_change(win, sym_on_top, SCM_BOOL_F,
-                               SCM_BOOL_FromBool(old));
+                               scm_from_bool(old));
 
   KeepOnTop();
   return SCM_UNSPECIFIED;
@@ -3142,7 +3143,7 @@ specified.")
 #define FUNC_NAME s_kept_on_top_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fOnTop);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fOnTop);
 }
 #undef FUNC_NAME
 
@@ -3252,7 +3253,7 @@ specified.")
 #define FUNC_NAME s_titlebar_shown_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fTitle);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fTitle);
 }
 #undef FUNC_NAME
 
@@ -3322,7 +3323,7 @@ usual way if not specified.  See `normal-border' and\n\
 #define FUNC_NAME s_border_normal_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fBorder);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fBorder);
 }
 #undef FUNC_NAME
 
@@ -3415,7 +3416,7 @@ the usual way if not specified.")
 #define FUNC_NAME s_icon_sticky_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fStickyIcon);
+  return scm_from_bool(PSWFROMSCMWIN(win)->fStickyIcon);
 }
 #undef FUNC_NAME
 
@@ -3481,16 +3482,16 @@ if not specified.")
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
 
-  if (gh_eq_p(sym, sym_mouse)) {
+  if (scm_is_eq(sym, sym_mouse)) {
     psw->fClickToFocus = False;
     psw->fSloppyFocus = False;
-  } else if (gh_eq_p(sym, sym_click)) {
+  } else if (scm_is_eq(sym, sym_click)) {
     psw->fClickToFocus = True;
     psw->fSloppyFocus = False;
-  } else if (gh_eq_p(sym, sym_sloppy)) {
+  } else if (scm_is_eq(sym, sym_sloppy)) {
     psw->fClickToFocus = False;
     psw->fSloppyFocus = True;
-  } else if (gh_eq_p(sym, sym_none)) {
+  } else if (scm_is_eq(sym, sym_none)) {
     psw->fClickToFocus = True;
     psw->fSloppyFocus = True;
   } else {
@@ -3534,7 +3535,7 @@ SCM_DEFINE(get_window_colors, "get-window-colors", 0, 1, 0,
   VALIDATE_ARG_WIN_USE_CONTEXT(1, win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(psw->TextColor, psw->BackColor, SCM_UNDEFINED);
+  return scm_list_n(psw->TextColor, psw->BackColor, SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -3549,7 +3550,7 @@ fg or bg may be #f, which means that the color is inherited from the decor.")
   VALIDATE_ARG_WIN_USE_CONTEXT(1, win);
   psw = PSWFROMSCMWIN(win);
 
-  return gh_list(psw->HiTextColor, psw->HiBackColor, SCM_UNDEFINED);
+  return scm_list_n(psw->HiTextColor, psw->HiBackColor, SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -3564,18 +3565,18 @@ Returned list is ( frame title_w (side-n side-e side-s side-w)\n\
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
-#define s(x) gh_long2scm(psw->sides[(x)])
-#define c(x) gh_long2scm(psw->corners[(x)])
-  return gh_list( gh_long2scm(psw->frame),
-                  gh_long2scm(psw->title_w),
-                  gh_list(s(0),s(1),s(2),s(3),
-                          SCM_UNDEFINED),
-                  /* corners are in nw, ne, sw, se order internally,
-                     so make more sensible for scheme interface
-                     GJB:FIXME:: ultimately, fix inside, but deocr rewrite should */
-                  gh_list(c(0),c(1),c(3),c(2),
-                          SCM_UNDEFINED),
-                  SCM_UNDEFINED );
+#define s(x) scm_from_long(psw->sides[(x)])
+#define c(x) scm_from_long(psw->corners[(x)])
+  return scm_list_n(scm_from_long(psw->frame),
+		    scm_from_long(psw->title_w),
+		    scm_list_n(s(0),s(1),s(2),s(3),
+			       SCM_UNDEFINED),
+		    /* corners are in nw, ne, sw, se order internally,
+		       so make more sensible for scheme interface
+		       GJB:FIXME:: ultimately, fix inside, but deocr rewrite should */
+		    scm_list_n(c(0),c(1),c(3),c(2),
+			       SCM_UNDEFINED),
+		    SCM_UNDEFINED);
 #undef s
 #undef c
 }
@@ -3637,9 +3638,9 @@ to highlight each of those window regions.")
   ScwmWindow *psw;
   int n;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2,win,psw);
-  if (SCM_BOOL_F == nonant) {
+  if (scm_is_false(nonant)) {
     n = SCWM_NONANT_NONE;
-  } else if (gh_symbol_p(nonant)) {
+  } else if (scm_is_symbol(nonant)) {
     n = IntFromNonantSymbol(nonant);
   } else {
     VALIDATE_ARG_INT_RANGE_COPY(1,nonant,0,8,n);
@@ -3662,7 +3663,7 @@ SCM_DEFINE (window_highlighted_nonant, "window-highlighted-nonant", 0, 1, 0,
   if (psw->highlighted_nonant == SCWM_NONANT_NONE)
     return SCM_BOOL_F;
   if (psw->highlighted_nonant >= 0)
-    return gh_int2scm(psw->highlighted_nonant);
+    return scm_from_int(psw->highlighted_nonant);
   return NonantSymbolFromInt(psw->highlighted_nonant);
 }
 #undef FUNC_NAME
@@ -3753,7 +3754,7 @@ color for WIN). See also `get-window-highlight-colors'.")
 #define FUNC_NAME s_set_window_highlight_foreground_x
 {
   ScwmWindow *psw;
-  if (fg != SCM_BOOL_F) VALIDATE_ARG_COLOR(1,fg);
+  if (scm_is_true(fg)) VALIDATE_ARG_COLOR(1,fg);
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
 
   psw->HiTextColor = fg;
@@ -3779,7 +3780,7 @@ for WIN).  See also `get-window-highlight-colors'.")
   ScwmDecor * fl;
   ScwmWindow *psw;
 
-  if (bg != SCM_BOOL_F)
+  if (scm_is_true(bg))
     VALIDATE_ARG_COLOR(1,bg);
 
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
@@ -3959,18 +3960,17 @@ context in the usual way if not specified.")
 {
   ScwmWindow *psw;
   char *icon_name;
-  int length;
 
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
   VALIDATE_ARG_IMAGE_OR_STRING_OR_F(1,image);
 
   if (IMAGE_P(image)) {
     psw->icon_req_image = image;
-    icon_name = gh_scm2newstr(IMAGE(image)->full_name, &length);
+    icon_name = scm_to_locale_string(IMAGE(image)->full_name);
     /* MS:FIXME:: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
 		  (unsigned long) psw, icon_name);
-    gh_free(icon_name);
+    free(icon_name);
   }
 
   force_icon_redraw(psw);
@@ -4011,7 +4011,7 @@ to the window context in the usual way if not specified.")
      sends more info than that! */
 
   /* Broadcast the new mini-icon or something? */
-  if (psw->mini_icon_image != SCM_BOOL_F) {
+  if (scm_is_true(psw->mini_icon_image)) {
     BroadcastMiniIcon(M_MINI_ICON, psw);
   }
 
@@ -4043,7 +4043,7 @@ WIN defaults to the window context in the usual way if not specified.")
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1, win,psw);
-  return SCM_BOOL_FromBool(psw->fShaped);
+  return scm_from_bool(psw->fShaped);
 }
 #undef FUNC_NAME
 
@@ -4056,7 +4056,7 @@ WIN defaults to the window context in the usual way if not specified.")
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(1,win,psw);
-  return SCM_BOOL_FromBool(psw->fShapedIcon);
+  return scm_from_bool(psw->fShapedIcon);
 }
 #undef FUNC_NAME
 
@@ -4166,7 +4166,7 @@ window context in the usual way if not specified.")
   ScwmWindow *psw;
 
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
-  if (desk == SCM_BOOL_F) {
+  if (scm_is_false(desk)) {
     psw->fStartsOnDesk = False;
   } else {
     int d;
@@ -4212,8 +4212,6 @@ specified.")
 
 
 
-MAKE_SMOBFUNS(window);
-
 /* this function is part of the implementation of
    VALIDATE_WIN_USE_CONTEXT, so do not have it use
    that for argument checking --03/31/99 gjb */
@@ -4226,7 +4224,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
   if (UNSET_SCM(win)) {
     /* Select interactive if win is not set */
     win = get_window(SCM_BOOL_T, release_p, cursor);
-    if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
+    if (scm_is_false(win) || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;
     }
   }
@@ -4240,7 +4238,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
     /* maybe should just return SCM_BOOL_F; */
     return SCM_BOOL_F;
   }
-  return (win);
+  return win;
 }
 
 
@@ -4288,7 +4286,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
 SCM
 ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
 {
-  char *sz = gh_scm2newstr(spec,NULL);
+  char *sz = scm_to_locale_string(spec);
   char *pch = sz;
   SCM args = SCM_EOL;
   int num_args = 0;
@@ -4307,7 +4305,7 @@ ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
         SCM procname = scm_procedure_name(proc);
         scm_error(sym_bad_interactive_spec, "ScmArgsFromInteractiveSpec",
                   "Bad interactive spec for %s: %s", 
-                  gh_list(procname,spec,SCM_UNDEFINED),
+                  scm_list_n(procname,spec,SCM_UNDEFINED),
                   SCM_BOOL_F);
       }
     }
@@ -4315,7 +4313,7 @@ ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
     if (SCM_UNDEFINED != arg) {
       ++num_args;
       /* this builds the list of arguments up in reverse order */
-      args = gh_cons(arg,args);
+      args = scm_cons(arg,args);
     }
   }
 
@@ -4325,7 +4323,7 @@ ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
     args = scm_reverse(args);
   }
 
-  gh_free(sz);
+  free(sz);
   return args;
 }
 
@@ -4341,8 +4339,8 @@ set_squashed_titlebar_x(SCM win, SCM flag)
   SCM oldval;
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  oldval = SCM_BOOL_FromBool(psw->fSquashedTitlebar);
-  psw->fSquashedTitlebar = gh_scm2bool(flag);
+  oldval = scm_from_bool(psw->fSquashedTitlebar);
+  psw->fSquashedTitlebar = scm_to_bool(flag);
   ResizePswToCurrentSize(psw);
   signal_window_property_change(win, sym_squashed_titlebar, flag, oldval);
 }
@@ -4355,7 +4353,7 @@ squashed_titlebar_p(SCM win)
 #define FUNC_NAME "squashed_titlebar_p"
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
-  return SCM_BOOL_FromBool(psw->fSquashedTitlebar);
+  return scm_from_bool(psw->fSquashedTitlebar);
 }
 #undef FUNC_NAME
 
@@ -4365,11 +4363,9 @@ SCWM_PROPERTY_HANDLER(squashed_titlebar_handler, sym_squashed_titlebar, squashed
 void
 init_window()
 {
-  REGISTER_SCWMSMOBFUNS(window);
-
-#ifndef SCM_MAGIC_SNARFER
 #include "window.x"
-#endif
+
+  REGISTER_SCWMSMOBFUNS(window);
 
   set_property_handler (sym_sticky, &sticky_handler);
   set_property_handler (sym_squashed_titlebar, &squashed_titlebar_handler);

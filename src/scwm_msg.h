@@ -11,14 +11,13 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
-
 /* if you would like to see lots of debug messages from scwm, for debugging
    purposes, uncomment the next line */
 
-/* #define SCWM_DEBUG_MSGS */
-/* #define SCWM_EVENT_DEBUG_MSGS */
-
+#if 0
+#define SCWM_DEBUG_MSGS
+#define SCWM_EVENT_DEBUG_MSGS
+#endif
 
 #ifdef SCWM_DEBUG_MSGS
 #  define DBUG(X) scwm_msg X
@@ -40,9 +39,5 @@ typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 void scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args);
 void scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...);
 
-#define SCWM_DISPLAY "~A"
-/* #define SCWM_DISPLAY "%s" */
-#define SCWM_WRITE "~S"
-/* #define SCWM_WRITE "%S" */
 
 #endif

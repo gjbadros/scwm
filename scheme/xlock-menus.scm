@@ -46,7 +46,7 @@ conform to the standard xlock output format."
 ;;; The screen saver and screen lock menus
 ;;; --------------------------------------
 
-(define*-public (xlock-query-modes #&optional (xlock *xlock-query-program*))
+(define*-public (xlock-query-modes #:optional (xlock *xlock-query-program*))
   "Returns a list of mode names queried from the given XLOCK program.
 Special modes \"random\", \"bomb\", and \"blank\" are not included in this list.
 Use *xlock-query-program* to specify what program's output we should
@@ -70,7 +70,7 @@ read to compute the list of modes.  See also `make-xlock-menu'."
   (exe (string-append "xlock " xlock-options " -mode " mode
                       (if lock "" " -nolock"))))
 
-(define*-public (make-xlock-menu #&optional (lock? #f))
+(define*-public (make-xlock-menu #:optional (lock? #f))
   "Create an xlock menu.
 To use this, add the following to the menu of your choice:
    (menuitem \"Screensaver\" #:action (make-xlock-menu #f))

@@ -7,6 +7,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif
@@ -16,8 +18,6 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 #include <X11/Intrinsic.h>
-
-#include <guile/gh.h>
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -35,26 +35,26 @@
 
 #define VALIDATE_ARG_COLOR(pos,X)                            \
   do {                                                       \
-    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (scm_is_string(X)) { X = make_color(X); }               \
     if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
   } while (0)
 
 #define VALIDATE_ARG_COLOR_OR_SYM(pos,X)                     \
   do {                                                       \
-    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (scm_is_string(X)) { X = make_color(X); }               \
     if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
   } while (0)
 
 #define VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(pos,X)           \
   do {                                                       \
-    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (scm_is_string(X)) { X = make_color(X); }               \
     if (UNSET_SCM(X)) { X = WHITE_COLOR; }                   \
     else if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
   } while (0)
 
 #define VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(pos,X)           \
   do {                                                       \
-    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (scm_is_string(X)) { X = make_color(X); }               \
     if (UNSET_SCM(X)) { X = BLACK_COLOR; }                   \
     else if (!COLOR_OR_SYMBOL_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
   } while (0)
@@ -62,7 +62,7 @@
 #define VALIDATE_ARG_COLOR_COPY_USE_WHITE(pos,X,xcolor)       \
   do {                                                        \
     if (UNSET_SCM(X)) { X = WHITE_COLOR; }                    \
-    if (gh_string_p(X)) { X = make_color(X); }                \
+    if (scm_is_string(X)) { X = make_color(X); }                \
     if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X); } \
     xcolor = XCOLOR(X);                                       \
   } while (0)
@@ -71,7 +71,7 @@
 #define VALIDATE_ARG_COLOR_COPY_USE_BLACK(pos,X,xcolor)       \
   do {                                                        \
     if (UNSET_SCM(X)) { X = BLACK_COLOR; }                    \
-    if (gh_string_p(X)) { X = make_color(X); }                \
+    if (scm_is_string(X)) { X = make_color(X); }                \
     if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X); } \
     xcolor = XCOLOR(X);                                       \
   } while (0)
@@ -94,8 +94,8 @@ typedef struct {
                      (for a closest color match) */
 } scwm_color;
 
-#define COLOR_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_color)
-#define COLOR(X)  ((scwm_color *)(gh_cdr(X)))
+#define COLOR_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_color, X))
+#define COLOR(X)  ((scwm_color *)SCM_SMOB_DATA(X))
 #define XCOLOR(X) (COLOR(X)->pixel)
 #define COLORNAME(X) (COLOR(X)->name)
 
@@ -111,19 +111,19 @@ typedef struct {
 #define SAFE_XCOLOR_OR_WHITE(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(WHITE_COLOR))
 #define SAFE_XCOLOR_OR_BLACK(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(BLACK_COLOR))
 
-#define COLOR_OR_SYMBOL_P(x) (COLOR_P((x)) || gh_symbol_p((x)))
+#define COLOR_OR_SYMBOL_P(x) (COLOR_P(x) || scm_is_symbol(x))
 
-#define DYNAMIC_COLOR_P(X) (gh_symbol_p((X))? \
-			    COLOR_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+#define DYNAMIC_COLOR_P(X) (scm_is_symbol(X)? \
+			    COLOR_P(scm_variable_ref(scm_lookup(X))) : \
 			    COLOR_P((X)))
 
-#define DYNAMIC_SAFE_COLOR(X) (gh_symbol_p((X))? \
-			       SAFE_COLOR(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			       SAFE_COLOR((X)))
+#define DYNAMIC_SAFE_COLOR(X) (scm_is_symbol(X)? \
+			       SAFE_COLOR(scm_variable_ref(scm_lookup(X))) : \
+			       SAFE_COLOR(X))
 
-#define DYNAMIC_SAFE_COLOR_USE_DEF(X,def) (gh_symbol_p((X))? \
-			       SAFE_COLOR_USE_DEF(scm_symbol_binding(SCM_BOOL_F,(X)),def) : \
-			       SAFE_COLOR_USE_DEF((X),def))
+#define DYNAMIC_SAFE_COLOR_USE_DEF(X,def) (scm_is_symbol(X)? \
+			       SAFE_COLOR_USE_DEF(scm_variable_ref(scm_lookup(X)),def) : \
+			       SAFE_COLOR_USE_DEF(X,def))
 
 
 /* GJB:FIXME:: colors have an especially poor interfaces --

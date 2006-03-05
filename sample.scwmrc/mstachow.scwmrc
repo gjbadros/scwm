@@ -498,7 +498,7 @@
 ; single click or hold/drag, 
 
 (define (system-button-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((double-click) (close-window win))
 	     ((click motion) (popup-menu-from-decoration 
@@ -508,7 +508,7 @@
 ; Return a proc that will show the window
 
 (define (system-button-right-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu-from-decoration 
 			      (make-small-window-ops-menu win)

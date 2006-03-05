@@ -26,13 +26,14 @@ underscores, so that the resulting string can be used as a key for
   "Return the string \"false\" if ARG is #f, \"true\" otherwise."
   (if arg "true" "false"))
 
-(define-public (color->string color)
-  "Convert scwm color object COLOR into an X11 name of that color.
-The resulting string can, e.g., be used in command lines for executing
-other applications."
-  (color-property color 'name))
+;; This is in base.scm
+;;(define-public (color->string color)
+;;  "Convert scwm color object COLOR into an X11 name of that color.
+;;The resulting string can, e.g., be used in command lines for executing
+;;other applications."
+;;  (color-property color 'name))
 
-(define*-public (size->string sz #&optional (sep "x"))
+(define*-public (size->string sz #:optional (sep "x"))
   "Convert a two-element list to a string.
 Use the optional second argument as the separator."
   (string-append (number->string (car sz)) sep (number->string (cadr sz))))
@@ -76,17 +77,17 @@ Use the optional second argument as the separator."
   "Dump all arguments into a string."
   (with-output-to-string (lambda () (apply write-all #t rest))))
 
-(define-public (string-join delimit strings)
-  "Concatenates the list STRINGS into a single string.
-DELIMIT is put between every two elements of STRINGS."
-  (let ((result ""))
-    (map (lambda (el)
-	   (if (not (string-null? el))
-	       (if (string-null? result)
-		   (set! result el)
-		   (set! result (string-append result delimit el)))))
-	 strings)
-    result))
+;;(define-public (string-join delimit strings)
+;;  "Concatenates the list STRINGS into a single string.
+;;DELIMIT is put between every two elements of STRINGS."
+;;  (let ((result ""))
+;;    (map (lambda (el)
+;;	   (if (not (string-null? el))
+;;	       (if (string-null? result)
+;;		   (set! result el)
+;;		   (set! result (string-append result delimit el)))))
+;;	 strings)
+;;    result))
 
 ;; contributed by Glenn Trig
 ;; (this is close to basename, but keeps the path intact,

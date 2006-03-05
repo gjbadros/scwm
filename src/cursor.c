@@ -6,7 +6,7 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
+#include <libguile/ports.h>
 #include "guile-compat.h"
 
 #define CURSOR_IMPLEMENTATION
@@ -21,13 +21,6 @@
 #include "dmalloc.h"
 #endif
 
-
-static
-SCM
-mark_cursor(SCM ARG_IGNORE(obj)) 
-{
-  return SCM_BOOL_F;
-}
 
 static
 size_t 
@@ -51,7 +44,7 @@ print_cursor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   if (xp->szName)
     scm_puts((char *) xp->szName, port); /* GJB:FIXME:CONST */
   else
-    scm_write(gh_ulong2scm((unsigned long)xp->cursor), port);
+    scm_write(scm_from_ulong((unsigned long)xp->cursor), port);
   scm_putc('>', port);
   return 1;
 }
@@ -214,23 +207,23 @@ Cursor
 XCursorByNumber(int cursor_num) 
 {
   Cursor c = XCreateFontCursor(dpy,cursor_num);
-  DBUG(("XCursorByNumber","Cursor num is: %d, XCursor is: %p\n",cursor_num,c));
+  DBUG((DBG, "Xcursorbynumber","Cursor num is: %d, XCursor is: %p\n",cursor_num,c));
   return c;
 }
 
 
 SCM_DEFINE(set_window_cursor_x,"set-window-cursor!",2,0,0,
           (SCM win, SCM cursor),
-"Set the default cursor for WIN to CURSOR. \n\
-If CURSOR is #f, this undefines the cursor for WIN and\n\
-makes that window use its parent window's cursor.\n\
-See `get-x-cursor', and `create-pixmap-cursor' for ways\n\
-to create cursor objects.")
+"Set the default cursor for WIN to CURSOR. \n\n"
+"If CURSOR is #f, this undefines the cursor for WIN and\n"
+"makes that window use its parent window's cursor.\n"
+"See `get-x-cursor', and `create-pixmap-cursor' for ways\n"
+"to create cursor objects.")
 #define FUNC_NAME s_set_window_cursor_x
 {
   Window w;
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
-  if (cursor == SCM_BOOL_F) {
+  if (scm_is_false(cursor)) {
     XUndefineCursor(dpy, w);
   } else {
     VALIDATE_ARG_CURSOR(2,cursor);
@@ -243,21 +236,21 @@ to create cursor objects.")
 
 SCM_DEFINE(get_x_cursor,"get-x-cursor",1,0,0,
 	  (SCM name_or_number),
-"Return the cursor object corresponding to NAME-OR-NUMBER.\n\
-NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,\n\
-\"trek\") or a number specifying the cursor number.  See \n\
-<file>X11/cursorfont.h</file> for the standard cursors.  Note\n\
-that the \"XC_\" macro prefix should be omitted when used with\n\
-this procedure..")
+"Return the cursor object corresponding to NAME-OR-NUMBER.\n\n"
+"NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,\n"
+"\"trek\") or a number specifying the cursor number.  See \n"
+"<file>X11/cursorfont.h</file> for the standard cursors.  Note\n"
+"that the \"XC_\" macro prefix should be omitted when used with\n"
+"this procedure..")
 #define FUNC_NAME s_get_x_cursor
 {
   SCM sc;
-  if (gh_string_p(name_or_number)) {
-    char *c=gh_scm2newstr(name_or_number,NULL);
+  if (scm_is_string(name_or_number)) {
+    char *c=scm_to_locale_string(name_or_number);
     sc=get_scm_cursor_by_name(c);
     FREE(c);
     return sc;
-  } else if (gh_number_p(name_or_number)) {
+  } else if (scm_is_number(name_or_number)) {
     int i;
     VALIDATE_ARG_INT_RANGE_COPY(1,name_or_number,0,XC_num_glyphs-1,i);
     return get_scm_cursor_by_number(i);
@@ -268,11 +261,11 @@ this procedure..")
 
 SCM_DEFINE(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
           (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot),
-"Create and return a new cursor object from the pixmap image.\n\
-IMAGE specifies the look of the cursor that will be returned.\n\
-FG-COLOR and BG-COLOR specify the foreground and background colors\n\
-respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the\n\
-cursor's hot spot (from the top-left of the cursor).")
+"Create and return a new cursor object from the pixmap image.\n\n"
+"IMAGE specifies the look of the cursor that will be returned.\n"
+"FG-COLOR and BG-COLOR specify the foreground and background colors\n"
+"respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the\n"
+"cursor's hot spot (from the top-left of the cursor).")
 #define FUNC_NAME s_create_pixmap_cursor
 {
   int dpixX, dpixY;
@@ -322,21 +315,20 @@ CreateScmGlobalCursors()
   /** The cursor to use when in a menu, defaults to sb_left_arrow. */
 }
 
-MAKE_SMOBFUNS(cursor);
-
 void
 init_cursor() 
 {
   int i;
-  REGISTER_SCWMSMOBFUNS(cursor);
 
-  for (i=0;i<XC_num_glyphs;i++) {
+  scm_tc16_scwm_cursor = scm_make_smob_type("cursor", 0);
+  scm_set_smob_free(scm_tc16_scwm_cursor, free_cursor);
+  scm_set_smob_print(scm_tc16_scwm_cursor, print_cursor);
+
+  for (i=0; i<XC_num_glyphs; i++) {
     preloaded_x_cursors[i]=SCM_UNDEFINED;
   }
 
-#ifndef SCM_MAGIC_SNARFER
 #include "cursor.x"
-#endif
 }
 
 

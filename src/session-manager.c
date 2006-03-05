@@ -480,7 +480,7 @@ SCM_DEFINE(SM_error_message, "SM-error-message", 0, 0, 0,
 Only valid, if `SM-register' returned #f.")
 #define FUNC_NAME s_SM_error_message
 {
-  return gh_str02scm(SMerror);
+  return scm_from_locale_string(SMerror);
 }
 #undef FUNC_NAME
 
@@ -497,7 +497,7 @@ If Scwm is already registered, this function just returns the client id.")
   char *SmcNewId;
 
   if (SMconn != NULL)
-    return gh_str02scm(SmcId);
+    return scm_from_locale_string(SmcId);
 
   XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
 
@@ -533,7 +533,7 @@ If Scwm is already registered, this function just returns the client id.")
   SmcId = SmcNewId;
   IceSMconn = SmcGetIceConnection(SMconn);
   setSMProperties();
-  return gh_str02scm(SmcId);
+  return scm_from_locale_string(SmcId);
 }
 #undef FUNC_NAME
 
@@ -564,9 +564,7 @@ void doneSM(int automatic_restart)
 
 void initSM()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "session-manager.x"
-#endif
 
   if (SmcId)
     loadMyself();

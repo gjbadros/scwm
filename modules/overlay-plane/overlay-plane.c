@@ -44,7 +44,7 @@ SCM_DEFINE (has_overlay_plane_p, "has-overlay-plane?", 0, 0, 0,
 "Return #t if the current screen has an overlay plane, #f otherwise.")
 #define FUNC_NAME s_has_overlay_plane_p
 {
-  return SCM_BOOL_FromBool(fHaveOverlayPlane);
+  return scm_from_bool(fHaveOverlayPlane);
 }
 #undef FUNC_NAME
 

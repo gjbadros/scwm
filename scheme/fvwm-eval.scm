@@ -419,7 +419,7 @@
 		 #:proc (lambda(x)(eval-fvwm-command
 				   (extract-command args) fmod x)))))
 
-(define* (fvwm-none thunk #&key (only '()) (except '()))
+(define* (fvwm-none thunk #:key (only '()) (except '()))
   (if (null? (list-windows #:only only #:except except))
       (thunk)))
 
@@ -507,7 +507,7 @@
     (write button-string)(newline) (write command-string)(newline)
     (bind-mouse contexts (string-append modifier button-string)
  ;;; do we get a window??
-		(lambda()
+		(lambda ()
 		  (eval-fvwm-command command-string fmod))))
   )
 
@@ -532,7 +532,7 @@
     (write key-string)(newline) (write command-string)(newline)
     (bind-key contexts (string-append modifier key-string)
  ;;; do we get a window??
-	      (lambda()
+	      (lambda ()
 		(eval-fvwm-command command-string fmod))))
   )
 		    
@@ -543,7 +543,7 @@
 
 
 
-(define*-public (eval-fvwm-command command #&optional (fmod #f) 
+(define*-public (eval-fvwm-command command #:optional (fmod #f) 
 				   (window #f))
   "Evaluate an fvwm2 command.
 Implemented for compatibility with fvwm2 modules, which can send

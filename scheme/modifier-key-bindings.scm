@@ -34,7 +34,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 
 
 (define*-public (unbind-two-modifier-key-events
-		modkey1 modkey2 #&optional ignore1 ignore2)
+		modkey1 modkey2 #:optional ignore1 ignore2)
   "Unbind events attached to a multi-modifier key event.
 MODKEY1, MODKEY2 should have the form (cons <keycode> <modifier mask>).
 The XKM_* variables can be used as arguments here.
@@ -80,7 +80,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 				proc-press proc-release))
 
 (define*-public (unbind-three-modifier-key-events
-		modkey1 modkey2 modkey3 #&optional ignore1 ignore2)
+		modkey1 modkey2 modkey3 #:optional ignore1 ignore2)
   "Unbind events attached to a multi-modifier key event.
 MODKEY1, MODKEY2, MODKEY3 should have the form (cons <keycode> <modifier mask>).
 The XKM_* variables can be used as arguments here.
@@ -131,7 +131,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 			       proc-press proc-release))
 
 (define*-public (unbind-four-modifier-key-events
-		modkey1 modkey2 modkey3 modkey4 #&optional ignore1 ignore2 )
+		modkey1 modkey2 modkey3 modkey4 #:optional ignore1 ignore2 )
   "Unbind events attached to a multi-modifier key event.
 MODKEY1, MODKEY2, MODKEY3, MODKEY4 should have the form (cons <keycode> <modifier mask>).
 The XKM_* variables can be used as arguments here.

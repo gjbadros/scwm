@@ -63,7 +63,7 @@ This can be overridden on a per-window basis using `set-hover-focus-delay!'."
   #:range '(0 . 10000)
   #:favorites '(0 100 300 500 1000 2000 3000))
 
-(define*-public (set-hover-focus-delay! delay #&optional (win (get-window)))
+(define*-public (set-hover-focus-delay! delay #:optional (win (get-window)))
   "Set the hover-focus delay to DELAY (in ms) for WIN.
 DELAY is the number of milliseconds after the pointer enters
 WIN that WIN will be focused.  See `set-hover-focus!' to turn
@@ -74,7 +74,7 @@ hover-focus on or off for a given window."
 
 ;;; hover-focus: setter and style options
 
-(define*-public (set-hover-focus! hover-focus? #&optional (win (get-window)))
+(define*-public (set-hover-focus! hover-focus? #:optional (win (get-window)))
   "Turn hover-focus on (#t) or off (#f) for WIN.
 hover-focus makes a window automatically get focus when the mouse pointer
 remains in a window frame.  See `set-hover-focus-delay!' for controlling

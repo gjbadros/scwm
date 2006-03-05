@@ -757,7 +757,7 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 
 static
 MenuItemInMenu *
-PmiimFromPmdXY(DynamicMenu *pmd, int ARG_UNUSED(x), int y)
+PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 {
 #define FUNC_NAME "PmiimFromPmdXY"
   int ipmiim;
@@ -852,11 +852,11 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
 	break;
       if (SCM_NULLP(scmRest))
 	break;
-      scmImage = gh_car(scmRest);
-      pmd->pmdi->rimg[iImage] = DYNAMIC_SAFE_IMAGE(gh_car(scmRest));
+      scmImage = scm_car(scmRest);
+      pmd->pmdi->rimg[iImage] = DYNAMIC_SAFE_IMAGE(scm_car(scmRest));
       if (!pmd->pmdi->rimg[iImage])
 	break;
-      scmRest = gh_cdr(scmRest);
+      scmRest = scm_cdr(scmRest);
   }
   /* Is this a valid xpm menu? */
   if (iImage != NUM_IMAGES) {

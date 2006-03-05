@@ -27,7 +27,7 @@
 (defmacro-public test-case (TITLE FORM . RESULT)
   #f)
 
-(define kwm-modules ())
+(define kwm-modules '())
 (define kwm-kpanel-winid #f)
 
 (define WM_PROTOCOLS (string->X-atom "WM_PROTOCOLS"))

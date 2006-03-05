@@ -540,17 +540,17 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                       &x_units, &y_units);
 
     scwm_run_hook(interactive_resize_start_hook, 
-                  gh_list(SCM_FROM_PSW(psw),
-                          gh_int2scm(xmotion), gh_int2scm(ymotion), 
-                          SCM_UNDEFINED));
+                  scm_list_n(SCM_FROM_PSW(psw),
+			     scm_from_int(xmotion), scm_from_int(ymotion), 
+			     SCM_UNDEFINED));
 
     /* same hook is called identically on each iteration; see below */
     scwm_run_hook(interactive_resize_new_size_hook, 
-                  gh_list(SCM_FROM_PSW(psw),
-                          gh_int2scm(dragx), gh_int2scm(dragy),
-                          gh_int2scm(dragWidth), gh_int2scm(dragHeight),
-                          gh_int2scm(x_units), gh_int2scm(y_units),
-                          SCM_UNDEFINED));
+                  scm_list_n(SCM_FROM_PSW(psw),
+			     scm_from_int(dragx), scm_from_int(dragy),
+			     scm_from_int(dragWidth), scm_from_int(dragHeight),
+			     scm_from_int(x_units), scm_from_int(y_units),
+			     SCM_UNDEFINED));
   }
   
   CassowaryEditSize(psw);
@@ -631,11 +631,11 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
         /* two calls to this hook exist.
            see the other above */
         scwm_run_hook(interactive_resize_new_size_hook, 
-                      gh_list(SCM_FROM_PSW(psw),
-                              gh_int2scm(dragx), gh_int2scm(dragy),
-                              gh_int2scm(dragWidth), gh_int2scm(dragHeight),
-                              gh_int2scm(x_units), gh_int2scm(y_units),
-                              SCM_UNDEFINED));
+                      scm_list_n(SCM_FROM_PSW(psw),
+				 scm_from_int(dragx), scm_from_int(dragy),
+				 scm_from_int(dragWidth), scm_from_int(dragHeight),
+				 scm_from_int(x_units), scm_from_int(y_units),
+				 SCM_UNDEFINED));
       }
       
 
@@ -726,7 +726,7 @@ specified. ")
 
   InteractiveResize(psw, False, &width, &height);
 
-  return gh_list(gh_int2scm(width),gh_int2scm(height),SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(width),scm_from_int(height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -759,7 +759,7 @@ place.")
 
   InteractiveResize(psw, True, &width, &height);
 
-  return gh_list(gh_int2scm(width),gh_int2scm(height),SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(width),scm_from_int(height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -779,9 +779,7 @@ init_resize_gcs()
 void 
 init_resize()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "resize.x"
-#endif
 }
 
 

@@ -69,11 +69,11 @@ XUngrabServer_withSemaphore(Display * disp)
 
 SCM_DEFINE(X_grab_server, "X-grab-server", 0, 0, 0,
 	  (),
-"Grab the X server.\n\
-This is very risky; you should almost definitely use\n\
-`with-grabbed-server' instead.  This must be paired with\n\
-X-ungrab-server.  This primitive is undefined at startup\n\
-to make it hard to access directly. See also `X-server-grabs'")
+"Grab the X server.\n\n"
+"This is very risky; you should almost definitely use\n"
+"`with-grabbed-server' instead.  This must be paired with\n"
+"X-ungrab-server.  This primitive is undefined at startup\n"
+"to make it hard to access directly. See also `X-server-grabs'")
 #define FUNC_NAME s_X_grab_server
 {
   XGrabServer_withSemaphore(dpy);
@@ -83,11 +83,11 @@ to make it hard to access directly. See also `X-server-grabs'")
 
 SCM_DEFINE(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
 	  (),
-"Ungrab the X server.\n\
-Using `X-grab-server' and `X-ungrab-server' directly is risky; you \n\
-should almost definitely use `with-grabbed-server' instead. This \n\
-primitive is undefined at startup to make it hard to access directly. \n\
-See also `X-server-grabs'")
+"Ungrab the X server.\n\n"
+"Using `X-grab-server' and `X-ungrab-server' directly is risky; you \n"
+"should almost definitely use `with-grabbed-server' instead. This \n"
+"primitive is undefined at startup to make it hard to access directly. \n"
+"See also `X-server-grabs'")
 #define FUNC_NAME s_X_ungrab_server
 {
   XUngrabServer_withSemaphore(dpy);
@@ -98,21 +98,19 @@ See also `X-server-grabs'")
 
 SCM_DEFINE(X_server_grabs, "X-server-grabs", 0, 0, 0,
 	  (),
-"Return the number of nested server grabs.\n\
-Nonzero means the server is currently grabbed. \n\
-See also `with-grabbed-server', `X-grab-server' and `X-ungrab-server'")
+"Return the number of nested server grabs.\n\n"
+"Nonzero means the server is currently grabbed. \n"
+"See also `with-grabbed-server', `X-grab-server' and `X-ungrab-server'")
 #define FUNC_NAME s_X_server_grabs
 {
-  return gh_int2scm(xgrabcount);
+  return scm_from_int(xgrabcount);
 }
 #undef FUNC_NAME
 
 
 void init_Grab()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "Grab.x"
-#endif
 }
 
 

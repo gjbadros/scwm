@@ -37,7 +37,6 @@
 #include <assert.h>
 #include <X11/X.h>
 
-#include <guile/gh.h>
 #include <libguile.h>
 
 #define XPROPERTY_IMPLEMENTATION
@@ -102,9 +101,9 @@ static int Set32Value(void **dest, long el)
 
 Atom InternAtomFromScm(Display *dpy, SCM s, Bool f)
 {
-  char *sz = gh_scm2newstr(s, NULL);
+  char *sz = scm_to_locale_string(s);
   Atom answer = XInternAtom(dpy, sz, f);
-  gh_free(sz);
+  free(sz);
   return answer;
 }
 
@@ -134,8 +133,8 @@ value.")
 
   if (format == SCM_UNDEFINED) {
     fmt=8;
-  } else if (gh_number_p(format)) {
-    fmt=gh_scm2int(format);
+  } else if (scm_is_number(format)) {
+    fmt=scm_to_int(format);
     if (fmt != 8 && fmt != 16 && fmt != 32) {
       scwm_error(FUNC_NAME, "FORMAT must be 8, 16, or 32.");
       return SCM_UNSPECIFIED;
@@ -143,10 +142,10 @@ value.")
   } else {
     SCWM_WRONG_TYPE_ARG(5, format);
   }
-  if (fmt == 8 && gh_string_p(value)) {
+  if (fmt == 8 && scm_is_string(value)) {
     fGotString = True;
-    val = gh_scm2newstr(value, &len);
-  } else if (gh_vector_p(value)) {
+    val = scm_to_locale_stringn(value, &len);
+  } else if (scm_is_true(scm_vector_p(value))) {
     int i;
     int (*setter)(void **, long);
     void *v;
@@ -163,11 +162,11 @@ value.")
     default:
       assert(0);		/* we checked this above */
     }
-    len = gh_vector_length(value);
+    len = scm_c_vector_length(value);
     v = val = (len == 0 ? NULL : safemalloc(len*fmt/8));
     for (i=0; i<len; i++) {
-      SCM el=gh_vector_ref(value, gh_int2scm(i));
-      if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {
+      SCM el=scm_vector_ref(value, scm_from_int(i));
+      if (!scm_is_number(el) || !setter(&v, scm_to_long(el))) {
 	SCWM_WRONG_TYPE_ARG(3, value);
       }
     }
@@ -176,13 +175,13 @@ value.")
   }
   if (type == SCM_UNDEFINED) {
     atype=XA_STRING;
-  } else if (gh_string_p(type)) {
+  } else if (scm_is_string(type)) {
     atype = InternAtomFromScm(dpy, type, False);
-  } else if (gh_number_p(type)) {
-    atype = gh_scm2long(type);
+  } else if (scm_is_number(type)) {
+    atype = scm_to_long(type);
   } else {
     /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
-    if (fGotString) gh_free(val);
+    if (fGotString) free(val);
     else FREE(val);
     SCWM_WRONG_TYPE_ARG(4, type);
   }
@@ -194,7 +193,7 @@ value.")
     mode=PropModeAppend;
   } else {
   /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
-    if (fGotString) gh_free(val);
+    if (fGotString) free(val);
     else FREE(val);
     scwm_error(FUNC_NAME, "ACTION must be one of 'replace, 'prepend, or "
 	       "'append");
@@ -207,7 +206,7 @@ value.")
   XChangeProperty(dpy, w, aprop, atype, fmt, mode, val, len);
   
   /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
-  if (fGotString) gh_free(val);
+  if (fGotString) free(val);
   else FREE(val);
   return SCM_UNSPECIFIED;
 }
@@ -245,17 +244,17 @@ SCM
 ScmListOfStringsFromStringLen( char *pch, int cch)
 {
   if (strlen(pch) == cch)
-    return gh_str2scm(pch,cch);
+    return scm_from_locale_stringn(pch,cch);
   else {
     SCM items = SCM_EOL;
     char *pchNull = pch + cch - 1;
     while (pchNull >= pch) {
       if ('\0' == *pchNull) {
-        items = gh_cons(gh_str02scm(pchNull+1),items);
+        items = scm_cons(scm_from_locale_string(pchNull+1),items);
       }
       --pchNull;
     }
-    items = gh_cons(gh_str02scm(pch),items);
+    items = scm_cons(scm_from_locale_string(pch),items);
     return items;
   }
 }
@@ -303,16 +302,16 @@ If the X property could be found, a list '(value type format) is returned.\n\
     break;
   case 16:
     v16=(INT16 *)val;
-    value=gh_make_vector(gh_int2scm(len), SCM_BOOL_F);
+    value=scm_make_vector(scm_from_int(len), SCM_BOOL_F);
     for (i=0; i<len; i++) {
-      gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v16++));
+      scm_vector_set_x(value, scm_from_int(i), scm_from_long(*v16++));
     }
     break;
   case 32:
     v32=(INT32 *)val;
-    value=gh_make_vector(gh_int2scm(len), SCM_BOOL_F);
+    value=scm_make_vector(scm_from_int(len), SCM_BOOL_F);
     for (i=0; i<len; i++) {
-      gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v32++));
+      scm_vector_set_x(value, scm_from_int(i), scm_from_long(*v32++));
     }
     break;
   default:
@@ -321,9 +320,9 @@ If the X property could be found, a list '(value type format) is returned.\n\
   }
   XFree(val);
   str=XGetAtomName(dpy, atype);
-  type=gh_str02scm(str);
+  type=scm_from_locale_string(str);
   XFree(str);
-  return gh_list(value,type,gh_int2scm(fmt),SCM_UNDEFINED);
+  return scm_list_n(value,type,scm_from_int(fmt),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -363,7 +362,7 @@ WIN is the window to query, an X window id, or 'root-window.")
   if (props) {
     for (i=n; i--; ) {
       name = XGetAtomName(dpy, props[i]);
-      properties = gh_cons(gh_str02scm(name), properties);
+      properties = scm_cons(scm_from_locale_string(name), properties);
       XFree(name);
     }
     XFree(props);
@@ -393,7 +392,7 @@ If STRING contains NULL-characters, the behaviour is undefined.")
   VALIDATE_ARG_STR_NEWCOPY(1,string,sz);
   a = InternAtomFromScm(dpy,string,False);
   assert(sizeof(Atom) == sizeof(unsigned long));
-  return gh_ulong2scm((unsigned long)a);
+  return scm_from_ulong((unsigned long)a);
 }
 #undef FUNC_NAME
 
@@ -410,7 +409,7 @@ Returns #f, if the X atom was not known.")
   VALIDATE_ARG_ATOM_COPY(1,atom,at);
   sz = XGetAtomName(dpy, at);
   if (!sz) return SCM_BOOL_F;
-  answer = gh_str02scm(sz);
+  answer = scm_from_locale_string(sz);
   XFree(sz);
   return answer;
 }
@@ -436,7 +435,7 @@ object, 'root-window, or an integer window Id.")
     if (psw)
       return SCM_FROM_PSW(psw);
     else
-      return gh_long2scm(w);
+      return scm_from_long(w);
   }
 }
 #undef FUNC_NAME
@@ -464,9 +463,7 @@ is a window object or 'root-window.")
 void
 init_xproperty()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "xproperty.x"
-#endif
 }
 
 

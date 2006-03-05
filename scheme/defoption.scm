@@ -25,7 +25,7 @@
 
 ;; scwm-options takes the place of the doc tools-generated
 ;; `user-options' variable
-(if (not (feature? 'scwm-options))
+(if (not (provided? 'scwm-options))      ; feature?
     (begin
       (define-public scwm-options '())
       (define-public scwm-options-groups '())))
@@ -73,7 +73,7 @@ REST contains keyword arguments including:
   #:widget - a custom widget to use for this group"
   `(define-scwm-group-proc ',sym ,name ,@rest))
 
-(define*-public (define-scwm-group-proc sym name #&key (docstring #f) (icon #f) (widget #f))
+(define*-public (define-scwm-group-proc sym name #:key (docstring #f) (icon #f) (widget #f))
   "Helper procedure for `define-scwm-group'-- use that instead."
   (or (symbol? sym) (error "SYM is not a symbol!"))
   (let* ((option-group (list sym name docstring icon widget))
@@ -148,12 +148,13 @@ scwm-options-groups
 (define-public (prompt-from-symbol sym)
   "Return a string prompt that is appropriate for the option symbol SYM."
   (let* ((name (symbol->string sym))
-	 (n (make-shared-substring name 1 (- (string-length name) 1))))
+;;	 (n (make-shared-substring name 1 (- (string-length name) 1))))
+	 (n (substring name 1 (- (string-length name) 1))))
     (regexp-substitute/global #f "-" n 'pre " " 'post)))
 
 ;;(prompt-from-symbol '*foo-is-here*)
 
-(define*-public (define-scwm-option-proc var sym docstring default #&key
+(define*-public (define-scwm-option-proc var sym docstring default #:key
 		  (type #f)
 		  (name #f)
 		  (permit-disable #f)

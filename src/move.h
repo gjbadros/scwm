@@ -27,7 +27,7 @@ void Keyboard_shortcuts(XEvent * Event, int ReturnEvent,
 Window WFrameOrIcon(ScwmWindow *psw);
 Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 
-#endif MOVE_H
+#endif /* MOVE_H */
 
 /* Local Variables: */
 /* tab-width: 8 */

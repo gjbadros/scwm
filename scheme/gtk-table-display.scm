@@ -49,7 +49,7 @@
 ;; (define str (output-of-system-cmd "bookmark-grep extreme"))
 ;; (set! str (make-shared-substring str 0 (1- (string-length str))))
 
-(define*-public (gtk-table-from-string string #&key
+(define*-public (gtk-table-from-string string #:key
 				       (select-proc #f) 
 				       (titles #("URL" "Title")) 
 				       (window-title "URLs"))

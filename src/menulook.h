@@ -64,16 +64,16 @@ typedef struct {
     MenuDrawingVtable * mdvt;
 } scwm_menulook;
 
-#define MENULOOK_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_menulook)
-#define MENULOOK(X) ((scwm_menulook *)gh_cdr(X))
+#define MENULOOK_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_menulook, X))
+#define MENULOOK(X) ((scwm_menulook *)SCM_SMOB_DATA(X))
 #define SAFE_MENULOOK(X) (MENULOOK_P(X)? MENULOOK(X) : NULL)
 
-#define MENULOOK_OR_SYMBOL_P(X) (MENULOOK_P(X) || gh_symbol_p(X))
-#define DYNAMIC_MENULOOK_P(X) (gh_symbol_p(X) ? \
-                              MENULOOK_P(scm_symbol_binding(SCM_BOOL_F,(X))) :\
+#define MENULOOK_OR_SYMBOL_P(X) (MENULOOK_P(X) || scm_is_symbol(X))
+#define DYNAMIC_MENULOOK_P(X) (scm_is_symbol(X) ? \
+                              MENULOOK_P(scm_variable_ref(scm_lookup(X))) :\
                               MENULOOK_P(X))
-#define DYNAMIC_SAFE_MENULOOK(X) (gh_symbol_p(X) ? \
-				  SAFE_MENULOOK(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+#define DYNAMIC_SAFE_MENULOOK(X) (scm_is_symbol(X) ? \
+				  SAFE_MENULOOK(scm_variable_ref(scm_lookup(X))) : \
 				  SAFE_MENULOOK(X))
 
 EXTERN long scm_tc16_scwm_menulook;

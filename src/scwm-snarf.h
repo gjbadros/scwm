@@ -23,58 +23,56 @@ SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(...)
 SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(), char *szArgList);
 #endif
 
-/* do not define this macro if we are extracting comments since
-   the macro name is used as a lexical cue to the extractor */
+#define SCWM_HOOK(var, name, args, docstring)\
+SCM_SNARF_HERE(\
+static SCM var\
+)\
+SCM_SNARF_INIT(\
+var = scm_permanent_object(scm_make_hook(scm_from_int(args)));\
+scm_c_define(name, var)\
+)
 
-#ifndef SCM_MAGIC_SNARFER
-#define SCWM_HOOK(var, name, args, docstring) \
-static SCM var
-#else
+#define SCWM_GLOBAL_HOOK(var, name, args, docstring)\
+SCM_SNARF_HERE(\
+SCM var\
+)\
+SCM_SNARF_INIT(\
+var = scm_permanent_object(scm_make_hook(scm_from_int(args)));\
+scm_c_define(name, var)\
+)
 
-#ifndef HAVE_SCM_MAKE_HOOK
-#define SCWM_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_sysintern(name, SCM_EOL); } while (0)
-#else
-#ifdef HAVE_SCM_CREATE_HOOK
-#define SCWM_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_create_hook(name,args); } while (0)
-#else
-#define SCWM_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_make_named_hook(name,args); } while (0)
-#endif
-#endif
-
-#endif
-
-#ifndef SCM_MAGIC_SNARFER
-#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
-SCM var
-#else
-
-#ifndef HAVE_SCM_MAKE_HOOK
-#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_sysintern(name, SCM_EOL); } while (0)
-#else
-#ifdef HAVE_SCM_CREATE_HOOK
-#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_create_hook(name,args); } while (0)
-#else
-#define SCWM_GLOBAL_HOOK(var, name, args, docstring) \
-SCM__I     do { var = scm_make_named_hook(name,args); } while (0)
-#endif
-#endif
-
-#endif
 
 /* GJB:FIXME:: need to signify interactive procedures somehow */
-#define SCWM_IPROC(x1,x2,x3,x4,x5,x6,x7,x8) SCM_DEFINE(x1,x2,x3,x4,x5,x6,x8)
+#define SCWM_IPROC(FNAME, PRIMNAME, REQ, OPT, VAR, ARGLIST, ISPEC, DOC) \
+SCM_SNARF_HERE(static const char s_##FNAME[]=PRIMNAME;\
+SCM FNAME ARGLIST\
+)\
+SCM_SNARF_INIT(\
+scwm_make_igsubr(s_##FNAME, REQ, OPT, VAR, \
+                 (SCM_FUNC_CAST_ARBITRARY_ARGS) FNAME, ISPEC, NULL);\
+)
+
+#if 0
+#define SCM_DEFINE(FNAME, PRIMNAME, REQ, OPT, VAR, ARGLIST, DOCSTRING) \
+SCM_SNARF_HERE(\
+static const char s_ ## FNAME [] = PRIMNAME; \
+SCM FNAME ARGLIST\
+)\
+SCM_SNARF_INIT(\
+scm_c_define_gsubr (s_ ## FNAME, REQ, OPT, VAR, \
+                    (SCM_FUNC_CAST_ARBITRARY_ARGS) FNAME); \
+)\
+SCM_SNARF_DOCS(primitive, FNAME, PRIMNAME, ARGLIST, REQ, OPT, VAR, DOCSTRING)
+#endif
 
 #ifndef SCM_MAGIC_SNARFER
 #define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
 static scwm_property_handler var = { &setter, &getter }
 #else
 #define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
-SCM__I     set_property_handler (sym, &var)
+SCM_SNARF_INIT(\
+set_property_handler (sym, &var)\
+)
 #endif
 
 

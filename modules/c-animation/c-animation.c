@@ -90,8 +90,8 @@ AnimatedResizeWindows(SCM xforms,
     { /* scope */
     SCM xform_iter = xforms;
     Bool fFirst = True;
-    for (; xform_iter != SCM_EOL; xform_iter = gh_cdr(xform_iter)) {
-      SCM xform = gh_car(xform_iter);
+    for (; xform_iter != SCM_EOL; xform_iter = scm_cdr(xform_iter)) {
+      SCM xform = scm_car(xform_iter);
       ScwmWindow *psw = NULL;
       Window w;
       Bool fFrame = False;
@@ -102,32 +102,32 @@ AnimatedResizeWindows(SCM xforms,
       int startX, startY, deltaX, deltaY;
       int endX, endY;
       
-      psw = PSWFROMSCMWIN(gh_car(xform)); xform = gh_cdr(xform);
-      fFrame = gh_scm2bool(gh_car(xform)); 
+      psw = PSWFROMSCMWIN(scm_car(xform)); xform = scm_cdr(xform);
+      fFrame = scm_to_bool(scm_car(xform)); 
       if (fFrame) w = psw->frame;
       else w = psw->icon_w;
 
-      xform = gh_cdr(xform); cns = gh_car(xform);
-      startW = gh_scm2int(gh_car(cns));
-      startH = gh_scm2int(gh_cdr(cns));
-      xform = gh_cdr(xform); cns = gh_car(xform);
-      endW = gh_scm2int(gh_car(cns));
-      endH = gh_scm2int(gh_cdr(cns));
+      xform = scm_cdr(xform); cns = scm_car(xform);
+      startW = scm_to_int(scm_car(cns));
+      startH = scm_to_int(scm_cdr(cns));
+      xform = scm_cdr(xform); cns = scm_car(xform);
+      endW = scm_to_int(scm_car(cns));
+      endH = scm_to_int(scm_cdr(cns));
       deltaW = endW - startW;
       deltaH = endH - startH;
 
-      xform = gh_cdr(xform); cns = gh_car(xform);
-      startX = gh_scm2int(gh_car(cns));
-      startY = gh_scm2int(gh_cdr(cns));
-      xform = gh_cdr(xform); cns = gh_car(xform);
-      endX = gh_scm2int(gh_car(cns));
-      endY = gh_scm2int(gh_cdr(cns));
+      xform = scm_cdr(xform); cns = scm_car(xform);
+      startX = scm_to_int(scm_car(cns));
+      startY = scm_to_int(scm_cdr(cns));
+      xform = scm_cdr(xform); cns = scm_car(xform);
+      endX = scm_to_int(scm_car(cns));
+      endY = scm_to_int(scm_cdr(cns));
       deltaX = endX - startX;
       deltaY = endY - startY;
 
-      xform = gh_cdr(xform); cns = gh_car(xform);
-      fSetEndX = gh_scm2bool(gh_car(cns));
-      fSetEndY = gh_scm2bool(gh_cdr(cns));
+      xform = scm_cdr(xform); cns = scm_car(xform);
+      fSetEndX = scm_to_bool(scm_car(cns));
+      fSetEndY = scm_to_bool(scm_cdr(cns));
       
 #ifdef SCWM_DEBUG_ANIM_RESIZE
       fprintf(stderr,"startX = %d, startY = %d, endX = %d, endY = %d, deltaX = %d, deltaY = %d\n",
@@ -233,7 +233,7 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
                      Bool fSetEndX, Bool fSetEndY,
 		     Bool fWarpPointerToo, int cmsDelay, float *ppctMovement)
 {
-  SCM xforms = gh_cons(ScmWindowDelta(psw,w,startW,startH,endW,endH,
+  SCM xforms = scm_cons(ScmWindowDelta(psw,w,startW,startH,endW,endH,
                                       startX,startY,endX,endY,fSetEndX,fSetEndY),
                        SCM_EOL);
   AnimatedResizeWindows(xforms,fWarpPointerToo,cmsDelay,ppctMovement, True);
@@ -315,19 +315,19 @@ animated window shades and animated moves.")
   int citems;
   int i;
 
-  if (!gh_vector_p(vector)) {
+  if (!scm_to_bool(scm_vector_p(vector))) {
     SCWM_WRONG_TYPE_ARG(1,vector);
   }
 
-  citems = gh_vector_length(vector);
+  citems = scm_vector_length(vector);
   for (i=0; i<citems; i++) {
-    SCM val = gh_vector_ref(vector,gh_int2scm(i));    
-    if (!gh_number_p(val)) {
+    SCM val = scm_vector_ref(vector,scm_from_int(i));    
+    if (!scm_to_bool(scm_number_p(val))) {
       SCWM_WRONG_TYPE_ARG(1,vector);
     }
     /* FIXGJB: also check < 2, perhaps (don't want to
       check < 1, since we might want to overshoot and then come back) */
-    rgpctMovementDefault[i] = (float) gh_scm2double(val);
+    rgpctMovementDefault[i] = (float) scm_to_double(val);
   }
   /* Ensure that we end up 100% of the way to our destination */
   if (i>0 && rgpctMovementDefault[i-1] != 1.0) {
@@ -391,7 +391,7 @@ the window context in the usual way if not specified.")
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
   signal_window_property_change(win, sym_shaded, SCM_BOOL_T,
-                                SCM_BOOL_FromBool(old));
+                                scm_from_bool(old));
 
   return SCM_UNSPECIFIED;
 }
@@ -428,7 +428,7 @@ not specified. See also `window-unshade', `animated-window-shade'.")
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
   signal_window_property_change(win, sym_shaded, SCM_BOOL_F,
-                                SCM_BOOL_FromBool(old));
+                                scm_from_bool(old));
 
   return SCM_UNSPECIFIED;
 }
@@ -451,10 +451,10 @@ conjunction with the first window in the XFORMS list;  defaults to #f.")
   Bool fMovePointer;
   SCM xform_iter = xforms;
   int i = 0;
-  for (; xform_iter != SCM_EOL; xform_iter = gh_cdr(xform_iter), ++i) {
-    if (!FScmIsWindowDelta(gh_car(xform_iter))) {
+  for (; xform_iter != SCM_EOL; xform_iter = scm_cdr(xform_iter), ++i) {
+    if (!FScmIsWindowDelta(scm_car(xform_iter))) {
       scm_misc_error(FUNC_NAME,"Element %S of xforms argument list is bad: %s.",
-                     gh_list(gh_int2scm(i),gh_car(xform_iter),SCM_UNDEFINED));
+                     scm_list_n(scm_from_int(i),scm_car(xform_iter),SCM_UNDEFINED));
       scm_wrong_type_arg(FUNC_NAME,1,xforms);
     }
   }
@@ -463,8 +463,8 @@ conjunction with the first window in the XFORMS list;  defaults to #f.")
   { /* scope */
     int cmsDelay = -1;
     
-    if (gh_number_p(*pscm_animation_delay)) {
-      cmsDelay = gh_scm2int(*pscm_animation_delay);
+    if (scm_is_number(*pscm_animation_delay)) {
+      cmsDelay = scm_to_int(*pscm_animation_delay);
     }
     AnimatedResizeWindows(xforms, fMovePointer, 
                           cmsDelay, NULL, !fInResolveHook);
@@ -501,8 +501,8 @@ way if not specified.")
   { /* scope */
     int cmsDelay = -1;
     
-    if (gh_number_p(*pscm_animation_delay)) {
-      cmsDelay = gh_scm2int(*pscm_animation_delay);
+    if (scm_is_number(*pscm_animation_delay)) {
+      cmsDelay = scm_to_int(*pscm_animation_delay);
     }
 
     /* use viewport coordinates */
@@ -557,8 +557,8 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
   { /* scope */
     int cmsDelay = -1;
     Window x_win;
-    if (gh_number_p(*pscm_animation_delay)) {
-      cmsDelay = gh_scm2int(*pscm_animation_delay);
+    if (scm_to_bool(scm_number_p(*pscm_animation_delay))) {
+      cmsDelay = scm_to_int(*pscm_animation_delay);
     }
 
     if (SCM_BOOL_F==
@@ -619,9 +619,7 @@ static
 void
 init_c_animation()
 {
-#ifndef SCM_MAGIC_SNARFER
  #include "c-animation.x"
-#endif
 }
 
 void scm_init_app_scwm_c_animation_module()

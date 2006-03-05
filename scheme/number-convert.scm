@@ -35,7 +35,7 @@
 ;; (char-value #\B)
 ;; (char-value #\1)
 
-(define*-public (number-in-base number base #&optional value)
+(define*-public (number-in-base number base #:optional value)
   "Return the integer that corresponds to string NUMBER in base BASE.
 VALUE is the optional value of any prefix to NUMBER."
   (let ((sl (string-length number)))

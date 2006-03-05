@@ -158,7 +158,7 @@
 (define ui-box-spacing 4)
 (define ui-box-border 5)
 
-(define* (initialize-gtk-toggle-menu #&optional (close? #f))
+(define* (initialize-gtk-toggle-menu #:optional (close? #f))
   (let* ((toplevel gtk-toggle-window)
 	 (vboxcn gtk-instance-box)
 	 (vbox (gtk-vbox-new #f 3))

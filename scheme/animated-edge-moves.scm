@@ -9,7 +9,7 @@
 
 
 ;; Northwest
-(define*-public (animated-move-to-nw #&optional (win (get-window)))
+(define*-public (animated-move-to-nw #:optional (win (get-window)))
   "Move WIN to the northwest edge and update its gravity."
   (interactive)  
   (with-window win
@@ -17,7 +17,7 @@
 	       (set-window-gravity! 'northwest)))
 
 ;; Northeast
-(define*-public (animated-move-to-ne #&optional (win (get-window)))
+(define*-public (animated-move-to-ne #:optional (win (get-window)))
   "Move WIN to the northeast edge and update its gravity."
   (interactive)  
   (with-window win
@@ -25,7 +25,7 @@
 	       (set-window-gravity! 'northeast)))
 
 ;; Southwest
-(define*-public (animated-move-to-sw #&optional (win (get-window)))
+(define*-public (animated-move-to-sw #:optional (win (get-window)))
   "Move WIN to the southwest edge and update its gravity."
   (interactive)  
   (with-window win
@@ -33,7 +33,7 @@
 	       (set-window-gravity! 'southwest)))
 
 ;; SouthEast
-(define*-public (animated-move-to-se #&optional (win (get-window)))
+(define*-public (animated-move-to-se #:optional (win (get-window)))
   "Move WIN to the southeast edge and update its gravity."
   (interactive)  
   (with-window win
@@ -42,7 +42,7 @@
 	       (set-window-gravity! 'southeast)))
 
 ;; North
-(define*-public (animated-move-to-n #&optional (win (get-window)))
+(define*-public (animated-move-to-n #:optional (win (get-window)))
   "Move WIN to the north edge and update its gravity."
   (interactive)  
   (with-window win
@@ -50,7 +50,7 @@
 	       (set-window-gravity! 'north)))
 
 ;; East
-(define*-public (animated-move-to-e #&optional (win (get-window)))
+(define*-public (animated-move-to-e #:optional (win (get-window)))
   "Move WIN to the east edge and update its gravity."
   (interactive)  
   (with-window win
@@ -58,7 +58,7 @@
 	       (set-window-gravity! 'east)))
 
 ;; South
-(define*-public (animated-move-to-s #&optional (win (get-window)))
+(define*-public (animated-move-to-s #:optional (win (get-window)))
   "Move WIN to the south edge and update its gravity."
   (interactive)
   (with-window win
@@ -66,7 +66,7 @@
 	       (set-window-gravity! 'south)))
 
 ;; West
-(define*-public (animated-move-to-w #&optional (win (get-window)))
+(define*-public (animated-move-to-w #:optional (win (get-window)))
   "Move WIN to the west edge and update its gravity."
   (interactive)
   (with-window win
@@ -74,7 +74,7 @@
 	       (set-window-gravity! 'west)))
 
 ;; Center
-(define*-public (animated-move-to-center #&optional (win (get-window)))
+(define*-public (animated-move-to-center #:optional (win (get-window)))
   "Move WIN to the center of the viewport and update its gravity."
   (interactive)
   (with-window win

@@ -167,12 +167,12 @@
 	   (apply string (make-list pad #\nul)))))))
 
 ;; writes the string as binary data to the port
-(define*-public (binary-write str #&optional (port (current-output-port)))
+(define*-public (binary-write str #:optional (port (current-output-port)))
   "Writes STR as binary data to PORT."
   (uniform-array-write str port))
 
 ;; reads length bytes of binary data and returns it as a string
-(define*-public (binary-read length #&optional (port (current-input-port)))
+(define*-public (binary-read length #:optional (port (current-input-port)))
   "Reads LENGTH bytes of binary data from PORT and return it as a string."
   (let* ((s (make-string length))
 	 (result (uniform-array-read! s port)))
@@ -182,7 +182,7 @@
 
 ;; reads the binary representation of a C long from the port and
 ;; returns it as a Scheme number.
-(define*-public (binary-read-long #&optional (port (current-input-port)))
+(define*-public (binary-read-long #:optional (port (current-input-port)))
   "Reads a binary representation of a C long and return as a scheme number.
 The value is read from PORT, or the current-input-port."
   (let* ((u (make-uniform-array #xfffffff 1))

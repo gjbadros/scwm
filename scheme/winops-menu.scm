@@ -27,7 +27,7 @@
   "Return the application menu for WIN, or #f if there is none."
   (window-property win 'application-menu))
 
-(define*-public (set-window-application-menu! menu #&optional (win (get-window)))
+(define*-public (set-window-application-menu! menu #:optional (win (get-window)))
   "Set the application menu for WIN to MENU."
   (set-window-property! win 'application-menu menu))
 

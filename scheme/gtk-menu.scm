@@ -8,21 +8,21 @@
   :use-module (gtk gtk)
   :use-module (app scwm optargs))
 
-(define*-public (scwm-gtk-menu-title label #&key image-left)
-  (if (bound? image-left)
+(define*-public (scwm-gtk-menu-title label #:key image-left)
+  (if image-left
       (scwm-gtk-menuitem label #:image-left image-left)
       (scwm-gtk-menuitem label)))
 
 (define-public scwm-gtk-menu-separator (gtk-menu-item-new))
 
-(define*-public (scwm-gtk-menuitem label #&key image-above image-left
+(define*-public (scwm-gtk-menuitem label #:key image-above image-left
 				   (fg #f) (bg #f) (font #f)
 				   extra-label action submenu hover-action unhover-action
 				   hotkey-prefs)
   (let ((forced-submenu? #f))
-    (if (and (bound? action) (bound? submenu))
+    (if (and action submenu)
 	(error "Cannot give both an action and a submenu"))
-    (if (bound? submenu)
+    (if submenu
 	(begin
 	  (set! forced-submenu? #t)
 	  (set! action submenu)))
@@ -36,14 +36,14 @@
 	(gtk-widget-show align)
 	(gtk-container-add mi hbox)
 	(gtk-widget-set-usize align 22 16)
-	(if (and (bound? image-left) image-left)
+	(if image-left
 	    (let ((pix (image->gtk-pixmap image-left hbox)))
 	      (gtk-container-add align pix)
 	      (gtk-widget-show pix)))
 	(gtk-box-pack-start hbox align #f #f 0)
 	(gtk-box-pack-start hbox lab #t #t 4)
 	(gtk-widget-show mi)
-	(if (bound? extra-label)
+	(if extra-label
 	    (let ((extralab (gtk-label-new extra-label)))
 	      (gtk-misc-set-alignment extralab 0 1)
 	      (gtk-box-pack-start hbox extralab #f #f 4)))
@@ -67,7 +67,7 @@
 		   (scwm-gtk-menuitem label #:image-left picture-left #:action action))))
 	 (menuitem-properties mi)))
 
-(define*-public (scwm-gtk-menu list-of-menuitems #&key
+(define*-public (scwm-gtk-menu list-of-menuitems #:key
 			       (image-side 'menu-side-image)
 			       (image-align 'top)
 			       (color-bg-image-side 'menu-side-bg-color)
@@ -93,7 +93,7 @@
     (gtk-widget-show-all menu)
     menu))
 
-(define*-public (scwm-gtk-popup-menu menu #&optional warp-to-index x-pos y-pos left-side? permit-alt-release-selection?)
+(define*-public (scwm-gtk-popup-menu menu #:optional warp-to-index x-pos y-pos left-side? permit-alt-release-selection?)
   (gtk-menu-popup menu #f #f 0 0))
 
 #!

@@ -20,6 +20,14 @@
   :use-module (app scwm nonants)
   :use-module (app scwm optargs))
 
+(export
+ place-nonant-marker
+ window-is-selected?
+ select-window-toggle
+ select-window-add
+ select-window-remove
+ remove-nonant-marker
+ )
 
 
 ;; hook procedures
@@ -37,7 +45,7 @@ Invoked as (proc WINDOW-NO-LONGER-SELECTED).")
 
 (define show-nonant-flag #f)
 
-(define*-public (window-is-selected? #&optional (w (get-window)))
+(define* (window-is-selected? #:optional (w (get-window)))
   "Return #t if W is in the selected window list, else #f.
 See also `select-window-add', `select-window-remove', and `selected-windows-list'."
   (member w selected-windows))
@@ -50,7 +58,7 @@ See also `select-window-add', `select-window-remove', and `selected-windows-list
 ;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
 ;;(use-scwm-modules optargs flash-window listops)
 
-(define*-public (select-window-toggle #&optional (w (get-window-with-nonant)))
+(define* (select-window-toggle #:optional (w (get-window-with-nonant)))
   "Toggle the selectedness of W.
 See `select-window-add' and `select-window-remove'."
   (interactive)
@@ -59,7 +67,7 @@ See `select-window-add' and `select-window-remove'."
       (select-window-add w)))
 
  
-(define*-public (select-window-add #&optional (w (get-window-with-nonant)))
+(define* (select-window-add #:optional (w (get-window-with-nonant)))
   "Select a single window, highlight it, and add it to the selected-windows-list.
 The selected window is returned and will remain highlighted
 until `unflash-window' is called on that window.  The selected
@@ -75,7 +83,7 @@ accessed via `selected-windows-list'."
 	(set! selected-windows (cons w selected-windows))
 	w)))
 
-(define*-public (select-window-remove #&optional (w (get-window-with-nonant)))
+(define* (select-window-remove #:optional (w (get-window-with-nonant)))
   "Unselect a single window, de-highlight it, and remove it from the selected-windows-list.
 The selected window is removed from the selected-windows list that can be
 accessed via `selected-windows-list'."
@@ -128,7 +136,7 @@ PROC might be one of `resource-match??', `class-match??', etc."
 ;; or provide a way of telling select-window-interactively that
 ;; the root window is not an error
 (define*-public (select-multiple-windows-interactively
-		 #&optional (max 32000) (proc-when-selected #f))
+		 #:optional (max 32000) (proc-when-selected #f))
   "Return a list of user-selected windows, up to MAX.
 The list is in the reverse order from the way by which they were selected.
 PROC-WHEN-SELECTED will be run on each window as it is selected."
@@ -169,7 +177,8 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
     (message-window-set-position! markwin (+ xpos (* xoffset xnon)) (+ ypox (* yoffset ynon)))))
 
 
-(define*-public (place-nonant-marker #&optional (w (get-window-with-nonant)))
+
+(define* (place-nonant-marker #:optional (w (get-window-with-nonant)))
   "Place a nonant marker on W."
   (if (and (window? w) (object-property w 'nonant))
       (let ((nonant (object-property w 'nonant))
@@ -181,7 +190,7 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
 	(set-object-property! w 'markwin markwin))))
 
 	     
-(define*-public (remove-nonant-marker #&optional (w (get-window)))
+(define* (remove-nonant-marker #:optional (w (get-window)))
   "Remove a nonant marker from W."
   (let ((markwin (object-property w 'markwin)))
     (if (message-window? markwin)

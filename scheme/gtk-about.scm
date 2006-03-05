@@ -12,7 +12,7 @@
 
 ;; Largely borrowed from Galway, the Guile HTML editor --12/05/99 gjb
 ;; GJB:FIXME:: how do I force a startup width, but not height?
-(define*-public (gtk-about title text #&optional (pixmap #f) (width 500) (height 400))
+(define*-public (gtk-about title text #:optional (pixmap #f) (width 500) (height 400))
   (let* ((window  (gtk-window-new 'dialog))
 	 (notebook(gtk-notebook-new))
 	 (box     (gtk-vbox-new #f 1))
@@ -22,7 +22,7 @@
 	 (text-widget (gtk-text-new #f #f)))
     (if (string? pixmap) (set! pixmap (gtk-pixmap-new-search-scwm-path pixmap button0)))
     (gtk-signal-connect button1 "clicked"
-			(lambda() (gtk-widget-destroy window)))
+			(lambda () (gtk-widget-destroy window)))
     (gtk-window-set-title window title)
     (gtk-container-add window box)
     (for-each (lambda (i) (gtk-box-pack-start box i)) (list notebook hbox0))

@@ -4,10 +4,9 @@
 
 (define-module (app scwm path-cache)
   :use-module (ice-9 string-fun)
-  :use-module (app scwm base))
-
-(if (> guile-version 1.3)
-    (use-modules (ice-9 popen)))
+  :use-module (app scwm base)
+  :use-module (ice-9 popen)
+  :use-module (ice-9 rdelim))
 
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)

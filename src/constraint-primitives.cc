@@ -35,13 +35,13 @@ static SCM scmMasterSolver = SCM_BOOL_F;
 static set<ScwmWindow *> setpswDirty;
 
 SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook", 1,
-"Called upon completion of each constraint re-solve.
-The hook is passed a single argument, the solver object that just re-solved.
-The various 'changed-proc hooks on cl-variable objects are called as the solver
-changes variables.  Often, those callbacks should just remember what
-has changed and then act on all the changes at once using this
-callback.  The alternative--acting on all variable changes as they
-occur--can be inefficent and visually distracting.");
+"Called upon completion of each constraint re-solve."
+"The hook is passed a single argument, the solver object that just re-solved."
+"The various 'changed-proc hooks on cl-variable objects are called as the solver"
+"changes variables.  Often, those callbacks should just remember what"
+"has changed and then act on all the changes at once using this"
+"callback.  The alternative--acting on all variable changes as they"
+"occur--can be inefficent and visually distracting.");
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSolver *)
@@ -122,11 +122,11 @@ ScwmResolve(ClSimplexSolver *psolver)
 
 SCM_DEFINE(add_stays_on_window, "add-stays-on-window", 1, 0, 0,
           (SCM win),
-"Add stay constraint on all window dimensions.
-WIN is a window object.  This is done automatically for all
-current windows when a solver is made the master solver via
-`scwm-set-master-solver' and is also done for all newly-created
-windows.   Occasions for using this primitive are rare.")
+"Add stay constraint on all window dimensions."
+"WIN is a window object.  This is done automatically for all"
+"current windows when a solver is made the master solver via"
+"`scwm-set-master-solver' and is also done for all newly-created"
+"windows.   Occasions for using this primitive are rare.")
 #define FUNC_NAME s_add_stays_on_window
 {
   if (!WINDOWP(win)) {
@@ -174,8 +174,8 @@ SCM_DEFINE (scwm_set_master_solver_x, "scwm-set-master-solver!", 1, 0, 0,
 
 SCM_DEFINE (scwm_master_solver, "scwm-master-solver", 0, 0, 0,
            (),
-"Return the constraint solver object that is the current master for Scwm.
-Returns #f if no master solver has yet been asssigned via `scwm-set-master-solver!'.")
+"Return the constraint solver object that is the current master for Scwm."
+"Returns #f if no master solver has yet been asssigned via `scwm-set-master-solver!'.")
 #define FUNC_NAME s_scwm_master_solver
 {
   return scmMasterSolver;
@@ -334,10 +334,10 @@ SCM_DEFINE(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
 
 SCM_DEFINE(cl_resolve_xforms,"cl-resolve-xforms", 0, 1, 0,
           (SCM move_threshold),
-"Return a list of window xforms that corresponds to changes made in last resolve.
-Only windows that have been moved or resized more the MOVE-THRESHOLD pixels
-in any direction/dimension have xforms listed.
-See `animate-windows' for the format of the xforms return value.")
+"Return a list of window xforms that corresponds to changes made in last resolve."
+"Only windows that have been moved or resized more the MOVE-THRESHOLD pixels"
+"in any direction/dimension have xforms listed."
+"See `animate-windows' for the format of the xforms return value.")
 #define FUNC_NAME s_cl_resolve_xforms 
 {
   SCM answer = SCM_EOL;
@@ -378,10 +378,10 @@ See `animate-windows' for the format of the xforms return value.")
 
 SCM_DEFINE(cl_reset_dirty_windows,"cl-reset-dirty-windows", 0, 0, 0,
           (),
-"Empty the dirty-windows list.
-This is useful if the handling of the resolves are done in 
-the `scwm-resolve-hook' using `cl-resolve-xforms' and, e.g.,
-`animate-windows'.")
+"Empty the dirty-windows list."
+"This is useful if the handling of the resolves are done in "
+"the `scwm-resolve-hook' using `cl-resolve-xforms' and, e.g.,"
+"`animate-windows'.")
 #define FUNC_NAME s_cl_reset_dirty_windows
 {
   setpswDirty.clear();

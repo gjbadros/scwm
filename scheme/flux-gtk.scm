@@ -28,7 +28,7 @@
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
-(define*-public (rename-window-interactively #&optional (win (get-window)))
+(define*-public (rename-window-interactively #:optional (win (get-window)))
   "Prompt for a new name for WIN and change its title.
 WIN defaults as usual to the current window context."
   (interactive)
@@ -54,7 +54,8 @@ is a substring search."
 ;; (use-scwm-modules time-convert)
 
 (define-public (chop-string str)
-  (make-shared-substring str 0 (1- (string-length str))))
+;;  (make-shared-substring str 0 (1- (string-length str))))
+  (substring str 0 (1- (string-length str))))
 
 ;;(output-of-system-cmd "bookmark-grep ")
 

@@ -11,7 +11,6 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #include "shutdown.h"
@@ -92,7 +91,7 @@ Done(int restart_or_dump, char *command)
   /* need to be sure we've opened the display -- could
      seg fault during startup */
   if (dpy) {
-    scwm_run_hook1(shutdown_hook,SCM_BOOL_FromBool(restart_or_dump));
+    scwm_run_hook1(shutdown_hook,scm_from_bool(restart_or_dump));
 
     Reborder((restart_or_dump > 0));
     XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
@@ -178,10 +177,10 @@ SaveDesktopState()
 
 SCWM_IPROC(restart, "restart", 0, 1, 0,
            (SCM command), NULL,
-"Restart the window manager. \n\
-If COMMAND is specified, use that, as the new window manager to\n\
-run. If COMMAND is not specified or is exactly equal to \"scwm\",\n\
-restart scwm with the same command-line arguments as given previously.")
+"Restart the window manager. \n\n"
+"If COMMAND is specified, use that, as the new window manager to\n"
+"run. If COMMAND is not specified or is exactly equal to \"scwm\",\n"
+"restart scwm with the same command-line arguments as given previously.")
 #define FUNC_NAME s_restart
 {
   char *sz;
@@ -212,9 +211,7 @@ SCWM_IPROC(scwm_quit, "scwm-quit", 0, 0, 0,
 
 void init_shutdown()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "shutdown.x"
-#endif
 }
 
 /* Local Variables: */

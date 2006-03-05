@@ -15,41 +15,31 @@
 #define SCWM_STATIC_INLINE static __inline__
 #endif
 
-#include <guile/gh.h>
+#define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) SCM_NEWSMOB(ANSWER, ID, PSMOB)
 
-#define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) \
-   do { \
-     SCM_NEWCELL((ANSWER)); \
-     SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
-     SCM_SETCAR((ANSWER),(ID)); \
-   } while (0)
-
-#define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
-                                   (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \
+#define DEREF_IF_SYMBOL(x) do { if (scm_is_symbol(x)) { \
+                                   (x) = scm_variable_ref(scm_lookup(x)); \
                                 } } while (0)
 
-#define DYNAMIC_PROCEDURE_P(x) (gh_procedure_p((x)) || \
-				(gh_symbol_p((x)) && \
-				 gh_procedure_p(scm_symbol_binding(SCM_BOOL_F,(x)))))
+#define DYNAMIC_PROCEDURE_P(x) (scm_to_bool(scm_procedure_p(x)) || \
+				(scm_is_symbol(x) && \
+				 scm_to_bool(scm_procedure_p(scm_variable_ref(scm_lookup(x))))))
 
-#define PROCEDURE_OR_SYMBOL_P(x) (gh_procedure_p((x)) || gh_symbol_p((x)))
+#define PROCEDURE_OR_SYMBOL_P(x) (scm_to_bool(scm_procedure_p(x)) || scm_is_symbol(x))
 
 #define RESTP_SCM 1
 
 
-#define scwm_ptr2scm(p) gh_long2scm((long)(p))
-
-#define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
-
+#define scwm_ptr2scm(p) scm_from_long((long)(p))
 
 SCWM_INLINE 
 static void scwm_defer_ints() {
-  SCM_REDEFER_INTS;
+    // SCM_REDEFER_INTS;
 }
 
 SCWM_INLINE 
 static void scwm_allow_ints() {
-  SCM_REALLOW_INTS;
+    // SCM_REALLOW_INTS;
 }
 
 #endif

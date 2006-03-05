@@ -18,7 +18,6 @@
 ;;;;
 
 
-
 (define-module (app scwm std-menus)
   :use-module (app scwm base)
   :use-module (app scwm optargs)
@@ -34,7 +33,7 @@
 
 
 
-(define*-public (execute-on-selection command #&optional (selection "PRIMARY"))  
+(define*-public (execute-on-selection command #:optional (selection "PRIMARY"))  
   "Run COMMAND in the background, with arguments supplied by the X selection.
 If there is no selection, then uses the `X-cut-buffer-string'.  SELECTION
 default to \"PRIMARY\"."
@@ -45,13 +44,13 @@ default to \"PRIMARY\"."
 			     (if str str (X-cut-buffer-string))
 			     "'")))))
 
-(define*-public (exe-on-selection command #&optional (selection "PRIMARY"))
+(define*-public (exe-on-selection command #:optional (selection "PRIMARY"))
   "Return a procedure that runs COMMAND in the background on the X selection.
 If there is no selection, then uses the `X-cut-buffer-string'.  SELECTION
 default to \"PRIMARY\"."
   (lambda () (execute-on-selection command selection)))
 
-(define*-public (make-hosts-menu host-list #&optional (user (user-name)))
+(define*-public (make-hosts-menu host-list #:optional (user (user-name)))
   "Create a telnet menu.
 To use this, add the following to the menu of your choice:
   (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
@@ -116,15 +115,15 @@ The selection must contain a single full pathname."
 					   (make-regexp (car entry))))
 			     (if (and (regexp-exec (car entry) file))
 				 (list (apply menuitem (cdr entry)))
-				 ()))
+				 '()))
 			   (optget *context-map*)))
-	       ())))))
+	       '())))))
 
 
 ;;; SRL:FIXME:: This function usually closes the window.
 ;;;   The only them that works is darkside.
 ;; contributed by Glenn Trig
-(define*-public (make-menu-window-theme #&optional force?)
+(define*-public (make-menu-window-theme #:optional force?)
   "Return a menu that lets the user set the theme for a single window.
 If FORCE? is #t, then the cached theme file is reloaded."
   (menu  
@@ -137,7 +136,7 @@ If FORCE? is #t, then the cached theme file is reloaded."
 
 
 ;; contributed by Glenn Trig
-(define*-public (make-menu-global-theme #&optional force?)
+(define*-public (make-menu-global-theme #:optional force?)
   "Return a menu that lets the user set the theme for all windows.
 If FORCE? is #t, then the cached theme file is reloaded."
   (menu  

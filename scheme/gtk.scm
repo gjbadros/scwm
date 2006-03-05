@@ -37,8 +37,8 @@
 (define-public scwm-gtk-timer-hook-enabled? #t)
 
 ;; see note above
-(if (and (bound? gdk-get-leader-window-id) (procedure? gdk-get-leader-window-id))
-    (set! gdk-leader-window (gdk-get-leader-window-id)))
+;(if (and (bound? gdk-get-leader-window-id) (procedure? gdk-get-leader-window-id))
+;    (set! gdk-leader-window (gdk-get-leader-window-id)))
 
 (define-public (scwm-gtk-sync)
   "Dispatch all pending gtk-events.
@@ -79,15 +79,16 @@ GTKWIN is a GTk+ window object returned from `gtk-window-new'.
 Return value is #f if no corresponding window exists now.
 Also will return #f if your guile-gtk implementation does
 not support this procedure (you should upgrade!)."
-  (if (not (bound? gtk-window-get-window-id))
-      #f
-      (id->window (gtk-window-get-window-id gtkwin))))
+  #f)
+  ;(if (not (bound? gtk-window-get-window-id))
+  ;    #f
+  ;    (id->window (gtk-window-get-window-id gtkwin))))
 
 
 (define (add-the-hook)
   (add-hook! error-hook gtk-show-error))
 
-(define*-public (use-gtk-error-window-for-scwm #&optional (on #t))
+(define*-public (use-gtk-error-window-for-scwm #:optional (on #t))
   (if on
       (if (done-startup?)
 	  (add-the-hook)

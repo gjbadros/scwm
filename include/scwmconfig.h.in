@@ -1,33 +1,13 @@
-/* include/scwmconfig.h.in.  Generated automatically from configure.in by autoheader.  */
+/* include/scwmconfig.h.in.  Generated from configure.in by autoheader.  */
+/* acconfig.h --- documentation for local preprocessor symbols defined
+   by configure.
+   Greg J. Badros <gjb@cs.washington.edu>
+   Maciej Stachowiak <mstachow@alum.mit.edu>
+   */
 
-/* Define if on AIX 3.
-   System headers sometimes define this.
-   We just want to avoid a redefinition error message.  */
-#ifndef _ALL_SOURCE
-#undef _ALL_SOURCE
-#endif
-
-/* Define to empty if the keyword does not work.  */
-#undef const
-
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
-
-/* Define if on MINIX.  */
-#undef _MINIX
-
-/* Define if the system does not provide POSIX.1 features except
-   with this defined.  */
-#undef _POSIX_1_SOURCE
-
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if the X Window System is missing or not being used.  */
-#undef X_DISPLAY_MISSING
+/* Package and version macros defined by automake */
+#undef PACKAGE 
+#undef VERSION 
 
 /* Define this if your Xext library supports the X extension (wether
    your server does or not will be determined at runtime */
@@ -99,6 +79,10 @@
    which should be used instead of scm_parse_path from C.  */
 #undef HAVE_SCM_INTERNAL_PARSE_PATH
 
+/* Define this if your libguile has a scm_make_vector, which needs
+   three arguments. This should be true only of older versions. */
+#undef HAVE_SCM_MAKE_VECTOR_3_ARGS
+
 /* Define this if your libguile has scm_load_startup_files,
    which means the hack to get boot-9.scm to be loaded is unnecessary
    and even dangerous. */
@@ -119,6 +103,7 @@
    the new-style SMOB interface (>= guile-1.3.2 */
 #undef HAVE_SCM_MAKE_SMOB_TYPE_MFPE
 
+
 /* Define this if your libguile has scm_strport_to_string
    (added sometime after guile-1.3) */
 #undef HAVE_SCM_STRPORT_TO_STRING
@@ -128,6 +113,18 @@
 
 /* Define this if your system has a <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
+
+/* Define this if your system has the getopt_long function. */
+#undef HAVE_GETOPT_LONG
+
+/* Define this if your system has the usleep function. */
+#undef HAVE_USLEEP
+
+/* Define this if your system has the setlinebuf function. */
+#undef HAVE_SETLINEBUF
+
+/* Define this if your system has the setvbuf function. */
+#undef HAVE_SETVBUF
 
 /* Define this if you want multibyte support. */
 #undef I18N
@@ -153,50 +150,127 @@
 /* Define this if you want the --dump option */
 #undef ENABLE_DUMP
 
-/* Define if you have the gethostname function.  */
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the `gethostname' function. */
 #undef HAVE_GETHOSTNAME
 
-/* Define if you have the getopt_long function.  */
-#undef HAVE_GETOPT_LONG
-
-/* Define if you have the setenv function.  */
-#undef HAVE_SETENV
-
-/* Define if you have the setlinebuf function.  */
-#undef HAVE_SETLINEBUF
-
-/* Define if you have the setvbuf function.  */
-#undef HAVE_SETVBUF
-
-/* Define if you have the strcasecmp function.  */
-#undef HAVE_STRCASECMP
-
-/* Define if you have the strerror function.  */
-#undef HAVE_STRERROR
-
-/* Define if you have the strncasecmp function.  */
-#undef HAVE_STRNCASECMP
-
-/* Define if you have the sysconf function.  */
-#undef HAVE_SYSCONF
-
-/* Define if you have the uname function.  */
-#undef HAVE_UNAME
-
-/* Define if you have the usleep function.  */
-#undef HAVE_USLEEP
-
-/* Define if you have the waitpid function.  */
-#undef HAVE_WAITPID
-
-/* Define if you have the <X11/SM/SMlib.h> header file.  */
-#undef HAVE_X11_SM_SMLIB_H
-
-/* Define if you have the <getopt.h> header file.  */
+/* Define to 1 if you have the <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
-/* Define if you have the <sys/select.h> header file.  */
+/* Define to 1 if you have the `getopt_long' function. */
+#undef HAVE_GETOPT_LONG
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `m' library (-lm). */
+#undef HAVE_LIBM
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `setenv' function. */
+#undef HAVE_SETENV
+
+/* Define to 1 if you have the `setlinebuf' function. */
+#undef HAVE_SETLINEBUF
+
+/* Define to 1 if you have the `setvbuf' function. */
+#undef HAVE_SETVBUF
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the `strcasecmp' function. */
+#undef HAVE_STRCASECMP
+
+/* Define to 1 if you have the `strerror' function. */
+#undef HAVE_STRERROR
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strncasecmp' function. */
+#undef HAVE_STRNCASECMP
+
+/* Define to 1 if you have the `sysconf' function. */
+#undef HAVE_SYSCONF
+
+/* Define to 1 if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
 
-/* Define if you have the m library (-lm).  */
-#undef HAVE_LIBM
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the `uname' function. */
+#undef HAVE_UNAME
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `usleep' function. */
+#undef HAVE_USLEEP
+
+/* Define to 1 if you have the `waitpid' function. */
+#undef HAVE_WAITPID
+
+/* Define to 1 if you have the <X11/SM/SMlib.h> header file. */
+#undef HAVE_X11_SM_SMLIB_H
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
+
+/* Define to 1 if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+
+/* Define to 1 if on MINIX. */
+#undef _MINIX
+
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif

@@ -29,7 +29,6 @@
 #include <sys/types.h>
 #include <X11/Xlib.h>
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #include "xrm.h"
@@ -51,8 +50,8 @@ Later, the value can be retrieved using `X-resource-get'.")
   VALIDATE_ARG_STR_NEWCOPY(2,value,szValue);
 
   XrmPutStringResource(&db,szSpecifier,szValue);
-  gh_free(szSpecifier);
-  gh_free(szValue);
+  free(szSpecifier);
+  free(szValue);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -78,10 +77,10 @@ If there is no resource under the given key, #f is returned.")
 
   if (XrmGetResource(db,szName,szClass,&szType,&ret) ||
       XrmGetResource(dbSystem,szName,szClass,&szType,&ret)) {
-    answer = gh_str02scm(ret.addr);
+    answer = scm_from_locale_string(ret.addr);
   }
-  gh_free(szName);
-  if (szClass != szName) gh_free(szClass);
+  free(szName);
+  if (szClass != szName) free(szClass);
   return answer;
 }
 #undef FUNC_NAME
@@ -97,7 +96,7 @@ the file.")
   char *szFilename;
   VALIDATE_ARG_STR_NEWCOPY(1,filename,szFilename);
   XrmPutFileDatabase(db, szFilename);
-  gh_free(szFilename);
+  free(szFilename);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -196,9 +195,7 @@ MergeResourceDatabases()
 void
 init_xrm()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "xrm.x"
-#endif
   MergeResourceDatabases();
 }
 

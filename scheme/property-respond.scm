@@ -109,7 +109,7 @@ See `property-changed-respond','property-change-debug', and `X-PropertyNotify-ho
 (define-public (stop-property-respond)
   "Turn off property-change responses.
 See `property-changed-respond','property-change-debug', and `X-PropertyNotify-hook'."
-  (if (bound? property-changed-debug)
+  (if property-changed-debug
       (remove-hook! X-PropertyNotify-hook property-changed-debug))
-  (if (bound? property-changed-respond)
+  (if property-changed-respond
       (remove-hook! X-PropertyNotify-hook property-changed-respond)))

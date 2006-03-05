@@ -4,7 +4,7 @@
 dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
 dnl
-AC_DEFUN(AM_PATH_GTK,
+AC_DEFUN([AM_PATH_GTK],
 [dnl 
 dnl Get the cflags and libraries from the gtk-config script
 dnl
@@ -184,7 +184,7 @@ main ()
 dnl AM_PATH_ESD([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for ESD, and define ESD_CFLAGS and ESD_LIBS
 dnl
-AC_DEFUN(AM_PATH_ESD,
+AC_DEFUN([AM_PATH_ESD],
 [dnl 
 dnl Get the cflags and libraries from the esd-config script
 dnl
@@ -347,7 +347,7 @@ int main ()
 dnl AM_PATH_IMLIB([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for IMLIB, and define IMLIB_CFLAGS and IMLIB_LIBS
 dnl
-AC_DEFUN(AM_PATH_IMLIB,
+AC_DEFUN([AM_PATH_IMLIB],
 [dnl 
 dnl Get the cflags and libraries from the imlib-config script
 dnl
@@ -505,7 +505,7 @@ int main ()
 ])
 
 # Check for gdk-imlib
-AC_DEFUN(AM_PATH_GDK_IMLIB,
+AC_DEFUN([AM_PATH_GDK_IMLIB],
 [dnl 
 dnl Get the cflags and libraries from the imlib-config script
 dnl

@@ -31,7 +31,7 @@
 ;; should probably turn off the invalid interaction hook
 ;; or provide a way of telling select-window-interactively that
 ;; the root window is not an erro
-(define*-public (select-multiple-windows-interactively #&optional (max 32000))
+(define*-public (select-multiple-windows-interactively #:optional (max 32000))
   (do ((w '())
        (wlist '() (cons w wlist))
        (i 0 (+ 1 i)))

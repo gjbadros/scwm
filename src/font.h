@@ -72,32 +72,32 @@ typedef struct {
 #define XFIXEDFONTNAME "fixed"
 #endif
 
-#define FONT_P(X) (SCM_NIMP((X)) && gh_car((X)) == (SCM)scm_tc16_scwm_font)
-#define FONT(X)  ((scwm_font *)gh_cdr((X)))
-#define SAFE_FONT(X)  (FONT_P((X))?FONT((X)):NULL)
-#define DYNAMIC_FONT_P(X) (gh_symbol_p((X))? \
-			   FONT_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			   FONT_P((X)))
-#define FONT_OR_SYMBOL_P(x) (FONT_P((x)) || gh_symbol_p((x)))
+#define FONT_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_font, X))
+#define FONT(X)  ((scwm_font *)SCM_SMOB_DATA(X))
+#define SAFE_FONT(X)  (FONT_P((X))?FONT(X):NULL)
+#define DYNAMIC_FONT_P(X) (scm_is_symbol(X)? \
+			   FONT_P(scm_variable_ref(scm_lookup(X))) : \
+			   FONT_P(X))
+#define FONT_OR_SYMBOL_P(x) (FONT_P(x) || scm_is_symbol(x))
 
-#define DYNAMIC_SAFE_FONT(X) (gh_symbol_p((X))? \
-			      SAFE_FONT(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			      SAFE_FONT((X)))
+#define DYNAMIC_SAFE_FONT(X) (scm_is_symbol(X)? \
+			      SAFE_FONT(scm_variable_ref(scm_lookup(X))) : \
+			      SAFE_FONT(X))
 
 #ifdef I18N
-#define XFONT(X) (((scwm_font *)gh_cdr((X)))->fontset)
-#define FONTY(X) (((scwm_font *)gh_cdr((X)))->ascent)
+#define XFONT(X) (FONT(X)->fontset)
+#define FONTY(X) (FONT(X)->ascent)
 #else
-#define XFONT(X) (((scwm_font *)gh_cdr((X)))->xfs)
-#define FONTY(X) ((XFONT(X))->ascent)
+#define XFONT(X) (FONT(X)->xfs)
+#define FONTY(X) (XFONT(X)->ascent)
 #endif
 
-#define XFONTID(X) (((scwm_font *)gh_cdr((X)))->xfs->fid)
+#define XFONTID(X) (FONT(X)->xfs->fid)
 
 #define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
-#define FONTNAME(X) (((scwm_font *)gh_cdr(X))->name)
+#define FONTNAME(X) (FONT(X)->name)
 #define SAFE_FONTNAME(X) (FONT_P((X))?FONTNAME((X)):NULL)
-#define FONTHEIGHT(X) (((scwm_font *)gh_cdr(X))->height)
+#define FONTHEIGHT(X) (FONT(X)->height)
 
 SCM make_font(SCM fname);
 
@@ -127,7 +127,7 @@ extern SCM scmFixedFont;
 
 #define VALIDATE_ARG_FONT_OR_STRING(pos,scm) \
   do { \
-  if (gh_string_p(scm)) scm = make_font(scm); \
+  if (scm_is_string(scm)) scm = make_font(scm); \
   if (!FONT_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 

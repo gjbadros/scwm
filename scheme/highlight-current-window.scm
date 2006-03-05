@@ -30,7 +30,7 @@
 (define (flash-window-on-and-update-current-highlighted win)
   (set! current-highlighted-window (flash-window-on win)))
 
-(define* (unflash-window-if-not-selected #&optional (win (window-context)))
+(define* (unflash-window-if-not-selected #:optional (win (window-context)))
   "Unflash WIN as long as it is not selected."
   (if (and win (not (window-is-selected? win)))
       (begin (unflash-window win)
@@ -48,7 +48,7 @@
   (remove-hook! select-window-leave-hook unflash-window-if-not-selected)
   (remove-hook! select-window-done-hook unflash-window-if-not-selected))
 
-(define*-public (start-highlighting-current-window #&optional (win (window-context)))
+(define*-public (start-highlighting-current-window #:optional (win (window-context)))
   "Add appropriate hook procedures to make the window with the mouse be highlighted.
 See also `end-highlighting-current-window'."
   (and win (set! current-highlighted-window (flash-window-on win)))
@@ -58,7 +58,7 @@ See also `end-highlighting-current-window'."
 ;; window-leave-hook  window-enter-hook
 
 (define*-public (end-highlighting-current-window 
-		 #&optional (win current-highlighted-window))
+		 #:optional (win current-highlighted-window))
   "Remove the hook procedures that make the window with mouse be highlighted.
 See also `start-highlighting-current-window'."
   (and win (unflash-window-if-not-selected win))

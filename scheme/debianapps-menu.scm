@@ -24,7 +24,7 @@
 ;;;; Changelog:
 ;;;; 12/3/1999 Francesco Tapparo: 
 ;;;;           moved the menuitems out of make-debianapps-menu
-;;;;           now make-debianapps-menu accepts #&key arguments and
+;;;;           now make-debianapps-menu accepts #:key arguments and
 ;;;;           pass them to menu.
 ;;;;           removed default-menu-file and added the *debian-menu-path*
 ;;;;           option
@@ -69,11 +69,11 @@
 		  #:submenu menu-quit-verify)))
 
 
-(define*-public (make-debianapps-menu #&key
+(define*-public (make-debianapps-menu #:key
 				      (title default-debianapps-menu-title)
 				      (menu-file "scwm_menus")
-				      #&allow-other-keys
-				      #&rest rest)
+				      #:allow-other-keys
+				      #:rest rest)
   "Read menu-file and return a menu object.
 TITLE is the string to be used as title of the menu.  
 MENU-FILE is the file used to create the menu entries, 

@@ -62,7 +62,7 @@
 ;; Retrieve the current default configuration for modules of type 
 ;; MODULE-TYPE 
 ;;
-;;   run-fvwm2-module MODULE-NAME #&optional OTHER-ARGS CONFIG-INFO
+;;   run-fvwm2-module MODULE-NAME #:optional OTHER-ARGS CONFIG-INFO
 ;;   CONFIG-FILE
 ;; Run the module MODULE-NAME, searching the fvwm2-module-path to find
 ;; it, unless MODULE-NAME starts with "/", "./" or "../", in which
@@ -428,7 +428,7 @@
      "ColorLimit 0"
      "ClickTime 150")))
 
-(define*-public (run-fvwm2-module module-name #&optional
+(define*-public (run-fvwm2-module module-name #:optional
 				  (other-args '())	       
 				  (config-file "~/.fvwm2rc")
 				  (config-info
@@ -544,7 +544,7 @@
 				   (write window-id)
 				   (newline)))
 			     (catch #t
-				    (lambda()
+				    (lambda ()
 				      (if (= window-id 0)
 					  (eval-fvwm-command command fmod)
 					  (eval-fvwm-command command

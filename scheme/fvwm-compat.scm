@@ -29,13 +29,13 @@
 
 (define fvwm-exec-shell "/bin/sh")
 
-(define*-public (fvwm-exec-use-shell #&optional (shell #f))
+(define*-public (fvwm-exec-use-shell #:optional (shell #f))
   "Use SHELL when emulating fvwm \"EXEC\" commands.
 Defaults to <envar>$SHELL</envar> or <filename>/bin/sh</filename>."
   (set! fvwm-exec-shell 
 	(cond
-	 (command => id)
-	 ((getenv "SHELL") => id)
+	 (command => identity)          ; id
+	 ((getenv "SHELL") => identity) ; id
 	 (else "/bin/sh"))))
 
 

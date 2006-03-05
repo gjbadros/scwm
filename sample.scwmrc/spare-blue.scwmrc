@@ -458,11 +458,11 @@
 
 ;; this is the function, scwm calls when you restart it
 (define (restart-function)
-  ())
+  '())
 
 ;; init-function is the function, scwm calls after the initialisation.
 (define (init-function)
-  ())
+  '())
 
 ;;; now we define the maximize function
 ;; use this definition, if you want the normal vertical-only maximize function

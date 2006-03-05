@@ -46,7 +46,7 @@
 
 (proplist-get-all-dictionary-keys p)
 
-(define* (proplist-dictionary->alist pl #&optional (i 0))
+(define* (proplist-dictionary->alist pl #:optional (i 0))
   (let* ((keys (proplist-get-all-dictionary-keys pl))
 	 (num (proplist-get-number-of-elements keys)))
     (if (>= i num)

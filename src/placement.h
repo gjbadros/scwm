@@ -6,6 +6,8 @@
 #ifndef PLACEMENT_H
 #define PLACEMENT_H
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif

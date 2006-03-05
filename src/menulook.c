@@ -14,7 +14,6 @@
 
 #include <assert.h>
 
-#include <guile/gh.h>
 #include "guile-compat.h"
 
 #define MENULOOK_IMPLEMENTATION
@@ -26,9 +25,8 @@
 SCM
 mark_menulook(SCM scm)
 {
-  GC_MARK_SCM_IF_SET(MENULOOK(scm)->name);
-  GC_MARK_SCM_IF_SET(MENULOOK(scm)->extra);
-  return SCM_BOOL_F;
+  scm_gc_mark(MENULOOK(scm)->name);
+  return MENULOOK(scm)->extra;
 }
 
 size_t
@@ -54,7 +52,7 @@ SCM_DEFINE (menu_look_p, "menu-look?", 1, 0, 0,
 "Return #t if OBJ is a menulook object, #f otherwise.")
 #define FUNC_NAME s_menu_look_p
 {
-  return SCM_BOOL_FromBool(MENULOOK_P(obj));
+  return scm_from_bool(MENULOOK_P(obj));
 }
 #undef FUNC_NAME
 
@@ -87,7 +85,7 @@ look and change some of its properties.
 SCM
 make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
 {
-  return make_menulook_internal(gh_str02scm(szName), extra, mdvt);
+  return make_menulook_internal(scm_from_locale_string(szName), extra, mdvt);
 }
 
 SCM_DEFINE(copy_menu_look, "copy-menu-look", 2, 1, 0,
@@ -116,16 +114,15 @@ only the Xpm menu look uses the EXTRA information.")
 }
 #undef FUNC_NAME
 
-MAKE_SMOBFUNS(menulook);
-
 void
 init_menulook()
 {
-  REGISTER_SCWMSMOBFUNS(menulook);
+  scm_tc16_scwm_menulook = scm_make_smob_type("menulook", 0);
+  scm_set_smob_mark(scm_tc16_scwm_menulook, mark_menulook);
+  scm_set_smob_free(scm_tc16_scwm_menulook, free_menulook);
+  scm_set_smob_print(scm_tc16_scwm_menulook, print_menulook);
 
-#ifndef SCM_MAGIC_SNARFER
 #include "menulook.x"
-#endif
 }
 
 #ifdef __cplusplus

@@ -26,20 +26,12 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>  /* for file descriptors */
 #endif
 
-#ifndef HAVE_SCM_MAKE_HOOK
-#define SCWM_MAKE_HOOK(name,args) SCM_EOL
-#else
-#ifdef HAVE_SCM_CREATE_HOOK
-#define SCWM_MAKE_HOOK(name,args) scm_create_hook((name),(args))
-#else
-#define SCWM_MAKE_HOOK(name,args) scm_permanent_object(scm_make_named_hook((name),(args)))
-#endif
-#endif
+//#define SCWM_MAKE_HOOK(name,args) scm_create_hook((name),(args))
+#define SCWM_MAKE_HOOK(name,args) scm_c_define(name, scm_make_hook(args))
 
 /* Individual callbacks. */
 

@@ -49,7 +49,7 @@
 (animated-resize-frame 200 200 w3 0 0)
 
 
-(define* (little-top-left #&optional (win (get-window)))
+(define* (little-top-left #:optional (win (get-window)))
   (animated-resize-frame 100 100 win 0 0))
 
 (bind-key 'window "H-a" little-top-left)

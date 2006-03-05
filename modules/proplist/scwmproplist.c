@@ -27,13 +27,13 @@ typedef struct {
 
 long scm_tc16_scwm_proplist_t;
 
-#define PROPLIST_T(X)  (((scwm_proplist_t *)(gh_cdr(X)))->value)
-#define INTERNAL_PROPLIST_T(X)  ((plptr_t)((scwm_proplist_t *)(gh_cdr(X)))->value)
-#define SCWMPROPLIST_T(X)  ((scwm_proplist_t *)(gh_cdr(X)))
-#define IS_PROPLIST_T(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_proplist_t)
+#define SCWMPROPLIST_T(X)  ((scwm_proplist_t *)SCM_SMOB_DATA(X))
+#define PROPLIST_T(X)  (SCWMPROPLIST_T(X)->value)
+#define INTERNAL_PROPLIST_T(X)  ((plptr_t)(SCWMPROPLIST_T(X))->value)
+#define IS_PROPLIST_T(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_proplist_t, X)
 
-#define IS_PROPLIST_DICT(X) (IS_PROPLIST_T((X)) && \
-                             INTERNAL_PROPLIST_T((X))->type == PLDICTIONARY)
+#define IS_PROPLIST_DICT(X) (IS_PROPLIST_T(X) && \
+                             INTERNAL_PROPLIST_T(X)->type == PLDICTIONARY)
 
 #define VALIDATE_ARG_PROPLIST_DICT(iarg,pl) do { \
     if (!IS_PROPLIST_DICT((pl))) SCWM_WRONG_TYPE_ARG(iarg,(pl)); \
@@ -41,14 +41,14 @@ long scm_tc16_scwm_proplist_t;
 
 /* takes a proplist or a string */
 #define VALIDATE_ARG_PROPLIST(iarg,pl) do { \
-    if (gh_string_p(pl)) { char *sz = gh_scm2newstr(pl,NULL); \
+    if (scm_is_string(pl)) { char *sz = scm_to_locale_string(pl); \
                            pl = ScmProplist(PLMakeString(sz)); \
                            free(sz); } \
     if (!IS_PROPLIST_T((pl))) SCWM_WRONG_TYPE_ARG(iarg,(pl)); \
   } while (0)
 
 #define VALIDATE_ARG_PROPLIST_COPY(iarg,pl,cvar) do { \
-    if (gh_string_p(pl)) { char *sz = gh_scm2newstr(pl,NULL); \
+    if (scm_is_string(pl)) { char *sz = scm_to_locale_string(pl); \
                            pl = ScmProplist(PLMakeString(sz)); \
                            free(sz); } \
     if (!IS_PROPLIST_T((pl))) SCWM_WRONG_TYPE_ARG(iarg,(pl)); \
@@ -62,7 +62,7 @@ long scm_tc16_scwm_proplist_t;
 
 /* also permit strings */
 #define ASSERT_CONVERT_PROPLIST(pl) do { \
-    if (gh_string_p(pl)) { char *sz = gh_scm2newstr(pl,NULL); \
+    if (scm_is_string(pl)) { char *sz = scm_to_locale_string(pl); \
                            pl = ScmProplist(PLMakeString(sz)); \
                            free(sz); } \
     if (!IS_PROPLIST_T((pl))) SCWM_WRONG_TYPE_ARG(0,(pl)); \
@@ -94,7 +94,7 @@ print_proplist_t(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate)) {
   plptr_t internal;
   scwm_proplist_t *spt=PROPLIST_T(obj);
   scm_puts("#<proplist_t ", port);
-  scm_write(gh_ulong2scm((unsigned long)spt), port);   
+  scm_write(scm_from_ulong((unsigned long)spt), port);   
 
   internal = (plptr_t)spt;
   switch (internal->type) {
@@ -108,11 +108,11 @@ print_proplist_t(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate)) {
     break;
   case PLARRAY:
     scm_puts(" array ",port);
-    scm_write(gh_long2scm(internal->t.array.number),port);
+    scm_write(scm_from_long(internal->t.array.number),port);
     break;
   case PLDICTIONARY:
     scm_puts(" dictionary ",port);
-    scm_write(gh_long2scm(internal->t.dict.number),port);
+    scm_write(scm_from_long(internal->t.dict.number),port);
     break;
   default:
     scm_puts("[unknown type]",port);
@@ -151,7 +151,7 @@ proplist_to_scm(proplist_t pl,int retain_count)
 
   if (PLIsString(pl)) {
     plptr_t internal = (plptr_t) pl;
-    return gh_str02scm(internal->t.str.string);
+    return scm_from_locale_string(internal->t.str.string);
   } else {
     return ScmProplist(pl);
   }
@@ -177,7 +177,7 @@ c_cmp_callback(proplist_t a,proplist_t b) {
     r=scwm_safe_call2(scm_cmp_callback,
 		      proplist_to_scm(a,1),
 		      proplist_to_scm(b,1));
-    return gh_scm2bool(r);
+    return scm_to_bool(r);
   }
   return NO;
 }
@@ -191,7 +191,7 @@ SCM_DEFINE(proplist_make_array_from_elements,"proplist-make-array-from-elements"
   SCM value;
   while (1) {
     if (items==SCM_EOL) break;
-    value=gh_car(items),items=gh_cdr(items);
+    value=scm_car(items),items=scm_cdr(items);
     ASSERT_PROPLIST(value);
 
     if (array==NULL) {
@@ -224,11 +224,11 @@ The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).")
   VALIDATE_ARG_LIST(1,items);
   while (1) {
     if (items==SCM_EOL) break;
-    key=gh_car(items),items=gh_cdr(items);
+    key=scm_car(items),items=scm_cdr(items);
     if (items==SCM_EOL) {
       scm_misc_error(FUNC_NAME,"items must have an even number of elements",SCM_EOL);
     }
-    value=gh_car(items),items=gh_cdr(items);
+    value=scm_car(items),items=scm_cdr(items);
     ASSERT_CONVERT_PROPLIST(key);
     ASSERT_CONVERT_PROPLIST(value);
 
@@ -378,7 +378,7 @@ See `proplist-set-string-cmp-hook' for changing the behaviour.")
 {
   VALIDATE_ARG_PROPLIST(1,plA);
   VALIDATE_ARG_PROPLIST(2,plB);
-  return gh_bool2scm(PLIsEqual(PROPLIST_T(plA),
+  return scm_from_bool(PLIsEqual(PROPLIST_T(plA),
                                PROPLIST_T(plB)));
 }
 #undef FUNC_NAME
@@ -429,8 +429,9 @@ permit Guile strings to be used anywhere a string proplist object is expected.")
 #define FUNC_NAME s_proplist_make_data
 {
   int len;
-  char *s = gh_scm2newstr(data,&len);
+  char *s = scm_to_locale_string(data, &len);
   SCM result;
+  // DPS: Does s need a NUL added?
 
   /* PLMakeData returns new object. must not inc refcount */
   result=proplist_to_scm(PLMakeData(s,(unsigned int)len),0);
@@ -477,7 +478,7 @@ or pairs.")
 #define FUNC_NAME s_proplist_get_number_of_elements
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_ulong2scm(PLGetNumberOfElements(PROPLIST_T(pl)));
+  return scm_from_ulong(PLGetNumberOfElements(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -523,7 +524,7 @@ be enclosed in quotes.")
   VALIDATE_ARG_PROPLIST(1,pl);
   s=PLGetStringDescription(PROPLIST_T(pl));
   if (s) {
-    result=gh_str02scm(s);
+    result=scm_from_locale_string(s);
     free(s);
   } else {
     result=SCM_BOOL_F;
@@ -544,7 +545,7 @@ SCM_DEFINE(proplist_get_data_description,"proplist-get-data-description",1,0,0,
   VALIDATE_ARG_PROPLIST(1,pl);
   s=PLGetDataDescription(PROPLIST_T(pl));
   if (s) {
-    result=gh_str02scm(s);
+    result=scm_from_locale_string(s);
     free(s);
   } else {
     result=SCM_BOOL_F;
@@ -570,7 +571,7 @@ SCM_DEFINE(proplist_get_data,"proplist-get-data",1,0,0,
   s=PLGetDataBytes(p);
   if (s) {
     sl=PLGetDataLength(p);
-    result=gh_str2scm((char *)s,(int)sl);
+    result=scm_from_locale_stringn((char *)s,(int)sl);
     free(s);
   } else {
     result=SCM_BOOL_F;
@@ -592,7 +593,7 @@ proplist objects into Guile strings, so this may not often be necessary.")
   VALIDATE_ARG_PROPLIST(1,pl);
   s=PLGetString(PROPLIST_T(pl));
   if (s) {
-    result=gh_str02scm(s);
+    result=scm_from_locale_string(s);
   } else {
     result=SCM_BOOL_F;
   }
@@ -607,7 +608,7 @@ SCM_DEFINE(proplist_is_string,"proplist-is-string",1,0,0,
 #define FUNC_NAME s_proplist_is_string
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsString(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsString(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -618,7 +619,7 @@ SCM_DEFINE(proplist_is_data,"proplist-is-data",1,0,0,
 #define FUNC_NAME s_proplist_is_data
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsData(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsData(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -629,7 +630,7 @@ SCM_DEFINE(proplist_is_array,"proplist-is-array",1,0,0,
 #define FUNC_NAME s_proplist_is_array
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsArray(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsArray(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -640,7 +641,7 @@ SCM_DEFINE(proplist_is_dictionary,"proplist-is-dictionary",1,0,0,
 #define FUNC_NAME s_proplist_is_dictionary
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsDictionary(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsDictionary(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -651,7 +652,7 @@ SCM_DEFINE(proplist_is_simple,"proplist-is-simple",1,0,0,
 #define FUNC_NAME s_proplist_is_simple
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsSimple(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsSimple(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -662,7 +663,7 @@ SCM_DEFINE(proplist_is_compound,"proplist-is-compound",1,0,0,
 #define FUNC_NAME s_proplist_is_compound
 {
   VALIDATE_ARG_PROPLIST(1,pl);
-  return gh_bool2scm(PLIsCompound(PROPLIST_T(pl)));
+  return scm_from_bool(PLIsCompound(PROPLIST_T(pl)));
 }
 #undef FUNC_NAME
 
@@ -724,7 +725,7 @@ If KICK-ME? is #f, any callback registered for the domain will not be called.")
 {
   Bool kick_me;
   VALIDATE_ARG_PROPLIST(1,pl_domain_name);
-  kick_me=gh_scm2bool(kick_me_p);
+  kick_me=scm_to_bool(kick_me_p);
   /* PLDeleteDomain returns the input name - must inc refcount */
   return proplist_to_scm(PLDeleteDomain(PROPLIST_T(pl_domain_name),
                                         kick_me),1);
@@ -777,8 +778,8 @@ SCM_DEFINE(proplist_set_filename_x,"proplist-set-filename!",2,0,0,
   SCM result;
 
   VALIDATE_ARG_PROPLIST(1,pl);
-  if (gh_string_p(filename)) {
-    char *sz = gh_scm2newstr(filename,NULL);
+  if (scm_is_string(filename)) {
+    char *sz = scm_to_locale_string(filename);
     fname = PLMakeString(sz);
     FREE(sz);
     must_release=1;
@@ -806,7 +807,7 @@ SCM_DEFINE(proplist_save,"proplist-save",2,0,0,
   Bool atomically;
   VALIDATE_ARG_PROPLIST_COPY(1,pl,proplist);
   VALIDATE_ARG_BOOL_COPY(2,atomically_p,atomically);
-  return gh_bool2scm(PLSave(proplist,atomically));
+  return scm_from_bool(PLSave(proplist,atomically));
 }
 #undef FUNC_NAME
 
@@ -818,7 +819,7 @@ SCM_DEFINE(proplist_synchronize,"proplist-synchronize",1,0,0,
 {
   scwm_proplist_t *proplist;
   VALIDATE_ARG_PROPLIST_COPY(1,pl,proplist);
-  return gh_bool2scm(PLSynchronize(proplist));
+  return scm_from_bool(PLSynchronize(proplist));
 }
 #undef FUNC_NAME
 

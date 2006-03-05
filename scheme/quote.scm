@@ -112,7 +112,7 @@ In almost all cases, a call with (eq press? #f) should follow one with
      (xtest-fake-key-event keycode press? delay))
    (mask->keycodes mask)))
 
-(define*-public (xtest-fake-modmask-key mask keycode #&optional (delay #f))
+(define*-public (xtest-fake-modmask-key mask keycode #:optional (delay #f))
   "Send key events to simulate the pressing of KEYCODE with MASK active.
 KEYCODE is the key code of the key to fake pressing.
 MASK is a modifier mask specifying which modifier keys to press before
@@ -126,7 +126,7 @@ is #f for no delay."
      (xtest-fake-key-event keycode #f delay))
    (lambda () (xtest-fake-modmask mask delay #f))))
 
-(define*-public (xtest-fake-modmask-button mask button #&optional (delay #f))
+(define*-public (xtest-fake-modmask-button mask button #:optional (delay #f))
   "Send key/button events to simulate the pressing of BUTTON with MASK active.
 BUTTON is the button number of the button to fake pressing.
 MASK is a modifier mask specifying which modifier keys to press before

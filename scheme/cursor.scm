@@ -9,7 +9,7 @@
   )
 
 
-(define*-public (image-name->cursor name #&optional (x-hotspot 8) (y-hotspot 8))
+(define*-public (image-name->cursor name #:optional (x-hotspot 8) (y-hotspot 8))
   "Make a cursor given only the NAME.
 X-HOTSPOT and Y-HOTSPOT can specify the hotspot coordinates for the cursor."
   (create-pixmap-cursor (make-image name) #f #f x-hotspot y-hotspot))
@@ -26,7 +26,7 @@ X-HOTSPOT and Y-HOTSPOT can specify the hotspot coordinates for the cursor."
 
 ;;; SRL:FIXME:: Should allow different cursors for each nonant.
 ;; (apply-fancy-resize-cursors)
-(define*-public (apply-fancy-resize-cursors #&optional (win (get-window)))
+(define*-public (apply-fancy-resize-cursors #:optional (win (get-window)))
   "Use the fancy resize cursors for WIN."
   (map (lambda (pair) (set-window-cursor! (nonant-decoration win (car pair)) (cdr pair)))
        `((northwest . ,resize-br)

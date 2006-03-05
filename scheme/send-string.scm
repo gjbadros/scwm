@@ -68,7 +68,7 @@ use by `send-key'.  See also `X-synthetic-send-string'."
 ;; (X-synthetic-send-string "!@#$%^&*()_+[]\\{}|;':\",./<>?`~" (get-window))
 
 
-(define*-public (X-synthetic-send-string str #&optional (win (get-window)))
+(define*-public (X-synthetic-send-string str #:optional (win (get-window)))
   "Send string STR to WIN via synthetic X events.
 See also `send-key'.
 Note that some programs (e.g., xterm) by default do not

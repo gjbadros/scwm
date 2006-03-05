@@ -11,7 +11,7 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
+#include <libguile/ports.h>
 
 #define DECOR_IMPLEMENTATION
 #include "decor.h"
@@ -41,7 +41,7 @@ static void
 DestroyScwmDecor(ScwmDecor * fl)
 {
   if (fl->tag) {
-    gh_free(fl->tag);
+    free(fl->tag);
     fl->tag = NULL;
   }
   if (fl->HiReliefGC != NULL) {
@@ -177,7 +177,7 @@ decor2scm(ScwmDecor * fl)
   fl->shadow_factor = 0.5;
 
   set_highlight_foreground_x(BLACK_COLOR);
-  set_highlight_background_x(gh_str02scm("grey"));
+  set_highlight_background_x(scm_from_locale_string("grey"));
   set_title_font_x(str_fixed);
   set_current_decor_x(tmpd);
 
@@ -208,9 +208,9 @@ decor2scm(ScwmDecor * fl)
 
 SCM_DEFINE(make_decor, "make-decor", 0, 1, 0,
           (SCM name),
-"Create a new decor object. NAME optionally provides a string\n\
-that is used to name the decor, and is displayed when the decor is\n\
-printed.")
+"Create a new decor object. NAME optionally provides a string\n\n"
+"that is used to name the decor, and is displayed when the decor is\n"
+"printed.")
 #define FUNC_NAME s_make_decor
 {
   char *tag;
@@ -239,9 +239,9 @@ SCM_DEFINE(default_decor, "default-decor", 0, 0, 0,
 
 SCM_DEFINE(set_current_decor_x, "set-current-decor!", 1, 0, 0,
           (SCM decor),
-"Set the current decor to DECOR. Operations described as\n\
-setting options \"in the current decor\" will now operate on this\n\
-one.")
+"Set the current decor to DECOR. Operations described as\n\n"
+"setting options \"in the current decor\" will now operate on this\n"
+"one.")
 #define FUNC_NAME s_set_current_decor_x
 {
   ScwmDecor *new_cur;
@@ -313,15 +313,12 @@ SCM_DEFINE(window_decor, "window-decor", 1, 0, 0,
 
 
 
-MAKE_SMOBFUNS(decor);
-
 void
 init_decor()
 {
   REGISTER_SCWMSMOBFUNS(decor);
-#ifndef SCM_MAGIC_SNARFER
+
 #include "decor.x"
-#endif
 }
 
 

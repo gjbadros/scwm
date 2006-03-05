@@ -22,7 +22,7 @@
 ;;;;                    gtk-message use a label widget to calculate 
 ;;;;                    automatically the dimensions (trick stolen from
 ;;;;                    xmessage)
-;;;;                    message is a #&key value; removed xsize and ysize
+;;;;                    message is a #:key value; removed xsize and ysize
 ;;;;                    the close button is more small
 
 
@@ -31,7 +31,7 @@
   :use-module (app scwm optargs)
   :use-module (gtk gtk))
 
-(define* (quit-toolbar win #&optional (close-message "close"))
+(define* (quit-toolbar win #:optional (close-message "close"))
   (let* ((bar (gtk-alignment-new 0.5 0.5 0 0))
 	 (quit-button (gtk-button-new-with-label close-message)))
     (gtk-signal-connect quit-button "clicked" (lambda ()
@@ -41,7 +41,7 @@
 
 
 ;; (gtk-message "Hello world" #:close-message "Ok" #:title "Alert")
-(define*-public (gtk-message message #&key (close-message "close") (title "message"))
+(define*-public (gtk-message message #:key (close-message "close") (title "message"))
   "It display a message on the display, using a gtk window
 MESSAGE is a string representing the message to be displayed on the screen."
   (let* ((msgwin (gtk-window-new 'dialog))

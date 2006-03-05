@@ -30,7 +30,7 @@ constraints is reset to empty)."
 
 (define ui-constraints-window #f)
 
-(define*-public (start-constraints #&key (draw-constraints-with-focus #f) (draw-disabled-constraints #t))
+(define*-public (start-constraints #:key (draw-constraints-with-focus #f) (draw-disabled-constraints #t))
   "Start using the constraint solver.
 DRAW-CONSTRAINTS-WITH-FOCUS is used to specify whether
 you'd like all constraints drawn or just the ones which

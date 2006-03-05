@@ -104,48 +104,48 @@
 
 
 SCWM_HOOK(before_new_window_hook, "before-new-window-hook", 1,
-"This hook is invoked when first creating a new window object.\n\
-Its procedures are each called with a single argument, WIN, the new\n\
-window.  Only a subset of the usual window parameters should be set\n\
-here, in particular, those that control what hints will be respected\n\
-for this window, and those that control how the window will be placed.\n\
-\n\
-This hook does not typically need to be used directly by the user;\n\
-`window-style' from the \"(app scwm style)\" module provides a convenient\n\
-interface to setting the relevant parameters when a new window is\n\
-created.\n\
-\n\
-See also `before-place-new-window-hook' and `after-new-window-hook'. ");
+"This hook is invoked when first creating a new window object.\n\n"
+"Its procedures are each called with a single argument, WIN, the new\n"
+"window.  Only a subset of the usual window parameters should be set\n"
+"here, in particular, those that control what hints will be respected\n"
+"for this window, and those that control how the window will be placed.\n"
+"\n"
+"This hook does not typically need to be used directly by the user;\n"
+"`window-style' from the \"(app scwm style)\" module provides a convenient\n"
+"interface to setting the relevant parameters when a new window is\n"
+"created.\n"
+"\n"
+"See also `before-place-new-window-hook' and `after-new-window-hook'. ");
 
 SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook", 1,
-"This hook is invoked just before placing a new window.\n\
-It comes after `before-new-window-hook', but before `after-new-window-hook'. \n\
-Its procedures are each called with a single argument, WIN, the new window.\n\
-This hook may be removed later since it is mostly redundant with the other\n\
-two hooks, despite being invoked at a slightly different time. \n\
-\n\
-See also `before-new-window-hook' and `after-new-window-hook'.");
+"This hook is invoked just before placing a new window.\n\n"
+"It comes after `before-new-window-hook', but before `after-new-window-hook'. \n"
+"Its procedures are each called with a single argument, WIN, the new window.\n"
+"This hook may be removed later since it is mostly redundant with the other\n"
+"two hooks, despite being invoked at a slightly different time. \n"
+"\n"
+"See also `before-new-window-hook' and `after-new-window-hook'.");
 
 SCWM_HOOK(after_new_window_hook, "after-new-window-hook", 1,
-"This hook is invoked after a window is created and placed.\n\
-Its procedures are each called with a single argument, WIN, the new window.\n\
-Any window operations may be performed at this time. However, it is\n\
-recommended that placement-related operations, such as setting the\n\
-position, desk, viewport location and z-ordering of a window be done\n\
-in the placement procedure instead.  It should be used for setting\n\
-window styles, as the window geometry needs to be fully and correctly\n\
-specified before the window is placed.  The `window-style' mechanism\n\
-from the \"(app scwm style)\" module provides a convenient interface to\n\
-setting the relevant parameters when a new window is created. \n\
-\n\
-See also `before-new-window-hook' and `before-place-new-window-hook'.");
+"This hook is invoked after a window is created and placed.\n\n"
+"Its procedures are each called with a single argument, WIN, the new window.\n"
+"Any window operations may be performed at this time. However, it is\n"
+"recommended that placement-related operations, such as setting the\n"
+"position, desk, viewport location and z-ordering of a window be done\n"
+"in the placement procedure instead.  It should be used for setting\n"
+"window styles, as the window geometry needs to be fully and correctly\n"
+"specified before the window is placed.  The `window-style' mechanism\n"
+"from the \"(app scwm style)\" module provides a convenient interface to\n"
+"setting the relevant parameters when a new window is created. \n"
+"\n"
+"See also `before-new-window-hook' and `before-place-new-window-hook'.");
        
 SCWM_HOOK(window_close_hook,"window-close-hook",1,
-"This hook is invoked whenever a scwm-managed window is closed.\n\
-It is invoked on deletes, destroys, or for any reason that a window\n\
-is closed. The hook procedures are invoked with one argument,\n\
-WIN, the window being closed.  The WIN is still valid during the hook\n\
-procedures.");
+"This hook is invoked whenever a scwm-managed window is closed.\n\n"
+"It is invoked on deletes, destroys, or for any reason that a window\n"
+"is closed. The hook procedures are invoked with one argument,\n"
+"WIN, the window being closed.  The WIN is still valid during the hook\n"
+"procedures.");
 
 
 /* This global is True iff Cassowary's resolve hook
@@ -255,7 +255,7 @@ AddWindow(Window w)
   ResetAllFlags(psw);
   psw->fBorderWidthSet = False;
 
-  psw->icon_cursor=SCM_UNDEFINED;
+  psw->icon_cursor = SCM_UNDEFINED;
 
   psw->cmap_windows = NULL;
   psw->number_cmap_windows = 0;
@@ -782,7 +782,7 @@ AddWindow(Window w)
 		(unsigned long) psw, psw->classhint.res_class);
   BroadcastName(M_RES_NAME, psw->w, psw->frame,
 		(unsigned long) psw, psw->classhint.res_name);
-  if (psw->mini_icon_image != SCM_BOOL_F) {
+  if (scm_is_true(psw->mini_icon_image)) {
     BroadcastMiniIcon(M_MINI_ICON, psw);
   }
 
@@ -808,7 +808,7 @@ AddWindow(Window w)
 
   CreateIconWindow(psw,ICON_X_VP(psw),ICON_Y_VP(psw));
 
-  return (psw);
+  return psw;
 }
 #undef FUNC_NAME 
  
@@ -857,7 +857,7 @@ DestroyScwmWindow(ScwmWindow *psw)
   XDeleteContext(dpy, psw->w, ScwmContext);
 
   if (psw->icon_w && psw->fPixmapOurs &&
-      psw->icon_image != SCM_BOOL_F) {
+      scm_is_true(psw->icon_image)) {
     XFreePixmap(dpy, IMAGE(psw->icon_image)->image);
   }
 
@@ -1032,9 +1032,7 @@ GetWindowSizeHints(ScwmWindow * psw)
 
 void init_add_window()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "add_window.x"
-#endif
 }
 
 

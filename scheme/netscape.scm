@@ -68,7 +68,7 @@ May error if no netscape windows are present."
 
 
 ;; from Todd Larason
-(define*-public (run-in-netscape command completion #&optional (netwin (netscape-win)))
+(define*-public (run-in-netscape command completion #:optional (netwin (netscape-win)))
   "Runs COMMAND in a Netscape window, calling COMPLETION when done, if set.
 Uses Netscape window NETWIN if specifies, or one found by (netscape-win)
 otherwise; it is an error if NETWIN refers to a non-Netscape window."
@@ -120,10 +120,10 @@ separators, so the url gets chopped off at the first literal comma."
 
 ;; (run-in-netscape "openURL(http://www.cs.washington.edu)" noop)
 (define*-public (netscape-goto-url url 
-                #&optional
+                #:optional
 		(completion #f)
 		(new *netscape-new-window*)
-		#&key (start-netscape-as-needed #f))
+		#:key (start-netscape-as-needed #f))
   "Make netscape go to the location URL.
 Calls COMPLETION when done.
 The optional argument specifies whether a new window should be opened.
@@ -143,7 +143,7 @@ It defaults to `*netscape-new-window*'."
 
 ;; (netscape-goto-selection-url)
 (define*-public (netscape-goto-selection-url 
-		 #&optional (new *netscape-new-window*) (selection "PRIMARY"))
+		 #:optional (new *netscape-new-window*) (selection "PRIMARY"))
   "Goto the url that is held in the X11 selection, SELECTION.
 Uses the cut buffer instead if no selection exists.
 See `X-handle-selection-string' and `netscape-goto-url'.  NEW can be #f to
@@ -156,7 +156,7 @@ not open a new netscape frame. SELECTION defaults to \"PRIMARY\" if not given.
 				(if str str (X-cut-buffer-string)) display-message-briefly new))))
 
 (define*-public (netscape-goto-cut-buffer-url 
-		 #&optional (new *netscape-new-window*))
+		 #:optional (new *netscape-new-window*))
   "Goto the url that is held in the X11 cut buffer.
 See `X-cut-buffer' and `netscape-goto-url'.  NEW can be #f to
 not open a new netscape frame."
@@ -246,7 +246,7 @@ Just go to the Metacrawler home page if WORD is #f."
     (and s (netscape-google-search s))))
 
 
-(define*-public (netscape-google-search-selection-url #&optional (selection "PRIMARY"))
+(define*-public (netscape-google-search-selection-url #:optional (selection "PRIMARY"))
   "Use Netscape to do a Google search of the selection, SELECTION.
 SELECTION defaults to \"PRIMARY\" if not specified."
   (interactive)
@@ -255,7 +255,7 @@ SELECTION defaults to \"PRIMARY\" if not specified."
 			       (netscape-google-search str))))
 
 
-(define*-public (netscape-av-search-selection-url #&optional (selection "PRIMARY"))
+(define*-public (netscape-av-search-selection-url #:optional (selection "PRIMARY"))
   "Use Netscape to do a AltaVista search of the selection, SELECTION.
 SELECTION defaults to \"PRIMARY\" if not specified."
   (interactive)
@@ -263,7 +263,7 @@ SELECTION defaults to \"PRIMARY\" if not specified."
 			     (lambda (str)
 			       (netscape-av-search str))))
 
-(define*-public (netscape-metacrawler-search-selection-url #&optional (selection "PRIMARY"))
+(define*-public (netscape-metacrawler-search-selection-url #:optional (selection "PRIMARY"))
   "Use Netscape to do a Metacrawler search of the selection, SELECTION.
 SELECTION defaults to \"PRIMARY\" if not specified."
   (interactive)

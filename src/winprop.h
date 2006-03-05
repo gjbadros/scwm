@@ -22,7 +22,7 @@
 #ifndef WINPROP_H
 #define WINPROP_H
 
-#include <guile/gh.h>
+#include <libguile.h>
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -46,8 +46,8 @@ typedef struct {
 } scwm_property_handler;
 
 
-#define PROPERTY_HANDLER_P(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_property_handler)
-#define PROPERTY_HANDLER(X)  ((scwm_property_handler *)SCM_CDR((X)))
+#define PROPERTY_HANDLER_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_property_handler, X))
+#define PROPERTY_HANDLER(X)  ((scwm_property_handler *)SCM_SMOB_DATA(X))
 #define CALL_PH_SETTER(X, win, val) \
     ((*(PROPERTY_HANDLER((X))->setter))(win,val))
 #define CALL_PH_GETTER(X, win) ((*(PROPERTY_HANDLER((X))->getter))(win))

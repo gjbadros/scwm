@@ -15,7 +15,7 @@
   :use-module (app scwm listops))
 
 
-(define*-public (make-window-list-menu #&key (only '()) (except '())
+(define*-public (make-window-list-menu #:key (only '()) (except '())
 				       (by-stacking #f)
 				       (by-focus #f)
 				       (by-resource #f)
@@ -130,7 +130,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
      #:hover-delay hover-delay)))
 
 
-(define*-public (show-window-list-menu warp-to-index permit-alt-release-selection? #&rest rest)
+(define*-public (show-window-list-menu warp-to-index permit-alt-release-selection? #:rest rest)
   "Popup a window list menu.
 Warps the pointer to the WARP-TO-INDEX menu item iff it is an integer.
 If PERMIT-ALT-RELEASE-SELECTION? is #t, then the release of the Alt/Meta
@@ -140,7 +140,7 @@ Accepts all keyword arguments that `make-window-list-menu' takes."
   (popup-menu (apply make-window-list-menu rest) warp-to-index #f #f #f permit-alt-release-selection?))
 
 
-(define*-public (select-window-from-window-list #&key
+(define*-public (select-window-from-window-list #:key
 						(only '()) (except '())
 						(ignore-winlist-skip #f))
   "Permit selecting a window from a window list.
@@ -187,3 +187,4 @@ The selection procedure deiconifies the window and gives it focus."
   (show-window-list-menu 1 #f
 			 #:only (class-match?? "Netscape")
 			 #:proc animated-deiconify-to-vp-focus))
+

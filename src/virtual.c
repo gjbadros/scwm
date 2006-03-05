@@ -40,7 +40,9 @@ SCWM_SYMBOL(sym_east,"east");
 SCWM_SYMBOL(sym_south,"south");
 SCWM_SYMBOL(sym_west,"west");
 
-#define SCROLL_REGION (gh_scm2int(*pscm_scroll_region))
+SCM_VARIABLE_INIT(scm_scroll_region, "scroll-region", scm_from_int(2));
+/** The number of pixels at the edge of the screen within which virtual scrolling will occur. */
+
 
 SCWM_HOOK(change_desk_hook,"change-desk-hook", 2,
 "This hook is invoked whenever the current desktop is changed.\n\
@@ -85,11 +87,9 @@ Procedures in the hook are called with no arguments.");
 
 static Edge in_edge = EDGE_NONE;
 
-static SCM *pscm_scroll_region;
-
 int CpixScrollRegion()
 {
-  return gh_scm2int(*pscm_scroll_region);
+  return scm_to_int(scm_variable_ref(scm_scroll_region));
 }
 
 
@@ -532,9 +532,9 @@ MoveViewport_internal(int newx, int newy)
 		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vy, 1);
 
   scwm_run_hook(viewport_position_change_hook, 
-                gh_list(gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy),
-                        gh_int2scm(diffx), gh_int2scm(diffy),
-                        SCM_UNDEFINED)); 
+                scm_list_n(scm_from_int(Scr.Vx), scm_from_int(Scr.Vy),
+			   scm_from_int(diffx), scm_from_int(diffy),
+			   SCM_UNDEFINED)); 
 
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
@@ -559,9 +559,9 @@ MoveViewport_internal(int newx, int newy)
   }
 
   scwm_run_hook(after_viewport_position_change_hook, 
-                gh_list(gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy),
-                        gh_int2scm(diffx), gh_int2scm(diffy),
-                        SCM_UNDEFINED)); 
+                scm_list_n(scm_from_int(Scr.Vx), scm_from_int(Scr.Vy),
+			   scm_from_int(diffx), scm_from_int(diffy),
+			   SCM_UNDEFINED)); 
 
   checkPanFrames();
   fInMoveViewport_internal = False;
@@ -596,7 +596,7 @@ changeDesks(int val1, int val2)
   }
 
   scwm_run_hook2(change_desk_hook, 
-                gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
+                scm_from_int(Scr.CurrentDesk), scm_from_int(oldDesk));
   
   Broadcast(M_NEW_DESK, 1, Scr.CurrentDesk, 0, 0, 0, 0, 0, 0);
   /* Scan the window list, mapping windows on the new Desk,
@@ -656,19 +656,14 @@ changeDesks(int val1, int val2)
   CoerceEnterNotifyOnCurrentWindow();
 
   scwm_run_hook2(after_change_desk_hook, 
-                 gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
+                 scm_from_int(Scr.CurrentDesk), scm_from_int(oldDesk));
 }
 
 
 void
 init_virtual()
 {
-  SCWM_VAR_INIT(scroll_region, "scroll-region", gh_int2scm(2));
-  /** The number of pixels at the edge of the screen within which virtual scrolling will occur. */
-
-#ifndef SCM_MAGIC_SNARFER
 #include "virtual.x"
-#endif
 }
 
 

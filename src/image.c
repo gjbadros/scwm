@@ -18,6 +18,8 @@
  *
  */
 
+#include <libguile.h>
+
 #ifdef HAVE_CONFIG_H
 #include "scwmconfig.h"
 #endif
@@ -35,8 +37,6 @@
 #ifdef HAVE_LIBXPM
 #include <X11/xpm.h>
 #endif
-
-#include <guile/gh.h>
 
 #define IMAGE_IMPLEMENTATION
 #include "image.h"
@@ -93,7 +93,12 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 /* The location of the value of the image-load-path variable. */
 
-static SCM *pscm_image_load_path;
+/* Make the image-load-path Scheme variable easily accessible from C,
+   and load it with a nice default value. */
+  
+SCM_VARIABLE_INIT(scm_image_load_path,"image-load-path", scm_c_eval_string("\'"SCWM_IMAGE_LOAD_PATH));
+/** List of strings of directories in which to look for image files. */
+
 
 SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1,
 "Called with image name as a string when not found.");
@@ -164,28 +169,28 @@ SCM_DEFINE(image_p, "image?", 1, 0, 0,
 "Returns #t if OBJ is an image object, otherwise #f.")
 #define FUNC_NAME s_image_p
 {
-  return SCM_BOOL_FromBool(IMAGE_P(obj));
+  return scm_from_bool(IMAGE_P(obj));
 }
 #undef FUNC_NAME
 
 
 SCM_DEFINE(image_properties, "image-properties", 1, 0, 0,
           (SCM image),
-"Return an association list giving some properties of IMAGE.\n\
-Currently defined properties are 'filename, the fully expanded\n\
-pathname of the image, 'width, its width, 'height, its height, and\n\
-depth, its color depth. ")
+"Return an association list giving some properties of IMAGE.\n\n"
+"Currently defined properties are 'filename, the fully expanded\n"
+"pathname of the image, 'width, its width, 'height, its height, and\n"
+"'depth, its color depth. ")
 #define FUNC_NAME s_image_properties
 {
   scwm_image *psimg;
   VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
-  return gh_list(gh_cons(sym_filename,psimg->full_name),
-		 gh_cons(sym_width,gh_int2scm(psimg->width)),
-		 gh_cons(sym_height,gh_int2scm(psimg->height)),
-		 gh_cons(sym_depth,gh_int2scm(psimg->depth)),
-		 gh_cons(sym_pixmap,gh_int2scm(psimg->image)),
-		 gh_cons(sym_mask,gh_int2scm(psimg->mask)),
-		 SCM_UNDEFINED);
+  return scm_list_n(scm_cons(sym_filename, psimg->full_name),
+		    scm_cons(sym_width,    scm_from_int(psimg->width)),
+		    scm_cons(sym_height,   scm_from_int(psimg->height)),
+		    scm_cons(sym_depth,    scm_from_int(psimg->depth)),
+		    scm_cons(sym_pixmap,   scm_from_int(psimg->image)),
+		    scm_cons(sym_mask,     scm_from_int(psimg->mask)),
+		    SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -193,21 +198,21 @@ depth, its color depth. ")
 char *
 SzNewImageShortName(scwm_image *psimg)
 {
-  char *sz = gh_scm2newstr(psimg->full_name,NULL);
+  char *sz = scm_to_locale_string(psimg->full_name);
   char *pch = strrchr(sz,'/');
   char *szAnswer;
   if (!pch) pch = sz;
   else pch++;
   szAnswer = strdup(pch);
-  gh_free(sz);
+  free(sz);
   return szAnswer;
 }
 
 SCM_DEFINE(image_short_name, "image-short-name", 1, 0, 0,
           (SCM image),
-"Return the short name of IMAGE. \n\
-Use `image-properties' to access other properties of IMAGE\n\
-including its full name.")
+"Return the short name of IMAGE. \n\n"
+"Use `image-properties' to access other properties of IMAGE\n"
+"including its full name.")
 #define FUNC_NAME s_image_short_name
 {
   scwm_image *psimg;
@@ -215,8 +220,8 @@ including its full name.")
   char *sz;
   VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
   sz = SzNewImageShortName(psimg);
-  answer = gh_str02scm(sz);
-  gh_free(sz);
+  answer = scm_from_locale_string(sz);
+  free(sz);
   return answer;
 }  
 #undef FUNC_NAME
@@ -230,7 +235,7 @@ SCM_DEFINE(image_size, "image-size", 1, 0, 0,
 {
   scwm_image *psimg;
   VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
-  return gh_list(gh_int2scm(psimg->width),gh_int2scm(psimg->height),SCM_UNDEFINED);
+  return scm_list_n(scm_from_int(psimg->width),scm_from_int(psimg->height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -279,8 +284,8 @@ SCM_DEFINE(load_xbm, "load-xbm", 1, 0, 0,
 
   result=make_empty_image(full_path);
   ci=IMAGE(result);
-  
-  c_path = gh_scm2newstr(full_path,&ignore);
+
+  c_path = scm_to_locale_string(full_path);
 
   xbm_return=XReadBitmapFile(dpy, Scr.Root, c_path, 
 		      &ci->width, &ci->height, &ci->image, 
@@ -294,7 +299,7 @@ SCM_DEFINE(load_xbm, "load-xbm", 1, 0, 0,
     scwm_msg(WARN,FUNC_NAME,"Could not load bitmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  gh_free(c_path);
+  free(c_path);
   return result;
 }
 #undef FUNC_NAME
@@ -315,7 +320,7 @@ SCM_DEFINE(load_xpm, "load-xpm", 1, 0, 0,
   result=make_empty_image(full_path);
   ci=IMAGE(result);
 
-  c_path = gh_scm2newstr(full_path,&ignore);
+  c_path = scm_to_locale_string(full_path);
 
   xpm_attributes.colormap = ImageColorMap;
 
@@ -342,7 +347,7 @@ SCM_DEFINE(load_xpm, "load-xpm", 1, 0, 0,
     scwm_msg(WARN,FUNC_NAME,"Could not load pixmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  gh_free(c_path);
+  free(c_path);
   return result;
 }
 #undef FUNC_NAME
@@ -377,13 +382,12 @@ SCM_DEFINE(load_imlib_image, "load-imlib-image", 1, 0, 0,
   SCM result;
   ImlibImage *pimg = NULL;
   scwm_image *ci;
-  int ignore;
   char *c_path;
 
   result=make_empty_image(full_path);
   ci=IMAGE(result);
 
-  c_path = gh_scm2newstr(full_path,&ignore);
+  c_path = scm_to_locale_string(full_path);
 
   pimg = Imlib_load_image(imlib_data, c_path);
   if (!pimg) {
@@ -396,7 +400,7 @@ SCM_DEFINE(load_imlib_image, "load-imlib-image", 1, 0, 0,
     }
   }
 
-  gh_free(c_path);
+  free(c_path);
   return result;
 }
 #undef FUNC_NAME
@@ -406,12 +410,12 @@ SCM_DEFINE(load_imlib_image, "load-imlib-image", 1, 0, 0,
 
 SCM_DEFINE(register_image_loader, "register-image-loader", 2, 0, 0,
           (SCM extension, SCM proc),
-"Register PROC as the loader to use for images ending in EXTENSION.\n\
-EXTENSION must be a string beginning with a period, the\n\
-empty string (for files with no extension), or the string \"default\"\n\
-(for files that no other image loader succeeds in loading). PROC will\n\
-be called with the full pathname of the image and should return an\n\
-image object, or #f if it succeeds.")
+"Register PROC as the loader to use for images ending in EXTENSION.\n\n"
+"EXTENSION must be a string beginning with a period, the\n"
+"empty string (for files with no extension), or the string \"default\"\n"
+"(for files that no other image loader succeeds in loading). PROC will\n"
+"be called with the full pathname of the image and should return an\n"
+"image object, or #f if it succeeds.")
 #define FUNC_NAME s_register_image_loader
 {
   VALIDATE_ARG_STR(1,extension);
@@ -427,10 +431,10 @@ image object, or #f if it succeeds.")
 
 SCM_DEFINE(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
           (SCM extension),
-"Unregister the loader, if any, for images ending in EXTENSION.\n\
-EXTENSION must be a string beginning with a period, the\n\
-empty string (for files with no extension), or the string \"default\"\n\
-(for files that no other image loader succeeds in loading).")
+"Unregister the loader, if any, for images ending in EXTENSION.\n\n"
+"EXTENSION must be a string beginning with a period, the\n"
+"empty string (for files with no extension), or the string \"default\"\n"
+"(for files that no other image loader succeeds in loading).")
 #define FUNC_NAME s_unregister_image_loader
 {
   VALIDATE_ARG_STR(1,extension);
@@ -469,7 +473,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     int max_path_len= 0;
 
     /* relative path */ 
-    if (!gh_list_p(*pscm_image_load_path)) {
+    if (!scm_is_true(scm_list_p(scm_variable_ref(scm_image_load_path)))) {
       /* Warning, image-load-path is not a list. */
       goto DONE_PATH_EXPAND_FNAME;
       return SCM_BOOL_F;
@@ -477,55 +481,63 @@ path_expand_image_fname(SCM name, const char *func_name)
     
     /* traverse the path list to compute the max buffer size we will
        need. */
-    /* GJB:FIXME:: ideally, we'd like to do this only after 
-     *pscm_image_load_path changes -- maybe we could compare
-     against a hash of the old value before redoing this work */
+    /* GJB:FIXME:: ideally, we'd like to do this only after
+     scm_variable_ref(scm_image_load_path) changes -- maybe we could
+     compare against a hash of the old value before redoing this
+     work */
 
-    for (p = *pscm_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
-      SCM elt = gh_car(p);
-      if (!gh_string_p(elt)) {
+    for (p = scm_variable_ref(scm_image_load_path); !scm_is_null(p); p = scm_cdr(p)) {
+      SCM elt = scm_car(p);
+      if (!scm_is_string(elt)) {
 	/* Warning, non-string in image-load-path */
 	scwm_msg(WARN,FUNC_NAME,"Non-string in image-load-path");
         goto DONE_PATH_EXPAND_FNAME;
 	/* Assuming path is list of strings simplifies code below. */
       } else {
-	int l=SCM_ROLENGTH(elt);
+	int l = scm_c_string_length(elt);
 	max_path_len= (l > max_path_len) ? l : max_path_len;
       }
     }
     
-    /* Add 2, one for the '/', one for the final NULL */
-    c_fname = NEWC(max_path_len + length + 2,char);
+    /* Add 2, one for the '/', one for the final NUL */
+    c_fname = NEWC(max_path_len + length + 2, char);
     
     /* Try every possible path */
-    for(p = *pscm_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
-      SCM elt = gh_car(p);
-      int path_len = SCM_ROLENGTH(elt);
-      memcpy(c_fname, SCM_ROCHARS(elt), path_len);
+    for (p = scm_variable_ref(scm_image_load_path); !scm_is_null(p); p = scm_cdr(p)) {
+      SCM elt = scm_car(p);
+#if 0
+      int path_len = SCM_STRING_LENGTH(elt);
+      memcpy(c_fname, SCM_STRING_CHARS(elt), path_len);
+#else
+      int path_len = scm_to_locale_stringbuf(elt, c_fname, max_path_len + length +1);
+#endif
       c_fname[path_len] = '/';
       memcpy(&(c_fname[path_len+1]), c_name, length);
       c_fname[path_len+length+1] = 0;
-      if(access(c_fname, R_OK)==0) {
+      if (access(c_fname, R_OK)==0) {
 	break;
       }
     }
     
-    if (p==SCM_EOL) {
+    if (scm_is_null(p)) {
       /* warn that the file is not found. */
       scwm_msg(WARN,FUNC_NAME,"Image file was not found: `%s'",c_name);
-      scwm_run_hook1(image_not_found_hook,gh_str02scm(c_name));
+      scwm_run_hook1(image_not_found_hook,scm_from_locale_string(c_name));
       goto DONE_PATH_EXPAND_FNAME;
     }
   }
 
-  result = gh_str02scm(c_fname);
+  result = scm_from_locale_string(c_fname);
+
  DONE_PATH_EXPAND_FNAME:
   /* c_fname and c_name may be aliased from assignment above --
      be sure to free only once */
-  if (c_fname != c_name && c_fname)
+  if (c_fname != c_name && c_fname) {
     FREEC(c_fname);
-  if (c_name)
-    gh_free(c_name);
+  }
+  if (c_name) {
+    free(c_name);
+  }
   return result;
 }
 #undef FUNC_NAME
@@ -535,26 +547,25 @@ get_image_loader(SCM name)
 {
   char *c_name;
   char *c_ext;
-  int length;
   SCM result = SCM_BOOL_F;
   
-  c_name = gh_scm2newstr(name,&length);
+  c_name = scm_to_locale_string(name);
 
   c_ext = strchr (c_name,'.');
   if (c_ext==NULL) {
     scm_hash_ref (image_loader_hash_table, str_empty, SCM_BOOL_F);  
   } else {
-    while (c_ext != NULL && result == SCM_BOOL_F) {
+    while (c_ext != NULL && scm_is_false(result)) {
       result = scm_hash_ref (image_loader_hash_table, 
-			     gh_str02scm(c_ext), SCM_BOOL_F);
+			     scm_from_locale_string(c_ext), SCM_BOOL_F);
       c_ext = strchr (c_ext+1,'.');
     }
   }
 
-  gh_free(c_name);
+  free(c_name);
   c_name = NULL;
 
-  if (result == SCM_BOOL_F) {
+  if (scm_is_false(result)) {
     result = scm_hash_ref(image_loader_hash_table, str_default,
 			  SCM_BOOL_F);
   }
@@ -565,11 +576,11 @@ get_image_loader(SCM name)
  * Use (title-style #:pixmap "a036") to trigger error. */
 SCM_DEFINE(make_image, "make-image", 1, 0, 0,
           (SCM name),
-"Loads an image from the file NAME.\n\
-To load the image, the appropriate image loaders will be invoked as\n\
-needed. If NAME starts with \"/\", \"./\" or \"../\", it is treated as a\n\
-fully qualified pathname; otherwise, the image path is searched for an\n\
-appropriate file.")
+"Loads an image from the file NAME.\n\n"
+"To load the image, the appropriate image loaders will be invoked as\n"
+"needed. If NAME starts with \"/\", \"./\" or \"../\", it is treated as a\n"
+"fully qualified pathname; otherwise, the image path is searched for an\n"
+"appropriate file.")
 #define FUNC_NAME s_make_image
 {
   SCM result;
@@ -580,40 +591,45 @@ appropriate file.")
 
   /* First check the hash table for this image.  */
   result=scm_hash_ref(image_hash_table, name, SCM_BOOL_F);
-  if (result != SCM_BOOL_F) {
+  if (scm_is_true(result)) {
     /* MS:FIXME:: should really check for up-to-date-ness here */
     /* Never mind, let's just rely on the cache clear stuff */
-    return(result);
+    return result;
   }
 
   /* OK, it wasn't in the hash table - we need to expand the filename.
    */
-  full_path = path_expand_image_fname(name,FUNC_NAME);
-
-  if (full_path==SCM_BOOL_F) {
-    return (SCM_BOOL_F);
+#if 0
+  full_path = path_expand_image_fname(name, FUNC_NAME);
+#else
+  full_path = scm_search_path(scm_variable_ref(scm_image_load_path),
+			      name, SCM_UNDEFINED);
+#endif
+  if (scm_is_false(full_path)) {
+    return SCM_BOOL_F;
   }
 
   /* Check the cache again */
   result=scm_hash_ref(image_hash_table, full_path, SCM_BOOL_F);
-  if (result != SCM_BOOL_F) {
+  if (scm_is_true(result)) {
     scm_hash_set_x(image_hash_table, name, result);
     return result;
   }
 
   /* still not there, find the right loader, and load it up. */
   loader = get_image_loader(name);
-  if (loader != SCM_BOOL_F) {
+
+  if (scm_is_true(loader)) {
     result = scwm_safe_call1(loader, full_path);
   }
 
-  if (result == SCM_BOOL_F) {
+  if (scm_is_false(result)) {
     /* the load failed; try the default loader */
     loader = scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
-    if (loader != SCM_BOOL_F) {
+    if (scm_is_true(loader)) {
       result = scwm_safe_call1(loader, full_path);
     }
-    if (result == SCM_BOOL_F) {
+    if (scm_is_false(result)) {
       /* Still failed, return #f and possibly warn. */
       return SCM_BOOL_F;
     }
@@ -633,12 +649,12 @@ appropriate file.")
 /* GJB:FIXME:: make name == #t do a clear of all entries (ie. reset hash table). */
 SCM_DEFINE(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
           (SCM name),
-"Images are cached by both name and full pathname. It is\n\
-remotely possible that the file that should be used for a particular\n\
-name will change, for example if you alter the image file or change\n\
-your image path. For this unlikely eventuality,\n\
-`clear-image-cache-entry' is provided - it removes the image\n\
-associated with NAME from the image cache")
+"Remove the image associated with NAME from the image cache.\n\n"
+"Images are cached by both name and full pathname. It is\n"
+"remotely possible that the file that should be used for a particular\n"
+"name will change, for example if you alter the image file or change\n"
+"your image path. For this unlikely eventuality,\n"
+"`clear-image-cache-entry' is provided")
 #define FUNC_NAME s_clear_image_cache_entry
 {
   scm_hash_remove_x(image_hash_table, name);
@@ -650,10 +666,10 @@ associated with NAME from the image cache")
 #ifdef USE_IMLIB
 SCM_DEFINE(window_to_image,"window->image", 1, 4, 0,
           (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height),
-"Return an image with the contents of window WIN.\n\
-WIN can be a window id (as a long), a window object, or\n\
-the symbol 'root-window. Captures the rectangle of the window\n\
-at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
+"Return an image with the contents of window WIN.\n\n"
+"WIN can be a window id (as a long), a window object, or\n"
+"the symbol 'root-window. Captures the rectangle of the window\n"
+"at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
 #define FUNC_NAME s_window_to_image
 {
   Window w;
@@ -670,7 +686,7 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
   { /* scope */
     ImlibImage *pimg = Imlib_create_image_from_drawable(imlib_data,
                                                         w, None, x, y, wd, ht);
-    SCM result = make_empty_image(gh_str02scm("by window->image"));
+    SCM result = make_empty_image(scm_from_locale_string("by window->image"));
     scwm_image *ci = IMAGE(result);
     if (!MakeScwmImageFromImlibImage(ci,pimg)) {
       scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmaps from window");
@@ -683,8 +699,8 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
 
 SCM_DEFINE (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
            (SCM image, SCM width, SCM height),
-"Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. \n\
-See also `clone-resized-image' from the background module.")
+"Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. \n\n"
+"See also `clone-resized-image' from the background module.")
 #define FUNC_NAME s_clone_scaled_image
 {
   int w, h;
@@ -695,7 +711,7 @@ See also `clone-resized-image' from the background module.")
   { /* scope */
     ImlibImage *pimgSource = IMAGE(image)->im;
     ImlibImage *pimgNew = Imlib_clone_scaled_image(imlib_data,pimgSource,w,h);
-    SCM result = make_empty_image(gh_str02scm("by window->image"));
+    SCM result = make_empty_image(scm_from_locale_string("by window->image"));
     scwm_image *ci = IMAGE(result);
     if (!MakeScwmImageFromImlibImage(ci,pimgNew)) {
       scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmap");
@@ -713,7 +729,7 @@ make_image_from_pixmap(char *szDescription,
 		       Pixmap image, Pixmap mask, 
 		       int width, int height, int depth)
 {
-  SCM result = make_empty_image(gh_str02scm(szDescription));
+  SCM result = make_empty_image(scm_from_locale_string(szDescription));
   scwm_image *ci = IMAGE(result);
   ci->image = image;
   ci->mask = mask;
@@ -733,8 +749,6 @@ init_image_colormap()
   ImageColorMap = root_attributes.colormap;
 }
 
-MAKE_SMOBFUNS(scwmimage);
-
 void init_image() 
 {
 #ifdef USE_IMLIB
@@ -742,28 +756,26 @@ void init_image()
 #else /* !USE_IMLIB */  
   SCM val_load_xbm, val_load_xpm;
 #endif
-  
+
   REGISTER_SCWMSMOBFUNS(scwmimage);
 
   /* Save a convenient Scheme "default" string */
-  scm_permanent_object(str_default=gh_str02scm("default"));
+  scm_permanent_object(str_default=scm_from_locale_string("default"));
 
   /* Do the same for "" */
-  scm_permanent_object(str_empty=gh_str02scm(""));
+  scm_permanent_object(str_empty=scm_from_locale_string(""));
 
   /* Include registration of procedures and other things. */
-#ifndef SCM_MAGIC_SNARFER
 # include "image.x"
-#endif
 
   /* Initialize the image cache table. */
   image_hash_table = 
-    scm_make_weak_value_hash_table (SCM_MAKINUM(IMAGE_HASH_SIZE));
+    scm_make_weak_value_hash_table (scm_from_int(IMAGE_HASH_SIZE));
   scm_permanent_object(image_hash_table);
 
   /* Initialize the loader hash table. */
   image_loader_hash_table = 
-    gh_make_vector (SCM_MAKINUM(IMAGE_LOADER_HASH_SIZE), SCM_EOL);
+    scm_make_vector (scm_from_int(IMAGE_LOADER_HASH_SIZE), SCM_EOL);
   scm_permanent_object(image_loader_hash_table);
 
   /* Register the standard loaders. */
@@ -778,7 +790,8 @@ void init_image()
     /* init imlib */
     imlib_data = Imlib_init_with_params(dpy, &imlib_params);
     
-    val_load_imlib_image = gh_lookup("load-imlib-image");
+    /* DPS:FIX  will throw error if undefined */
+    val_load_imlib_image = scm_variable_ref(scm_c_lookup("load-imlib-image"));
     if(val_load_imlib_image == SCM_UNDEFINED) {
       scwm_msg(ERR,"init_image","load-imlib-image not defined -- "
                "probable build error\n consider 'rm *.x' and rebuild");
@@ -786,11 +799,13 @@ void init_image()
     }
 
     register_image_loader (str_empty, val_load_imlib_image);
-    register_image_loader (gh_str02scm("default"), val_load_imlib_image);
+    register_image_loader (scm_from_locale_string("default"), val_load_imlib_image);
   }
 #else /* !USE_IMLIB */  
-  val_load_xbm = gh_lookup("load-xbm");
-  val_load_xpm = gh_lookup("load-xpm");
+
+  /* DPS:FIX   will throw error if undefined */
+  val_load_xbm = scm_variable_ref(scm_c_lookup("load-xbm"));
+  val_load_xpm = scm_variable_ref(scm_c_lookup("load-xpm"));
 
   if (val_load_xbm == SCM_UNDEFINED) {
     scwm_msg(ERR,"init_image","load-xbm not defined -- probable build error\n\
@@ -799,22 +814,15 @@ consider 'rm *.x' and rebuild");
   }
 
   register_image_loader (str_empty, val_load_xbm);
-  register_image_loader (gh_str02scm(".icon"), val_load_xbm);
-  register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
-  register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
+  register_image_loader (scm_from_locale_string(".icon"), val_load_xbm);
+  register_image_loader (scm_from_locale_string(".bitmap"), val_load_xbm);
+  register_image_loader (scm_from_locale_string(".xbm"), val_load_xbm);
   if (!UNSET_SCM(val_load_xpm)) {
-    register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
-    register_image_loader (gh_str02scm(".xpm.gz"), val_load_xpm);
+    register_image_loader (scm_from_locale_string(".xpm"), val_load_xpm);
+    register_image_loader (scm_from_locale_string(".xpm.gz"), val_load_xpm);
     register_image_loader (str_default, val_load_xbm);
   }
 #endif /* USE_IMLIB */
-  
-  /* Make the image-load-path Scheme variable easily accessible from C,
-     and load it with a nice default value. */
-  
-  SCWM_VAR_INIT(image_load_path,"image-load-path", gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH));
-  /** List of strings of directories in which to look for image files. */
-
 }
 
 

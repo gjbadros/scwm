@@ -55,8 +55,8 @@
 ;; lists can be used to construct menus and to do the 
 ;; drawing.
 
-(define-public global-constraint-class-list ())
-(define-public global-constraint-instance-list ())
+(define-public global-constraint-class-list '())
+(define-public global-constraint-instance-list '())
 
 ;; (length global-constraint-instance-list)
 
@@ -142,7 +142,7 @@ SIDE-EFFECT: removes class object from the global class list."
     (for-each (lambda (class) 
 		(run-hook constraint-class-delete-hook class))
 	      global-constraint-class-list)
-    (set! global-constraint-class-list ())))
+    (set! global-constraint-class-list '())))
 
 ;; ui-constraint-class?
 
@@ -303,7 +303,7 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
 ;; SIDE-EFFECT: adds new instance object to the global list
 ;; Returned objects are (obid-ui-constraint . (CLASS (CN) ENABLED? LIST-OF-WINDOWS OPTS))
 
-(define*-public (make-ui-constraint ui-constraint-class arg-list #&key (visible? #t))
+(define*-public (make-ui-constraint ui-constraint-class arg-list #:key (visible? #t))
   "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
 WIN-LIST specifies the windows to be constrained.  Returns a new constraint
 object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
@@ -632,7 +632,7 @@ an ui-constraint."
 
 ;; draw-constraints-of-window
 
-(define*-public (draw-constraints-of-window win #&key (draw-disabled #t))
+(define*-public (draw-constraints-of-window win #:key (draw-disabled #t))
   "Draw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
   (for-each (if draw-disabled draw-constraint draw-enabled) (ui-constraints-involving-window win)))
@@ -640,7 +640,7 @@ If WIN is not specified, the user is prompted to select a window."
 
 ;; undraw-constraints-of-window
 
-(define*-public (undraw-constraints-of-window win #&key (draw-disabled #t))
+(define*-public (undraw-constraints-of-window win #:key (draw-disabled #t))
   "Undraw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
   (for-each (if draw-disabled undraw-constraint undraw-enabled) (ui-constraints-involving-window win)))
@@ -648,14 +648,14 @@ If WIN is not specified, the user is prompted to select a window."
 
 ;; draw-all-constraints
 
-(define*-public (draw-all-constraints #&key (draw-disabled #t))
+(define*-public (draw-all-constraints #:key (draw-disabled #t))
   "Draw all constraints in the global instance list."
   (for-each (if draw-disabled draw-constraint draw-enabled) global-constraint-instance-list))
 
 
 ;; undraw-all-constraints
 
-(define*-public (undraw-all-constraints #&key (draw-disabled #t))
+(define*-public (undraw-all-constraints #:key (draw-disabled #t))
   "Undraw all constraints in the global instance list."
   (for-each (if draw-disabled undraw-constraint undraw-enabled) global-constraint-instance-list))
 
@@ -743,14 +743,14 @@ Errors if UI-CONSTRAINT is not a ui-constraint object."
 
 (add-hook! window-close-hook delete-ui-constraints-involving-window!)
 
-(define*-public (move-after-deleting-constraints #&optional (win (get-window)))
+(define*-public (move-after-deleting-constraints #:optional (win (get-window)))
   "Move WIN after deleting all constraints that involve it.
 See also `delete-ui-constraints-involving-window!'."
   (interactive)
   (delete-ui-constraints-involving-window! win)
   (interactive-move win))
 
-(define*-public (move-after-deleting-inferred-constraints #&optional (win (get-window)))
+(define*-public (move-after-deleting-inferred-constraints #:optional (win (get-window)))
   "Move WIN after deleting all inferred constraints that involve it.
 See also `delete-inferred-ui-constraints-involving-window!'."
   (interactive)

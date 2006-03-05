@@ -49,15 +49,15 @@ unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
 #define VALIDATE_ARG_ATOM_COPY(pos,scm,cvar) \
   do { \
   assert(sizeof(Atom) == sizeof(unsigned long)); \
-  if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
+  if (scm_is_number(scm)) cvar = (Atom) scm_to_ulong(scm); \
   else SCWM_WRONG_TYPE_ARG(pos,scm); \
   } while (0)
 
 #define VALIDATE_ARG_ATOM_OR_STRING_COPY(pos,scm,cvar) \
   do { \
   assert(sizeof(Atom) == sizeof(unsigned long)); \
-  if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
-  else if (gh_string_p(scm)) { \
+  if (scm_is_number(scm)) cvar = (Atom) scm_to_ulong(scm); \
+  else if (scm_is_string(scm)) { \
     cvar = InternAtomFromScm(dpy,scm,False); \
   } else SCWM_WRONG_TYPE_ARG(pos,scm); \
   } while (0)

@@ -18,7 +18,6 @@
 ;;;; 
 
 
-
 (define-module (app scwm advice))
 
 
@@ -49,7 +48,7 @@ only a minimal subset of its features."
       (list 'begin
 	    (if (not (defined? orig))
 		`(define ,orig ,function)
-		())
+		'())
 	    (case (car param)
 	      ((before) `(define ,function
 			   (lambda ,args
