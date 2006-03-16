@@ -216,9 +216,7 @@ scwm_init_background()
   scm_permanent_object(root_image);
   scm_permanent_object(root_bg_color);
 
-#ifndef SCM_MAGIC_SNARFER
  #include "background.x"
-#endif
 }
 
 
