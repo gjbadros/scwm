@@ -40,6 +40,8 @@
 #include "dmalloc.h"
 #endif
 
+typedef void *(*cont_proc)(void*);
+
 #define USE_LAZY_HANDLER 1
 
 /* #define SCWM_DEBUG_SAFE_APPLY */
@@ -97,6 +99,11 @@ scwm_body_apply (void *body_data)
   return scm_apply_0(ad->proc, ad->args);/* DPS: Watch args */
 }
 
+/*
+  scm_internal_cwdr -> scm_c_with_continuation_barrier
+  scm_internal_stack_catch -> scm_intrenal_stack_catch
+  scm_internal_stack_cwdr -> ?
+ */
 
 /* Use scm_internal_cwdr to establish a new dynamic root - this causes
    all throws to be caught and prevents continuations from exiting the
@@ -138,58 +145,9 @@ char *SzNameOfProcedureNew(SCM proc)
 #endif
 
 
-static SCM
-scm_internal_stack_cwdr (scm_t_catch_body body,
-			 void *body_data,
-			 scm_t_catch_handler handler,
-			 void *handler_data,
-			 SCM_STACKITEM *stack_item)
-{
-  struct cwssdr_data d;
-  d.tag = SCM_BOOL_T;
-  d.body = body;
-  d.data = body_data;
-  d.handler = handler;
-  return scm_internal_cwdr_no_unwind (cwssdr_body, &d, handler, handler_data, 
-                                      stack_item);
-}
 
 static SCM run_hook_proc;
 
-#if USE_LAZY_HANDLER
-
-SCM
-mg_lazy_handler(void *data, SCM tag, SCM throw_args)
-{
-  SCM eport = scm_current_error_port();
-
-  /* Error report */
-  scm_puts("scwm:", eport);
-  if (!SCM_DEVAL_P)
-    scm_puts(" (enable debugging evaluator for backtrace output)", eport);
-  scm_putc('\n', eport);
-
-  scm_handle_by_message_noexit(data, tag, throw_args);
-  scm_force_output(eport);
-  scm_ithrow(tag, throw_args, 1);
-  return SCM_UNSPECIFIED; /* never returns */
-}
-
-
-static SCM
-scwm_lazy_body_apply(void * body_data)
-{
-  return scm_internal_lazy_catch(SCM_BOOL_T,
-                                 (scm_t_catch_body) scwm_body_apply, body_data,
-                                 (scm_t_catch_handler) mg_lazy_handler, body_data);
-}
-
-SCM
-scwm_empty_handler(void *data, SCM tag, SCM args)
-{
-  return SCM_BOOL_F;
-}
-#endif
 
 SCM
 scwm_safe_apply (SCM proc, SCM args)
@@ -209,15 +167,7 @@ scwm_safe_apply (SCM proc, SCM args)
     }
 #endif
 
-#if USE_LAZY_HANDLER
-  return scm_internal_stack_cwdr(scwm_lazy_body_apply, &apply_data,
-				 scwm_empty_handler, "scwm",
-				 &stack_item);
-#else
-  return scm_internal_stack_cwdr(scwm_body_apply, &apply_data,
-				 scwm_handle_error, "scwm",
-				 &stack_item);
-#endif
+  return scm_c_with_continuation_barrier((cont_proc)scwm_body_apply, &apply_data);
 }
 
 static SCM
@@ -238,9 +188,7 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
   }
 #endif
 
-  return scm_internal_cwdr_no_unwind(scwm_body_apply, &apply_data,
-                                     scm_handle_by_message_noexit, "scwm",
-                                     &stack_item);
+  return scm_c_with_continuation_barrier((cont_proc)scwm_body_apply, &apply_data);
 }
 
 
@@ -344,25 +292,12 @@ scwm_body_eval_x (void *body_data)
   return scm_eval (expr, scm_current_module());
 }
 
-#if USE_LAZY_HANDLER
-static SCM
-scwm_lazy_body_eval_x(void * body_data)
-{
-  return scm_internal_lazy_catch(SCM_BOOL_T,
-                                 (scm_t_catch_body) scwm_body_eval_x, body_data,
-                                 (scm_t_catch_handler) mg_lazy_handler, body_data);
-}
-#endif
 
 SCWM_INLINE static SCM 
-scwm_catching_eval_x (SCM expr) {
-#if USE_LAZY_HANDLER
-  return scm_internal_stack_catch (SCM_BOOL_T, scwm_lazy_body_eval_x, &expr,
-				  scwm_empty_handler, "scwm");
-#else
+scwm_catching_eval_x (SCM expr)
+{
   return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
 				   scwm_handle_error, "scwm");
-#endif
 }
 
 static int clnsProcessingHook = 5;
@@ -415,13 +350,6 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
   port = scm_set_current_error_port(port);
   str = scm_strport_to_string(port);
 
-  scm_write(str, scm_current_output_port());
-  scm_newline(scm_current_output_port());
-  scm_flush(scm_current_output_port());
-  scm_write(str, scm_current_error_port());
-  scm_newline(scm_current_error_port());
-  scm_flush(scm_current_error_port());
-
   // eq? #t
   if (scm_is_true(scm_hook_empty_p(error_hook))) {
     scm_display(str, scm_current_error_port());	/* was scm_def_errp */
@@ -443,20 +371,22 @@ SCM_DEFINE(safe_load, "safe-load", 1, 0, 0,
 "errors.")
 #define FUNC_NAME s_safe_load
 {
-  SCM_STACKITEM stack_item;
-  VALIDATE_ARG_STR(1,fname);
-  return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
-				     scm_handle_by_message_noexit, "scwm", 
-				     &stack_item);
+  void * ret;
+  ret =  scm_c_with_continuation_barrier((cont_proc)scwm_body_load, &fname);
+  if (ret)
+    return (SCM) ret;
+  return SCM_BOOL_F; /* or what? */
 }
 #undef FUNC_NAME
 
 SCM scwm_safe_eval_str (char *string)
 {
-  SCM_STACKITEM stack_item;
-  return scm_internal_cwdr_no_unwind(scwm_body_eval_str, string,
-				     scm_handle_by_message_noexit, "scwm", 
-				     &stack_item);
+  void *ret;
+
+  ret = scm_c_with_continuation_barrier((cont_proc)scwm_body_eval_str, string);
+  if (ret)
+    return (SCM) ret;
+  return SCM_BOOL_F; /* or what? */
 }
 
 SCM_DEFINE(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
@@ -792,7 +722,7 @@ SCM_DEFINE(call_interactively, "call-interactively", 1, 1, 0,
   DEREF_IF_SYMBOL(thunk);
   VALIDATE_ARG_PROC(1,thunk);
   VALIDATE_ARG_BOOL_COPY_USE_F(2,debug,fDebugThisCommand);
-  interactive_spec = scm_procedure_property(thunk,scm_str2symbol("interactive")); // sym_interactive
+  interactive_spec = scm_procedure_property(thunk,scm_from_locale_symbol("interactive")); // sym_interactive
   if (UNSET_SCM(interactive_spec)) { 
     SCM procname = scm_procedure_name(thunk);
     /* char *szProcname = strdup("<anonymous procedure>"); 

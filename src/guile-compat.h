@@ -43,34 +43,15 @@ extern "C" {
 #define UNSET_SCM(x) (scm_is_eq(x, SCM_UNDEFINED) || scm_is_false(x))
 #endif
 
-#define GC_MARK_SCM_IF_SET(scm) do { if (scm && !UNSET_SCM((scm))) \
-     { scm_gc_mark((scm)); } } while (0)
+#define GC_MARK_SCM_IF_SET(scm) do { if (scm && !UNSET_SCM(scm)) \
+     { scm_gc_mark(scm); } } while (0)
 
 
-
-#ifdef HAVE_SCM_THE_LAST_STACK_FLUID
-  /* from libguile/fluids.h --07/01/98 gjb */
-SCM scm_fluid_ref (SCM fluid);
-SCM scm_fluid_set_x (SCM fluid, SCM value);
-#define DEREF_LAST_STACK scm_fluid_ref(scm_cdr(scm_the_last_stack_fluid))
-#define SET_LAST_STACK(X) scm_fluid_set_x (scm_cdr (scm_the_last_stack_fluid), (X))
-
-#else
-#define DEREF_LAST_STACK scm_cdr(scm_the_last_stack_var)
-#define SET_LAST_STACK(X) scm_set_cdr_x(scm_the_last_stack_var, (X))
-#endif
 
 #ifndef SCM_EOF_OBJECT_P
 #define SCM_EOF_OBJECT_P(x) ((x) == SCM_EOF_VAL)
 #endif
 
-#ifndef HAVE_SCM_INTERNAL_CWDR
-
-/* Simulate cwdr with catch. */
-#define scm_internal_cwdr(body, body_data, handler, handler_data, \
-			  stack_start) \
-scm_internal_catch (SCM_BOOL_T, body, body_data, handler, handler_data)
-#endif /* SCM_INTERNAL_CWDR */
 
 #if 1
 SCM 
@@ -89,16 +70,7 @@ extern SCM scm_internal_stack_catch (SCM tag,
 #endif
 #endif
 
-#ifndef HAVE_SCM_INTERNAL_PARSE_PATH
-#define scm_internal_parse_path scm_parse_path
-#endif
-
 typedef void (*main_prog_t) (int argc, char **argv);
-
-SCM make_output_strport(char *fname);
-#ifndef HAVE_SCM_STRPORT_TO_STRING
-SCM scm_strport_to_string(SCM port);
-#endif
 
 #endif /* GUILE_COMPAT_H */
 
