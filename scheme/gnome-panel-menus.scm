@@ -30,9 +30,9 @@
 ;;     returns the AnotherLevel menus
 ;;
 ;; (make-menu-gnome-user #:optional
-			       (path "/usr/share/applnk")
-			       (title "KDE Menus"))
-  (make-menu-from-structured-directory path title))
+;;			       (path "/usr/share/applnk")
+;;			       (title "KDE Menus"))
+;; (make-menu-from-structured-directory path title))
 
 
 
