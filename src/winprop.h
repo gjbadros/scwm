@@ -34,7 +34,7 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-EXTERN long scm_tc16_scwm_property_handler;
+extern scm_t_bits scm_tc16_scwm_property_handler;
 
 
 typedef void (*scwm_prop_setter)(SCM win, SCM new_val);
