@@ -586,41 +586,10 @@ dnl This checks if the new printer functions are available, and should
 dnl be used instead of the old ones.
 AC_CHECK_LIB(guile, scm_puts, AC_DEFINE(HAVE_SCM_PUTS), ,$GUILE_LIBS)
 
-dnl This checks if we have gh_vref or gh_vector_ref
-AC_CHECK_LIB(guile, gh_vector_ref, AC_DEFINE(HAVE_GH_VECTOR_REF), ,$GUILE_LIBS)
-
-dnl This checks if we have gh_vset or gh_vector_set
-AC_CHECK_LIB(guile, gh_vector_set_x, AC_DEFINE(HAVE_GH_VECTOR_SET_X), ,$GUILE_LIBS)
-
 dnl This checks if we have a guile with readline support
 AC_CHECK_LIB(guile, scm_readline, AC_DEFINE(HAVE_SCM_READLINE), ,$GUILE_LIBS)
 
-dnl This checks if we have a guile with gh_length, not gh_list_length
-AC_CHECK_LIB(guile, gh_length, AC_DEFINE(HAVE_GH_LENGTH), ,$GUILE_LIBS)
-
 AC_CHECK_LIB(guile, scm_parse_path, AC_DEFINE(HAVE_SCM_PARSE_PATH), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_std_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_internal_cwdr, AC_DEFINE(HAVE_SCM_INTERNAL_CWDR), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_internal_stack_catch, AC_DEFINE(HAVE_SCM_INTERNAL_STACK_CATCH), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_internal_parse_path, AC_DEFINE(HAVE_SCM_INTERNAL_PARSE_PATH), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILES), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_create_hook, AC_DEFINE(HAVE_SCM_CREATE_HOOK), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_hook_empty_p, AC_DEFINE(HAVE_SCM_HOOK_EMPTY_P), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_make_smob_type_mfpe, AC_DEFINE(HAVE_SCM_MAKE_SMOB_TYPE_MFPE), ,$GUILE_LIBS)
-
-dnl AC_CHECK_LIB(guile, scm_strport_to_string, AC_DEFINE(HAVE_SCM_STRPORT_TO_STRING), ,$GUILE_LIBS)
 
 LDFLAGS="${saved_LDFLAGS}"
 
@@ -825,7 +794,6 @@ AC_OUTPUT([Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/proplist/Makefile \
 	  modules/xtest/Makefile \
-	  modules/scwmgtkhelper/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
