@@ -24,7 +24,7 @@
 
 #include <X11/Xlib.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include "scwm.h"
@@ -319,7 +319,7 @@ animated window shades and animated moves.")
     SCWM_WRONG_TYPE_ARG(1,vector);
   }
 
-  citems = scm_vector_length(vector);
+  citems = scm_to_int(scm_vector_length(vector));
   for (i=0; i<citems; i++) {
     SCM val = scm_vector_ref(vector,scm_from_int(i));    
     if (!scm_to_bool(scm_number_p(val))) {
@@ -615,22 +615,12 @@ along with the window.")
 #undef FUNC_NAME
 
 
-static
 void
 init_c_animation()
 {
  #include "c-animation.x"
 }
 
-void scm_init_app_scwm_c_animation_module()
-{
-  SCWM_VAR_INIT(animation_delay, "animation-delay", SCM_BOOL_F);
-  /** Number of milliseconds to delay between frames of animation.
-Defaults to 10 milliseconds if this is not a number.  See also
-`animated-resize-window', `animated-move-window', etc. */
-
-  scm_register_module_xxx("app scwm c-animation", init_c_animation);
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

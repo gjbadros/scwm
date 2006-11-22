@@ -206,18 +206,10 @@ init_drawing_gc()
   DrawingGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
-static void
 init_drawing()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "drawing.x"
-#endif
   init_drawing_gc();
-}
-
-void scm_init_app_scwm_xlib_drawing_module()
-{
-  scm_register_module_xxx("app scwm xlib-drawing", init_drawing);
 }
 
 

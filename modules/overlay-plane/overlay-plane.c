@@ -12,9 +12,8 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
-#include <libguile/dynl.h>
 
 #include "scwm.h"
 #include "screen.h"
@@ -125,8 +124,8 @@ This is just for demonstration and testing purposes for now.")
 
 
 
-static void
-init_overlay_plane()
+void
+scwm_init_overlay_plane()
 {
 
   fHaveOverlayPlane = get_colors();
@@ -135,15 +134,9 @@ init_overlay_plane()
     get_GC_clear(Scr.Root, &clear_gc);
   }
 
-#ifndef SCM_MAGIC_SNARFER
 #include "overlay-plane.x"
-#endif
 }
 
-void scm_init_app_scwm_overlay_plane_module()
-{
-  scm_register_module_xxx("app scwm overlay-plane", init_overlay_plane);
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

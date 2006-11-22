@@ -23,7 +23,7 @@
 #endif
 #include <X11/Xlib.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include <gdk/gdkprivate.h>
@@ -108,9 +108,7 @@ static
 void
 init_scwmgtkhelper()
 {
-#ifndef SCM_MAGIC_SNARFER
  #include "scwmgtkhelper.x"
-#endif
 }
 
 void scm_init_app_scwm_scwmgtkhelper_module()
