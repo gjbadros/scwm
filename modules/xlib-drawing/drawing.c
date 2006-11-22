@@ -23,6 +23,7 @@
 #endif
 
 #include <stdio.h>
+#include <math.h>
 #include <X11/X.h>
 #include <X11/Intrinsic.h>
 #include <X11/keysym.h>
