@@ -9,7 +9,7 @@
 ;;(define thank-scwm-authors-with-usage-note #t)
 
 
-(use-scwm-modules base winops winlist wininfo style face decor)
+(use-scwm-modules base winops winlist-menu wininfo style face decor)
 
 ;;-------------------------------;;
 ;; set some basic style info    ;;

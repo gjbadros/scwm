@@ -84,13 +84,13 @@
 ;;;; import scwm modules       ;;;;
 
 (use-scwm-modules base winops wininfo stacking optargs placement shutdown-opts style
-		  defoption winlist animation animated-iconify themes gnome-hints)
+		  defoption winlist-menu animation animated-iconify themes gnome-hints)
 
 
 ;;;;-------------------------------;;;;
 ;;;; utility procedures            ;;;;
 
-(define* (bind-direction-keys modifier move-proc #&key (percent 100)
+(define* (bind-direction-keys modifier move-proc #:key (percent 100)
                               (no-move-val 0)
                               (direction-keys '("Left" "Right" "Up" "Down"))
                               (diagonal-keys 
@@ -184,7 +184,7 @@
     ((click) (lower-by-one))
     ((double-click) (lower-window))))
 
-(define* (toggle-stick-and-on-top #&optional (win (get-window)))
+(define* (toggle-stick-and-on-top #:optional (win (get-window)))
   (cond
    ((and (sticky-window? win) (kept-on-top? win))
     (unstick-window win)
@@ -516,7 +516,7 @@
 
 
 (define (stick-button-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click) (toggle-stick))
 	     ((double-click) (toggle-stick-and-on-top))
@@ -525,7 +525,7 @@
 			win bnum)))))
 
 (define (stick-button-right-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu-from-decoration 
 			      (window-stick-menu win)
@@ -533,7 +533,7 @@
   
 
 (define (maximize-button-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click) (toggle-maximize-vertical))
 	     ((double-click) (toggle-maximize-both))
@@ -542,7 +542,7 @@
 			win bnum)))))
 
 (define (maximize-button-right-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu-from-decoration 
 			      (window-maximize-menu win)
@@ -550,7 +550,7 @@
 
 
 (define (shade-button-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click) (animated-toggle-window-shade))
 	     ((motion) (popup-menu-from-decoration 
@@ -558,14 +558,14 @@
 			win bnum)))))
 
 (define (shade-button-right-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu-from-decoration 
 			      (window-shade-menu win)
 			      win bnum)))))
 
 (define (iconify-button-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click) (animated-toggle-iconify))
 	     ((motion) (popup-menu-from-decoration 
@@ -573,21 +573,21 @@
 			win bnum)))))
 
 (define (iconify-button-right-action bnum)
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu-from-decoration 
 			      (window-iconify-menu win)
 			      win bnum)))))
 
 (define icon-action
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((motion) (opaque-move))
 	     ((double-click) (animated-deiconify))
 	     ((click) (popup-menu (window-iconify-menu win))))))
 
 (define icon-right-action
-  (lambda* (#&optional (win (get-window)))
+  (lambda* (#:optional (win (get-window)))
 	   (case (mouse-event-type)
 	     ((click motion) (popup-menu
 			      (window-iconify-menu win))))))
