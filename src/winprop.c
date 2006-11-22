@@ -41,29 +41,29 @@ SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4,
 SCM property_handler_hash_table;
 
 
-SCM
-mark_property_handler(SCM ARG_IGNORE(obj))
+SCM_GLOBAL_SMOB(scm_tc16_scwm_property_handler, "scwm-property-handler", 0);
+
+SCM_SMOB_MARK(scm_tc16_scwm_property_handler, mark_property_handler, obj)
 {
   return SCM_BOOL_F;
 }
 
-size_t 
-free_property_handler(SCM ARG_IGNORE(obj))
+SCM_SMOB_FREE(scm_tc16_scwm_property_handler, free_property_handler, obj)
 {
   return 0;
 }
 
 /* GJB:FIXME:MS: Maybe we should register a descriptive string name with the
    property handler and print that here? */
-int 
-print_property_handler(SCM ARG_UNUSED(obj), SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_property_handler, print_property_handler, obj, port, pstate)
 {
   scm_puts("#<property-handler>", port);
   return 1;
 }
 
 
-void set_property_handler(SCM prop, scwm_property_handler *handler)
+void
+set_property_handler(SCM prop, scwm_property_handler *handler)
 {
   SCM new_obj;
   SCWM_NEWCELL_SMOB(new_obj, scm_tc16_scwm_property_handler, handler);
@@ -155,8 +155,6 @@ be considered in flux.")
 void 
 init_winprop()
 {
-  REGISTER_SCWMSMOBFUNS(property_handler);
-
   property_handler_hash_table = 
     scm_make_vector (scm_from_int(HANDLER_TABLE_SIZE), SCM_EOL);
 
