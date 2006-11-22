@@ -744,11 +744,6 @@ HandleScwmExec()
         o_port = scm_set_current_output_port(scm_open_output_string());
         e_port = scm_set_current_error_port(scm_open_output_string());
 
-#if 0        
-        /* Workaround for a problem with older Guiles */
-        saved_def_e_port = scm_def_errp;
-        scm_def_errp = scm_current_error_port();
-#endif
         /* before we eval the request, record the window to respond
            in a global, so Done can respond if necessary (in case
            the eval-d expression calls `quit' or seg faults, etc.) */
@@ -756,16 +751,13 @@ HandleScwmExec()
         /* Evaluate the request expression and free it. */
         val = scwm_safe_eval_str((char *) req);
         XFree(req); 
-        str_val=scm_strprint_obj(val);
+        str_val=scm_object_to_string(val, SCM_UNDEFINED);
         ret = (unsigned char *) scm_to_locale_stringn(str_val, &rlen);
         
         /* restore output and error ports; use returned o_port/e_port
            below for getting the strings back */
         o_port = scm_set_current_output_port(o_port);
         e_port = scm_set_current_error_port(e_port);
-#if 0
-        scm_def_errp = saved_def_e_port;
-#endif
    
         /* Retrieve output and errors */
         output = (unsigned char *) scm_to_locale_stringn(scm_strport_to_string(o_port),
@@ -2042,7 +2034,7 @@ NoEventsScwmUpdate(Bool fNoBlock)
     FD_SET(IceSMfd, &in_fdset);
 #endif
 
-  retval = scm_internal_select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
+  retval = scm_std_select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
 
   if (retval == 0) {
     update_timer_hooks();
@@ -2348,7 +2340,7 @@ SCM_DEFINE(send_button, "send-button", 1, 5, 0,
     y = wy_offset;
   }
 
-  if (kind == sym_click || kind == sym_press ) {
+  if (scm_is_eq(kind, sym_click) || scm_is_eq(kind, sym_press)) {
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
@@ -2356,7 +2348,7 @@ SCM_DEFINE(send_button, "send-button", 1, 5, 0,
     DBUG((DBG,FUNC_NAME,"New Sent button press of %d at %d, %d; time = %ld\n",
           bnum,x,y,lastTimestamp));
   }
-  if (kind == sym_click || kind == sym_release) {
+  if (scm_is_eq(kind, sym_click) || scm_is_eq(kind, sym_release)) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
@@ -2366,7 +2358,7 @@ SCM_DEFINE(send_button, "send-button", 1, 5, 0,
   }
     
   /* desk events use w, not child, as the window to receive the event */
-  if (kind == sym_desk_click || kind == sym_desk_press) {
+  if (scm_is_eq(kind, sym_desk_click) || scm_is_eq(kind, sym_desk_press)) {
     XUngrabPointer(dpy,CurrentTime);
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
 			x, y, x_root, y_root, w, 0);
@@ -2374,7 +2366,7 @@ SCM_DEFINE(send_button, "send-button", 1, 5, 0,
 	       (XEvent *) &event);
   }
 
-  if (kind == sym_desk_click || kind == sym_desk_release) {
+  if (scm_is_eq(kind, sym_desk_click) || scm_is_eq(kind, sym_desk_release)) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)), 
 			x, y, x_root, y_root, w, 0);
     XSendEvent(dpy, w, fPropagate, SubstructureNotifyMask, 
