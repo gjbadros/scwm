@@ -174,7 +174,7 @@ typedef struct ScwmDecor {
 } ScwmDecor;
 
 
-EXTERN long scm_tc16_scwm_screen;
+extern scm_t_bits scm_tc16_scwm_screen;
 
 struct ScwmScreenConstraintInfo;
 

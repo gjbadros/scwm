@@ -29,7 +29,7 @@
 
 void init_message_window();
 
-EXTERN long scm_tc16_scwm_msgwindow;
+extern scm_t_bits scm_tc16_scwm_msgwindow;
 
 #define MSGWINDOW_P(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_msgwindow, X))
 #define MSGWINDOW(X)   ((scwm_msgwindow *)SCM_SMOB_DATA(X))

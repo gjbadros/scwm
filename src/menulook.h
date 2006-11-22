@@ -76,7 +76,7 @@ typedef struct {
 				  SAFE_MENULOOK(scm_variable_ref(scm_lookup(X))) : \
 				  SAFE_MENULOOK(X))
 
-EXTERN long scm_tc16_scwm_menulook;
+EXTERN scm_t_bits scm_tc16_scwm_menulook;
 
 SCM make_menulook(char * szName, SCM extra, MenuDrawingVtable * pmdvt);
 

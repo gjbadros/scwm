@@ -33,7 +33,7 @@ size_t
 free_menulook(SCM scm)
 {
   scwm_menulook * pml = MENULOOK(scm);
-  FREE(pml->mdvt);
+  FREE(pml->mdvt);		/* ??? scm_gc_free(pml, sizeof (scwm_menulook), "menulook") */
   return 0;
 }
 
@@ -59,17 +59,14 @@ SCM_DEFINE (menu_look_p, "menu-look?", 1, 0, 0,
 static SCM
 make_menulook_internal(SCM name, SCM extra, MenuDrawingVtable * mdvt)
 {
-  SCM result;
   scwm_menulook * pml;
 
-  pml = NEW(scwm_menulook);
+  pml = NEW(scwm_menulook);	/* scm_gc_malloc(sizeof (scwm_menulook), "menulook") */
   pml->name = name;
   pml->extra = extra;
   pml->mdvt = mdvt;
 
-  SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_menulook, pml);
-
-  return result;
+  SCM_RETURN_NEWSMOB(scm_tc16_scwm_menulook, pml);
 }
 
 /**CONCEPT: Menu Looks

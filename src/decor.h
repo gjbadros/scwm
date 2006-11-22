@@ -35,7 +35,7 @@ typedef struct {
 EXTERN_SET(ScwmDecor *last_decor,NULL);
 EXTERN_SET(ScwmDecor *cur_decor,NULL);
 
-EXTERN long scm_tc16_scwm_decor;
+EXTERN scm_t_bits scm_tc16_scwm_decor;
 
 #define DECORP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_decor, X))
 #define DECOR(X)  ((scwm_decor *)SCM_SMOB_DATA(X))

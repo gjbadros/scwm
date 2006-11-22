@@ -10,7 +10,7 @@
 #include <ctype.h>
 #include <X11/keysym.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include <limits.h>
 
 #define BINDING_IMPLEMENTATION

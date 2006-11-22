@@ -22,7 +22,7 @@
 
 #define CURSOR(X)  ((scwm_cursor *)SCM_SMOB_DATA(X))
 #define IS_CURSOR(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_cursor, X))
-#define XCURSOR(X)  (IS_CURSOR((X))?CURSOR(X)->cursor:None)
+#define XCURSOR(X)  (IS_CURSOR(X)?CURSOR(X)->cursor:None)
 
 EXTERN SCM *pscm_cursor_set_focus;
 #define XCURSOR_SET_FOCUS XCURSOR(*pscm_cursor_set_focus)
@@ -43,7 +43,7 @@ EXTERN SCM *pscm_cursor_menu;
 #define XCURSOR_MENU XCURSOR(*pscm_cursor_menu)
 
 
-EXTERN long scm_tc16_scwm_cursor;
+extern scm_t_bits scm_tc16_scwm_cursor;
 
 typedef struct {
   Cursor cursor;
@@ -69,7 +69,7 @@ void CreateScmGlobalCursors();
 
 #define VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(pos,arg,cvar) \
   do { if (UNSET_SCM(arg)) { arg = SCM_BOOL_F; cvar = XCURSOR_SELECT; } \
-       else if (SCM_BOOL_T == arg) { cvar = XCURSOR_KILL; } \
+       else if (scm_is_eq(SCM_BOOL_T, arg)) { cvar = XCURSOR_KILL; } \
        else if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
        else cvar = XCURSOR(arg); } while (0)
 

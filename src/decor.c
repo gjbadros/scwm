@@ -11,6 +11,8 @@
 #include "scwmconfig.h"
 #endif
 
+#include <libguile.h>
+
 #include <libguile/ports.h>
 
 #define DECOR_IMPLEMENTATION
@@ -32,6 +34,8 @@
 
 SCM set_current_decor_x(SCM decor);
 SCM current_decor();
+
+SCM_GLOBAL_SMOB(scm_tc16_scwm_decor, "scwm-decor", 0);
 
 /*
  *  DestroyScwmDecor -- frees all memory assocated with an ScwmDecor
@@ -70,18 +74,15 @@ options directly settable per-window at some point, especially if we
 can figure out a way to not increase the memory overhead much.
 */
 
-
-size_t 
-free_decor(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_decor, free_decor, obj)
 {
   DestroyScwmDecor(SCWMDECOR(obj));
-  FREE(SCWMDECOR(obj));
-  FREE(DECOR(obj));
+  scm_gc_free(SCWMDECOR(obj), sizeof (ScwmDecor), "scwm-decor");
+  scm_gc_free(DECOR(obj), sizeof (scwm_decor), "scwm-decor");
   return 0;
 };
 
-int 
-print_decor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_decor, print_decor, obj, port, pstate)
 {
   char *name;
 
@@ -97,9 +98,7 @@ print_decor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 };
 
-
-SCM 
-mark_decor(SCM obj)
+SCM_SMOB_MARK(scm_tc16_scwm_decor, mark_decor, obj)
 {
   ScwmDecor *fl;
   int i,j;
@@ -159,7 +158,7 @@ decor2scm(ScwmDecor * fl)
   scwm_decor *dec;
   int i,j;
 
-  dec = NEW(scwm_decor);
+  dec = scm_gc_malloc(sizeof (scwm_decor), "scwm-decor");
   dec->refcnt = 0;
   dec->sd = fl;
   scwm_defer_ints();
@@ -202,7 +201,7 @@ decor2scm(ScwmDecor * fl)
 
   scwm_allow_ints();
 
-  return (answer);
+  return answer;
 };
 
 
@@ -219,7 +218,7 @@ SCM_DEFINE(make_decor, "make-decor", 0, 1, 0,
   VALIDATE_ARG_STR_NEWCOPY_USE_NULL(1,name,tag);
 
   /* make the decor */
-  newdec = NEW(ScwmDecor);
+  newdec = scm_gc_malloc(sizeof (ScwmDecor), "scwm-decor");
   newdec->tag = tag;
 
   return decor2scm(newdec);
@@ -307,7 +306,7 @@ SCM_DEFINE(window_decor, "window-decor", 1, 0, 0,
   ScwmWindow *psw;
   VALIDATE_ARG_WINVALID_COPY(1,win,psw);
 
-  return (psw->fl->scmdecor);
+  return psw->fl->scmdecor;
 }
 #undef FUNC_NAME
 
@@ -316,8 +315,6 @@ SCM_DEFINE(window_decor, "window-decor", 1, 0, 0,
 void
 init_decor()
 {
-  REGISTER_SCWMSMOBFUNS(decor);
-
 #include "decor.x"
 }
 

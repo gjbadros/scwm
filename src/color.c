@@ -77,27 +77,26 @@ color brighter than the decoration color); the effect is to reverse
 SCM_SYMBOL (sym_name,"name");
 SCM_SYMBOL (sym_pixel,"pixel");
 
-SCM
-mark_color(SCM obj)
+SCM_GLOBAL_SMOB(scm_tc16_scwm_color, "scwm-color", 0);
+
+SCM_SMOB_MARK(scm_tc16_scwm_color, mark_color, obj)
 {
   GC_MARK_SCM_IF_SET(COLORNAME(obj));
   return SCM_BOOL_F;
 }
 
-size_t 
-free_color(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_color, free_color, obj)
 {
   scwm_color *sc=COLOR(obj);
   if (!sc->borrowed) {
     XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, &sc->pixel, 1, 0);
   }
-  FREE(sc);
+  scm_gc_free(sc, sizeof (scwm_color), "scwm-color");
 
   return 0;
 }
 
-int 
-print_color(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_color, print_color, obj, port, pstate)
 {
   scm_puts("#<color ", port);
   scm_write(COLORNAME(obj), port);
@@ -219,7 +218,7 @@ ScmMakeColor(const char *cn, int *perror_status)
     }
   }
 
-  sc = NEW(scwm_color);
+  sc = scm_gc_malloc(sizeof (scwm_color), "scwm-color");
   sc->pixel = color.pixel;
   sc->name = scm_from_locale_string((char *)cn); /* GJB:FIXME:CONST */
   sc->borrowed = fBorrowedColor;
@@ -962,8 +961,6 @@ SCM_DEFINE (not_menu_background, "not-menu-background", 0, 0, 0,
 void 
 init_color()
 {
-  REGISTER_SCWMSMOBFUNS(color);
-
   color_hash_table = 
     scm_make_weak_value_hash_table (scm_from_int(COLOR_HASH_SIZE));
   scm_gc_protect_object(color_hash_table);

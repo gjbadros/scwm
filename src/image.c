@@ -122,9 +122,9 @@ once is not inefficient, as caching ensures that image objects are
 shared.
 */
 
+SCM_GLOBAL_SMOB(scm_tc16_scwm_scwmimage, "scwm-image", 0);
 
-size_t 
-free_scwmimage(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_scwmimage, free_scwmimage, obj)
 {
   scwm_image *si = IMAGE(obj);
   if (!si)
@@ -144,12 +144,11 @@ free_scwmimage(SCM obj)
     }
   }
 #endif
-  FREE(si);
-  return (0);
+  scm_gc_free(si, sizeof (scwm_image), "scwm-image");
+  return 0;
 }
 
-int 
-print_scwmimage(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_scwmimage, print_scwmimage, obj, port, pstate)
 {
   scm_puts("#<image ", port);
   scm_write(IMAGE(obj)->full_name, port);
@@ -157,8 +156,7 @@ print_scwmimage(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-SCM
-mark_scwmimage(SCM obj)
+SCM_SMOB_MARK(scm_tc16_scwm_scwmimage, mark_scwmimage, obj)
 {
   GC_MARK_SCM_IF_SET(IMAGE(obj)->full_name);
   return SCM_BOOL_F;
@@ -243,10 +241,9 @@ SCM_DEFINE(image_size, "image-size", 1, 0, 0,
 SCM
 make_empty_image(SCM name)
 {
-  SCM result;
   scwm_image *ci;
 
-  ci = NEW(scwm_image);
+  ci = scm_gc_malloc(sizeof (scwm_image), "scwm-image");
   ci->full_name = name;
 #ifdef USE_IMLIB
   ci->im = 0;
@@ -258,8 +255,7 @@ make_empty_image(SCM name)
   ci->depth = 0;
   ci->foreign = 0;
 
-  SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_scwmimage, ci);
-  return result;
+  SCM_RETURN_NEWSMOB(scm_tc16_scwm_scwmimage, ci);
 }
 
 /**CONCEPT: Image Loaders 
@@ -445,103 +441,6 @@ SCM_DEFINE(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-
-/*SCWM_VALIDATE: name*/
-SCM
-path_expand_image_fname(SCM name, const char *func_name)
-#define FUNC_NAME func_name
-{
-  char *c_name, *c_fname = NULL;
-  int length;
-  SCM result = SCM_BOOL_F;
-
-  VALIDATE_ARG_STR_NEWCOPY_LEN(1,name,c_name,length);
-
-  if ((length > 0 && c_name[0]=='/') ||
-      (length > 1 && c_name[0]=='.' &&
-       (c_name[1]=='/' || (length > 2 && c_name[1]=='.' 
-			   && c_name[2]=='/')))) {
-    /* absolute path */
-
-    if (access(c_name, R_OK)==0) {
-      c_fname = c_name;  /* alias the two names */
-    } else {
-      goto DONE_PATH_EXPAND_FNAME;
-    }
-  } else {
-    SCM p;
-    int max_path_len= 0;
-
-    /* relative path */ 
-    if (!scm_is_true(scm_list_p(scm_variable_ref(scm_image_load_path)))) {
-      /* Warning, image-load-path is not a list. */
-      goto DONE_PATH_EXPAND_FNAME;
-      return SCM_BOOL_F;
-    }
-    
-    /* traverse the path list to compute the max buffer size we will
-       need. */
-    /* GJB:FIXME:: ideally, we'd like to do this only after
-     scm_variable_ref(scm_image_load_path) changes -- maybe we could
-     compare against a hash of the old value before redoing this
-     work */
-
-    for (p = scm_variable_ref(scm_image_load_path); !scm_is_null(p); p = scm_cdr(p)) {
-      SCM elt = scm_car(p);
-      if (!scm_is_string(elt)) {
-	/* Warning, non-string in image-load-path */
-	scwm_msg(WARN,FUNC_NAME,"Non-string in image-load-path");
-        goto DONE_PATH_EXPAND_FNAME;
-	/* Assuming path is list of strings simplifies code below. */
-      } else {
-	int l = scm_c_string_length(elt);
-	max_path_len= (l > max_path_len) ? l : max_path_len;
-      }
-    }
-    
-    /* Add 2, one for the '/', one for the final NUL */
-    c_fname = NEWC(max_path_len + length + 2, char);
-    
-    /* Try every possible path */
-    for (p = scm_variable_ref(scm_image_load_path); !scm_is_null(p); p = scm_cdr(p)) {
-      SCM elt = scm_car(p);
-#if 0
-      int path_len = SCM_STRING_LENGTH(elt);
-      memcpy(c_fname, SCM_STRING_CHARS(elt), path_len);
-#else
-      int path_len = scm_to_locale_stringbuf(elt, c_fname, max_path_len + length +1);
-#endif
-      c_fname[path_len] = '/';
-      memcpy(&(c_fname[path_len+1]), c_name, length);
-      c_fname[path_len+length+1] = 0;
-      if (access(c_fname, R_OK)==0) {
-	break;
-      }
-    }
-    
-    if (scm_is_null(p)) {
-      /* warn that the file is not found. */
-      scwm_msg(WARN,FUNC_NAME,"Image file was not found: `%s'",c_name);
-      scwm_run_hook1(image_not_found_hook,scm_from_locale_string(c_name));
-      goto DONE_PATH_EXPAND_FNAME;
-    }
-  }
-
-  result = scm_from_locale_string(c_fname);
-
- DONE_PATH_EXPAND_FNAME:
-  /* c_fname and c_name may be aliased from assignment above --
-     be sure to free only once */
-  if (c_fname != c_name && c_fname) {
-    FREEC(c_fname);
-  }
-  if (c_name) {
-    free(c_name);
-  }
-  return result;
-}
-#undef FUNC_NAME
-
 SCM
 get_image_loader(SCM name)
 {
@@ -599,12 +498,8 @@ SCM_DEFINE(make_image, "make-image", 1, 0, 0,
 
   /* OK, it wasn't in the hash table - we need to expand the filename.
    */
-#if 0
-  full_path = path_expand_image_fname(name, FUNC_NAME);
-#else
   full_path = scm_search_path(scm_variable_ref(scm_image_load_path),
 			      name, SCM_UNDEFINED);
-#endif
   if (scm_is_false(full_path)) {
     return SCM_BOOL_F;
   }
@@ -756,8 +651,6 @@ void init_image()
 #else /* !USE_IMLIB */  
   SCM val_load_xbm, val_load_xpm;
 #endif
-
-  REGISTER_SCWMSMOBFUNS(scwmimage);
 
   /* Save a convenient Scheme "default" string */
   scm_permanent_object(str_default=scm_from_locale_string("default"));

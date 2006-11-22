@@ -27,7 +27,7 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-EXTERN long scm_tc16_scwm_menu;
+extern scm_t_bits scm_tc16_scwm_menu;
 extern XContext MenuContext;
 
 typedef struct DynamicMenu_tag DynamicMenu;
@@ -85,20 +85,22 @@ struct DynamicMenu_tag
 
 #define MENU_OR_SYMBOL_P(X) (MENU_P(X) || scm_is_symbol(X))
 
-#define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
+#define SAFE_MENU(X)  (MENU_P(X)? MENU(X): NULL)
 
+
+// Was scm_symbol_bound_p instead of scm_defined_p
 #define DYNAMIC_MENU_P(X) \
   (scm_is_symbol(X)? (\
-    scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
+    scm_is_true(scm_defined_p(X, SCM_UNDEFINED))? \
       MENU_P(scm_variable_ref(scm_lookup(X))) : \
       False ) : \
     MENU_P(X))
 
 #define DYNAMIC_SAFE_MENU(X) \
   (scm_is_symbol(X)? (\
-    scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
+    scm_is_true(scm_defined_p(X, SCM_UNDEFINED))? \
       SAFE_MENU(scm_variable_ref(scm_lookup(X))) : \
-      NULL ) : \
+      NULL) : \
     SAFE_MENU(X))
 
 #define VALIDATE_ARG_MENU(pos,scm) \

@@ -265,11 +265,10 @@ ResetAllButtons(ScwmDecor * fl)
   fl->right_buttons[0].flags |= MWMButton;
 }
 
-long scm_tc16_scwm_face;
 
+SCM_GLOBAL_SMOB(scm_tc16_scwm_face, "scwm-face", 0);
 
-int 
-print_face(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_face, print_face, obj, port, pstate)
 {
   scm_puts("#<face ", port);
   scm_write(scwm_ptr2scm(FACE(obj)), port);
@@ -278,17 +277,15 @@ print_face(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-size_t
-free_face(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_face, free_face, obj)
 {
   FreeButtonFace(dpy,BUTTONFACE(obj));
-  FREE(BUTTONFACE(obj));
-  FREE(FACE(obj));
-  return (0);
+  scm_gc_free(BUTTONFACE(obj), sizeof (ButtonFace), "scwm-face");
+  scm_gc_free(FACE(obj), sizeof (scwm_face), "scwm-face");
+  return 0;
 }
 
-SCM
-mark_face(SCM obj)
+SCM_SMOB_MARK(scm_tc16_scwm_face, mark_face, obj)
 {
   ButtonFace *bf;
   
@@ -350,13 +347,13 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
 
   VALIDATE_ARG_BUTTONFACE_COPY(1,face,bf);
 
-  if (flag==sym_justify) {
-    if (flagval==sym_left) {
+  if (scm_is_eq(flag, sym_justify)) {
+    if (scm_is_eq(flagval, sym_left)) {
       bf->style |= HOffCenter;
       bf->style &= ~HRight;
-    } else if (flagval==sym_right) {
+    } else if (scm_is_eq(flagval, sym_right)) {
       bf->style |= HOffCenter | HRight;
-    } else if (flagval==sym_center) {
+    } else if (scm_is_eq(flagval, sym_center)) {
       bf->style &= ~HOffCenter;
     } 
     else {
@@ -364,15 +361,15 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
-  } else if (flag==sym_vertical_justify) {
-    if (flagval==sym_top) {
+  } else if (scm_is_eq(flag, sym_vertical_justify)) {
+    if (scm_is_eq(flagval, sym_top)) {
       bf->style |= VOffCenter;
       bf->style &= ~VBottom;
-    } else if (flagval==sym_bottom) {
+    } else if (scm_is_eq(flagval, sym_bottom)) {
       bf->style |= VOffCenter;
       /* SRL:FIXME:: Broken. */
       bf->style &= ~VBottom;
-    } else if (flagval==sym_center) {
+    } else if (scm_is_eq(flagval, sym_center)) {
       bf->style &= ~VOffCenter;
     } 
     else {
@@ -380,14 +377,14 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
-  } else if (flag==sym_relief) {
-    if (flagval==sym_raised) {
+  } else if (scm_is_eq(flag, sym_relief)) {
+    if (scm_is_eq(flagval, sym_raised)) {
       bf->style &= ~FlatButton;
       bf->style &= ~SunkButton;
-    }  else if (flagval==sym_sunk) {
+    }  else if (scm_is_eq(flagval, sym_sunk)) {
       bf->style &= ~FlatButton;
       bf->style |= SunkButton;
-    } else if (flagval==sym_flat) {
+    } else if (scm_is_eq(flagval, sym_flat)) {
       bf->style &= ~SunkButton;
       bf->style |= FlatButton;
     } else {
@@ -395,11 +392,11 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
-  } else if (flag==sym_use_style_of) {
-    if (flagval==sym_title) {
+  } else if (scm_is_eq(flag, sym_use_style_of)) {
+    if (scm_is_eq(flagval, sym_title)) {
       bf->style |= UseTitleStyle;
       bf->style &= ~UseBorderStyle;
-    } else if (flagval==sym_border) {
+    } else if (scm_is_eq(flagval, sym_border)) {
       bf->style |= UseBorderStyle;
       bf->style &= ~UseTitleStyle;
     } else if (scm_is_false(flagval)) {
@@ -410,7 +407,7 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
-  } else if (flag==sym_hidden_handles) {
+  } else if (scm_is_eq(flag, sym_hidden_handles)) {
     if (scm_is_bool(flagval) && scm_is_true(flagval)) {
       bf->style |= HiddenHandles;
     } else if (scm_is_false(flagval)) {
@@ -420,7 +417,7 @@ SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
-  } else if (flag==sym_no_inset) {
+  } else if (scm_is_eq(flag, sym_no_inset)) {
     if (scm_is_bool(flagval) && scm_is_true(flagval)) {
       bf->style |= NoInset;
     } else if (scm_is_false(flagval)) {
@@ -453,8 +450,8 @@ SCM_DEFINE(make_face, "make-face",2,0,0,
   VALIDATE_ARG_LIST(1,flags);
   VALIDATE_ARG_LIST(2,specs);
 
-  sf = NEW(scwm_face);
-  sf->bf = bf = NEW(ButtonFace);
+  sf = scm_gc_malloc(sizeof (scwm_face), "scwm-face");
+  sf->bf = bf = scm_gc_malloc(sizeof (ButtonFace), "scwm-face");
 
   scwm_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_face, sf);
@@ -657,11 +654,12 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
   bf=BUTTONFACE(face);
 
-  if (spec==sym_relief_pattern) {
+  if (scm_is_eq(spec, sym_relief_pattern)) {
     int l;
     /* MS:FIXME:: arbitrary limit of 20 points in relief patterns is silly */
-    if (scm_is_true(scm_list_p(arg)) &&((l=scm_to_size_t(scm_length(arg))) >= 2)
-	&& (l <= 20)) {
+    if (scm_is_true(scm_list_p(arg)) &&
+	((l=scm_to_size_t(scm_length(arg))) >= 2) &&
+	(l <= 20)) {
       struct vector_coords vc;
       SCM p, pel;
       vc.num=0;
@@ -687,10 +685,12 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       bf->style |= VectorButton;
     } else {
       /* MS:FIXME:: give a better error message */
+      scm_write(arg, SCM_UNDEFINED);
+      scm_newline(SCM_UNDEFINED);
       SCWM_WRONG_TYPE_ARG(3,arg);
     }
 
-  } else if (spec==sym_solid) {
+  } else if (scm_is_eq(spec, sym_solid)) {
     /* MS:FIXME:: give a better error message */
     VALIDATE_ARG_COLOR(3,arg);
 
@@ -701,11 +701,11 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     bf->style &= ~ButtonFaceTypeMask;
     bf->style |= SolidButton;
 
-  } else if (spec==sym_gradient) {
+  } else if (scm_is_eq(spec, sym_gradient)) {
     int vert_p;
     if (scm_is_true(scm_list_p(arg)) && scm_to_size_t(scm_length(arg)) > 2
-	&& ((vert_p=(scm_car(arg)==sym_vertical)) ||
-	    scm_car(arg)==sym_horizontal)) {
+	&& ((vert_p=(scm_is_eq(scm_car(arg), sym_vertical))) ||
+	    scm_is_eq(scm_car(arg), sym_horizontal))) {
       char **s_colors;
       int npixels, nsegs, i, sum;
       int *perc;
@@ -718,6 +718,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       if (nsegs < 1 || nsegs > 128) {
 	/* MS:FIXME:: give a better error message */
+	scm_write(arg, SCM_UNDEFINED);
+	scm_newline(SCM_UNDEFINED);
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
       perc = NEWC(nsegs,int);
@@ -746,6 +748,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	FREEC(s_colors);
 	FREEC(perc);
 	/* MS:FIXME:: give a better error message */
+	scm_write(arg, SCM_UNDEFINED);
+	scm_newline(SCM_UNDEFINED);
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
@@ -759,6 +763,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       if (!pixels) {
 	/* error: couldn't allocate gradient */
 	/* MS:FIXME:: give a better error message */
+	scm_write(arg, SCM_UNDEFINED);
+	scm_newline(SCM_UNDEFINED);
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
@@ -777,17 +783,19 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* MS:FIXME:: give a better error message */
+      scm_write(arg, SCM_UNDEFINED);
+      scm_newline(SCM_UNDEFINED);
       SCWM_WRONG_TYPE_ARG(3,arg);
     }
-  } else if (spec==sym_pixmap) {
+  } else if (scm_is_eq(spec, sym_pixmap)) {
     int tiled_p;
     int mini_p=0;
     
     tiled_p=(scm_is_true(scm_list_p(arg)) && scm_to_size_t(scm_length(arg)) == 2 &&
-	     scm_car(arg)==sym_tiled &&
+	     scm_is_eq(scm_car(arg), sym_tiled) &&
 	     (scm_is_string(scm_cadr(arg)) || IMAGE_P(scm_cadr(arg))));
-    if (tiled_p || scm_is_string(arg) || (mini_p=(arg==sym_mini_program_icon ||
-						arg==sym_mini_icon)) ||
+    if (tiled_p || scm_is_string(arg) || (mini_p=(scm_is_eq(arg, sym_mini_program_icon) ||
+						scm_is_eq(arg, sym_mini_icon))) ||
 	IMAGE_P(arg)) {
       SCM image = SCM_BOOL_F;
       
@@ -809,7 +817,9 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (scm_is_false(image)) {
 	  /* signal an error: couldn't load picture */
 	  /* MS:FIXME:: give a better error message */
-	  scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
+	  scm_write(arg, SCM_UNDEFINED);
+	  scm_newline(SCM_UNDEFINED);
+	  scwm_msg(WARN, FUNC_NAME, "Image not found for argument #%d",3);
 	}
       }
       
@@ -833,10 +843,14 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* MS:FIXME:: give a better error message */
+      scm_write(arg, SCM_UNDEFINED);
+      scm_newline(SCM_UNDEFINED);
       scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
     }
   } else {
     /* MS:FIXME:: give a better error message */
+    scm_write(arg, SCM_UNDEFINED);
+    scm_newline(SCM_UNDEFINED);
     SCWM_WRONG_TYPE_ARG(3,arg);
   }
 
@@ -1028,7 +1042,7 @@ init_face()
   int i;
 
   /* This needs to be done before the faces are created, below */
-  REGISTER_SCWMSMOBFUNS(face);
+#include "face.x"
 
   /* these should probably be exported as Scheme variables */
   default_titlebar_face=make_face(SCM_EOL, SCM_EOL);
@@ -1045,8 +1059,6 @@ init_face()
     LoadDefaultRightButton(BUTTONFACE(default_rbutton_face[i]),i);
     scm_gc_protect_object(default_rbutton_face[i]);
   }
-
-#include "face.x"
 }
 
 /* Local Variables: */

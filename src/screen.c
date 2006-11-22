@@ -27,14 +27,14 @@
 #include "dmalloc.h"
 #endif
 
-size_t 
-free_screen(SCM ARG_IGNORE(obj))
+SCM_GLOBAL_SMOB(scm_tc16_scwm_screen, "scwm-screen", 0);
+
+SCM_SMOB_FREE(scm_tc16_scwm_screen, free_screen, obj)
 {
   return 0;
 };
 
-int 
-print_screen(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_screen, print_screen, obj, port, pstate)
 {
   ScreenInfo *psi = SCREEN(obj);
 
@@ -45,9 +45,7 @@ print_screen(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 };
 
-
-SCM 
-mark_screen(SCM obj)
+SCM_SMOB_MARK(scm_tc16_scwm_screen, mark_screen, obj)
 {
   ScreenInfo *psi = SCREEN(obj);
   assert(psi);
@@ -67,17 +65,13 @@ mark_screen(SCM obj)
 SCM
 ScmFromPScreenInfo(ScreenInfo *psi)
 {
-  SCM answer;
-  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_screen,psi);
-  return answer;
+  SCM_RETURN_NEWSMOB(scm_tc16_scwm_screen, psi);
 }
 
 
 void
 init_screen()
 {
-  REGISTER_SCWMSMOBFUNS(screen);
-
 #include "screen.x"
 }
 

@@ -93,6 +93,7 @@ extern int g_argc;
 
 #define STREQ(a,b) (!strcmp(a,b))
 
+#if 0
 #define REGISTER_SCWMSMOBFUNS(T) \
  do { \
     scm_tc16_scwm_##T = scm_make_smob_type(#T, 0); \
@@ -100,7 +101,7 @@ extern int g_argc;
     scm_set_smob_free(scm_tc16_scwm_##T, &(free_##T)); \
     scm_set_smob_print(scm_tc16_scwm_##T, &(print_##T)); \
   } while (0)
-
+#endif
 
 #ifndef SCWM_EXTRACT_COMMENTS
 /* do not define this macro if we are extracting comments since

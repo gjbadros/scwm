@@ -171,7 +171,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
 
 #define SET_BIT_FOR_OBJ_PROP(s) \
 do { \
-  if (SCM_NFALSEP(scm_object_property(SCM_FROM_PSW(psw), \
+  if (!scm_is_false(scm_object_property(SCM_FROM_PSW(psw), \
                                       s))) { \
 /*    scwm_msg(DBG,FUNC_NAME,"fWinListSkip for %s",psw->name); */ \
     flags |= (1 << i); \
@@ -520,18 +520,18 @@ perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  */
 
-size_t
-free_window(SCM obj)
+SCM_GLOBAL_SMOB(scm_tc16_scwm_window, "scwm-window", 0);
+
+SCM_SMOB_FREE(scm_tc16_scwm_window, free_window, obj)
 {
 #if defined(SCWM_DEBUG_MAKE_FREE_WIN)
   fprintf(stderr,"Freeing win %ld\n",obj);
 #endif
-  FREE(WINDOW(obj));
-  return (0);
+  scm_gc_free(WINDOW(obj), sizeof (scwm_window), "scwm-window");
+  return 0;
 }
 
-SCM
-mark_window(SCM obj)
+SCM_SMOB_MARK(scm_tc16_scwm_window, mark_window, obj)
 {
   if (VALIDWINP(obj)) {
     int i;
@@ -587,9 +587,7 @@ mark_window(SCM obj)
   return SCM_BOOL_F;
 }
 
-
-int
-print_window(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_window, print_window, obj, port, pstate)
 {
   scm_puts("#<window ", port);
   if (VALIDWINP(obj)) {
@@ -617,7 +615,7 @@ make_window(ScwmWindow * win)
   scwm_window *schwin;
   SCM answer;
 
-  schwin = NEW(scwm_window);
+  schwin = scm_gc_malloc(sizeof (scwm_window), "scwm-window");
 
   scwm_defer_ints();
 
@@ -2785,7 +2783,7 @@ This is the X id for the actual application window. WIN defaults to\n\
 the window context in the usual way if not specified.")
 #define FUNC_NAME s_window_id
 {
-  if (win == sym_root_window) {
+  if (scm_is_eq(win, sym_root_window)) {
     return scm_from_int(Scr.Root);
   }
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3604,12 +3602,12 @@ will revert to its usual color.  See also `window-decoration-ids'.")
 static int
 IntFromNonantSymbol(SCM sym)
 {
-  if (sym == sym_non_top) return SCWM_NONANT_TOP;
-  else if (sym == sym_non_vmiddle) return SCWM_NONANT_VMIDDLE;
-  else if (sym == sym_non_bottom) return SCWM_NONANT_BOTTOM;
-  else if (sym == sym_non_left) return SCWM_NONANT_LEFT;
-  else if (sym == sym_non_hcenter) return SCWM_NONANT_HCENTER;
-  else if (sym == sym_non_right) return SCWM_NONANT_RIGHT;
+  if (scm_is_eq(sym, sym_non_top)) return SCWM_NONANT_TOP;
+  else if (scm_is_eq(sym, sym_non_vmiddle)) return SCWM_NONANT_VMIDDLE;
+  else if (scm_is_eq(sym, sym_non_bottom)) return SCWM_NONANT_BOTTOM;
+  else if (scm_is_eq(sym, sym_non_left)) return SCWM_NONANT_LEFT;
+  else if (scm_is_eq(sym, sym_non_hcenter)) return SCWM_NONANT_HCENTER;
+  else if (scm_is_eq(sym, sym_non_right)) return SCWM_NONANT_RIGHT;
   else return SCWM_NONANT_NONE;
 }
 
@@ -4364,8 +4362,6 @@ void
 init_window()
 {
 #include "window.x"
-
-  REGISTER_SCWMSMOBFUNS(window);
 
   set_property_handler (sym_sticky, &sticky_handler);
   set_property_handler (sym_squashed_titlebar, &squashed_titlebar_handler);

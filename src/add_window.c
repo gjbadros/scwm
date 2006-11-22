@@ -53,7 +53,7 @@
 #include <X11/extensions/shape.h>
 #endif
 
-#include <guile/gh.h>
+#include <libguile.h>
 
 #define ADD_WINDOW_IMPLEMENTATION
 #include "add_window.h"

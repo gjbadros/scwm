@@ -77,7 +77,7 @@
   } while (0)
 
 
-EXTERN long scm_tc16_scwm_color;
+extern scm_t_bits scm_tc16_scwm_color;
 
 EXTERN SCM str_black;
 EXTERN SCM str_white;

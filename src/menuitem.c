@@ -31,8 +31,9 @@
 #include "dmalloc.h"
 #endif
 
-SCM 
-mark_menuitem(SCM obj)
+SCM_GLOBAL_SMOB(scm_tc16_scwm_menuitem, "scwm-menuitem", 0);
+
+SCM_SMOB_MARK(scm_tc16_scwm_menuitem, mark_menuitem, obj)
 {
   MenuItem *pmi;
   pmi = MENUITEM(obj);
@@ -49,8 +50,7 @@ mark_menuitem(SCM obj)
   return SCM_BOOL_F;
 }
 
-size_t 
-free_menuitem(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_menuitem, free_menuitem, obj)
 {
   MenuItem *mi = MENUITEM(obj);
   if (mi->szLabel) {
@@ -62,12 +62,11 @@ free_menuitem(SCM obj)
   if (mi->pchHotkeyPreferences) {
     FREE(mi->pchHotkeyPreferences);
   }
-  FREE(mi);
-  return(0);
+  scm_gc_free(mi, sizeof (MenuItem), "scwm-menuitem");
+  return 0;
 }
 
-int 
-print_menuitem(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_menuitem, print_menuitem, obj, port, pstate)
 {
   scm_puts("#<menuitem ", port);
   if (MENUITEM_P(obj)) {
@@ -147,8 +146,7 @@ for assigning shortcut keys to the various menuitems.\n\
 For a higher-level interface to this function, see `menuitem'.")
 #define FUNC_NAME s_make_menuitem
 {
-  MenuItem *pmi = NEW(MenuItem);
-  SCM answer;
+  MenuItem *pmi = scm_gc_malloc(sizeof (MenuItem), "scwm-menuitem");
   VALIDATE_ARG_STR_NEWCOPY_LEN(1,label,pmi->szLabel,pmi->cchLabel);
 
   if (UNSET_SCM(action)) {
@@ -194,8 +192,7 @@ For a higher-level interface to this function, see `menuitem'.")
   pmi->scmFGColor = SCM_BOOL_F;
   pmi->scmFont = SCM_BOOL_F;
 
-  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menuitem,pmi);
-  return answer;
+  SCM_RETURN_NEWSMOB(scm_tc16_scwm_menuitem, pmi);
 }
 #undef FUNC_NAME
 
@@ -268,8 +265,6 @@ from the menu in which it is embedded.")
 void
 init_menuitem()
 {
-  REGISTER_SCWMSMOBFUNS(menuitem);
-
 #include "menuitem.x"
 }
 

@@ -19,11 +19,11 @@ typedef struct {
   ButtonFace *bf;
 } scwm_face;
 
-extern long scm_tc16_scwm_face;
+extern scm_t_bits scm_tc16_scwm_face;
 
 #define FACEP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_face, X))
 #define FACE(X)  ((scwm_face *)SCM_SMOB_DATA(X))
-#define BUTTONFACE(X) (((scwm_face *)SCM_SMOB_DATA(X))->bf)
+#define BUTTONFACE(X) (FACE(X)->bf)
 
 extern SCM default_titlebar_face;
 extern SCM default_border_face;

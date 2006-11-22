@@ -31,8 +31,9 @@
 #include "font.h"
 #include "events.h"
 
-static SCM
-mark_msgwindow(SCM obj)
+SCM_GLOBAL_SMOB(scm_tc16_scwm_msgwindow, "scwm-messagewindow", 0);
+
+SCM_SMOB_MARK(scm_tc16_scwm_msgwindow, mark_msgwindow, obj)
 {
   scwm_msgwindow* msg = MSGWINDOW( obj );
 
@@ -56,8 +57,7 @@ UnmapMessageWindow(scwm_msgwindow* msg)
 }
 
 
-static size_t 
-free_msgwindow(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_msgwindow, free_msgwindow, obj)
 {
   scwm_msgwindow *msg = MSGWINDOW(obj);
 #ifndef NDEBUG
@@ -70,12 +70,11 @@ free_msgwindow(SCM obj)
   }
 #endif
 
-  FREE(msg);
+  scm_gc_free(msg, sizeof (scwm_msgwindow), "scwm-messagewindow");
   return 0;
 }
 
-static int 
-print_msgwindow(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_msgwindow, print_msgwindow, obj, port, pstate)
 {
   scwm_msgwindow *msg = MSGWINDOW(obj);
   scm_puts("#<msgwindow ", port);
@@ -265,12 +264,13 @@ MESSAGE is the initial string for the message window. \n\
 Uses defaults from the ScreenInfo struct for the other values.")
 #define FUNC_NAME s_make_message_window
 {
-  SCM answer;
   scwm_msgwindow* msg;
 
   VALIDATE_ARG_STR(1,message);
 
-  msg = NEW(scwm_msgwindow);
+
+  // msg = NEW(scwm_msgwindow);
+  msg = scm_gc_malloc(sizeof (scwm_msgwindow), "scwm-messagewindow");
 
   if (SCM_UNDEFINED == message)
     msg->sz = NULL;
@@ -298,9 +298,7 @@ Uses defaults from the ScreenInfo struct for the other values.")
   XSaveContext(dpy, msg->win, ExposeWindowProcContext, (caddr_t) OnExposeEvent);
   XSaveContext(dpy, msg->win, MsgWindowContext, (caddr_t) msg);
 
-  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
-
-  return answer;
+  SCM_RETURN_NEWSMOB(scm_tc16_scwm_msgwindow, msg);
 }
 #undef FUNC_NAME
 
@@ -314,16 +312,15 @@ window on your X/11 display.")
 {
   Window w;
   scwm_msgwindow* msg = NULL;
-  SCM answer = SCM_BOOL_F;
   unsigned long i;
 
   VALIDATE_ARG_INT_COPY(1,winid,i);
   w = (Window) i;
   
   if ( XFindContext(dpy, w, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL ) {
-    SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
+    SCM_RETURN_NEWSMOB(scm_tc16_scwm_msgwindow, msg);
   }
-  return answer;
+  return SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
@@ -692,8 +689,6 @@ SCM_DEFINE (message_window_relief_p, "message-window-relief?", 1, 0, 0,
 void 
 init_message_window()
 {
-  REGISTER_SCWMSMOBFUNS(msgwindow);
-
 #include "message-window.x"
 }
 

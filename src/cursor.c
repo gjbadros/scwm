@@ -22,22 +22,21 @@
 #endif
 
 
-static
-size_t 
-free_cursor(SCM obj) 
+SCM_GLOBAL_SMOB(scm_tc16_scwm_cursor, "scwm-cursor", 0);
+
+SCM_SMOB_FREE(scm_tc16_scwm_cursor, free_cursor, obj)
 {
   scwm_cursor *xp=CURSOR(obj);
+
   XFreeCursor(dpy,xp->cursor);
   /* we only free strings from non x cursors */
   if (xp->szName && xp->is_x_cursor)
     FREE((char *)xp->szName);
-  FREE(xp);
+  scm_gc_free(xp, sizeof (scwm_cursor), "scwm-cursor");
   return 0;
 }
 
-static
-int 
-print_cursor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate)) 
+SCM_SMOB_PRINT(scm_tc16_scwm_cursor, print_cursor, obj, port, pstate)
 {
   scwm_cursor *xp=CURSOR(obj);
   scm_puts("#<cursor ", port);
@@ -150,7 +149,7 @@ x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName)
   scwm_cursor *sxp;
   SCM result;
 
-  sxp=NEW(scwm_cursor);
+  sxp = scm_gc_malloc(sizeof (scwm_cursor), "scwm-cursor");
   sxp->cursor=xc;
   sxp->is_x_cursor = is_x_cursor;
   if (szName)
@@ -158,11 +157,8 @@ x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName)
   else
     sxp->szName = NULL;
 
-  scwm_defer_ints();
-  SCWM_NEWCELL_SMOB(result,scm_tc16_scwm_cursor,sxp);
+  SCM_NEWSMOB(result,scm_tc16_scwm_cursor,sxp);
   scm_permanent_object(result);
-  scwm_allow_ints();
-
   return result;
 }
 
@@ -319,10 +315,6 @@ void
 init_cursor() 
 {
   int i;
-
-  scm_tc16_scwm_cursor = scm_make_smob_type("cursor", 0);
-  scm_set_smob_free(scm_tc16_scwm_cursor, free_cursor);
-  scm_set_smob_print(scm_tc16_scwm_cursor, print_cursor);
 
   for (i=0; i<XC_num_glyphs; i++) {
     preloaded_x_cursors[i]=SCM_UNDEFINED;

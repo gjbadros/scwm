@@ -51,7 +51,7 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-EXTERN long scm_tc16_scwm_font;
+EXTERN scm_t_bits scm_tc16_scwm_font;
 EXTERN SCM str_fixed;
 
 typedef struct {

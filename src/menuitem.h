@@ -22,7 +22,7 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-EXTERN long scm_tc16_scwm_menuitem;
+extern scm_t_bits scm_tc16_scwm_menuitem;
 
 /* menu item states are associated with items in a menu's list of
    items, not with menu items in particular (since the same item

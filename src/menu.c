@@ -75,8 +75,9 @@ SzFirstItemFromPmd(const DynamicMenu *pmd)
 }
 #endif
 
-SCM 
-mark_menu(SCM obj)
+SCM_GLOBAL_SMOB(scm_tc16_scwm_menu, "scwm-menu", 0);
+
+SCM_SMOB_MARK(scm_tc16_scwm_menu, mark_menu, obj)
 {
   Menu *pmenu;
   pmenu = MENU(obj);
@@ -97,19 +98,18 @@ mark_menu(SCM obj)
   return SCM_BOOL_F;
 }
 
-size_t 
-free_menu(SCM obj)
+SCM_SMOB_FREE(scm_tc16_scwm_menu, free_menu, obj)
 {
   Menu *pmenu = MENU(obj);
   if (pmenu->pchUsedShortcutKeys) {
     FREE(pmenu->pchUsedShortcutKeys);
   }
-  FREE(pmenu);
-  return(0);
+  // FREE(pmenu);
+  scm_gc_free(pmenu, sizeof (Menu), "scwm-menu");
+  return 0;
 }
 
-int 
-print_menu(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+SCM_SMOB_PRINT(scm_tc16_scwm_menu, print_menu, obj, port, pstate)
 {
   scm_puts("#<menu ", port);
   if (MENU_P(obj)) {
@@ -184,7 +184,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
       ipmiim++;
     }
     rest = scm_cdr(rest);
-    if (SCM_NULLP(rest))
+    if (scm_is_null(rest))
       break;
   }
   return pch;
@@ -249,7 +249,8 @@ SCM_DEFINE(make_menu, "make-menu", 5, 5, 0,
 "EXTRA-OPTIONS can be anything understood by the menu-look")
 #define FUNC_NAME s_make_menu
 {
-  Menu *pmenu = NEW(Menu);
+  // Menu *pmenu = NEW(Menu);
+  Menu *pmenu = scm_gc_malloc(sizeof (Menu), "scwm-menu");
   SCM answer;
   pmenu->cmsPopupDelay = 900;
   pmenu->cmsHoverDelay = 500;
@@ -310,7 +311,7 @@ SCM_DEFINE(make_menu, "make-menu", 5, 5, 0,
 
   pmenu->pchUsedShortcutKeys = NULL;
 
-  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_menu, pmenu);
   pmenu->self = answer;
   return answer;
 }
@@ -1373,13 +1374,12 @@ MenuInteraction(DynamicMenu *pmd, int warp_to, Bool fPermitAltReleaseToSelect)
     if (fHotkeyUsed)
       XPutBackKeystrokeEvent(dpy,pmiim->pmd->w,XK_Right);
   } /* while true */
- MENU_INTERACTION_RETURN:
+  MENU_INTERACTION_RETURN:
   return pmiSelected;
 }
 #undef FUNC_NAME
 
-static
-void
+static void
 FreeDynamicMenu(DynamicMenu *pmd)
 {
   int ipmiim = 0;
@@ -1390,6 +1390,7 @@ FreeDynamicMenu(DynamicMenu *pmd)
     /* permit the menu item to be freed again */
     scm_gc_unprotect_object(pmiim->pmi->self);
     FREE(pmiim);
+    // scm_gc_free(pmiim, sizeof (MenuItemInMenu), "scwm-menu"); ???
     pmd->rgpmiim[ipmiim] = NULL;
   }
   FREEC(pmd->rgpmiim);
@@ -1397,12 +1398,12 @@ FreeDynamicMenu(DynamicMenu *pmd)
   /* now let the menu get gc-d if appropriate */
   scm_gc_unprotect_object(pmd->pmenu->self);
 
-  FREE(pmd);
+  //FREE(pmd);
+  scm_gc_free(pmd, sizeof (DynamicMenu), "scwm-menu");
 }  
   
   
-static
-MenuItemInMenu *
+static MenuItemInMenu *
 InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
 {
   MenuItem * pmi;
@@ -1420,6 +1421,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   }
   
   pmiim = NEW(MenuItemInMenu);
+  //pmiim = scm_gc_malloc(sizeof (MenuItemInMenu), "scwm-menu");
 
   /* save some back pointers so we can find a dynamic menu
      just from the menu item */
@@ -1443,8 +1445,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   return pmiim;
 }
 
-static
-void
+static void
 InitializeDynamicMenu(DynamicMenu *pmd)
 {
 #define FUNC_NAME "InitializeDynamicMenu"
@@ -1473,7 +1474,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     }
     
     rest = scm_cdr(rest);
-    if (SCM_NULLP(rest))
+    if (scm_is_null(rest))
       break;
   }
   /* save the array size in the struct */
@@ -1490,11 +1491,11 @@ InitializeDynamicMenu(DynamicMenu *pmd)
 }
 #undef FUNC_NAME
 
-static
-DynamicMenu *
+static DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
-  DynamicMenu *pmd = NEW(DynamicMenu);
+  //DynamicMenu *pmd = NEW(DynamicMenu);
+  DynamicMenu *pmd = scm_gc_malloc(sizeof (DynamicMenu), "scwm-menu");
   scwm_menulook * pml;
   pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
@@ -1524,8 +1525,7 @@ NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   return pmd;
 }
 
-static
-void
+static void
 PopdownAllPriorMenus(DynamicMenu *pmd)
 {
   DynamicMenu *pmdPrior = pmd->pmdPrior;
@@ -1541,8 +1541,7 @@ PopdownAllPriorMenus(DynamicMenu *pmd)
 
 /* x,y are the outermost position of the decoration's nearest edge
    corner is 0 for NW, 1 for NE, 2 for SE, 3 for SW  (clockwise) */
-static
-void
+static void
 SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
 {
   switch (corner) {
@@ -1577,8 +1576,7 @@ SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
 
 /* x,y are the outermost position of the decoration's nearest edge
    corner is 0 for NW, 1 for NE, 2 for SE, 3 for SW  (clockwise) */
-static 
-SCM
+static SCM
 PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, 
               int warp_to, Bool fPermitAltReleaseToSelect,
               int x, int y, int corner)
@@ -1675,8 +1673,6 @@ the Alt/Meta modifier select a menu item.")
 void
 init_menu()
 {
-  REGISTER_SCWMSMOBFUNS(menu);
-
 # include "menu.x"
 }
 

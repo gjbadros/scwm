@@ -194,10 +194,10 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
   if ((int) height > cpixHeight - 2*MENU_ITEM_RR_SPACE)
     height = cpixHeight - 2*MENU_ITEM_RR_SPACE;
   
-  if (align == sym_top) {
+  if (scm_is_eq(align, sym_top)) {
     cpixDstYoffset = MENU_ITEM_RR_SPACE;
     cpixSrcYoffset = 0;
-  } else if (align == sym_center) {
+  } else if (scm_is_eq(align, sym_center)) {
     if (psimg->height > height) {
       cpixDstYoffset = MENU_ITEM_RR_SPACE;
       cpixSrcYoffset = (psimg->height - height)/2;

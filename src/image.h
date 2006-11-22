@@ -75,7 +75,7 @@ typedef struct
                                SAFE_IMAGE(scm_variable_ref(scm_lookup(X))):\
                                SAFE_IMAGE(X))
 
-EXTERN long scm_tc16_scwm_scwmimage;
+extern scm_t_bits scm_tc16_scwm_scwmimage;
 
 SCM make_image_from_pixmap(char *szDescription,
 			   Pixmap image, Pixmap mask, 
