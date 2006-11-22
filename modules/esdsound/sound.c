@@ -154,9 +154,8 @@ void catch_pipe()
 static void
 init_sound()
 {
-#ifndef SCM_MAGIC_SNARFER
 #include "sound.x"
-#endif
+
   esd = esd_open_sound(NULL);
   signal(SIGPIPE, catch_pipe);
 }

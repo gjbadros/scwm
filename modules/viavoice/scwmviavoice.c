@@ -18,7 +18,7 @@
 #include "arg_unused.h"
 #include "validate.h"
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 #include <gtk/gtk.h>
 
@@ -662,9 +662,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
 static void
 init_scwmviavoice()
 {
-#ifndef SCM_MAGIC_SNARFER
  #include "scwmviavoice.x"
-#endif
 }
 
 

@@ -25,7 +25,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include "scwm.h"
@@ -144,9 +144,7 @@ If MS-DELAY is ommitted or is #f or 0, no delay is used")
 static void
 init_scwmxtest()
 {
-#ifndef SCM_MAGIC_SNARFER
  #include "scwmxtest.x"
-#endif
 }
 
 void scm_init_app_scwm_scwmxtest_module()

@@ -8,7 +8,7 @@
 #include <orb/orbit.h>
 #include <libgnorba/gnorba.h>
 #include <gtk/gtk.h>
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 #include <string.h>
 #include <stdio.h>
@@ -129,9 +129,7 @@ init_scwmcorba()
   
   scwm_scheme_evaluator_corba_gtk_init(argc,argv);
 
-#ifndef SCM_MAGIC_SNARFER
  #include "scwmcorba.x"
-#endif
 }
 
 void scm_init_app_scwm_scwmcorba_module()

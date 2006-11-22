@@ -14,7 +14,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include "scwm.h"
@@ -1060,9 +1060,7 @@ init_draw_xpm_menu()
 
      for non-shaped menus */
   
-#ifndef SCM_MAGIC_SNARFER
 #include "draw-xpm-menu.x"
-#endif
 }
 
 void scm_init_app_scwm_xpm_menus_module()

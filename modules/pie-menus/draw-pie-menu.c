@@ -26,7 +26,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include "drawmenu.h"
@@ -1366,9 +1366,7 @@ init_draw_pie_menu()
 				       pmdvtShaped);
   SCWM_VAR_READ_ONLY(NULL,"shaped-pie-menu-look", shaped_pie_menu_look);
   /** A menu-look that gives pie menus with only the labels visible */
-#ifndef SCM_MAGIC_SNARFER
 #include "draw-pie-menu.x"
-#endif
 }
 
 void scm_init_app_scwm_pie_menus_module()

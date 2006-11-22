@@ -7,7 +7,7 @@
 #include "scwmconfig.h"
 #endif
 
-#include <guile/gh.h>
+#include <libguile.h>
 #include "guile-compat.h"
 
 #include <proplist.h>
@@ -863,9 +863,7 @@ static
 void
 init_proplist_wrapper() {
   REGISTER_SCWMSMOBFUNS(proplist_t);
-#ifndef SCM_MAGIC_SNARFER
 #include "scwmproplist.x"
-#endif
 }
 
 
