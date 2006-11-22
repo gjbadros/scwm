@@ -185,11 +185,11 @@ value.")
     else FREE(val);
     SCWM_WRONG_TYPE_ARG(4, type);
   }
-  if (action == SCM_UNDEFINED || action == sym_replace) {
+  if (action == SCM_UNDEFINED || scm_is_eq(action, sym_replace)) {
     mode=PropModeReplace;
-  } else if (action == sym_prepend) {
+  } else if (scm_is_eq(action, sym_prepend)) {
     mode=PropModePrepend;
-  } else if (action == sym_append) {
+  } else if (scm_is_eq(action, sym_append)) {
     mode=PropModeAppend;
   } else {
   /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */

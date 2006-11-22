@@ -101,7 +101,7 @@ extern SCM sym_click, sym_root_window;
 #define VALIDATE_WINVALID_COPY(arg,psw) VALIDATE_ARG_WINVALID_COPY(1,(arg),(psw))
 
 #define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,cvar) \
-  do {  if (arg == sym_root_window) cvar = Scr.Root;              \
+  do {  if (scm_is_eq(arg, sym_root_window)) cvar = Scr.Root;              \
         else if (scm_is_number(arg)) {                            \
           assert(sizeof(Window) == sizeof(unsigned long));        \
           cvar = scm_to_ulong(arg);                               \
@@ -374,7 +374,7 @@ typedef struct {
   Bool valid;
 } scwm_window;
 
-EXTERN long scm_tc16_scwm_window;
+extern scm_t_bits scm_tc16_scwm_window;
 EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 
 #define WINDOWP(X) (SCM_SMOB_PREDICATE(scm_tc16_scwm_window, X))
