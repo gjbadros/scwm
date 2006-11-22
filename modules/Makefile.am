@@ -12,8 +12,9 @@ SUBDIRS = \
 	xpm-menus \
 	esdsound \
 	proplist \
-	xtest \
-	scwmgtkhelper
+	xtest
+
+#	scwmgtkhelper
 
 DIST_SUBDIRS = $(SUBDIRS)
 
