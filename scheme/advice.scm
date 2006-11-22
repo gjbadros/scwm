@@ -26,7 +26,7 @@
 ; neither does advising lamdas with variable number of arguemnts
 (defmacro-public defadvice (function param . body)
   "Advices FUNCTION with BODY.
-\(defadvice FUNCTION \(CLASS NAME\)\)
+\\(defadvice FUNCTION \\(CLASS NAME\\)\\)
 FUNCTION is the function to advice.
 If CLASS is 'before, execute BODY before the function proper.
 If CLASS is 'after, execute BODY after the function proper.

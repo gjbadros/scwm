@@ -104,9 +104,9 @@ REST is a list of other menu-items to include in the returned menu."
 (define-public (message . str)
   "Display the string arguments STR in a message window.
 Requires the program `xmessage'."
-  (execute (string-append "echo -e \'"
+  (execute (string-append "echo -e \\'"
 			  (quotify-single-quotes (apply string-append str))
-			   "\'| xmessage -file - -default okay -nearmouse")))
+			   "\\'| xmessage -file - -default okay -nearmouse")))
 
 (define-public (show-mesg . str)
   "Return a lambda to display the string arguments STR in a message window.
