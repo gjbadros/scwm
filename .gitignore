@@ -16,3 +16,4 @@ ltconfig
 ltmain.sh
 scwm.spec
 *.doc
+*.o
