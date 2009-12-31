@@ -1,0 +1,6 @@
+.deps
+.libs
+Makefile
+Makefile.in
+scwm_set_pid_property.lo
+*.doc
