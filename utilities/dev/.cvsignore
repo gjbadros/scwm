@@ -1,8 +1,0 @@
-Makefile
-Makefile.in
-X-error-describe
-create-dependency-dot-graph
-scwm-usage-counter
-scwmdoc
-scwmdoc.scm
-*.doc
