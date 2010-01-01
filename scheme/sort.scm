@@ -7,7 +7,7 @@
 (define-module (app scwm sort)
   :use-module (app scwm optargs))
 
-(export sort)
+(re-export sort)
 
 ;; Modified from Springer & Friedman,
 ;; _Scheme_and_the_Art_of_Programming_
