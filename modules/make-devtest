@@ -1,4 +1,4 @@
-#!/uns/bin/zsh -f
+#!/bin/sh -f
 # Use this script to copy the dynamic libraries to lib subdir
 # and put $SCWMDIR/modules/lib in your SCWM_LOAD_PATH
 # ahead of the system libraries.
