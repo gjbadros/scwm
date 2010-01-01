@@ -56,9 +56,9 @@ SCM_DEFINE(set_background_color_x, "set-background-color!", 1, 0, 0,
   XClearWindow(dpy, Scr.Root);
 
   XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
-		  (char *)&(XCOLOR(color)), 1);
+		  (unsigned char *)&(XCOLOR(color)), 1);
   XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&dummy, 1);
+		  (unsigned char *)&dummy, 1);
 
   root_bg_color = color;
 
@@ -180,11 +180,11 @@ STYLE can be either 'centered or 'tiled.")
   root_image = image;
 
   XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
-		  (char *)&dummy, 1);
+		  (unsigned char *)&dummy, 1);
   XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(image)->image), 1);
+		  (unsigned char *)&(IMAGE(image)->image), 1);
   XChangeProperty(dpy, Scr.Root, atom_XSETROOT_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(image)->image), 1);
+		  (unsigned char *)&(IMAGE(image)->image), 1);
 
   
   return SCM_UNSPECIFIED;
