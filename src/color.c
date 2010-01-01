@@ -17,6 +17,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
 #include <float.h>
+#include <stdio.h>
 
 #define COLOR_IMPLEMENTATION
 #include "color.h"
