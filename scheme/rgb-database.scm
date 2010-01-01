@@ -18,10 +18,8 @@
 ;;;;
 
 (define-module (app scwm rgb-database)
-  :use-module (app scwm base))
-
-(if (> guile-version 1.3)
-    (use-modules (ice-9 popen)))
+  :use-module (app scwm base)
+  :use-module (ice9 popen))
 
 (define*-public (read-and-append-to p #:optional (l '()))
   "Read in the lines from port P and return them.

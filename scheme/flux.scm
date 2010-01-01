@@ -12,6 +12,7 @@
 
 (define-module (app scwm flux)
   :use-module (ice-9 regex)
+  :use-module (ice-9 popen)
   :use-module (app scwm base)
   :use-module (app scwm stylist)
   :use-module (app scwm face)
@@ -39,9 +40,6 @@
   :use-module (app scwm tile)
   :use-module (app scwm highlight-current-window)
   :use-module (app scwm xprop-extras))
-
-(if (> guile-version 1.3)
-    (use-modules (ice-9 popen)))
 
 (use-scwm-modules base stylist animation animated-iconify)
 
