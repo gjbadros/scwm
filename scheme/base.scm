@@ -20,9 +20,8 @@
 
 
 (define-module (app scwm base)
-  :use-module (app scwm optargs)
-  :use-module (ice-9 optargs)
   :use-module (ice-9 string-fun)
+  :use-module (app scwm optargs)
   :use-module (app scwm defoption)
   :export (hash-table->alist
            add-hook-once!

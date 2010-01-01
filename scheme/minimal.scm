@@ -7,16 +7,14 @@
 ;;;; (these can get overridden later, of course)
 
 (define-module (app scwm minimal)
-  :use-module (ice-9 optargs))
-  ;:use-module (app scwm optargs))
+  :use-module (app scwm optargs))
 
 (define guile-version (+ (string->number (major-version)) 
 			 (/ (string->number (minor-version)) 10)))
 
 ;; Turn off buffering so that we can see messages as
 ;; they are displayed (an issue in >= guile-1.3.2)
-(if (> guile-version 1.3)
-    (setvbuf (current-output-port) _IONBF))
+(setvbuf (current-output-port) _IONBF)
 
 ;; Make quit an alias for scwm-quit
 (define quit scwm-quit)
@@ -46,31 +44,27 @@
 
 
 ;;; Some functions for decoration bindings
-;(define* (resize-or-raise)
-(define (resize-or-raise)
+(define* (resize-or-raise)
   "Perform a resize, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-resize', and double-click does
 `lower-window'."
-  ;(interactive)
+  (interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-resize))
     ((double-click) (lower-window))))
-(set-procedure-property! resize-or-raise 'interactive #t)
 
-;(define* (move-or-raise)
-(define (move-or-raise)
+(define* (move-or-raise)
   "Perform a move, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-move', and double-click does
 `lower-window'."
-  ;(interactive)
+  (interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-move))
     ((double-click) (lower-window))))
-(set-procedure-property! move-or-raise 'interactive #t)
 
 ;;; Initialize the decoration bindings to
 ;;; permit at least some useful behaviour
