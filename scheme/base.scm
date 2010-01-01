@@ -20,7 +20,7 @@
 
 
 (define-module (app scwm base)
-  ;:use-module (app scwm optargs)
+  :use-module (app scwm optargs)
   :use-module (ice-9 optargs)
   :use-module (ice-9 string-fun)
   :use-module (app scwm defoption)
@@ -53,6 +53,7 @@
 
            ;; These were not declared public, but other modules make use of
            ;; them.
+           *use-scwm-system-proc*
            menu-bg-color
            menu-text-color
            menu-stipple-color

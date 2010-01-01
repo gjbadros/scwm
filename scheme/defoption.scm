@@ -60,9 +60,9 @@ DOCSTRING documents the option.  REST contains keyword arguments including:
 #:favorites - a list of favorite (or all, for enum type) possibilities for this variable.
 #:setter - the setter procedure, if any.
 #:getter - the getter procedure, if any."
-  `(let ((answer (define-public ,sym ,default)))
-     (define-scwm-option-proc ,sym ',sym ,docstring ,default ,@rest)
-     answer))
+  `(begin
+     (define-public ,sym ,default)
+     (define-scwm-option-proc ,sym ',sym ,docstring ,default ,@rest)))
 
 (defmacro-public define-scwm-group (sym name . rest )
   "Define SYM to be a new scwm option group.

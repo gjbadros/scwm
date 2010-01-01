@@ -105,10 +105,10 @@ will definitely return #f."
 	   (append (window-virtual-position win) (window-frame-size win)
 		   (window-virtual-position win2) (window-frame-size win2))))))
 
-(define*-public ((window-overlaps-window? #:optional (win (get-window)))
-		 #:optional (win2 (get-window)))
+(define*-public (window-overlaps-window? #:optional (win (get-window)))
   "Return a function that takes WIN2 and returns #t if it overlaps WIN."
-  (windows-overlap? win win2))
+  (lambda* (#:optional (win2 (get-window)))
+    (windows-overlap? win win2)))
 
 (define-public (list-overlapping-windows win)
   "Return a list of windows that overlap WIN.
