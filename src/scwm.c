@@ -1229,7 +1229,7 @@ Repository Timestamp: %s\n",
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
   { /* scope */
-#if 1
+#if 0
     extern char *init_scheme_string;
     scwm_safe_eval_str(init_scheme_string);
 #else
