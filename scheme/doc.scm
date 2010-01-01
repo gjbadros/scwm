@@ -75,7 +75,7 @@ Returns #t if any documentation was found, #f otherwise."
 (define-public (object-documentation sym)
   "Return documentation attached to SYM or to (eval SYM)."
   (let ((evalsym (catch #t
-			(lambda () (eval sym))
+			(lambda () (eval sym (interaction-environment)))
 			(lambda (key . args)
 			  #f))))
     (cond

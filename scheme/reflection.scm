@@ -60,12 +60,12 @@ Returns #f if PROC-NAME is not a procedure name."
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.
 Three values are returned in a list: (num-required num-optional rest-argument-p)."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc) (interaction-environment)))
   (procedure-property proc 'arity))
 
 (define-public (procedure-num-required-args proc)
   "Return the number of required arguments for PROC."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc) (interaction-environment)))
   (car (procedure-arity proc)))
 
 (define-public (procedure-num-optional-args proc)
@@ -213,7 +213,7 @@ The returned list contains pairs (modulesym . procsym)"
 (define-public (procedure-apropos rgx)
   "Returns a list of procedures that match RGX.
 This returns a simple list of procedure objects."
-  (map (lambda (p) (eval (cdr p))) (procedure-apropos-with-modules rgx)))
+  (map (lambda (p) (eval (cdr p) (interaction-environment))) (procedure-apropos-with-modules rgx)))
 
 ;; (interactive-procedure-apropos-with-modules "get-window")
 (define-public (interactive-procedure-apropos-with-modules rgx)
@@ -231,7 +231,7 @@ The returned list contains pairs (modulesym . procsym)"
 (define-public (interactive-procedure-apropos rgx)
   "BROKEN: Returns a list of interactive procedures that match RGX.
 This returns a simple list of procedure objects."
-  (map (lambda (p) (eval (cdr p))) (interactive-procedure-apropos-with-modules rgx)))
+  (map (lambda (p) (eval (cdr p) (interaction-environment))) (interactive-procedure-apropos-with-modules rgx)))
 
 ;(map procedure-required-formals (procedure-apropos "n"))
 ;(map procedure-optional-formals (procedure-apropos "n"))
