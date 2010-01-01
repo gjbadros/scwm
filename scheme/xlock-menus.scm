@@ -26,10 +26,8 @@
   :use-module (app scwm menus-extras)
   :use-module (app scwm style)
   :use-module (app scwm themes)
-  :use-module (ice-9 regex))
-
-(if (> guile-version 1.3)
-    (use-modules (ice-9 popen)))
+  :use-module (ice-9 regex)
+  :use-module (ice-9 popen))
 
 
 
