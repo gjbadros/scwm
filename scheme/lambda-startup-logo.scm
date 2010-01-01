@@ -42,7 +42,7 @@ as startup can be longer than ideal)."
 		    (iota 24))))
 	
 	(add-hook! load-processing-hook next-logo-image-n)))
-  (append-hook! startup-hook logo-remove)
+  (add-hook! startup-hook logo-remove #t)
   )
 
 (define-public (logo-remove)

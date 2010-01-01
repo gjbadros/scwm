@@ -25,10 +25,8 @@
 
 ;; scwm-options takes the place of the doc tools-generated
 ;; `user-options' variable
-(if (not (provided? 'scwm-options))      ; feature?
-    (begin
-      (define-public scwm-options '())
-      (define-public scwm-options-groups '())))
+(define-public scwm-options '())
+(define-public scwm-options-groups '())
 ;;(set! scwm-options '())
 
 (provide 'scwm-options)
@@ -274,6 +272,6 @@ Shorthand for scwm-option-get."
   "Get option SYM's value."
   (let ((g (scwm-option-getter sym)))
     (if g (g)
-	(eval sym))))
+	(eval sym (interaction-environment)))))
 
 ;; (scwm-option-symset! *theme-path* (string-with-colons->path-list "foo:bar:baz"))

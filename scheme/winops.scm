@@ -278,15 +278,14 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
   (if win ((if opaquely? opaque-resize rubber-band-resize) win)))
 
 
-
-
 ;; Printing
-(if (cached-program-exists? "xpr")
-    (define*-public (print-window #:optional (win (get-window)))
-      "Print WIN using xpr and lpr."
-      (if win (execute (string-append "xwd -id " 
-				      (number->string (window-id win))
-				      " | xpr | lpr")))))
+;;;;; Can't have a define within an if !!
+;(if (cached-program-exists? "xpr")
+;    (define*-public (print-window #:optional (win (get-window)))
+;      "Print WIN using xpr and lpr."
+;      (if win (execute (string-append "xwd -id " 
+;				      (number->string (window-id win))
+;				      " | xpr | lpr")))))
 
 (define*-public (resize-window w h #:optional (win (get-window)) x y)
   "Resize WIN's client area to a size of W by H in pixels. 

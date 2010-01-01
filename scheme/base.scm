@@ -84,11 +84,8 @@
 (define-scwm-group system "System")
 (define-scwm-group menu "Menu")
 
-(if hash-fold
-    (define (hash-table->alist table)
-      (hash-fold acons '() table))
-    (define (hash-table->alist h) 
-      (apply append (vector->list h))))
+(define (hash-table->alist table)
+  (hash-fold acons '() table))
 
 (define (add-hook-once! hook proc)
   "Add PROC to HOOK only if it does not contain PROC already."
@@ -731,14 +728,6 @@ start the shell remotely."
 
 (defmacro-public thunk (proc)
   `(lambda args (apply ,proc args)))
-
-;; Only define if not already defined by Guile
-(if (not (defined? 'remove-hook!))
-    (defmacro-public remove-hook! (hook proc)
-      `(if (memq ,proc ,hook)
-           (set! ,hook
-                 (delq! ,proc ,hook)))))
-
 
 (defmacro-public with-window (win . body)
 ;;;** Bind the window-context to WIN while evaluating BODY.

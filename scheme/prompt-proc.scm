@@ -161,7 +161,7 @@ See also `prompt-proc'."
     (gtk-clist-set-column-width clist 0 100)
     (gtk-clist-set-column-width clist 1 150)
     (for-each (lambda (mp) 
-		(let ((proc (eval (cdr mp))))
+		(let ((proc (eval (cdr mp) (interaction-environment))))
 		  (vector-set! x 0 (symbol->string (car mp)))
 		  (vector-set! x 1 (symbol->string (cdr mp)))
 		  (vector-set! x 2 (formals-to-string
