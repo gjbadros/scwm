@@ -61,9 +61,11 @@ CUMULATIVE indicates that the option can be specified multiple times
 (define (make-bool-handler t-handler f-handler)
   (let ((proc (lambda (val win)
 		(if val (t-handler win) (f-handler win)))))
-    (set-procedure-property! proc 'name (symbol-append (procedure-name t-handler)
+    (set-procedure-property! proc 'name (symbol-append (or (procedure-name t-handler)
+							   'th)
 						       '-or-
-						       (procedure-name f-handler)
+						       (or (procedure-name f-handler)
+							   'fh)
 						       '-handler))
     proc))
 
