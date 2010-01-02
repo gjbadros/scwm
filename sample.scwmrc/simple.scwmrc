@@ -8,10 +8,6 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
-;(define (foo filename)
-;  (simple-format #t "Loading ~S~%" filename))
-;(set! %load-hook foo)
-
 (define user-image-load-path 
   (list (string-append (user-home) "/src/scwm/pixmaps")
 	(string-append (user-home) "/src/scwm/bitmaps")))
