@@ -69,7 +69,7 @@ all the group action procedures to be used on lists of windows, too."
 	    (eval `(define*-public (,group-op #:optional (group (get-window)))
 		     ,(string-append "Apply `" window-op "' to all members "
 				     "of GROUP.")
-		     (for-each ,window-op (group->windows group)))))
+		     (for-each ,window-op (group->windows group))) (current-module)))
 	  '(iconify-group-individually window-shade-group window-unshade-group
 	    stick-group unstick-group keep-group-on-top un-keep-group-on-top
 	    close-group delete-group destroy-group)

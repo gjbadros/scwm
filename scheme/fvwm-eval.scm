@@ -539,7 +539,7 @@
 (define-fvwm-command "ChangeDecor"
       (if window
             (let* ((arg (get-one-string-arg args)))
-	        (set-window-decor! window (eval (string->symbol arg))))))
+	        (set-window-decor! window (eval (string->symbol arg) (current-module))))))
 
 
 

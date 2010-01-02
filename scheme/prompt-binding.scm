@@ -153,7 +153,7 @@ COLS is a list of strings."
 (define (populate-cmd-clist-with-procedures clist)
   (let ((x #("procname" "modulename")))
     (for-each (lambda (mp)
-		(let ((proc (eval (cdr mp))))
+		(let ((proc (eval (cdr mp) (current-module))))
 		  (let ((modulename (symbol->string (car mp)))
 			(procname (symbol->string (cdr mp))))
 		    (vector-set! x 0 procname)
@@ -217,18 +217,18 @@ KEY-PROC is either `bind-key' or `unbind-key'."
 		   (mouse-proc context-sym
 			       (string-append prefix butnum)
 			       (if (not (string=? type "Immed"))
-				   (eval cmd-sym) #f)
+				   (eval cmd-sym (current-module)) #f)
 			       (if (string=? type "Immed")
-				   (eval cmd-sym) #f)
+				   (eval cmd-sym (current-module)) #f)
 			       )))
 	       ;; not a mouse binding, so hopefully a keyboard one
 	       (lambda ()
 		 (key-proc context-sym
 			   key 
 			   (if (not (string=? type "Release"))
-				(eval cmd-sym) #f)
+				(eval cmd-sym (current-module)) #f)
 			   (if (string=? type "Release")
-			       (eval cmd-sym) #f)))))))
+			       (eval cmd-sym (current-module)) #f)))))))
     (if (string=? key "Null") #f proc)))
 
 (define (remove-binding-for-row clist row)

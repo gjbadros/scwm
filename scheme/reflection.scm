@@ -45,7 +45,7 @@ Return #f if PROC-OR-STRING-OR-SYMBOL is none of those things."
       (and (string? proc-or-string-or-symbol)
 	   (procedure-string->procedure proc-or-string-or-symbol))
       (and (symbol? proc-or-string-or-symbol)
-	   (eval proc-or-string-or-symbol))))
+	   (eval proc-or-string-or-symbol (current-module)))))
 
 ;; (procedure-string->procedure "push-focus-window")
 (define-public (procedure-string->procedure proc-name)
@@ -53,29 +53,29 @@ Return #f if PROC-OR-STRING-OR-SYMBOL is none of those things."
 Returns #f if PROC-NAME is not a procedure name."
   (catch #t
 	 (lambda ()
-	   (eval (string->symbol proc-name)))
+	   (eval (string->symbol proc-name) (current-module)))
 	 (lambda (key . args)
 	   #f)))
 
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.
 Three values are returned in a list: (num-required num-optional rest-argument-p)."
-  (and (symbol? proc) (set! proc (eval proc) (interaction-environment)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (procedure-property proc 'arity))
 
 (define-public (procedure-num-required-args proc)
   "Return the number of required arguments for PROC."
-  (and (symbol? proc) (set! proc (eval proc) (interaction-environment)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (car (procedure-arity proc)))
 
 (define-public (procedure-num-optional-args proc)
   "Return the number of optional arguments for PROC."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (cadr (procedure-arity proc)))
 
 (define-public (procedure-takes-rest-arg? proc)
   "Return #t iff PROC take a rest argument."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (caddr (procedure-arity proc)))
 
 
@@ -86,7 +86,7 @@ created using an optargs *-format macro, this
 procedure will not provide much useful information.
 See instead `procedure-keyword-arguments' and 
 `procedure-optional-arguments'."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (or (procedure-property proc 'arglist)
       (catch #t
 	     (lambda ()
@@ -102,7 +102,7 @@ See instead `procedure-keyword-arguments' and
 Returns #f if PROC is a primitive.  This will not include
 any \"lambda*\" formals generated using optargs. See also
 `procedure-keyword-arguments' and `procedure-optional-arguments'."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (let ((formals (procedure-formals proc)))
     (if (or (not formals) (symbol? formals))
 	'()
@@ -120,13 +120,13 @@ Returns #f if PROC was not defined using keyword or optional
 arguments (this includes procedures defined using standard . rest
 syntax).  Otherwise returns a list such as '(foo #:optional bar).
 Note that these currently do not display in their expected format"
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (procedure-property proc 'optargs-arglist))
 
 
 (define-public (procedure-keyword-formals proc)
   "BROKEN:Returns an a-list of the optargs keyword arguments and default values for PROC."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (let ((optargs-arglist (procedure-optargs-arglist proc)))
     (if optargs-arglist
 	(let ((got-key #f))
@@ -138,7 +138,7 @@ Note that these currently do not display in their expected format"
 
 (define-public (procedure-optional-formals proc)
   "BROKEN:Returns a list of the optional arguments for PROC."
-  (and (symbol? proc) (set! proc (eval proc)))
+  (and (symbol? proc) (set! proc (eval proc (current-module))))
   (let ((arglist (procedure-property proc 'arglist)))
     (if arglist
 	(list-tail arglist (procedure-num-required-args proc))
@@ -205,7 +205,7 @@ The list elements are of the form '(module . procedure)"
 (define-public (procedure-apropos-with-modules rgx)
   "Returns a list of procedures that match RGX along with defined-in modules.
 The returned list contains pairs (modulesym . procsym)"
-  (filter-map (lambda (p) (let ((m-p (eval (cdr p)))) 
+  (filter-map (lambda (p) (let ((m-p (eval (cdr p) (current-module)))) 
 			    (if (procedure? m-p) p #f)))
 	      (apropos-internal-with-modules rgx)))
 
@@ -213,14 +213,14 @@ The returned list contains pairs (modulesym . procsym)"
 (define-public (procedure-apropos rgx)
   "Returns a list of procedures that match RGX.
 This returns a simple list of procedure objects."
-  (map (lambda (p) (eval (cdr p) (interaction-environment))) (procedure-apropos-with-modules rgx)))
+  (map (lambda (p) (eval (cdr p) (current-module))) (procedure-apropos-with-modules rgx)))
 
 ;; (interactive-procedure-apropos-with-modules "get-window")
 (define-public (interactive-procedure-apropos-with-modules rgx)
   "BROKEN: Returns a list of procedures that match RGX and that can take no arguments.
 I.e., they are interactive procedures useful for bindings.
 The returned list contains pairs (modulesym . procsym)"
-  (filter-map (lambda (p) (let ((m-p (eval (cdr p)))) 
+  (filter-map (lambda (p) (let ((m-p (eval (cdr p) (current-module)))) 
 			    (if (and (procedure? m-p) 
 				     (procedure-is-interactive? m-p))
 				p
@@ -231,7 +231,7 @@ The returned list contains pairs (modulesym . procsym)"
 (define-public (interactive-procedure-apropos rgx)
   "BROKEN: Returns a list of interactive procedures that match RGX.
 This returns a simple list of procedure objects."
-  (map (lambda (p) (eval (cdr p) (interaction-environment))) (interactive-procedure-apropos-with-modules rgx)))
+  (map (lambda (p) (eval (cdr p) (current-module))) (interactive-procedure-apropos-with-modules rgx)))
 
 ;(map procedure-required-formals (procedure-apropos "n"))
 ;(map procedure-optional-formals (procedure-apropos "n"))

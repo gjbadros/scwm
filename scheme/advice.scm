@@ -39,7 +39,7 @@ This is inspired by the Emacs-Lisp function of the same name but does support
 only a minimal subset of its features."
   (if (not (defined? function))
       (error "Function not defined:" function))
-  (let ((source (procedure-source (eval function))))
+  (let ((source (procedure-source (eval function (current-module)))))
     (if (not (eq? (car source) 'lambda))
 	(error "Does not evaluate to a lambda expression:" function))
     (let ((orig (string->symbol (string-append "ad-Orig-"
@@ -52,10 +52,10 @@ only a minimal subset of its features."
 	    (case (car param)
 	      ((before) `(define ,function
 			   (lambda ,args
-			     ,@body ,(cons (eval function)
+			     ,@body ,(cons (eval function (current-module))
 					   args))))
 	      ((after) `(define ,function
-			  (lambda ,args ,(cons (eval function) args) ,@body)))
+			  (lambda ,args ,(cons (eval function (current-module)) args) ,@body)))
 	      ((around) `(define ,function
 			   (lambda () (let ((ad-do-it FIXME)) ,@body))))
 	      (else (error "CLASS must be 'before, 'around, or 'after:"

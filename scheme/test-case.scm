@@ -15,11 +15,11 @@
 (defmacro-public test-case (TITLE FORM . RESULT)
   (catch #t
 	 (lambda ()
-	   (let ((res (eval FORM))
+	   (let ((res (eval FORM (current-module)))
 		 (succeed (car RESULT)))
 	     (cond
 	      ((eq? succeed '=>) 
-	       (let ((answer (equal? res (eval (cadr RESULT)))))
+	       (let ((answer (equal? res (eval (cadr RESULT) (current-module)))))
 		 (if (and display-test-case-errors (not answer) )
 		     (begin
 		       (display "Test `")
@@ -27,7 +27,7 @@
 		       (display "' failed -- `")
 		       (display res)
 		       (display "' not equal? to `")
-		       (display (eval (cadr RESULT)))
+		       (display (eval (cadr RESULT) (current-module)))
 		       (display "' in ")
 		       (display FORM)
 		       (display "\n")))

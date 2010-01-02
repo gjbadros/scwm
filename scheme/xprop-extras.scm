@@ -133,7 +133,7 @@ name, and `window-pid' to get the process id.
 	    WH-IconPosition WH-IconMask WH-WindowGroup WH-reserved WH-Urgency)
 	  (cdr sym)))
     ((null? sym))
-  (eval `(define ,(car sym) ,n)))
+  (eval `(define ,(car sym) ,n) (current-module)))
 
 ; define the WM_SIZE_HINTS flags WSH-*
 (do ((n 1 (* 2 n))
@@ -142,7 +142,7 @@ name, and `window-pid' to get the process id.
 	    WSH-PBaseSize WSH-PWinGravity)
 	  (cdr sym)))
     ((null? sym))
-  (eval `(define ,(car sym) ,n)))
+  (eval `(define ,(car sym) ,n) (current-module)))
 
 ; define the _MOTIF_WM_HINTS flags MWH-*
 (define MWH-FUNCTIONS 1)
@@ -153,7 +153,7 @@ name, and `window-pid' to get the process id.
      (sym '(MWF-ALL MWF-RESIZE MWF-MOVE MWF-MINIMIZE MWF-MAXIMIZE MWF-CLOSE)
 	  (cdr sym)))
     ((null? sym))
-  (eval `(define ,(car sym) ,n)))
+  (eval `(define ,(car sym) ,n) (current-module)))
 
 (define-public (mwm-functions->string func)
   "Converts the MWM function flags into a readable form."
@@ -162,7 +162,7 @@ name, and `window-pid' to get the process id.
       (string-join ", "
 		   (map (lambda (flag)
 			  (if (not (zero? (logand func
-						  (eval flag))))
+						  (eval flag (current-module)))))
 			      (substring (symbol->string flag) 4)
 			      ""))
 			'(MWF-ALL MWF-RESIZE MWF-MOVE
@@ -174,7 +174,7 @@ name, and `window-pid' to get the process id.
 		    MWD-MINIMIZE MWD-MAXIMIZE)
 	  (cdr sym)))
     ((null? sym))
-  (eval `(define ,(car sym) ,n)))
+  (eval `(define ,(car sym) ,n) (current-module)))
 
 (define-public (mwm-decorations->string decor)
   "Converts the MWM decoration flags into a readable form."
@@ -183,7 +183,7 @@ name, and `window-pid' to get the process id.
       (string-join ", "
 		   (map (lambda (flag)
 			  (if (not (zero? (logand decor
-						  (eval flag))))
+						  (eval flag (current-module)))))
 			      (substring (symbol->string flag) 4)
 			      ""))
 			'(MWD-ALL MWD-BORDER MWD-RESIZEH MWD-TITLE MWD-MENU

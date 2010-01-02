@@ -98,4 +98,4 @@ See also `prompt-string'."
 	 (hbox (car answer))
 	 (getter (cadr answer))
 	 (entry (caddr answer)))
-    (list hbox (lambda () (eval (string->symbol (getter)))) entry)))
+    (list hbox (lambda () (eval (string->symbol (getter)) (current-module))) entry)))

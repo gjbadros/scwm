@@ -31,7 +31,7 @@
   "Return an approximation of the number of menuitems that will fit vertically on screen."
   (let* ((menu-font-property menu-font)
 	 (menu-font (if (symbol? menu-font-property)
-                        (eval menu-font-property (interaction-environment))
+                        (eval menu-font-property (current-module))
                         menu-font-property))
 	 (menu-font-height (assoc-ref (font-properties menu-font) 'height)))
     (round/ (cadr (display-size)) (+ 7 menu-font-height))))

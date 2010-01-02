@@ -101,7 +101,7 @@
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
 	 (favorites (scwm-option-favorites sym))
-	 (var (eval sym (interaction-environment)))
+	 (var (eval sym (current-module)))
 	 (prompt (string-append "Set " name))
 	 (title (string-append "Set " name))
 	 (set-proc (lambda (v) (scwm-option-symset! sym v))))

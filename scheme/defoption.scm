@@ -272,6 +272,6 @@ Shorthand for scwm-option-get."
   "Get option SYM's value."
   (let ((g (scwm-option-getter sym)))
     (if g (g)
-	(eval sym (interaction-environment)))))
+	(eval sym (current-module)))))
 
 ;; (scwm-option-symset! *theme-path* (string-with-colons->path-list "foo:bar:baz"))

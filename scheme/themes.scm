@@ -116,7 +116,7 @@ tar file with extension .tar, .tar.gz, or .tgz."
 		 (last-val (if #f #f)))
 	(if (eof-object? expr)
 	    last-val
-	    (loop (read) (eval last-val)))))))
+	    (loop (read) (eval last-val (current-module))))))))
 
 (define (load-directory-theme file-name theme-name)
   (let* ((old-dir (getcwd))

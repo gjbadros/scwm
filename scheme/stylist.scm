@@ -38,7 +38,7 @@
 TITLE is the title of the dialog window; defaults to `Style Selector'.
 TEMPLATE is the window where the initial values come from; defaults to a
 random window that matches PREDICATE."
-  (let* ((windows (list-windows #:only (eval predicate)))
+  (let* ((windows (list-windows #:only (eval predicate (current-module))))
 	 (flashed-windows windows)
 	 (the-style '()))
     (if (and (not template) (pair? windows))
@@ -57,7 +57,7 @@ random window that matches PREDICATE."
 		    (set! flashed-windows '())
 		    (run-hook apply-hook)
 		    (let ((form `(window-style ,predicate ,@the-style)))
-		      (eval form)
+		      (eval form (current-module))
 		      (write form)
 		      (newline))
 		    (set! the-style '())))
