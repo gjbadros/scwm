@@ -33,7 +33,7 @@
 
 
 
-(define*-public (string-prompt prompt proc #&optional (title "string-prompt"))
+(define*-public (string-prompt prompt proc #:optional (title "string-prompt"))
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
 E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
   (let* ((toplevel (gtk-window-new 'dialog))

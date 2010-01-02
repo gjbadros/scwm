@@ -99,7 +99,7 @@ or `set-auto-raise-unfocus-proc!'."
   #:group 'focus)
 
 
-(define*-public (set-auto-raise! auto-raise? :&optional (win (get-window)))
+(define*-public (set-auto-raise! auto-raise? #:optional (win (get-window)))
   "Turn auto-raise on (#t) or off (#f) for WIN.
 Auto-raise makes a window automatically raise when the mouse pointer
 enters the window frame.  See `set-auto-raise-delay!' for controlling
