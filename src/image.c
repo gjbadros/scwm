@@ -499,7 +499,7 @@ SCM_DEFINE(make_image, "make-image", 1, 0, 0,
   /* OK, it wasn't in the hash table - we need to expand the filename.
    */
   full_path = scm_search_path(scm_variable_ref(scm_image_load_path),
-			      name, SCM_UNDEFINED);
+			      name, SCM_EOL);
   if (scm_is_false(full_path)) {
     return SCM_BOOL_F;
   }
