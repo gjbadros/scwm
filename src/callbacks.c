@@ -289,7 +289,14 @@ static SCM
 scwm_body_eval_x (void *body_data)
 {
   SCM expr = *(SCM *) body_data;
-  return scm_eval (expr, scm_current_module());
+  SCM compile = scm_module_variable(scm_c_resolve_module("system base compile"),
+				    scm_from_locale_symbol ("compile"));
+  
+  if (scm_is_true(compile))
+    return scm_call_3(scm_variable_ref(compile), expr,
+		      scm_from_locale_keyword("env"), scm_current_module());
+  else
+    return scm_eval(expr, scm_current_module());
 }
 
 
