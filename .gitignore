@@ -1,5 +1,6 @@
 *.rpm
 *.tar.gz
+README
 ANNOUNCE
 Makefile
 Makefile.in
