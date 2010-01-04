@@ -19,7 +19,7 @@
   (cons (car l) (cadr l)))
 
 (define (round-to-pct n pct)
-  (round (* n pct)))
+  (inexact->exact (round (* n pct))))
 
 (define (animate-iconify-or-deiconify icon-pos win-pos icon-size win-size 
                                       ms-delay before-animation-proc 

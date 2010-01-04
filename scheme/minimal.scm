@@ -223,6 +223,8 @@ then `random-place-window', and finally `interactive-place-window'."
  guile-version
  *scwm-modules*
  append-hook!
+ module-loaded-hook
+ display-module-loaded
  scwm-module-loaded?
  eval-after-load
  resize-or-raise

@@ -781,7 +781,7 @@ dimension to a number of pixels."
 
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
-  (if scwm-set-master-solver! #t #f))
+  (if (defined? 'scwm-set-master-solver!) #t #f))
 
 (define-public (scwm-system cmd)
   "Run CMD using /bin/sh -c CMD and return a list: (exit-status child-pid).

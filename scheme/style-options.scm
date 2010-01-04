@@ -59,13 +59,16 @@ CUMULATIVE indicates that the option can be specified multiple times
 	      (vector handler type cumulative?)))
 
 (define (make-bool-handler t-handler f-handler)
-  (let ((proc (lambda (val win)
+  (let ((proc->symbol
+	 (lambda (proc)
+	   (string->symbol (string-append "A" (object->string (object-address proc))))))
+	(proc (lambda (val win)
 		(if val (t-handler win) (f-handler win)))))
     (set-procedure-property! proc 'name (symbol-append (or (procedure-name t-handler)
-							   'th)
+							   (proc->symbol t-handler))
 						       '-or-
 						       (or (procedure-name f-handler)
-							   'fh)
+							   (proc->symbol f-handler))
 						       '-handler))
     proc))
 
