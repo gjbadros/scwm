@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-libscwmviavoice.la
-scwmgrammar.fsg
-scwmviavoice.lo
-scwmviavoice.x
-*.doc

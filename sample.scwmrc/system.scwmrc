@@ -728,21 +728,6 @@
   (interactive)
   (popup-menu menu-quit-verify #t))
 
-(define menu-viavoice
-  (menu
-   (list
-    (menu-title "ViaVoice") menu-separator
-    (menuitem "&Enable voice recognizer" 
-	       #:action (lambda ()
-			  (system "killall esd")
-			  (use-scwm-modules viavoice)
-			  (vv-initialize)))
-    (menuitem "&Disable voice recognizer" 
-	       #:action (lambda ()
-			  (use-scwm-modules viavoice)
-			  (vv-terminate)
-			  (system "esd &"))))))
-
 (define menu-applications
   (menu (cons
 	 (menu-title "Applications")
@@ -898,7 +883,6 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 	(menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
 		  #:submenu menu-constraints)
 	#f)
-    (menuitem "ViaVoice" #:submenu menu-viavoice)
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-term.xpm" 
 	      #:submenu menu-hosts-servers)

@@ -28,7 +28,7 @@ theme-impl.scm themes.scm titlebar-buttons.scm \
 test-case.scm tile.scm time-convert.scm \
 ui-constraints-buttons.scm ui-constraints-classes.scm ui-constraints-toggle-menu.scm \
 ui-constraints-composition.scm ui-constraints.scm \
-undo.scm viavoice.scm viavoice-smrc.scm virtual.scm \
+undo.scm virtual.scm \
 visibility-reporter.scm \
 wavplay.scm where-is.scm window-locations.scm window-selection.scm \
 window-configuration.scm wininfo.scm \
