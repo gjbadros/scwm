@@ -21,9 +21,10 @@
 (define-module (app scwm c-animation)
   #:export (set-animation!
 	    animated-window-shade
-	    animated-window_unshade
+	    animated-window-unshade
 	    animate-windows
 	    animated-resize-window
-	    animated-resize-frame))
+	    animated-resize-frame
+	    animated-move-window))
 
 (load-extension "libscwm-c-animation" "init_c_animation")

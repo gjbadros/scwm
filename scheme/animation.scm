@@ -26,14 +26,13 @@
 
 
 
-(export animate-windows)
-(export animated-move-window)
-(export animated-window-shade)
-(export animated-window-unshade)
-(export animated-resize-window)
-(export animated-resize-frame)
-(export set-animation!)
-(export animation-delay)
+(re-export animate-windows)
+(re-export animated-move-window)
+(re-export animated-window-shade)
+(re-export animated-window-unshade)
+(re-export animated-resize-window)
+(re-export animated-resize-frame)
+(re-export set-animation!)
 
 (define-public animated-toggle-window-shade
   (make-toggling-winop shaded-window?
