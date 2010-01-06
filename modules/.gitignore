@@ -3,3 +3,4 @@ Makefile.in
 devlib
 lib
 *.doc
+*.la

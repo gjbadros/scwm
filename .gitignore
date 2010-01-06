@@ -18,3 +18,5 @@ ltmain.sh
 scwm.spec
 *.doc
 *.o
+elisp-comp
+depcomp

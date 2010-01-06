@@ -5,3 +5,5 @@ config.h.in
 scwmconfig.h
 stamp-h
 stamp-h.in
+stamp-h1
+scwmconfig.h.in
