@@ -4,18 +4,18 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 if HAVE_ESD
-scwm_module_LTLIBRARIES = libesdsound.la
+extensions_LTLIBRARIES = scwm-esdsound.la
+scwm_esdsound_la_SOURCES = sound.c
+scwm_esdsound_snarfs = sound.x
 
-libesdsound_la_SOURCES = sound.c
-libesdsound_snarfs = sound.x
-
-BUILT_SOURCES = $(libesdsound_snarfs)
+BUILT_SOURCES = $(scwm_esdsound_snarfs)
 endif
 
-libesdsound_la_LIBADD = @ESD_LIBS@
-libesdsound_la_LDFLAGS = -export-dynamic
+scwm_esdsound_la_LIBADD = @ESD_LIBS@
+scwm_esdsound_la_LDFLAGS = -module -export-dynamic -shared
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

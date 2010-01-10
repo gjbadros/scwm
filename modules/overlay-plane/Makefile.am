@@ -4,14 +4,14 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
-scwm_module_LTLIBRARIES = libscwmoverlay-plane.la
+extensions_LTLIBRARIES = scwm-overlay-plane.la
 
-libscwmoverlay_plane_la_SOURCES = overlay-plane.c get_color.c
-libscwmoverlay_plane_la_LDFLAGS = -export-dynamic
-
-libscwmoverlay_plane_snarfs = overlay-plane.x
+scwm_overlay_plane_la_SOURCES = overlay-plane.c get_color.c
+scwm_overlay_plane_la_LDFLAGS = -module -export-dynamic -shared
+scwm_overlay_plane_snarfs = overlay-plane.x
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
-BUILT_SOURCES = $(libscwmoverlay_plane_snarfs)
+BUILT_SOURCES = $(scwm_overlay_plane_snarfs)

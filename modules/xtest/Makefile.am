@@ -4,17 +4,17 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 if HAVE_XTEST
-scwm_module_LTLIBRARIES = libscwmxtest.la
+extensions_LTLIBRARIES = scwm-xtest.la
 
-libscwmxtest_la_SOURCES = scwmxtest.c
-libscwmxtest_snarfs = scwmxtest.x
+scwm_xtest_la_SOURCES = scwmxtest.c
+scwm_xtest_la_LDFLAGS = -module -export-dynamic -shared
+scwm_xtest_snarfs = scwmxtest.x
 
-BUILT_SOURCES = $(libscwmxtest_snarfs)
+BUILT_SOURCES = $(scwm_xtest_snarfs)
 
 endif
-
-libscwmxtest_la_LDFLAGS = -export-dynamic
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

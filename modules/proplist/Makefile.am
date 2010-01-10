@@ -4,18 +4,19 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 if HAVE_PROPLIST
-scwm_module_LTLIBRARIES = libscwmproplist.la
+extensions_LTLIBRARIES = scwm-proplist.la
 
-libscwmproplist_la_SOURCES = scwmproplist.c
-libscwmproplist_snarfs = scwmproplist.x
+scwm_proplist_la_SOURCES = scwmproplist.c
+scwm_proplist_snarfs = scwmproplist.x
 
-BUILT_SOURCES = $(libscwmproplist_snarfs)
+BUILT_SOURCES = $(scwm_proplist_snarfs)
 endif
 
-libscwmproplist_la_LDFLAGS = -export-dynamic
-libscwmproplist_la_LIBADD = -L/usr/contrib/lib/ -lPropList
+scwm_proplist_la_LDFLAGS = -module -export-dynamic -shared
+scwm_proplist_la_LIBADD = -L/usr/contrib/lib/ -lPropList
 
 INCLUDES = @PROPLIST_INCLUDES@ -I$(SCWM_SRC_DIR) @x_cflags@ \
 	@GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

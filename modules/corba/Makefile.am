@@ -5,13 +5,14 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 EXTRA_DIST=scwm_scheme_evaluator.idl
 
 if HAVE_GNOME_CORBA
 bin_PROGRAMS = scwm-corba-exec 
-scwm_module_LTLIBRARIES = libscwmcorba.la
-libscwmcorba_snarfs = scwmcorba.x
+extensions_LTLIBRARIES = scwm-corba.la
+scwm_corba_snarfs = scwmcorba.x
 
 idl_output_source = \
 	scwm_scheme_evaluator-common.c \
@@ -29,17 +30,17 @@ scwm_corba_exec_SOURCES = \
 $(idl_output_source) $(idl_output_headers): scwm_scheme_evaluator.idl
 	orbit-idl $<
 
-libscwmcorba_la_SOURCES = \
+scwm_corba_la_SOURCES = \
 	scwmcorba.c \
 	scwm_scheme_evaluator-impl.c \
 	scwm_scheme_evaluator-common.c \
 	scwm_scheme_evaluator-skels.c
 
-BUILT_SOURCES = $(libscwmcorba_snarfs) $(idl_output_source)
+BUILT_SOURCES = $(scwm_corba_snarfs) $(idl_output_source)
 
 endif
 
-libscwmcorba_la_LDFLAGS = \
+scwm_corba_la_LDFLAGS = -module -shared \
  -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lgnomeui -lart_lgpl -lgdk_imlib \
  -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11  \
  -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl

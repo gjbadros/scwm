@@ -4,15 +4,16 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
-BUILT_SOURCES = draw-xpm-menu.x
+extensions_LTLIBRARIES = scwm-xpm-menus.la
 
-scwm_module_LTLIBRARIES = libscwm-xpm-menus.la
+scwm_xpm_menus_la_SOURCES = draw-xpm-menu.c
+scwm_xpm_menus_la_LDFLAGS = -module -export-dynamic -shared
 
-libscwm_xpm_menus_la_SOURCES = draw-xpm-menu.c
-libscwm_xpm_menus_la_LDFLAGS = -export-dynamic
+scwm_xpm_menus_snarfs = draw-xpm-menu.x
 
-libxpm_menus_snarfs = 
+BUILT_SOURCES = $(scwm_xpm_menus_snarfs)
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

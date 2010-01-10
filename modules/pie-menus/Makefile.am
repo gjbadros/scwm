@@ -4,14 +4,14 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
-scwm_module_LTLIBRARIES = libpie-menus.la
+extensions_LTLIBRARIES = scwm-pie-menus.la
 
-libpie_menus_la_SOURCES = draw-pie-menu.c
-libpie_menus_la_LDFLAGS = -export-dynamic
-
-libpie_menus_snarfs = draw-pie-menu.x
+scwm_pie_menus_la_SOURCES = draw-pie-menu.c
+scwm_pie_menus_la_LDFLAGS = -module -export-dynamic -shared
+scwm_pie_menus_snarfs = draw-pie-menu.x
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
-BUILT_SOURCES = $(libpie_menus_snarfs)
+BUILT_SOURCES = $(scwm_pie_menus_snarfs)

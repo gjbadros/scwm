@@ -204,6 +204,9 @@ fi
 
 AC_SUBST(GUILE)
 
+PKG_PROG_PKG_CONFIG()
+AC_SUBST(GUILE_EXTENSIONS_DIR, `${PKG_CONFIG} --variable=extensionsdir guile-2.0`)
+
 AC_PATH_PROGS(PERL, perl perl5, no)
 
 AC_SUBST(PERL)

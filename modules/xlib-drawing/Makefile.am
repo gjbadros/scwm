@@ -4,12 +4,13 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 BUILT_SOURCES = drawing.x
 
-scwm_module_LTLIBRARIES = libscwm_xlib-drawing.la
-libscwm_xlib_drawing_la_SOURCES = drawing.c drawing.h
-libscwm_xlib_drawing_la_LDFLAGS = -export-dynamic
+extensions_LTLIBRARIES = scwm-xlib-drawing.la
+scwm_xlib_drawing_la_SOURCES = drawing.c drawing.h
+scwm_xlib_drawing_la_LDFLAGS = -module -export-dynamic -shared
 
 EXTRA_DIST = drawing.scm
 

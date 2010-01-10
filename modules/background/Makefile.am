@@ -4,13 +4,14 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 BUILT_SOURCES = background.x
 
-scwm_module_LTLIBRARIES = libscwm_background.la
+extensions_LTLIBRARIES = scwm-background.la
 
-libscwm_background_la_SOURCES = background.x background.c
-libscwm_background_la_LDFLAGS = -export-dynamic
+scwm_background_la_SOURCES = background.x background.c
+scwm_background_la_LDFLAGS = -module -export-dynamic -shared
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

@@ -5,6 +5,7 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 pkglib_LTLIBRARIES = libapplefile.la
 libapplefile_la_SOURCES = applefile.c applesingledouble.c macbinary.c crc.c \

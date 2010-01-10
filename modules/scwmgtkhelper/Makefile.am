@@ -4,15 +4,15 @@
 include $(top_srcdir)/Makefile.common
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 if HAVE_GTK
-scwm_module_LTLIBRARIES = libscwmgtkhelper.la
+extensions_LTLIBRARIES = scwm-gtkhelper.la
 endif
 
-libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c
-libscwmgtkhelper_snarfs = scwmgtkhelper.x
-
-libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
+scwm_gtkhelper_la_SOURCES = scwmgtkhelper.c
+scwm_gtkhelper_la_LDFLAGS = -module -export-dynamic -shared @GTK_LIBS@
+scwm_gtkhelper_snarfs = scwmgtkhelper.x
 
 AM_CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
