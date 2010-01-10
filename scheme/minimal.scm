@@ -17,9 +17,8 @@
 (setvbuf (current-output-port) _IONBF)
 
 ;; Make quit an alias for scwm-quit
-(define quit scwm-quit)
 (set-procedure-property! scwm-quit 'interactive #t)
-(set-procedure-property! quit 'interactive #t)
+(module-define! the-scm-module 'quit scwm-quit)
 ;(undefine scwm-quit)
 
 (define FIXED-FONT (make-font "fixed"))
