@@ -151,7 +151,7 @@ void catch_pipe()
   fprintf(stderr, "-SIGPIPE-");
 }
 
-static void
+void
 init_sound()
 {
 #include "sound.x"
@@ -159,12 +159,6 @@ init_sound()
   esd = esd_open_sound(NULL);
   signal(SIGPIPE, catch_pipe);
 }
-
-void scm_init_app_scwm_esdsound_module()
-{
-  scm_register_module_xxx("app scwm esdsound", init_sound);
-}
-
 
 /* Local Variables: */
 /* tab-width: 8 */

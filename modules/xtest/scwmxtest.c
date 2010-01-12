@@ -141,15 +141,10 @@ If MS-DELAY is ommitted or is #f or 0, no delay is used")
 #undef FUNC_NAME 
 
 
-static void
+void
 init_scwmxtest()
 {
  #include "scwmxtest.x"
-}
-
-void scm_init_app_scwm_scwmxtest_module()
-{
-  scm_register_module_xxx("app scwm scwmxtest", init_scwmxtest);
 }
 
 /* Local Variables: */

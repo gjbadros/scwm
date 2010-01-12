@@ -1030,7 +1030,7 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
 #undef FUNC_NAME
 #undef INCREASE_MAYBE
 
-static void
+void
 init_draw_xpm_menu()
 {
   MenuDrawingVtable * pmdvt;
@@ -1061,11 +1061,6 @@ init_draw_xpm_menu()
      for non-shaped menus */
   
 #include "draw-xpm-menu.x"
-}
-
-void scm_init_app_scwm_xpm_menus_module()
-{
-  scm_register_module_xxx("app scwm xpm-menus", init_draw_xpm_menu);
 }
 
 /* Local Variables: */

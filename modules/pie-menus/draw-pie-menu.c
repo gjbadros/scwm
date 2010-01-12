@@ -1323,7 +1323,6 @@ drawpiemenu_init_gcs()
   MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
-static
 void
 init_draw_pie_menu()
 {
@@ -1367,11 +1366,6 @@ init_draw_pie_menu()
   SCWM_VAR_READ_ONLY(NULL,"shaped-pie-menu-look", shaped_pie_menu_look);
   /** A menu-look that gives pie menus with only the labels visible */
 #include "draw-pie-menu.x"
-}
-
-void scm_init_app_scwm_pie_menus_module()
-{
-  scm_register_module_xxx("app scwm pie-menus", init_draw_pie_menu);
 }
 
 /* Local Variables: */
