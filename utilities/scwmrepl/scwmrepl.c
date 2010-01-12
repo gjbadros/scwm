@@ -108,7 +108,7 @@ char *scwm_complete(char *text, int state)
 void init_readline()
 {
   // warning: assignment from incompatible pointer type
-  rl_completion_entry_function=(Function *)scwm_complete;
+  rl_completion_entry_function=(rl_compentry_func_t *)scwm_complete;
 }
 #endif
 
