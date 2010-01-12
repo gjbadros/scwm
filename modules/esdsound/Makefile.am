@@ -12,6 +12,7 @@ scwm_esdsound_la_SOURCES = sound.c
 scwm_esdsound_snarfs = sound.x
 
 BUILT_SOURCES = $(scwm_esdsound_snarfs)
+CLEANFILES = $(scwm_esdsound_snarfs)
 endif
 
 scwm_esdsound_la_LIBADD = @ESD_LIBS@

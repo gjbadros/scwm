@@ -13,6 +13,7 @@ scwm_proplist_la_SOURCES = scwmproplist.c
 scwm_proplist_snarfs = scwmproplist.x
 
 BUILT_SOURCES = $(scwm_proplist_snarfs)
+CLEANFILES = $(scwm_proplist_snarfs)
 endif
 
 scwm_proplist_la_LDFLAGS = -module -export-dynamic -shared

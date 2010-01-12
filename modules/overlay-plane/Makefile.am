@@ -15,3 +15,4 @@ scwm_overlay_plane_snarfs = overlay-plane.x
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(scwm_overlay_plane_snarfs)
+CLEANFILES = $(scwm_overlay_plane_snarfs)

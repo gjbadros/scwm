@@ -14,6 +14,7 @@ scwm_xtest_la_LDFLAGS = -module -export-dynamic -shared
 scwm_xtest_snarfs = scwmxtest.x
 
 BUILT_SOURCES = $(scwm_xtest_snarfs)
+CLEANFILES = $(scwm_xtest_snarfs)
 
 endif
 

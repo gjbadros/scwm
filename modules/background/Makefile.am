@@ -7,6 +7,7 @@ AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 extensionsdir = $(GUILE_EXTENSIONS_DIR)
 
 BUILT_SOURCES = background.x
+CLEANFILES = background.x
 
 extensions_LTLIBRARIES = scwm-background.la
 
@@ -22,9 +23,3 @@ EXTRA_DIST = background.scm
 MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 snarfcppopts = $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
-#SUFFIXES = .x
-#.c.x:
-#	$(GUILE_SNARF) -o $@ $< $(snarfcppopts)
-
-CLEANFILES = *.x

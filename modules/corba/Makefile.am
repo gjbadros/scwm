@@ -37,6 +37,7 @@ scwm_corba_la_SOURCES = \
 	scwm_scheme_evaluator-skels.c
 
 BUILT_SOURCES = $(scwm_corba_snarfs) $(idl_output_source)
+CLEANFILES = $(scwm_corba_snarfs) $(idl_output_source)
 
 endif
 

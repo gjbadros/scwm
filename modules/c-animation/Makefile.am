@@ -13,6 +13,7 @@ scwm_c_animation_la_LDFLAGS = -module -export-dynamic -shared
 scwm_c_animation_snarfs = c-animation.x
 
 BUILT_SOURCES = $(scwm_c_animation_snarfs)
+CLEANFILES = $(scwm_c_animation_snarfs)
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@

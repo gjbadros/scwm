@@ -15,3 +15,4 @@ scwm_pie_menus_snarfs = draw-pie-menu.x
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(scwm_pie_menus_snarfs)
+CLEANFILES = $(scwm_pie_menus_snarfs)

@@ -18,5 +18,6 @@ AM_CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libscwmgtkhelper_snarfs)
+CLEANFILES = $(libscwmgtkhelper_snarfs)
 
 scwmgtkhelper.x: CFLAGS += AM_FLAGS

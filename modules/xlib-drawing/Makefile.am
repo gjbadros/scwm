@@ -17,4 +17,4 @@ EXTRA_DIST = drawing.scm
 INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ \
 	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 
-CLEANFILES = *.x
+CLEANFILES = drawing.x
