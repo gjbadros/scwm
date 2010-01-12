@@ -27,4 +27,4 @@
 	    animated-resize-frame
 	    animated-move-window))
 
-(load-extension "libscwm-c-animation" "init_c_animation")
+(load-extension "scwm-c-animation.so" "init_c_animation")

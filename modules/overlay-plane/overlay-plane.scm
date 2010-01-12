@@ -21,7 +21,6 @@
 (define-module (app scwm overlay-plane)
   #:export (has-overlay-plane?
 	    draw-overlay-plane
-	    hide-overlay-plane
-	    ))
+	    hide-overlay-plane))
 
-(load-extension "libscwmoverlay-plane" "scwm_init_overlay_plane")
+(load-extension "scwm-overlay-plane" "scwm_init_overlay_plane")

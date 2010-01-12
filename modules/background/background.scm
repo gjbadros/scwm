@@ -26,4 +26,4 @@
             set-background-image!
             reset-background!))
 
-(load-extension "libscwm_background" "scwm_init_background")
+(load-extension "scwm-background" "scwm_init_background")
