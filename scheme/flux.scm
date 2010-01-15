@@ -409,7 +409,7 @@ WIN is a window object, an X window id, or 'root-window."
   (inexact->exact x))
 
 ;;; make-X-geometry is modified
-;;; from Faré Rideau's scwm-functions file --09/20/99 gjb
+;;; from FarÃ© Rideau's scwm-functions file --09/20/99 gjb
 (define*-public (make-X-geometry #:key (x-size #f) (y-size #f) (x-offset #f) (y-offset #f))
   (if (not (or
 	    (and x-size y-size)
