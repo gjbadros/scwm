@@ -207,6 +207,7 @@ init_drawing_gc()
   DrawingGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
+void
 init_drawing()
 {
 #include "drawing.x"
