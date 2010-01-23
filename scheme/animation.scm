@@ -21,7 +21,7 @@
 (define-module (app scwm animation)
   :use-module (app scwm base)
   :use-module (app scwm winops)
-  ;; :use-module (app scwm c-animation)   ;; other modules should use this module, not c-animation
+  :use-module (app scwm c-animation)   ;; other modules should use this module, not c-animation
   :use-module (app scwm optargs))
 
 

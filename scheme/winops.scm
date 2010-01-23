@@ -22,7 +22,7 @@
   :use-module (app scwm minimal)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
-  ;; :use-module (app scwm c-animation)
+  :use-module (app scwm c-animation)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
   :use-module (app scwm wininfo)

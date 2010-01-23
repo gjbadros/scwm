@@ -6,7 +6,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm winops)
   :use-module (app scwm virtual)
-  ;;:use-module (app scwm xlib-drawing)
+  :use-module (app scwm xlib-drawing)
   )
 
 (define-public iconify-animation-offsets

@@ -1,4 +1,4 @@
-;;;; Copyright (C) 2006 Dale P. Smith
+;;;; Copyright (C) 2010 Dale P. Smith
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -18,12 +18,9 @@
 
 
 
-(define-module (app scwm drawing)
-  #:export (xlib-set-drawing-mask!
-	    xlib-draw-rectangle!
-	    xlib-draw-line!
-	    xlib-draw-arc!
-	    xlib-set-line-attributes!
-	    xlib-set-fill-style!))
+(define-module (app scwm overlay-plane)
+  #:export (has-overlay-plane?
+	    draw-overlay-plane
+	    hide-overlay-plane))
 
-(load-extension "libscwm_drawing" "init_drawing")
+(load-extension "scwm-overlay-plane" "scwm_init_overlay_plane")

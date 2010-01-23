@@ -1,4 +1,4 @@
-;;;; Copyright (C) 2006 Dale P. Smith
+;;;; Copyright (C) 2010 Dale P. Smith
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -16,11 +16,9 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-
+(define-module (app scwm draw-pie-menu)
+  :export(pie-menu-look
+	  circle-pie-menu-look
+	  shaped-pie-menu-look))
 
-(define-module (app scwm overlay-plane)
-  #:export (has-overlay-plane?
-	    draw-overlay-plane
-	    hide-overlay-plane))
-
-(load-extension "scwm-overlay-plane" "scwm_init_overlay_plane")
+(load-extension "scwm-draw-pie-menu" "init_draw_pie_menu")
