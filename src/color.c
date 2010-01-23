@@ -449,7 +449,7 @@ adjust_brightness(SCM color, double factor) {
   XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
   color_mult(&c.red, &c.green, &c.blue, factor);
   sprintf(cnamebuf, "rgb:%.4hx/%.4hx/%.4hx", c.red, c.green, c.blue);
-  cnamebuf[19]=0;
+  cnamebuf[18]=0;
 
   return ScmMakeColor(cnamebuf, NULL);
 }
@@ -478,7 +478,7 @@ invert_color(SCM color) {
   XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
   sprintf(cnamebuf, "rgb:%.4hx/%.4hx/%.4hx", 
           0xffff-c.red, 0xffff-c.green, 0xffff-c.blue);
-  cnamebuf[19]=0;
+  cnamebuf[18]=0;
 
   return ScmMakeColor(cnamebuf, NULL);
 }
