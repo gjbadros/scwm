@@ -263,7 +263,7 @@
   (remove-hook! iconify-hook kwm-iconify-window-handler)
 
   (remove-hook! deiconify-hook kwm-deiconify-window-handler)
-1<
+
   (remove-hook! change-desk-hook kwm-change-desk-handler)
 
   ;; (remove-hook! client-message-hook client-message-debug-handler)
