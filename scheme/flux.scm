@@ -13,6 +13,7 @@
 (define-module (app scwm flux)
   :use-module (ice-9 regex)
   :use-module (ice-9 popen)
+  :use-module (ice-9 rdelim)
   :use-module (app scwm base)
   :use-module (app scwm stylist)
   :use-module (app scwm face)

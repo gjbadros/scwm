@@ -21,7 +21,8 @@
 
 (define-module (app scwm file)
   :use-module (ice-9 string-fun)
-  :use-module (ice-9 popen))
+  :use-module (ice-9 popen)
+  :use-module (ice-9 rdelim))
 
 
 ;;;;

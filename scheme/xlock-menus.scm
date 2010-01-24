@@ -27,7 +27,8 @@
   :use-module (app scwm style)
   :use-module (app scwm themes)
   :use-module (ice-9 regex)
-  :use-module (ice-9 popen))
+  :use-module (ice-9 popen)
+  :use-module (ice-9 rdelim))
 
 
 

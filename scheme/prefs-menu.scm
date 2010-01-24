@@ -36,7 +36,8 @@
   :use-module (app scwm doc)
   :use-module (app scwm flux)
   :use-module (app scwm file)
-  :use-module (app scwm stringops))
+  :use-module (app scwm stringops)
+  :use-module (ice-9 rdelim))
 
 
 

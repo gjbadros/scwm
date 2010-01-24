@@ -4,6 +4,7 @@
 
 (define-module (app scwm doc)
   :use-module (ice-9 regex)
+  :use-module (ice-9 rdelim)
   :use-module (app scwm base)
   :use-module (app scwm stringops)
   :use-module (app scwm optargs)
