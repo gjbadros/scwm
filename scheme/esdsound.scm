@@ -22,4 +22,4 @@
 	   sound-play
 	   esd-reconnect))
 
-(load-extension "scwm_esdsound" "init_sound")
+(load-extension "scwm-esdsound" "init_sound")
