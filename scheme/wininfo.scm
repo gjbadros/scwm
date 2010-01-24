@@ -411,7 +411,7 @@ case-sensitive or not."
   define-public (win-not?? predicate)
   "Return a predicate which is the logical not of PREDICATE when applied to a window."
   (cond
-   ((object-property 'style-not predicate) => id)
+   ((object-property 'style-not predicate) => identity)
    ((eq? always? predicate) never?)
    ((eq? never? predicate) always?)
    (else

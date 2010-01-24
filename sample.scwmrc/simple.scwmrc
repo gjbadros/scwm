@@ -9,8 +9,8 @@
 ;;(define thank-scwm-authors-with-usage-note #t)
 
 (define user-image-load-path 
-  (list (string-append (user-home) "/src/scwm/pixmaps")
-	(string-append (user-home) "/src/scwm/bitmaps")))
+  (list (string-append (user-home) "/src/scwm.git.try3/pixmaps")
+	(string-append (user-home) "/src/scwm.git.try3/bitmaps")))
 
 ;;; set path to use for image searches
 (set! image-load-path 

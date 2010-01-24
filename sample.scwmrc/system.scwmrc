@@ -150,6 +150,7 @@
 ;;; set path to use for image searches
 (append! image-load-path
      (list
+      "/home/dsmith/src/scwm.git.try3//pixmaps"
       (string-append scwmdir "/pixmaps")
       (string-append (scwm-path-prefix) "/share/scwm/pixmaps")
       "/usr/share/icons/mini"

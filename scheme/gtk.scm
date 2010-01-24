@@ -24,8 +24,8 @@
 
 
 (define-module (app scwm gtk)
-  :use-module (gtk gtk)
-  :use-module (gtk gdk)
+  :use-module (gnome gtk)
+  :use-module (gnome gdk)
   :use-module (app scwm optargs) ;; for bound?
   :use-module (app scwm base)
   :use-module (app scwm file) ;; for find-file-in-path
