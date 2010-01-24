@@ -49,7 +49,7 @@ then attempts to load it as such."
 (define-public (try-everything-loader fname)
   "Tries to load an arbitrary image, using any available loader."
   (cond
-   ((ImageMagick-loader fname) => id)
+   ((ImageMagick-loader fname) => identity)
    (else (netpbm-loader fname))))
 
 (define-public (support-image-conversion)

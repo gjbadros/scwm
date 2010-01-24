@@ -407,7 +407,7 @@
 
 (define-public (get-fvwm2-module-config module-type)
   (cond 
-   ((hash-ref fvwm2-module-config-hash module-type) => id)
+   ((hash-ref fvwm2-module-config-hash module-type) => identity)
    (else '())))
 
 (define-public (register-fvwm2-module-config module-type . args)
