@@ -22,11 +22,12 @@
 (define-module (app scwm reflection)
   :use-module (ice-9 session)
   :use-module (ice-9 regex)
+  :use-module (srfi srfi-1)
   :use-module (app scwm listops))
 
 (define-public (procedure->string proc)
   "Return a string that represents the name of PROC.
-Returns "<anonymous-procedure>" for procedures without names and "<none>"
+Returns \"<anonymous-procedure>\" for procedures without names and \"<none>\"
 if passed something which is not a procedure."
   (if (and proc (procedure? proc))
       (symbol->string (or (procedure-name proc) '<anonymous-procedure>))
