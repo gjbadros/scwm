@@ -38,9 +38,9 @@ This is considered to be the case if the string FNAME starts with \"/\",
        (or (char=? (string-ref fname 0) #\/)
 	   (and (char=? (string-ref fname 0) #\.)
 		(or
-		 (and (> (string-length fname 1))
+		 (and (> (string-length fname) 1)
 		      (char=? (string-ref fname 1) #\/))
-		 (and (> (string-length fname 2))
+		 (and (> (string-length fname) 2)
 		      (char=? (string-ref fname 1) #\.)
 		      (char=? (string-ref fname 2) #\/)))))))
 			 
