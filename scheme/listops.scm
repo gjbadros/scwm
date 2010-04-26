@@ -19,7 +19,8 @@
 
 
 
-(define-module (app scwm listops))
+(define-module (app scwm listops)
+  :use-moules (srfi srfi-1))
 
 
 
