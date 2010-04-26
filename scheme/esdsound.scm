@@ -22,4 +22,5 @@
 	   sound-play
 	   esd-reconnect))
 
-(load-extension "scwm-esdsound" "init_sound")
+(eval-when (eval load compile)
+  (load-extension "scwm-esdsound" "init_sound"))

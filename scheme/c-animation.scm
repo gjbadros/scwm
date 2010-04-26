@@ -27,4 +27,5 @@
 	    animated-resize-frame
 	    animated-move-window))
 
-(load-extension "scwm-c-animation" "init_c_animation")
+(eval-when (eval load compile)
+  (load-extension "scwm-c-animation" "init_c_animation"))

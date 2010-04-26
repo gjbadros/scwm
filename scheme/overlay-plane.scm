@@ -23,4 +23,5 @@
 	    draw-overlay-plane
 	    hide-overlay-plane))
 
-(load-extension "scwm-overlay-plane" "scwm_init_overlay_plane")
+(eval-when (eval load compile)
+  (load-extension "scwm-overlay-plane" "scwm_init_overlay_plane"))

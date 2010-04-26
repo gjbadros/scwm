@@ -26,4 +26,5 @@
             set-background-image!
             reset-background!))
 
-(load-extension "scwm-background" "scwm_init_background")
+(eval-when (eval load compile)
+  (load-extension "scwm-background" "scwm_init_background"))

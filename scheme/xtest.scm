@@ -23,4 +23,5 @@
 	   xtest-fake-motion-event
 	   xtest-fake-relative-motion-event))
 
-(load-extension "scwm-xtest" "init_scwmxtest")
+(eval-when (eval load compile)
+  (load-extension "scwm-xtest" "init_scwmxtest"))

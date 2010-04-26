@@ -26,4 +26,5 @@
 	    xlib-set-line-attributes!
 	    xlib-set-fill-style!))
 
-(load-extension "scwm-xlib-drawing" "init_drawing")
+(eval-when (eval load compile)
+  (load-extension "scwm-xlib-drawing" "init_drawing"))

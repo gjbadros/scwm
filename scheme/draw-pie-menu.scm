@@ -21,4 +21,5 @@
 	  circle-pie-menu-look
 	  shaped-pie-menu-look))
 
-(load-extension "scwm-draw-pie-menu" "init_draw_pie_menu")
+(eval-when (eval load compile)
+  (load-extension "scwm-draw-pie-menu" "init_draw_pie_menu"))
