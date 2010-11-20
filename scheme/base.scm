@@ -22,6 +22,7 @@
 (define-module (app scwm base)
   :use-module (ice-9 string-fun)
   :use-module (app scwm optargs)
+  :use-module (app scwm minimal)
   :use-module (app scwm defoption)
   :export (hash-table->alist
            add-hook-once!
@@ -353,7 +354,7 @@ If BG is #f, use the default menu background"
 ;;(define*-public (set-window-background! bg #:optional (w (get-window)))
 ;;  (set-window-colors! #f bg w))
 
-(define*-public (set-highlight-colors! #:optional (bg #f) (fg #f))
+(define*-public (set-highlight-colors! #:optional (bg #f) (fg #f) (win (get-window)))
   "Set the highlight window's background color to BG, foreground color to FG.
 The \"highlight window\" is the window with the current input focus."
   (if bg (set-highlight-background! bg win))
