@@ -65,7 +65,7 @@ See also `fvwm-exec-use-shell'."
       (while #t
 	     (let ((form (read read-pipe)))
 	       (if (eof-object? form)
-		   (break #f)
+		   (break)
 		   (eval form (current-module)))))
       (close-port read-pipe)
       *unspecified*))))
