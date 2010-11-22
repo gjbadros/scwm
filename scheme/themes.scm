@@ -22,7 +22,6 @@
 (define-module (app scwm themes)
   :use-module (app scwm style-options)
   :use-module (app scwm style)
-  :use-module (app scwm sort)  ;; GJB:FIXME:G1.3.2: not needed in guile-1.3.2
   :use-module (app scwm defoption)
   :use-module (app scwm optargs)
   :use-module (app scwm file)

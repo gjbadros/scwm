@@ -30,7 +30,6 @@
   :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
   :use-module (app scwm window-selection)
-  ;;:use-module (app scwm sort)
   :export (toggle-maximize-vertical toggle-maximize-horizontal))
 
 
