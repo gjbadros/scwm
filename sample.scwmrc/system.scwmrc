@@ -38,7 +38,7 @@
     (begin
       (add-hook! module-loaded-hook display-module-loaded)
       (set! %load-verbosely #t)
-      (debug-enable 'debug 'backtrace)
+      (debug-enable 'backtrace)
       (read-enable 'positions)))
 
 (define-public (load-user-file filename)
