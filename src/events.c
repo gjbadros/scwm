@@ -734,7 +734,7 @@ HandleScwmExec()
                              &req)==Success) {
         SCM val, str_val;
         unsigned char *ret, *output, *error;
-        int rlen, olen, elen;
+        size_t rlen, olen, elen;
         SCM o_port, e_port;
         SCM saved_def_e_port;
         

@@ -38,9 +38,9 @@ typedef struct MenuItem_tag
 {
   SCM self;                     /* pointer back to the scheme object */
   char *szLabel;		/* main label of the item */
-  int cchLabel;
+  size_t cchLabel;
   char *szExtra;		/* extra information to display */
-  int cchExtra;
+  size_t cchExtra;
   SCM scmImgAbove;		/* Pixmap to show  above label*/
   SCM scmImgLeft;		/* Pixmap to show to left of label */
   SCM scmAction;		/* action to perform */
@@ -50,7 +50,7 @@ typedef struct MenuItem_tag
   SCM scmFGColor;		/* foreground/text color */
   SCM scmFont;  		/* font */
   char *pchHotkeyPreferences;	/* ordered list of hotkeys */
-  int cchHotkeyPreferences;	/* number of hotkeys selected */
+  size_t cchHotkeyPreferences;	/* number of hotkeys selected */
   Bool fIsSeparator;		/* Is this a separator? */
 				/* This gets set true in make_menuitem,
 				   iff everything is empty strings

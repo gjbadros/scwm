@@ -122,7 +122,8 @@ how the new VALUE should be merged (if at all) with the existing\n\
 value.")
 #define FUNC_NAME s_X_property_set_x
 {
-  int fmt, len, mode;
+  int fmt, mode;
+  size_t len;
   void *val;
   Atom aprop, atype;
   Window w;
