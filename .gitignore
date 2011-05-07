@@ -20,3 +20,4 @@ scwm.spec
 *.o
 elisp-comp
 depcomp
+autom4te.cache
