@@ -461,7 +461,7 @@ SCM_DEFINE(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
 "Return the <envar>$PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_prefix
 {
-  return scm_from_locale_string(SCWM_PREFIX);
+  return scm_from_latin1_string(SCWM_PREFIX);
 }
 #undef FUNC_NAME
 
@@ -471,7 +471,7 @@ SCM_DEFINE(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 "Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_exec_prefix
 {
-  return scm_from_locale_string(SCWM_PREFIX);
+  return scm_from_latin1_string(SCWM_PREFIX);
 }
 #undef FUNC_NAME
 

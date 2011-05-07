@@ -176,7 +176,7 @@ decor2scm(ScwmDecor * fl)
   fl->shadow_factor = 0.5;
 
   set_highlight_foreground_x(BLACK_COLOR);
-  set_highlight_background_x(scm_from_locale_string("grey"));
+  set_highlight_background_x(scm_from_latin1_string("grey"));
   set_title_font_x(str_fixed);
   set_current_decor_x(tmpd);
 

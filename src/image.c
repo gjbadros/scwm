@@ -581,7 +581,7 @@ SCM_DEFINE(window_to_image,"window->image", 1, 4, 0,
   { /* scope */
     ImlibImage *pimg = Imlib_create_image_from_drawable(imlib_data,
                                                         w, None, x, y, wd, ht);
-    SCM result = make_empty_image(scm_from_locale_string("by window->image"));
+    SCM result = make_empty_image(scm_from_latin1_string("by window->image"));
     scwm_image *ci = IMAGE(result);
     if (!MakeScwmImageFromImlibImage(ci,pimg)) {
       scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmaps from window");
@@ -606,7 +606,7 @@ SCM_DEFINE (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
   { /* scope */
     ImlibImage *pimgSource = IMAGE(image)->im;
     ImlibImage *pimgNew = Imlib_clone_scaled_image(imlib_data,pimgSource,w,h);
-    SCM result = make_empty_image(scm_from_locale_string("by window->image"));
+    SCM result = make_empty_image(scm_from_latin1_string("by window->image"));
     scwm_image *ci = IMAGE(result);
     if (!MakeScwmImageFromImlibImage(ci,pimgNew)) {
       scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmap");
@@ -653,10 +653,10 @@ void init_image()
 #endif
 
   /* Save a convenient Scheme "default" string */
-  scm_permanent_object(str_default=scm_from_locale_string("default"));
+  scm_permanent_object(str_default=scm_from_latin1_string("default"));
 
   /* Do the same for "" */
-  scm_permanent_object(str_empty=scm_from_locale_string(""));
+  scm_permanent_object(str_empty=scm_from_latin1_string(""));
 
   /* Include registration of procedures and other things. */
 # include "image.x"
@@ -692,7 +692,7 @@ void init_image()
     }
 
     register_image_loader (str_empty, val_load_imlib_image);
-    register_image_loader (scm_from_locale_string("default"), val_load_imlib_image);
+    register_image_loader (scm_from_latin1_string("default"), val_load_imlib_image);
   }
 #else /* !USE_IMLIB */  
 
@@ -707,12 +707,12 @@ consider 'rm *.x' and rebuild");
   }
 
   register_image_loader (str_empty, val_load_xbm);
-  register_image_loader (scm_from_locale_string(".icon"), val_load_xbm);
-  register_image_loader (scm_from_locale_string(".bitmap"), val_load_xbm);
-  register_image_loader (scm_from_locale_string(".xbm"), val_load_xbm);
+  register_image_loader (scm_from_latin1_string(".icon"), val_load_xbm);
+  register_image_loader (scm_from_latin1_string(".bitmap"), val_load_xbm);
+  register_image_loader (scm_from_latin1_string(".xbm"), val_load_xbm);
   if (!UNSET_SCM(val_load_xpm)) {
-    register_image_loader (scm_from_locale_string(".xpm"), val_load_xpm);
-    register_image_loader (scm_from_locale_string(".xpm.gz"), val_load_xpm);
+    register_image_loader (scm_from_latin1_string(".xpm"), val_load_xpm);
+    register_image_loader (scm_from_latin1_string(".xpm.gz"), val_load_xpm);
     register_image_loader (str_default, val_load_xbm);
   }
 #endif /* USE_IMLIB */

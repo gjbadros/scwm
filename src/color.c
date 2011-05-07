@@ -969,8 +969,8 @@ init_color()
   protected_colors = scm_make_vector (scm_from_int(4), SCM_BOOL_F);
   scm_gc_protect_object(protected_colors);
 
-  scm_gc_protect_object(str_black=scm_from_locale_string("black"));
-  scm_gc_protect_object(str_white=scm_from_locale_string("white"));
+  scm_gc_protect_object(str_black=scm_from_latin1_string("black"));
+  scm_gc_protect_object(str_white=scm_from_latin1_string("white"));
 
 #include "color.x"
 }

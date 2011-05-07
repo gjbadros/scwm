@@ -237,7 +237,7 @@ SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
     return SCM_BOOL_F;
 
   if (scm_is_false(scm_hook_p(hook))) {
-    scwm_error_message(scm_from_locale_string("Bad hook: ~S, args = ~S\n"), 
+    scwm_error_message(scm_from_latin1_string("Bad hook: ~S, args = ~S\n"), 
                        scm_list_n(hook,args,SCM_UNDEFINED));
     return SCM_UNSPECIFIED;
   }
@@ -331,7 +331,7 @@ static SCM
 scwm_body_load (void *body_data)
 {
   SCM filename = *(SCM *) body_data;
-  SCM port = scm_open_file (filename, scm_from_locale_string("r"));
+  SCM port = scm_open_file (filename, scm_from_latin1_string("r"));
   return scwm_catching_load_from_port (port);
 }
 

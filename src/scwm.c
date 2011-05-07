@@ -777,7 +777,7 @@ scwm_main(void * closure, int argc, char **argv)
 
 #ifdef I18N
   /* setlocale in guile */
-  scm_setlocale( scm_variable_ref(scm_c_lookup("LC_CTYPE")), scm_from_locale_string("") ); 
+  scm_setlocale( scm_variable_ref(scm_c_lookup("LC_CTYPE")), scm_from_latin1_string("") ); 
   /* setlocale in X (system native locale or X_LOCALE) */
   if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
     scwm_msg(WARN,"main","Can't set specified locale.\n");
