@@ -167,7 +167,7 @@ The list elements are of the form '(module . procedure)"
   (let ((match (make-regexp rgx))
 	(modules (cons (current-module)
 		       (module-uses (current-module))))
-	(recorded (make-vector 61 '()))
+	(recorded (make-hash-table 61))
 	(vars (cons '() '())))
     (let ((last vars))
       (for-each

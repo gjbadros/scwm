@@ -121,8 +121,8 @@ These options are cumulative for repeated calls to
 			 (gravity . center) (offset . (0 0)) 
 			 (proportional-offset . (0.5 0.5))))
 
-(define msgwin-option-table (make-vector 3 #f))
-(define msgwin-placer-table (make-vector 3 #f))
+(define msgwin-option-table (make-hash-table 3))
+(define msgwin-placer-table (make-hash-table 3))
 
 
 (define (msgwin-action-options action)
@@ -185,8 +185,8 @@ These options are cumulative for repeated calls to
 		move-message-new-position-hook)
   (remove-hook! interactive-move-finish-hook move-message-finish-hook))
 
-(define msgwin-enabler-table (make-vector 3))
-(define msgwin-disabler-table (make-vector 3))
+(define msgwin-enabler-table (make-hash-table 3))
+(define msgwin-disabler-table (make-hash-table 3))
 
 (hashq-set! msgwin-enabler-table 'interactive-move enable-move-msgwin)
 (hashq-set! msgwin-disabler-table 'interactive-move disable-move-msgwin)
