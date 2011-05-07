@@ -626,7 +626,7 @@ make_window(ScwmWindow * win)
   /* MS:FIXME:: 
      Warning, arbitrary constant, we really need growable hash
      tables. */
-  win->other_properties = scm_make_vector(scm_from_int(5), SCM_EOL);
+  win->other_properties = scm_c_make_hash_table(5);
   scm_gc_protect_object(answer);
 
   SET_VALIDWIN_FLAG(answer, True);

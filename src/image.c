@@ -668,7 +668,7 @@ void init_image()
 
   /* Initialize the loader hash table. */
   image_loader_hash_table = 
-    scm_make_vector (scm_from_int(IMAGE_LOADER_HASH_SIZE), SCM_EOL);
+    scm_c_make_hash_table(IMAGE_LOADER_HASH_SIZE);
   scm_permanent_object(image_loader_hash_table);
 
   /* Register the standard loaders. */

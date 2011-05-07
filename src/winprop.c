@@ -156,7 +156,7 @@ void
 init_winprop()
 {
   property_handler_hash_table = 
-    scm_make_vector (scm_from_int(HANDLER_TABLE_SIZE), SCM_EOL);
+    scm_c_make_hash_table(HANDLER_TABLE_SIZE);
 
   scm_permanent_object(property_handler_hash_table);
 
