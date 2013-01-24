@@ -115,22 +115,6 @@ scwm_body_apply (void *body_data)
    catch-like constructs to be used; this may have negative, perhaps
    even significantly so, performance implications. */
 
-struct cwssdr_data
-{
-  SCM tag;
-  scm_t_catch_body body;
-  void *data;
-  scm_t_catch_handler handler;
-};
-
-static SCM
-cwssdr_body (void *data)
-{
-  struct cwssdr_data *d = (struct cwssdr_data *) data;
-  return scm_internal_stack_catch (d->tag, d->body, d->data, d->handler, 
-				  NULL);
-}
-
 #ifdef SCWM_DEBUG_SAFE_APPLY
 char *SzNameOfProcedureNew(SCM proc)
 {
