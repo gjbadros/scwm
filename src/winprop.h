@@ -55,6 +55,6 @@ typedef struct {
 void signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val);
 
 void set_property_handler(SCM prop, scwm_property_handler *handler);
-
+#define INIT_PROPERTY_HANDLER(setter, getter) { &setter, &getter }
 
 #endif /* WINPROP_H */

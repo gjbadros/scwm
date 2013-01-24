@@ -4362,9 +4362,6 @@ void
 init_window()
 {
 #include "window.x"
-
-  set_property_handler (sym_sticky, &sticky_handler);
-  set_property_handler (sym_squashed_titlebar, &squashed_titlebar_handler);
 }
 
 

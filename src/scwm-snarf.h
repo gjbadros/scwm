@@ -65,15 +65,13 @@ scm_c_define_gsubr (s_ ## FNAME, REQ, OPT, VAR, \
 SCM_SNARF_DOCS(primitive, FNAME, PRIMNAME, ARGLIST, REQ, OPT, VAR, DOCSTRING)
 #endif
 
-#ifndef SCM_MAGIC_SNARFER
 #define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
-static scwm_property_handler var = { &setter, &getter }
-#else
-#define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
+SCM_SNARF_HERE(\
+static scwm_property_handler var = INIT_PROPERTY_HANDLER(setter, getter) \
+)\
 SCM_SNARF_INIT(\
-set_property_handler (sym, &var)\
+set_property_handler(sym, &var)\
 )
-#endif
 
 
 #define SCWM_SYMBOL(cname,scheme_name) SCM_SYMBOL(cname,scheme_name)
