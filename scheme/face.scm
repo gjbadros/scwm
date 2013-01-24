@@ -268,7 +268,7 @@ These extra keyword arguments can either be included
 in the main argument list, or lists of these arguments can be used
 as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
   (if mwm
-      (set-button-mwm-flag! mwm))
+      (set-button-mwm-flag! button mwm))
   (act-on-face-specs (lambda args
 		       (apply set-button-face! button args))
 		     parse-button-face-specs parse-button-face-flags 
