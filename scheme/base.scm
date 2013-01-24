@@ -27,7 +27,7 @@
   :export (hash-table->alist
            add-hook-once!
            append-hook-once!
-           round/
+           scwm-round/
            half
            sleep-ms
            maybe-make-color
@@ -98,7 +98,7 @@
   (if (not (memq proc (hook->list hook)))
       (append-hook! hook proc)))
 
-(define (round/ x y)
+(define (scwm-round/ x y)
   "Return the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
 
@@ -190,19 +190,19 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
 ;; Convenience procedures for specifying positions and sizes.
 (define (%x x)
   "Return the number of pixels that is X percent of the display width."
-  (round/ (* x display-width) 100))
+  (scwm-round/ (* x display-width) 100))
 
 (define (%y y)
   "Return the number of pixels that is Y percent of the display height."
-  (round/ (* y display-height) 100))
+  (scwm-round/ (* y display-height) 100))
 
 (define (pix->%x pix)
   "Return the percent of the display width that PIX is."
-  (round/ (* pix 100) display-width))
+  (scwm-round/ (* pix 100) display-width))
 
 (define (pix->%y pix)
   "Return the percent of the display height that PIX is."
-  (round/ (* pix 100) display-height))
+  (scwm-round/ (* pix 100) display-height))
 
 (define (x- x)
   "Return the viewport pixel coordinate X pixels left of the right display edge."
@@ -278,19 +278,19 @@ If Y is #f, just return #f."
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
-  (round/ (* (- 100 x) display-width) 100))
+  (scwm-round/ (* (- 100 x) display-width) 100))
 
 (define-public (%y- y)
   "Return the pixel coordinate Y percent of the height away from the bottom edge."
-  (round/ (* (- 100 y) display-height) 100))
+  (scwm-round/ (* (- 100 y) display-height) 100))
 
 (define*-public (w%x x #:optional (w (get-window)))
   "Return a pixel width X percent of the width of window W."
-  (round/ (* x (car (window-frame-size w))) 100))
+  (scwm-round/ (* x (car (window-frame-size w))) 100))
 
 (define*-public (w%y y #:optional (w (get-window)))
   "Return a pixel height Y percent of the height of window W."
-  (round/ (* y (cadr (window-frame-size w))) 100))
+  (scwm-round/ (* y (cadr (window-frame-size w))) 100))
 
 ;; (string-contains-slash? "foo/bar")
 ;; (string-contains-slash? "bar")
@@ -357,8 +357,8 @@ If BG is #f, use the default menu background"
 (define*-public (set-highlight-colors! #:optional (bg #f) (fg #f) (win (get-window)))
   "Set the highlight window's background color to BG, foreground color to FG.
 The \"highlight window\" is the window with the current input focus."
-  (if bg (set-highlight-background! bg win))
-  (if fg (set-highlight-foreground! fg win)))
+  (if bg (set-highlight-background! bg))
+  (if fg (set-highlight-foreground! fg)))
 
 (define*-public (set-window-colors! #:optional (bg #f) (fg #f) (win (get-window)))
   "Set WIN's background color to BG, foreground color to FG."
@@ -777,7 +777,7 @@ dimension to a number of pixels."
 
 (define-public (unset-message-window-position!)
   "Move the message window back to the default screen-center position."
-  (apply set-message-window-position!
+  (apply message-window-set-position!
 	 (append (map (lambda (x) (/ x 2)) (display-size)) (list -.5 -.5))))
 
 (define-public (scwm-is-constraint-enabled?)
@@ -844,7 +844,7 @@ Returns the child-pid, or #f if the fork fails."
 		   (execl "/bin/sh" "sh" "-c" command))
 		 (lambda args #f))
 	  ;; If we return from the exec for any reason, it means it failed.
-	  (quit 1))
+	  (quit))
 	
 	;; Okay, we're the parent process.  Return the child pid, in
 	;; case we want to wait for it at some point in the future.

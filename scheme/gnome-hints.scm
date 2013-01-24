@@ -172,7 +172,7 @@
 (define (gnome-set-area! x y)
   (X-property-set! 'root-window _WIN_AREA
                    (list->vector
-                    (map (lambda (vp ds) (round/ vp ds))
+                    (map (lambda (vp ds) (scwm-round/ vp ds))
                          (list x y) (display-size)))
                    "CARDINAL" 32))
 

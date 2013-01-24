@@ -95,9 +95,9 @@ the position that `move-window-to-viewport' would move the window to."
     ;; SRL:FIXME:: Can't we avoid unnecessarily changing the windows
     ;;   position relative to the viewport?
     (list (+ (* xx display-width)
-	     (modulo (car pos) (- display-width (round/ width 2))))
+	     (modulo (car pos) (- display-width (scwm-round/ width 2))))
 	  (+ (* yy display-height)
-	     (modulo (cadr pos) (- display-height (round/ height 2)))))))
+	     (modulo (cadr pos) (- display-height (scwm-round/ height 2)))))))
 
 ;; GJB:FIXME:: rename to move-window-to-aligned-viewport
 (define*-public (move-window-to-viewport xx yy #:optional (win (get-window)))

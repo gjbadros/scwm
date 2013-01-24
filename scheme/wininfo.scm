@@ -154,7 +154,7 @@ if it were on top (unobscured)."
 (define-public (window-center-position win)
   "Return the virtual coordinates of the center of WIN as a list of the X and Y coordinate."
   (map (lambda (wp ws) 
-	 (+ wp (round/ ws 2)))
+	 (+ wp (scwm-round/ ws 2)))
        (window-position win)
        (window-frame-size win)))
 

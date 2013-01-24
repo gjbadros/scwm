@@ -34,7 +34,7 @@
                         (eval menu-font-property (current-module))
                         menu-font-property))
 	 (menu-font-height (assoc-ref (font-properties menu-font) 'height)))
-    (round/ (cadr (display-size)) (+ 7 menu-font-height))))
+    (scwm-round/ (cadr (display-size)) (+ 7 menu-font-height))))
 
 (define-public (sorted-by-car-string l)
   "Sort the elements of list L based on the string value of their `car'.

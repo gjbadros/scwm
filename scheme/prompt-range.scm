@@ -77,7 +77,7 @@ See also `prompt-range'."
   (let* ((hbox (gtk-hbox-new #f 5))
 	 (label (gtk-label-new prompt))
 	 (delta (- (cdr range) (car range)))
-	 (page-inc (round/ delta 10))
+	 (page-inc (scwm-round/ delta 10))
 	 ;; gtk-adjustment-new value lower upper step-inc page-inc page-size
 	 (adjustment (gtk-adjustment-new (or initval (car range))
 					 (car range) (cdr range)

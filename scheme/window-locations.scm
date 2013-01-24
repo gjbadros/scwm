@@ -5,7 +5,7 @@
   :use-module (app scwm base))
 
 (define (half n)
-  (round/ n 2))
+  (scwm-round/ n 2))
 
 (define-public (pair-virtual->viewport pt)
   "Convert a pair point from virtual to viewport coordinates.
