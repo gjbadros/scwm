@@ -7,7 +7,23 @@
 ;;;; (these can get overridden later, of course)
 
 (define-module (app scwm minimal)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :export (guile-version
+	   *scwm-modules*
+	   with-grabbed-server
+	   append-hook!
+	   module-loaded-hook
+	   display-module-loaded
+	   scwm-module-loaded?
+	   eval-after-load
+	   resize-or-raise
+	   move-or-raise
+	   ;;scwm-quit
+	   process-use-scwm-modules
+	   standard-place-window
+	   hack-interactive-move
+	   hack-interactive-resize
+	   use-scwm-modules))
 
 (define guile-version (+ (string->number (major-version)) 
 			 (/ (string->number (minor-version)) 10)))
@@ -217,21 +233,3 @@ then `random-place-window', and finally `interactive-place-window'."
 ;; Use the above as the default placement procedure
 (set! default-placement-proc standard-place-window)
 (set! default-transient-placement-proc null-place-window)
-
-(export
- guile-version
- *scwm-modules*
- append-hook!
- module-loaded-hook
- display-module-loaded
- scwm-module-loaded?
- eval-after-load
- resize-or-raise
- move-or-raise
- ;;scwm-quit
- process-use-scwm-modules
- standard-place-window
- hack-interactive-move
- hack-interactive-resize
- use-scwm-modules)
-
