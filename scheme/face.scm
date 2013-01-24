@@ -21,13 +21,12 @@
 (define-module (app scwm face)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
-  :use-module (app scwm optargs))
-
-(export title-style
-        set-left-button-face!
-        set-right-button-face!
-        button-style
-        border-style)
+  :use-module (app scwm optargs)
+  :export (title-style
+	   set-left-button-face!
+	   set-right-button-face!
+	   button-style
+	   border-style))
 
 (define-scwm-group face "Decorations")
 
