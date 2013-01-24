@@ -21,6 +21,7 @@
 ;;;   -> changing auto-orientation
 
 (define-module (app scwm ui-constraints)
+  :use-module (srfi srfi-1)
   :use-module (app scwm base)
   :use-module (app scwm hooks)
   :use-module (app scwm constraint-animation)

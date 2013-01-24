@@ -18,6 +18,7 @@
 ;;;;
 
 (define-module (app scwm group)
+  :use-module (srfi srfi-1)
   :use-module (app scwm winops)
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs)

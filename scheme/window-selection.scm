@@ -8,6 +8,7 @@
 
 
 (define-module (app scwm window-selection)
+  :use-module (srfi srfi-1)
   :use-module (app scwm base)
   :use-module (app scwm hooks)
   :use-module (app scwm wininfo)
