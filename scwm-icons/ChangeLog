@@ -1,0 +1,29 @@
+Mon Aug 30 15:11:34 1999    <gjb@cs.washington.edu>
+
+	* icons/Makefile.am (EXTRA_DIST): Use $(scwm_pixmaps_DATA) instead
+ 	of duplicating the wildcard.
+
+	* scwm-icons.spec.in: Use prefix = /usr, and %files
+	%prefix/share/scwm/pixmaps/*
+
+	* configure.in: Use datadir/scwm/pixmaps, not
+	prefix/scwm/pixmaps.  Make --prefix=/usr work so that the prefix
+	is the same for scwm and scwm-icons.
+	
+Mon Aug 30 13:01:52 1999    <gjb@cs.washington.edu>
+
+	* scwm-icons.spec.in: Bump to version 2, use files from
+	scwm/pixmaps/*, not pixmaps/scwm/*
+
+	* configure.in: Install to $prefix/scwm/pixmaps, not
+	$prefix/pixmaps/scwm.
+
+Thu Aug 26 12:25:36 1999    <gjb@cs.washington.edu>
+
+	* configure.in: Added startup directory.  Use scwm_pixmapsdir as
+	the install directory name.  Create .spec file from .spec.in.
+
+Thu Aug 26 10:29:25 1999    <gjb@cs.washington.edu>
+
+	* Use automake, added startup/*.xpm images.
+

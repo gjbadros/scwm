@@ -1,0 +1,118 @@
+# $Id: configure.in,v 1.5 1999/08/30 22:12:56 gjb Exp $
+# configure.in
+# Autoconf script for scwm-icons package
+# (C) 1998, 1999 Greg J. Badros and Maciej Stachowiak
+
+#-------------------------------------------------------------------
+#
+# Process this file with autoconf to produce a configure script.
+#
+#-------------------------------------------------------------------
+
+AC_INIT(startup/scwm-logo-0.xpm)
+AC_PREREQ(2.4)
+
+dnl ## Initialize automake ##
+AM_INIT_AUTOMAKE(scwm-icons, 0.99.2)
+AM_MAINTAINER_MODE
+
+
+#-------------------------------------------------------------------
+#
+# Remove the ./config.cache file and rerun configure if
+# the cache file belong to a different architecture
+#
+#-------------------------------------------------------------------
+
+AC_CHECK_PROG(UNAME_A, uname -a, [uname -a], "")
+if test "$UNAME_A" = ""; then
+    AC_CHECK_PROG(UNAME_A, uname, [uname], "")
+fi
+
+if test "$UNAME_A" != ""; then
+    uname=`$UNAME_A`
+    AC_MSG_CHECKING('checking cached value of \$uname')
+    AC_CACHE_VAL(ac_cv_prog_uname, [nocached=1 ac_cv_prog_uname=`$UNAME_A`])
+    if test "$nocached" = "1"; then
+        AC_MSG_RESULT(no)
+    else
+        AC_MSG_RESULT(yes)
+    fi
+
+    if test "$uname" != "$ac_cv_prog_uname"; then
+        echo "Running on a different architecture. Can't use cached values"
+        echo "Removing config.cache and running configure again"
+        rm -f config.cache
+        exec $CMDLINE
+    fi
+fi
+
+
+#-------------------------------------------------------------------
+#
+# Checks for programs.
+#
+#-------------------------------------------------------------------
+
+AC_CHECK_PROG(RM, rm, rm -f, rm -f)
+
+#-------------------------------------------------------------------
+#
+# Checks for standard programs.
+#
+#-------------------------------------------------------------------
+
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+
+#===================================================================
+
+
+#-------------------------------------------------------------------
+# 
+# Check for X11
+#
+#-------------------------------------------------------------------
+
+AC_PATH_X
+
+
+#-------------------------------------------------------------------
+#
+# Hard coded scwm config stuff
+#
+#-------------------------------------------------------------------
+
+dnl These defines really should be going into config.h, rather than
+dnl being passed by the makefile.
+
+scwm_name="scwm"
+
+
+scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
+scwm_pixmapsdir="\${datadir}/scwm/pixmaps"
+
+
+#-------------------------------------------------------------------
+#
+# export variables
+#
+#-------------------------------------------------------------------
+
+AC_SUBST(scwm_icons)
+AC_SUBST(scwm_name)
+AC_SUBST(scwm_pixmapsdir)
+
+#-------------------------------------------------------------------
+#
+# Output makefiles.
+#
+#-------------------------------------------------------------------
+
+AC_OUTPUT(Makefile \
+          icons/Makefile \
+          mini-icons/Makefile \
+	  startup/Makefile \
+	  scwm-icons.spec \
+)

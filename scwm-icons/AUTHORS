@@ -1,0 +1,20 @@
+Primary Authors of Scwm
+=======================
+
+Greg J. Badros, gjb@cs.washington.edu:
+Maciej Stachowiak, mstachow@alum.mit.edu:
+
+Greg and Maciej have worked together on Scwm since Maciej first
+converted fvwm2 to use Guile/Scheme as its configuration language in
+September of 1997.  Together, they've written, debugged, maintained,
+and packaged Scwm over the last two years.  But they could not have done 
+it without the support of many, many other folks!
+
+
+
+scwm-icons distribution includes icons from
+
+fvwm2 package
+Greg J. Badros
+and lots of other places.
+

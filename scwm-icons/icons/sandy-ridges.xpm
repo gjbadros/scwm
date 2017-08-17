@@ -1,0 +1,853 @@
+/* XPM */
+static char *sandy-ridges[] = {
+/* width height num_colors chars_per_pixel */
+"   128    71       43            1",
+/* colors */
+". c #b8ac98",
+"# c #b09c88",
+"a c #a89c80",
+"b c #a89478",
+"c c #a09478",
+"d c #a08c78",
+"e c #a08c70",
+"f c #988468",
+"g c #988460",
+"h c #987860",
+"i c #907860",
+"j c #907858",
+"k c #907058",
+"l c #887050",
+"m c #886850",
+"n c #886848",
+"o c #806848",
+"p c #806048",
+"q c #806040",
+"r c #785838",
+"s c #705838",
+"t c #705038",
+"u c #685030",
+"v c #684830",
+"w c #604830",
+"x c #584028",
+"y c #504028",
+"z c #503828",
+"A c #483820",
+"B c #483020",
+"C c #403020",
+"D c #382818",
+"E c #302818",
+"F c #302018",
+"G c #282010",
+"H c #281810",
+"I c #201810",
+"J c #181008",
+"K c #101008",
+"L c #100808",
+"M c #080800",
+"N c #080000",
+"O c #000000",
+/* pixels */
+"zACIHuCFqwurAxDIDJKAzwCArvztzEDFFDHHAKMJJFLLJMLOGOOLKBGIMIOJJLOJIJNIILIDMLLOHJFCICAKLOGIOLGMIDGGIMKMJLLOOJNNOMOLEOONGwzOIzFJLCGL",
+"JJIGxvwyxwADzDDJBDCwwDwxrBGBDEGIAINFLOMLHNMJODLOJIIIIEIMOJNJMCNOJIIIOOMIIIFCIFFCJIIONDLJOFAGFGFFOJGODILMMLNOKIOMLJGFDzODFKGKDuEG",
+"NEFxvxCFzCGvzCDGzFBwCxxzxJzwCGJDDJGMLFLCGJBLFGJIOMJOOOMLBOOMIOGFFMJOOJDAFDzLIGHFLGJOGJIHJwJMIGENOzODLLLHLOFOIJGJOMHLIJJJLDFCyGOO",
+"LBGrCBzzyxwqwDFEzEzBuCBCABtIGOHILOLODNFFOJMMMIJJIHOJLOKJLILLJMLIGOHKGFFDFGJMLHGIMHLIOEFDGHOCGzJJCHJGJKKJLONIOFLLIGNOLGJJIxHBJIIK",
+"FzBpCqCxyrzlLGLEJCFmDHGzxBMJIOJKINGJDLBNGJGOJIDGGOMOJOJJNONJLMIDLOJKDOCFEMGJzEAIDJFJDzAIJIzDHDJBMIOOKLGILOJMLKDGFMOICEzIACDyHCKO",
+"zDvuBDCBtyxxLKJDACzwNFAtDIJzONOAIDJHJFJGCIONFIOOLJJOMJOEMKMIJGGDOJOMDzABKGJMACDJLJJMuBGOFDFMDGHIOLNOMLOJGLMLHJOOJNDHDzCLyFzJILLM",
+"wBuxGxwruBwCJLCAFExwIAuxGFDHOLCGKOMGDGDCJOMDGMOLLIMOJMDGMLILJLJJMJNHxFGLKFOJtCLOGGLLzGOMFJOMFKIMMJKMJMIGMMOFGMNNIDFFyDMJxEIFIFGE",
+"yyrxxspyxwwIIvuBzuqxIttAGDCCOCFFKFAuFxzGIGEILLNIDOOOKIOJJJJNNMMJMJOGEJNFIMOGGJJNNOLJzONLINMJJIKKNLHBMDCJJGDGJJJEzIIEGIztvEvDDEDD",
+"owwzAqwxqzxDICFGDBxFCtCEEzxNOFGJKDxEDAKIJLOMNOOOIEJOOFJIOOIJGKLJJLJDCMIILMNMIOKIIJLCGNKJMIFLLJLONJELJEOJJKMJOJJKONJDBquGzAIHJFDD",
+"wGwzuqtwzDCMIDFFwuuBxxyDBCONIFJJEwDDIIIJOOOONJLOOOGGJJCJKzMJMILMMAIDJOMNMKOzJOLJOOOINOOOKIJJLIOOKCKJNLKJOOJLLDMIIFvtuvLuvODFDtCu",
+"DwvutqDzBFKECzDwwxyAzxFFDOGGFIGDxIDJFEJMLLJMINMMOMJOOIMNxLOOMLHLEJJJLOEMNLHOOLLMNMLJMMLOLLJIILLJDOJOJHJLIIFHCJJDDBxzBGwxMDAAxCFy",
+"wCutuBwuCIxDzzBswxxzxAFzMBELKIIzOCFDGLJINOOOILHKOOMMJMOFJMOOJLLLMELMNIOJOJINJMOIOOOLNOOGMDGMMKMEIILIJMJGNJJJOJxBDCzCFxzJwDzCFBtx",
+"zwhrvktxFBxAzDwwFBwxxHCLGGMLGJAODzDFJFELOIJLNAILONONLGOHLLLNOHKMILINOFJLOKHJKNLOGKOOLLKNJIONIOFJJFIJLGDOJBDDErzIDADzxrAtDFxxzqAx",
+"wpkuqzCDIABEECADAkwAIGGDHDHDKCIBuwDDIENNALONMLMOIOFIJHILOOILOMOOMLIOHOOOMJJONONILFMOJOMIJDIFOGNHBCJIJDKJuDGIDCHDwDruwtvFCBtDxzwt",
+"rrrvCAxFABCDDDwxqxCDBAxFxDFJDCzyyHGIIFMDOJLHJBJFKGDJKFIOOOMOOGJOMLKLMMIOJJLOOMMOIOMNLICIAEILIIFFFNLKIDIxHLCxArzuzurxxrICBBCxwlqw",
+"wwtCxvECFCCDyqwtwtuwxxFAFHGCCACzECBFDHFKMFzMDIKGIKINKOMIOMCLIHMLOOJOJFOLOLMOMGMJNJIHGDJDIIJFIGJGKIEHCEBDDwqCtxzvwzwFyCAuCCiuolxr",
+"xsxytFDCBAxuoCwxwwzCAKCHHBBFDDxCDAGGIDJIJFNJLGHJLKOKGCHMJDOOIOMOOIMLDOMLLLJIELMOLKLLIOFJJDEJIJDJJEIGGADAAvFxzvwyHzFzuquDFkxxnwtw",
+"zAAsFFzCFxxuDytxxwzxIDzIABIDCAAHzBDHDHEOJOIMHDMMKKDCFJHOGLODMIOMOOMDOOJLOJLJJOJOMIJGOIDJCDMIIGGMDEFGCCxEzCwAvsBGzztrtxJAqBwfupwv",
+"CyrDGACHwxuvxuwzuxzDFCJGAGCCDyFCyFKIICLNLJOJGLLJJGGMMNJJFMCOLMNKMLDONKNLILJLOLMOIJJMLGNJDJGGIDKGCHKGDwJCzwBxuzGzywwCADwuHvcutyzD",
+"CzEFDFCwxwryxxxxtACFDJDCBDFIxGHDIKJIDMNINOOLMLIELJOLOIOJLFOOJOOOOLOOONOILLIOOOOMGLLNJOIFEGILDLLHJLIFxJDxACAxzzxtBzDzCuADtixvCwzz",
+"ECzxFrvxwswrxxzxDIFDGGFICLHzENDMFIJFKLILOLJHFGIJMOOOKLOJNLOONJKLMOJIMDILLIMJOOOKOLNJLKILFOJCIOGOFIFADCwFzwwtrtwJHDDCxwzrxzwwxtDF",
+"BxuCvxGuAxuCICHDHzzFMLMCGDyENHLGCJDILOLMFMMOMLGJIOHHJJNIMOJLLOJJOJFNHJJJMOLJFLIOMIGKNOODIGAGOILFAGzBCCFDqCwzDFLIxDwvwtwCxuqzAAFw",
+"DvyBCGuwCsADBHAwBDJLKHzCBzGKIJHDJKJONOLKLJLOJGJFLIDOIKJOMOLILNJNNGJNOJJMLJMJNINGJKOOOJCDCAGLIIFBFFDFGBDwDDwzvtxuAxrBtuCwxwzDtxvA",
+"DzDFDwwCDzDDIDzFKDDFEFGAFJLMMMNLLKKOJMNLMGIMHOLKOJOOLMNIIMMLONOLOKNLMLMKJNJJHOJOLJIIGHHAFJJJJJJGFDCFxDBBworwsBFHCxDAwBxCCxxtxxCF",
+"BzDwxzDFBwCzzDCCyxIIJMDGMJLMIOIFFJOOOOOIFONLLNOMGOOIJIIFMONOMLMLNLNJLOJIMMMOLOKIDBKJJNCEJGIIDLDzyBFCABzrlxzwxADAvDAuurCExuxxwwDG",
+"zDzuGFDwzwCvKEzzHFODMIDGIELDMODFJOJJFMIJMLFMGMLMMLCJJGyLKHKGMOILLNLIJJJLOLOGJMFDKHODOGACDzGxGIwxADxwrBrruAlwrDGAAGlvtFMyqDsnwBIz",
+"DBmFGDtzwzwBICyFEFJGOGFEGFMIIIEFOFOGJOOKLJONOGOIOGELOCMIIOwLOFMOOMBMJMINILGJOICIFEIDLCAyAxEANzwwDuCtEyxtArxxAJCwCurDzJtmCv.CzJzC",
+"CvAJFAvuzBwJLEzFCLGKNLzGDOOOKJFOJOONOOILOKOKNLGGNFOLLOOKMAOLIOLKOGLILNIHJKEONIAFBJDGLFtzwFGDBzwDzCCzyzqtxtwvCzuvBtBxCwvzxaxCGCzz",
+"IwCGDrqxDuCIIxCDOLLONyCIOLLDOLILJMNFOJGLLKOMIOHINLOIOJOOONOINNJMLHMMOCAIMCILJyBBLIGIKruzDIBtFBxAxAArxsnBttxxuBvJEyAGyCwwwvxGzAzG",
+"urCFqwxFACGMJHFONIIOIGJLOLFNLGJJJOJGOMJOJMJHGMHJFIHIOOMGJDJOMOJODCLOzFGNGGJLIFCLICCHAxBCFAuCIwzxxCwtBwDxtADsJFLItwJsxwuDriDzzDzG",
+"xxJtFCyCDCLJEEEIIJOOKJDMIJJOJKFJLNINLOLNNIIJOJGCDLJFMLOICOJIOHIIFGMCMJFIIEKICBzCCDJHCAuCxxzDyzuzAFwzDAwwwFtwAxvrrGwqCuyqfzFvDwyz",
+"zJCFIwAJJONIOIJLIMMGJDIIMNNMNJMONOHLOMOMLMCIOMOMOKHMMMJOOGJIOIIMFOILOBEMLOLDLDDLOFFxBuzxCCFBFyCFFCvzBxxwvwltDADGDHtxBvtxxIwwFzBF",
+"IEDFDALMOIJMIEJNCDIILKFNMMNJJKJJHHILNKIILOFNMKOIJKCMOGMMMNDNLCLIMJIJHDOLOFGHCxDGwwCBDCwGGGCxyAzzwwwzCwtrwxrCFyCwxxlxxoAwByrFCuED",
+"FEGJHJOIDFJFKGJJOOOIOCMOKGzAOIGHJODHJHILNICNLNMMOJELMJMMNIILDKMLIIJMJLOICCFzDzCCHIHBIuCDAvmnFxwxzDsuwstwxtkzyBAACxrDwDCCyuxCwEII",
+"GDJJGJCGDFIJGIJOIFDGFDHHDADOLDIJOBALILOLMILJIONMLDLJNOKIGDHOJOILJGLKHJAEBACDACDJCzzAxwyxtnrFIuxAErozIwxvwrwFIDBAzqxFCzwtutxGDIEI",
+"zIOGJGEIBLMFNMIJDIGEMIIIDLONJFMOGFJGOFJJMILJOIMJHJNLLJIMGIJKMLJLBJOHJFCFwFHzIGDFzDCzGCzxtzCFzvCFxwzLArutwrwECvzxuwDxxwvzvxMDHIGI",
+"MLLDOCDFJOGJOFIIGJDOMCDGJOGOLOOIGHJOHIMOJMJENOONOONMIMOJLJOJKIJJOJLDNABCFJBDKADECFzJFvuvyCuCADFxwxzCttwxtwDJCCAACBADIzCxBLGFOEIH",
+"IJCIGxJIKHJOOFJDMDLIFCMLLHOIMOJHLJOIOKJONFIEMOMLIOOHKIJMMOINOIMOJJCIFwGEGCFJLCGCJAHCxuCzGuDIFDAxAzCIADDxzGFICCDFwDDKzwzHDGCLJEJN",
+"IJFIFIDLGNNODEzLFIKLMNKNNLINMNIIMLDMJMOMHOIJNLNBOOOOJIOFIOLKKIKJIKEIDFAICJJLCCxJDFGEEGyDzxIDECxxGzNDFBxtDwDDxxAnCEDDzxFwzHFOGFII",
+"JGHHKwLLOMJGOFNMNOLNNJIOLJIGMOGHOJOJOOJKOMJNOOKJINOMIGILJOJOOHNLJGGFItIILOIDNDLOLLGFHxuBwFGJDCvLDICExxqzwxCzxAxILDGDzxADMIOIJDOJ",
+"ILIMFJINMJINJEOHHGMOOHOJEGCOOIOMMIILNLLFKIIGOOOLGLIKDJNMNIMKJLNHIKGJCGLNOHGOIDOFCAEEDsADIGLAAvCFAwICzrrDyBDFzACHxDBDwCJJGOGOEHOF",
+"MMJOLMNGHJJJIJJLNJJMOMIDMMMJOJOLJGGLJJFDOLHMJLMMLNOMJMKOIOOOIMOHMLHLIONDDIIIHIGHKMJFAwDGxyvuzwCGwJIvrqDEuxDvvxGDDGIGDLMIOIJIDNLG",
+"LJJOLLDDMJJOLIOOOLMLLLKOLOJLOMINNLMLMGFNMDLMOLLMKOLOLONNNOMLOOJIMHGJIHAAOGGOIDJJHBzvtryuruBCAzIDDExuyDDuqFAAAHIFEJGJGJJFFHELJJII",
+"LENLIGGNOGNLLOONLONLJJEJLDFLLLIJOIJOLMLOJGOLMJOLLOLLFJMOJOJIIOIKJBINDCCJJDNIGIGDGzAtzxCxxFFuCEIHAGExxwwsxCxwzJIFILIHANFFMHMOCLGL",
+"OOIOFMHLOMOMLNOHOMMJCLMOIHOOCLDLOJHDJLHLJFOLDIMIONIMJHNJLKLOJOCLLJOIzGCNLILLKEDJzvxxFuuszCuwMENxCFqfzwAwzEzEOOHFLLFIOOFLJKLJFMDO",
+"LOMJJILIHNJMOMLOLGJILJFDFFMCDLKJKMHDAHBLyHMIMLLMMJMIOONHIOJNILIJFGJCCCFOBHMJFBDAtCyxteACCDyKLEGxFxqIIAGwKDCJIFILOJOMIIEMLFMIFKJF",
+"LKMJIMNMLFILJMOLIIMGMAwIDJJDLMLLKLGELDKLJILOMMMJLKJINLOMJOMILJHIDJIAyEFFDOLIxxzzBztysEJzDzCLDDFyFwGGyDxwCrFFGOKJMJMDHJGIzGLDJMMO",
+"OOMDLIMIIILJNLIDIIDGECNKMLGJOJJNNOOMKLMMLMLJLNGMKOOINJGNNOMGJFFLDCBtCxCLLLGvxCCDzxCxACswwzGFBHxBzBytzwrsuCICOLHOMOMDJCxDDJNFMJNI",
+"IJOOOOCCKIMLGJDIJDIJFOIJGCIMJOMJOKMLILNLGGOJJOMJJOHJMJOMMGMIKFJCwHCCEFMOGICCFAFzwCxwAryzDJFyICByAwwzBxtzIKGOLOONLOFFFBGIFKLLONJO",
+"JCMLNIFOOEJJJGEJCCHHJJFLFOJNLJJJOOKMFLJGGOLONJCJMJJMNLLNIJKJDICCFMDEDJLCCJDCACDxFDzyxxCyFzuDIzzzCBDzFxCGJFMMNMFMOJIGFJDIMMMOLKON",
+"FDOOOFOJDALGJFJEJJNOOMMMNLKLOKMNJKOJDLMOLONOLDJLNLMKJJOIOOIDIDCIJKzzBJzFJMADzDyDzxrrswsyzwFGDBCCIxzDIAABGGMOJHOOOKJFOCIOMNNLJMNG",
+"FNMOFNIDDFLNJJJLLJLOMJIEOGOONOLHLMFFLMNHLNJOMJLOOIMOMJMOILIHGzFFIAwzIxFJIFytzAzxxzqtxzDIzJDEHHCMzDJIBvxJJLMNOOOMOGIIGDLLIOOLJOIH",
+"FJMIOJDDyHMGCKHJJLIMDJJLJMOLHLIMOJMLLLIGNILLJKILDJLLOONGMJGDCCCIHDCGzEJJMDtDIADCCrqxICDuFDCJODMCCGxuCCIMIMMJGOLODIIGJLJGONOMNLJD",
+"ILLOHGDxKOLINMNMLONFLMOGEIMFJOLJLMOzyJDIDJKMIxHJNNOLOJKJNIIDCDKODBCzFHJOBwADzAzvuxwGBuzILJGOLICzGzzOOGNLJMKJKCJLMKMOLGLILMJKKIBw",
+"OGOJKIBNMFOILLOOHMLGKGxFAOMDLIMMJOzALILINLOIGMONIMMJLJHMCJEAFIMCxHzDCELzAHzGCwBAHwuFCFOJODINJADHICOODIHOLIOJJOOMIJOFJJFHJJLOIEAJ",
+"JOIOOFJJFOLNCOOOMIIzIDMGLIHLGILNOOGOIJONJOODODIHDONJIOJBDIADDHFCDxrzxIDDIxwCmBDCxtFNDIBIFxMJxzCGCCJzHxEJFMNHMHJIDOLIJONIOJOJIFGJ",
+"LOMFDxDGOMOOMDLIKHzFJJEDOJFLOMLIOLIIJOFGLIOOLJLLOINONINKIMHIOMHxvzCJJOKIByCCFNFHDGMGCCILCIOCGDIKCEIHGDOMOJMMJLJMOJMOLLLLKDIFzAGO",
+"DFDCDCLOOLLHIGJILCFEIBCGODMJNNGJMCBHBGxGLIJNOHKJOLONOOOFLMLNJFxxJIJLLLDBCGGLJLIIDLGGDJJIBOHJHDMIAOOJOMGMOJJONIMJOLOOMKIOzDDBEION",
+"DHEHGEMJEHGFJIILFFJDGFDOGDLLLKCOFwJAEHDMOIKLMGMOMINMHOLIOLODJGCLJHJHIJDGMJLMIJHCHFAFDFIzJNHICJMCLJHNNMMHLJKMNILOOHLOCIJxDECKDIMD",
+"JFIHCJNDKJJOODNGDFDAJvECAJOJJxJItCABIIINDIOOMOJLIJOIIHILLNIJNAHJEJGHNFDMGIIDCLBGGDDHxOGJOIDJJIJJGOOOJLOIGJONLNHNFHLDCOyIGAIFCOIF",
+"DDGDJMBKFFMGADDzCCDDwrGDIKHCFBJxCDLJJBMGFNMLMOMJMOMOLNOFMKIHDzNzJKIKFCOFLLEJOJIKFDCCKNDJGGLNOMJJONFHIKJLIONJJNONIJHIKIDOAGIILOCO",
+"tICIHxDLANFCIBCKBCBrwDICDCHEDDJDILIzxHNCMOLOIJENGLMOOOILIILHDOIDJFKFGNLDOCJLDJHwEDDNJECJLOLOOOIOIFIMIOJIOOKLLNIIBEFIIGLHwIFILAFJ",
+"CFCJCBNLzIzFyxLBlHwzDzACzMGAFMHBICBzJOJIJJJGOLMBNMMIOONIJLJxMKxIKHJDJLxCOENGLLwDOwIFCIJLOFMKOGLNIONLJHOMIJLJKNGuJEJMDDFwIFGMCDOF",
+"zILOCKLuBJCJHJLuIJsAzCLCLODKLMGLJJLOOIMJMLDOMINGJMFMJIEAIItFJzyNLCyxIAsMJAIAAwsJvtKDHGAMFCOIBGMGHHHFECMHLNGILOFOLDOCxKONIIIJDNOx",
+"JIFyxJAwJDDHyBwrxrrCDICFOKGNIEHGILJLLJIMMMLLOLNLDNOLIxCMLCIMNDGLzACJKzJOzFDzHDILFLMDDCLKDINHLOMMKHKJDOLNKOGDGCDAtCDAJJOzDMFAzIDx",
+"xxxyFGDzzAxtywwrBzAIIAIIOFBIGHGGOJFOBGIJOIKOJIOMLIGFDANHIOJNEuDFJJJICBDIHGJMGIHKCDEzCLFIEOJOOOOODJOIGJJILCDEzJDAGIKLMOzIGzCyGOEC",
+"uBzFGBvrxurDAyzxDzDJCHHGJxJOJIFOOzNCIOJJONINJJHIMKFKJKLMIHIDzGMNLDGAzELOILOCFFFHAFDzIGIMKFMIMONIIGJIMNIOJFMCIIuIDFJFGDDCqFCGJCvt",
+"uDwJwwwwwyCJEAzBGCHFLDEDGIMDIALKCHJFMIOOINLIOHJILDLOLIMMLBJCKGGIJAGuHIIJIHDwAFFDzECFCMNOOOGJOHMMJNOILGMJzCzvBtGGwMDACGAzAJAGxAzx",
+"ADAJuEtwwFzNtzwDzGCLCxzHJIAFIDJBMIOLOIJDONLLKIBJCILIDIDOFFHAHAILCxCtIzLIJBHtOILDJDIvNJJONOFJNJOHMMNMOFNwFBFxEHOvMFCFKFJxFDCIAFxr",
+"EyDCuqrtDzDHvxzGIHIKtAFOFDFMDGGIOMLNJOKOJOLLFFJJFNCIFDILELCLIJJJxCxzINMMDIECOLJDCDFDFKOJJHJIILLEMJLLFICDHCwwJIDDIALFHJDtGzGwxvvt",
+"GyDxlwyDDzIFmzIKDDJIxELJDHMLDJJOKGINOMNLOJODDIJMFCGIDKJMFJLHIDEDvCyFOIIEFKCGHMDBIJGIIOLOIKOOHMGLMHGJJDGGAvzJJFECILHEIBruFzxzxAyz"
+};
+SIMPLE  =                    T                                                  BITPIX  =                    8                                                  NAXIS   =                    2                                                  NAXIS1  =                  128                                                  NAXIS2  =                   71                                                  HISTORY Written by XV 3.10a                                                     END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              A+DsLA++=$o=++D(
++
++   
+  ++$3 +$
++(+O3A$ ($3 +5  
+    
+ +  9O=$(3
+(5^S$=D=D9A=(A+3Sf^W+=+OD= W9$ $+$+   
+   
+
+$$$3$+
+(
+3
+D3D=+(3 
++3+$+$ 
+
+(
+
+$3+3LL++9
+$+W = LDOOW9+9S(WLL$=W=L+= 3
+3D=9$+5 
+ + 
+
+53
+++ $$99
+3D3W=
+5W 
+++O  $  $L$5$D( O$3$$D$+39$D^S+LLLLLLA3(9=5 3$
++(+ +9
+3$  
+ 
++
+ 
+
+53  9 S+L9$$+=(3$3      
+ =3=O5W  L+93 9=99 D9=DS5=$ 5O^DS^+9A=D+=+3 D $  =3  $
++= 
++ 9=(
+ 
+ 3$$$9$+= $   $3S+$$ ++3f$3 3OWDDDA$ +==9DWALL^5=99 $5    $ 5    
+ $+9 (S+$35+  3+(=3
+$(      +  
+3+(=+9 
+ = =3A  (3$AD9L++A5L^D^^3+3$  ( 
+
+
+
+
+ 
+
++ 
+D3
+3+ 
+=93= =$+=+
+$
+++3
++
+ + 
+  + 3+9W3+9 =+$9=+D=
+ 3
+S53
+S[9=3
+3
+ +
+ 
+
+  
++  $(9W$=A
+3AD9[999L[OW+ 9$3 5  $(3
+ 
+ $ 
++ 3D + D3$335
+==$AD
+5sL=+=93= 9$535=   
+5  
+DD+
+D3 ( 
+
+L+ L$3
+ $  
+ 
+ 
+ S(++$L$ 3+ $W3D+
+9$353535^L+3+3(+++
+=D3 
+ ( 
+   
+
++ +$$ 
++ 3
++L(++(3
+ 
+    $   
+
+5($ 
+L$
+9$++ +5$$ 9++=33++L^ +3$5D3+
+5 $
+   
+ $+==$3 $
+
+( $+33+  
+  $
+  + 9 
+ 3 $3+  + +$+9O(39 DW395+   
+ 
+
+9( $+ +3
+5  ++D   +    
+   
+$
++3 A 9$3 $+( (( $
+$$+ $+  +
+
+
+3 $L9(+ 
+   
+ 
+ + 3
++ 
+3$9$+$=33
+
+
+  
+ 3D+(3+++$+3+3
+  
+
+ 
+3$(53  + 355 D 
+  
+    $
+
+$DD
+
+
++53  
+
++
+  +5 +9       
+   =++5( 
+ $+D+    +
+=$(+ $
+ 
+ 
+ $ 
+  
+
+
+   DO=3 5A33$$+  33
+3 3 +3( +  
+  
+
+
+
++$=9     $$ 
+3   =+ 
+
+ 
+       + ++  5+9++$3+D^=D++DL3o5+3DW$+5$DD=3 33=D($+ 
+   $    5$ 
+
+  
+  D$9 +
+ =9
+
+
+   
+3(9$3D=+3(
+=9= 3L59LS$3$  +9+3  + 
+    $$
+ (9
+
+  +D 
+
+ $
+  ($ 
+
+ =A++D 
+ +3+ +53=$ 5L9+=9=OSDL 5S=
+  
+3= ==   
+3
+ 
+ 
+
+5L$ ++A 3
++
+ 
+
+ 
+
+
+ 
+
+
++
+
+    +333+3 =(+W+9+33^fD3+S$+3 +33 DS33  
+ + 
+   
++$ $++$
+
+
+
+ (     
+
+$$
+
+ 
+    
+ =$$9L=D$$AW=9=DD=fWD=+=+(3=+5OD
+      +
+
+  
+ $+   $ +9
+ $(  
+
+  +
+ 
+  
++
+
+   ++3==5=$9+=+A+=D^^[L[A=L$ +533D=+995      $ 3 
+ 3
+$  ( (33$
+$ 
+  $
+   
+ 3
+
++33$+(+
+33+393+D$+=ADD3A$=S+===35+=$D3 $$  $+ 
+     33
+ ++$  3  
+
+
+       $3L33($  33$9$=L3DL9^A=+$A35A9LL=5DW=  
+  
+ $$$5 $
+
+    +
+
+
+++ (3
+    
+
+
+
+      $$
++35W3D3
+
+
+ OD33+=D3D93[LL= $5D5=5AW=L^[S33 
+  +3D++$
+
+$
+ 
+ 9L++
+
+
+
+ (
++
+
+ 
+
+  
++9A($$+ 
+DD==5=WA[(=+=3
+++$A$L  A+DL3^$$  + = 
++ 
+ 
+ 
+ 
+ 
+$+$$3+
++95
+A
+
+   
+$ 333$ 5$5+9W3ADWŽ933+A
+( D$Df9 L+3$
+  (
+$$$   $
+  
+  3
+   3
++
+ +
+
+$ 
++ 
+
+  3
+
+ = 3
+
+
+(+=ODD$SS[=3SL(D3$f†=L9L=(=(  $
+
+$  $
+
+$+ 
+(
+    
+
+  
+ 
+(
++$
+
+
+  
+
+   
+ 
+
+ 
+
+$   5+33+  + =9W=D3DD$$S3(9 (DDLL[D3DL=$
+9$$ 3
+ 
+
+ 
+
+++ 
+   
+
+
+
+ 
+ 
+ 
+
+ $+
+ 
+
+ 
+ 
+  
+   99    +5=OW^AS^S539=++(DSA++Sf$999$(  $$(
+ 
+ 
+ +  
+  
+$+ 
+
+
+      
+
+ ++ $9L+ DAOS=L3 LO^f+(SD+OOD ++  +
+ +
+ 
+$(     ( 3   
+
+
+$    
+ 
++
+ 3 
+   + $39((+[9+ 
+99O3$9L3=^^+A5+$=93D+5+L3    ( $ L
+
+   $ 
+ 
+            
+   
+  $W
+ ++
+ 
+
+ $DS5L$ +3O
++3(DDf=LD3=D9D
++ +=D9+ + $$+
+  +(=
+$
+
+
++  
+5     $ 
+(+$93
+33D+$ (( A+=D+(3DD =+$5DW+L++DD9n3(++=D$L=$  $3 D  $++
+$3
+
+  
+   $( 
+     3$L ( 3$
+3 393DS3= S+$+9D9=39++D= $33+$L++=L=+ 3
+(
+
++ 3+$   $ + 3+    
+     (     
+  
++953$5+9+(3$=$OSOA3S39+$DLD=3WWLDWL+3399359+=3D5
+ $ (=   (5
+$+ (+
+ $  $  $
+ 
+
+ 
+
+5 $3$L$= +$=+3= 3=DW=3$=O3$DL=
+9^SWL^L(3O=DSL+DDLO=OD+  + 3 +$  $+ $++9+ 
++ 59
+
+ 
+
+ 
++
+  +  
+ 
+9(593+93+3==9DLADWn^$SD9(^k=LDOL^L$+59=fD$3=LWSWD +($(  +$$     3  =9   +
+3
+ (
+
++
+
+ 33$=+=335S3+9Oon$DLD=+[SL[WLDWw=A5993D^+L+33ASD3L((+$+9
+ (3+
+$
+
+ $ 3  +
+3
++ 
+ $ 3D+ LL35+3L   3DA9==LLL=3LW^LD^3$A3LDDsDDk9L5A^$3S(+=3$L9  
+ +  
+  
+3       $ 
+ 5(
+ 
++
+++
+ $$D5S=D33$5$A3$$3O=5DDLOLsW+9+ +WD5OWDDLL$=5$DDW$3A3+3
+(((  + $
+
+ 
+  3+
+$
+ 3  $ 3$(35=33+39S3DD=+A=S=9$L=+9LLL$WL9DO^^ Lf3SAf†=$O+LA=S^3$fLD$93 $   
+ 
+$
+      $   +   +3
+ =$   
+$3
+339D53$9S3L=DD3LW5L+DW9+[$
+WL[DLS+^|+==+= L3 +^fD+S3D3+ 
+
+ A3 
+
++ 
+
+$  
+
+  
+      
+ 393
+A55
+ ^S=+5W$5D9D99^D[n5WWDDS5O(A9 A3LLLOD =9= 3O9$9OS=5L
+(=$3
+ 
+= +   $     
+  
+  $ 
+
+  9 
+ 
+  
+
+( 9$5+ 
+$W=L$ +5=L+=33=A=fWDWLO3=SO5W5D3LO=D›D3 3==+5o$ +W=L=L53A$($   $( $($ $    
+      (
+ 3 L
+ $  5
+  3$(+
+39A9D(9=LL+S3W(ADW9^DD93L3S^+=Wo3O­3==3=+=S $+L=L3O(==$ ++ (
++ +$ $
+$ 
+
+3 A
+  
+
+
+
+ 
+  $+ +  93+= D LD9+DL^5^^S9sL^+ 99 sOW$Af+[nL5=5=+LD=+$5L3==+33AD+ 
+ $$     $ 
+
+    $  
+
+
+
+  
+ +53( +
++=A5$395=^sD=LD9+9O+9SS^3(DSDDLL+ +=+$+LL3+=+++=$++$($ 9$
+
+
+ 
+  
+   
+
+  
+ 
+
+  
+ 9$ $+3$D+55Lk^L[5$3D+9L5D33DDWDD3$+OA53 SL3[9+59L5+
+=35= +  
+
+
+  $
++   
+
+  
+    3+39 
+$5$$+$ 5+L++L=OWDS9D^5WS3LDL=+WDO95DS3OD S9DS33+==$
+3 +A(
+ 3+
+ 
+$ 
+   
+
+  $ 
+$
+    + 9  
+$9 =533$+f3L=+$
+D+LOLWL3DSf=99$L(3=D$^ODL[L^DD=D+$+  $3
+=(+$$
+
+ 
+$    
+ 
+  
+ +
+
+    
+
+
+$ 3   $$9+3L$=LLW^WL++3DL=^D=LLDW+$3=($+$3LDL^ADDDDW93$++35+$D ++  
+
+(
+ 
+  
+$      
+    
+
+     
+
+ $( 
++
+
+
+$D+D939D==DW5=+=3S9+W|DO3L==3A^+ 93LDSODSL=SD=+$3 9 33+A$3A$3
+
+  
+
+  $3 
+
++ 
+
+
+ 
+ 
+ +  + 3 +L3=L5DS= =ALL39+LSO“SWA=+=99[$$=3$DDS+AWDDL=D+=95+399=5++(  ++3$  
+ +   +  
+ 
+    +3+  +($ 33D(=3L9O[5 ==W^WD9f5L†SgLOD[DAW$+359DSk3LDLL=39355$++D3+9  +$
+ 
+  3+     
++ 
+
+
+(
+ 
+
+
+ $+(+(  9+99O$D=OLA=$=SfS+$wDDnLWLLLW3DO(3$33+AfLWLWSLDD$9$ 3393=(35$+$$=+   3
+
+   $ 
+ 
+   ++$  (3(5++Lf3WD=OL=L$A39S33|SksD^^^^O39D$953+++LDfD3+59D$D+$+3=AA $+ 
+5$ +$       
+
+ 
+    
+39(
+$$$
++D
+3D9^=S=S^DD^3553DLsfLLgwSf=3+95((39+9wL9  +++35SL++(9
+ 
+  $
+  
+   
+      
+$  +$  53+S+ +3+L+^SLWO$35W+D=LW=L^OwWD$5D9=+LL$5LDD3
+  
+ 9 +=+$$(
+ 
+9
+  
+  
+
+
+ 
+ $
+ 
+    
+
+  $$
+ + 5++(^=+9+=D^9W+$DD=f9DL3SWS5LS3D+==5[LDD=D9$=5(
+= 3$+ 
+   
+   $  
+
+
+(
+      
+   + (
+  D5+3=3$D=L+=3$5WD+LOSWf+=5$(3=+LLDA9=D$$+   $ +D+$(
+
+   D
+  
+
+(
+ (
+  
+
+
+
+ 
+
+
+
++  
+$3++5D=5 LD+99D3$AL L=SfWL=+3+$$LSS5DDA+53 $(L++    
+     3=
+9+  = 
+      
+  3
+  
+
++$OWSO
+SO +$+W3SkLL=9fLDf=D+3$ +5D$3W3((=D $ +D(+9
+    (  $   
+
++3
+ 
+3 $
+
+
+ (
+(   +5fS =9$++AA^DD[gADLLOS5=SfDWW9 +33 3$$$9S$D=  (
+
++      ($    
+= 
+
+5+3 + (=( =WO(O++(++L5SD DL^S5L3
+39$(DL9SD $+ 
+3   + +3 +  
+
+ + 
+
+
+D$ 
+$ W3
+   
+
+=  $ $  $ +$$A+D($$ (=+OS5+35WADD
++93=L$9W+=  9+$ 3 $  
+  (  +  +=95 93+
+S5  $+$+  
+ 
+  
+
+  ++=3
+A$=
+
+$=5g3f3DA^=s
+ 
+(3$o+ =D5  +
+5   +      
++
+ + 3$( =(9+$+=9=++5  
+ 
+ 
++ $ 3(=93+A3 
+5 ^35==ADLfL+$(=(=5S35395W  
+ 
+ +$$  
+ 
+
+
+
+   $$+$ 
+ 
+ ($+  3 =3 
+  $
+
+  
+ D5($DOD3$=3 O=3+ =$5L3DD=D=L3 ++ 
+$
+3 5
+$     
+5    $$  +9$+=
+ $
+   L ( = +
+
+
+
+ $   
+
++$3A    DOLADL9+=++5+3LL+LD^5 5+( 9$
+ 
+ +
+ ( 3   $3$$3 +
+ $9 $ $$   +
+
+  
+ $+= +$ +S( =93S3$fLS^9D++9=L39^O=W=(+$$+9$
+
+
+    
+5  
+ 
++
+
+ $339
+   
+ +  
+
+    
+(   L= =$
+3 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

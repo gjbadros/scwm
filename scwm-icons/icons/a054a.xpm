@@ -1,0 +1,234 @@
+/* XPM */
+static char *a054a[] = {
+/* width height num_colors chars_per_pixel */
+"    96    96       64            1",
+/* colors */
+". c #000c08",
+"# c #082018",
+"a c #183028",
+"b c #001410",
+"c c #182420",
+"d c #101810",
+"e c #001008",
+"f c #102c20",
+"g c #283830",
+"h c #081c18",
+"i c #102020",
+"j c #203830",
+"k c #081410",
+"l c #081008",
+"m c #203028",
+"n c #001008",
+"o c #102820",
+"p c #182c20",
+"q c #101c18",
+"r c #081410",
+"s c #000c08",
+"t c #081810",
+"u c #081010",
+"v c #102020",
+"w c #183028",
+"x c #081410",
+"y c #182c20",
+"z c #182820",
+"A c #081810",
+"B c #203028",
+"C c #102020",
+"D c #000c08",
+"E c #001410",
+"F c #304038",
+"G c #182420",
+"H c #203c30",
+"I c #203430",
+"J c #183028",
+"K c #102018",
+"L c #203428",
+"M c #081810",
+"N c #183020",
+"O c #082020",
+"P c #182820",
+"Q c #101818",
+"R c #001010",
+"S c #283c38",
+"T c #082018",
+"U c #081810",
+"V c #081010",
+"W c #203030",
+"X c #102820",
+"Y c #182c28",
+"Z c #000c08",
+"0 c #081410",
+"1 c #102420",
+"2 c #081410",
+"3 c #081818",
+"4 c #000c08",
+"5 c #182420",
+"6 c #203c38",
+"7 c #102020",
+"8 c #203430",
+"9 c #183028",
+/* pixels */
+"v7KqhAUMkxkx2kU2xxMthvGzGXzyypyyG1vKhhtAxEennu0k0Eu00xUUUtAh3AAMM2xMMAhKhKvG1G51ivvKKK7ihK7i1ivv",
+"CK7Kq33UUUUxkxkx2xMUAhhK1GGzyYypzzG1vKThh3ME0eueu0Reu0x2x2UUUUMk2xx0xx2Uhqvvi1G5GGiKhhKv7vKK7K7K",
+"KqKqqqhqA3UUMkx2MMMUMUMM7v1GzypyYyYyzG1vGvK3M00R000e0R000x22Mx2xx20EuE0EMAhKvvvGv5zG7KK7vK7KK7K7",
+"qhqKhqhAQAUUMkxkAUA3AAUUAhK7G5zPypJJJpzzzzGvqAUUx000eueu00xxkkxkxk000uuu02A3qqK7Kvzpy5KKhqvvvvvK",
+"qhqhQhAUUUUkUxUUxUA333A3AA3hK7vG1zypJJJpyyzzGvq3UUx200Re0000x000x000E0E0e02UU3qKK7K5PzGvhqKKKKKK",
+"qqhq3AUMUMkxxkx200xUUAQA3UA3Aqq7Kv1zzyypypJpzGivqqQAkx00uRuuRuuRuuRuueueu0xUUAqqvKqhvG5zGvKhA3hq",
+"qhqh3A3AUkxx000000002UUA33AA3A3hhhKvvGzzyyyyYzzGiKKq3UUxuueueeelneleeunu0xkUU3qKivKKqvGzPzG7KTqT",
+"hqhqqQ3AMU200uReuuuu0xkUKqQQAAAQhhhTTvvGXzypyJYpiii7qQAU00uuuVluunuuVunl02UUAQC77GpzvKv5GzpJYzvK",
+"1vvK#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.Zu2UAUxAhqGGypJwmJz1vK7",
+"vvhAUUx0kx20RnelRxUAhqK7yzyPypJpwmwJJyyPyyzzG1G1vvKhAUx00uuu0xr0ueuuennZnnu0U3UUUU3qvzzpLIIwpzzG",
+"wpGK3AU200kx0uR0u2AqK7TKvGywWwJpwJJJJJJYpzzzz51GGivKqUUr0uu0UQqqUUUk20ueVZDZe2A3UUUAqv1zzywmwpPz",
+"Gyyz1hhA3AAU2xx0ExMthKvvv1GzyJJJyyyyyyJNyJpyyz1v#1yJyXvhxEEEx3vGvvhhhhtxxEnnnuxkMkMUAAA3hqT1zyyy",
+"zzpzzGvvKTqhAM2xxxMU3hhKKvvzPpJJJppyzz1GG1zzzzzz5zJmIIIwziAx0x3Kz1G1G1vvqAM0eReuxx2MUUAAqv5pyzyz",
+"yzzzzzzGGi1iKhAMx20x0kU2hqKvGzppJNypz1vvhTKv1zzyzyJwjIwJpzGvhhAMvGzzzzzzzGvqU0ue00x2UMUU3vPJyzzp",
+"JpyzypzzzyyzzvThUkr00uu0xUA3KiG5ypYyzGvTKKhhKKviyJISFSmzKvG5GGKqTvozzG1GyzzGvqUU22Ux2UMU2AvGzPNJ",
+"JJJJmIJJJJJJpzvvCq3Ux0xrx02UA3q7G1zzzz1v7KhAAAhqvvzwjIJzvKqhKv5p1Gpyyzzz1zzz5iKq3AAUUMUMkUUhvGyp",
+"zzpJwImwJwJwJyzziiCq3UUkx20x2UAQhKKvGGGGKqhAUAUAUMUh7GGiGv7KhKKKzzyppzzzv11GzGvK7Kh3UUMUUMkUqvi1",
+"vGzzpyJJJwJJJJyyGGvvqhAAUkx2rx2UMA3hqK7vKq3AUMMMhhAAhqvvqKGG5KhMvvvvGzG111111ivivCqhAUAAQQhQhq7v",
+"zzyzGzJwJwJwJJJJypyz1v7hAUkk00k0x2xMU3hqCKq3Ukxke0xx2MAqT7qTK7vihhhTv1G1G151GzGziKq333A3AqCKqKKG",
+"vv1zzzG1yzyJNJJJaNNyzG1v3AAMkx0u00xx2UMUMMUUMxxE000xkxkUMth7vvTTKKhqAhKKhKvi1G5GvvKKhAUMMATv11vv",
+"1GzzyzzzzzzzypNJJwJJpyzz7KhAUk00x000xxx2x2xUM200000000xUMthhTTvv7KKhKK77K7vviivvivvKqhAAUAhKvi1i",
+"G1zzzzyzGzGzGzzyJwJJJJppzGv7qAU22x220000xx2xxx0E000000xkMkxUUAqKKKKqTqTqvKivGvGviGvvKKhhUtU3hK7v",
+"KvKviGGzGivvvGGzyyyNJJJJpypGvK3QMU2x220x000k2000000E002UUUkMUUA37TK7Tqh3K7Kvvi1iGviiv7qTUUMUU3K7",
+"7KKKTKiGvvKKKKviGGPypJJJJJJyPi7KQhAAU22x02000000R0000xAQhqqqq3QUKq7K77KKTK7KviG5vivvK7Kh3AUMUAqK",
+"7KhqAqhhqqqqAhqqKviGPyyJNJJJpzGiK7qq3AMU00000000eeuE0kAqKviGGiKK3hhhKKv7qK7KvvvGvvvvKKhqqQAUAQqK",
+"A3AUUUUUAAAAUUUMQQKvizzzyyJJJpzziivKq3AU2k000uu0RuEu0x3qvGzyYJyzivKKhKhKv7K7KivivCvKKhhhAQAUUUUU",
+"002x2UMUUUUUUMk2xUUhKv11zyyJJJYPGvi7hQ3Ak0r0u0uu0eueE0UQTvGyJwmwmBpzi77Kivvv7KKKivv7Khq3UkUkk200",
+"uuu00kxkxM22x0EeuR00xAqCiizPJwJJzzGzG1hAttb0Euu0neeuuueuMh1pwJaJL88LwNoOvv1G1vvvvvvvvKTKt2xE00uV",
+"ne0xxxkx22UUM2x00ueu0kUAKvizyyJJypyypyz5#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",
+"0uuVnu00AAhqKKvvivvK7KKThqhKKvGGyyJwwJpzGGvivKhhvvGzzypy5viK7hhhAqqhKKKvKK7Kv1zyyzzypJwJzGK3UUkx",
+"r0lnnZnR02xMAQhq7qKKqqhQh3A33q7v1zyJJJyz5G5GGvGi1G1zzpyYpyyzG17KqTK7K77vv7KTKviGzzzzzpyJpyzi7hUU",
+"Uk0uuuuueR00xMUUhQhq33AUAUUUUAqq7izppyzzGG1iG5zzzzzyypYJpJJyyz1vv7KvvvKKvvKv7K7vGGG5zzzzypyyPiqA",
+"3UU00uuueeeRR00xUUUUAUUUUMkxMkMUqqvGzzzzz5GvviGGzzypJyJyJ9pJpzz1iv7KKKKKKC7iK7KqKv1GzGzPzyypJzvq",
+"ThhAUx00u0ueu000002UUU2kxkxx0000UA3KvGGzGG5GGvvizzpppJypypyYyyyzGvvv7vKhqKKK7Kq7h7ivGGGzyzyypy5G",
+"zz5iqhUU000ueuEuu00xkxkx0x0r000u00kAqvG1vvGG5Givv15yyyzzyyyyyyyyzGGiGv7KQ33qqq7KK7K7K7iGyzzzyPz5",
+"ooo117hA2xx00eueeRR0uuuu0u0uueuenu0xk3qi7i15vvvvqKvzzPyz5G5G5GzP1o11O1##hhAAU3Aq3q3qqK77vvGzzypy",
+"zzpzzGiKhhAMx0euReeRe0euuuuueuRunneu0kUQKvvivCvvvvvvvGzzGG1ivivGvvv1vvv7Kqq3AU3AAqAh3qhqKKvGGzPz",
+"zzyYpyz5Gv7qUU20EueueuuueeRueuuenVnneuxUqKvivvKvGvvTvv1G5ivvKK7qKK7KvKKK7Kqh3UM23AAAAAUA3Ah7viGG",
+"11zzpPppzG17K3AUx00ReneuRlneleeunnnnn0kUAhKKvKviTvvG1vvvvvvKqhhh33AqAq3hqqhQAUUkMUUUUUUU2UAAqK7v",
+"qKiGzzPzzzzGvKqh3Ax0uunlnnRlRnuelRunuuxUA3KKvKivKv11G1vvvKKKKhqqAUAUUUxkxxkxx2x0x2MMUtUt2x2U33qq",
+"3qq7i5zPyyzzGvKqqhUM00uunnuneVeVeueuneu0MAh7Ki1GzGvvvGzziiv77KvK3qQUU200nnnuuuu00x2UUUUUkxk2xUUA",
+"UU3qKvG1zyzzzGv7KqhQUx00uueununenuueuuRuMAqKvvGGyzzGGzzyzGGGvivviK7q3UMxuuenuu00x2UM3AMMkxkxx2kx",
+"0rUUhK7v11zyzzzzTqqAUUk0ueueuenuZnu0u00k2AhKviGzzpyJyyzzPzz5G1iizzGvvhAA2r0uu00kkMUA3UU2UUxk0r02",
+"000kkUAqTvvGzGzzvvTqhUUU00unnnVennnneuxk0xU3KvG1zyzypyypzzzzzzzozzyzzz11AttMxx2Uxx2UUAUAUMU2x0Eu",
+"euR0x2UUAhKvvivGzG1vKqAUU00unnneuR00Euee0xU3Kvzzpzypzpzzzzzzzzzzzzyyyz51v7K3AUMkx2UMA33A3UUU2x0E",
+"00000xxkMUhqKKvvzG5Gv7qq3AU00RuennnnnneRu00U3KvGzypypyzz1G1GGzzyypypJyyyzz1KK3AAUUMU3A3q3h3AUMxx",
+"2x0x00x0xMUAhqKCvvvvivvK7Kh3UM2xReD.DZnnnne02AKvGGzpyPzGzzGv1izGzzypJJJJpzz5vi7Kh3A3AhqhqqqqA3UU",
+"UUU2kx020x2UUAhKKvivivK7i7CKqhQAQU2uenD.ZZZn02A3K7G5PzzGzGGvKvvivvGypJwmypyPGivCK7qq3q3qKK7qqhh3",
+"QAUUx2x000x2x2U3KCvGG1vvKKvvvKTqAAUAU0Z...sDneu0UAqKiiGGGiCKKqqhqK71GppJJJJzzivCvi7KKqKq77K7K7KK",
+"KqQAUkUkx0k00xkUqqviG11vviiGiGv7AUU3QU0n.s.sZnneE22Ahq7KiK7qqhAqAhhKviGzyyzPzGiCvKi77K7KK77iviC7",
+"iCKqq3UAkkkxk0kUxUh7GzzzG1zzzzG1PiqQA3AklVuuu000e002UAqq7qKqqqQAAAA3qK7iGzzzzP5GKKviiiCvqKvKiivi"
+};
+SIMPLE  =                    T                                                  BITPIX  =                    8                                                  NAXIS   =                    2                                                  NAXIS1  =                   96                                                  NAXIS2  =                   96                                                  HISTORY Written by XV 3.10a                                                     END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             !!!!!!!!	!!!!!				!##!!!		##&&&&!!			!!!!##&&)###!
+						!##!!!!!!!##&&&&#!!!
+								
+!#####!!!!#####&###!!	
+!				
+		!!#!##!#!!!!!!!!!!!!###!!!!									!#!#####!!!!!!!!!#!!!!#!!!!					!!##&##!!!!!!!!#!!!						
+#!!!!#!		!!##!!									!!!			!!!!!!!			
+
+		
+	!!#!##!
+			
+									!!#$##!				
+						!!#!!	
+		
+			
+			!!!!!			
+
+			!!!#!!!!!###!!	###!!########!#!!!#!!	!!!###&#####$###!!#!####			
+
+!!!!!!!##&#&#&&#&#!!!!!!###&!	
+!###!!!!!!!###$&#&&##!!!!!####!			
+!#&&&#!!!##$###!!!!!!##&##!	##&&&&#!!!###!##!!##&&&!##%&$###&&####&##!!!!!!!! ###!!&&&)&##%&#!!###!!#&)&!!##&&&+)&&&!#!!	!!!!!!##&&&!!###&&&&&&##!!!	
+	!!!!!!!!!!#))&&#!		
+#$%#&&&&&&#!			!!!!!##$!!#&)&&&&##!!!#&&&&&$#!!
+!##&###!##&)&&&&##!!!#&&)&&##	!!#&&&#!!#$&&&&&&&#!#$&###&&*,##!
+		!######!!###&&&&&&#!#&&)&&#&&##!				!##!!!!!!!!#!####%&#!!#&&&)&#!##!!
+						
+!!!##!!!##&&&&#&&##!!!#&,,)$$#!
+					
+!#!#!#!!!####$&##$#$#!!!!!!#&&)&#		#%&%#!!!!!#&&&##$######!!!&&&,&)#			&&&&&#####&&&&&##%##&&#!!!!#!!!&)..,,&&!!!	!&&&&#####&&&&####&&&&&$#!!!!#!##&#&&,.4.,)&#!!		!$&,&###%&%&&##!!!#&&##&##!!!##$&&&&,.0..,&&#!	#&&+,&&#%&&#!!!!#!!!!!!###&&)&,&+,,,&&&#!!!!!!!!&)+,+,&&&&&&#!!#!##&&&&,+.,0,&####!!!##!!##!&)..001,,)&!!##&&&),..,,+!##!!!!#!#&&&&&##&!!$)&#&&,400&#
+##&#&&&&)&,&&&#!!!!##&&&&&&&&&&%##&#&#####$&&,,,!!##&&&&&&)&&&##!!!!#&&&),,,,))&&&&&&&&#!!##&&&&#!!!##&&)&&&#!!##&&,,....,&&&&&&&#!!!!#!!!!!	
+!!!##&&&+&&!				#&&&,..1.,,)&&&###!!#!!		!#!#$&&&&!
+					&,&,,..1..&&&###!!!!			!##&&######!	
+					!&&,&,..,+&%!!!!		
+!!&&&&!!!				#&&&&+,,+&%!##&&&$!		#&&)&))#!!!!##&&&#!!
+!#$&#!!##&%&&&#!		!##&&&&&&#!
+!!###%&&&&###!!!!#!!!!!#&&&&&&##!!!#!!!!!!!##%&&&&&##!!!!!#!#&%&&&&%%#!!!#!!&&&&&&&&&&###!	!!!!##&&&&&&&&##!!!#&&,)&&&&&&#!!!!###!!!!&&&&),&&&&&&#!!!!!!&.,&!####!!!!!!##&##!##!!!##!!##$#!#&,494)!!!#!!!!%&#!!!!!!!##&%##!!!#!#&&.,&&#!!!!!!!!	!&#!!#!!#!!!!#&&&###!!!!!!!!!&),,,&!!	
+	##!#!##!!#&&&######&%#&###!#&#			!###&#
+#&*&&#&&&&&&&$#!!!!		!!#&)&#!!
+		
+#!#!##&#&)&&&##!##!!						!!#+,,&#!!				!!!##&&,&&&&####!!!!!	
+					##&&)&!			!#&*,*+&&&##$##!!!!				!#&&&#		$&&)&&%#&&&&##!#!!!&&&$#!
+###!###&&&&&!!!!!#!&&&&!		#!!&&)!!!!!##&##!					#&&&##!!!!#&%#
+				!#&&#!!!#$##!!#!		
+		!#&&)&!!!!!!###$##!!			
+	!##)&#!!!!!!!!!!!!!!####$###!		
+
+!###&##!!!#%######!#!!!!!!##$&&&&####!		!!!#&&&&!!!#&&)#&####&&!!!!!#&&&&&&&&##!
+!#&&%#!#!!!!!#&&&&#&&#&&#%$!!&&&)&)&##!!!$&&+&&#!!!##&&&%&%&#!!!!!#%&&&&&$#!$&),,&&#!!!#$##$&&&&#!##%&&&%&&#!%#&%&,..&&&$#!!$!!!!!!#&%&&#&&)&!!	!##&&&&&)#!!
+!!!####&&&#$#!		!##$%$%&&#!#!!###!#&&&&#!
+				!##&&&&&&##!!!!!#!&#&&#					!!!#&##&####$##!###&&#!				
+!!####&##$!!!!!!!###&&#			
+!!&%&&&#&#!!!###!####!!					
+		#####&&&$#	
+	
+!!!!#&!!#!!				
+	
+!###!!!#####
+	!###&$#		#!!#&$!!!####$!!									!!!!!#####&#!
+
+
+
+		!!##&&&###!!
+		!!!!##&&&#!!!!		!##!###$#$#!
+	
+!!#$##!!		
+	!!#####			                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

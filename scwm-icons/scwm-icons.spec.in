@@ -1,0 +1,56 @@
+# Note that this is NOT a relocatable package
+%define ver @VERSION@
+%define rel 3
+%define prefix /usr
+
+Name: scwm-icons
+Summary: Icons and Pixmaps for the Scheme Constraints Window Manager.
+Version: %ver
+Release: %rel
+Source: ftp://scwm.mit.edu/pub/scwm/scwm-icons-%ver.tar.gz
+Group: X11/Window Managers
+BuildRoot: /tmp/scwm-icons-%ver-build
+Copyright: Copyright (C) 1997,1998,1999 Greg J. Badros, Maciej Stachowiak, et. al.
+Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow@alum.mit.edu>
+URL: http://scwm.mit.edu/
+Distribution: scwm
+BuildArchitectures: noarch
+
+%description
+
+These are icons and pixmaps for Scwm.
+
+Scwm is the Scheme Constraints Window Manager, a highly dynamic and
+extensible window manager for the X Window System.  Scwm embeds Guile
+Scheme as the configuration and extension language, and includes a
+sophisticated constraint solver for permitting the user to interactively
+specify constraints among top-level window sizes and positions.  Nearly
+all decorations can be changed at run-time on a per-window basis.
+Dynamic loading of C modules is supported.  Scwm is self-documenting and
+provides A powerful protocol for interacting with the window manager
+from other processes
+
+%changelog
+* Thu Aug 26 1999  Greg J. Badros <gjb@cs.washington.edu>
+- First packaging
+%prep
+
+%setup
+
+%build
+./configure --prefix=%{prefix} --enable-fsstd
+make 
+
+%install
+make prefix=$RPM_BUILD_ROOT/%{prefix} install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+
+%postun
+
+%files
+%defattr(-, root, root)
+%{prefix}/share/scwm/pixmaps/*

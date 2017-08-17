@@ -1,0 +1,100 @@
+/* XPM */
+static char *blakback[] = {
+/* width height num_colors chars_per_pixel */
+"    76    71       21            1",
+/* colors */
+". c #0c0c0c",
+"# c #747474",
+"a c #444444",
+"b c #a4a4a4",
+"c c #2c2c2c",
+"d c #5c5c5c",
+"e c #8c8c8c",
+"f c #1c1c1c",
+"g c #848484",
+"h c #545454",
+"i c #bcbcbc",
+"j c #3c3c3c",
+"k c #6c6c6c",
+"l c #141414",
+"m c #7c7c7c",
+"n c #4c4c4c",
+"o c #343434",
+"p c #646464",
+"q c #949494",
+"r c #242424",
+"s c #cccccc",
+/* pixels */
+"crllfclrrllllfffrffllrfflrclllrffrfrllrflllfrrffllrfffloflffcrllflrclfollfrl",
+"hclffclff.frrffllfllrnllfoaf.lofffffllffffrffllfllfflflrllfcrfflrllllrcllffl",
+"flfcll.lllfrflrfffllolllrffl.fpfflllllfllffllcflllllfflllffffflfrllllrfllfrl",
+"lffl.llcllflllolfllrf.llffl.lccflfrllfooflllfocfffffrcrfrfflfflllllfcnflffrl",
+"lflllfhqllcrffrllcnflfrofflldnllflllcarllllflcnfrrfllffflfrfclflllrafffllffl",
+"fllfffcclffrffllfrfllclclllrsflllllfoolllffffolllffllcflllfffllllfffllfllfll",
+"llrrflllflllfrlllllllrlrflfrjllffrlfof.lrcrrff.llllllrfrflllflrflfrrllcfllll",
+"fffrfllfflllffllllllffloolllflllrrljml.lrflflfffflllllflfllrlllolcjcllcllffl",
+"fl.lrflflllfallljflffforl.lfolllfflorlllorrllfffllflclllfllrffdhllffrlllflll",
+"lllffllfffcfrlfcllfrlfrfllljjl.lcllllllfhcr.folflrrrflrlfllrcoof.llflllfaffl",
+"flljpllfffrllljflffjlfflllfccllcclfllfffofllffllfllrflclrflcffllllfrflllrfll",
+".ffrollflrfllfollcojffflllcfolljcfolcdffflflllffllfclcrfllfolllllalfrllfflll",
+"flllflllrrflfrl.farflllfforfrllfllolfrlflflflrnofllflfllffar.lfflolrolllrffl",
+"nllfflfoolllolllaollllffcelfllcllfl.rrllfllcflfflllrfflllfollfjjlrfkrllfclll",
+"flflfffnrlllclfhfflfdllllclllfcllfflcrllllfrflfllllofllffflllfjrllrflllfjflf",
+"llllohlllllrllfrlflrjl.lcrl.lnclljfcrrflfffflfllllj#rlllrrlllcjllfrflllrkfll",
+"lllfrfllfl#ollrllfflcllrjrlllrfflcfrffllfffllllfcfncflfjcflf.fflllffllfbdlll",
+"lllfllllrlcfllrlfolllllflfllfrofllflllllffflrllfflcfllfclllllfflflfflllfllll",
+"llfrflrrrfflllfloolllfllfcllfjollfrcflllrflrclfrlljlllflllrllcflffrflfffllll",
+"fffcflfllfllllfloflflflcffffhhlllfrrlllrfllcflfffrc.lffflrcrlflfofrflfrlflfl",
+"llfrr.lfffllfrffcf.lllfrflfffrllrflfllfnrlrlllfflflllfffflfrfflrcffflrllflff",
+"lfnlfffffflfcffrfllfflfrlllfllllflffllfjallllffllflllfrllllcrlljnrfflllllffl",
+"lcflfrljallfcllrllrlfcfrfllflflfflrfffrfflllnjlflffllcfllfrnllfcfllfllfffffl",
+"jjlllllcfllocllflffforlflfffocfflldlfrolllllhcc.llflfblffffrl.clllllllffolll",
+"flllflffllfofllrfllrlllllrlfrffllffllrrfllllffllllflrjlfffff.fflllflfllrflll",
+"flllffnalllllflcflfjflffrjfrrfllfaflrlllllfflclllloarl.focfffffflnffl.frflll",
+"llflrfjpfllffrlcflroflfrrflrrl.flrllofllllcclfllllicllfcfllcllfffnfllfprllll",
+"llllfrrll.lrarllllfllllfrffll.lrlfllorllllcflflllclllfcrlllrlllllrl.ljklllcl",
+".fllfrlllf.lfflllclllllfrlfllljlfollalllrrcflfofnrllrfllllfrlfllccfllarlllff",
+"lrflffllrclfdfllorllrflfrlflfoflrjlocllfkffrrfjffllfoflfllocllflhrllfrllllll",
+"lollforlrflfacflfflfojlfcrflrclljrlrflfffljcrfof.lljrrfrflrflfrfrllrflloflfl",
+"llllffflffllfolllflffflohlllfllfcrflflflllflllflllffffllflfcllfflfjfllrnflfl",
+"llfdjllllflflflllfllllldcllfllllffl.llfllfflllrlllffflllflffllrrlfrlllrf.flf",
+".fajflllfllllflllfflfrfrlllfllllrlllrfllfrrllff.llrroffflffllffflfllllrlfcll",
+"fcrflllorffrcrrfllfrocfrllfflfffnrlrallckflflcclljpcrflfllrlrfffljflllorffll",
+"lllflrrfrffoorllllfffllcllflflllrllrhllhclloflfflndf.llllfflfffffclllrfllffl",
+"llfllfflrlfllll.lfohllllclffffllaflfrlfrllllllrclrol.llllfllolllflllfjrlfkll",
+"lflllr.lcfllcllfccjcl.llf.fllcffpfllflllffllllnrlrcllcfrfllfollfflrflrcrof.l",
+"flllfhlfrllrellroofffrlhfllflfforlllcrlllffllrrflff.lrfclrafcrffllcflrcfllll",
+"cl.lrrlcoflfflfrlllforlllfflllrrlllfllfllffllrfllflfrffflflfcdllllfllorllfrl",
+"fllrorrcfllrrlfllllrfl.lfflfffrflfllllllfocflrffrlfocffllrlllf.lfjfljjllljcl",
+"llfoofllfflrfl.llllf.lfloflflllffflllrjflofllrlffllfflflffffllllfflfolllfoll",
+"lflfcfllfllrcllrllrcllrfrlflllfrfllfcjdflrlllflfllffllllrfcffllffllfolllfflf",
+"cllfallfflljrlr#llanfcnfllrflljoflllcflllcllfrllljfllllfrlffffroffrflllorlll",
+"lllrclllllolffcfllnolffllfflfn#flflcflllfjllfrflfjllclffllflrflrflrlllloflfl",
+"flfff.flfrclfrfllrorllffllfffrfllllclllrrlllffrlfcfocffflllfrllorlllllrcllfl",
+"clfcfllffolllll.rfffllffllrllfllllffllfcjrllckrllllllflfllfrflfafllrlfhfllfl",
+"lllfflrflfllflfrollllrcrrlflfllfrllflolrollfmcfllllllflflflrllfrllolllofllrl",
+"l.lrrlrrflllfracfl.lcrcffllfrllfcllcrlfhfllffllflcflfflffrcolrofllrlljkcllfl",
+".lrorlrcf.llfrcffllfcfflffllffclfflnflro.lff.llllcllolfcflfflrllllfllocrlfol",
+"lrcfllfrclffflfflllcrlllollrrfflrflclljllffffllflfllrfffllf.lll.lllfflflllfl",
+"alrllfloflfllfrllfolfllrcllrfllfpflllfflllrhllhgfllfronrllrlllffoflfffrllorl",
+"f.fllffrllfllfclfcollrlff.lrllrrr.lflllllfflllkrllfrfrollfflfoccafflllfllcff",
+"lffflrcllrfflpalfrfllclfrllcllrcffllllffrllllcfllfcffflllflljclfrllllrlllrfl",
+"rfllffrllllflhllllllfllfflfhf.rllflllcorollccrlllflllllllflcrlfrclllaollfcll",
+"pllfflrfflfrflllflrffllrllfcllfrfl.fcaflflfanolllfflfllfllffffrrlllrdflflfrl",
+"prllffffflcrlllllfjfflrcllofllforllcdrllllrrorllfrrflllllrjlfllllllfjflllfal",
+"rfllrrlfolffllllffrfllcfffflllfrffldrllflfflcf.lfrnlllllaec.fllfcllroflllrol",
+"lfllffllf.lrfllfahfllfllllcfollffflflfllfrfrflllffrlfollaklllllcfllcjrllrfrl",
+"rfllffllllrrllfajfl.ffllfafljlfffllflflffcllllllcrffffllcc.lllodfllrjfllclcl",
+"rffrofllocrflfoalllljollnollrlllrrlrflflfcllfcflfrlfllllmj.flojfllllfllfrlrl",
+"llrclllfjffflfrfllffrflfjcclllllollrflllfllloallfrlflllcallolanllcllrlffllcl",
+"flllllfrrlllljflllflfllrclf.llfffflrl.foflllrclfffffl.frlllflcrlffllrclllfrl",
+"flflfflrflllfjfllfcfllfprlfllfdrflfllljollloffflrrflllajflfflllllfllralllrfl",
+"lfrrcrfrflfoflllrcrlllrjllolffafllljfanflrrcllllrclfllkhclffllrlrllfhrllrfll",
+"lfcjrrlffllrfflfccl.lfnr.lflllrl.lrhlcrllfffflllrlllffolflfflcofcllrrflcflfl",
+"lflfllllfllffllffllllohfllflllcrlrmr.flllrfllllfflffllffflllfccflllfllfrllrl",
+"rcfff.lffflfflforlllrajlllrfllfllrr.lfllrnlllflllfffflfrllllrrcl.ljflrflllrl",
+"lrrfllfrflllllcofllfocrllfcrlflrffllffflcollarllfrfllfrlllflrrrllocllfflfflf",
+"fflfllrahf.flrrlflfrcfflllrflfffcolfrrflfflfallfcqfllfflfrflroflffllfjlffrfl",
+"lllflljnflllfpcllllflllflforlflfffllfrllfllfllllfrlffflllfflffllrlllccllllll"
+};
+SIMPLE  =                    T                                                  BITPIX  =                    8                                                  NAXIS   =                    2                                                  NAXIS1  =                   76                                                  NAXIS2  =                   71                                                  HISTORY Written by XV 3.10a                                                     END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <Ld,4$$$$,,$DT$$$,$,4$$D,”$$4<$$$$,44,$,$$,4D$$$$$$4,$,4$$D<$$$$L$$$,<$$4T,$$|$$,,$$,<$$$,,L$$$T,$$4,4,$$,$$,$$4$,$$<4D<DL$$,$,lT,$$T$$$<,d$\$<44$$D<$D$$$<$,$4$,$,$$,$$,<$$<,,4$4D$,D4DL,$,$$44,$4D<4L4$$$$,,$|<4<$$$$$D<D<,,$,,4\$<,,$DT,4$$$4Dl,,<$$$$$$4$,$\$,$LDŒ,,$4$4d$,$<$,44$,\$$$4$$$$<<Dd$$$$,$,DDL4$$$\$$$TT$,4$4,,$,$$,D4,$,$dD$,$,$,$,,<,$$$$,,4$$$$$l$$$44,,D,D$4$4$,$d$TT„$4L$$4$4$$,$,,$4$$$,<$$4$$,$,,,L$4,4,$4,$4$$$$$D,,$,$,,$T,$,4$4$<l,$$4$,$$$4$4|,$$44$,,4$$,<$,l$$D$T$,$$4$$,$$$,4,$4$$,$,4,L4Lt,<$<,$$$4,D<$$tDL,L$<4,,$<$$4$4$,$,$$,$$$,<\$$,444$4$<4$44$4$$,$$$$4,$$4,$<<<<,,$$,4$4$$$$$,\4$$T$$Œ$44$T4$,$$$$,$D,$,$,$,,,,<,,dL$$,,$4$$,$4$4T,D$$$,$44<$l$$$44$,$$TT,4L\,$,$4$$,$$$4,$L$$D,l,,<d,$$$<4$D<$$$$$$$$4$,\<\,$$$$$44T,$,<$L44$$D,4<,$$,<$$<,$4<$$$$$$$4$$,\4$$$4$<4,l$$<44,T$$$,$<4D$$,4L$$$,,D$$$$D$$$4$,,,$$$<l,$<d$,$4$$$$$4,,¼,,,Ld$LD,<$<$$D$,4D$4,L$4$$$$$$$<$<<,4,4$4,\$4T,,¤$,4,$<D,$$,$$$L<,$L,L,$$<D$,$<L$$$$,$$$L$$$$,$,4,TT$$$,$,$,$4$$$$$$44,<4$,$$,$<$,$$,$4$4$,,$t4$,$<$$,$,L,<,¤\4T$$$<,$L,<,$$<t$$$,<$$lL$,T\,,,$$4<$$<L444D4,Œ,$$,$4<<$l$,$$$D$4$$4$$L4D$4$4$$4$4,4<,4<,4,\,,$4D$<d$<<,,,,4$,$,$$,$,$$<<,T,$4$$$$$,44D$D<4$44$4$$,$\T$$44$$<|$$4,<,,$$$$$$<$4$,$$$$$$$,,,$$,,$Ì444,T”,$$,L$4\L,D$,L$$$,$D,4$,,$444,$,$$,L$,$$4$d,$$$T,,$$$L4D4$$,$$$,,$,$$$$$,$$$$$$$4,$$,4$                                                                                                                                                                                                                                                                                                                                                                            
